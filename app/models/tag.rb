@@ -12,11 +12,10 @@
 class Tag < ApplicationRecord
   acts_as_paranoid
 
-  after_commit :reindex_citations, :reindex_abstract_screening_results
-
   has_many :abstract_screening_results_tags
   has_many :abstract_screening_results, through: :abstract_screening_results_tags
-  has_many :citations, through: :abstract_screening_results
+  has_many :fulltext_screening_results_tags
+  has_many :fulltext_screening_results, through: :fulltext_screening_results_tags
 
   include SharedQueryableMethods
 
@@ -33,12 +32,4 @@ class Tag < ApplicationRecord
   scope :by_projects_user, lambda { |projects_user|
                              joins(:taggings).where(taggings: { projects_users_role_id: projects_user.projects_users_roles }).order(:name).distinct
                            }
-
-  def reindex_citations
-    citations.each(&:reindex)
-  end
-
-  def reindex_abstract_screening_results
-    abstract_screening_results.each(&:reindex)
-  end
 end

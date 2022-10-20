@@ -13,11 +13,10 @@
 class Reason < ApplicationRecord
   acts_as_paranoid
 
-  after_commit :reindex_citations, :reindex_abstract_screening_results
-
   has_many :abstract_screening_results_reasons
   has_many :abstract_screening_results, through: :abstract_screening_results_reasons
-  has_many :citations, through: :abstract_screening_results
+  has_many :fulltext_screening_results_reasons
+  has_many :fulltext_screening_results, through: :fulltext_screening_results_reasons
 
   include SharedQueryableMethods
 
@@ -30,12 +29,4 @@ class Reason < ApplicationRecord
   scope :by_project_lead, lambda { |project|
                             joins(:labels_reasons).where(labels_reasons: { projects_users_role_id: project.projects_users_roles.where(role: Role.find_by(name: 'Leader')) }).order(:name).distinct
                           }
-
-  def reindex_citations
-    citations.each(&:reindex)
-  end
-
-  def reindex_abstract_screening_results
-    abstract_screening_results.each(&:reindex)
-  end
 end

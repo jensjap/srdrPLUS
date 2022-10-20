@@ -13,7 +13,7 @@
   </div>
   <div class="flex flex-col w-full">
     <!-- prettier-ignore -->
-    <%= simple_form_for([@project, @fulltext_screening]) do |f| %>
+    <%= simple_form_for([action_name == 'edit' ? nil : @project, @fulltext_screening]) do |f| %>
     <div
       class="mt-8"
       x-data="{ pns: 'fulltext_screening', cns: 'fulltext_screening_type', customInput: false, open: false }"
@@ -22,32 +22,56 @@
       <%= render 'components/single_select' %>
     </div>
     <template
-      x-if="fulltext_screening.fulltext_screening_type.selection.key == 'pilot'"
+      x-if="['pilot', 'n-size-single', 'n-size-double'].includes(fulltext_screening.fulltext_screening_type.selection.key)"
     >
       <div class="mb-4">
-        <label for="no_of_citations"
-          >Maximum number of citations (1..100,000) drawn from the citations
-          pool:</label
-        >
+        <label for="no_of_citations">Number of citations per user:</label>
         <input
           type="number"
           id="no_of_citations"
-          name="no_of_citations"
+          name="fulltext_screening[no_of_citations]"
           min="1"
           max="100000"
+          :value="fulltext_screening.no_of_citations"
         />
       </div>
     </template>
 
-    <div
-      class="mt-8"
-      x-data="{ pns: 'fulltext_screening', cns: 'projects_users_role_ids', customInput: false, open: false }"
-    >
-      <div>Participants</div>
-      <%= render 'components/multi_select' %>
+    <div class="mt-4">
+      <div
+        class="flex items-center justify-between cursor-pointer"
+        @click="fulltext_screening.exclusive_users = !fulltext_screening.exclusive_users"
+      >
+        <input
+          type="hidden"
+          value="false"
+          name="fulltext_screening[exclusive_users]"
+        />
+        <input
+          type="checkbox"
+          name="fulltext_screening[exclusive_users]"
+          :value="fulltext_screening.exclusive_users"
+          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900">Exclusive Users</span>
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Only these users may participate in this screening
+          </span>
+        </span>
+      </div>
     </div>
 
-    <div class="grid grid-rows lg:grid-cols-4 gap-8 gap-x-12 mt-8">
+    <template x-if="fulltext_screening.exclusive_users">
+      <div
+        x-data="{ pns: 'fulltext_screening', cns: 'user_ids', customInput: false, open: false }"
+      >
+        <div>Users</div>
+        <%= render 'components/multi_select' %>
+      </div>
+    </template>
+
+    <div class="grid grid-rows lg:grid-cols-4 gap-8 gap-x-12 mt-4">
       <div
         class="flex items-center justify-between cursor-pointer"
         @click="fulltext_screening.all_tag = !fulltext_screening.all_tag; fulltext_screening.yes_tag = fulltext_screening.all_tag; fulltext_screening.no_tag = fulltext_screening.all_tag; fulltext_screening.maybe_tag = fulltext_screening.all_tag"
@@ -151,29 +175,6 @@
           </span>
         </span>
       </div>
-      <div></div>
-      <!-- <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="fulltext_screening.yes_reason = !fulltext_screening.yes_reason; fulltext_screening.all_reason = (fulltext_screening.yes_reason && fulltext_screening.no_reason && fulltext_screening.maybe_reason)"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="fulltext_screening[yes_reason_required]"
-        />
-        <input
-          type="checkbox"
-          name="fulltext_screening[yes_reason_required]"
-          :value="fulltext_screening.yes_reason"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900">Yes Labels</span>
-          <span class="text-sm text-gray-500" id="availability-description"
-            >Require Reasons</span
-          >
-        </span>
-      </div> -->
       <div
         class="flex items-center justify-between cursor-pointer"
         @click="fulltext_screening.no_reason = !fulltext_screening.no_reason; fulltext_screening.all_reason = (fulltext_screening.no_reason && fulltext_screening.maybe_reason)"
@@ -218,6 +219,7 @@
           >
         </span>
       </div>
+      <div class="flex items-center justify-between cursor-pointer"></div>
 
       <div
         class="flex items-center justify-between cursor-pointer"
@@ -435,6 +437,8 @@
         all_tag: false,
         all_reason: false,
         all_note: false,
+        no_of_citations: 0,
+        exclusive_users: false,
         yes_tag: false,
         no_tag: false,
         maybe_tag: false,
@@ -448,7 +452,7 @@
         only_predefined_tags: false,
         hide_author: false,
         hide_journal: false,
-        projects_users_role_ids: {
+        user_ids: {
           selections: [],
           options: [],
         },

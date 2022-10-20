@@ -1,14 +1,14 @@
 <div
-  class="relative z-10"
+  :class="desktop ? '' : 'relative z-10'"
   aria-labelledby="modal-title"
   role="dialog"
   aria-modal="true"
-  x-show="reasoningMenu"
+  x-show="desktop || reasoningMenu"
   x-cloak
 >
   <div
-    class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-    x-show="reasoningMenu"
+    :class="desktop ? '' : 'fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity'"
+    x-show="desktop ||reasoningMenu"
     x-transition:enter="ease-out duration-300"
     x-transition:enter-start="opacity-0"
     x-transition:enter-end="opacity-100"
@@ -17,22 +17,24 @@
     x-transition:leave-end="opacity-0"
   ></div>
 
-  <div class="fixed z-10 inset-0 overflow-y-auto">
-    <div class="flex items-center justify-center min-h-full p-4 text-center">
+  <div :class="desktop ? '' : 'fixed z-10 inset-0 overflow-y-auto'">
+    <div
+      :class="desktop ? '' : 'flex items-center justify-center min-h-full p-4 text-center'"
+    >
       <div
-        class="relative bg-white rounded-lg px-4 pt-5 pb-4 text-left shadow-xl transform transition-all w-full lg:w-1/3 h-[90vh] sm:mt-4 mb-8 sm:p-6"
-        x-show="reasoningMenu"
+        :class="desktop ? '' : 'relative bg-white rounded-lg px-4 pt-5 pb-4 text-left shadow-xl transform transition-all w-full lg:w-1/3 h-[90vh] sm:mt-4 sm:p-6'"
+        x-show="desktop ||reasoningMenu"
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
         x-transition:leave="ease-in duration-200"
         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
         x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-        @click.outside="if (addReasonModal.on == false) { reasoningMenu = false }"
+        @click.outside="if (!desktop && addReasonModal.on == false) { reasoningMenu = false }"
       >
         <button
           type="button"
-          class="cursor-pointer z-10 absolute top-4 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+          :class="desktop ? 'hidden' : 'cursor-pointer z-10 absolute top-4 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500'"
           @click="reasoningMenu = false"
         >
           <span class="sr-only">Close menu</span>
@@ -54,8 +56,8 @@
           </svg>
         </button>
 
-        <div class="fixed inset-5 mb-24 overflow-y-scroll">
-          <template x-if="label_value == -1">
+        <div :class="desktop ? '' : 'fixed inset-5 mb-24 overflow-y-scroll'">
+          <template x-if="!desktop && fsr.label == -1">
             <div class="mb-4">
               <h1 class="text-2xl flex items-center">
                 Mark Rejected
@@ -78,7 +80,7 @@
               </h1>
             </div>
           </template>
-          <template x-if="label_value == 0">
+          <template x-if="!desktop && fsr.label == 0">
             <div class="mb-4">
               <h1 class="text-2xl flex items-center">
                 Mark Maybe
@@ -101,7 +103,7 @@
               </h1>
             </div>
           </template>
-          <template x-if="label_value == 1">
+          <template x-if="!desktop && fsr.label == 1">
             <div class="mb-4">
               <h1 class="text-2xl flex items-center">
                 Mark Accepted
@@ -125,41 +127,49 @@
             </div>
           </template>
           <div class="min-h-[100px]">
-            <h1
-              class="text-xl"
-              x-text="mustSelectReason() ? '*Reason' : 'Reason'"
-            ></h1>
+            <h2 class="flex justify-between">
+              <div class="text-xl">Reason</div>
+              <div
+                class="text-xs flex items-end gap-x-1 font-bold"
+                x-show="options.no_reason_required || options.yes_reason_required || options.maybe_reason_required"
+              ><div>
+                <span>Required for labels:</span>
+                <span :class="(fsr.label == -1 && !hasSomeReason()) ? 'text-red-600' : ''" x-show="options.no_reason_required">No</span>
+                <span :class="(fsr.label == 0 && !hasSomeReason()) ? 'text-red-600' : ''" x-show="options.maybe_reason_required">Maybe</span>
+                <span :class="(fsr.label == 1 && !hasSomeReason()) ? 'text-red-600' : ''" x-show="options.yes_reason_required">Yes</span>
+              </div>
+            </h2>
             <hr class="m-0" />
             <label for="notes" class="block text-sm text-gray-700"
-              >Select one reason</label
+              >Select up to one reason</label
             >
-            <div class="grid grid-rows sm:grid-cols-4 gap-4 mt-4 mb-8">
+            <div class="grid grid-rows sm:grid-cols-6 gap-4 mt-4 mb-8">
               <template
-                x-for="[key, value] in Object.entries(predefined_reasons)"
+                x-for="[key, value] in Object.entries(fsr.predefined_reasons)"
               >
                 <span
-                  :class="value ? 'bg-srdrpurple' : 'bg-gray-700'"
-                  @click="turnOffAllReasons(); predefined_reasons[key] = !value; postAsr(false)"
-                  class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm text-white font-black"
+                  :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
+                  @click="turnOffAllReasons(); fsr.predefined_reasons[key] = !value; updateFsr(false)"
+                  class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
                   x-text="key"
                 >
                 </span>
               </template>
-              <template x-for="[key, value] in Object.entries(custom_reasons)">
+              <template x-for="[key, value] in Object.entries(fsr.custom_reasons)">
                 <div class="relative">
                   <span
-                    :class="value ? 'bg-srdrpurple' : 'bg-gray-700'"
-                    @click="turnOffAllReasons(); custom_reasons[key] = !value; postAsr(false)"
-                    class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm text-white font-black"
+                    :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
+                    @click="turnOffAllReasons(); fsr.custom_reasons[key] = !value; updateFsr(false)"
+                    class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
                     x-text="key"
                   >
                   </span>
                   <button
                     type="button"
                     class="cursor-pointer absolute top-0 right-0 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white bg-red-500"
-                    @click="deleteCustomValue('custom_reasons', key); postAsr(false)"
+                    @click="deleteCustomValue('custom_reasons', key)"
                   >
-                    <span class="sr-only">Remove large option</span>
+                    <span class="sr-only">remove custom reason</span>
                     <svg
                       class="h-2 w-2"
                       stroke="currentColor"
@@ -182,11 +192,11 @@
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-10 w-10"
+                  class="h-8 w-8"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1"
                 >
                   <path
                     stroke-linecap="round"
@@ -199,37 +209,45 @@
           </div>
 
           <div class="min-h-[100px]">
-            <h1
-              class="text-xl"
-              x-text="mustSelectTag() ? '*Tags' : 'Tags'"
-            ></h1>
+            <h2 class="flex justify-between">
+              <div class="text-xl">Tags</div>
+              <div
+                class="text-xs flex items-end gap-x-1 font-bold"
+                x-show="options.no_tag_required || options.yes_tag_required || options.maybe_tag_required"
+             ><div>
+                <span>Required for labels:</span>
+                <span :class="(fsr.label == -1 && !hasSomeTag()) ? 'text-red-600' : ''" x-show="options.no_tag_required">No</span>
+                <span :class="(fsr.label == 0 && !hasSomeTag()) ? 'text-red-600' : ''" x-show="options.maybe_tag_required">Maybe</span>
+                <span :class="(fsr.label == 1 && !hasSomeTag()) ? 'text-red-600' : ''" x-show="options.yes_tag_required">Yes</span>
+              </div>
+            </h2>
             <hr class="m-0" />
             <label for="notes" class="block text-sm text-gray-700"
-              >Select one or more reasons</label
+              >Select tags</label
             >
-            <div class="grid grid-rows sm:grid-cols-4 gap-4 mt-4 mb-8">
-              <template x-for="[key, value] in Object.entries(predefined_tags)">
+            <div class="grid grid-rows sm:grid-cols-6 gap-4 mt-4 mb-8">
+              <template x-for="[key, value] in Object.entries(fsr.predefined_tags)">
                 <span
-                  :class="value ? 'bg-srdrpurple' : 'bg-gray-700'"
-                  @click="predefined_tags[key] = !value; postAsr(false)"
-                  class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm text-white font-black"
+                  :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
+                  @click="fsr.predefined_tags[key] = !value; updateFsr(false)"
+                  class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
                   x-text="key"
                 >
                 </span>
               </template>
-              <template x-for="[key, value] in Object.entries(custom_tags)">
+              <template x-for="[key, value] in Object.entries(fsr.custom_tags)">
                 <div class="relative">
                   <span
-                    :class="value ? 'bg-srdrpurple' : 'bg-gray-700'"
-                    @click="custom_tags[key] = !value; postAsr(false)"
-                    class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-3 py-4 rounded-full text-sm text-white font-black"
+                    :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
+                    @click="fsr.custom_tags[key] = !value; updateFsr(false)"
+                    class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
                     x-text="key"
                   >
                   </span>
                   <button
                     type="button"
                     class="cursor-pointer absolute top-0 right-0 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white bg-red-500"
-                    @click="deleteCustomValue('custom_tags', key); postAsr(false)"
+                    @click="deleteCustomValue('custom_tags', key)"
                   >
                     <span class="sr-only">Remove large option</span>
                     <svg
@@ -254,11 +272,11 @@
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-10 w-10"
+                  class="h-8 w-8"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
-                  stroke-width="2"
+                  stroke-width="1"
                 >
                   <path
                     stroke-linecap="round"
@@ -270,40 +288,115 @@
             </div>
           </div>
           <div class="min-h-[100px]">
-            <h1
-              class="text-xl"
-              x-text="mustEnterNotes() ? '*Notes' : 'Notes'"
-            ></h1>
+            <h2 class="flex justify-between">
+              <div class="text-xl">Notes</div>
+              <div
+                class="text-xs flex items-end gap-x-1 font-bold"
+                x-show="options.no_note_required || options.yes_note_required || options.maybe_note_required"
+              ><div>
+                <span>Required for labels:</span>
+                <span :class="(fsr.label == -1 && !hasSomeNote()) ? 'text-red-600' : ''" x-show="options.no_note_required">No</span>
+                <span :class="(fsr.label == 0 && !hasSomeNote()) ? 'text-red-600' : ''" x-show="options.maybe_note_required">Maybe</span>
+                <span :class="(fsr.label == 1 && !hasSomeNote()) ? 'text-red-600' : ''" x-show="options.yes_note_required">Yes</span>
+              </div>
+            </h2>
             <hr class="m-0" />
             <div>
               <label for="notes" class="block text-sm text-gray-700"
                 >Write in notes</label
               >
-              <div class="mt-1">
+              <div class="mt-1 mb-8">
                 <textarea
                   rows="4"
+                  columns="30"
                   name="notes"
                   id="notes"
-                  x-model="notes"
+                  x-model="fsr.notes"
                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"
-                  @input.debounce.500ms="postAsr(false)"
+                  @input.debounce.500ms="updateFsr(false)"
                 ></textarea>
               </div>
             </div>
           </div>
         </div>
         <div
-          class="fixed bottom-0 h-24 mb-5 mx-5 left-0 right-0 flex flex-col justify-center items-center content-center"
-          x-show="label_value !== null"
+          :class="desktop ? 'hidden' : 'fixed bottom-0 h-24 mb-5 mx-5 left-0 right-0 flex flex-col justify-center items-center content-center'"
+          x-show="fsr.label !== null"
         >
           <button
             type="button"
             class="cursor-pointer justify-center m-auto w-full h-20 inline-flex items-center border border-transparent text-xl font-medium rounded-md shadow-sm text-white bg-green-900 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             :class="satisfiesReasoning() ? '' : 'cursor-not-allowed bg-gray-900 hover:bg-gray-700'"
-            @click="if (satisfiesReasoning()) postAsr(true)"
+            @click="if (satisfiesReasoning()) updateFsr(true)"
             x-text="satisfiesReasoning() ? 'Submit' : 'Please fill in the required data above'"
           ></button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    x-show="desktop"
+    class="border-l border-gray-600 fixed bottom-0 right-0 w-1/2 h-32 text-white"
+  >
+    <div class="grid grid-cols-3 h-full">
+      <div
+        class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
+        @click="fsr.label = -1; if (satisfiesReasoning()) { updateFsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+        :class="(fsr.label == -1 || fsr.label == null) ? '' : 'saturate-[0.1]'"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-10 w-10"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </div>
+      <div :class="desktop ? 'grid grid-rows-1' : 'grid grid-rows-2'">
+        <div
+          class="cursor-pointer bg-srdrpurple flex justify-center items-center"
+          @click="fsr.label = 0; if (satisfiesReasoning()) { updateFsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+          :class="(fsr.label == 0 || fsr.label == null)? '' : 'saturate-[0.1]'"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-10 w-10"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
+      </div>
+      <div
+        class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
+        @click="fsr.label = 1; if (satisfiesReasoning()) { updateFsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+        :class="(fsr.label == 1 || fsr.label == null)? '' : 'saturate-[0.1]'"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-10 w-10"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+            clip-rule="evenodd"
+          />
+        </svg>
       </div>
     </div>
   </div>

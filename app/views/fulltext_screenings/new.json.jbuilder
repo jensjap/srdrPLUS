@@ -11,6 +11,8 @@ json.fulltext_screening do
   json.all_tag @fulltext_screening.yes_tag_required && @fulltext_screening.no_tag_required && @fulltext_screening.maybe_tag_required
   json.all_reason @fulltext_screening.no_reason_required && @fulltext_screening.maybe_reason_required
   json.all_note @fulltext_screening.yes_note_required && @fulltext_screening.no_note_required && @fulltext_screening.maybe_note_required
+  json.no_of_citations @fulltext_screening.no_of_citations
+  json.exclusive_users @fulltext_screening.exclusive_users
   json.yes_tag @fulltext_screening.yes_tag_required
   json.no_tag @fulltext_screening.no_tag_required
   json.maybe_tag @fulltext_screening.maybe_tag_required
@@ -24,9 +26,9 @@ json.fulltext_screening do
   json.only_predefined_tags @fulltext_screening.only_predefined_tags
   json.hide_author @fulltext_screening.hide_author
   json.hide_journal @fulltext_screening.hide_journal
-  json.projects_users_role_ids do
-    json.selections @fulltext_screening.projects_users_roles.map { |pur| { key: pur.id, value: pur.handle } }
-    json.options @fulltext_screening.project.projects_users_roles.map { |pur| { key: pur.id, value: pur.handle } }
+  json.user_ids do
+    json.selections @fulltext_screening.fulltext_screenings_users.map { |asu| { key: asu.id, value: asu.handle } }
+    json.options @fulltext_screening.project.users.map { |u| { key: u.id, value: u.handle } }
   end
   json.reason_ids do
     json.selections @fulltext_screening.reasons.map { |reason| { key: reason.id, value: reason.name } }

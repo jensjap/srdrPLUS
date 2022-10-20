@@ -1,8 +1,4 @@
-<div
-  x-data="screenStore"
-  @keyup.escape.window="closeAllModals()"
-  id="abstrackr-wrapper"
->
+<div x-data="screenStore" @keyup.escape.window="closeAllModals()">
   <!-- prettier-ignore -->
   <%= render 'abstract_screenings/screen/add_reasoning' %>
   <%= render 'abstract_screenings/screen/weighing_screen' %>
@@ -279,13 +275,10 @@
       disable_textarea_keywords_and_phrases: false,
 
       init() {
-        <% if params[:asr_id] %>
-          this.getAsrId(<%= params[:asr_id] %>);
-        <% elsif params[:before_asr_id] %>
-          this.getAsrId(null, <%= params[:before_asr_id] %>);
-        <% else %>
-          this.getAsrId();
-        <% end %>
+        const url = new URL(window.location.href);
+        const asr_id = url.searchParams.get("asr_id");
+        const before_asr_id = url.searchParams.get("before_asr_id");
+        this.getAsrId(asr_id, before_asr_id);
 
         const smallDevice = window.matchMedia("(min-width: 1024px)");
         smallDevice.addListener(handleDeviceChange);
@@ -631,17 +624,22 @@
         this.processWeights("abstract", "processedAbstract");
       },
 
-      async getAsrId(asrId = '', beforeAsrId = '') {
-        const response = await fetch(
-          `/abstract_screenings/<%= params[:abstract_screening_id] %>/screen?asr_id=${asrId}&before_asr_id=${beforeAsrId}`,
-          {
-            method: "GET",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-          }
-        );
+      async getAsrId(asrId, beforeAsrId) {
+        let url = "";
+        if (asrId) {
+          url = `/abstract_screenings/<%= params[:abstract_screening_id] %>/screen?asr_id=${asrId}`;
+        } else if (beforeAsrId) {
+          url = `/abstract_screenings/<%= params[:abstract_screening_id] %>/screen?before_asr_id=${beforeAsrId}`;
+        } else {
+          url = `/abstract_screenings/<%= params[:abstract_screening_id] %>/screen`;
+        }
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
         const data = await response.json();
 
         this.asr.id = data.asr_id;

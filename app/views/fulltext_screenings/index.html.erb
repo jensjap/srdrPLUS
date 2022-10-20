@@ -1,7 +1,7 @@
 <div class="p-4 lg:p-8">
   <div class="sm:flex sm:items-center">
     <div class="sm:flex-auto">
-      <h1 class="text-xl font-bold">Full-Text Screenings</h1>
+      <h1 class="text-xl font-bold">Fulltext Screenings</h1>
       <p class="mt-2 text-sm text-gray-700">
         Setup an fulltext screening process for your project members and pool of
         citations
@@ -24,7 +24,9 @@
           <div
             class="overflow-hidden shadow-sm ring-1 ring-black ring-opacity-5"
           >
-            <table class="w-full table-auto divide-y divide-gray-300">
+            <table
+              class="w-full table-auto divide-y divide-gray-300 overflow-x-auto whitespace-nowrap"
+            >
               <thead class="bg-gray-50">
                 <tr>
                   <th
@@ -43,35 +45,23 @@
                     scope="col"
                     class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Participants
+                    Participant (No. of Labels)
                   </th>
                   <th
                     scope="col"
                     class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    No. of Citations
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    No. of Labels
-                  </th>
-                  <th
-                    scope="col"
-                    class="w-1/5 px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
                     Predefined Reasons
                   </th>
                   <th
                     scope="col"
-                    class="w-1/5 px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
                     Predefined Tags
                   </th>
                   <th
                     scope="col"
-                    class="relative w-1/6 py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8"
+                    class="relative py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8"
                   >
                     <span class="sr-only">Actions</span>
                   </th>
@@ -80,80 +70,120 @@
               <tbody class="divide-y divide-gray-200 bg-white">
                 <% if @fulltext_screenings.empty? %>
                 <tr>
-                  <td>No full-text screenings yet.</td>
+                  <td>No fulltext screenings yet.</td>
                 </tr>
                 <% end %>
                 <!-- prettier-ignore -->
-                <% @fulltext_screenings.each do |fts| %>
+                <% @fulltext_screenings.each do |fs| %>
                 <tr>
                   <td
                     class="pl-4 pr-3 text-sm font-medium text-gray-500 sm:pl-6 lg:pl-8"
                   >
-                    <%= fts.fulltext_screening_type %>
+                    <!-- prettier-ignore -->
+                    <%= fs.fulltext_screening_type %>
+                    <% if FulltextScreening::NON_PERPETUAL.include?(fs.fulltext_screening_type) %>
+                    <div>
+                      No. of citations per user: <%= fs.no_of_citations %>
+                    </div>
+                    <% end %>
+                  </td>
+                  <td class="px-3 text-sm text-gray-500">
+                    <div class="flex justify-between">
+                      <div>Exclusive users:</div>
+                      <div><%= fs.exclusive_users %></div>
+                    </div>
+                    <div class="flex justify-between">
+                      <div>Only predefined reasons:</div>
+                      <div><%= fs.only_predefined_reasons %></div>
+                    </div>
+                    <div class="flex justify-between">
+                      <div>Only predefined tags:</div>
+                      <div><%= fs.only_predefined_tags %></div>
+                    </div>
+                    <div class="flex justify-between">
+                      <div>Hide author:</div>
+                      <div><%= fs.hide_author %></div>
+                    </div>
+                    <div class="flex justify-between">
+                      <div>Hide journal:</div>
+                      <div><%= fs.hide_journal %></div>
+                    </div>
+                    <div class="flex justify-between">
+                      <div>Tags required for:</div>
+                      <div><%= fs.tag_options.join(', ') %></div>
+                    </div>
+                    <div class="flex justify-between">
+                      <div>Reasons required for:</div>
+                      <div><%= fs.reason_options.join(', ') %></div>
+                    </div>
+                    <div class="flex justify-between">
+                      <div>Notes required for:</div>
+                      <div><%= fs.note_options.join(', ') %></div>
+                    </div>
                   </td>
                   <td class="px-3 text-sm text-gray-500">
                     <!-- prettier-ignore -->
-                    Tags required for: <%= fts.tag_options.join(', ') %><br />
-                    Reasons required for: <%= fts.reason_options.join(', ')
-                    %><br />
-                    Notes required for: <%= fts.note_options.join(', ') %><br />
-                    Only predefined reasons: <%= fts.only_predefined_reasons
-                    %><br />
-                    Only predefined tags: <%= fts.only_predefined_tags %><br />
-                    Hide author: <%= fts.hide_author %><br />
-                    Hide journal: <%= fts.hide_journal %><br />
+                    <% users = fs.fulltext_screening_results.map(&:user) %>
+                    <% users += fs.users.to_a if fs.exclusive_users %>
+                    <% users.uniq.each do |user| %>
+                    <!-- prettier-ignore -->
+                    <div><%= user.handle %> (<%= FulltextScreeningResult.where(user:, fulltext_screening: fs).where("label IS NOT NULL").count %>)</div>
+                    <% end %>
                   </td>
                   <td class="px-3 text-sm text-gray-500">
-                    <%= fts.projects_users_roles.count %> member(s)
-                  </td>
-                  <td class="px-3 text-sm text-gray-500">
-                    <%= fts.fulltext_screening_type == 'perpetual' ? '∞' :
-                    fts.citations_projects.count %>
-                  </td>
-                  <td class="px-3 text-sm text-gray-500">
-                    <%= fts.fulltext_screening_results.count %>
-                  </td>
-                  <td class="px-3 text-sm text-gray-500">
-                    <% fts.reasons.map(&:name).each do |reason| %>
+                    <% fs.reasons.map(&:name).each do |reason| %>
                     <!-- prettier-ignore -->
                     - <%= reason %><br />
                     <% end %>
                   </td>
                   <td class="px-3 text-sm text-gray-500">
-                    <% fts.tags.map(&:name).each do |tag| %>
+                    <% fs.tags.map(&:name).each do |tag| %>
                     <!-- prettier-ignore -->
                     - <%= tag %><br />
                     <% end %>
                   </td>
 
-                  <td
-                    class="pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8"
-                  >
+                  <td class="flex flex-col items-center">
+                    <% if @project.leaders.include?(current_user) ||
+                    !fs.exclusive_users || fs.users.include?(current_user) %>
+                    <!-- prettier-ignore -->
+                    <% if FulltextScreeningService.find_citation_id(fs, current_user) %>
                     <%= link_to('Continue Screening',
-                    fulltext_screening_screen_path(fts), class: "w-full
-                    inline-flex items-center justify-center rounded-md border
-                    border-transparent bg-srdrpurple px-4 py-2 my-1 text-center
-                    text-sm font-medium text-white shadow-sm
-                    hover:bg-srdrpurple-light focus:outline-none focus:ring-2
-                    focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline
-                    hover:text-white") %> <%= link_to('Show Results',
-                    fulltext_screening_path(fts), class: "w-full inline-flex
+                    fulltext_screening_screen_path(fs), class: "w-48 inline-flex
                     items-center justify-center rounded-md border
                     border-transparent bg-srdrpurple px-4 py-2 my-1 text-center
                     text-sm font-medium text-white shadow-sm
                     hover:bg-srdrpurple-light focus:outline-none focus:ring-2
                     focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline
-                    hover:text-white") %> <%= link_to('Edit',
-                    edit_fulltext_screening_path(fts), class: "w-full
-                    inline-flex items-center justify-center rounded-md border
-                    border-transparent bg-srdrpurple px-4 py-2 my-1 text-center
-                    text-sm font-medium text-white shadow-sm
-                    hover:bg-srdrpurple-light focus:outline-none focus:ring-2
-                    focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline
                     hover:text-white") %>
+                    <% else %>
+                    <button
+                      class="w-48 inline-flex mb-2 cursor-not-allowed saturate-[0.25] items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
+                    >
+                      Nothing Left to Screen</button
+                    ><% end %>
+                    <!-- prettier-ignore -->
+                    <%= link_to('Show Results',
+                      fulltext_screening_path(fs), class: "w-48 inline-flex
+                      items-center justify-center rounded-md border
+                      border-transparent bg-srdrpurple px-4 py-2 my-1
+                      text-center text-sm font-medium text-white shadow-sm
+                      hover:bg-srdrpurple-light focus:outline-none focus:ring-2
+                      focus:ring-indigo-500 focus:ring-offset-2
+                      hover:no-underline hover:text-white") %>
+                    <!-- prettier-ignore -->
+                    <% if @project.leaders.include?(current_user) %>
+                    <%= link_to('Edit', edit_fulltext_screening_path(fs),
+                      class: "w-48 inline-flex items-center justify-center
+                      rounded-md border border-transparent bg-srdrpurple px-4
+                      py-2 my-1 text-center text-sm font-medium text-white
+                      shadow-sm hover:bg-srdrpurple-light focus:outline-none
+                      focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
+                      hover:no-underline hover:text-white") %>
+                    <% end %>
                   </td>
                 </tr>
-                <% end %>
+                <% end %> <% end %>
               </tbody>
             </table>
           </div>

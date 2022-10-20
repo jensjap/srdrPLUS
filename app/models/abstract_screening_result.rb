@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: abstract_screening_results
+#
+#  id                    :bigint           not null, primary key
+#  abstract_screening_id :bigint
+#  user_id               :bigint
+#  citation_id           :bigint
+#  label                 :integer
+#  notes                 :text(65535)
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#
 class AbstractScreeningResult < ApplicationRecord
   searchkick
 

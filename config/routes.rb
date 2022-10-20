@@ -164,17 +164,18 @@ Rails.application.routes.draw do
   get 'sd_key_questions/:id/fuzzy_match', to: 'sd_key_questions#fuzzy_match'
 
   resources :abstract_screening_results, only: %i[show update]
+  resources :fulltext_screening_results, only: %i[show update]
   resources :data_audits, only: %i[index update]
   resources :projects, concerns: :paginatable, shallow: true do
+    get 'citation_lifecycle_management', to: 'abstract_screenings#citation_lifecycle_management'
+    get 'kpis', to: 'abstract_screenings#kpis'
+
     resources :abstract_screenings do
       get 'rescreen', to: 'abstract_screenings#rescreen'
       get 'screen', to: 'abstract_screenings#screen'
       post 'label', to: 'abstract_screenings#label'
       post 'update_word_weight', to: 'abstract_screenings#update_word_weight'
     end
-    get 'citation_lifecycle_management', to: 'abstract_screenings#citation_lifecycle_management'
-    get 'kpis', to: 'abstract_screenings#kpis'
-
     resources :fulltext_screenings do
       get 'rescreen', to: 'fulltext_screenings#rescreen'
       get 'screen', to: 'fulltext_screenings#screen'
@@ -334,6 +335,9 @@ Rails.application.routes.draw do
 
   resources :abstract_screening_results, only: [] do
     resources :sf_abstract_records, only: [:index]
+  end
+
+  resources :fulltext_screening_results, only: [] do
     resources :sf_fulltext_records, only: [:index]
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
