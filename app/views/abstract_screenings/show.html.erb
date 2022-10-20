@@ -1,40 +1,137 @@
 <div class="px-4 sm:px-6 lg:px-8 py-4">
   <!-- <%= render 'dashboard' %> -->
   <div x-data="abstract_screening_results">
-    <div class="sm:flex sm:items-center">
-      <div class="sm:flex-auto">
-        <h1 class="text-xl font-semibold text-gray-900">
-          Abstract Screening Results
-        </h1>
-        <p class="mt-2 text-sm text-gray-700">
-          A list of all results for citations that have been labeled.
-        </p>
-      </div>
-      <div class="mt-4 sm:mt-0 sm:ml-16 flex flex-col items-end">
-        <!-- prettier-ignore -->
-        <% if AbstractScreeningService.find_citation_id(@abstract_screening, current_user) %>
-        <%= link_to('Continue Screening',
-        abstract_screening_screen_path(@abstract_screening), class: "mb-2
-        cursor-pointer inline-flex items-center justify-center rounded-md border
-        border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium
-        text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none
-        focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full
-        hover:no-underline hover:text-white") %>
-        <% else %>
-        <button
-          class="mb-2 cursor-not-allowed saturate-[0.25] w-full inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
-        >
-          Nothing Left to Screen
-        </button>
-        <% end %>
-        <!-- prettier-ignore -->
-        <%= link_to('Back to Abstract Screenings',
-        project_abstract_screenings_path(@abstract_screening.project), class:
-        "cursor-pointer inline-flex items-center justify-center rounded-md
-        border border-transparent bg-gray-700 px-4 py-2 text-sm font-medium
-        text-white shadow-sm hover:bg-gray-500 focus:outline-none focus:ring-2
-        focus:ring-indigo-500 focus:ring-offset-2 w-full hover:no-underline
-        hover:text-white") %>
+    <div class="lg:flex lg:items-center">
+      <div class="lg:flex-auto">
+        <div class="flex flex-col md:flex-row justify-between mb-4">
+          <div>
+            <h1 class="text-xl font-semibold text-gray-900">
+              Abstract Screening Results
+            </h1>
+            <p class="mt-2 text-sm text-gray-700">
+              A list of all results for citations that have been labeled.
+            </p>
+          </div>
+          <div class="flex-col items-end">
+            <!-- prettier-ignore -->
+            <% if AbstractScreeningService.find_citation_id(@abstract_screening, current_user) %>
+            <%= link_to('Continue Screening',
+            abstract_screening_screen_path(@abstract_screening), class: "text-center mb-2
+            cursor-pointer inline-flex items-center justify-center rounded-md border
+            border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium
+            text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none
+            focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full
+            hover:no-underline hover:text-white") %>
+            <% else %>
+            <button
+              class="text-center mb-2 cursor-not-allowed saturate-[0.25] w-full inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
+            >
+              Nothing Left to Screen
+            </button>
+            <% end %>
+            <!-- prettier-ignore -->
+            <%= link_to('Back to Abstract Screenings',
+            project_abstract_screenings_path(@abstract_screening.project), class:
+            "text-center cursor-pointer inline-flex items-center justify-center rounded-md
+            border border-transparent bg-gray-700 px-4 py-2 text-sm font-medium
+            text-white shadow-sm hover:bg-gray-500 focus:outline-none focus:ring-2
+            focus:ring-indigo-500 focus:ring-offset-2 w-full hover:no-underline
+            hover:text-white") %>
+          </div>
+        </div>
+        <div class="flex flex-wrap lg:flex-nowrap gap-4">
+          <div
+            class="text-xs w-full text-gray-700 border-l-2 border-gray-200 p-2"
+          >
+            <div class="flex justify-between">
+              <div>Screening Type:</div>
+              <div>
+                <!-- prettier-ignore -->
+                <%= @abstract_screening.abstract_screening_type %>
+              <% if AbstractScreening::NON_PERPETUAL.include?(@abstract_screening.abstract_screening_type) %>
+                <div>
+                  No. of citations per user: <%=
+                  @abstract_screening.no_of_citations %>
+                </div>
+                <% end %>
+              </div>
+            </div>
+            <div class="flex justify-between">
+              <div>Exclusive users:</div>
+              <div><%= @abstract_screening.exclusive_users %></div>
+            </div>
+            <div class="flex justify-between">
+              <div>Only predefined reasons:</div>
+              <div><%= @abstract_screening.only_predefined_reasons %></div>
+            </div>
+            <div class="flex justify-between">
+              <div>Only predefined tags:</div>
+              <div><%= @abstract_screening.only_predefined_tags %></div>
+            </div>
+            <div class="flex justify-between">
+              <div>Hide author:</div>
+              <div><%= @abstract_screening.hide_author %></div>
+            </div>
+            <div class="flex justify-between">
+              <div>Hide journal:</div>
+              <div><%= @abstract_screening.hide_journal %></div>
+            </div>
+            <div class="flex justify-between">
+              <div>Tags required for:</div>
+              <div><%= @abstract_screening.tag_options.join(', ') %></div>
+            </div>
+            <div class="flex justify-between">
+              <div>Reasons required for:</div>
+              <div><%= @abstract_screening.reason_options.join(', ') %></div>
+            </div>
+            <div class="flex justify-between">
+              <div>Notes required for:</div>
+              <div><%= @abstract_screening.note_options.join(', ') %></div>
+            </div>
+          </div>
+          <div
+            class="text-xs w-full text-gray-700 border-l-2 border-gray-200 p-2"
+          >
+            <div class="flex justify-between">
+              <!-- prettier-ignore -->
+              <% users = @abstract_screening.abstract_screening_results.map(&:user) %>
+              <% users += @abstract_screening.users.to_a if @abstract_screening.exclusive_users %>
+              <% users.uniq.each do |user| %>
+              <div><%= user.handle %></div>
+              <div>
+                <!-- prettier-ignore -->
+                (<%= AbstractScreeningResult.where(user:, abstract_screening: @abstract_screening).where("label IS NOT NULL").count %>)
+              </div>
+              <% end %>
+            </div>
+          </div>
+          <div
+            class="text-xs w-full text-gray-700 border-l-2 border-gray-200 p-2"
+          >
+            <div class="flex justify-between">
+              <div>Predefined Reasons:</div>
+              <div>
+                <% @abstract_screening.reasons.map(&:name).each do |reason| %>
+                <!-- prettier-ignore -->
+                - <%= reason %><br />
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <div
+            class="text-xs w-full text-gray-700 border-l-2 border-gray-200 p-2"
+          >
+            <div class="flex justify-between">
+              <div>Predefined Tags:</div>
+              <div>
+                <% @abstract_screening.tags.map(&:name).each do |tag| %>
+                <!-- prettier-ignore -->
+                - <%= tag %><br />
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="relative my-4">
