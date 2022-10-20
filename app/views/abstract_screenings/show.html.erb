@@ -47,14 +47,15 @@
               <div>
                 <!-- prettier-ignore -->
                 <%= @abstract_screening.abstract_screening_type %>
-              <% if AbstractScreening::NON_PERPETUAL.include?(@abstract_screening.abstract_screening_type) %>
-                <div>
-                  No. of citations per user: <%=
-                  @abstract_screening.no_of_citations %>
-                </div>
-                <% end %>
               </div>
             </div>
+            <!-- prettier-ignore -->
+            <% if AbstractScreening::NON_PERPETUAL.include?(@abstract_screening.abstract_screening_type) %>
+            <div class="flex justify-between">
+              <div>No. of citations per user:</div>
+              <div><%= @abstract_screening.no_of_citations %></div>
+            </div>
+            <% end %>
             <div class="flex justify-between">
               <div>Exclusive users:</div>
               <div><%= @abstract_screening.exclusive_users %></div>
