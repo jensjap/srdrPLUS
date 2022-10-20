@@ -146,6 +146,7 @@ class ExtractionsController < ApplicationController
   def work
     @project = @extraction.project
     authorize(@project, policy_class: ExtractionPolicy)
+    @nav_buttons.push('extractions', 'my_projects')
 
     set_extraction_forms_projects
 
