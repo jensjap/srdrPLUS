@@ -20,7 +20,7 @@
     right: 8px;
   }
 </style>
-<div x-data="screeningFormData" class="">
+<div x-data="screeningFormData" x-show="questions.length > 0">
   <div class="py-2">
     <h1 class="text-xl">Screening Form</h1>
     <hr class="m-0" />
@@ -36,7 +36,7 @@
             <div class="py-2 px-4">
               <h2
                 class="text-lg"
-                x-text="`${question_index + 1}. ${question.name}`"
+                x-text="`${question_index + 1}. ${question.name || ''}`"
               ></h2>
               <p class="m-0" x-text="question.description"></p>
             </div>

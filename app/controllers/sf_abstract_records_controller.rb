@@ -9,8 +9,8 @@ class SfAbstractRecordsController < ApplicationController
         @screening_form = ScreeningForm.includes(
           sf_questions: [
             {
-              sf_rows: { sf_cells: %i[sf_options sf_abstract_records sf_fulltext_records] },
-              sf_columns: { sf_cells: %i[sf_options sf_abstract_records sf_fulltext_records] }
+              sf_rows: { sf_cells: %i[sf_options sf_abstract_records] },
+              sf_columns: { sf_cells: %i[sf_options sf_abstract_records] }
             }
           ]
         ).where(id: @screening_form.id).first
