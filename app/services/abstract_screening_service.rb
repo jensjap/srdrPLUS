@@ -1,4 +1,10 @@
 class AbstractScreeningService
+  def self.as_user?(user)
+    return false if user.nil?
+
+    (ENV['SRDRPLUS_AS_USERS'].nil? ? [] : JSON.parse(ENV['SRDRPLUS_AS_USERS'])).include?(user.id)
+  end
+
   def self.get_asr(abstract_screening, user)
     unfinished_asr = find_unfinished_asr(abstract_screening, user)
     return unfinished_asr if unfinished_asr

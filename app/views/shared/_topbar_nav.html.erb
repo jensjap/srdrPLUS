@@ -328,6 +328,44 @@
             :class="extractions_form_builder && 'bg-srdr-primary !text-white'"
             >Extractions Form Builder</a
           >
+          <% if AbstractScreeningService.as_user?(current_user) %>
+          <a
+            href="<%= project_citations_path(project) %>"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="citation_pool && 'bg-srdr-primary !text-white'"
+            >Citations</a
+          >
+          <!-- <a
+          href="<%= project_citation_lifecycle_management_path(project) %>"
+          class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+          :class="lifecycle_management && 'bg-srdr-primary !text-white'"
+          >Citation Phase Management</a
+        > -->
+          <a
+            href="<%= project_abstract_screenings_path(project) %>"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="abstract_screening && 'bg-srdr-primary !text-white'"
+            >Abstract Screening</a
+          >
+          <!-- <a
+          href="<%= project_fulltext_screenings_path(project) %>"
+          class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+          :class="fulltext_screening && 'bg-srdr-primary !text-white'"
+          >Full-Text Screening</a
+        > -->
+          <a
+            href="<%= project_screening_forms_path(project, form_type: 'abstract') %>"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="abstract_form && 'bg-srdr-primary !text-white'"
+            >A.S. Form Builder</a
+          >
+          <!-- <a
+          href="<%= project_screening_forms_path(project, form_type: 'fulltext') %>"
+          class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+          :class="fulltext_form && 'bg-srdr-primary !text-white'"
+          >F.S. Form Builder</a
+        > -->
+          <% else %>
           <a
             href="<%= project_citations_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
@@ -346,48 +384,13 @@
             :class="screen && 'bg-srdr-primary !text-white'"
             >Screen</a
           >
+          <% end %>
           <a
             href="<%= project_extractions_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="extractions && 'bg-srdr-primary !text-white'"
             >Extractions</a
           >
-          <a
-            href="<%= project_citations_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="citation_pool && 'bg-srdr-primary !text-white'"
-            >Citations</a
-          >
-          <!-- <a
-            href="<%= project_citation_lifecycle_management_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="lifecycle_management && 'bg-srdr-primary !text-white'"
-            >Citation Phase Management</a
-          > -->
-          <a
-            href="<%= project_abstract_screenings_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="abstract_screening && 'bg-srdr-primary !text-white'"
-            >Abstract Screening</a
-          >
-          <!-- <a
-            href="<%= project_fulltext_screenings_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="fulltext_screening && 'bg-srdr-primary !text-white'"
-            >Full-Text Screening</a
-          > -->
-          <a
-            href="<%= project_screening_forms_path(project, form_type: 'abstract') %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="abstract_form && 'bg-srdr-primary !text-white'"
-            >A.S. Form Builder</a
-          >
-          <!-- <a
-            href="<%= project_screening_forms_path(project, form_type: 'fulltext') %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="fulltext_form && 'bg-srdr-primary !text-white'"
-            >F.S. Form Builder</a
-          > -->
           <a
             href="<%= export_data_project_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
