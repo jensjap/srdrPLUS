@@ -36,17 +36,19 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
 
     buffer = @imported_file.content.download
     _parse_workbook(buffer)
-    _sort_out_worksheets unless @dict_errors[:parse_error_found]
+    _sort_out_worksheets     unless @dict_errors[:parse_error_found]
     _process_worksheets_data unless @dict_errors[:wb_errors_found]
-    _insert_wb_data_into_db unless @dict_errors[:ws_errors_found]
+    _insert_wb_data_into_db  unless @dict_errors[:ws_errors_found]
   end  # def perform(*args)
 
   private
 
   def _parse_workbook(buffer)
+    puts "Parsing Workbook.."
     @wb = RubyXL::Parser.parse_buffer(buffer)
     @dict_errors[:parse_error_found] = false
   rescue RuntimeError => e
+    puts "  @dict_errors[:parse_error_found] = true"
     @dict_errors[:parse_error_found] = true
   end  # def _parse_workbook(buffer)
 
@@ -58,6 +60,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   #
   # @wb_worksheets
   def _sort_out_worksheets
+    puts "Sorting out worksheets.."
     @dict_errors[:wb_errors]       = []
     @dict_errors[:wb_errors_found] = false
 
@@ -65,13 +68,16 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     #   their respective keys.
     @wb.worksheets.each do |ws|
       case ws.sheet_name
-      when /Assignments and Mappings/
+      when /Assignments? and Mappings?/i
+        puts "  Found Assignments and Mappings"
         @wb_worksheets[:aam] << ws
 
-      when /Workbook Citation References/
+      when /Workbooks? Citations? References?/i
+        puts "  Found Workbook Citation References"
         @wb_worksheets[:wcr] << ws
 
       else
+        puts "  Found Unknown Worksheet Names.."
         @wb_worksheets[:unknowns] << ws
 
       end # case ws.sheet_name
@@ -111,6 +117,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
 
   # Populate @wb_data under key :wcr.
   def _process_workbook_citation_references_section(ws)
+    puts "Processing Workbook Citation References worksheet"
     cnt_of_data_rows = _find_number_of_data_rows(ws.sheet_data.rows)
 
     header_row = ws.sheet_data.rows[0]
@@ -165,20 +172,32 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   #   1. pmid
   #   2. citation_name
   #   3. #!!! TODO: search by authors and year combined.
+  #
+  # return [INTEGER]
   def _find_citation_id_in_db(pmid, citation_name, authors, year)
-    citation = Citation.find_by(pmid: pmid) if pmid.present?
-    return citation.id if citation
+    # PMID is a string. Do a little clean-up.
+    pmid = pmid.to_i.to_s
 
-    import_citations_from_pubmed_array(@project, [pmid]) if pmid.present?
-    citation = Citation.find_by(pmid:) if pmid.present?
-    return citation.id if citation
+    # If no sensible PMID is present we try to find by citation_name, authors and year.
+    if pmid.eql?("0")
+      citations = Citation.where(name: citation_name)
+      return citations.first.id if citations.present?
 
-    citation = Citation.find_by(name: citation_name) if citation_name.present?
-    return citation.id if citation
+      puts 'Creating citation from citation_name, authors, year'
+      citation = _create_citation_from_citation_name__authors__year(citation_name, authors, year)
+      return citation.id if citation
 
-    citation = _create_citation_from_citation_name__authors__year(citation_name, authors, year)
-    return citation.id if citation
+    # Try to find citation already in project.
+    elsif pmid.present?
+      citations = Citation.where(pmid:)
+      return citations.first.id if citations.present?
 
+      puts 'Creating citation from PMID'
+      import_citations_from_pubmed_array(@project, [pmid])
+      return citation = Citation.find_by(pmid:)
+    end
+
+    puts "Unable to match Citation record to row: #{ [pmid, citation_name, authors, year] }"
     @dict_errors[:ws_errors] << "Unable to match Citation record to row: #{ [pmid, citation_name, authors, year] }"
     @dict_errors[:ws_errors_found] = true
 
@@ -201,6 +220,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   #   variable. Need to be careful about "Outcomes" as it has its own uniqe structure.
   #   All other sections only have Name and Descriptions as identifiers.
   def _process_assignments_and_mappings_section(ws)
+    puts "Processing Assignments and Mappings worksheet"
     cnt_of_data_rows = _find_number_of_data_rows(ws.sheet_data.rows, 1)
 
     header_row = ws.sheet_data.rows[0]
@@ -253,16 +273,16 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     @lsof_type1_section_names.each do |type1_section_name|
       header_row.cells.each do |cell|
         case cell.value
-        when /#{type1_section_name.singularize} Name/
+        when /#{type1_section_name.singularize} Name/i
           @dict_header_index_lookup["#{type1_section_name.singularize} Name"] = cell.column
-        when /#{type1_section_name.singularize} Description/
+        when /#{type1_section_name.singularize} Description/i
           @dict_header_index_lookup["#{type1_section_name.singularize} Description"] = cell.column
-        when /#{type1_section_name.singularize} Specific Measurement/
+        when /#{type1_section_name.singularize} Specific Measurement/i
           @dict_header_index_lookup["#{type1_section_name.singularize} Specific Measurement"] = cell.column
-        when /#{type1_section_name.singularize} Type/
+        when /#{type1_section_name.singularize} Type/i
           @dict_header_index_lookup["#{type1_section_name.singularize} Type"] = cell.column
         when re_match_targets
-          @dict_header_index_lookup["#{cell.value}"] = cell.column
+          @dict_header_index_lookup["#{ cell.value.strip }"] = cell.column
         end # case cell.value
       end # header_row.cells.each do |cell|
     end # @lsof_type1_section_names.each do |type1_section_name|
@@ -353,6 +373,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   end # def _sort_row_data(user_email, user_id, wb_cit_ref_id, row)
 
   def _insert_wb_data_into_db
+    puts "Inserting data into db.."
     @wb_data[:aam].each do |user_email, dict_wb_citation_reference_ids|
       dict_wb_citation_reference_ids.each do |_wb_cit_ref_id, dict_type1_data|
         _process_assignments_and_mappings_extraction_data(user_email, dict_type1_data)
@@ -361,8 +382,14 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   end # def _insert_wb_data_into_db
 
   def _process_assignments_and_mappings_extraction_data(user_email, data)
-    user     = User.find_by(email: user_email)
-    citation = Citation.find_by(id: @wb_data[:wcr][data[:wb_cit_ref_id]]["citation_id"])
+    user = User.find_by(email: user_email)
+
+    begin
+      citation = Citation.find_by(id: @wb_data[:wcr][data[:wb_cit_ref_id]]["citation_id"])
+    rescue => e
+      puts e
+      return
+    end
 
     extraction = _retrieve_extraction_record(user, citation)
     _toggle_true_all_kqs_for_extraction(extraction) if extraction.present?

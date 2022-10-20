@@ -249,6 +249,27 @@
           :class="help && 'bg-srdr-secondary text-white'"
           >Help</a
         >
+        <% if current_user %>
+        <a
+          href="<%= edit_user_registration_path %>"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+          :class="account && 'bg-srdr-secondary text-white'"
+          >Account</a
+        >
+        <% else %>
+        <a
+          href="<%= new_user_session_path %>"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+          :class="signin && 'bg-srdr-secondary text-white'"
+          >Login</a
+        >
+        <a
+          href="<%= new_user_registration_path %>"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+          :class="signup && 'bg-srdr-secondary text-white'"
+          >Register</a
+        >
+        <% end %>
       </div>
     </div>
 
@@ -306,6 +327,24 @@
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="extractions_form_builder && 'bg-srdr-primary !text-white'"
             >Extractions Form Builder</a
+          >
+          <a
+            href="<%= project_citations_path(project) %>"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="citation_pool && 'bg-srdr-primary !text-white'"
+            >Citation Pool</a
+          >
+          <a
+            href="<%= project_tasks_path(project) %>"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="tasks && 'bg-srdr-primary !text-white'"
+            >Tasks</a
+          >
+          <a
+            href="<%= next_assignment_project_path(project) %>"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="screen && 'bg-srdr-primary !text-white'"
+            >Screen</a
           >
           <a
             href="<%= project_extractions_path(project) %>"
