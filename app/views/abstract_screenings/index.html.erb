@@ -88,22 +88,36 @@
                     <% end %>
                   </td>
                   <td class="px-3 text-sm text-gray-500">
-                    <div class="grid grid-cols-4">
-                      <div class="col-span-3">Exclusive users:</div>
+                    <div class="flex justify-between">
+                      <div>Exclusive users:</div>
                       <div><%= as.exclusive_users %></div>
-                      <div class="col-span-3">Only predefined reasons:</div>
+                    </div>
+                    <div class="flex justify-between">
+                      <div>Only predefined reasons:</div>
                       <div><%= as.only_predefined_reasons %></div>
-                      <div class="col-span-3">Only predefined tags:</div>
+                    </div>
+                    <div class="flex justify-between">
+                      <div>Only predefined tags:</div>
                       <div><%= as.only_predefined_tags %></div>
-                      <div class="col-span-3">Hide author:</div>
+                    </div>
+                    <div class="flex justify-between">
+                      <div>Hide author:</div>
                       <div><%= as.hide_author %></div>
-                      <div class="col-span-3">Hide journal:</div>
+                    </div>
+                    <div class="flex justify-between">
+                      <div>Hide journal:</div>
                       <div><%= as.hide_journal %></div>
-                      <div class="col-span-3">Tags required for:</div>
+                    </div>
+                    <div class="flex justify-between">
+                      <div>Tags required for:</div>
                       <div><%= as.tag_options.join(', ') %></div>
-                      <div class="col-span-3">Reasons required for:</div>
+                    </div>
+                    <div class="flex justify-between">
+                      <div>Reasons required for:</div>
                       <div><%= as.reason_options.join(', ') %></div>
-                      <div class="col-span-3">Notes required for:</div>
+                    </div>
+                    <div class="flex justify-between">
+                      <div>Notes required for:</div>
                       <div><%= as.note_options.join(', ') %></div>
                     </div>
                   </td>
