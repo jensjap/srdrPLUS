@@ -40,9 +40,8 @@
           </div>
         </div>
         <div class="flex flex-wrap lg:flex-nowrap gap-4">
-          <div
-            class="text-xs w-full text-gray-700 border-l-2 border-gray-200 p-2"
-          >
+          <div class="text-xs w-full text-gray-700 p-2">
+            <div class="text-center border-b-2 border-gray-200">Options</div>
             <div class="flex justify-between">
               <div>Screening Type:</div>
               <div>
@@ -89,9 +88,8 @@
               <div><%= @abstract_screening.note_options.join(', ') %></div>
             </div>
           </div>
-          <div
-            class="text-xs w-full text-gray-700 border-l-2 border-gray-200 p-2"
-          >
+          <div class="text-xs w-full text-gray-700 p-2">
+            <div class="text-center border-b-2 border-gray-200">Users</div>
             <div class="flex justify-between">
               <!-- prettier-ignore -->
               <% users = @abstract_screening.abstract_screening_results.map(&:user) %>
@@ -105,30 +103,24 @@
               <% end %>
             </div>
           </div>
-          <div
-            class="text-xs w-full text-gray-700 border-l-2 border-gray-200 p-2"
-          >
-            <div class="flex justify-between">
-              <div>Predefined Reasons:</div>
-              <div>
-                <% @abstract_screening.reasons.map(&:name).each do |reason| %>
-                <!-- prettier-ignore -->
-                - <%= reason %><br />
-                <% end %>
-              </div>
+          <div class="text-xs w-full text-gray-700 p-2">
+            <div class="text-center border-b-2 border-gray-200">
+              Predefined Reasons
             </div>
+            <% @abstract_screening.reasons.map(&:name).each do |reason| %>
+            <!-- prettier-ignore -->
+            - <%= reason %><br />
+            <% end %>
           </div>
-          <div
-            class="text-xs w-full text-gray-700 border-l-2 border-gray-200 p-2"
-          >
-            <div class="flex justify-between">
-              <div>Predefined Tags:</div>
-              <div>
-                <% @abstract_screening.tags.map(&:name).each do |tag| %>
-                <!-- prettier-ignore -->
-                - <%= tag %><br />
-                <% end %>
-              </div>
+          <div class="text-xs w-full text-gray-700 p-2">
+            <div class="text-center border-b-2 border-gray-200">
+              Predefined Tags
+            </div>
+            <div>
+              <% @abstract_screening.tags.map(&:name).each do |tag| %>
+              <!-- prettier-ignore -->
+              - <%= tag %><br />
+              <% end %>
             </div>
           </div>
         </div>
