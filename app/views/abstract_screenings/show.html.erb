@@ -90,18 +90,18 @@
           </div>
           <div class="text-xs w-full text-gray-700 p-2">
             <div class="text-center border-b-2 border-gray-200">Users</div>
+            <!-- prettier-ignore -->
+            <% users = @abstract_screening.abstract_screening_results.map(&:user) %>
+            <% users += @abstract_screening.users.to_a if @abstract_screening.exclusive_users %>
+            <% users.uniq.each do |user| %>
             <div class="flex justify-between">
-              <!-- prettier-ignore -->
-              <% users = @abstract_screening.abstract_screening_results.map(&:user) %>
-              <% users += @abstract_screening.users.to_a if @abstract_screening.exclusive_users %>
-              <% users.uniq.each do |user| %>
               <div><%= user.handle %></div>
               <div>
                 <!-- prettier-ignore -->
                 (<%= AbstractScreeningResult.where(user:, abstract_screening: @abstract_screening).where("label IS NOT NULL").count %>)
               </div>
-              <% end %>
             </div>
+            <% end %>
           </div>
           <div class="text-xs w-full text-gray-700 p-2">
             <div class="text-center border-b-2 border-gray-200">
