@@ -113,6 +113,8 @@ class Project < ApplicationRecord
   has_many :mesh_descriptors_projects, dependent: :destroy
   has_many :mesh_descriptors, through: :mesh_descriptors_projects
 
+  has_many :screening_qualifications, dependent: :destroy
+
   validates :name, presence: true
 
   # accepts_nested_attributes_for :extraction_forms_projects, reject_if: :all_blank, allow_destroy: true

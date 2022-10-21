@@ -15,8 +15,7 @@ class AbstractScreeningResult < ApplicationRecord
   searchkick
 
   belongs_to :abstract_screening
-  belongs_to :project_citation
-  belongs_to :citation, through: :citation
+  belongs_to :citations_project
   belongs_to :user
 
   has_many :abstract_screening_results_reasons
@@ -26,6 +25,7 @@ class AbstractScreeningResult < ApplicationRecord
   has_many :sf_abstract_records, dependent: :destroy, inverse_of: :abstract_screening_result
 
   delegate :project, to: :abstract_screening
+  delegate :citation, to: :citations_project
 
   def search_data
     {

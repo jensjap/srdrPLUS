@@ -37,6 +37,9 @@ class AbstractScreening < ApplicationRecord
     PILOT => 'Pilot'
   }.freeze
   NON_PERPETUAL = [N_SIZE_SINGLE, N_SIZE_DOUBLE, PILOT]
+  SINGLE_SCREENINGS = [SINGLE_PERPETUAL, N_SIZE_SINGLE]
+  DOUBLE_SCREENINGS = [DOUBLE_PERPETUAL, N_SIZE_DOUBLE]
+  ALL_SCREENINGS = [PILOT]
 
   validates_presence_of :abstract_screening_type
 
@@ -50,6 +53,18 @@ class AbstractScreening < ApplicationRecord
   has_many :tags, through: :abstract_screenings_tags
 
   has_many :abstract_screening_results, dependent: :destroy, inverse_of: :abstract_screening
+
+  def single_screening?
+    SINGLE_SCREENINGS.include?(abstract_screening_type)
+  end
+
+  def double_screening?
+    DOUBLE_SCREENINGS.include?(abstract_screening_type)
+  end
+
+  def all_screenings?
+    ALL_SCREENINGS.include?(abstract_screening_type)
+  end
 
   def reasons_object
     reasons.each_with_object({}) do |reason, hash|

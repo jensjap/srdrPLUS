@@ -1,7 +1,7 @@
 class FulltextScreeningService
   def self.find_citation_id(fulltext_screening, user)
     unfinished_fsr = find_unfinished_fsr(fulltext_screening, user)
-    return unfinished_fsr.citation_id if unfinished_fsr
+    return unfinished_fsr.citation.id if unfinished_fsr
 
     return nil if at_or_over_limit?(fulltext_screening, user)
 
@@ -19,7 +19,8 @@ class FulltextScreeningService
     citation_id = find_citation_id(fulltext_screening, user)
     return nil if citation_id.nil?
 
-    FulltextScreeningResult.find_or_create_by!(fulltext_screening:, user:, citation_id:)
+    cp = CitationsProject.find_by(project: fulltext_screening.project, citation_id:)
+    FulltextScreeningResult.find_or_create_by!(fulltext_screening:, user:, citations_project: cp)
   end
 
   def self.find_unfinished_fsr(fulltext_screening, user)
@@ -68,7 +69,7 @@ class FulltextScreeningService
   end
 
   def self.project_screened_citation_ids(fulltext_screening)
-    fulltext_screening.project.fulltext_screening_results.pluck(:citation_id)
+    CitationsProject.joins(fulltext_screening_results: :fulltext_screening).where(fulltext_screening_results: { fulltext_screening: }).pluck(:citation_id)
   end
 
   def self.at_or_over_limit?(fulltext_screening, user)

@@ -7,7 +7,7 @@ class AbstractScreeningService
 
   def self.find_citation_id(abstract_screening, user)
     unfinished_asr = find_unfinished_asr(abstract_screening, user)
-    return unfinished_asr.citation_id if unfinished_asr
+    return unfinished_asr.citation.id if unfinished_asr
 
     return nil if at_or_over_limit?(abstract_screening, user)
 
@@ -25,7 +25,8 @@ class AbstractScreeningService
     citation_id = find_citation_id(abstract_screening, user)
     return nil if citation_id.nil?
 
-    AbstractScreeningResult.find_or_create_by!(abstract_screening:, user:, citation_id:)
+    cp = CitationsProject.find_by(project: abstract_screening.project, citation_id:)
+    AbstractScreeningResult.find_or_create_by!(abstract_screening:, user:, citations_project: cp)
   end
 
   def self.find_unfinished_asr(abstract_screening, user)
@@ -74,7 +75,7 @@ class AbstractScreeningService
   end
 
   def self.project_screened_citation_ids(abstract_screening)
-    abstract_screening.project.abstract_screening_results.pluck(:citation_id)
+    CitationsProject.joins(abstract_screening_results: :abstract_screening).where(abstract_screening_results: { abstract_screening: }).pluck(:citation_id)
   end
 
   def self.at_or_over_limit?(abstract_screening, user)

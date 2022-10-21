@@ -23,13 +23,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_21_100923) do
   create_table "abstract_screening_results", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "abstract_screening_id"
     t.bigint "user_id"
-    t.bigint "citation_id"
+    t.bigint "citations_project_id"
     t.integer "label", limit: 1
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["abstract_screening_id"], name: "index_abstract_screening_results_on_abstract_screening_id"
-    t.index ["citation_id"], name: "asr_on_c"
+    t.index ["citations_project_id"], name: "asr_on_cp"
     t.index ["user_id"], name: "asr_on_u"
   end
 
@@ -1659,14 +1659,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_21_100923) do
   end
 
   create_table "screening_qualifications", charset: "utf8mb3", force: :cascade do |t|
-    t.bigint "citation_id"
-    t.bigint "project_id"
+    t.bigint "citations_project_id"
+    t.bigint "user_id"
     t.string "qualification_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["citation_id", "project_id", "qualification_type"], name: "c_p_qt", unique: true
-    t.index ["citation_id"], name: "index_screening_qualifications_on_citation_id"
-    t.index ["project_id"], name: "index_screening_qualifications_on_project_id"
+    t.index ["citations_project_id", "user_id", "qualification_type"], name: "cp_u_qt", unique: true
+    t.index ["citations_project_id"], name: "index_screening_qualifications_on_citations_project_id"
+    t.index ["user_id"], name: "index_screening_qualifications_on_user_id"
   end
 
   create_table "sd_analytic_frameworks", id: :integer, charset: "utf8mb3", force: :cascade do |t|

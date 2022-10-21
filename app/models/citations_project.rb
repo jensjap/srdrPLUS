@@ -21,24 +21,6 @@ class CitationsProject < ApplicationRecord
 
   acts_as_paranoid column: :active, sentinel_value: true
 
-  CITATION_POOL = 'CP'.freeze
-  ABSTRACT_SCREENING_UNSCREENED = 'ASU'.freeze
-  ABSTRACT_SCREENING_PARTIALLY_SCREENED = 'ASPS'.freeze
-  ABSTRACT_SCREENING_REJECTED = 'ASR'.freeze
-  ABSTRACT_SCREENING_IN_CONFLICT = 'ASIC'.freeze
-  ABSTRACT_SCREENING_ACCEPTED = 'ASA'.freeze
-  FULLTEXT_SCREENING_UNSCREENED = 'FTU'.freeze
-  FULLTEXT_SCREENING_PARTIALLY_SCREENED = 'FTPS'.freeze
-  FULLTEXT_SCREENING_REJECTED = 'FTR'.freeze
-  FULLTEXT_SCREENING_IN_CONFLICT = 'FTIC'.freeze
-  FULLTEXT_SCREENING_ACCEPTED = 'FTA'.freeze
-  DATA_EXTRACTION_NOT_YET_EXTRACTED = 'DENYE'.freeze
-  DATA_EXTRACTION_IN_PROGRESS = 'DEIP'.freeze
-  COMPLETED = 'C'.freeze
-
-  DEMOTE = 'demote'.freeze
-  PROMOTE = 'promote'.freeze
-
   scope :unlabeled,
         lambda { |project, count|
           includes(citation: [{ authors_citations: [:author] }, :keywords, :journal])
@@ -66,10 +48,9 @@ class CitationsProject < ApplicationRecord
   has_one :priority, dependent: :destroy
 
   has_many :extractions, dependent: :destroy
-  has_many :abstract_screenings_citations_projects
-  has_many :abstract_screening_results, through: :abstract_screenings_citations_projects
-  has_many :citations_projects_fulltext_screenings
-  has_many :fulltext_screening_results, through: :citations_projects_fulltext_screenings
+  has_many :abstract_screening_results
+  has_many :fulltext_screening_results
+  has_many :screening_qualifications, dependent: :destroy
 
   has_many :labels, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
@@ -110,89 +91,5 @@ class CitationsProject < ApplicationRecord
     cp_to_remove.taggings.each do |t|
       t.dup.update_attributes(taggable_id: master_cp.id)
     end
-  end
-
-  def promote
-    case screening_status
-    when CITATION_POOL
-      update(screening_status: ABSTRACT_SCREENING_UNSCREENED)
-    when ABSTRACT_SCREENING_UNSCREENED
-      update(screening_status: ABSTRACT_SCREENING_PARTIALLY_SCREENED)
-    when ABSTRACT_SCREENING_PARTIALLY_SCREENED
-      update(screening_status: ABSTRACT_SCREENING_REJECTED)
-    when ABSTRACT_SCREENING_REJECTED
-      update(screening_status: ABSTRACT_SCREENING_IN_CONFLICT)
-    when ABSTRACT_SCREENING_IN_CONFLICT
-      update(screening_status: ABSTRACT_SCREENING_ACCEPTED)
-    when ABSTRACT_SCREENING_ACCEPTED
-      update(screening_status: FULLTEXT_SCREENING_UNSCREENED)
-    when FULLTEXT_SCREENING_UNSCREENED
-      update(screening_status: FULLTEXT_SCREENING_PARTIALLY_SCREENED)
-    when FULLTEXT_SCREENING_PARTIALLY_SCREENED
-      update(screening_status: FULLTEXT_SCREENING_REJECTED)
-    when FULLTEXT_SCREENING_REJECTED
-      update(screening_status: FULLTEXT_SCREENING_IN_CONFLICT)
-    when FULLTEXT_SCREENING_IN_CONFLICT
-      update(screening_status: FULLTEXT_SCREENING_ACCEPTED)
-    when FULLTEXT_SCREENING_ACCEPTED
-      update(screening_status: DATA_EXTRACTION_NOT_YET_EXTRACTED)
-    when DATA_EXTRACTION_NOT_YET_EXTRACTED
-      update(screening_status: DATA_EXTRACTION_IN_PROGRESS)
-    when DATA_EXTRACTION_IN_PROGRESS
-      update(screening_status: COMPLETED)
-    when COMPLETED
-      update(screening_status: COMPLETED)
-    end
-  end
-
-  def demote
-    case screening_status
-    when CITATION_POOL
-      update(screening_status: CITATION_POOL)
-    when ABSTRACT_SCREENING_UNSCREENED
-      update(screening_status: CITATION_POOL)
-    when ABSTRACT_SCREENING_PARTIALLY_SCREENED
-      update(screening_status: ABSTRACT_SCREENING_UNSCREENED)
-    when ABSTRACT_SCREENING_REJECTED
-      update(screening_status: ABSTRACT_SCREENING_PARTIALLY_SCREENED)
-    when ABSTRACT_SCREENING_IN_CONFLICT
-      update(screening_status: ABSTRACT_SCREENING_REJECTED)
-    when ABSTRACT_SCREENING_ACCEPTED
-      update(screening_status: ABSTRACT_SCREENING_IN_CONFLICT)
-    when FULLTEXT_SCREENING_UNSCREENED
-      update(screening_status: ABSTRACT_SCREENING_ACCEPTED)
-    when FULLTEXT_SCREENING_PARTIALLY_SCREENED
-      update(screening_status: FULLTEXT_SCREENING_UNSCREENED)
-    when FULLTEXT_SCREENING_REJECTED
-      update(screening_status: FULLTEXT_SCREENING_PARTIALLY_SCREENED)
-    when FULLTEXT_SCREENING_IN_CONFLICT
-      update(screening_status: FULLTEXT_SCREENING_REJECTED)
-    when FULLTEXT_SCREENING_ACCEPTED
-      update(screening_status: FULLTEXT_SCREENING_IN_CONFLICT)
-    when DATA_EXTRACTION_NOT_YET_EXTRACTED
-      update(screening_status: FULLTEXT_SCREENING_ACCEPTED)
-    when DATA_EXTRACTION_IN_PROGRESS
-      update(screening_status: DATA_EXTRACTION_NOT_YET_EXTRACTED)
-    when COMPLETED
-      update(screening_status: DATA_EXTRACTION_IN_PROGRESS)
-    end
-  end
-
-  def search_data
-    {
-      project_id:,
-      citations_project_id: id,
-      citation_id: citation.id,
-      accession_number_alts: citation.accession_number_alts,
-      author_map_string: citation.author_map_string,
-      name: citation.name,
-      year: citation.year,
-      users: abstract_screening_results.map(&:user).uniq.map(&:handle).join(', '),
-      labels: abstract_screening_results.map(&:label).join(', '),
-      reasons: abstract_screening_results.map(&:reasons).flatten.map(&:name).join(', '),
-      tags: abstract_screening_results.map(&:tags).flatten.map(&:name).join(', '),
-      note: abstract_screening_results.map(&:note).compact.map(&:value).join(', '),
-      screening_status:
-    }
   end
 end

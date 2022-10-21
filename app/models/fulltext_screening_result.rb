@@ -15,7 +15,7 @@ class FulltextScreeningResult < ApplicationRecord
   searchkick
 
   belongs_to :fulltext_screening
-  belongs_to :citation
+  belongs_to :citations_project
   belongs_to :user
 
   has_many :fulltext_screening_results_reasons
@@ -25,6 +25,7 @@ class FulltextScreeningResult < ApplicationRecord
   has_many :sf_fulltext_records, dependent: :destroy, inverse_of: :fulltext_screening_result
 
   delegate :project, to: :fulltext_screening
+  delegate :citation, to: :citations_project
 
   def search_data
     {
