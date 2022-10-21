@@ -3,7 +3,7 @@ class CreateFulltextScreeningResults < ActiveRecord::Migration[7.0]
     create_table :fulltext_screening_results do |t|
       t.references :fulltext_screening
       t.references :user, index: { name: 'fsr_on_u' }
-      t.references :citation, index: { name: 'fsr_on_c' }
+      t.references :citations_project, index: { name: 'fsr_on_cp' }
       t.integer :label, limit: 1
       t.text :notes
       t.timestamps

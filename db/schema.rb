@@ -856,12 +856,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_21_100923) do
   create_table "fulltext_screening_results", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "fulltext_screening_id"
     t.bigint "user_id"
-    t.bigint "citation_id"
+    t.bigint "citations_project_id"
     t.integer "label", limit: 1
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["citation_id"], name: "fsr_on_c"
+    t.index ["citations_project_id"], name: "fsr_on_cp"
     t.index ["fulltext_screening_id"], name: "index_fulltext_screening_results_on_fulltext_screening_id"
     t.index ["user_id"], name: "fsr_on_u"
   end
