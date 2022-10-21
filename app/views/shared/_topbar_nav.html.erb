@@ -329,12 +329,12 @@
             :class="citation_pool && 'bg-srdr-primary !text-white'"
             >Citations</a
           >
-          <!-- <a
-          href="<%= project_citation_lifecycle_management_path(project) %>"
-          class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-          :class="lifecycle_management && 'bg-srdr-primary !text-white'"
-          >Citation Phase Management</a
-        > -->
+          <a
+            href="<%= project_citation_lifecycle_management_path(project) %>"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="lifecycle_management && 'bg-srdr-primary !text-white'"
+            >Citation Phase Management</a
+          >
           <a
             href="<%= project_screening_forms_path(project, form_type: 'abstract') %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"

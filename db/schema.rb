@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_21_100923) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1656,6 +1656,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
     t.index ["label_type_id"], name: "index_screening_options_on_label_type_id"
     t.index ["project_id"], name: "index_screening_options_on_project_id"
     t.index ["screening_option_type_id"], name: "index_screening_options_on_screening_option_type_id"
+  end
+
+  create_table "screening_qualifications", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "citation_id"
+    t.bigint "project_id"
+    t.string "qualification_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["citation_id", "project_id", "qualification_type"], name: "c_p_qt", unique: true
+    t.index ["citation_id"], name: "index_screening_qualifications_on_citation_id"
+    t.index ["project_id"], name: "index_screening_qualifications_on_project_id"
   end
 
   create_table "sd_analytic_frameworks", id: :integer, charset: "utf8mb3", force: :cascade do |t|

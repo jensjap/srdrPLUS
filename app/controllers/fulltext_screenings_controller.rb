@@ -23,25 +23,6 @@ class FulltextScreeningsController < ApplicationController
     end
   end
 
-  def citation_lifecycle_management
-    authorize(@project, policy_class: FulltextScreeningPolicy)
-    @nav_buttons.push('lifecycle_management', 'my_projects')
-    respond_to do |format|
-      format.html
-      format.json do
-        @query = params[:query].present? ? params[:query] : '*'
-        @order_by = params[:order_by]
-        @sort = params[:sort].present? ? params[:sort] : nil
-        @page = params[:page].present? ? params[:page].to_i : 1
-        per_page = 15
-        order = @order_by.present? ? { @order_by => @sort } : {}
-        @citations_projects = CitationsProjectSearchService.new(@project, @query, @page, per_page, order).elastic_search
-        @total_pages = (@citations_projects.response['hits']['total']['value'] / per_page) + 1
-        @es_hits = @citations_projects.response['hits']['hits'].map { |hit| hit['_source'] }
-      end
-    end
-  end
-
   def destroy
     @fulltext_screening = FulltextScreening.find(params[:id])
     authorize(@fulltext_screening.project, policy_class: FulltextScreeningPolicy)
@@ -67,10 +48,6 @@ class FulltextScreeningsController < ApplicationController
       .order(id: :desc)
       .page(params[:page])
       .per(5)
-  end
-
-  def kpis
-    authorize(@project, policy_class: FulltextScreeningPolicy)
   end
 
   def screen

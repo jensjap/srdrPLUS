@@ -129,9 +129,6 @@ Rails.application.routes.draw do
   end
   resources :authors
   resources :comparisons
-  resources :citations_projects, only: [] do
-    post 'update_evaluation', to: 'citations_projects#update_evaluation'
-  end
   resources :journals
   resources :keywords
   resources :labels

@@ -1,2 +1,0 @@
-module CitationsProjectsHelper
-end

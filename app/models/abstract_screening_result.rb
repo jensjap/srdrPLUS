@@ -15,7 +15,8 @@ class AbstractScreeningResult < ApplicationRecord
   searchkick
 
   belongs_to :abstract_screening
-  belongs_to :citation
+  belongs_to :project_citation
+  belongs_to :citation, through: :citation
   belongs_to :user
 
   has_many :abstract_screening_results_reasons

@@ -33,7 +33,7 @@ class Citation < ApplicationRecord
   has_one :journal, dependent: :destroy
 
   has_many :citations_projects, dependent: :destroy, inverse_of: :citation
-  has_many :abstract_screening_results, through: :citations_projects, dependent: :destroy, inverse_of: :citation
+  has_many :abstract_screening_results, dependent: :destroy, inverse_of: :citation
   has_many :projects, through: :citations_projects
   has_many :authors_citations, dependent: :destroy
   has_many :authors, through: :authors_citations
@@ -44,10 +44,6 @@ class Citation < ApplicationRecord
   accepts_nested_attributes_for :keywords, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :journal, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :labels, reject_if: :all_blank, allow_destroy: true
-
-  def abstract_screening_results
-    citations_projects.map(&:abstract_screenings).flatten.map(&:abstract_screening_results).flatten
-  end
 
   # Redundant?
   def abstract_utf8
@@ -187,6 +183,6 @@ class Citation < ApplicationRecord
   end
 
   def author_list_for_citation_references_in_brackets
-    authors.map{ |a| "[#{ a.name }]" }.join('')
+    authors.map { |a| "[#{a.name}]" }.join('')
   end
 end

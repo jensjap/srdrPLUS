@@ -1,0 +1,2 @@
+class ScreeningQualification < ApplicationRecord
+end
