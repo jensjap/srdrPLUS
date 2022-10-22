@@ -1,15 +1,12 @@
-json.count 0
-json.cp 0
-json.asu 0
-json.asps 0
-json.asr 0
-json.asc 0
-json.asa 0
-json.ftu 0
-json.ftps 0
-json.ftr 0
-json.ftc 0
-json.fta 0
-json.denye 0
-json.deip 0
-json.c 0
+kpis = KPIService.new(@project)
+json.asu kpis.find_kpi(:asu)
+json.asps kpis.find_kpi(:asps)
+json.asic kpis.find_kpi(:asic)
+json.asr kpis.find_kpi(:asr)
+json.ftu kpis.find_kpi(:ftu)
+json.ftps kpis.find_kpi(:ftps)
+json.ftic kpis.find_kpi(:ftic)
+json.ftr kpis.find_kpi(:ftr)
+json.ene kpis.find_kpi(:ene)
+json.eip kpis.find_kpi(:eip)
+json.ec kpis.find_kpi(:ec)
