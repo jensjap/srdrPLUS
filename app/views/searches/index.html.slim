@@ -23,7 +23,7 @@
 .max-w-6xl.mx-auto.px-4.sm:px-6.lg:px-8
   h1.text-3xl.mt-6 Search Criteria
   ul#search-tabs.tabs data-deep-link='true' data-update-history='true' data-tabs=''
-    li.tabs-title class=(params[:general_search].present? ? 'is-active' : '')
+    li.tabs-title class=(params.keys.any? { |k| %w(projects_search citations_search).include?(k) } ? '' : 'is-active')
       = link_to 'General Search', '#panel-general-search', title: 'Search for projects'
 
     li.tabs-title class=(params[:projects_search].present? ? 'is-active' : '')
@@ -33,7 +33,7 @@
       = link_to 'Advanced Citations Search', '#panel-citations-search', title: 'Search for citations'
 
   .tabs-content data-tabs-content='search-tabs'
-    #panel-general-search.tabs-panel class=(params[:general_search].present? ? 'is-active' : '')
+    #panel-general-search.tabs-panel class=(params.keys.any? { |k| %w(projects_search citations_search).include?(k) } ? '' : 'is-active')
       = render 'searches/general_search_form', label: 'Name'
 
     #panel-projects-search.tabs-panel class=(params[:projects_search].present? ? 'is-active' : '')
