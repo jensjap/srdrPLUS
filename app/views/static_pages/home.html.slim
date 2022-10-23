@@ -10,58 +10,11 @@
             .SRDR-Moving-system SRDR+:
             .SRDR-Moving-system Moving systematic reviews forward.
             .SRDR-is-a-free-pow SRDR+ is a free, powerful, easy to use tool for data extraction, management, and archival during systematic reviews.
-          - unless current_user
-            div.p-8.bg-white.ml-4 x-data="{ current_tab:'login' }"
-              .sm:hidden
-                label.sr-only for="tabs" Select a tab
-                select#tabs.block.w-full.focus:ring-indigo-500.focus:border-indigo-500.border-gray-300.rounded-md @change="$event.target.value=='login' ? current_tab='login' : current_tab='register'; console.log($event.target.value)" name="tabs"
-                  option value='login'    Login
-                  option value='register' Register
-              .hidden.sm:block
-                .border-b.border-gray-200
-                  nav.-mb-px.flex aria-label="Tabs"
-                    div.border-transparent.text-gray-500.hover:text-gray-700.hover:border-gray-300.py-4.px-1.text-center.font-medium.text-sm.cursor-pointer @click="current_tab='login'"    :class="current_tab=='login'    ? '!border-b-2 !border-indigo-500 text-indigo-600' : ''" class="w-1/4" Login
-                    div.border-transparent.text-gray-500.hover:text-gray-700.hover:border-gray-300.py-4.px-1.text-center.font-medium.text-sm.cursor-pointer @click="current_tab='register'" :class="current_tab=='register' ? '!border-b-2 !border-indigo-500 text-indigo-600' : ''" aria-current="page" class="w-1/4" Register
-              div x-show="current_tab=='login'" x-cloak=""
-                .Get-started-now
-                  span.text-style-1 Already have an account?
-                = simple_form_for(:user, namespace: 'login', url: new_user_session_path, html: { data: { 'abide': '' } }) do |f|
-                  .alert.callout data-abide-error='' style='display: none;'
-                    p
-                      i.fi-alert>
-                      ' Please correct the errors below.
-                  .form-inputs style='margin-top: 1rem;'
-                    = f.input :login, placeholder: 'Email or Username', required: true, autofocus: true
-                    = f.input :password, placeholder: 'Password', required: true
-                    /= f.input :remember_me, as: :boolean if devise_mapping.rememberable?
-                  .form-actions.flex.justify-center.mt-6
-                    = f.button :submit, "Sign In", class: "sign-in-button"
-              div x-show="current_tab=='register'" x-cloak=""
-                div style="border: solid 1px black; padding: 5px; width: 200px; margin-left: auto;"
-                  span Form Approved
-                  br
-                  span OMB No. 0935-0244
-                  br
-                  span Exp. Date 10/31/2022
-                .Get-started-now
-                  span.text-style-1 Get started now.
-                = simple_form_for(User.new, as: :user, url: registration_path(:user), html: { data: { 'abide': '' } }) do |f|
-                  .alert.callout data-abide-error='' style='display: none;'
-                    p
-                      i.fi-alert>
-                      ' Please correct the errors below.
-                  .form-inputs style='margin-top: 1rem;'
-                    = f.input :email, placeholder: 'Email', required: true, hint: 'Email must have the following format: example@domain.edu', autofocus: true
-                    = f.input :password, placeholder: "Password (Must contain a minimum of 6 characters)", required: true,
-                      input_html: { minlength: 6 }
-                  .form-actions
-                    = f.button :submit, "Create an Account", class: "sign-up-button"
-                .omb-clearance-disclaimer
-                  br
-                  span.text-xs Public reporting burden for this collection of information is estimated to average 2 minutes per response, the estimated time required to complete the survey. An agency may not conduct or sponsor, and a person is not required to respond to, a collection of information unless it displays a currently valid OMB control number. Send comments regarding this burden estimate or any other aspect of this collection of information, including suggestions for reducing this burden, to: AHRQ Reports Clearance Officer Attention: PRA, Paperwork Reduction Project (0935-0244) AHRQ, 5600 Fishers Lane, # 07W41A, Rockville, MD 20857.
-                  br
-                  br
-                  span.text-xs Your responses will be kept confidential to the extent permitted by law, including AHRQ’s confidentiality statute, 42 USC 299c-3(c).
+
+          div.p-8.bg-white.ml-4.m style="margin: auto !important;"
+            .hidden.sm:block
+              h3.See-how-you-can-work Search our database TODAY!
+              = render 'searches/general_search_form', label: false
 
   .grid-x.align-center-middle
     .cell.medium-9.Rectangle-2

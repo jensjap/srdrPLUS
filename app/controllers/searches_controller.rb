@@ -13,7 +13,7 @@ class SearchesController < ApplicationController
     @accepted_param_values = []
     search_fields = []
 
-    search_params = params[:projects_search] || params[:citations_search] || []
+    search_params = params[:general_search] || params[:projects_search] || params[:citations_search] || []
     search_params.each do |k, v|
       if ACCEPTABLE_SEARCH_KEYS.include?(k) && v.present?
         @accepted_param_values << v
@@ -21,22 +21,41 @@ class SearchesController < ApplicationController
       end
     end
 
-    if params[:projects_search]
-      project_ids = Project.search(@accepted_param_values.join(' '), where: { created_at: time_filter },
-                                                                     fields: search_fields).pluck(:id)
-      @projects = Project.where(id: project_ids).to_a
-      ensure_project_results_are_public
-      apply_more_advanced_filters
-      @projects = Kaminari.paginate_array(@projects).page(params[:page] || 1).per(10)
+    if params[:general_search]
+      project_ids = Project.search(@accepted_param_values.join(' ')).pluck(:id)
+      process_project_search_results(project_ids)
+
+      citation_ids = Citation.search(@accepted_param_values.join(' ')).pluck(:id)
+      process_citation_search_results(citation_ids)
+
+    elsif params[:projects_search]
+      project_ids = Project.search(
+        @accepted_param_values.join(' '),
+        where: { created_at: time_filter },
+        fields: search_fields
+      ).pluck(:id)
+      process_project_search_results(project_ids)
+
     elsif params[:citations_search]
       citation_ids = Citation.search(@accepted_param_values.join(' '), fields: search_fields).pluck(:id)
-      @citations_projects = CitationsProject.where(citation_id: citation_ids).to_a
-      ensure_citation_results_are_public
-      @citations_projects = Kaminari.paginate_array(@citations_projects).page(params[:page] || 1).per(10)
+      process_citation_search_results(citation_ids)
     end
   end
 
   private
+
+  def process_project_search_results(project_ids)
+    @projects = Project.where(id: project_ids).to_a
+    ensure_project_results_are_public
+    apply_more_advanced_filters
+    @projects = Kaminari.paginate_array(@projects).page(params[:page] || 1).per(10)
+  end
+
+  def process_citation_search_results(citation_ids)
+    @citations_projects = CitationsProject.where(citation_id: citation_ids).to_a
+    ensure_citation_results_are_public
+    @citations_projects = Kaminari.paginate_array(@citations_projects).page(params[:page] || 1).per(10)
+  end
 
   def time_filter
     if params[:projects_search][:after].present?
