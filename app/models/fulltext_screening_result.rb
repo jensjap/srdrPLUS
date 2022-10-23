@@ -5,7 +5,7 @@
 #  id                    :bigint           not null, primary key
 #  fulltext_screening_id :bigint
 #  user_id               :bigint
-#  citation_id           :bigint
+#  citations_project_id  :bigint
 #  label                 :integer
 #  notes                 :text(65535)
 #  created_at            :datetime         not null
