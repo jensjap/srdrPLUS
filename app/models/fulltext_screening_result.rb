@@ -34,10 +34,10 @@ class FulltextScreeningResult < ApplicationRecord
       case label
       when 1
         citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::FS_REJECTED).destroy_all
-        citations_project.screening_qualifications.create!(qualification_type: ScreeningQualification::FS_ACCEPTED)
+        citations_project.screening_qualifications.find_or_create_by!(qualification_type: ScreeningQualification::FS_ACCEPTED)
       when -1
         citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::FS_ACCEPTED).destroy_all
-        citations_project.screening_qualifications.create!(qualification_type: ScreeningQualification::FS_REJECTED)
+        citations_project.screening_qualifications.find_or_create_by!(qualification_type: ScreeningQualification::FS_REJECTED)
       end
     end
     citations_project.evaluate_screening_status

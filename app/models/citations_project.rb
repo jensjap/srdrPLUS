@@ -131,9 +131,11 @@ class CitationsProject < ApplicationRecord
     elsif screening_qualifications.any? { |sq| sq.qualification_type == ScreeningQualification::AS_REJECTED }
       update(screening_status: :asr)
     elsif screening_qualifications.any? { |sq| sq.qualification_type == ScreeningQualification::FS_ACCEPTED }
-      # TODOS
-      # update(screening_status: :ene)
-      # update(screening_status: :eip)
+      if Extraction.where(citations_project: self).present?
+        update(screening_status: :eip)
+      else
+        update(screening_status: :ene)
+      end
       # update(screening_status: :ec)
     elsif screening_qualifications.any? { |sq| sq.qualification_type == ScreeningQualification::AS_ACCEPTED }
       if fulltext_screening_results.blank?
