@@ -1219,9 +1219,6 @@ module SeedData
       # Seed Extraction Forms.
       @ef1 = ExtractionForm.create(name: 'ef1')
 
-      # Seed Default Status.
-      Status.find_or_create_by!(name: "Draft")
-      Status.find_or_create_by!(name: "Completed")
       # Seed CitationType.
       ["Primary", "Secondary", "Abstrackr"].each do |type|
         CitationType.find_or_create_by!(name: type)
@@ -1396,14 +1393,14 @@ module SeedDataExtended
 
         # Projects.
         project_titles.each do |n|
-          updated_at = Faker::Time.between(from: DateTime.now - 1000, to: DateTime.now - 1)
+          updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now - 1)
           User.current = User.first
           Project.create!(name:        n[0],
                           description: n[1],
                           attribution: Faker::Creature::Cat.registry,
                           methodology_description: Faker::Movies::HarryPotter.quote,
-                          prospero:                Faker::Number.hexadecimal(digits: 12),
-                          doi:                     Faker::Number.hexadecimal(digits: 6),
+                          prospero:                Faker::Number.hexadecimal(12),
+                          doi:                     Faker::Number.hexadecimal(6),
                           notes:                   Faker::Movies::HarryPotter.book,
                           funding_source:          Faker::Book.publisher,
                           created_at:              updated_at - rand(1000).hours,
@@ -1422,11 +1419,11 @@ module SeedDataExtended
 
         # Citations, Journals, Authors and Keywords
         200.times do |n|
-          updated_at = Faker::Time.between(from: DateTime.now - 1000, to: DateTime.now - 1)
+          updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now - 1)
           c = Citation.create!(
             name:           Faker::Lorem.sentence,
-            pmid:           Faker::Number.number(digits: 10),
-            refman:         Faker::Number.number(digits: 9),
+            pmid:           Faker::Number.number(10),
+            refman:         Faker::Number.number(9),
             abstract:       Faker::Lorem.paragraph,
             citation_type:  @citation_types.sample,
             created_at:     updated_at - rand(1000).hours,
@@ -1437,9 +1434,9 @@ module SeedDataExtended
           # Journals
           Journal.create!(
             name:              Faker::Music::RockBand.name,
-            publication_date:  Faker::Date.backward(days: 10000),
-            volume:            Faker::Number.number(digits: 1),
-            issue:             Faker::Number.number(digits: 1),
+            publication_date:  Faker::Date.backward(10000),
+            volume:            Faker::Number.number(1),
+            issue:             Faker::Number.number(1),
             citation:          c
           )
 
