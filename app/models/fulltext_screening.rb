@@ -37,6 +37,9 @@ class FulltextScreening < ApplicationRecord
     PILOT => 'Pilot'
   }.freeze
   NON_PERPETUAL = [N_SIZE_SINGLE, N_SIZE_DOUBLE, PILOT]
+  SINGLE_SCREENINGS = [SINGLE_PERPETUAL, N_SIZE_SINGLE]
+  DOUBLE_SCREENINGS = [DOUBLE_PERPETUAL, N_SIZE_DOUBLE]
+  ALL_SCREENINGS = [PILOT]
 
   validates_presence_of :fulltext_screening_type
 
@@ -50,6 +53,18 @@ class FulltextScreening < ApplicationRecord
   has_many :tags, through: :fulltext_screenings_tags
 
   has_many :fulltext_screening_results, dependent: :destroy, inverse_of: :fulltext_screening
+
+  def single_screening?
+    SINGLE_SCREENINGS.include?(fulltext_screening_type)
+  end
+
+  def double_screening?
+    DOUBLE_SCREENINGS.include?(fulltext_screening_type)
+  end
+
+  def all_screenings?
+    ALL_SCREENINGS.include?(fulltext_screening_type)
+  end
 
   def reasons_object
     reasons.each_with_object({}) do |reason, hash|

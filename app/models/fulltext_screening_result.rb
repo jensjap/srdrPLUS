@@ -27,6 +27,43 @@ class FulltextScreeningResult < ApplicationRecord
   delegate :project, to: :fulltext_screening
   delegate :citation, to: :citations_project
 
+  after_save :evaluate_screening_qualifications
+
+  def evaluate_screening_qualifications
+    if saved_change_to_attribute('label') && citations_project_sufficiently_labeled?
+      case label
+      when 1
+        citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::FS_REJECTED).destroy_all
+        citations_project.screening_qualifications.create!(qualification_type: ScreeningQualification::FS_ACCEPTED)
+      when -1
+        citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::FS_ACCEPTED).destroy_all
+        citations_project.screening_qualifications.create!(qualification_type: ScreeningQualification::FS_REJECTED)
+      end
+    end
+    citations_project.evaluate_screening_status
+  end
+
+  def citations_project_sufficiently_labeled?
+    return true if fulltext_screening.single_screening?
+
+    if fulltext_screening.exclusive_users
+      relevant_fsrs = FulltextScreeningResult.where(fulltext_screening:, citations_project:, user: users)
+      required_fsrs_pilot_count = fulltext_screening.fulltext_screenings_users.count
+    else
+      relevant_fsrs = FulltextScreeningResult.where(fulltext_screening:, citations_project:)
+      required_fsrs_pilot_count = fulltext_screening.project.projects_users.count
+    end
+    return false unless relevant_fsrs.all? { |fsr| fsr.label == 1 } || relevant_fsrs.all? { |fsr| fsr.label == -1 }
+
+    if fulltext_screening.double_screening? && relevant_fsrs.count == 2
+      true
+    elsif fulltext_screening.all_screenings? && relevant_fsrs.count == required_fsrs_pilot_count
+      true
+    else
+      false
+    end
+  end
+
   def search_data
     {
       id:,

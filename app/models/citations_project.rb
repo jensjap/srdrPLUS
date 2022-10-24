@@ -96,10 +96,16 @@ class CitationsProject < ApplicationRecord
 
   def search_data
     abstract_screenings_by_group = abstract_screening_results.group_by { |asr| asr.abstract_screening }
-    label_strings = []
+    as_label_strings = []
     abstract_screenings_by_group.each do |as, asrs|
       asrs_strings = asrs.map { |asr| asr.label || 'null' }.join(', ')
-      label_strings << "#{as.abstract_screening_type}: #{asrs_strings}"
+      as_label_strings << "#{as.abstract_screening_type}: #{asrs_strings}"
+    end
+    fulltext_screenings_by_group = fulltext_screening_results.group_by { |fsr| fsr.fulltext_screening }
+    fs_label_strings = []
+    fulltext_screenings_by_group.each do |fs, fsrs|
+      fsrs_strings = fsrs.map { |fsr| fsr.label || 'null' }.join(', ')
+      fs_label_strings << "#{fs.fulltext_screening_type}: #{fsrs_strings}"
     end
     {
       project_id:,
@@ -110,8 +116,8 @@ class CitationsProject < ApplicationRecord
       name: citation.name,
       year: citation.year,
       users: abstract_screening_results.map(&:user).uniq.map(&:handle).join(', '),
-      as_labels: label_strings,
-      fs_labels: [],
+      as_labels: as_label_strings,
+      fs_labels: fs_label_strings,
       reasons: abstract_screening_results.map(&:reasons).flatten.map(&:name).join(', '),
       tags: abstract_screening_results.map(&:tags).flatten.map(&:name).join(', '),
       note: abstract_screening_results.map(&:notes).compact.join(', '),
