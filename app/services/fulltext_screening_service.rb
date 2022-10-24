@@ -9,7 +9,7 @@ class FulltextScreeningService
     when FulltextScreening::PILOT
       get_next_pilot_citation_id(fulltext_screening, user)
     when FulltextScreening::SINGLE_PERPETUAL, FulltextScreening::N_SIZE_SINGLE
-      get_next_singles_citation_id(fulltext_screening, user)
+      get_next_singles_citation_id(fulltext_screening)
     when FulltextScreening::DOUBLE_PERPETUAL, FulltextScreening::N_SIZE_DOUBLE
       get_next_doubles_citation_id(fulltext_screening, user)
     end
@@ -38,14 +38,14 @@ class FulltextScreeningService
     citation_id = unscreened_citation_ids.sample
 
     if citation_id.nil?
-      get_next_singles_citation_id(fulltext_screening, user)
+      get_next_singles_citation_id(fulltext_screening)
     else
       citation_id
     end
   end
 
-  def self.get_next_singles_citation_id(fulltext_screening, _user)
-    project_screened_citation_ids = project_screened_citation_ids(fulltext_screening)
+  def self.get_next_singles_citation_id(fulltext_screening)
+    project_screened_citation_ids = project_screened_citation_ids(fulltext_screening.project)
     fulltext_screening.project.citations.where.not(id: project_screened_citation_ids).sample&.id
   end
 
@@ -54,7 +54,7 @@ class FulltextScreeningService
       other_users_screened_citation_ids(fulltext_screening, user) - user_screened_citation_ids(fulltext_screening, user)
     citation_id = unscreened_citation_ids.tally.select { |_, v| v == 1 }.keys.sample
     if citation_id.nil?
-      get_next_singles_citation_id(fulltext_screening, user)
+      get_next_singles_citation_id(fulltext_screening)
     else
       citation_id
     end
@@ -68,8 +68,8 @@ class FulltextScreeningService
     fulltext_screening.fulltext_screening_results.where(user:).map(&:citation).map(&:id)
   end
 
-  def self.project_screened_citation_ids(fulltext_screening)
-    CitationsProject.joins(fulltext_screening_results: :fulltext_screening).where(fulltext_screening_results: { fulltext_screening: }).map(&:citation).map(&:id)
+  def self.project_screened_citation_ids(project)
+    CitationsProject.joins(fulltext_screening_results: :fulltext_screening).where(project:).map(&:citation_id)
   end
 
   def self.at_or_over_limit?(fulltext_screening, user)

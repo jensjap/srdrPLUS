@@ -51,7 +51,7 @@ class AbstractScreeningService
   end
 
   def self.get_next_singles_citation_id(abstract_screening)
-    project_screened_citation_ids = project_screened_citation_ids(abstract_screening)
+    project_screened_citation_ids = project_screened_citation_ids(abstract_screening.project)
     abstract_screening.project.citations.where.not(id: project_screened_citation_ids).sample&.id
   end
 
@@ -74,8 +74,8 @@ class AbstractScreeningService
     abstract_screening.abstract_screening_results.where(user:).map(&:citation).map(&:id)
   end
 
-  def self.project_screened_citation_ids(abstract_screening)
-    CitationsProject.joins(abstract_screening_results: :abstract_screening).where(project: abstract_screening.project).map(&:citation_id)
+  def self.project_screened_citation_ids(project)
+    CitationsProject.joins(abstract_screening_results: :abstract_screening).where(project:).map(&:citation_id)
   end
 
   def self.at_or_over_limit?(abstract_screening, user)
