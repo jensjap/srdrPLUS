@@ -33,7 +33,6 @@ class Citation < ApplicationRecord
   has_one :journal, dependent: :destroy
 
   has_many :citations_projects, dependent: :destroy, inverse_of: :citation
-  has_many :abstract_screening_results, dependent: :destroy, inverse_of: :citation
   has_many :projects, through: :citations_projects
   has_many :authors_citations, dependent: :destroy
   has_many :authors, through: :authors_citations
