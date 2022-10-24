@@ -26,7 +26,7 @@ class Citation < ApplicationRecord
   acts_as_paranoid
   searchkick
 
-  after_commit :reindex_citations_projects, :reindex_abstract_screening_results
+  after_commit :reindex_citations_projects
 
   belongs_to :citation_type, optional: true
 
@@ -175,10 +175,6 @@ class Citation < ApplicationRecord
 
   def reindex_citations_projects
     citations_projects.each(&:reindex)
-  end
-
-  def reindex_abstract_screening_results
-    abstract_screening_results.each(&:reindex)
   end
 
   def author_list_for_citation_references_in_brackets
