@@ -126,16 +126,16 @@ class CitationsProject < ApplicationRecord
   end
 
   def evaluate_screening_status
-    if screening_qualifications.any? { |sq| sq.qualification_type == 'ft-rejected' }
+    if screening_qualifications.any? { |sq| sq.qualification_type == ScreeningQualification::FS_REJECTED }
       update(screening_status: :fsr)
-    elsif screening_qualifications.any? { |sq| sq.qualification_type == 'as-rejected' }
+    elsif screening_qualifications.any? { |sq| sq.qualification_type == ScreeningQualification::AS_REJECTED }
       update(screening_status: :asr)
-    elsif screening_qualifications.any? { |sq| sq.qualification_type == 'ft-accepted' }
+    elsif screening_qualifications.any? { |sq| sq.qualification_type == ScreeningQualification::FS_ACCEPTED }
       # TODOS
       # update(screening_status: :ene)
       # update(screening_status: :eip)
       # update(screening_status: :ec)
-    elsif screening_qualifications.any? { |sq| sq.qualification_type == 'as-accepted' }
+    elsif screening_qualifications.any? { |sq| sq.qualification_type == ScreeningQualification::AS_ACCEPTED }
       if fulltext_screening_results.blank?
         update(screening_status: :fsu)
       elsif fulltext_screening_results.any? { |fsr| fsr.label == -1 } &&
