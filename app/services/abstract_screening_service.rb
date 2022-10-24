@@ -15,7 +15,7 @@ class AbstractScreeningService
     when AbstractScreening::PILOT
       get_next_pilot_citation_id(abstract_screening, user)
     when AbstractScreening::SINGLE_PERPETUAL, AbstractScreening::N_SIZE_SINGLE
-      get_next_singles_citation_id(abstract_screening, user)
+      get_next_singles_citation_id(abstract_screening)
     when AbstractScreening::DOUBLE_PERPETUAL, AbstractScreening::N_SIZE_DOUBLE
       get_next_doubles_citation_id(abstract_screening, user)
     end
@@ -44,13 +44,13 @@ class AbstractScreeningService
     citation_id = unscreened_citation_ids.sample
 
     if citation_id.nil?
-      get_next_singles_citation_id(abstract_screening, user)
+      get_next_singles_citation_id(abstract_screening)
     else
       citation_id
     end
   end
 
-  def self.get_next_singles_citation_id(abstract_screening, _user)
+  def self.get_next_singles_citation_id(abstract_screening)
     project_screened_citation_ids = project_screened_citation_ids(abstract_screening)
     abstract_screening.project.citations.where.not(id: project_screened_citation_ids).sample&.id
   end
@@ -60,7 +60,7 @@ class AbstractScreeningService
       other_users_screened_citation_ids(abstract_screening, user) - user_screened_citation_ids(abstract_screening, user)
     citation_id = unscreened_citation_ids.tally.select { |_, v| v == 1 }.keys.sample
     if citation_id.nil?
-      get_next_singles_citation_id(abstract_screening, user)
+      get_next_singles_citation_id(abstract_screening)
     else
       citation_id
     end
@@ -75,7 +75,7 @@ class AbstractScreeningService
   end
 
   def self.project_screened_citation_ids(abstract_screening)
-    CitationsProject.joins(abstract_screening_results: :abstract_screening).where(abstract_screening_results: { abstract_screening: }).map(&:citation).map(&:id)
+    CitationsProject.joins(abstract_screening_results: :abstract_screening).where(project: abstract_screening.project).map(&:citation_id)
   end
 
   def self.at_or_over_limit?(abstract_screening, user)
