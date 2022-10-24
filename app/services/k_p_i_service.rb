@@ -20,9 +20,14 @@ class KPIService
         @kpis[:ftps] += 1
         @kpis[:ftic] += 1
       elsif cp.screening_qualifications.blank?
-        @kpis[:asu] += 1
-        @kpis[:asps] += 1
-        @kpis[:asic] += 1
+        if cp.abstract_screening_results.blank?
+          @kpis[:asu] += 1
+        elsif cp.abstract_screening_results.any? { |asr| asr.label == -1 } &&
+              cp.abstract_screening_results.any? { |asr| asr.label == 1 }
+          @kpis[:asic] += 1
+        else
+          @kpis[:asps] += 1
+        end
       end
     end
   end

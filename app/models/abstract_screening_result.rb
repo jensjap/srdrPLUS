@@ -27,6 +27,42 @@ class AbstractScreeningResult < ApplicationRecord
   delegate :project, to: :abstract_screening
   delegate :citation, to: :citations_project
 
+  after_save :evaluate_screening_qualifications
+
+  def evaluate_screening_qualifications
+    return unless saved_change_to_attribute('label') && citations_project_sufficiently_labeled?
+
+    case label
+    when 1
+      citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::AS_REJECTED).destroy_all
+      citations_project.screening_qualifications.create!(qualification_type: ScreeningQualification::AS_ACCEPTED)
+    when -1
+      citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::AS_ACCEPTED).destroy_all
+      citations_project.screening_qualifications.create!(qualification_type: ScreeningQualification::AS_REJECTED)
+    end
+  end
+
+  def citations_project_sufficiently_labeled?
+    return true if abstract_screening.single_screening?
+
+    if abstract_screening.exclusive_users
+      relevant_asrs = AbstractScreeningResult.where(abstract_screening:, citations_project:, user: users)
+      required_asrs_pilot_count = abstract_screening.abstract_screenings_users.count
+    else
+      relevant_asrs = AbstractScreeningResult.where(abstract_screening:, citations_project:)
+      required_asrs_pilot_count = abstract_screening.project.projects_users.count
+    end
+    return false unless relevant_asrs.all? { |asr| asr.label == 1 } || relevant_asrs.all? { |asr| asr.label == -1 }
+
+    if abstract_screening.double_screening? && relevant_asrs.count == 2
+      true
+    elsif abstract_screening.all_screenings? && relevant_asrs.count == required_asrs_pilot_count
+      true
+    else
+      false
+    end
+  end
+
   def search_data
     {
       id:,

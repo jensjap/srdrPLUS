@@ -67,15 +67,15 @@ class AbstractScreeningService
   end
 
   def self.other_users_screened_citation_ids(abstract_screening, user)
-    abstract_screening.abstract_screening_results.where.not(user:).pluck(:citation_id)
+    abstract_screening.abstract_screening_results.where.not(user:).map(&:citation).map(&:id)
   end
 
   def self.user_screened_citation_ids(abstract_screening, user)
-    abstract_screening.abstract_screening_results.where(user:).pluck(:citation_id)
+    abstract_screening.abstract_screening_results.where(user:).map(&:citation).map(&:id)
   end
 
   def self.project_screened_citation_ids(abstract_screening)
-    CitationsProject.joins(abstract_screening_results: :abstract_screening).where(abstract_screening_results: { abstract_screening: }).pluck(:citation_id)
+    CitationsProject.joins(abstract_screening_results: :abstract_screening).where(abstract_screening_results: { abstract_screening: }).map(&:citation).map(&:id)
   end
 
   def self.at_or_over_limit?(abstract_screening, user)

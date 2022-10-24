@@ -10,6 +10,11 @@
 #  updated_at           :datetime         not null
 #
 class ScreeningQualification < ApplicationRecord
+  AS_ACCEPTED = 'as-accepted'.freeze
+  AS_REJECTED = 'as-rejected'.freeze
+  FS_ACCEPTED = 'as-accepted'.freeze
+  FS_REJECTED = 'as-rejected'.freeze
+
   belongs_to :citations_project
-  belongs_to :user
+  belongs_to :user, optional: true
 end

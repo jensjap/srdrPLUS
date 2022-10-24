@@ -61,15 +61,15 @@ class FulltextScreeningService
   end
 
   def self.other_users_screened_citation_ids(fulltext_screening, user)
-    fulltext_screening.fulltext_screening_results.where.not(user:).pluck(:citation_id)
+    fulltext_screening.fulltext_screening_results.where.not(user:).map(&:citation).map(&:id)
   end
 
   def self.user_screened_citation_ids(fulltext_screening, user)
-    fulltext_screening.fulltext_screening_results.where(user:).pluck(:citation_id)
+    fulltext_screening.fulltext_screening_results.where(user:).map(&:citation).map(&:id)
   end
 
   def self.project_screened_citation_ids(fulltext_screening)
-    CitationsProject.joins(fulltext_screening_results: :fulltext_screening).where(fulltext_screening_results: { fulltext_screening: }).pluck(:citation_id)
+    CitationsProject.joins(fulltext_screening_results: :fulltext_screening).where(fulltext_screening_results: { fulltext_screening: }).map(&:citation).map(&:id)
   end
 
   def self.at_or_over_limit?(fulltext_screening, user)
