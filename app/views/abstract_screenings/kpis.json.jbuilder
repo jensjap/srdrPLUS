@@ -1,3 +1,4 @@
+json.count @project.citations_projects.count
 json.asu @project.citations_projects.where(screening_status: :asu).count
 json.asps @project.citations_projects.where(screening_status: :asps).count
 json.asic @project.citations_projects.where(screening_status: :asic).count

@@ -18,7 +18,7 @@ class CitationsProject < ApplicationRecord
   searchkick
   include SharedParanoiaMethods
 
-  after_commit :reindex
+  after_create :evaluate_screening_status
 
   acts_as_paranoid column: :active, sentinel_value: true
 
@@ -49,8 +49,8 @@ class CitationsProject < ApplicationRecord
   has_one :priority, dependent: :destroy
 
   has_many :extractions, dependent: :destroy
-  has_many :abstract_screening_results
-  has_many :fulltext_screening_results
+  has_many :abstract_screening_results, dependent: :destroy
+  has_many :fulltext_screening_results, dependent: :destroy
   has_many :screening_qualifications, dependent: :destroy
 
   has_many :labels, dependent: :destroy
