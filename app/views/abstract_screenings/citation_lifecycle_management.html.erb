@@ -265,12 +265,12 @@
                   <th
                     scope="col"
                     class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    @click="changeOrderBy('labels')"
+                    @click="changeOrderBy('as_labels')"
                   >
                     <div class="flex justify-between">
-                      Label
+                      AS Labels
                       <template
-                        x-if="pagination.sort == 'asc' && pagination.order_by == 'labels'"
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'as_labels'"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -288,7 +288,52 @@
                         </svg>
                       </template>
                       <template
-                        x-if="pagination.sort == 'desc' && pagination.order_by == 'labels'"
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'as_labels'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('fs_labels')"
+                  >
+                    <div class="flex justify-between">
+                      FS Labels
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'fs_labels'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'fs_labels'"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -529,8 +574,18 @@
                       ></td>
                       <td
                         class="px-3 text-sm text-gray-500"
-                        x-text="result.labels"
-                      ></td>
+                      >
+                      <template x-for="labels in result.as_labels">
+                        <div x-text="labels"></div>
+                      </template>
+                      </td>
+                      <td
+                        class="px-3 text-sm text-gray-500"
+                      >
+                      <template x-for="labels in result.fs_labels">
+                        <div x-text="labels"></div>
+                      </template>
+                      </td>
                       <td
                         class="px-3 text-sm text-gray-500"
                         x-text="result.reasons"

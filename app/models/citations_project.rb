@@ -5,6 +5,7 @@
 #  id                :integer          not null, primary key
 #  citation_id       :integer
 #  project_id        :integer
+#  screening_status  :string(255)
 #  deleted_at        :datetime
 #  active            :boolean
 #  created_at        :datetime         not null
@@ -91,5 +92,62 @@ class CitationsProject < ApplicationRecord
     cp_to_remove.taggings.each do |t|
       t.dup.update_attributes(taggable_id: master_cp.id)
     end
+  end
+
+  def search_data
+    abstract_screenings_by_group = abstract_screening_results.group_by { |asr| asr.abstract_screening }
+    label_strings = []
+    abstract_screenings_by_group.each do |as, asrs|
+      asrs_strings = asrs.map { |asr| asr.label || 'null' }.join(', ')
+      label_strings << "#{as.abstract_screening_type}: #{asrs_strings}"
+    end
+    {
+      project_id:,
+      citations_project_id: id,
+      citation_id: citation.id,
+      accession_number_alts: citation.accession_number_alts,
+      author_map_string: citation.author_map_string,
+      name: citation.name,
+      year: citation.year,
+      users: abstract_screening_results.map(&:user).uniq.map(&:handle).join(', '),
+      as_labels: label_strings,
+      fs_labels: [],
+      reasons: abstract_screening_results.map(&:reasons).flatten.map(&:name).join(', '),
+      tags: abstract_screening_results.map(&:tags).flatten.map(&:name).join(', '),
+      note: abstract_screening_results.map(&:notes).compact.join(', '),
+      screening_status:
+    }
+  end
+
+  def evaluate_screening_status
+    if screening_qualifications.any? { |sq| sq.qualification_type == 'ft-rejected' }
+      update(screening_status: :fsr)
+    elsif screening_qualifications.any? { |sq| sq.qualification_type == 'as-rejected' }
+      update(screening_status: :asr)
+    elsif screening_qualifications.any? { |sq| sq.qualification_type == 'ft-accepted' }
+      # TODOS
+      # update(screening_status: :ene)
+      # update(screening_status: :eip)
+      # update(screening_status: :ec)
+    elsif screening_qualifications.any? { |sq| sq.qualification_type == 'as-accepted' }
+      if fulltext_screening_results.blank?
+        update(screening_status: :fsu)
+      elsif fulltext_screening_results.any? { |fsr| fsr.label == -1 } &&
+            fulltext_screening_results.any? { |fsr| fsr.label == 1 }
+        update(screening_status: :fsic)
+      else
+        update(screening_status: :fsps)
+      end
+    elsif screening_qualifications.blank?
+      if abstract_screening_results.blank?
+        update(screening_status: :asu)
+      elsif abstract_screening_results.any? { |asr| asr.label == -1 } &&
+            abstract_screening_results.any? { |asr| asr.label == 1 }
+        update(screening_status: :asic)
+      else
+        update(screening_status: :asps)
+      end
+    end
+    reindex
   end
 end

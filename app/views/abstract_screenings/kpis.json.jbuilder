@@ -1,12 +1,11 @@
-kpis = KPIService.new(@project)
-json.asu kpis.find_kpi(:asu)
-json.asps kpis.find_kpi(:asps)
-json.asic kpis.find_kpi(:asic)
-json.asr kpis.find_kpi(:asr)
-json.ftu kpis.find_kpi(:ftu)
-json.ftps kpis.find_kpi(:ftps)
-json.ftic kpis.find_kpi(:ftic)
-json.ftr kpis.find_kpi(:ftr)
-json.ene kpis.find_kpi(:ene)
-json.eip kpis.find_kpi(:eip)
-json.ec kpis.find_kpi(:ec)
+json.asu @project.citations_projects.where(screening_status: :asu).count
+json.asps @project.citations_projects.where(screening_status: :asps).count
+json.asic @project.citations_projects.where(screening_status: :asic).count
+json.asr @project.citations_projects.where(screening_status: :asr).count
+json.fsu @project.citations_projects.where(screening_status: :fsu).count
+json.fsps @project.citations_projects.where(screening_status: :fsps).count
+json.fsic @project.citations_projects.where(screening_status: :fsic).count
+json.fsr @project.citations_projects.where(screening_status: :fsr).count
+json.ene @project.citations_projects.where(screening_status: :ene).count
+json.eip @project.citations_projects.where(screening_status: :eip).count
+json.ec @project.citations_projects.where(screening_status: :ec).count

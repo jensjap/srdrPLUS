@@ -30,16 +30,17 @@ class AbstractScreeningResult < ApplicationRecord
   after_save :evaluate_screening_qualifications
 
   def evaluate_screening_qualifications
-    return unless saved_change_to_attribute('label') && citations_project_sufficiently_labeled?
-
-    case label
-    when 1
-      citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::AS_REJECTED).destroy_all
-      citations_project.screening_qualifications.create!(qualification_type: ScreeningQualification::AS_ACCEPTED)
-    when -1
-      citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::AS_ACCEPTED).destroy_all
-      citations_project.screening_qualifications.create!(qualification_type: ScreeningQualification::AS_REJECTED)
+    if saved_change_to_attribute('label') && citations_project_sufficiently_labeled?
+      case label
+      when 1
+        citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::AS_REJECTED).destroy_all
+        citations_project.screening_qualifications.create!(qualification_type: ScreeningQualification::AS_ACCEPTED)
+      when -1
+        citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::AS_ACCEPTED).destroy_all
+        citations_project.screening_qualifications.create!(qualification_type: ScreeningQualification::AS_REJECTED)
+      end
     end
+    citations_project.evaluate_screening_status
   end
 
   def citations_project_sufficiently_labeled?
