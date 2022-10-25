@@ -1944,6 +1944,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
     t.index ["wac_id"], name: "index_wacs_bacs_rssms_on_wac_id"
   end
 
+  add_foreign_key "abstrackr_settings", "profiles"
   add_foreign_key "actions", "action_types"
   add_foreign_key "actions", "users"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
