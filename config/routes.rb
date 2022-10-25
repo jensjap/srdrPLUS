@@ -122,6 +122,12 @@ Rails.application.routes.draw do
       resources :key_questions, only: [:show]
       resources :questions, only: [:show]
     end # END namespace :v2 do
+
+    namespace :fhir do
+      resources :citations
+    end # END namespace :fhir do
+
+
   end # END namespace :api do
 
   resources :assignments do
