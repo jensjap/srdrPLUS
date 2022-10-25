@@ -1,2 +1,0 @@
-module SfCellsHelper
-end
