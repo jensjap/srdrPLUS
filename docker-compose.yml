@@ -1,14 +1,14 @@
 version: '3'
 
 services:
-  app: 
+  app:
     build:
       context: .
       dockerfile: Dockerfile
-    depends_on:     
+    depends_on:
       - database
       - redis
-    ports: 
+    ports:
       - "3000:3000"
     volumes:
       - .:/app
@@ -34,6 +34,7 @@ services:
     volumes:
       - esdata:/usr/share/elasticsearch/data
     environment:
+      xpack.security.enabled: "false"
       discovery.type: single-node
       ELASTIC_PASSWORD: password
 
@@ -42,7 +43,7 @@ services:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      - app      
+      - app
       - database
       - redis
     volumes:
