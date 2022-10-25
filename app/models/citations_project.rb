@@ -5,7 +5,7 @@
 #  id                :integer          not null, primary key
 #  citation_id       :integer
 #  project_id        :integer
-#  screening_status  :string(255)
+#  screening_status  :string(255)      default("asu")
 #  deleted_at        :datetime
 #  active            :boolean
 #  created_at        :datetime         not null
@@ -17,8 +17,6 @@
 class CitationsProject < ApplicationRecord
   searchkick
   include SharedParanoiaMethods
-
-  after_create :evaluate_screening_status
 
   acts_as_paranoid column: :active, sentinel_value: true
 

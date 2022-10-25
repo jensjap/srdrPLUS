@@ -334,7 +334,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_24_041235) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "consensus_type_id"
     t.boolean "pilot_flag"
-    t.string "screening_status"
+    t.string "screening_status", default: "asu"
     t.index ["active"], name: "index_citations_projects_on_active"
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id"
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id"
