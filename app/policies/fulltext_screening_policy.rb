@@ -54,11 +54,6 @@ class FulltextScreeningPolicy < ApplicationPolicy
   end
 
   def screen?
-    #user.allowed_to_screen_fulltexts?(
-    #  fulltext_screening_id: self.record.id,
-    #  project_id: self.record.project_id
-    #)
-
     # Always allow to screen as per request.
     true
   end

@@ -36,8 +36,6 @@
 class User < ApplicationRecord
   acts_as_paranoid
 
-  # after_commit :reindex_citations_projects
-
   devise :omniauthable, omniauth_providers: [:google_oauth2]
   has_secure_token :api_key
 
@@ -145,30 +143,6 @@ class User < ApplicationRecord
 
   def admin?
     user_type.user_type == 'Admin'
-  end
-
-  # def reindex_citations_projects
-  #   citations_projects.each(&:reindex)
-  # end
-
-  # Look for existence of a AbstractScreeningsProjectsUsersRole and return Boolean.
-  def allowed_to_screen_abstracts?(abstract_screening_id:, project_id:)
-    AbstractScreeningsProjectsUsersRole.find_by(
-      abstract_screening_id:,
-      projects_users_role: ProjectsUsersRole.where(
-        projects_user: ProjectsUser.find_by(project_id:, user: self)
-      )
-    ).present?
-  end
-
-  # Look for existence of a FulltextScreeningsProjectsUsersRole and return Boolean.
-  def allowed_to_screen_fulltexts?(fulltext_screening_id:, project_id:)
-    FulltextScreeningsProjectsUsersRole.find_by(
-      fulltext_screening_id:,
-      projects_users_role: ProjectsUsersRole.where(
-        projects_user: ProjectsUser.find_by(project_id:, user: self)
-      )
-    ).present?
   end
 
   private
