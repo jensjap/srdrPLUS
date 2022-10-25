@@ -103,20 +103,20 @@ class CitationsProject < ApplicationRecord
       fs_label_strings << "#{fs.fulltext_screening_type}: #{fsrs_strings}"
     end
     {
-      project_id:,
-      citations_project_id: id,
-      citation_id: citation.id,
-      accession_number_alts: citation.accession_number_alts,
-      author_map_string: citation.author_map_string,
-      name: citation.name,
-      year: citation.year,
-      users: abstract_screening_results.map(&:user).uniq.map(&:handle).join(', '),
-      as_labels: as_label_strings,
-      fs_labels: fs_label_strings,
-      reasons: abstract_screening_results.map(&:reasons).flatten.map(&:name).join(', '),
-      tags: abstract_screening_results.map(&:tags).flatten.map(&:name).join(', '),
-      note: abstract_screening_results.map(&:notes).compact.join(', '),
-      screening_status:
+      'project_id' => project_id,
+      'citations_project_id' => id,
+      'citation_id' => citation.id,
+      'accession_number_alts' => citation.accession_number_alts,
+      'author_map_string' => citation.author_map_string,
+      'name' => citation.name,
+      'year' => citation.year,
+      'users' => abstract_screening_results.map(&:user).uniq.map(&:handle).join(', '),
+      'as_labels' => as_label_strings,
+      'fs_labels' => fs_label_strings,
+      'reasons' => abstract_screening_results.map(&:reasons).flatten.map(&:name).join(', '),
+      'tags' => abstract_screening_results.map(&:tags).flatten.map(&:name).join(', '),
+      'note' => abstract_screening_results.map(&:notes).compact.join(', '),
+      'screening_status' => screening_status
     }
   end
 

@@ -337,5 +337,7 @@ Rails.application.routes.draw do
   resources :fulltext_screening_results, only: [] do
     resources :sf_fulltext_records, only: [:index]
   end
+
+  resources :screening_qualifications, only: %i[create]
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

@@ -1,6 +1,7 @@
 <div class="p-4 lg:p-8" x-data="citation_lifecycle_management">
   <!-- prettier-ignore -->
   <%= render 'selection' %>
+  <%= render 'loading' %>
   <%= render 'dashboard' %>
   <div>
     <div class="sm:flex sm:items-center">
@@ -629,6 +630,7 @@
         sort: null,
       },
       selected: [],
+      showLoading: false,
 
       init() {
         this.fetch_results();
@@ -695,6 +697,47 @@
         }
         params.push(`page=${this.pagination.current_page}`);
         return url + "?" + params.join("&");
+      },
+
+      async createScreeningQualification(qualification_type) {
+        this.showLoading = true;
+        const response = await fetch("/screening_qualifications", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          body: JSON.stringify({
+            qualification_type,
+            citations_project_ids: this.selected.map(
+              (cp) => cp.citations_project_id
+            ),
+          }),
+        });
+        const data = await response.json();
+        data.forEach((screeningStatus) => {
+          this.selected.forEach((selection) => {
+            if (
+              selection.citations_project_id ==
+              screeningStatus.citations_project_id
+            ) {
+              selection.screening_status = screeningStatus.screening_status;
+            }
+          });
+          this.results.forEach((result) => {
+            if (
+              result.citations_project_id ==
+              screeningStatus.citations_project_id
+            ) {
+              result.screening_status = screeningStatus.screening_status;
+            }
+          });
+        });
+        Alpine.store("dashboard").fetch_kpis();
+        this.showLoading = false;
       },
 
       async fetch_results() {
