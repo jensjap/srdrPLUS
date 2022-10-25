@@ -1393,7 +1393,7 @@ module SeedDataExtended
 
         # Projects.
         project_titles.each do |n|
-          updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now - 1)
+          updated_at = Faker::Time.between(from: DateTime.now - 1000, to: DateTime.now - 1)
           User.current = User.first
           Project.create!(name:        n[0],
                           description: n[1],
@@ -1419,7 +1419,7 @@ module SeedDataExtended
 
         # Citations, Journals, Authors and Keywords
         200.times do |n|
-          updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now - 1)
+          updated_at = Faker::Time.between(from: DateTime.now - 1000, to: DateTime.now - 1)
           c = Citation.create!(
             name:           Faker::Lorem.sentence,
             pmid:           Faker::Number.number(10),

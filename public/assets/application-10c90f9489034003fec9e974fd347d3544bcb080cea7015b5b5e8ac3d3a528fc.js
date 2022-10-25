@@ -66017,7 +66017,7 @@ function __guardMethod__(obj, methodName, transform) {
       return;
     }
     return (function() {
-      var add_breadcrumb, apply_select2_to_term_select, create_term_selects, delete_term_group, fetch_palette, fetch_term_groups, force_update_c_p, get_c_p, get_history_page, lock_button, next_citation, nothing_to_label, populate_term_modal, populate_terms, send_label, send_new_term, send_new_term_group, start_screening, switch_to_list, switch_to_screening, update_arrows, update_breadcrumb, update_index, update_info, update_label, update_reasons, update_term, update_term_group;
+      var apply_select2_to_term_select, create_term_selects, delete_term_group, fetch_palette, fetch_term_groups, force_update_c_p, get_c_p, get_history_page, lock_button, next_citation, nothing_to_label, populate_term_modal, populate_terms, send_label, send_new_term, send_new_term_group, start_screening, switch_to_list, switch_to_screening, update_arrows, update_info, update_label, update_reasons, update_term, update_term_group;
       force_update_c_p = function(obj) {
         $.ajax({
           type: 'GET',
@@ -66306,7 +66306,6 @@ function __guardMethod__(obj, methodName, transform) {
               obj.index = obj.index - 1;
             } else if (obj.citations.length > 0) {
               next_citation(obj);
-              add_breadcrumb(obj);
               obj.index = 0;
             }
             update_info(obj);
@@ -66578,44 +66577,6 @@ function __guardMethod__(obj, methodName, transform) {
           switch_to_list(obj, obj.history.slice(page_index * page_size, (page_index + 1) * page_size));
           return obj.history_page = page_index;
         }
-      };
-      add_breadcrumb = function(obj) {
-        var breadcrumb_id, button, id, next_index;
-        next_index = obj.history.length;
-        breadcrumb_id = 'breadcrumb_' + next_index;
-        id = next_index;
-        button = $('<input/>').attr({
-          type: 'button',
-          id: breadcrumb_id,
-          "class": 'button'
-        });
-        button.click(function() {
-          obj.index = obj.history.length - next_index;
-          update_info(obj);
-          return update_arrows(obj);
-        });
-        $('#breadcrumb-group').append(button);
-        obj.history[obj.index].breadcrumb_id = breadcrumb_id;
-        obj.history[obj.index].id = id;
-      };
-      update_breadcrumb = function(citation) {
-        var button, label;
-        button = $('#' + citation.breadcrumb_id);
-        label = citation.label.label_type_id;
-        button.removeClass('success alert');
-        if (label === 1) {
-          button.addClass('success');
-        } else if (label === 2) {
-          button.addClass('alert');
-        }
-      };
-      update_index = function(obj, new_index) {
-        var new_breadcrumb_id, old_breadcrumb_id;
-        old_breadcrumb_id = obj.history[obj.index].breadcrumb_id;
-        obj.index = new_index;
-        new_breadcrumb_id = obj.history[new_index].breadcrumb_id;
-        $('#' + old_breadcrumb_id).removeClass('hollow');
-        $('#' + new_breadcrumb_id).addClass('hollow');
       };
       update_reasons = function() {
         var project_lead_reasons, projects_user_reasons, root_url;
@@ -69062,14 +69023,14 @@ function __guardMethod__(obj, methodName, transform) {
     $('.export-type-radio').each(function(e) {
       var export_button, link_string;
       if ($(this).is(':checked')) {
-        export_button = $(this).parents('.reveal').find('.start-export-button');
+        export_button = $(this).parents('.export-type-selection').find('.start-export-button');
         return link_string = $(export_button).attr('href', $(this).val());
       }
     });
     $('.export-type-radio').on('change', function(e) {
       var export_button, link_string;
       if ($(this).is(':checked')) {
-        export_button = $(this).parents('.reveal').find('.start-export-button');
+        export_button = $(this).parents('.export-type-selection').find('.start-export-button');
         return link_string = $(export_button).attr('href', $(this).val());
       }
     });
@@ -69414,16 +69375,6 @@ function __guardMethod__(obj, methodName, transform) {
   };
 
 }).call(this);
-document.addEventListener('alpine:init', () => {
-    Alpine.store('navigation', {
-        on: true,
-
-        toggle() {
-            this.on = !this.on
-        }
-    })
-})
-;
 (function() {
   var documentCode, get_result_value;
 
@@ -70649,4 +70600,15 @@ let documentCode = function() {
     autoResize(this)
   })
 }
-;
+
+function resizeIframe(iframe) {
+  iframe.height = iframe.contentWindow.document.body.scrollHeight + "px";
+}
+
+addEventListener('resize', (event) => {
+  var iframes = document.getElementsByClassName('iframe');
+  for (var i = 0; i < iframes.length; ++i) {
+    var item = iframes[i];  
+    resizeIframe(item)
+  }
+});
