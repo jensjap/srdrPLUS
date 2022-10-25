@@ -69023,14 +69023,14 @@ function __guardMethod__(obj, methodName, transform) {
     $('.export-type-radio').each(function(e) {
       var export_button, link_string;
       if ($(this).is(':checked')) {
-        export_button = $(this).parents('.reveal').find('.start-export-button');
+        export_button = $(this).parents('.export-type-selection').find('.start-export-button');
         return link_string = $(export_button).attr('href', $(this).val());
       }
     });
     $('.export-type-radio').on('change', function(e) {
       var export_button, link_string;
       if ($(this).is(':checked')) {
-        export_button = $(this).parents('.reveal').find('.start-export-button');
+        export_button = $(this).parents('.export-type-selection').find('.start-export-button');
         return link_string = $(export_button).attr('href', $(this).val());
       }
     });

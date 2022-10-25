@@ -48,12 +48,12 @@ documentCode = ->
   # Iterate over each option and if any of them are "checked" go ahead and use that value.
   $( '.export-type-radio' ).each ( e ) ->
     if $( this ).is ':checked'
-      export_button = $( this ).parents('.reveal').find( '.start-export-button' )
+      export_button = $( this ).parents( '.export-type-selection' ).find( '.start-export-button' )
       link_string = $( export_button ).attr( 'href', $( this ).val() )
   # Update the option on change.
   $( '.export-type-radio' ).on 'change', ( e ) ->
     if $( this ).is ':checked'
-      export_button = $( this ).parents('.reveal').find( '.start-export-button' )
+      export_button = $( this ).parents( '.export-type-selection' ).find( '.start-export-button' )
       link_string = $( export_button ).attr( 'href', $( this ).val() )
 
   ########## IMPORTERS
