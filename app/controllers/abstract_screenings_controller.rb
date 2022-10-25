@@ -49,7 +49,7 @@ class AbstractScreeningsController < ApplicationController
         @order_by = params[:order_by]
         @sort = params[:sort].present? ? params[:sort] : nil
         @page = params[:page].present? ? params[:page].to_i : 1
-        per_page = 15
+        per_page = 100
         order = @order_by.present? ? { @order_by => @sort } : {}
         @citations_projects = CitationsProjectSearchService.new(@project, @query, @page, per_page, order).elastic_search
         @total_pages = (@citations_projects.response['hits']['total']['value'] / per_page) + 1

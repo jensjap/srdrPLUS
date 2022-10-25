@@ -176,7 +176,7 @@
                     @click="changeOrderBy('year')"
                   >
                     <div class="flex justify-between">
-                      Publication Date
+                      Pub Date
                       <template
                         x-if="pagination.sort == 'asc' && pagination.order_by == 'year'"
                       >
@@ -544,15 +544,14 @@
                   </tr>
                 </template>
                 <template x-if="results != null">
-                  <template x-for="result in results">
+                  <template x-for="(result, i) in results">
                     <tr
                       class="cursor-pointer"
                       :class="selected.some(selectedCp => selectedCp.citations_project_id == result.citations_project_id) ? '!bg-green-100' : '!bg-white'"
-                      @click="toggleSelection(result)"
+                      @click="toggleSelection(i)"
                     >
-                      some selectedCp => selectedCp.citations_project_id ==
                       <td
-                        class="pl-4 pr-3 text-sm text-gray-500 sm:pl-6"
+                        class="pl-4 pr-3 text-sm text-gray-500 sm:pl-6 whitespace-nowrap"
                         x-text="result.accession_number_alts"
                       ></td>
                       <td
@@ -560,7 +559,7 @@
                         x-text="result.author_map_string"
                       ></td>
                       <td
-                        class="px-3 text-sm text-gray-500"
+                        class="px-3 text-sm text-gray-500 max-w-[250px] overflow-hidden text-ellipsis whitespace-nowrap"
                         x-text="result.name"
                       ></td>
                       <td
@@ -640,19 +639,21 @@
         });
       },
 
-      toggleSelection(cp) {
+      toggleSelection(resultsIndex) {
         if (
           this.selected.some(
             (selectedCp) =>
-              selectedCp.citations_project_id == cp.citations_project_id
+              selectedCp.citations_project_id ==
+              this.results[resultsIndex].citations_project_id
           )
         ) {
           this.selected = this.selected.filter(
             (selectedCp) =>
-              selectedCp.citations_project_id != cp.citations_project_id
+              selectedCp.citations_project_id !=
+              this.results[resultsIndex].citations_project_id
           );
         } else {
-          this.selected.push(cp);
+          this.selected.push(this.results[resultsIndex]);
         }
       },
 
