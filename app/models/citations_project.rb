@@ -121,7 +121,9 @@ class CitationsProject < ApplicationRecord
   end
 
   def evaluate_screening_status
-    if screening_qualifications.any? { |sq| sq.qualification_type == ScreeningQualification::FS_REJECTED }
+    if screening_qualifications.any? { |sq| sq.qualification_type == ScreeningQualification::E_REJECTED }
+      update(screening_status: :er)
+    elsif screening_qualifications.any? { |sq| sq.qualification_type == ScreeningQualification::FS_REJECTED }
       update(screening_status: :fsr)
     elsif screening_qualifications.any? { |sq| sq.qualification_type == ScreeningQualification::AS_REJECTED }
       update(screening_status: :asr)
