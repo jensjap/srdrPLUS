@@ -27,9 +27,9 @@ class FulltextScreeningsController < ApplicationController
     @fulltext_screening = FulltextScreening.find(params[:id])
     authorize(@fulltext_screening.project, policy_class: FulltextScreeningPolicy)
     if @fulltext_screening.destroy
-      flash[:success] = 'Fulltext screening was deleted.'
+      flash[:success] = 'The fulltext screening was deleted.'
     else
-      flash[:error] = 'The default fulltext screening cannot be deleted.'
+      flash[:error] = 'The screening could not be deleted.'
     end
     redirect_to project_fulltext_screenings_path(@fulltext_screening.project)
   end

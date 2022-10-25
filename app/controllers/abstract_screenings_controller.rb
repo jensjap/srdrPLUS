@@ -62,9 +62,9 @@ class AbstractScreeningsController < ApplicationController
     @abstract_screening = AbstractScreening.find(params[:id])
     authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
     if @abstract_screening.destroy
-      flash[:success] = 'Abstract screening was deleted.'
+      flash[:success] = 'The abstract screening was deleted.'
     else
-      flash[:error] = 'The default abstract screening cannot be deleted.'
+      flash[:error] = 'The abstract screening could not be deleted.'
     end
     redirect_to project_abstract_screenings_path(@abstract_screening.project)
   end
