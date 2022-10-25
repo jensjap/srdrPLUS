@@ -58,9 +58,6 @@ class CitationsProject < ApplicationRecord
   has_many :taggings, as: :taggable, dependent: :destroy
   has_many :tags, through: :taggings
 
-  has_and_belongs_to_many :abstract_screenings
-  has_and_belongs_to_many :fulltext_screenings
-
   accepts_nested_attributes_for :citation, reject_if: :all_blank
 
   # We find all CitationsProject entries that have the exact same citation_id
