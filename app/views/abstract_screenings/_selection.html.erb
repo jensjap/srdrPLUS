@@ -1,6 +1,6 @@
 <div class="pointer-events-none fixed inset-x-0 bottom-0 flex max-w-full z-10">
   <div
-    class="pointer-events-auto w-screen backdrop-blur-sm"
+    class="pointer-events-auto w-screen backdrop-blur-sm bg-srdr-secondary/80"
     x-show="selected.length > 0"
     x-cloak
     x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700"
@@ -13,37 +13,37 @@
     <!-- Replace with your content -->
     <div class="flex justify-center items-center">
       <div
-        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary text-white rounded-md"
+        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
         @click="selected = results"
       >
         Select All
       </div>
       <div
-        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary text-white rounded-md"
+        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
         @click="selected = []"
       >
         Deselect All
       </div>
       <div class="ml-8">
-        <span x-text="`Selected: ${selected.length}`"></span>
+        <span class="text-white" x-text="`Selected: ${selected.length}`"></span>
       </div>
       <div
-        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary text-white rounded-md"
+        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
       >
         AS Accept
       </div>
       <div
-        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary text-white rounded-md"
+        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
       >
         AS Reject
       </div>
       <div
-        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary text-white rounded-md"
+        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
       >
         FS Accept
       </div>
       <div
-        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary text-white rounded-md"
+        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
       >
         FS Reject
       </div>
