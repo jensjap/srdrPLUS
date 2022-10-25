@@ -81,15 +81,4 @@ class AbstractScreeningResult < ApplicationRecord
       updated_at:
     }
   end
-
-  def readable_label
-    case label
-    when -1
-      'No'
-    when 0
-      'Maybe'
-    when 1
-      'Yes'
-    end
-  end
 end
