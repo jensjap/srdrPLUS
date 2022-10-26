@@ -1,101 +1,103 @@
-<div
-  class="fixed top-1/2 left-1/2 h-[32rem] -mt-[18rem] w-96 -ml-48 md:h-[36rem] md:-mt-[18rem] md:w-[48rem] md:-ml-[24rem] z-10 transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:p-6"
-  x-show="showDetailView"
-  x-cloak
-  x-transition:enter="ease-out duration-300"
-  x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-  x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-  x-transition:leave="ease-in duration-200"
-  x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-  x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-  @click.outside="showDetailView = !showDetailView"
->
-  <div class="absolute top-0 right-0 pt-4 pr-4 block">
-    <button
-      type="button"
-      class="cursor-pointer rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-      @click="showDetailView = false"
-    >
-      <span class="sr-only">Close</span>
-      <!-- Heroicon name: outline/x-mark -->
-      <svg
-        class="h-6 w-6"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
-        aria-hidden="true"
+<template x-if="results !== null">
+  <div
+    class="fixed top-1/2 left-1/2 h-[32rem] -mt-[18rem] w-96 -ml-48 md:h-[36rem] md:-mt-[18rem] md:w-[48rem] md:-ml-[24rem] z-10 transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:p-6 border border-slate-200"
+    x-show="showDetailView"
+    x-cloak
+    x-transition:enter="ease-out duration-300"
+    x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+    x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+    x-transition:leave="ease-in duration-200"
+    x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+    x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+    @click.outside="showDetailView = !showDetailView"
+  >
+    <div class="absolute top-0 right-0 pt-4 pr-4 block">
+      <button
+        type="button"
+        class="cursor-pointer rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        @click="showDetailView = false"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M6 18L18 6M6 6l12 12"
-        />
-      </svg>
-    </button>
-  </div>
-  <div class="overflow-auto h-[20rem] md:h-[24rem]">
-    <div class="mt-3 sm:mt-5">
-      <h3
-        class="text-lg font-medium leading-6 text-gray-900"
-        id="modal-title"
-        x-text="results[detailedResult].name"
-      ></h3>
-      <div class="mt-2">
-        <p class="text-sm text-gray-500">
-          Authors:
-          <span x-text="results[detailedResult].author_map_string"></span>
-        </p>
-        <p class="text-sm text-gray-500">
-          Acession No.:
-          <span x-text="results[detailedResult].accession_number_alts"></span>
-        </p>
-        <p class="text-sm text-gray-500">
-          Year:
-          <span x-text="results[detailedResult].year"></span>
-        </p>
-        <p class="text-sm text-gray-500">
-          Status:
-          <span x-text="results[detailedResult].screening_status"></span>
-        </p>
-        <p class="text-sm text-gray-500">
-          Users:
-          <span x-text="results[detailedResult].users"></span>
-        </p>
-        <p class="text-sm text-gray-500">
-          AS Labels:
-          <template x-for="labels in results[detailedResult].as_labels">
-            <div x-text="labels"></div>
-          </template>
-        </p>
-        <p class="text-sm text-gray-500">
-          FS Labels:
-          <template x-for="labels in results[detailedResult].fs_labels">
-            <div x-text="labels"></div>
-          </template>
-        </p>
-        <p class="text-sm text-gray-500">
-          Reasons:
-          <span x-text="results[detailedResult].reasons"></span>
-        </p>
-        <p class="text-sm text-gray-500">
-          Tags:
-          <span x-text="results[detailedResult].tags"></span>
-        </p>
-        <p class="text-sm text-gray-500">
-          Note:
-          <span x-text="results[detailedResult].note"></span>
-        </p>
+        <span class="sr-only">Close</span>
+        <!-- Heroicon name: outline/x-mark -->
+        <svg
+          class="h-6 w-6"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </div>
+    <div class="overflow-auto h-[20rem] md:h-[24rem]">
+      <div class="mt-3 sm:mt-5">
+        <h3
+          class="text-lg font-medium leading-6 text-gray-900"
+          id="modal-title"
+          x-text="results[detailedResult].name"
+        ></h3>
+        <div class="mt-2">
+          <p class="text-sm text-gray-500">
+            Authors:
+            <span x-text="results[detailedResult].author_map_string"></span>
+          </p>
+          <p class="text-sm text-gray-500">
+            Acession No.:
+            <span x-text="results[detailedResult].accession_number_alts"></span>
+          </p>
+          <p class="text-sm text-gray-500">
+            Year:
+            <span x-text="results[detailedResult].year"></span>
+          </p>
+          <p class="text-sm text-gray-500">
+            Status:
+            <span x-text="results[detailedResult].screening_status"></span>
+          </p>
+          <p class="text-sm text-gray-500">
+            Users:
+            <span x-text="results[detailedResult].users"></span>
+          </p>
+          <p class="text-sm text-gray-500">
+            AS Labels:
+            <template x-for="labels in results[detailedResult].as_labels">
+              <div x-text="labels"></div>
+            </template>
+          </p>
+          <p class="text-sm text-gray-500">
+            FS Labels:
+            <template x-for="labels in results[detailedResult].fs_labels">
+              <div x-text="labels"></div>
+            </template>
+          </p>
+          <p class="text-sm text-gray-500">
+            Reasons:
+            <span x-text="results[detailedResult].reasons"></span>
+          </p>
+          <p class="text-sm text-gray-500">
+            Tags:
+            <span x-text="results[detailedResult].tags"></span>
+          </p>
+          <p class="text-sm text-gray-500">
+            Note:
+            <span x-text="results[detailedResult].note"></span>
+          </p>
+        </div>
       </div>
     </div>
+    <div class="mt-5 sm:mt-6">
+      <button
+        type="button"
+        class="cursor-pointer inline-flex w-full justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+      >
+        AS Accept
+      </button>
+    </div>
   </div>
-  <div class="mt-5 sm:mt-6">
-    <button
-      type="button"
-      class="cursor-pointer inline-flex w-full justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
-    >
-      AS Accept
-    </button>
-  </div>
-</div>
+</template>

@@ -116,8 +116,58 @@ class CitationsProject < ApplicationRecord
       'reasons' => abstract_screening_results.map(&:reasons).flatten.map(&:name).join(', '),
       'tags' => abstract_screening_results.map(&:tags).flatten.map(&:name).join(', '),
       'note' => abstract_screening_results.map(&:notes).compact.join(', '),
-      'screening_status' => screening_status
+      'screening_status' => screening_status,
+      'abstract_qualification' => abstract_qualification,
+      'fulltext_qualification' => fulltext_qualification,
+      'extraction_qualification' => extraction_qualification
     }
+  end
+
+  def abstract_qualification
+    as_qualification = screening_qualifications.find { |sq| sq.qualification_type[0..1] == 'as' }
+    return '-----' unless as_qualification
+
+    manually_qualified_by = as_qualification.user&.handle
+
+    if as_qualification.qualification_type == ScreeningQualification::AS_ACCEPTED && manually_qualified_by
+      "Passed: #{manually_qualified_by}"
+    elsif as_qualification.qualification_type == ScreeningQualification::AS_ACCEPTED
+      'Passed'
+    elsif as_qualification.qualification_type == ScreeningQualification::AS_REJECTED && manually_qualified_by
+      "Rejected: #{manually_qualified_by}"
+    elsif as_qualification.qualification_type == ScreeningQualification::AS_REJECTED
+      'Rejected'
+    end
+  end
+
+  def fulltext_qualification
+    fs_qualification = screening_qualifications.find { |sq| sq.qualification_type[0..1] == 'fs' }
+    return '-----' unless fs_qualification
+
+    manually_qualified_by = fs_qualification.user&.handle
+
+    if fs_qualification.qualification_type == ScreeningQualification::FS_ACCEPTED && manually_qualified_by
+      "Passed: #{manually_qualified_by}"
+    elsif fs_qualification.qualification_type == ScreeningQualification::FS_ACCEPTED
+      'Passed'
+    elsif fs_qualification.qualification_type == ScreeningQualification::FS_REJECTED && manually_qualified_by
+      "Rejected: #{manually_qualified_by}"
+    elsif fs_qualification.qualification_type == ScreeningQualification::FS_REJECTED
+      'Rejected'
+    end
+  end
+
+  def extraction_qualification
+    e_qualification = screening_qualifications.find { |sq| sq.qualification_type[0..1] == 'e-' }
+    return '-----' unless e_qualification
+
+    manually_qualified_by = e_qualification.user&.handle
+
+    if e_qualification.qualification_type == ScreeningQualification::E_REJECTED && manually_qualified_by
+      "Rejected: #{manually_qualified_by}"
+    elsif e_qualification.qualification_type == ScreeningQualification::E_REJECTED
+      'Rejected'
+    end
   end
 
   def evaluate_screening_status

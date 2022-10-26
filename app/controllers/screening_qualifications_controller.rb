@@ -11,10 +11,13 @@ class ScreeningQualificationsController < ApplicationController
           next unless citations_project
 
           citations_project.screening_qualifications.where(qualification_type: ScreeningQualification.opposite_qualification(qualification_type)).destroy_all
-          citations_project.screening_qualifications.find_or_create_by!(qualification_type:)
+          citations_project.screening_qualifications.find_or_create_by!(qualification_type:, user: current_user)
           citations_project.evaluate_screening_status
           results << { citations_project_id: citations_project.id,
-                       screening_status: citations_project.screening_status }
+                       screening_status: citations_project.screening_status,
+                       abstract_qualification: citations_project.abstract_qualification,
+                       fulltext_qualification: citations_project.fulltext_qualification,
+                       extraction_qualification: citations_project.extraction_qualification }
         end
 
         render json: results

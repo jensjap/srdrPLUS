@@ -222,10 +222,145 @@
                   <th
                     scope="col"
                     class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('abstract_qualification')"
+                  >
+                    <div class="flex justify-between">
+                      Abstract
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'abstract_qualification'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'abstract_qualification'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('fulltext_qualification')"
+                  >
+                    <div class="flex justify-between">
+                      Fulltext
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'fulltext_qualification'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'fulltext_qualification'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('extraction_qualification')"
+                  >
+                    <div class="flex justify-between">
+                      Extraction
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'extraction_qualification'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'extraction_qualification'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     @click="changeOrderBy('screening_status')"
                   >
                     <div class="flex justify-between">
-                      Status
+                      Sub Status
                       <template
                         x-if="pagination.sort == 'asc' && pagination.order_by == 'screening_status'"
                       >
@@ -305,6 +440,18 @@
                       <td
                         class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
                         x-text="result.year"
+                      ></td>
+                      <td
+                        class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                        x-text="result.abstract_qualification"
+                      ></td>
+                      <td
+                        class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                        x-text="result.fulltext_qualification"
+                      ></td>
+                      <td
+                        class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                        x-text="result.extraction_qualification"
                       ></td>
                       <td
                         class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
@@ -457,6 +604,7 @@
           }),
         });
         const data = await response.json();
+        console.log(data);
         data.forEach((screeningStatus) => {
           this.selected.forEach((selection) => {
             if (
@@ -464,6 +612,12 @@
               screeningStatus.citations_project_id
             ) {
               selection.screening_status = screeningStatus.screening_status;
+              selection.abstract_qualification =
+                screeningStatus.abstract_qualification;
+              selection.fulltext_qualification =
+                screeningStatus.fulltext_qualification;
+              selection.extraction_qualification =
+                screeningStatus.extraction_qualification;
             }
           });
           this.results.forEach((result) => {
@@ -472,6 +626,12 @@
               screeningStatus.citations_project_id
             ) {
               result.screening_status = screeningStatus.screening_status;
+              result.abstract_qualification =
+                screeningStatus.abstract_qualification;
+              result.fulltext_qualification =
+                screeningStatus.fulltext_qualification;
+              result.extraction_qualification =
+                screeningStatus.extraction_qualification;
             }
           });
         });
