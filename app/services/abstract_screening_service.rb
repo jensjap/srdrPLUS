@@ -78,7 +78,7 @@ class AbstractScreeningService
     CitationsProject.joins(abstract_screening_results: :abstract_screening).where(project:).map(&:citation_id)
   end
 
-  def self.at_or_over_limit?(abstract_screening, _user)
+  def self.at_or_over_limit?(abstract_screening)
     return false unless AbstractScreening::NON_PERPETUAL.include?(abstract_screening.abstract_screening_type)
 
     abstract_screening
