@@ -36,8 +36,8 @@
         </svg>
       </button>
     </div>
-    <div class="overflow-auto h-[20rem] md:h-[24rem]">
-      <div class="mt-3 sm:mt-5">
+    <div class="overflow-auto mt-6 rounded-md h-[20rem] md:h-[24rem]">
+      <div>
         <h3
           class="text-lg font-medium leading-6 text-gray-900"
           id="modal-title"
@@ -91,13 +91,62 @@
         </div>
       </div>
     </div>
-    <div class="mt-5 sm:mt-6">
-      <button
-        type="button"
-        class="cursor-pointer inline-flex w-full justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
-      >
-        AS Accept
-      </button>
+    <div class="mt-2 space-y-2 text-xs md:text-base">
+      <div class="flex justify-around">
+        <button
+          type="button"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+        >
+          AS Accept
+        </button>
+        <button
+          type="button"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+        >
+          AS Reject
+        </button>
+        <button
+          type="button"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+        >
+          AS Reset
+        </button>
+      </div>
+      <div class="flex justify-around">
+        <button
+          type="button"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+        >
+          FS Accept
+        </button>
+        <button
+          type="button"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+        >
+          FS Reject
+        </button>
+        <button
+          type="button"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+        >
+          FS Reset
+        </button>
+      </div>
+      <div class="flex justify-around">
+        <div class="w-1/4"></div>
+        <button
+          type="button"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+        >
+          Extraction Reject
+        </button>
+        <button
+          type="button"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+        >
+          Extraction Reset
+        </button>
+      </div>
     </div>
   </div>
 </template>
