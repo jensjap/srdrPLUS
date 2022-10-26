@@ -2,6 +2,7 @@
   <!-- prettier-ignore -->
   <%= render 'selection' %>
   <%= render 'loading' %>
+  <%= render 'detail_view' %>
   <%= render 'dashboard' %>
   <div>
     <div class="sm:flex sm:items-center">
@@ -221,276 +222,6 @@
                   <th
                     scope="col"
                     class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    @click="changeOrderBy('users')"
-                  >
-                    <div class="flex justify-between">
-                      Participants
-                      <template
-                        x-if="pagination.sort == 'asc' && pagination.order_by == 'users'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-                          />
-                        </svg>
-                      </template>
-                      <template
-                        x-if="pagination.sort == 'desc' && pagination.order_by == 'users'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
-                          />
-                        </svg>
-                      </template>
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    @click="changeOrderBy('as_labels')"
-                  >
-                    <div class="flex justify-between">
-                      AS Labels
-                      <template
-                        x-if="pagination.sort == 'asc' && pagination.order_by == 'as_labels'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-                          />
-                        </svg>
-                      </template>
-                      <template
-                        x-if="pagination.sort == 'desc' && pagination.order_by == 'as_labels'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
-                          />
-                        </svg>
-                      </template>
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    @click="changeOrderBy('fs_labels')"
-                  >
-                    <div class="flex justify-between">
-                      FS Labels
-                      <template
-                        x-if="pagination.sort == 'asc' && pagination.order_by == 'fs_labels'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-                          />
-                        </svg>
-                      </template>
-                      <template
-                        x-if="pagination.sort == 'desc' && pagination.order_by == 'fs_labels'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
-                          />
-                        </svg>
-                      </template>
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    @click="changeOrderBy('reasons')"
-                  >
-                    <div class="flex justify-between">
-                      Reason(s)
-                      <template
-                        x-if="pagination.sort == 'asc' && pagination.order_by == 'reasons'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-                          />
-                        </svg>
-                      </template>
-                      <template
-                        x-if="pagination.sort == 'desc' && pagination.order_by == 'reasons'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
-                          />
-                        </svg>
-                      </template>
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    @click="changeOrderBy('tags')"
-                  >
-                    <div class="flex justify-between">
-                      Tag(s)
-                      <template
-                        x-if="pagination.sort == 'asc' && pagination.order_by == 'tags'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-                          />
-                        </svg>
-                      </template>
-                      <template
-                        x-if="pagination.sort == 'desc' && pagination.order_by == 'tags'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
-                          />
-                        </svg>
-                      </template>
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    @click="changeOrderBy('note')"
-                  >
-                    <div class="flex justify-between">
-                      Note(s)
-                      <template
-                        x-if="pagination.sort == 'asc' && pagination.order_by == 'note'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-                          />
-                        </svg>
-                      </template>
-                      <template
-                        x-if="pagination.sort == 'desc' && pagination.order_by == 'note'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
-                          />
-                        </svg>
-                      </template>
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     @click="changeOrderBy('screening_status')"
                   >
                     <div class="flex justify-between">
@@ -533,6 +264,12 @@
                       </template>
                     </div>
                   </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 select-none"
+                  >
+                    <span>See Details</span>
+                  </th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
@@ -554,7 +291,7 @@
                       @click="toggleSelection(i)"
                     >
                       <td
-                        class="pl-4 pr-3 text-sm text-gray-500 sm:pl-6 whitespace-nowrap"
+                        class="pl-4 pr-3 text-sm text-gray-500 sm:pl-6 w-32 overflow-hidden text-ellipsis whitespace-nowrap"
                         x-text="result.accession_number_alts"
                       ></td>
                       <td
@@ -566,39 +303,39 @@
                         x-text="result.name"
                       ></td>
                       <td
-                        class="px-3 text-sm text-gray-500"
+                        class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
                         x-text="result.year"
                       ></td>
                       <td
-                        class="px-3 text-sm text-gray-500"
-                        x-text="result.users"
-                      ></td>
-                      <td class="px-3 text-sm text-gray-500">
-                        <template x-for="labels in result.as_labels">
-                          <div x-text="labels"></div>
-                        </template>
-                      </td>
-                      <td class="px-3 text-sm text-gray-500">
-                        <template x-for="labels in result.fs_labels">
-                          <div x-text="labels"></div>
-                        </template>
-                      </td>
-                      <td
-                        class="px-3 text-sm text-gray-500"
-                        x-text="result.reasons"
-                      ></td>
-                      <td
-                        class="px-3 text-sm text-gray-500"
-                        x-text="result.tags"
-                      ></td>
-                      <td
-                        class="px-3 text-sm text-gray-500"
-                        x-text="result.note"
-                      ></td>
-                      <td
-                        class="px-3 text-sm text-gray-500"
+                        class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
                         x-text="result.screening_status"
                       ></td>
+                      <td
+                        class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                        @click.stop="detailedResult = i; showDetailView = true"
+                      >
+                        <div class="flex justify-center">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="w-6 h-6"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+                            />
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                          </svg>
+                        </div>
+                      </td>
                     </tr>
                   </template>
                 </template>
@@ -631,6 +368,8 @@
       },
       selected: [],
       showLoading: false,
+      showDetailView: false,
+      detailedResult: 0,
 
       init() {
         this.fetch_results();
