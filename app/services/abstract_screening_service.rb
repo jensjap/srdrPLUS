@@ -9,7 +9,7 @@ class AbstractScreeningService
     unfinished_asr = find_unfinished_asr(abstract_screening, user)
     return unfinished_asr.citation.id if unfinished_asr
 
-    return nil if at_or_over_limit?(abstract_screening, user)
+    return nil if at_or_over_limit?(abstract_screening)
 
     case abstract_screening.abstract_screening_type
     when AbstractScreening::PILOT
@@ -78,13 +78,11 @@ class AbstractScreeningService
     CitationsProject.joins(abstract_screening_results: :abstract_screening).where(project:).map(&:citation_id)
   end
 
-  def self.at_or_over_limit?(abstract_screening, user)
+  def self.at_or_over_limit?(abstract_screening, _user)
     return false unless AbstractScreening::NON_PERPETUAL.include?(abstract_screening.abstract_screening_type)
 
     abstract_screening
       .abstract_screening_results
-      .where(user:)
-      .where('label IS NOT NULL')
       .count >= abstract_screening.no_of_citations
   end
 

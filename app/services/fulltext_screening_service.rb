@@ -3,7 +3,7 @@ class FulltextScreeningService
     unfinished_fsr = find_unfinished_fsr(fulltext_screening, user)
     return unfinished_fsr.citation.id if unfinished_fsr
 
-    return nil if at_or_over_limit?(fulltext_screening, user)
+    return nil if at_or_over_limit?(fulltext_screening)
 
     case fulltext_screening.fulltext_screening_type
     when FulltextScreening::PILOT
@@ -77,13 +77,11 @@ class FulltextScreeningService
     CitationsProject.joins(fulltext_screening_results: :fulltext_screening).where(project:).map(&:citation_id)
   end
 
-  def self.at_or_over_limit?(fulltext_screening, user)
+  def self.at_or_over_limit?(fulltext_screening)
     return false unless FulltextScreening::NON_PERPETUAL.include?(fulltext_screening.fulltext_screening_type)
 
     fulltext_screening
       .fulltext_screening_results
-      .where(user:)
-      .where('label IS NOT NULL')
       .count >= fulltext_screening.no_of_citations
   end
 
