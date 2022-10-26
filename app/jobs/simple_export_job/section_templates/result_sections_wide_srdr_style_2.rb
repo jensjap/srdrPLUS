@@ -108,11 +108,17 @@ module SimpleExportJob::SectionTemplates::ResultSectionsWideSrdrStyle2
 
                 if rssm[:outcome_type].eql? 'Continuous'
                   new_row.concat(build_data_row(rss_cols, desc_cont_header))
-                  ws_descriptive_statistics_continuous_outcomes.add_row(new_row)
+                  ws_descriptive_statistics_continuous_outcomes.add_row(
+                    new_row,
+                    types: [].fill(:string, 0, new_row.size)
+                  )
 
                 elsif rssm[:outcome_type].eql? 'Categorical'
                   new_row.concat(build_data_row(rss_cols, desc_cat_header))
-                  ws_descriptive_statistics_categorical_outcomes.add_row(new_row)
+                  ws_descriptive_statistics_categorical_outcomes.add_row(
+                    new_row,
+                    types: [].fill(:string, 0, new_row.size)
+                  )
 
                 else
                   next
@@ -131,11 +137,17 @@ module SimpleExportJob::SectionTemplates::ResultSectionsWideSrdrStyle2
 
                 if rssm[:outcome_type].eql? 'Continuous'
                   new_row.concat(build_data_row(rss_cols, bac_cont_header))
-                  ws_bac_statistics_continuous_outcomes.add_row(new_row)
+                  ws_bac_statistics_continuous_outcomes.add_row(
+                    new_row,
+                    types: [].fill(:string, 0, new_row.size)
+                  )
 
                 elsif rssm[:outcome_type].eql? 'Categorical'
                   new_row.concat(build_data_row(rss_cols, bac_cat_header))
-                  ws_bac_statistics_categorical_outcomes.add_row(new_row)
+                  ws_bac_statistics_categorical_outcomes.add_row(
+                    new_row,
+                    types: [].fill(:string, 0, new_row.size)
+                  )
 
                 else
                   next
@@ -153,7 +165,10 @@ module SimpleExportJob::SectionTemplates::ResultSectionsWideSrdrStyle2
 
                 if rssm[:outcome_type].eql? 'Continuous'
                   new_row.concat(build_data_row(rss_cols, wac_header))
-                  ws_wac_statistics.add_row(new_row)
+                  ws_wac_statistics.add_row(
+                    new_row,
+                    types: [].fill(:string, 0, new_row.size)
+                  )
 
                 else
                   # According to Ian, WAC does not make sense for Categorical
@@ -171,7 +186,10 @@ module SimpleExportJob::SectionTemplates::ResultSectionsWideSrdrStyle2
 
                 if rssm[:outcome_type].eql? 'Continuous'
                   new_row.concat(build_data_row(rss_cols, net_header))
-                  ws_net_statistics.add_row(new_row)
+                  ws_net_statistics.add_row(
+                    new_row,
+                    types: [].fill(:string, 0, new_row.size)
+                  )
 
                 else
                   # According to Ian, WAC does not make sense for Categorical
