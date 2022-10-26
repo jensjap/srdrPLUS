@@ -459,15 +459,15 @@
                       ></td>
                       <td
                         class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
-                        @click.stop="detailedResult = i; showDetailView = true"
+                        @click.stop="if (showDetailView && detailedResult == i) { showDetailView = false } else { detailedResult = i; showDetailView = true }"
                       >
                         <div class="flex justify-center">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
+                            :fill="(showDetailView && detailedResult == i) ? 'purple' : 'none'"
                             viewBox="0 0 24 24"
                             stroke-width="1.5"
-                            stroke="currentColor"
+                            :stroke="(showDetailView && detailedResult == i) ? 'white' : 'currentColor'"
                             class="w-6 h-6"
                           >
                             <path
