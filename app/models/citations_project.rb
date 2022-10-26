@@ -102,6 +102,36 @@ class CitationsProject < ApplicationRecord
       fsrs_strings = fsrs.map { |fsr| fsr.label || 'null' }.join(', ')
       fs_label_strings << "#{fs.fulltext_screening_type}: #{fsrs_strings}"
     end
+
+    abstract_screening_objects = []
+    abstract_screenings_by_group.each do |as, asrs|
+      asr_objs = { type: as.abstract_screening_type, asrs: [] }
+      asrs.each do |asr|
+        asr_obj = {}
+        asr_obj[:user] = asr.user.handle
+        asr_obj[:label] = asr.label
+        asr_obj[:reasons] = asr.reasons.map(&:name).join(', ')
+        asr_obj[:tags] = asr.tags.map(&:name).join(', ')
+        asr_obj[:notes] = asr.notes
+        asr_objs[:asrs] << asr_obj
+      end
+      abstract_screening_objects << asr_objs
+    end
+    fulltext_screening_objects = []
+    fulltext_screenings_by_group.each do |fs, fsrs|
+      fsr_objs = { type: fs.fulltext_screening_type, fsrs: [] }
+      fsrs.each do |fsr|
+        fsr_obj = {}
+        fsr_obj[:user] = fsr.user.handle
+        fsr_obj[:label] = fsr.label
+        fsr_obj[:reasons] = fsr.reasons.map(&:name).join(', ')
+        fsr_obj[:tags] = fsr.tags.map(&:name).join(', ')
+        fsr_obj[:notes] = fsr.notes
+        fsr_objs[:fsrs] << fsr_obj
+      end
+      fulltext_screening_objects << fsr_objs
+    end
+
     {
       'project_id' => project_id,
       'citations_project_id' => id,
@@ -115,11 +145,13 @@ class CitationsProject < ApplicationRecord
       'fs_labels' => fs_label_strings,
       'reasons' => abstract_screening_results.map(&:reasons).flatten.map(&:name).join(', '),
       'tags' => abstract_screening_results.map(&:tags).flatten.map(&:name).join(', '),
-      'note' => abstract_screening_results.map(&:notes).compact.join(', '),
+      'note' => abstract_screening_results.map(&:notes),
       'screening_status' => screening_status,
       'abstract_qualification' => abstract_qualification,
       'fulltext_qualification' => fulltext_qualification,
-      'extraction_qualification' => extraction_qualification
+      'extraction_qualification' => extraction_qualification,
+      'abstract_screening_objects' => abstract_screening_objects,
+      'fulltext_screening_objects' => fulltext_screening_objects
     }
   end
 

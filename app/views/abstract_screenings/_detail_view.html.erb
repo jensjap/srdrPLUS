@@ -60,34 +60,41 @@
             Status:
             <span x-text="results[detailedResult].screening_status"></span>
           </p>
-          <p class="text-sm text-gray-500">
-            Users:
-            <span x-text="results[detailedResult].users"></span>
-          </p>
-          <p class="text-sm text-gray-500">
-            AS Labels:
-            <template x-for="labels in results[detailedResult].as_labels">
-              <div x-text="labels"></div>
-            </template>
-          </p>
-          <p class="text-sm text-gray-500">
-            FS Labels:
-            <template x-for="labels in results[detailedResult].fs_labels">
-              <div x-text="labels"></div>
-            </template>
-          </p>
-          <p class="text-sm text-gray-500">
-            Reasons:
-            <span x-text="results[detailedResult].reasons"></span>
-          </p>
-          <p class="text-sm text-gray-500">
-            Tags:
-            <span x-text="results[detailedResult].tags"></span>
-          </p>
-          <p class="text-sm text-gray-500">
-            Note:
-            <span x-text="results[detailedResult].note"></span>
-          </p>
+          <template
+            x-for="aso in results[detailedResult].abstract_screening_objects"
+          >
+            <div class="border border-slate-200 rounded-md">
+              <div
+                class="p-2 text-sm text-gray-500 border-b border-slate-200"
+                x-text="aso.type"
+              ></div>
+              <template x-for="asr in aso.asrs">
+                <div class="p-2">
+                  <div class="text-sm text-gray-500">
+                    Users:
+                    <span x-text="asr.user"></span>
+                  </div>
+                  <div class="text-sm text-gray-500">
+                    Label: <span x-text="asr.label"></span>
+                  </div>
+                  <div class="text-sm text-gray-500">
+                    Reasons: <span x-text="asr.reasons"></span>
+                  </div>
+                  <div class="text-sm text-gray-500">
+                    Tags: <span x-text="asr.tags"></span>
+                  </div>
+                  <div class="text-sm text-gray-500">
+                    Notes: <span x-text="asr.notes"></span>
+                  </div>
+                  <button
+                    class="text-xs text-white bg-srdrpurple p-1 cursor-pointer"
+                  >
+                    Override Label?
+                  </button>
+                </div>
+              </template>
+            </div>
+          </template>
         </div>
       </div>
     </div>
