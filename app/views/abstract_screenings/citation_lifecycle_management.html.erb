@@ -421,7 +421,7 @@
                 <template x-if="results != null">
                   <template x-for="(result, i) in results">
                     <tr
-                      class="cursor-pointer"
+                      class="cursor-pointer select-none"
                       :class="selected.some(selectedCp => selectedCp.citations_project_id == result.citations_project_id) ? '!bg-green-100' : '!bg-white'"
                       @click="toggleSelection(i)"
                     >
@@ -518,8 +518,12 @@
       showLoading: false,
       showDetailView: false,
       detailedResult: 0,
+      lastIndexSelected: null,
 
       init() {
+        window.shift = false;
+        window.onkeyup = () => (window.shift = false);
+        window.onkeydown = () => (window.shift = true);
         this.fetch_results();
         this.$watch("query", (value, oldValue) => {
           this.pagination.current_page = 1;
@@ -539,21 +543,42 @@
       },
 
       toggleSelection(resultsIndex) {
-        if (
-          this.selected.some(
-            (selectedCp) =>
-              selectedCp.citations_project_id ==
-              this.results[resultsIndex].citations_project_id
-          )
-        ) {
-          this.selected = this.selected.filter(
-            (selectedCp) =>
-              selectedCp.citations_project_id !=
-              this.results[resultsIndex].citations_project_id
-          );
-        } else {
-          this.selected.push(this.results[resultsIndex]);
+        if (!window.shift) {
+          this.lastIndexSelected = resultsIndex;
         }
+
+        let head = null;
+        let tail = null;
+        if (resultsIndex >= this.lastIndexSelected) {
+          head = this.lastIndexSelected;
+          tail = resultsIndex;
+        } else {
+          head = resultsIndex;
+          tail = this.lastIndexSelected;
+        }
+        if (window.shift && tail == resultsIndex) {
+          head += 1;
+        } else if (window.shift && head == resultsIndex) {
+          tail -= 1;
+        }
+        for (i = head; i <= tail; i++) {
+          if (
+            !this.selected.some(
+              (selectedCp) =>
+                selectedCp.citations_project_id ==
+                this.results[i].citations_project_id
+            )
+          ) {
+            this.selected.push(this.results[i]);
+          } else {
+            this.selected = this.selected.filter(
+              (selectedCp) =>
+                selectedCp.citations_project_id !=
+                this.results[i].citations_project_id
+            );
+          }
+        }
+        this.lastIndexSelected = resultsIndex;
       },
 
       changeOrderBy(order_by) {
