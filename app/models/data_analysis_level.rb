@@ -11,6 +11,5 @@
 class DataAnalysisLevel < ApplicationRecord
   include SharedQueryableMethods
 
-  has_many :sd_meta_data, inverse_of: :data_analysis_level
+  has_many :sd_picods, inverse_of: :data_analysis_level
 end
-
