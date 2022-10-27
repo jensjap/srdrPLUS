@@ -146,6 +146,16 @@
           </div>
           <div>
             <span
+              x-text="$store.dashboard.kpis.er"
+              :class="$store.dashboard.show.er ? '' : 'invisible'"
+              x-transition
+            >
+              ..
+            </span>
+            <span class="text-xs font-extralight text-gray-500">rejected</span>
+          </div>
+          <div>
+            <span
               x-text="$store.dashboard.kpis.ec"
               :class="$store.dashboard.show.ec ? '' : 'invisible'"
               x-transition
@@ -175,6 +185,7 @@
         fsr: "..",
         ene: "..",
         eip: "..",
+        er: "..",
         ec: "..",
       },
 
@@ -189,6 +200,7 @@
         fsr: true,
         ene: true,
         eip: true,
+        er: true,
         ec: true,
       },
 

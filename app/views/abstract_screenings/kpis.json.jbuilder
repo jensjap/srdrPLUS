@@ -9,4 +9,5 @@ json.fsic @project.citations_projects.where(screening_status: :fsic).count
 json.fsr @project.citations_projects.where(screening_status: :fsr).count
 json.ene @project.citations_projects.where(screening_status: :ene).count
 json.eip @project.citations_projects.where(screening_status: :eip).count
+json.er @project.citations_projects.where(screening_status: :er).count
 json.ec @project.citations_projects.where(screening_status: :ec).count
