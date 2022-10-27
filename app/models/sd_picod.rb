@@ -26,7 +26,7 @@ class SdPicod < ApplicationRecord
 
   has_many_attached :pictures
 
-  belongs_to :data_analysis_level, inverse_of: :sd_meta_data, optional: true
+  belongs_to :data_analysis_level, inverse_of: :sd_picods, optional: true
   belongs_to :sd_meta_datum, inverse_of: :sd_picods
 
   has_many :sd_key_questions_sd_picods, inverse_of: :sd_picod, dependent: :destroy
