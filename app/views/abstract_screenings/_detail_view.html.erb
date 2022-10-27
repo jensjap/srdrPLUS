@@ -1,6 +1,6 @@
 <template x-if="results !== null">
   <div
-    class="fixed top-1/2 left-1/2 h-[32rem] -mt-[18rem] w-96 -ml-48 md:h-[36rem] md:-mt-[18rem] md:w-[48rem] md:-ml-[24rem] z-10 transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:p-6 border border-slate-200"
+    class="fixed top-1/2 left-1/2 h-[32rem] -mt-[18rem] w-96 -ml-48 md:h-[40rem] md:-mt-[20rem] md:w-[48rem] md:-ml-[24rem] z-10 transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:p-6 border border-slate-200"
     x-show="showDetailView"
     x-cloak
     x-transition:enter="ease-out duration-300"
@@ -36,7 +36,7 @@
         </svg>
       </button>
     </div>
-    <div class="overflow-auto mt-6 rounded-md h-[20rem] md:h-[24rem]">
+    <div class="overflow-auto mt-6 rounded-md h-[20rem] md:h-[28rem]">
       <div>
         <h3
           class="text-lg font-medium leading-6 text-gray-900"
@@ -44,22 +44,24 @@
           x-text="results[detailedResult].name"
         ></h3>
         <div class="mt-2">
-          <p class="text-sm text-gray-500">
+          <div class="text-sm text-gray-500">
             Authors:
             <span x-text="results[detailedResult].author_map_string"></span>
-          </p>
-          <p class="text-sm text-gray-500">
+          </div>
+          <div class="text-sm text-gray-500">
             Acession No.:
             <span x-text="results[detailedResult].accession_number_alts"></span>
-          </p>
-          <p class="text-sm text-gray-500">
+          </div>
+          <div class="text-sm text-gray-500">
             Year:
             <span x-text="results[detailedResult].year"></span>
-          </p>
-          <p class="text-sm text-gray-500">
+          </div>
+          <div class="text-sm text-gray-500">
             Status:
             <span x-text="results[detailedResult].screening_status"></span>
-          </p>
+          </div>
+        </div>
+        <div class="mt-2">
           <template
             x-for="aso in results[detailedResult].abstract_screening_objects"
           >
@@ -69,28 +71,32 @@
                 x-text="aso.type"
               ></div>
               <template x-for="asr in aso.asrs">
-                <div class="p-2">
-                  <div class="text-sm text-gray-500">
-                    Users:
-                    <span x-text="asr.user"></span>
+                <div class="p-2 border-b border-slate-200">
+                  <div>
+                    <div class="text-sm text-gray-500">
+                      Users:
+                      <span x-text="asr.user"></span>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                      Label: <span x-text="asr.label"></span>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                      Reasons: <span x-text="asr.reasons"></span>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                      Tags: <span x-text="asr.tags"></span>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                      Notes: <span x-text="asr.notes"></span>
+                    </div>
                   </div>
-                  <div class="text-sm text-gray-500">
-                    Label: <span x-text="asr.label"></span>
+                  <div>
+                    <button
+                      class="text-xs text-white bg-srdr-primary hover:bg-srdr-secondary p-1 cursor-pointer w-full"
+                    >
+                      Override Label
+                    </button>
                   </div>
-                  <div class="text-sm text-gray-500">
-                    Reasons: <span x-text="asr.reasons"></span>
-                  </div>
-                  <div class="text-sm text-gray-500">
-                    Tags: <span x-text="asr.tags"></span>
-                  </div>
-                  <div class="text-sm text-gray-500">
-                    Notes: <span x-text="asr.notes"></span>
-                  </div>
-                  <button
-                    class="text-xs text-white bg-srdrpurple p-1 cursor-pointer"
-                  >
-                    Override Label?
-                  </button>
                 </div>
               </template>
             </div>
@@ -102,19 +108,19 @@
       <div class="flex justify-around">
         <button
           type="button"
-          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
         >
           AS Accept
         </button>
         <button
           type="button"
-          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
         >
           AS Reject
         </button>
         <button
           type="button"
-          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
         >
           AS Reset
         </button>
@@ -122,19 +128,19 @@
       <div class="flex justify-around">
         <button
           type="button"
-          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
         >
           FS Accept
         </button>
         <button
           type="button"
-          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
         >
           FS Reject
         </button>
         <button
           type="button"
-          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
         >
           FS Reset
         </button>
@@ -143,13 +149,13 @@
         <div class="w-1/4"></div>
         <button
           type="button"
-          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
         >
           Extraction Reject
         </button>
         <button
           type="button"
-          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdrpurple-light px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
         >
           Extraction Reset
         </button>

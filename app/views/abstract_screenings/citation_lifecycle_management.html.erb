@@ -455,6 +455,7 @@
                       ></td>
                       <td
                         class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                        :class="applyTdBg(result.screening_status)"
                         x-text="result.screening_status"
                       ></td>
                       <td
@@ -527,6 +528,14 @@
           this.pagination.sort = null;
           this.fetch_results();
         });
+      },
+
+      applyTdBg(screening_status) {
+        if (screening_status.indexOf("ic") != -1) {
+          return "!bg-orange-600 text-white";
+        } else if (screening_status.indexOf("r") != -1) {
+          return "!bg-red-600 text-white";
+        }
       },
 
       toggleSelection(resultsIndex) {
