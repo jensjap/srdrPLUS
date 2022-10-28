@@ -1224,6 +1224,14 @@ module SeedData
         CitationType.find_or_create_by!(name: type)
       end
 
+      # Seed Status.
+      Status.find_or_create_by(name: 'Draft')
+      Status.find_or_create_by(name: 'Complete')
+
+      # Seed ExportType.
+      ExportType.find_or_create_by(name: '.xlsx')
+      ExportType.find_or_create_by(name: 'Google Sheets')
+
     end
   end
 end
