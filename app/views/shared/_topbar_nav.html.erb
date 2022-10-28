@@ -26,6 +26,7 @@
   extractions: <%= @nav_buttons.include?('extractions') %>,
   comparison_tool: <%= @nav_buttons.include?('comparison_tool') %>,
   export_data: <%= @nav_buttons.include?('export_data') %>,
+  sr_360: <%= @nav_buttons.include?('sr_360') %>,
   import_tools: <%= @nav_buttons.include?('import_tools') %>,
   publication: <%= @nav_buttons.include?('publication') %>,
   signin: <%= @nav_buttons.include?('signin') %>,
@@ -402,6 +403,12 @@
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="comparison_tool && 'bg-srdr-primary !text-white'"
             >Comparison Tool</a
+          >
+          <a
+            href="<%= project_sd_meta_data_path(project) %>"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="sr_360 && 'bg-srdr-primary !text-white'"
+            >SR-360</a
           >
           <a
             href="<%= project_imports_path(project) %>"

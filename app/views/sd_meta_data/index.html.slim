@@ -1,5 +1,5 @@
-.column.row#sdMetaData-list
-  h3 = "SR-360"
+#sdMetaData-list class="p-4 lg:p-8"
+  h1 class="text-xl font-bold" = "SR-360"
   h5 = @project.name
   br
   - if @sd_meta_data.present?
@@ -58,7 +58,7 @@
             - else sd_meta_datum.publishing.approval.present?
               td = "Request under review"
             td = link_to 'Destroy', sd_meta_datum_path(sd_meta_datum), data: { confirm: 'Are you sure? This will destroy the link you have created between a report and a project in SRDR. It will also destroy everything you have entered for this project in SRDR 2.0.' }, method: :delete, class: "sd-meta-data-index-delete"
-  .column.row
+  div class="pt-4 lg:pt-8"
     #create-sd-meta-datum-modal-button.create-button.button [data-open='create-sd-meta-datum-modal']
       i.fi-plus>
       = 'Create SR-360 Item'
