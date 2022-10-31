@@ -17,6 +17,7 @@ json.results @es_hits do |es_hit|
   json.extraction_qualification   es_hit['extraction_qualification']
   json.abstract_screening_objects es_hit['abstract_screening_objects']
   json.fulltext_screening_objects es_hit['fulltext_screening_objects']
+  json.abstract es_hit['abstract']
 end
 json.pagination do
   json.prev_page    @page == 1 ? 1 : @page - 1

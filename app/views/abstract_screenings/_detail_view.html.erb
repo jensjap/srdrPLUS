@@ -36,75 +36,77 @@
         </svg>
       </button>
     </div>
-    <div class="overflow-auto mt-6 rounded-md h-[20rem] md:h-[28rem]">
-      <div>
-        <h3
-          class="text-lg font-medium leading-6 text-gray-900"
-          id="modal-title"
-          x-text="results[detailedResult].name"
-        ></h3>
-        <div class="mt-2">
-          <div class="text-sm text-gray-500">
-            Authors:
-            <span x-text="results[detailedResult].author_map_string"></span>
-          </div>
-          <div class="text-sm text-gray-500">
-            Acession No.:
-            <span x-text="results[detailedResult].accession_number_alts"></span>
-          </div>
-          <div class="text-sm text-gray-500">
-            Year:
-            <span x-text="results[detailedResult].year"></span>
-          </div>
-          <div class="text-sm text-gray-500">
-            Status:
-            <span x-text="results[detailedResult].screening_status"></span>
-          </div>
+    <div class="overflow-y-scroll mt-6 h-[9rem] md:h-[17rem]">
+      <h3
+        class="text-lg font-medium leading-6 text-gray-900"
+        id="modal-title"
+        x-text="results[detailedResult].name"
+      ></h3>
+      <div class="mt-2">
+        <div class="text-sm text-gray-500">
+          Authors:
+          <span x-text="results[detailedResult].author_map_string"></span>
         </div>
-        <div class="mt-2">
-          <template
-            x-for="aso in results[detailedResult].abstract_screening_objects"
-          >
-            <div class="border border-slate-200 rounded-md">
-              <div
-                class="p-2 text-sm text-gray-500 border-b border-slate-200"
-                x-text="aso.type"
-              ></div>
-              <template x-for="asr in aso.asrs">
-                <div class="p-2 border-b border-slate-200">
-                  <div>
-                    <div class="text-sm text-gray-500">
-                      Users:
-                      <span x-text="asr.user"></span>
-                    </div>
-                    <div class="text-sm text-gray-500">
-                      Label: <span x-text="asr.label"></span>
-                    </div>
-                    <div class="text-sm text-gray-500">
-                      Reasons: <span x-text="asr.reasons"></span>
-                    </div>
-                    <div class="text-sm text-gray-500">
-                      Tags: <span x-text="asr.tags"></span>
-                    </div>
-                    <div class="text-sm text-gray-500">
-                      Notes: <span x-text="asr.notes"></span>
-                    </div>
-                  </div>
-                  <div>
-                    <button
-                      class="text-xs text-white bg-srdr-primary hover:bg-srdr-secondary p-1 cursor-pointer w-full"
-                    >
-                      Override Label
-                    </button>
-                  </div>
+        <div class="text-sm text-gray-500">
+          Acession No.:
+          <span x-text="results[detailedResult].accession_number_alts"></span>
+        </div>
+        <div class="text-sm text-gray-500">
+          Year:
+          <span x-text="results[detailedResult].year"></span>
+        </div>
+        <div class="text-sm text-gray-500">
+          Status:
+          <span x-text="results[detailedResult].screening_status"></span>
+        </div>
+        <div
+          x-text="results[detailedResult].abstract"
+          class="text-sm text-gray-500 my-4"
+        ></div>
+      </div>
+    </div>
+    <div class="overflow-y-scroll mt-6 h-[9rem] md:h-[17rem]">
+      <template
+        x-for="aso in results[detailedResult].abstract_screening_objects"
+      >
+        <div class="border border-slate-200 rounded-md">
+          <div
+            class="p-2 text-sm text-gray-500 border-b border-slate-200"
+            x-text="aso.type"
+          ></div>
+          <template x-for="asr in aso.asrs">
+            <div class="p-2 border-b border-slate-200">
+              <div>
+                <div class="text-sm text-gray-500">
+                  Users:
+                  <span x-text="asr.user"></span>
                 </div>
-              </template>
+                <div class="text-sm text-gray-500">
+                  Label: <span x-text="asr.label"></span>
+                </div>
+                <div class="text-sm text-gray-500">
+                  Reasons: <span x-text="asr.reasons"></span>
+                </div>
+                <div class="text-sm text-gray-500">
+                  Tags: <span x-text="asr.tags"></span>
+                </div>
+                <div class="text-sm text-gray-500">
+                  Notes: <span x-text="asr.notes"></span>
+                </div>
+              </div>
+              <!-- <div>
+                <button
+                  class="text-xs text-white bg-srdr-primary hover:bg-srdr-secondary p-1 cursor-pointer w-full"
+                >
+                  Override Label
+                </button>
+              </div> -->
             </div>
           </template>
         </div>
-      </div>
+      </template>
     </div>
-    <div class="mt-2 space-y-2 text-xs md:text-base">
+    <!-- <div class="mt-2 space-y-2 text-xs md:text-base">
       <div class="flex justify-around">
         <button
           type="button"
@@ -160,6 +162,6 @@
           Extraction Reset
         </button>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
