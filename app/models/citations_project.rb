@@ -151,7 +151,8 @@ class CitationsProject < ApplicationRecord
       'fulltext_qualification' => fulltext_qualification,
       'extraction_qualification' => extraction_qualification,
       'abstract_screening_objects' => abstract_screening_objects,
-      'fulltext_screening_objects' => fulltext_screening_objects
+      'fulltext_screening_objects' => fulltext_screening_objects,
+      'abstract' => citation.abstract
     }
   end
 
