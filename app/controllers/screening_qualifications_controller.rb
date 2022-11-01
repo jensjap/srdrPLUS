@@ -10,8 +10,16 @@ class ScreeningQualificationsController < ApplicationController
           citations_project = CitationsProject.find_by(id: citations_project_id)
           next unless citations_project
 
-          citations_project.screening_qualifications.where(qualification_type: ScreeningQualification.opposite_qualification(qualification_type)).destroy_all
-          citations_project.screening_qualifications.find_or_create_by!(qualification_type:, user: current_user)
+          existing_sqs = citations_project.screening_qualifications.where(qualification_type:)
+          if existing_sqs.present?
+            existing_sqs.destroy_all
+          else
+            if (opposite_qualification = ScreeningQualification.opposite_qualification(qualification_type))
+              citations_project.screening_qualifications.where(qualification_type: opposite_qualification).destroy_all
+            end
+            citations_project.screening_qualifications.find_or_create_by!(qualification_type:, user: current_user)
+          end
+
           citations_project.evaluate_screening_status
           results << { citations_project_id: citations_project.id,
                        screening_status: citations_project.screening_status,

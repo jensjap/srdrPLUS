@@ -204,38 +204,37 @@ class CitationsProject < ApplicationRecord
   end
 
   def evaluate_screening_status
-    if screening_qualifications.any? { |sq| sq.qualification_type == ScreeningQualification::E_REJECTED }
+    extractions = Extraction.where(citations_project: self)
+    if extractions.all? do |extraction|
+         extraction.extractions_extraction_forms_projects_sections.all? do |eefps|
+           eefps.status.name == 'Completed'
+         end
+       end
+      update(screening_status: :ec)
+    elsif extractions.present?
+      update(screening_status: :eip)
+    elsif screening_qualifications.where(qualification_type: ScreeningQualification::E_REJECTED).present?
       update(screening_status: :er)
-    elsif screening_qualifications.any? { |sq| sq.qualification_type == ScreeningQualification::FS_REJECTED }
+    elsif screening_qualifications.where(qualification_type: ScreeningQualification::FS_REJECTED).present?
       update(screening_status: :fsr)
-    elsif screening_qualifications.any? { |sq| sq.qualification_type == ScreeningQualification::AS_REJECTED }
+    elsif screening_qualifications.where(qualification_type: ScreeningQualification::FS_ACCEPTED).present?
+      update(screening_status: :ene)
+    elsif fulltext_screening_results.where(label: -1).present? && fulltext_screening_results.where(label: 1).present?
+      update(screening_status: :fsic)
+    elsif fulltext_screening_results.present?
+      update(screening_status: :fsip)
+    elsif screening_qualifications.where(qualification_type: ScreeningQualification::AS_REJECTED).present?
       update(screening_status: :asr)
-    elsif screening_qualifications.any? { |sq| sq.qualification_type == ScreeningQualification::FS_ACCEPTED }
-      if Extraction.where(citations_project: self).present?
-        update(screening_status: :eip)
-      else
-        update(screening_status: :ene)
-      end
-      # update(screening_status: :ec)
-    elsif screening_qualifications.any? { |sq| sq.qualification_type == ScreeningQualification::AS_ACCEPTED }
-      if fulltext_screening_results.blank?
-        update(screening_status: :fsu)
-      elsif fulltext_screening_results.any? { |fsr| fsr.label == -1 } &&
-            fulltext_screening_results.any? { |fsr| fsr.label == 1 }
-        update(screening_status: :fsic)
-      else
-        update(screening_status: :fsps)
-      end
-    elsif screening_qualifications.blank?
-      if abstract_screening_results.blank?
-        update(screening_status: :asu)
-      elsif abstract_screening_results.any? { |asr| asr.label == -1 } &&
-            abstract_screening_results.any? { |asr| asr.label == 1 }
-        update(screening_status: :asic)
-      else
-        update(screening_status: :asps)
-      end
+    elsif screening_qualifications.where(qualification_type: ScreeningQualification::AS_ACCEPTED).present?
+      update(screening_status: :fsu)
+    elsif abstract_screening_results.where(label: -1).present? && abstract_screening_results.where(label: 1).present?
+      update(screening_status: :asic)
+    elsif abstract_screening_results.present?
+      update(screening_status: :asip)
+    else
+      update(screening_status: :asu)
     end
+
     reindex
   end
 end
