@@ -2,9 +2,39 @@
 
 <div class="bg-white">
   <div class="p-4 lg:p-8">
+
     <div>
       <h1 class="text-xl font-bold">Help</h1>
     </div>
+
+    <div class="lg:grid lg:grid-cols-3 lg:gap-8">
+      <div>
+        <h2 class="text-base font-medium tracking-tight text-gray-900">
+          More Resources
+        </h2>
+      </div>
+      <div class="mt-12 lg:col-span-2 lg:mt-0">
+        <dl class='space-y-12'>
+          <div>
+            <dt class="text-base font-medium leading-6 text-gray-900">
+              Additional Links
+            </dt>
+            <dd class="mt-2 text-base text-gray-500">
+              <!-- prettier-ignore -->
+              <ul>
+                <li>
+                  <%= link_to("How to Cite SRDR+", citing_path) %>
+                </li>
+                <li>
+                  <%= link_to("SRDR Usage Policies", usage_path) %>
+                </li>
+              </ul>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
     <div class="lg:grid lg:grid-cols-3 lg:gap-8">
       <div>
         <h2 class="text-base font-medium tracking-tight text-gray-900">
@@ -12,7 +42,7 @@
         </h2>
       </div>
       <div class="mt-12 lg:col-span-2 lg:mt-0">
-        <dl class="space-y-12">
+        <dl class='space-y-12'>
           <div>
             <dt class="text-base font-medium leading-6 text-gray-900">
               Systematic Review Data Repository User Plus (SRDR+) User Guide
@@ -49,16 +79,17 @@
         </dl>
       </div>
     </div>
-    <div class="lg:grid lg:grid-cols-3 lg:gap-8">
+
+    <div class="lg:grid lg:grid-cols-5 lg:gap-8">
       <div>
         <h2 class="text-base font-medium tracking-tight text-gray-900">
           Tutorials - Video Guides
         </h2>
       </div>
-      <div class="mt-12 lg:col-span-2 lg:mt-0">
-        <dl class="space-y-12">
-          <div>
-            <dt class="text-base font-medium leading-6 text-gray-900">
+      <div class="mt-12 lg:col-span-4 lg:mt-0">
+        <dl class="lg:grid lg:grid-cols-3 lg:gap-4">
+          <div class='p-8'>
+            <dt class="text-base font-lg leading-6 text-gray-900">
               Introduction to SRDR+ for Data Extraction of Systematic Reviews
             </dt>
             <dd class="mt-2 text-base text-gray-500">
@@ -77,8 +108,8 @@
             </dd>
           </div>
 
-          <div>
-            <dt class="text-base font-medium leading-6 text-gray-900">
+          <div class='p-8'>
+            <dt class="text-base font-lg leading-6 text-gray-900">
               Setting up a new project and a project team in SRDR+
             </dt>
             <dd class="mt-2 text-base text-gray-500">
@@ -97,8 +128,8 @@
             </dd>
           </div>
 
-          <div>
-            <dt class="text-base font-medium leading-6 text-gray-900">
+          <div class='p-8'>
+            <dt class="text-base font-lg leading-6 text-gray-900">
               Adding and managing Citations in SRDR+
             </dt>
             <dd class="mt-2 text-base text-gray-500">
@@ -117,8 +148,8 @@
             </dd>
           </div>
 
-          <div>
-            <dt class="text-base font-medium leading-6 text-gray-900">
+          <div class='p-8'>
+            <dt class="text-base font-lg leading-6 text-gray-900">
               Adding and Managing Extractions in SRDR+
             </dt>
             <dd class="mt-2 text-base text-gray-500">
@@ -137,8 +168,8 @@
             </dd>
           </div>
 
-          <div>
-            <dt class="text-base font-medium leading-6 text-gray-900">
+          <div class='p-8'>
+            <dt class="text-base font-lg leading-6 text-gray-900">
               Exporting data out of SRDR+
             </dt>
             <dd class="mt-2 text-base text-gray-500">
@@ -154,33 +185,6 @@
               <%= link_to('https://youtu.be/vWXVhU3-XUY',
               'https://youtu.be/vWXVhU3-XUY', target: '_blank', data: { confirm:
               @exit_disclaimer }) %>
-            </dd>
-          </div>
-        </dl>
-      </div>
-    </div>
-    <div class="lg:grid lg:grid-cols-3 lg:gap-8">
-      <div>
-        <h2 class="text-base font-medium tracking-tight text-gray-900">
-          More Resources
-        </h2>
-      </div>
-      <div class="mt-12 lg:col-span-2 lg:mt-0">
-        <dl class="space-y-12">
-          <div>
-            <dt class="text-base font-medium leading-6 text-gray-900">
-              Additional Links
-            </dt>
-            <dd class="mt-2 text-base text-gray-500">
-              <!-- prettier-ignore -->
-              <ul>
-                <li>
-                  <%= link_to("How to Cite SRDR+", citing_path) %>
-                </li>
-                <li>
-                  <%= link_to("SRDR Usage Policies", usage_path) %>
-                </li>
-              </ul>
             </dd>
           </div>
         </dl>
