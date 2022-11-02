@@ -197,8 +197,8 @@ class SdMetaDatum < ApplicationRecord
 
     if sd_key_questions.blank? ||
        sd_key_questions.any? { |sd_key_question| sd_key_question.sd_key_questions_key_question_types.blank? } ||
-       sd_key_questions.any? { |sd_key_question| !sd_key_question.includes_meta_analysis }
-      errors << 'URL Links'
+       sd_key_questions.any? { |sd_key_question| sd_key_question.includes_meta_analysis.nil? }
+      errors << 'Purpose, Analytic Framework, and Key Questions'
     end
 
     if sd_picods.blank? ||
