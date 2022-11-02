@@ -70196,7 +70196,9 @@ function __guardMethod__(obj, methodName, transform) {
       Collapser.initialize_listeners();
       initializeSwitches();
       bind_srdr20_saving_mechanism();
-      apply_all_select2();
+      setTimeout((function() {
+        return apply_all_select2();
+      }), 50);
       return $('textarea').each(function() {
         return this.style.height = this.scrollHeight + "px";
       });

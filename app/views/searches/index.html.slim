@@ -34,9 +34,20 @@
 
   .tabs-content data-tabs-content='search-tabs'
     #panel-general-search.tabs-panel class=(params.keys.any? { |k| %w(projects_search citations_search).include?(k) } ? '' : 'is-active')
+      blockquote
+        legend Please enter your search term below.
+        legend We will provide the best matches based on your search criteria by checking against any available meta information in all publicly availabe Projects and Citations.
+        cite Helper
+
       = render 'searches/general_search_form', label: false
 
     #panel-projects-search.tabs-panel class=(params[:projects_search].present? ? 'is-active' : '')
+      blockquote
+        legend This is the advanced Project search section.
+        legend In this area you can narrow down your search by finding exact matches within the relative fields such as the name of the project, the description of the project and so on.
+        legend You can further fine tune you search by providing date ranges, arm names or outcome names.
+        cite Helper
+
       = simple_form_for :projects_search, defaults: { required: false }, url: searches_path, method: :get do |f|
         = f.input :name, input_html: { value: params.dig(:projects_search, :name) }
         = f.input :description, input_html: { value: params.dig(:projects_search, :description) }
@@ -57,8 +68,13 @@
         .my-4 = f.button :submit, 'Search'
 
     #panel-citations-search.tabs-panel class=(params[:citations_search].present? ? 'is-active' : '')
+      blockquote
+        legend This is the advanced Citations search section.
+        legend In this area you can narrow down your search by finding exact matches within the relative fields such as the title of the citation, search terms within citation abstract or provided identifiers.
+        cite Helper
+
       = simple_form_for :citations_search, defaults: { required: false }, url: searches_path, method: :get do |f|
-        = f.input :name, input_html: { value: params.dig(:citations_search, :name) }
+        = f.input :name, label: 'Title', input_html: { value: params.dig(:citations_search, :name) }
         = f.input :refman, label: 'RefMan', input_html: { value: params.dig(:citations_search, :refman) }
         = f.input :pmid, label: 'PMID', input_html: { value: params.dig(:citations_search, :pmid) }
         = f.input :abstract, input_html: { value: params.dig(:citations_search, :abstract) }
