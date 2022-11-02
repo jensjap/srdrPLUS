@@ -51,7 +51,7 @@ class Cleanup
     PopulationName,
     Profile,
     Project,
-    ProjectsStudy,
+    # ProjectsStudy, # model removed
     ProjectsUser,
     ProjectsUsersRole,
     ProjectsUsersTermGroupsColor,
@@ -77,7 +77,7 @@ class Cleanup
     ResultStatisticSectionsMeasure,
     Role,
     Section,
-    Study,
+    # Study, # model removed
     Suggestion,
     Tag,
     Tagging,
