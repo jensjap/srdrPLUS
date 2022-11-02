@@ -53,7 +53,8 @@ class FulltextScreeningResult < ApplicationRecord
     return true if fulltext_screening.single_screening?
 
     if fulltext_screening.exclusive_users
-      relevant_fsrs = FulltextScreeningResult.where(fulltext_screening:, citations_project:, user: users)
+      relevant_fsrs = FulltextScreeningResult.where(fulltext_screening:, citations_project:,
+                                                    user: fulltext_screening.users)
       required_fsrs_pilot_count = fulltext_screening.fulltext_screenings_users.count
     else
       relevant_fsrs = FulltextScreeningResult.where(fulltext_screening:, citations_project:)
