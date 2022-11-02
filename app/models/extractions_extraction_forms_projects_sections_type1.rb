@@ -134,7 +134,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
         timepoint_id: eefpst1rc_id,
         result_statistic_sections_measure: rssm)
 
-    Record.where(recordable: recordables.first).first.try(:name)
+    Record.where(recordable: recordables.first).first.try(:name).to_s.gsub(/\P{Print}|\p{Cf}/, '')
   end
 
   # Do not overwrite existing entries but associate to one that already exists or create a new one.

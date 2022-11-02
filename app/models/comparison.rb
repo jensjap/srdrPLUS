@@ -62,7 +62,7 @@ class Comparison < ApplicationRecord
       .where(
         timepoint_id: eefpst1rc_id,
         result_statistic_sections_measure: rssm)
-    Record.where(recordable: recordables.first).first.try(:name)
+    Record.where(recordable: recordables.first).first.try(:name).to_s.gsub(/\P{Print}|\p{Cf}/, '')
   end
 
   # Fetch records for this particular comparison
@@ -72,7 +72,7 @@ class Comparison < ApplicationRecord
       .where(
         extractions_extraction_forms_projects_sections_type1_id: eefpst1_arm_id,
         result_statistic_sections_measure: rssm)
-    Record.where(recordable: recordables.first).first.try(:name)
+    Record.where(recordable: recordables.first).first.try(:name).to_s.gsub(/\P{Print}|\p{Cf}/, '')
   end
 
   # Fetch records for this particular comparison
@@ -82,7 +82,7 @@ class Comparison < ApplicationRecord
       .where(
         bac_id: bac_id,
         result_statistic_sections_measure: rssm)
-    Record.where(recordable: recordables.first).first.try(:name)
+    Record.where(recordable: recordables.first).first.try(:name).to_s.gsub(/\P{Print}|\p{Cf}/, '')
   end
 
   # This is meant to print out the comparison in pretty format.
