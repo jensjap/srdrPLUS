@@ -1,7 +1,7 @@
 <div class="pointer-events-none fixed inset-x-0 bottom-0 flex max-w-full z-10">
   <div
     class="pointer-events-auto w-screen backdrop-blur-sm bg-srdr-secondary/80"
-    x-show="selected.length > 0"
+    x-show="!showDetailView && selected.length > 0"
     x-cloak
     x-transition:enter="transform transition ease-in-out duration-350 sm:duration-350"
     x-transition:enter-start="translate-y-full"
@@ -10,9 +10,8 @@
     x-transition:leave-start="translate-y-0"
     x-transition:leave-end="translate-y-full"
   >
-    <!-- Replace with your content -->
     <div class="flex justify-center items-center">
-      <div
+      <!-- <div
         class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
         @click="selected = results"
       >
@@ -23,33 +22,42 @@
         @click="selected = []"
       >
         Deselect All
-      </div>
+      </div> -->
       <div class="ml-8">
-        <span class="text-white" x-text="`Selected: ${selected.length}`"></span>
+        <span
+          class="text-white"
+          x-text="`Toggle ${selected.length} Citation(s)`"
+        ></span>
       </div>
       <div
         class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
         @click="createScreeningQualification('as-accepted')"
       >
-        AS Accept
+        Abstract Screening Acceptance
       </div>
       <div
         class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
         @click="createScreeningQualification('as-rejected')"
       >
-        AS Reject
+        Abstract Screening Rejection
       </div>
       <div
         class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
         @click="createScreeningQualification('fs-accepted')"
       >
-        FS Accept
+        Full-Text Screening Acceptance
       </div>
       <div
         class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
         @click="createScreeningQualification('fs-rejected')"
       >
-        FS Reject
+        Full-Text Screening Rejection
+      </div>
+      <div
+        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
+        @click="createScreeningQualification('e-rejected')"
+      >
+        Extract Rejection
       </div>
     </div>
     <!-- /End replace -->
