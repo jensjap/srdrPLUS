@@ -20,7 +20,10 @@ class ScreeningQualificationsController < ApplicationController
             citations_project.screening_qualifications.find_or_create_by!(qualification_type:, user: current_user)
           end
 
+          citations_project.abstract_screening_results.each(&:evaluate_screening_qualifications)
+          citations_project.fulltext_screening_results.each(&:evaluate_screening_qualifications)
           citations_project.evaluate_screening_status
+
           results << { citations_project_id: citations_project.id,
                        screening_status: citations_project.screening_status,
                        abstract_qualification: citations_project.abstract_qualification,

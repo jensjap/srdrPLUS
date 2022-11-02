@@ -30,8 +30,7 @@ class AbstractScreeningResult < ApplicationRecord
   after_save :evaluate_screening_qualifications
 
   def evaluate_screening_qualifications
-    return if !saved_change_to_attribute('label') ||
-              citations_project
+    return if citations_project
               .screening_qualifications
               .where.not(user: nil)
               .where("qualification_type LIKE 'as-%'")
