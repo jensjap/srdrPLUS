@@ -69,11 +69,11 @@ class AbstractScreeningResultsController < ApplicationController
       end
     end
 
-    AbstractScreeningsTagsUser.where(user: current_user, abstract_screening:).each do |asru|
-      next if other_asr_params['custom_tags'].key?(asru.tag.name)
+    AbstractScreeningsTagsUser.where(user: current_user, abstract_screening:).each do |astu|
+      next if other_asr_params['custom_tags'].key?(astu.tag.name)
 
-      asru.destroy
-      AbstractScreeningResultsTag.find_by(tag: asru.tag,
+      astu.destroy
+      AbstractScreeningResultsTag.find_by(tag: astu.tag,
                                           abstract_screening_result: @abstract_screening_result)&.destroy
     end
   end
