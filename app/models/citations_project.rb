@@ -77,7 +77,7 @@ class CitationsProject < ApplicationRecord
     ).to_a
     master_citations_project = citations_projects.shift
     citations_projects.each do |cp|
-      dedupe_update_associations(master_citations_project, cp)
+      CitationsProject.dedupe_update_associations(master_citations_project, cp)
       cp.destroy
     end
   end

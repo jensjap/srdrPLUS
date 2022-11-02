@@ -59,33 +59,30 @@ class Comparison < ApplicationRecord
   # by timepoint, bac, and measure.
   def tps_comparisons_rssms_values(eefpst1rc_id, rssm)
     recordables = tps_comparisons_rssms
-                  .where(
-                    timepoint_id: eefpst1rc_id,
-                    result_statistic_sections_measure: rssm
-                  )
-    Record.where(recordable: recordables).pluck(:name).join('\r')
+      .where(
+        timepoint_id: eefpst1rc_id,
+        result_statistic_sections_measure: rssm)
+    Record.where(recordable: recordables.first).first.try(:name)
   end
 
   # Fetch records for this particular comparison
   # by wac, arm, and measure.
   def comparisons_arms_rssms_values(eefpst1_arm_id, rssm)
     recordables = comparisons_arms_rssms
-                  .where(
-                    extractions_extraction_forms_projects_sections_type1_id: eefpst1_arm_id,
-                    result_statistic_sections_measure: rssm
-                  )
-    Record.where(recordable: recordables).pluck(:name).join('\r')
+      .where(
+        extractions_extraction_forms_projects_sections_type1_id: eefpst1_arm_id,
+        result_statistic_sections_measure: rssm)
+    Record.where(recordable: recordables.first).first.try(:name)
   end
 
   # Fetch records for this particular comparison
   # by wac, bac, and measure.
   def wacs_bacs_rssms_values(bac_id, rssm)
     recordables = wacs_bacs_rssms
-                  .where(
-                    bac_id:,
-                    result_statistic_sections_measure: rssm
-                  )
-    Record.where(recordable: recordables).pluck(:name).join('\r')
+      .where(
+        bac_id: bac_id,
+        result_statistic_sections_measure: rssm)
+    Record.where(recordable: recordables.first).first.try(:name)
   end
 
   # This is meant to print out the comparison in pretty format.
@@ -112,7 +109,7 @@ class Comparison < ApplicationRecord
       text += ' vs. '
     end
 
-    text[0..-6]
+    return "[ID: #{self.id}] " + text[0..-6]
   end
 
   def tokenize

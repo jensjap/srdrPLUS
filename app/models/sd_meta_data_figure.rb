@@ -13,5 +13,13 @@ class SdMetaDataFigure < ApplicationRecord
   has_many_attached :pictures
 
   belongs_to :sd_figurable, polymorphic: true
-end
 
+  def pictures=(attachables)
+    attachables = Array(attachables).compact_blank
+
+    if attachables.any?
+      attachment_changes['pictures'] =
+        ActiveStorage::Attached::Changes::CreateMany.new('pictures', self, pictures.blobs + attachables)
+    end
+  end
+end

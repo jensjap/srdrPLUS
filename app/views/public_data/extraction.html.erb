@@ -1,0 +1,73 @@
+<style>
+  html,
+  body {
+    scroll-behavior: smooth;
+    scroll-padding-top: 72px;
+  }
+</style>
+<div class="flex">
+  <div
+    class="grow-0 shrink-0 basis-52 py-3 hidden xl:block w-52 overflow-y-auto top-[68px] bg-white z-0"
+    style="position: sticky; height: calc(100vh - 68px)"
+  >
+    <div>
+      <ul class="list-none m-0 px-2">
+        <!-- prettier-ignore -->
+        <% @extraction_forms_projects.each_with_index do |efp| %>
+        <% efp.extraction_forms_projects_sections.includes(questions: [{ key_questions_projects_questions: :key_questions_project }, :key_questions_projects, :dependencies]).reject { |efps| efps.hidden }.each do |efps| %>
+        <% next unless @eefps_by_efps_dict.keys.include?(efps.id) %>
+        <li class="text-sm my-2 truncate">
+          <a href="#efp-<%= efp.id %>-efps-<%= efps.id %>">
+            <%= efps.section.name %>
+          </a>
+        </li>
+        <!-- prettier-ignore -->
+        <% end %>
+        <% end %>
+        <li class="text-sm my-2 truncate">
+          <a href="#printables">Print Data</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div
+    class="w-auto mx-auto py-16 md:py-6 sm:px-6 lg:px-8 overflow-y-auto"
+    id="printableArea"
+  >
+    <div class="max-w-7xl mx-auto space-y-6">
+      <h1 class="text-3xl font-medium text-warm-gray-900">
+        <%= "Extraction form for project: #{empty_or_na(@project.name)}" %>
+      </h1>
+      <!-- prettier-ignore -->
+      <% @extraction_forms_projects.each_with_index do |efp| %>
+      <% efp.extraction_forms_projects_sections.includes(questions: [{ key_questions_projects_questions: :key_questions_project }, :key_questions_projects, :dependencies]).reject { |efps| efps.hidden }.each do |efps| %>
+      <% next unless @eefps_by_efps_dict.keys.include?(efps.id) %>
+      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+        <div
+          id="efp-<%= efp.id %>-efps-<%= efps.id %>"
+          class="px-4 py-5 sm:px-6 bg-purple-900"
+        >
+          <h1 class="text-2xl font-bold leading-6 font-medium text-white">
+            <%= efps.section.name %>
+          </h1>
+        </div>
+        <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+          <dl class="sm:divide-y sm:divide-gray-200">
+            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
+              <div class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2">
+                <!-- prettier-ignore -->
+                <%= render "public_data/extraction/#{efps.extraction_forms_projects_section_type.name.parameterize.underscore}", section_name: efps.section.name, efp: efp, efps: efps %>
+              </div>
+            </div>
+          </dl>
+        </div>
+      </div>
+      <!-- prettier-ignore -->
+      <% end %>
+      <% end %>
+      <button id="printables" class="button" onClick="printPrintableArea()">
+        <i class="fi-print"> Print Data</i>
+      </button>
+    </div>
+  </div>
+</div>

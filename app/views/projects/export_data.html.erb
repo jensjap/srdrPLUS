@@ -1,0 +1,39 @@
+<div class="p-4 lg:p-8">
+  <h1 class="text-xl font-bold">Export Data</h1>
+  <div class='export-type-selection'>
+    <p class="text-base font-thin">
+      Legacy format: A hybrid between long and wide format. Follows the
+      traditional SRDR export structure.
+    </p>
+    <br />
+
+    <input
+      checked=""
+      class="export-type-radio"
+      id="xlsx-legacy-radio-<%= @project.id.to_s %>"
+      name="export-type-<%= @project.id.to_s %>"
+      type="radio"
+      value="<%= export_project_path(@project, export_type_name: '.xlsx legacy') %>"
+    />
+    <label for="xlsx-legacy-radio-<%= @project.id.to_s %>">
+      Microsoft Excel - legacy format (.xlsx) </label
+    ><br />
+
+    <input
+      class="export-type-radio"
+      id="gsheets-radio-<%= @project.id.to_s %>"
+      name="export-type-<%= @project.id.to_s %>"
+      type="radio"
+      value="<%= export_project_path(@project, export_type_name: 'Google Sheets') %>"
+    />
+    <label for="gsheets-radio-<%= @project.id.to_s %>"> Google Sheets </label>
+    <!-- prettier-ignore -->
+    <%= link_to "Export Project Data", export_project_path(@project, export_type_name: '.xlsx'), method: :post, class: "button expanded start-export-button" %>
+
+    <br />
+    <hr />
+    <p>Export Citation Screening Labels:</p>
+    <!-- prettier-ignore -->
+    <%= link_to "Export Project Citation Labels", export_citation_labels_project_path(@project, export_type_name: '.csv'), method: :post, class: 'button expanded start-citation-labels-export-button' %>
+  </div>
+</div>

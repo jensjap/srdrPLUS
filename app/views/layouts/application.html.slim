@@ -4,7 +4,7 @@ html class='no-js' lang='en'
     meta charset='utf-8'
     meta name='viewport' content='width=device-width, initial-scale=1.0'
 
-    title == content_for?(:title) ? yield(:title) : 'SRDR+'
+    title == content_for?(:title) ? yield(:title) + " | SRDR+" : 'SRDR+'
 
     / Google Tag Manager
     script[async src="https://www.googletagmanager.com/gtag/js?id=GTM-KFBGXK"]
@@ -15,6 +15,7 @@ html class='no-js' lang='en'
       gtag('config', 'GTM-KFBGXK');
 
     script src="https://kit.fontawesome.com/a55e144d79.js" crossorigin="anonymous"
+    script defer="true" src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js"
     script defer="true" src="https://unpkg.com/alpinejs@3.10.2/dist/cdn.min.js"
 
     = stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload"
@@ -41,16 +42,16 @@ html class='no-js' lang='en'
 
     / Google Tag Manager (noscript)
     noscript
-      iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KFBGXK" height="0" width="0" style="display:none;visibility:hidden">
+      iframe class="iframe" onload="resizeIframe(this)" src="https://www.googletagmanager.com/ns.html?id=GTM-KFBGXK" width="0" style="display:none;visibility:hidden">
 
-    iframe src="/ahrq_header.html" text="AHRQ Header" title="AHRQ Header" width="100%" frameborder="0" scrolling="no" seemless
+    iframe class="iframe" onload="resizeIframe(this)" src="/ahrq_header.html" text="AHRQ Header" title="AHRQ Header" height="101px" width="100%" frameborder="0" scrolling="no" seemless
       p Browser does not support iframes. Please update your browser to for a better viewing experience.
 
     - if content_for?(:content)
       = yield(:content)
 
     - else
-      .off-canvas-wrapper
+      div
         - if (controller_name.eql?('projects') && not(action_name.eql?('index')) && not(action_name.eql?('new'))) \
             || controller_name.eql?('extractions') \
             || controller_name.eql?('extraction_forms_projects') \
@@ -63,21 +64,18 @@ html class='no-js' lang='en'
           .off-canvas.position-right#offCanvasRightReportHtml data-off-canvas=''
             button.close-button aria-label='Close menu' type='button' data-close=''
               span aria-hidden='true' &times;
-            iframe id='htmlReportIframe' src='/TOC.html' text='Systematic Review Report' title='Systematic Review Report' width='100%' height='100%'
+            iframe class="iframe" onload="resizeIframe(this)" id='htmlReportIframe' src='/TOC.html' text='Systematic Review Report' title='Systematic Review Report' width='100%'
 
         .off-canvas-content data-off-canvas-content=''
           = render "shared/topbar_nav"
 
-          .content
-            / .breadcrumbs = render_breadcrumbs tag: :li, separator: ''
-            - if content_for(:project_title)
-              div style='margin-left: 2rem;'
-                h3 = "Project: " + yield(:project_title)
+          div class="min-h-[10vh]"
             = yield
             = render 'shared/scroll_top_wrapper'
 
+    = render 'layouts/srdr_plus_footer'
 
-    iframe src="/ahrq_footer.html" text="AHRQ Footer" title="AHRQ Footer" height="570" width="100%" frameborder="0" scrolling="no" seemless
+    iframe class="iframe" onload="resizeIframe(this)" src="/ahrq_footer.html" text="AHRQ Footer" title="AHRQ Footer" width="100%" frameborder="0" scrolling="no" seemless
       p Browser does not support iframes. Please update your browser to for a better viewing experience.
 
     = render 'toastr_rails/flash'

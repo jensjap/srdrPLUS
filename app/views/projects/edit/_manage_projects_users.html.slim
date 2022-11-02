@@ -1,153 +1,156 @@
-= simple_form_for(@project, html: { 'abide': '', 'live-validate': true }) do |f|
-  .form-inputs style="display: inline-block;"
-    table.hover style="table-layout: fixed;"
+div class="mx-auto p-4 lg:p-8"
+  h1 class="text-xl font-bold" Member(s) & Role(s)
+
+  = simple_form_for(@project, html: { 'abide': '', 'live-validate': true }) do |f|
+    .form-inputs style="display: inline-block;"
+      table.hover style="table-layout: fixed;"
+        thead
+          tr
+            th width="150px;"
+            th width="400px;" colspan="4"
+              div class="button tiny" data-open="member-roles-modal" See Role Definitions
+            th width="100px;"
+            th
+          tr
+            th User
+            - Role.all.each do |role|
+              th = role.name
+            th
+            th
+        tbody#projects-users-table
+          = f.simple_fields_for :projects_users do |pu_f|
+            = render 'projects_users/form', f: pu_f
+    .links
+      = link_to_add_association 'add another user to project', f, :projects_users, partial: 'projects_users/form', 'data-association-insertion-node': '#projects-users-table', 'data-association-insertion-method': 'append'
+    .form-actions
+      = f.button :submit, 'Save changes'
+
+  div class="reveal" id="member-roles-modal" data-reveal="" style="width: initial; max-width: 60%; height: 95vh;"
+    table#member-roles-table style="margin-top: 30px; text-align: center; border-spacing: 10px;"
       thead
         tr
-          th width="150px;"
-          th width="400px;" colspan="4"
-            div class="button tiny" data-open="member-roles-modal" See Role Definitions
-          th width="100px;"
-          th
+          th width="40%" Ability
+          th width="15%" Leader
+          th width="15%" Consolidator
+          th width="15%" Contributor
+          th width="15%" Auditor
+      tbody
         tr
-          th User
-          - Role.all.each do |role|
-            th = role.name
-          th
-          th
-      tbody#projects-users-table
-        = f.simple_fields_for :projects_users do |pu_f|
-          = render 'projects_users/form', f: pu_f
-  .links
-    = link_to_add_association 'add another user to project', f, :projects_users, partial: 'projects_users/form', 'data-association-insertion-node': '#projects-users-table', 'data-association-insertion-method': 'append'
-  .form-actions
-    = f.button :submit, 'Save changes'
+          td style="text-align: left; font-style: italic;" View the Project Information, Key Questions, and Member(s) & Role(s) section.
+          td
+            i class="fas fa-check"
+          td
+            i class="fas fa-check"
+          td
+            i class="fas fa-check"
+          td
+            i class="fas fa-check"
+        tr
+          td style="text-align: left; font-style: italic;" Edit the Project Information, Key Questions, and Member(s) & Role(s) section.
+          td
+            i class="fas fa-check"
+          td
+          td
+          td
+        tr
+          td style="text-align: left; font-style: italic;" View the Extraction Form Builder.
+          td
+            i class="fas fa-check"
+          td
+          td
+          td
+        tr
+          td style="text-align: left; font-style: italic;" Edit the Extraction Form Builder.
+          td
+            i class="fas fa-check"
+          td
+          td
+          td
+        tr
+          td style="text-align: left; font-style: italic;" View citations.
+          td
+            i class="fas fa-check"
+          td
+            i class="fas fa-check"
+          td
+            i class="fas fa-check"
+          td
+            i class="fas fa-check"
+        tr
+          td style="text-align: left; font-style: italic;" Add/create/edit citations.
+          td
+            i class="fas fa-check"
+          td
+          td
+            i class="fas fa-check"
+          td
+        tr
+          td style="text-align: left; font-style: italic;" View extractions.
+          td
+            i class="fas fa-check"
+          td
+            i class="fas fa-check"
+          td
+            i class="fas fa-check"
+            div = "(own extractions only)"
+          td
+            i class="fas fa-check"
+        tr
+          td style="text-align: left; font-style: italic;" Import/add/create extractions.
+          td
+            i class="fas fa-check"
+          td
+            i class="fas fa-check"
+          td
+            i class="fas fa-check"
+          td
+        tr
+          td style="text-align: left; font-style: italic;" Edit extractions.
+          td
+            i class="fas fa-check"
+          td
+            i class="fas fa-check"
+          td
+            i class="fas fa-check"
+            div = "(own extractions only)"
+          td
+        tr
+          td style="text-align: left; font-style: italic;" Access the Comparison Tool and consolidate information in the multiple copies of a given extraction into a single consolidated extraction.
+          td
+            i class="fas fa-check"
+          td
+            i class="fas fa-check"
+          td
+          td
+        tr
+          td style="text-align: left; font-style: italic;" View and edit the list of consolidated extractions.
+          td
+            i class="fas fa-check"
+          td
+            i class="fas fa-check"
+          td
+          td
+        tr
+          td style="text-align: left; font-style: italic;" Import study data into the project.
+          td
+            i class="fas fa-check"
+          td
+          td
+          td
+        tr
+          td style="text-align: left; font-style: italic;" Export data from the project.
+          td
+            i class="fas fa-check"
+          td
+          td
+          td
+        tr
+          td style="text-align: left; font-style: italic;" Request publication of the project
+          td
+            i class="fas fa-check"
+          td
+          td
+          td
 
-div class="reveal" id="member-roles-modal" data-reveal="" style="width: initial; max-width: 60%; height: 95vh;"
-  table#member-roles-table style="margin-top: 30px; text-align: center; border-spacing: 10px;"
-    thead
-      tr
-        th width="40%" Ability
-        th width="15%" Leader
-        th width="15%" Consolidator
-        th width="15%" Contributor
-        th width="15%" Auditor
-    tbody
-      tr
-        td style="text-align: left; font-style: italic;" View the Project Information, Key Questions, and Member(s) & Role(s) section.
-        td
-          i class="fas fa-check"
-        td
-          i class="fas fa-check"
-        td
-          i class="fas fa-check"
-        td
-          i class="fas fa-check"
-      tr
-        td style="text-align: left; font-style: italic;" Edit the Project Information, Key Questions, and Member(s) & Role(s) section.
-        td
-          i class="fas fa-check"
-        td
-        td
-        td
-      tr
-        td style="text-align: left; font-style: italic;" View the Extraction Form Builder.
-        td
-          i class="fas fa-check"
-        td
-        td
-        td
-      tr
-        td style="text-align: left; font-style: italic;" Edit the Extraction Form Builder.
-        td
-          i class="fas fa-check"
-        td
-        td
-        td
-      tr
-        td style="text-align: left; font-style: italic;" View citations.
-        td
-          i class="fas fa-check"
-        td
-          i class="fas fa-check"
-        td
-          i class="fas fa-check"
-        td
-          i class="fas fa-check"
-      tr
-        td style="text-align: left; font-style: italic;" Add/create/edit citations.
-        td
-          i class="fas fa-check"
-        td
-        td
-          i class="fas fa-check"
-        td
-      tr
-        td style="text-align: left; font-style: italic;" View extractions.
-        td
-          i class="fas fa-check"
-        td
-          i class="fas fa-check"
-        td
-          i class="fas fa-check"
-          div = "(own extractions only)"
-        td
-          i class="fas fa-check"
-      tr
-        td style="text-align: left; font-style: italic;" Import/add/create extractions.
-        td
-          i class="fas fa-check"
-        td
-          i class="fas fa-check"
-        td
-          i class="fas fa-check"
-        td
-      tr
-        td style="text-align: left; font-style: italic;" Edit extractions.
-        td
-          i class="fas fa-check"
-        td
-          i class="fas fa-check"
-        td
-          i class="fas fa-check"
-          div = "(own extractions only)"
-        td
-      tr
-        td style="text-align: left; font-style: italic;" Access the Comparison Tool and consolidate information in the multiple copies of a given extraction into a single consolidated extraction.
-        td
-          i class="fas fa-check"
-        td
-          i class="fas fa-check"
-        td
-        td
-      tr
-        td style="text-align: left; font-style: italic;" View and edit the list of consolidated extractions.
-        td
-          i class="fas fa-check"
-        td
-          i class="fas fa-check"
-        td
-        td
-      tr
-        td style="text-align: left; font-style: italic;" Import study data into the project.
-        td
-          i class="fas fa-check"
-        td
-        td
-        td
-      tr
-        td style="text-align: left; font-style: italic;" Export data from the project.
-        td
-          i class="fas fa-check"
-        td
-        td
-        td
-      tr
-        td style="text-align: left; font-style: italic;" Request publication of the project
-        td
-          i class="fas fa-check"
-        td
-        td
-        td
-
-  button class="close-button" data-close="" aria-label="Close modal" type="button"
-    span aria-hidden="true" &times;
+    button class="close-button" data-close="" aria-label="Close modal" type="button"
+      span aria-hidden="true" &times;

@@ -1,17 +1,17 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
-  # Maintenace Routes
+  # Maintenance Routes
   ################################
-  get 'maintenance', to: 'static_pages#about'
-  get '/' => redirect('/maintenance')
-  get '*path' => redirect('/maintenance')
-  put '/' => redirect('/maintenance')
-  put '*path' => redirect('/maintenance')
-  post '/' => redirect('/maintenance')
-  post '*path' => redirect('/maintenance')
-  delete '/' => redirect('/maintenance')
-  delete '*path' => redirect('/maintenance')
+  #get 'maintenance', to: 'static_pages#about'
+  #get '/' => redirect('/maintenance')
+  #get '*path' => redirect('/maintenance')
+  #put '/' => redirect('/maintenance')
+  #put '*path' => redirect('/maintenance')
+  #post '/' => redirect('/maintenance')
+  #post '*path' => redirect('/maintenance')
+  #delete '/' => redirect('/maintenance')
+  #delete '*path' => redirect('/maintenance')
   ################################
 
   get 'public_data', to: 'public_data#show'
@@ -180,6 +180,7 @@ Rails.application.routes.draw do
     resources :sd_meta_data
     resources :teams, concerns: :invitable, only: %i[create update destroy]
     member do
+      get 'export_data'
       get 'confirm_deletion'
       get 'next_assignment'
       post 'import_csv'
@@ -283,9 +284,12 @@ Rails.application.routes.draw do
       post 'export'
       post 'export_citation_labels'
       post 'export_to_gdrive'
+      get  'export_assignments_and_mappings'
+      post 'import_assignments_and_mappings'
+      post 'simple_import'
     end
 
-    resources :imports, only: [:new]
+    resources :imports, only: %i[index new]
   end
 
   root to: 'static_pages#home'

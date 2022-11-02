@@ -1,38 +1,194 @@
 <% provide(:title, 'Help & Training') %>
 
-<h1 style="margin: 2rem;">Getting Help</h1>
-<div class="lead">
-  <div style="margin: 2rem;">
-    Below you will find a variety of documents that will help you familiarize yourself with SRDR+ features. We recommend that you read through them to get the most out of your SRDR+ experience. 
-  </div>
-  <div style="margin: 2rem;">
-    <a href='https://srdrplus.s3.amazonaws.com/SRDR%2BPLUS%2BTraining%2B-%2B12-16-2018.pdf' target='_blank'>
-      2018 SRDR PLUS Training Manual
-    </a>
-    <div class="small">
-      <small>
-        (Right-click, or control-click on a Mac, the link and choose “Save Link As” to save the document to your computer)
-      </small>
-    </div>
+<div class="bg-white">
+  <div class="p-4 lg:p-8">
+
     <div>
-      File size: 9.1 MB
+      <h1 class="text-xl font-bold">Help</h1>
     </div>
+
+    <div class="lg:grid lg:grid-cols-3 lg:gap-8">
+      <div>
+        <h2 class="text-base font-medium tracking-tight text-gray-900">
+          More Resources
+        </h2>
+      </div>
+      <div class="mt-12 lg:col-span-2 lg:mt-0">
+        <dl class='space-y-12'>
+          <div>
+            <dt class="text-base font-medium leading-6 text-gray-900">
+              Additional Links
+            </dt>
+            <dd class="mt-2 text-base text-gray-500">
+              <!-- prettier-ignore -->
+              <ul>
+                <li>
+                  <%= link_to("How to Cite SRDR+", citing_path) %>
+                </li>
+                <li>
+                  <%= link_to("SRDR Usage Policies", usage_path) %>
+                </li>
+              </ul>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="lg:grid lg:grid-cols-3 lg:gap-8">
+      <div>
+        <h2 class="text-base font-medium tracking-tight text-gray-900">
+          Tutorials - PDF Guides
+        </h2>
+      </div>
+      <div class="mt-12 lg:col-span-2 lg:mt-0">
+        <dl class='space-y-12'>
+          <div>
+            <dt class="text-base font-medium leading-6 text-gray-900">
+              Systematic Review Data Repository User Plus (SRDR+) User Guide
+              Updated as of October 13, 2021
+            </dt>
+            <dd class="mt-2 text-base text-gray-500">
+              <%= link_to('Download PDF',
+              'https://srdrplus.s3.amazonaws.com/SRDR%2B+User+Guide+-+10-13-21_Final.pdf',
+              target: '_blank') %>
+            </dd>
+          </div>
+
+          <div>
+            <dt class="text-base font-medium leading-6 text-gray-900">
+              Tutorial: Data Extraction using SRDR+
+            </dt>
+            <dd class="mt-2 text-base text-gray-500">
+              <%= link_to('Download PDF',
+              'https://srdrplus.s3.amazonaws.com/SRDR%2B+Data+Extraction+Tutorial+-+10-13-21.pdf',
+              target: '_blank') %>
+            </dd>
+          </div>
+
+          <div>
+            <dt class="text-base font-medium leading-6 text-gray-900">
+              Importing Structured Data from DistillerSR® into SRDR+
+            </dt>
+            <dd class="mt-2 text-base text-gray-500">
+              <%= link_to('Download PDF',
+              'https://srdrplus.s3.amazonaws.com/Importing+Structured+Data+from+DistillerSR+into+SRDR%2B.pdf',
+              target: '_blank') %>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
     <div>
-      MD5 checksum: 66ed426085beeff2c7173fe0792bbf1e
+      <div>
+        <h2 class="text-base font-medium tracking-tight text-gray-900">
+          Tutorials - Video Guides
+        </h2>
+      </div>
+      <div class="mt-12 lg:col-span-4 lg:mt-0">
+        <dl class="lg:grid lg:grid-cols-3 lg:gap-4">
+          <div class='p-8'>
+            <dt class="text-base font-lg leading-6 text-gray-900">
+              Introduction to SRDR+ for Data Extraction of Systematic Reviews
+            </dt>
+            <dd class="mt-2 text-base text-gray-500">
+              <iframe
+                width="400"
+                height="225"
+                src="https://www.youtube-nocookie.com/embed/aDxStZR3CGA"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+              <%= link_to('https://youtu.be/aDxStZR3CGA',
+              'https://youtu.be/aDxStZR3CGA', target: '_blank', data: { confirm:
+              @exit_disclaimer }) %>
+            </dd>
+          </div>
+
+          <div class='p-8'>
+            <dt class="text-base font-lg leading-6 text-gray-900">
+              Setting up a new project and a project team in SRDR+
+            </dt>
+            <dd class="mt-2 text-base text-gray-500">
+              <iframe
+                width="400"
+                height="225"
+                src="https://www.youtube-nocookie.com/embed/obdwdkfCVac"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+              <%= link_to('https://youtu.be/obdwdkfCVac',
+              'https://youtu.be/obdwdkfCVac', target: '_blank', data: { confirm:
+              @exit_disclaimer }) %>
+            </dd>
+          </div>
+
+          <div class='p-8'>
+            <dt class="text-base font-lg leading-6 text-gray-900">
+              Adding and managing Citations in SRDR+
+            </dt>
+            <dd class="mt-2 text-base text-gray-500">
+              <iframe
+                width="400"
+                height="225"
+                src="https://www.youtube-nocookie.com/embed/QPfXnDwyHX0"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+              <%= link_to('https://youtu.be/QPfXnDwyHX0',
+              'https://youtu.be/QPfXnDwyHX0', target: '_blank', data: { confirm:
+              @exit_disclaimer }) %>
+            </dd>
+          </div>
+
+          <div class='p-8'>
+            <dt class="text-base font-lg leading-6 text-gray-900">
+              Adding and Managing Extractions in SRDR+
+            </dt>
+            <dd class="mt-2 text-base text-gray-500">
+              <iframe
+                width="400"
+                height="225"
+                src="https://www.youtube-nocookie.com/embed/7jmM7elUSmU"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+              <%= link_to('https://youtu.be/7jmM7elUSmU',
+              'https://youtu.be/7jmM7elUSmU', target: '_blank', data: { confirm:
+              @exit_disclaimer }) %>
+            </dd>
+          </div>
+
+          <div class='p-8'>
+            <dt class="text-base font-lg leading-6 text-gray-900">
+              Exporting data out of SRDR+
+            </dt>
+            <dd class="mt-2 text-base text-gray-500">
+              <iframe
+                width="400"
+                height="225"
+                src="https://www.youtube-nocookie.com/embed/vWXVhU3-XUY"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+              <%= link_to('https://youtu.be/vWXVhU3-XUY',
+              'https://youtu.be/vWXVhU3-XUY', target: '_blank', data: { confirm:
+              @exit_disclaimer }) %>
+            </dd>
+          </div>
+        </dl>
+      </div>
     </div>
-  </div>
-  <div style="margin: 2rem;">
-    <a href='https://srdrplus.s3.amazonaws.com/Appendix+D_Instructions+for+importing+structured+data+from+DistillerSR+to+SRDR.docx' target='_blank'>
-      Instructions for Importing Structured Data from DistillerSR into SRDR+
-    </a>
-    <div>
-      File size: 6 MB
-    </div>
-    <div>
-      MD5 checksum: 3d2f796f825606199c4ce3109894b052
-    </div>
-  </div>
-  <div style="margin: 2rem;">
-    Or you may contact us. Our information can be found <a style="font-weight:bold" href='./contact'>here</a>.
   </div>
 </div>

@@ -34,7 +34,8 @@ module SeedData
         { name: 'Distiller Section' },
         { name: 'Citation' },
         { name: 'Project' },
-        { name: 'Distiller' }
+        { name: 'Distiller' },
+        { name: 'Assignments and Mappings'}
       ])
 
       #FileType.
@@ -1218,6 +1219,19 @@ module SeedData
       # Seed Extraction Forms.
       @ef1 = ExtractionForm.create(name: 'ef1')
 
+      # Seed CitationType.
+      ["Primary", "Secondary", "Abstrackr"].each do |type|
+        CitationType.find_or_create_by!(name: type)
+      end
+
+      # Seed Status.
+      Status.find_or_create_by(name: 'Draft')
+      Status.find_or_create_by(name: 'Complete')
+
+      # Seed ExportType.
+      ExportType.find_or_create_by(name: '.xlsx')
+      ExportType.find_or_create_by(name: 'Google Sheets')
+
     end
   end
 end
@@ -1387,7 +1401,7 @@ module SeedDataExtended
 
         # Projects.
         project_titles.each do |n|
-          updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now - 1)
+          updated_at = Faker::Time.between(from: DateTime.now - 1000, to: DateTime.now - 1)
           User.current = User.first
           Project.create!(name:        n[0],
                           description: n[1],
@@ -1406,14 +1420,14 @@ module SeedDataExtended
         @project = Project.order(updated_at: :desc).first
         @project.key_questions << [@kq1, @kq2]
 
-        @primary        = CitationType.create!(name: 'Primary')
-        @secondary      = CitationType.create!(name: 'Secondary')
-        @abstrackr      = CitationType.create!(name: 'Abstrackr')
+        @primary        = CitationType.find_or_create_by!(name: 'Primary')
+        @secondary      = CitationType.find_or_create_by!(name: 'Secondary')
+        @abstrackr      = CitationType.find_or_create_by!(name: 'Abstrackr')
         @citation_types = [@primary, @secondary]
 
         # Citations, Journals, Authors and Keywords
         200.times do |n|
-          updated_at = Faker::Time.between(DateTime.now - 1000, DateTime.now - 1)
+          updated_at = Faker::Time.between(from: DateTime.now - 1000, to: DateTime.now - 1)
           c = Citation.create!(
             name:           Faker::Lorem.sentence,
             pmid:           Faker::Number.number(10),

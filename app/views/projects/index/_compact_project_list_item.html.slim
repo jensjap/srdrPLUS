@@ -34,12 +34,12 @@ div style="padding: 0.4rem; font-weight: bold;"
       .cell.auto
         - pu_count = @projects_projects_user_counts[project.id]
         - pu_title = "Members (#{pu_count || 0})"
-        a = link_to pu_title, edit_project_path(project) + '#panel-projects-users', title: t('.members_and_roles'), style: "text-decoration:underline;"
+        a = link_to pu_title, edit_project_path(project, page: 'members_and_roles'), title: t('.members_and_roles'), style: "text-decoration:underline;"
 
       .cell.auto
         - kqp_count = @projects_key_questions_project_counts[project.id]
         - kqp_title = "Key Questions (#{kqp_count || 0})"
-        a = link_to kqp_title, edit_project_path(project) + '#panel-key-questions', title: t('.key_questions', style: "text-decoration:underline;"), style: "text-decoration:underline;"
+        a = link_to kqp_title, edit_project_path(project, page: 'key_questions'), title: t('.key_questions', style: "text-decoration:underline;"), style: "text-decoration:underline;"
 
       .cell.auto
         - cp_count = @projects_citations_project_counts[project.id]
@@ -63,7 +63,7 @@ div style="padding: 0.4rem; font-weight: bold;"
         = render partial: 'shared/select_export_type', locals: { project: project }
       - if project.leaders.include?(current_user)
         .cell.medium-5
-            = link_to 'Edit Project Information', edit_project_path(project), title: 'Edit Project Information', style: "text-decoration:underline;"
+            = link_to 'Edit Project Information', edit_project_path(project, page: 'info'), title: 'Edit Project Information', style: "text-decoration:underline;"
         .cell.medium-5
           = link_to 'Edit Extraction Form', build_extraction_forms_project_path(project.extraction_forms_projects.first), title: 'Edit Extraction Form', style: "text-decoration:underline;"
       - else
@@ -76,7 +76,8 @@ div style="padding: 0.4rem; font-weight: bold;"
           i.fi-list-thumbnails
         nav.project-item-menu style="margin: 0 !important; right: 0;"
           ul
-            li style="margin: 10px 0 10px 0" = link_to t('request_publication'), new_publishing_path(type: Project.to_s, id: project.id), title: t('request_publication')
+            li style="margin: 10px 0 10px 0" = link_to "Import Tools", project_imports_path(project), title: 'Import Tools'
+            li style="margin: 10px 0 10px 0" = link_to 'Publication', new_publishing_path(type: Project.to_s, id: project.id), title: t('request_publication')
             li style="margin: 10px 0 10px 0" = link_to "SR-360", project_sd_meta_data_path(project), title: 'SR-360'
 
   - if project.publishing.present?

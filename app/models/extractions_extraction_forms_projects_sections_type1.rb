@@ -97,16 +97,11 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   has_one :ordering, as: :orderable, dependent: :destroy
 
-  has_many :extractions_extraction_forms_projects_sections_type1_rows,                 dependent: :destroy,
-                                                                                       inverse_of: :extractions_extraction_forms_projects_sections_type1
-  has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy,
-                                                                                       inverse_of: :extractions_extraction_forms_projects_sections_type1
-  has_many :extractions_extraction_forms_projects_sections_followup_fields, dependent: :destroy,
-                                                                            inverse_of: :extractions_extraction_forms_projects_sections_type1
-  has_many :tps_arms_rssms,                                                            dependent: :destroy,
-                                                                                       inverse_of: :extractions_extraction_forms_projects_sections_type1
-  has_many :comparisons_arms_rssms,                                                    dependent: :destroy,
-                                                                                       inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :extractions_extraction_forms_projects_sections_type1_rows,                 dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :extractions_extraction_forms_projects_sections_followup_fields,            dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :tps_arms_rssms,                                                            dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :comparisons_arms_rssms,                                                    dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
 
   has_many :comparable_elements, as: :comparable, dependent: :destroy
 
@@ -135,11 +130,11 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   # by timepoint, arm, and measure.
   def tps_arms_rssms_values(eefpst1rc_id, rssm)
     recordables = tps_arms_rssms
-                  .where(
-                    timepoint_id: eefpst1rc_id,
-                    result_statistic_sections_measure: rssm
-                  )
-    Record.where(recordable: recordables).pluck(:name).join('\r')
+      .where(
+        timepoint_id: eefpst1rc_id,
+        result_statistic_sections_measure: rssm)
+
+    Record.where(recordable: recordables.first).first.try(:name)
   end
 
   # Do not overwrite existing entries but associate to one that already exists or create a new one.
