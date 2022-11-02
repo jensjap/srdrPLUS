@@ -53,7 +53,8 @@ class AbstractScreeningResult < ApplicationRecord
     return true if abstract_screening.single_screening?
 
     if abstract_screening.exclusive_users
-      relevant_asrs = AbstractScreeningResult.where(abstract_screening:, citations_project:, user: users)
+      relevant_asrs = AbstractScreeningResult.where(abstract_screening:, citations_project:,
+                                                    user: abstract_screening.users)
       required_asrs_pilot_count = abstract_screening.abstract_screenings_users.count
     else
       relevant_asrs = AbstractScreeningResult.where(abstract_screening:, citations_project:)
