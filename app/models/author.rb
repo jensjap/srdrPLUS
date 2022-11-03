@@ -19,6 +19,15 @@ class Author < ApplicationRecord
   has_many :citations_projects, through: :citations
 
   acts_as_paranoid
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    authors_citations.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    citations.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
 
   def initials
     *rest, last = name.split

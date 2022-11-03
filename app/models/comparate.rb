@@ -13,7 +13,7 @@
 class Comparate < ApplicationRecord
   acts_as_paranoid
 
-  after_commit :set_extraction_stale, on: [:create, :update, :destroy]
+  after_commit :set_extraction_stale, on: %i[create update destroy]
 
   belongs_to :comparate_group,    inverse_of: :comparates
   belongs_to :comparable_element, inverse_of: :comparates, dependent: :destroy
@@ -22,9 +22,11 @@ class Comparate < ApplicationRecord
 
   private
 
-    def set_extraction_stale
-      self.comparate_group.comparison.comparisons_result_statistic_sections.each do |crss|
-        crss.result_statistic_section.population.extraction.extraction_checksum.update( is_stale: true ) unless crss.result_statistic_section.population.extraction.deleted?
+  def set_extraction_stale
+    comparate_group&.comparison&.comparisons_result_statistic_sections&.each do |crss|
+      unless crss.result_statistic_section.population.extraction.nil? || crss.result_statistic_section.population.extraction.deleted?
+        crss.result_statistic_section.population.extraction.extraction_checksum.update(is_stale: true)
       end
     end
+  end
 end

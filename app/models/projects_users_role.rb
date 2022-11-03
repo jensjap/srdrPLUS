@@ -15,6 +15,27 @@ class ProjectsUsersRole < ApplicationRecord
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    assignments.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    extractions.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    taggings.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    labels_reasons.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    labels.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    notes.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
 
   scope :by_project, ->(project) { joins(projects_user: :project).where(projects_users: { project: project.id }) }
 
@@ -30,11 +51,14 @@ class ProjectsUsersRole < ApplicationRecord
   has_many :extractions, inverse_of: :projects_users_role, dependent: :destroy
 
   has_many :projects_users_roles_teams
-  has_many :teams, through: :projects_users_roles_teams, dependent: :destroy
+  has_many :teams, through: :projects_users_roles_teams
 
   has_many :taggings, dependent: :destroy, inverse_of: :projects_users_role
-  has_many :tags, through: :taggings, dependent: :destroy
+  has_many :tags, through: :taggings
 
+  has_many :labels_reasons, dependent: :destroy, inverse_of: :projects_users_role
+
+  has_many :labels, dependent: :destroy, inverse_of: :projects_users_role
   has_many :notes, dependent: :destroy, inverse_of: :projects_users_role
 
   before_destroy :reassign_extraction

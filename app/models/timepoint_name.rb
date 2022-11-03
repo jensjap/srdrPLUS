@@ -18,6 +18,15 @@ class TimepointName < ApplicationRecord
   include SharedQueryableMethods
 
   acts_as_paranoid
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    extractions_extraction_forms_projects_sections_type1_row_columns.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    extraction_forms_projects_sections_type1s_timepoint_names.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
 
   after_create :test_isValidUCUM
 

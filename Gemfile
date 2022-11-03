@@ -86,7 +86,6 @@ gem 'slim-rails'
 gem 'sortable-rails' # List reordering, Drag & Drop.
 gem 'tailwindcss-rails', '~> 2.0'
 gem 'toastr_rails'
-gem 'turnout' # Easy maintenance mode
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby] # Windows does not include zoneinfo files
 gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
 gem 'zip-zip' # Spreadsheet reading.

@@ -26,6 +26,33 @@ class Project < ApplicationRecord
   attr_accessor :create_empty
 
   acts_as_paranoid
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    Publishing.with_deleted.where(publishable_type: self.class, publishable_id: id).each(&:really_destroy!)
+    KeyQuestionsProject
+      .with_deleted
+      .where(project_id: id)
+      .each(&:really_destroy!)
+    extractions.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    extraction_forms_projects.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    projects_studies.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    projects_users.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    citations_projects.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    tasks.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
+
   searchkick
 
   paginates_per 8
@@ -102,7 +129,7 @@ class Project < ApplicationRecord
   has_many :tasks, dependent: :destroy, inverse_of: :project
   has_many :assignments, through: :tasks, dependent: :destroy
 
-  has_many :screening_options
+  has_many :screening_options, dependent: :destroy, inverse_of: :project
   has_many :screening_option_types, through: :screening_options
 
   has_many :sd_meta_data
@@ -296,36 +323,6 @@ class Project < ApplicationRecord
       )
       .having('count(*) > 1')
       .length > 0
-
-    is_any_citation_added_to_project_multiple_times || is_the_same_citation_added_to_the_database_multiple_times_and_referenced_multiple_times
-  end
-
-  def dedupe_citations
-    # This takes care of citations that have been added to the project
-    # multiple times.
-    citations_projects
-      .group(:citation_id, :project_id)
-      .having('count(*) > 1')
-      .each do |cp|
-      cp.dedupe
-    end
-
-    sub_query = citations
-                .select(
-                  :citation_type_id,
-                  :name,
-                  :refman,
-                  :pmid,
-                  :abstract
-                )
-                .group(
-                  :citation_type_id,
-                  :name,
-                  :refman,
-                  :pmid,
-                  :abstract
-                )
-                .having('count(*) > 1').length > 0
 
     is_any_citation_added_to_project_multiple_times || is_the_same_citation_added_to_the_database_multiple_times_and_referenced_multiple_times
   end

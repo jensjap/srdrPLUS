@@ -32,6 +32,13 @@ class ExtractionFormsProject < ApplicationRecord
   attr_accessor :create_empty
 
   acts_as_paranoid column: :active, sentinel_value: true
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    ExtractionFormsProjectsSection
+      .with_deleted
+      .where(extraction_forms_project_id: id)
+      .each(&:really_destroy!)
+  end
 
   # Get all ExtractionFormsProject items that are linked to a particular Extraction.
   # scope :by_extraction, -> (extraction_id) {
@@ -57,7 +64,7 @@ class ExtractionFormsProject < ApplicationRecord
 
   belongs_to :extraction_forms_project_type, inverse_of: :extraction_forms_projects, optional: true
   belongs_to :extraction_form,               inverse_of: :extraction_forms_projects
-  belongs_to :project,                       inverse_of: :extraction_forms_projects, touch: true
+  belongs_to :project,                       inverse_of: :extraction_forms_projects # , touch: true
 
   has_many :extraction_forms_projects_sections,
            -> { ordered },

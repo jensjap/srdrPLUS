@@ -15,6 +15,16 @@ class QuestionRowColumn < ApplicationRecord
   attr_accessor :skip_callbacks
 
   acts_as_paranoid
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    Dependency.with_deleted.where(prerequisitable_type: self.class, prerequisitable_id: id).each(&:really_destroy!)
+    question_row_column_fields.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    question_row_columns_question_row_column_options.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
 
   after_create :create_default_question_row_column_options, unless: :skip_callbacks
   after_create :create_default_question_row_column_field, unless: :skip_callbacks
@@ -33,45 +43,43 @@ class QuestionRowColumn < ApplicationRecord
 
   amoeba do
     enable
-    customize(lambda { |original, cloned|
+    customize(lambda { |_original, cloned|
       cloned.skip_callbacks = true
     })
   end
 
-  #accepts_nested_attributes_for :question_row_column_fields
+  # accepts_nested_attributes_for :question_row_column_fields
   accepts_nested_attributes_for :question_row_columns_question_row_column_options, allow_destroy: true
 
   delegate :question,      to: :question_row
   delegate :question_type, to: :question_row
 
   def field_validation_value_for(name)
-    return QuestionRowColumnsQuestionRowColumnOption
+    QuestionRowColumnsQuestionRowColumnOption
       .find_by!(
         question_row_column: self,
-        question_row_column_option: QuestionRowColumnOption.find_by(name: name)
-    ).name
+        question_row_column_option: QuestionRowColumnOption.find_by(name:)
+      ).name
   end
 
   private
 
-    def create_default_question_row_column_options
-      QuestionRowColumnOption.all.each do |opt|
-        self.question_row_columns_question_row_column_options.create(
-          question_row_column: self,
-          question_row_column_option: opt
-        )
-      end
+  def create_default_question_row_column_options
+    QuestionRowColumnOption.all.each do |opt|
+      question_row_columns_question_row_column_options.create(
+        question_row_column: self,
+        question_row_column_option: opt
+      )
     end
+  end
 
-    def create_default_question_row_column_field
-      unless self.question_row_column_fields.present?
-        self.question_row_column_fields.create
-      end
-    end
+  def create_default_question_row_column_field
+    question_row_column_fields.create unless question_row_column_fields.present?
+  end
 
-    def ensure_question_row_column_fields
-      if self.question_row_column_type.name == QuestionRowColumnType::NUMERIC  # Numeric requires 2 fields.
-        self.question_row_column_fields.create! while self.question_row_column_fields.length < 2
-      end
+  def ensure_question_row_column_fields
+    if question_row_column_type.name == QuestionRowColumnType::NUMERIC  # Numeric requires 2 fields.
+      question_row_column_fields.create! while question_row_column_fields.length < 2
     end
+  end
 end

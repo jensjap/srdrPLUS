@@ -1,6 +1,19 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
+  # Maintenance Routes
+  ################################
+  #get 'maintenance', to: 'static_pages#about'
+  #get '/' => redirect('/maintenance')
+  #get '*path' => redirect('/maintenance')
+  #put '/' => redirect('/maintenance')
+  #put '*path' => redirect('/maintenance')
+  #post '/' => redirect('/maintenance')
+  #post '*path' => redirect('/maintenance')
+  #delete '/' => redirect('/maintenance')
+  #delete '*path' => redirect('/maintenance')
+  ################################
+
   get 'public_data', to: 'public_data#show'
 
   resources :publishings, only: %i[new create destroy]
