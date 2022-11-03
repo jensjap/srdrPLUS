@@ -72,16 +72,16 @@ class SdMetaDatum < ApplicationRecord
   has_many :key_questions, -> { distinct }, through: :sd_key_questions
 
   has_many :sd_result_items, -> { ordered }, dependent: :destroy
-  has_many :sd_narrative_results, through: :sd_result_items, dependent: :destroy
-  has_many :sd_evidence_tables, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :sd_network_meta_analysis_results, through: :sd_result_items, dependent: :destroy
-  has_many :sd_pairwise_meta_analytic_results, through: :sd_result_items, dependent: :destroy
-  has_many :sd_meta_regression_analysis_results, through: :sd_result_items, dependent: :destroy
+  has_many :sd_narrative_results, -> { ordered }, through: :sd_result_items, dependent: :destroy
+  has_many :sd_evidence_tables, -> { ordered }, through: :sd_result_items, dependent: :destroy
+  has_many :sd_network_meta_analysis_results, -> { ordered }, through: :sd_result_items, dependent: :destroy
+  has_many :sd_pairwise_meta_analytic_results, -> { ordered }, through: :sd_result_items, dependent: :destroy
+  has_many :sd_meta_regression_analysis_results, -> { ordered }, through: :sd_result_items, dependent: :destroy
 
   has_many :sd_key_questions_projects, through: :sd_key_questions, inverse_of: :sd_meta_datum
   has_many :project_key_questions, through: :sd_key_questions_projects, source: :key_question
 
-  has_many :sd_key_questions_sd_picods, through: :sd_key_questions, dependent: :destroy
+  has_many :sd_key_questions_sd_picods, -> { ordered }, through: :sd_key_questions, dependent: :destroy
 
   has_many :sd_journal_article_urls, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_other_items, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
