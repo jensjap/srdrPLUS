@@ -73,7 +73,7 @@
         <div class="border border-slate-200 rounded-md">
           <div
             class="p-2 text-sm text-gray-500 border-b border-slate-200"
-            x-text="aso.type"
+            x-text="`Abstract Screening Type: ${aso.type}`"
           ></div>
           <template x-for="asr in aso.asrs">
             <div class="p-2 border-b border-slate-200">
@@ -102,6 +102,45 @@
                   Override Label
                 </button>
               </div> -->
+            </div>
+          </template>
+        </div>
+      </template>
+      <template
+        x-for="fso in results[detailedResult].fulltext_screening_objects"
+      >
+        <div class="border border-slate-200 rounded-md">
+          <div
+            class="p-2 text-sm text-gray-500 border-b border-slate-200"
+            x-text="`Fulltext Screening Type: ${fso.type}`"
+          ></div>
+          <template x-for="fsr in fso.fsrs">
+            <div class="p-2 border-b border-slate-200">
+              <div>
+                <div class="text-sm text-gray-500">
+                  Users:
+                  <span x-text="fsr.user"></span>
+                </div>
+                <div class="text-sm text-gray-500">
+                  Label: <span x-text="fsr.label"></span>
+                </div>
+                <div class="text-sm text-gray-500">
+                  Reasons: <span x-text="fsr.reasons"></span>
+                </div>
+                <div class="text-sm text-gray-500">
+                  Tags: <span x-text="fsr.tags"></span>
+                </div>
+                <div class="text-sm text-gray-500">
+                  Notes: <span x-text="fsr.notes"></span>
+                </div>
+              </div>
+              <!-- <div>
+              <button
+                class="text-xs text-white bg-srdr-primary hover:bg-srdr-secondary p-1 cursor-pointer w-full"
+              >
+                Override Label
+              </button>
+            </div> -->
             </div>
           </template>
         </div>

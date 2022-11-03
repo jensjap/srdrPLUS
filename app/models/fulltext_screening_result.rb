@@ -27,24 +27,25 @@ class FulltextScreeningResult < ApplicationRecord
   delegate :project, to: :fulltext_screening
   delegate :citation, to: :citations_project
 
-  after_save :evaluate_screening_qualifications
+  after_commit :evaluate_screening_qualifications
 
   def evaluate_screening_qualifications
-    return if citations_project
-              .screening_qualifications
-              .where.not(user: nil)
-              .where("qualification_type LIKE 'fs-%'")
-              .present? ||
-              !citations_project_sufficiently_labeled?
-
-    case label
-    when 1
-      citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::FS_REJECTED).destroy_all
-      citations_project.screening_qualifications.find_or_create_by!(qualification_type: ScreeningQualification::FS_ACCEPTED)
-    when -1
-      citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::FS_ACCEPTED).destroy_all
-      citations_project.screening_qualifications.find_or_create_by!(qualification_type: ScreeningQualification::FS_REJECTED)
+    if citations_project
+       .screening_qualifications
+       .where.not(user: nil)
+       .where("qualification_type LIKE 'fs-%'")
+       .blank? &&
+       citations_project_sufficiently_labeled?
+      case label
+      when 1
+        citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::FS_REJECTED).destroy_all
+        citations_project.screening_qualifications.find_or_create_by!(qualification_type: ScreeningQualification::FS_ACCEPTED)
+      when -1
+        citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::FS_ACCEPTED).destroy_all
+        citations_project.screening_qualifications.find_or_create_by!(qualification_type: ScreeningQualification::FS_REJECTED)
+      end
     end
+
     citations_project.evaluate_screening_status
   end
 

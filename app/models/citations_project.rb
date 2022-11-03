@@ -58,6 +58,19 @@ class CitationsProject < ApplicationRecord
 
   accepts_nested_attributes_for :citation, reject_if: :all_blank
 
+  AS_UNSCREENED = 'asu'.freeze
+  AS_PARTIALLY_SCREENED = 'asps'.freeze
+  AS_IN_CONFLICT = 'asic'.freeze
+  AS_REJECTED = 'asr'.freeze
+  FS_UNSCREENED = 'fsu'.freeze
+  FS_PARTIALLY_SCREENED = 'fsps'.freeze
+  FS_IN_CONFLICT = 'fsic'.freeze
+  FS_REJECTED = 'fsr'.freeze
+  E_NEED_EXTRACTION = 'ene'.freeze
+  E_IN_PROGRESS = 'eic'.freeze
+  E_REJECTED = 'er'.freeze
+  E_COMPLETE = 'ec'.freeze
+
   # We find all CitationsProject entries that have the exact same citation_id
   # and project_id. Then we pick the first (oldest) one. We refer to it as the
   # "Master CP" and link associations from all other CitationsProject entries
@@ -210,29 +223,29 @@ class CitationsProject < ApplicationRecord
            eefps.status.name == 'Completed'
          end
        end
-      update(screening_status: :ec)
+      update(screening_status: E_COMPLETE)
     elsif extractions.present?
-      update(screening_status: :eip)
+      update(screening_status: E_IN_PROGRESS)
     elsif screening_qualifications.where(qualification_type: ScreeningQualification::E_REJECTED).present?
-      update(screening_status: :er)
+      update(screening_status: E_REJECTED)
     elsif screening_qualifications.where(qualification_type: ScreeningQualification::FS_REJECTED).present?
-      update(screening_status: :fsr)
+      update(screening_status: FS_REJECTED)
     elsif screening_qualifications.where(qualification_type: ScreeningQualification::FS_ACCEPTED).present?
-      update(screening_status: :ene)
+      update(screening_status: E_NEED_EXTRACTION)
     elsif fulltext_screening_results.where(label: -1).present? && fulltext_screening_results.where(label: 1).present?
-      update(screening_status: :fsic)
+      update(screening_status: FS_IN_CONFLICT)
     elsif fulltext_screening_results.present?
-      update(screening_status: :fsip)
+      update(screening_status: FS_PARTIALLY_SCREENED)
     elsif screening_qualifications.where(qualification_type: ScreeningQualification::AS_REJECTED).present?
-      update(screening_status: :asr)
+      update(screening_status: AS_REJECTED)
     elsif screening_qualifications.where(qualification_type: ScreeningQualification::AS_ACCEPTED).present?
-      update(screening_status: :fsu)
+      update(screening_status: FS_UNSCREENED)
     elsif abstract_screening_results.where(label: -1).present? && abstract_screening_results.where(label: 1).present?
-      update(screening_status: :asic)
+      update(screening_status: AS_IN_CONFLICT)
     elsif abstract_screening_results.present?
-      update(screening_status: :asip)
+      update(screening_status: AS_PARTIALLY_SCREENED)
     else
-      update(screening_status: :asu)
+      update(screening_status: AS_UNSCREENED)
     end
 
     reindex
