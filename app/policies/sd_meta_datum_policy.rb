@@ -7,11 +7,11 @@ class SdMetaDatumPolicy < ApplicationPolicy
   end
 
   def index?
-    project_contributor?
+    project_auditor?
   end
 
   def show?
-    project_contributor?
+    project_auditor?
   end
 
   def create?
