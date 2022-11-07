@@ -17,7 +17,6 @@ class ExportedItem < ApplicationRecord
   belongs_to :export_type
   belongs_to :user, optional: true
   belongs_to :project
-  belongs_to :projects_user
 
   has_one_attached :file
 end

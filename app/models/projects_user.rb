@@ -42,7 +42,6 @@ class ProjectsUser < ApplicationRecord
   has_many :term_groups_colors, through: :projects_users_term_groups_colors, dependent: :destroy
 
   has_many :sd_meta_data_queries, dependent: :destroy
-  has_many :exported_items, dependent: :destroy, inverse_of: :projects_user
 
   accepts_nested_attributes_for :imports, allow_destroy: true
   accepts_nested_attributes_for :imported_files, allow_destroy: true
