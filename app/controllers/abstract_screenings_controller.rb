@@ -1,7 +1,7 @@
 class AbstractScreeningsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: %i[update_word_weight kpis]
 
-  before_action :set_project, only: %i[index new create citation_lifecycle_management kpis]
+  before_action :set_project, only: %i[index new create citation_lifecycle_management export_screening_data kpis]
   before_action :set_abstract_screening, only: %i[update_word_weight screen]
   after_action :verify_authorized
 
@@ -55,6 +55,13 @@ class AbstractScreeningsController < ApplicationController
         @total_pages = (@citations_projects.response['hits']['total']['value'] / per_page) + 1
         @es_hits = @citations_projects.response['hits']['hits'].map { |hit| hit['_source'] }
       end
+    end
+  end
+
+  def export_screening_data
+    authorize(@project, policy_class: AbstractScreeningPolicy)
+    respond_to do |format|
+      format.xlsx
     end
   end
 

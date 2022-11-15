@@ -1,11 +1,25 @@
 <div x-data="$store.dashboard">
-  <h1 class="text-xl font-bold">Citation Phase Management</h3>
-    <p class="mt-2 text-sm text-gray-700" x-text="`(Number of Citations: ${$store.dashboard.kpis.count})`"></p>
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-xl font-bold">Citation Phase Management</h1>
+      <p
+        class="mt-2 text-sm text-gray-700"
+        x-text="`(Number of Citations: ${$store.dashboard.kpis.count})`"
+      ></p>
+    </div>
+    <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+      <%= link_to('Export Screening Data in XLSX',
+      "#{project_export_screening_data_path(@project)}.xlsx", class:
+      "inline-flex items-center justify-center rounded-md border
+      border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white
+      shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2
+      focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
+      hover:text-white") %>
+    </div>
+  </div>
   <dl class="mt-5 grid grid-cols-1 gap-3 lg:grid-cols-3">
     <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
-      <dt class="text-sm font-medium text-gray-500 truncate">
-        I. Citation
-      </dt>
+      <dt class="text-sm font-medium text-gray-500 truncate">I. Citation</dt>
       <dd class="mt-1 font-semibold text-gray-900">
         <div>
           <span
@@ -59,9 +73,7 @@
     </div>
 
     <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
-      <dt class="text-sm font-medium text-gray-500 truncate">
-        II. Fulltext
-      </dt>
+      <dt class="text-sm font-medium text-gray-500 truncate">II. Fulltext</dt>
       <dd class="mt-1 font-semibold text-gray-900">
         <div>
           <span
@@ -152,7 +164,9 @@
             >
               ..
             </span>
-            <span class="text-xs font-extralight text-gray-500">rejected (er)</span>
+            <span class="text-xs font-extralight text-gray-500"
+              >rejected (er)</span
+            >
           </div>
           <div>
             <span
@@ -162,7 +176,9 @@
             >
               ..
             </span>
-            <span class="text-xs font-extralight text-gray-500">complete (ec)</span>
+            <span class="text-xs font-extralight text-gray-500"
+              >complete (ec)</span
+            >
           </div>
         </div>
       </dd>
@@ -174,7 +190,7 @@
   document.addEventListener("alpine:init", () => {
     Alpine.store("dashboard", {
       kpis: {
-        count: '..',
+        count: "..",
         asu: "..",
         asps: "..",
         asic: "..",

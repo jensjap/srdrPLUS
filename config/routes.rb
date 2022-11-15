@@ -3,15 +3,15 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
   # Maintenance Routes
   ################################
-  #get 'maintenance', to: 'static_pages#about'
-  #get '/' => redirect('/maintenance')
-  #get '*path' => redirect('/maintenance')
-  #put '/' => redirect('/maintenance')
-  #put '*path' => redirect('/maintenance')
-  #post '/' => redirect('/maintenance')
-  #post '*path' => redirect('/maintenance')
-  #delete '/' => redirect('/maintenance')
-  #delete '*path' => redirect('/maintenance')
+  # get 'maintenance', to: 'static_pages#about'
+  # get '/' => redirect('/maintenance')
+  # get '*path' => redirect('/maintenance')
+  # put '/' => redirect('/maintenance')
+  # put '*path' => redirect('/maintenance')
+  # post '/' => redirect('/maintenance')
+  # post '*path' => redirect('/maintenance')
+  # delete '/' => redirect('/maintenance')
+  # delete '*path' => redirect('/maintenance')
   ################################
 
   get 'public_data', to: 'public_data#show'
@@ -117,7 +117,7 @@ Rails.application.routes.draw do
           patch 'update_positions'
         end
       end
-    end  # END namespace :v1 do
+    end # END namespace :v1 do
 
     namespace :v2 do
       resources :mesh_descriptors, only: [:index]
@@ -178,6 +178,7 @@ Rails.application.routes.draw do
   resources :data_audits, only: %i[index update]
   resources :projects, concerns: :paginatable, shallow: true do
     get 'citation_lifecycle_management', to: 'abstract_screenings#citation_lifecycle_management'
+    get 'export_screening_data', to: 'abstract_screenings#export_screening_data'
     get 'kpis', to: 'abstract_screenings#kpis'
 
     resources :abstract_screenings do
