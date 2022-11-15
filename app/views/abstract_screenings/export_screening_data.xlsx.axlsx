@@ -12,7 +12,7 @@ wb.add_worksheet(name: "citations for project id #{@project.id}") do |sheet|
       'fulltext screening status',
       'extraction status',
       'sub status'
-    ]
+    ].map { |cell| cell.to_s.gsub(/\P{Print}|\p{Cf}/, '') }
   )
   @project.citations_projects.each do |cp|
     sd = cp.search_data
@@ -26,7 +26,7 @@ wb.add_worksheet(name: "citations for project id #{@project.id}") do |sheet|
         sd['abstract_qualification'],
         sd['fulltext_qualification'],
         sd['screening_status']
-      ]
+      ].map { |cell| cell.to_s.gsub(/\P{Print}|\p{Cf}/, '') }
     )
   end
 end
@@ -53,7 +53,7 @@ wb.add_worksheet(name: 'screening descriptions') do |sheet|
       'hide journal information',
       'selected reasons',
       'selected tags'
-    ]
+    ].map { |cell| cell.to_s.gsub(/\P{Print}|\p{Cf}/, '') }
   )
   @project.abstract_screenings.each do |as|
     sheet.add_row(
@@ -77,7 +77,7 @@ wb.add_worksheet(name: 'screening descriptions') do |sheet|
         as.hide_journal,
         as.reasons.map(&:name),
         as.tags.map(&:name)
-      ]
+      ].map { |cell| cell.to_s.gsub(/\P{Print}|\p{Cf}/, '') }
     )
   end
 end
@@ -105,7 +105,7 @@ end
       end
     end
     sheet.add_row(
-      headers
+      headers.map { |cell| cell.to_s.gsub(/\P{Print}|\p{Cf}/, '') }
     )
     as.abstract_screening_results.each do |asr|
       row = [
@@ -162,7 +162,7 @@ end
         end
       end
 
-      sheet.add_row(row)
+      sheet.add_row(row.map { |cell| cell.to_s.gsub(/\P{Print}|\p{Cf}/, '') })
     end
   end
 end
@@ -190,7 +190,7 @@ end
       end
     end
     sheet.add_row(
-      headers
+      headers.map { |cell| cell.to_s.gsub(/\P{Print}|\p{Cf}/, '') }
     )
     fs.fulltext_screening_results.each do |fsr|
       row = [
@@ -247,7 +247,7 @@ end
         end
       end
 
-      sheet.add_row(row)
+      sheet.add_row(row.map { |cell| cell.to_s.gsub(/\P{Print}|\p{Cf}/, '') })
     end
   end
 end
