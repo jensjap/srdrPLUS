@@ -12,7 +12,7 @@ wb.add_worksheet(name: "citations for project id #{@project.id}") do |sheet|
       'fulltext screening status',
       'extraction status',
       'sub status'
-    ].map { |cell| cell.to_s.gsub(/\P{Print}|\p{Cf}/, '') }
+    ].map { |cell| cell.to_s.gsub(/[^[:ascii:]]/, '') }
   )
   CitationsProject.search(where: { project_id: @project.id }, load: false).each do |cp|
     sheet.add_row(
@@ -26,7 +26,7 @@ wb.add_worksheet(name: "citations for project id #{@project.id}") do |sheet|
         cp['fulltext_qualification'],
         cp['extraction_qualification'],
         cp['screening_status']
-      ].map { |cell| cell.to_s.gsub(/\P{Print}|\p{Cf}/, '') }
+      ].map { |cell| cell.to_s.gsub(/[^[:ascii:]]/, '') }
     )
   end
 end
@@ -53,7 +53,7 @@ wb.add_worksheet(name: 'screening descriptions') do |sheet|
       'hide journal information',
       'selected reasons',
       'selected tags'
-    ].map { |cell| cell.to_s.gsub(/\P{Print}|\p{Cf}/, '') }
+    ].map { |cell| cell.to_s.gsub(/[^[:ascii:]]/, '') }
   )
   @project.abstract_screenings.each do |as|
     sheet.add_row(
@@ -77,7 +77,7 @@ wb.add_worksheet(name: 'screening descriptions') do |sheet|
         as.hide_journal,
         as.reasons.map(&:name),
         as.tags.map(&:name)
-      ].map { |cell| cell.to_s.gsub(/\P{Print}|\p{Cf}/, '') }
+      ].map { |cell| cell.to_s.gsub(/[^[:ascii:]]/, '') }
     )
   end
 end
@@ -105,7 +105,7 @@ end
       end
     end
     sheet.add_row(
-      headers.map { |cell| cell.to_s.gsub(/\P{Print}|\p{Cf}/, '') }
+      headers.map { |cell| cell.to_s.gsub(/[^[:ascii:]]/, '') }
     )
     as.abstract_screening_results.each do |asr|
       row = [
@@ -125,35 +125,36 @@ end
             if sf_cell.nil?
               row << nil
             else
-              cell = "Answer Type: #{sf_cell.cell_type}\n"
+              cell = "Answer Type: #{sf_cell.cell_type}"
               sfars = SfAbstractRecord.where(sf_cell:, abstract_screening_result: asr)
               sfos = sf_cell.sf_options.order(:position)
               case sf_cell.cell_type
               when SfCell::TEXT
+                cell += "\n"
                 cell += sfars.map(&:value).join('\n')
               when SfCell::NUMERIC
                 sfars.each do |sfar|
+                  cell += "\n"
                   cell += sfar.equality if sf_cell.with_equality
                   cell += sfar.value
-                  cell += "\n"
                 end
               when SfCell::CHECKBOX, SfCell::DROPDOWN, SfCell::RADIO
                 sfos.each do |sfo|
                   record = sfars.select { |sfar| sfar.value == sfo.name }.first
+                  cell += "\n"
                   cell += "#{sfo.name}: #{record.nil? ? 'unselected' : 'selected'}"
                   cell += " [followup: #{record&.followup}]" if sfo.with_followup
-                  cell += "\n"
                 end
               when SfCell::SELECT_ONE, SfCell::SELECT_MULTIPLE
                 sfos.each do |sfo|
                   record = sfars.select { |sfar| sfar.value == sfo.name }.first
+                  cell += "\n"
                   cell += "#{sfo.name}: #{record.nil? ? 'unselected' : 'selected'}"
                   cell += " [followup: #{record&.followup}]" if sfo.with_followup
-                  cell += "\n"
                 end
                 sfars.select { |sfar| sfos.none? { |sfo| sfo.name == sfar.value } }.each do |sfar|
-                  cell += "#{sfar.value}: selected"
                   cell += "\n"
+                  cell += "#{sfar.value}: selected"
                 end
               end
               row << cell
@@ -162,7 +163,7 @@ end
         end
       end
 
-      sheet.add_row(row.map { |cell| cell.to_s.gsub(/\P{Print}|\p{Cf}/, '') })
+      sheet.add_row(row.map { |cell| cell.to_s.gsub(/[^[:ascii:]]/, '') })
     end
   end
 end
@@ -190,7 +191,7 @@ end
       end
     end
     sheet.add_row(
-      headers.map { |cell| cell.to_s.gsub(/\P{Print}|\p{Cf}/, '') }
+      headers.map { |cell| cell.to_s.gsub(/[^[:ascii:]]/, '') }
     )
     fs.fulltext_screening_results.each do |fsr|
       row = [
@@ -210,35 +211,36 @@ end
             if sf_cell.nil?
               row << nil
             else
-              cell = "Answer Type: #{sf_cell.cell_type}\n"
+              cell = "Answer Type: #{sf_cell.cell_type}"
               sffrs = SfFulltextRecord.where(sf_cell:, fulltext_screening_result: fsr)
               sfos = sf_cell.sf_options.order(:position)
               case sf_cell.cell_type
               when SfCell::TEXT
+                cell += "\n"
                 cell += sffrs.map(&:value).join('\n')
               when SfCell::NUMERIC
                 sffrs.each do |sffr|
+                  cell += "\n"
                   cell += sffr.equality if sf_cell.with_equality
                   cell += sffr.value
-                  cell += "\n"
                 end
               when SfCell::CHECKBOX, SfCell::DROPDOWN, SfCell::RADIO
                 sfos.each do |sfo|
                   record = sffrs.select { |sffr| sffr.value == sfo.name }.first
+                  cell += "\n"
                   cell += "#{sfo.name}: #{record.nil? ? 'unselected' : 'selected'}"
                   cell += " [followup: #{record&.followup}]" if sfo.with_followup
-                  cell += "\n"
                 end
               when SfCell::SELECT_ONE, SfCell::SELECT_MULTIPLE
                 sfos.each do |sfo|
                   record = sffrs.select { |sffr| sffr.value == sfo.name }.first
+                  cell += "\n"
                   cell += "#{sfo.name}: #{record.nil? ? 'unselected' : 'selected'}"
                   cell += " [followup: #{record&.followup}]" if sfo.with_followup
-                  cell += "\n"
                 end
                 sffrs.select { |sffr| sfos.none? { |sfo| sfo.name == sffr.value } }.each do |sffr|
-                  cell += "#{sffr.value}: selected"
                   cell += "\n"
+                  cell += "#{sffr.value}: selected"
                 end
               end
               row << cell
@@ -247,7 +249,7 @@ end
         end
       end
 
-      sheet.add_row(row.map { |cell| cell.to_s.gsub(/\P{Print}|\p{Cf}/, '') })
+      sheet.add_row(row.map { |cell| cell.to_s.gsub(/[^[:ascii:]]/, '') })
     end
   end
 end
