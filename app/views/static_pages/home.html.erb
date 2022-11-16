@@ -24,7 +24,7 @@
             class="mt-16 sm:mt-24 lg:col-span-6 lg:mt-0 flex flex-col justify-center"
           >
             <div
-              class="bg-white sm:mx-auto sm:w-full sm:max-w-md sm:overflow-hidden sm:rounded-lg"
+              class="bg-white sm:mx-auto sm:w-full sm:max-w-md sm:overflow-hidden sm:rounded-md"
             >
               <div class="px-4 py-8 sm:px-10">
                 <div class="flex flex-col justify-center">
@@ -49,13 +49,13 @@
   </div>
 
   <div class="relative -mt-12">
-    <div class="mx-auto max-w-7xl">
-      <div class="rounded-md bg-white shadow-md py-8">
-        <h1
+    <div class="mx-auto max-w-7xl mb-12">
+      <div class="rounded-md bg-white shadow-md py-8 xl:py-16">
+        <h2
           class="text-center text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl font-serif"
         >
           See how you can work with SRDR+
-        </h1>
+        </h2>
         <div class="px-8 lg:px-36">
           <dl class="mt-10 space-y-10">
             <div class="relative">
@@ -159,124 +159,257 @@
     </div>
   </div>
 
-  <div class="mx-auto max-w-7xl p-4 xl:p-0">
-    <div
-      class="relative mt-6 lg:mt-24 lg:grid lg:grid-cols-2 lg:items-center lg:gap-8"
-    >
-      <div class="relative lg:order-2">
-        <h3
-          class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl font-serif"
+  <div class="relative bg-slate-50">
+    <div class="mx-auto max-w-7xl p-4 xl:px-0 xl:py-16">
+      <div class="relative">
+        <h2
+          class="text-center text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl font-serif"
         >
-          Create your systematic review project today
-        </h3>
-        <p class="mt-3 text-lg text-gray-500">
-          SRDR+ has a variety of features that make it the best place to conduct
-          systematic reviews.
-        </p>
+          More than just features
+        </h2>
+      </div>
+      <div
+        class="relative mt-6 lg:mt-24 lg:grid lg:grid-cols-2 lg:items-center lg:gap-8"
+      >
+        <div class="relative lg:order-2">
+          <h3
+            class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl font-serif"
+          >
+            Create your systematic review project today
+          </h3>
+          <p class="mt-3 text-lg text-gray-500">
+            SRDR+ has a variety of features that make it the best place to
+            conduct systematic reviews.
+          </p>
+        </div>
+
+        <div class="relative mt-10 lg:mt-0" aria-hidden="true">
+          <div
+            class="bg-white min-h-[3rem] my-4 pl-4 py-4 shadow-md rounded-md flex items-center"
+          >
+            <div
+              class="absolute flex h-8 w-8 items-center justify-center rounded-md text-srdr-primary"
+            >
+              <%= image_tag 'icon-extraction-form.png', alt: 'extraction-form'
+              %>
+            </div>
+            <div class="ml-16 text-lg font-medium leading-6 text-gray-900">
+              Build electronic data extraction forms
+            </div>
+          </div>
+          <div
+            class="bg-white min-h-[3rem] my-4 pl-4 py-4 shadow-md rounded-md flex items-center"
+          >
+            <div
+              class="absolute flex h-8 w-8 items-center justify-center rounded-md text-srdr-primary"
+            >
+              <%= image_tag 'icon-include-studies.png', alt: 'include-studies'
+              %>
+            </div>
+            <div class="ml-16 text-lg font-medium leading-6 text-gray-900">
+              Extract and compare data
+            </div>
+          </div>
+          <div
+            class="bg-white min-h-[3rem] my-4 pl-4 py-4 shadow-md rounded-md flex items-center"
+          >
+            <div
+              class="absolute flex h-8 w-8 items-center justify-center rounded-md text-srdr-primary"
+            >
+              <%= image_tag 'icon-collaboration.png', alt: 'collaboration' %>
+            </div>
+            <div class="ml-16 text-lg font-medium leading-6 text-gray-900">
+              Collaborate with your team
+            </div>
+          </div>
+          <div
+            class="bg-white min-h-[3rem] my-4 pl-4 py-4 shadow-md rounded-md flex items-center"
+          >
+            <div
+              class="absolute flex h-8 w-8 items-center justify-center rounded-md text-srdr-primary"
+            >
+              <%= image_tag 'icon-export.png', alt: 'export' %>
+            </div>
+            <div class="ml-16 text-lg font-medium leading-6 text-gray-900">
+              Customize exports of your datasets
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="relative mt-10 lg:mt-0" aria-hidden="true">
-        <div
-          class="min-h-[3rem] my-4 pl-4 py-4 shadow-md rounded-md flex items-center"
-        >
-          <div
-            class="absolute flex h-8 w-8 items-center justify-center rounded-md text-srdr-primary"
+      <div
+        class="relative mt-6 lg:mt-24 lg:grid lg:grid-cols-2 lg:items-center lg:gap-8"
+      >
+        <div class="relative">
+          <h3
+            class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl font-serif"
           >
-            <%= image_tag 'icon-extraction-form.png', alt: 'extraction-form' %>
-          </div>
-          <div class="ml-16 text-lg font-medium leading-6 text-gray-900">
-            Build electronic data extraction forms
-          </div>
+            Access study data from published systematic reviews today.
+          </h3>
+          <p class="mt-3 text-lg text-gray-500">
+            Find and organize what you are.
+          </p>
         </div>
-        <div
-          class="min-h-[3rem] my-4 pl-4 py-4 shadow-md rounded-md flex items-center"
-        >
+        <div class="relative mt-10 lg:mt-0" aria-hidden="true">
           <div
-            class="absolute flex h-8 w-8 items-center justify-center rounded-md text-srdr-primary"
+            class="bg-white min-h-[3rem] my-4 pl-4 py-4 shadow-md rounded-md flex items-center"
           >
-            <%= image_tag 'icon-include-studies.png', alt: 'include-studies' %>
+            <div
+              class="absolute flex h-8 w-8 items-center justify-center rounded-md text-srdr-primary"
+            >
+              <%= image_tag 'icon-browse-topic.png', alt: 'browse-topic' %>
+            </div>
+            <div class="ml-16 text-lg font-medium leading-6 text-gray-900">
+              Browse topics with available study data
+            </div>
           </div>
-          <div class="ml-16 text-lg font-medium leading-6 text-gray-900">
-            Extract and compare data
-          </div>
-        </div>
-        <div
-          class="min-h-[3rem] my-4 pl-4 py-4 shadow-md rounded-md flex items-center"
-        >
           <div
-            class="absolute flex h-8 w-8 items-center justify-center rounded-md text-srdr-primary"
+            class="bg-white min-h-[3rem] my-4 pl-4 py-4 shadow-md rounded-md flex items-center"
           >
-            <%= image_tag 'icon-collaboration.png', alt: 'collaboration' %>
+            <div
+              class="absolute flex h-8 w-8 items-center justify-center rounded-md text-srdr-primary"
+            >
+              <%= image_tag 'icon-download-data.png', alt: 'download-data' %>
+            </div>
+            <div class="ml-16 text-lg font-medium leading-6 text-gray-900">
+              Download study data
+            </div>
           </div>
-          <div class="ml-16 text-lg font-medium leading-6 text-gray-900">
-            Collaborate with your team
-          </div>
-        </div>
-        <div
-          class="min-h-[3rem] my-4 pl-4 py-4 shadow-md rounded-md flex items-center"
-        >
           <div
-            class="absolute flex h-8 w-8 items-center justify-center rounded-md text-srdr-primary"
+            class="bg-white min-h-[3rem] my-4 pl-4 py-4 shadow-md rounded-md flex items-center"
           >
-            <%= image_tag 'icon-export.png', alt: 'export' %>
-          </div>
-          <div class="ml-16 text-lg font-medium leading-6 text-gray-900">
-            Customize exports of your datasets
+            <div
+              class="absolute flex h-8 w-8 items-center justify-center rounded-md text-srdr-primary"
+            >
+              <%= image_tag 'icon-use-data.png', alt: 'use-data' %>
+            </div>
+            <div class="ml-16 text-lg font-medium leading-6 text-gray-900">
+              Use study data in your own systematic review
+            </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <div
-      class="relative mt-6 lg:mt-24 lg:grid lg:grid-cols-2 lg:items-center lg:gap-8"
-    >
-      <div class="relative">
-        <h3
-          class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl font-serif"
+  <div class="relative">
+    <div class="mx-auto max-w-7xl p-4 xl:px-0 xl:py-16">
+      <h2
+        class="pb-16 text-center text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl font-serif"
+      >
+        Leading professionals love SRDR+
+      </h2>
+      <div class="space-y-12">
+        <ul
+          role="list"
+          class="list-none space-y-4 sm:grid sm:grid-cols-2 sm:gap-6 sm:space-y-0 lg:grid-cols-2 lg:gap-8"
         >
-          Access study data from published systematic reviews today.
-        </h3>
-        <p class="mt-3 text-lg text-gray-500">
-          Find and organize what you are looking for with a variety of tools.
-        </p>
-      </div>
-      <div class="relative mt-10 lg:mt-0" aria-hidden="true">
-        <div
-          class="min-h-[3rem] my-4 pl-4 py-4 shadow-md rounded-md flex items-center"
-        >
-          <div
-            class="absolute flex h-8 w-8 items-center justify-center rounded-md text-srdr-primary"
-          >
-            <%= image_tag 'icon-browse-topic.png', alt: 'browse-topic' %>
-          </div>
-          <div class="ml-16 text-lg font-medium leading-6 text-gray-900">
-            Browse topics with available study data
-          </div>
-        </div>
-        <div
-          class="min-h-[3rem] my-4 pl-4 py-4 shadow-md rounded-md flex items-center"
-        >
-          <div
-            class="absolute flex h-8 w-8 items-center justify-center rounded-md text-srdr-primary"
-          >
-            <%= image_tag 'icon-download-data.png', alt: 'download-data' %>
-          </div>
-          <div class="ml-16 text-lg font-medium leading-6 text-gray-900">
-            Download study data
-          </div>
-        </div>
-        <div
-          class="min-h-[3rem] my-4 pl-4 py-4 shadow-md rounded-md flex items-center"
-        >
-          <div
-            class="absolute flex h-8 w-8 items-center justify-center rounded-md text-srdr-primary"
-          >
-            <%= image_tag 'icon-use-data.png', alt: 'use-data' %>
-          </div>
-          <div class="ml-16 text-lg font-medium leading-6 text-gray-900">
-            Use study data in your own systematic review
-          </div>
-        </div>
+          <li class="py-6 px-6 text-center xl:px-10 xl:text-left">
+            <div>
+              <blockquote>
+                <p class="italic font-bold py-4">
+                  “In my regard, SRDR is among the most relevant developments in
+                  recent years!”
+                </p>
+              </blockquote>
+              <%= image_tag 'testimonial-matthias-perleth.png', class: 'mx-auto
+              h-20 w-20 rounded-full xl:h-28 xl:w-28', alt: 'Image of Matthias
+              Perleth' %>
+              <div class="space-y-2 xl:flex xl:items-center xl:justify-between">
+                <div class="space-y-1 text-lg font-medium leading-6 w-full">
+                  <h3 class="font-serif !text-base font-bold">
+                    Mathias Perleth, MPH
+                  </h3>
+                  <p class="text-xs">
+                    Board Treasurer, International Network of Agencies for
+                    Health Technology Assessment [INAHTA], Germany
+                  </p>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="py-6 px-6 text-center xl:px-10 xl:text-left">
+            <div>
+              <blockquote>
+                <p class="italic font-bold py-4">
+                  “I like SRDR’s use of the Tabs and the separation by topic
+                  area of the Tabs; it allows for focus on sections of a paper
+                  at a time. SRDR is powerful and adaptable, provides a way to
+                  standardize diverse results, and provides structure.“
+                </p>
+              </blockquote>
+              <%= image_tag 'testimonial-christine-clifford.png', class:
+              'mx-auto h-20 w-20 rounded-full xl:h-28 xl:w-28', alt: 'Image of
+              Christine Clifford Perleth' %>
+              <div class="space-y-2 xl:flex xl:items-center xl:justify-between">
+                <div class="space-y-1 text-lg font-medium leading-6 w-full">
+                  <h3 class="font-serif !text-base font-bold">
+                    Christine Clifford, MHP
+                  </h3>
+                  <p class="text-xs">
+                    Project Director, Eunice Kennedy Shriver Center, University
+                    of Massachusetts Medical School, USA
+                  </p>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="py-6 px-6 text-center xl:px-10 xl:text-left">
+            <div>
+              <blockquote>
+                <p class="italic font-bold py-4">
+                  “SRDR is one of the few data systems designed specifically for
+                  producing and archiving systematic reviews with the intention
+                  to share the data with the public. It’s extremely flexible and
+                  it allows users to design their forms (and data items on the
+                  forms) in a way that best suit their needs and workflow.”
+                </p>
+              </blockquote>
+              <%= image_tag 'testimonial-tianjing-li.png', class: 'mx-auto h-20
+              w-20 rounded-full xl:h-28 xl:w-28', alt: 'Image of Tianjing Li' %>
+              <div class="space-y-2 xl:flex xl:items-center xl:justify-between">
+                <div class="space-y-1 text-lg font-medium leading-6 w-full">
+                  <h3 class="font-serif !text-base font-bold">
+                    Tianjing Li, MD, MHS, PhD
+                  </h3>
+                  <p class="text-xs">
+                    Director, Cochrane Eyes and Vision United States Satellite,
+                    Associate Professor, Johns Hopkins Bloomberg School of
+                    Public Health, USA
+                  </p>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="py-6 px-6 text-center xl:px-10 xl:text-left">
+            <div>
+              <blockquote>
+                <p class="italic font-bold py-4">
+                  “The structure of SRDR lends itself well to teaching
+                  metacognitive processes associated with linking the discrete
+                  steps of the evidence analysis process. Another benefit is the
+                  flexibility of SRDR to handle diagnostic accuracy as well as
+                  etiology, treatment, and prognosis questions during systematic
+                  reviews.”
+                </p>
+              </blockquote>
+              <%= image_tag 'testimonial-james-scott-parrott.png', class:
+              'mx-auto h-20 w-20 rounded-full xl:h-28 xl:w-28', alt: 'Image of
+              James Scott Parrott' %>
+              <div class="space-y-2 xl:flex xl:items-center xl:justify-between">
+                <div class="space-y-1 text-lg font-medium leading-6 w-full">
+                  <h3 class="font-serif !text-base font-bold">
+                    James Scott Parrott, PhD
+                  </h3>
+                  <p class="text-xs">
+                    Professor, Rutgers University School of Health Professions,
+                    USA
+                  </p>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
