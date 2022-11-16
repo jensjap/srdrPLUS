@@ -1,0 +1,50 @@
+<div class="relative overflow-hidden hero-background bg-srdr-primary">
+  <div class="relative pt-6 pb-16 sm:pb-24">
+    <main class="mt-16 sm:mt-24">
+      <div class="mx-auto max-w-7xl">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+          <div
+            class="px-4 sm:px-6 sm:text-center md:mx-auto md:max-w-2xl lg:col-span-6 lg:flex lg:items-center lg:text-left"
+          >
+            <div>
+              <h1
+                class="mt-4 text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl"
+              >
+                SRDR+: Moving systematic reviews forward.
+              </h1>
+              <p
+                class="mt-3 text-base text-gray-300 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl"
+              >
+                SRDR+ is a free, powerful, easy to use tool for data extraction,
+                management, and archival during systematic reviews.
+              </p>
+            </div>
+          </div>
+          <div
+            class="mt-16 sm:mt-24 lg:col-span-6 lg:mt-0 flex flex-col justify-center"
+          >
+            <div
+              class="bg-white sm:mx-auto sm:w-full sm:max-w-md sm:overflow-hidden sm:rounded-lg"
+            >
+              <div class="px-4 py-8 sm:px-10">
+                <div class="flex flex-col justify-center">
+                  <h1 class="text-2xl font-bold">
+                    Search our Repository Today!
+                  </h1>
+                  <!-- prettier-ignore -->
+                  <%= simple_form_for(:general_search, defaults: { required: false }, url: searches_path, method: :get) do |f| %>
+                  <div class="my-6">
+                    <!-- prettier-ignore -->
+                    <%= f.input :name, label: false, placeholder: 'Enter your search term', input_html: { autofocus: true, value: params.dig(:general_search, :name) } %>
+                  </div>
+                  <div><%= f.button :submit, 'Search' %></div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
