@@ -37,12 +37,14 @@
         </svg>
       </button>
     </div>
-    <div class="overflow-y-scroll mt-6 h-[13rem] md:h-[17rem]">
-      <h3
-        class="text-lg font-medium leading-6 text-gray-900"
+    <div class="overflow-y-scroll mt-6 h-[13rem] md:h-[17rem] border p-2">
+      <div class="font-bold">Citation Details</div>
+      <hr class="mt-0 mb-2" />
+      <h4
+        class="!text-base font-medium leading-6 text-gray-900"
         id="modal-title"
         x-text="results[detailedResult].name"
-      ></h3>
+      ></h4>
       <div class="mt-2">
         <div class="text-sm text-gray-500">
           Authors:
@@ -66,7 +68,9 @@
         ></div>
       </div>
     </div>
-    <div class="overflow-y-scroll mt-6 h-[13rem] md:h-[17rem]">
+    <div class="overflow-y-scroll mt-6 h-[13rem] md:h-[17rem] border p-2">
+      <div class="font-bold">Screening Results</div>
+      <hr class="mt-0 mb-2" />
       <template
         x-for="aso in results[detailedResult].abstract_screening_objects"
       >
