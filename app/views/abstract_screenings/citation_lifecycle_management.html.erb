@@ -454,7 +454,7 @@
                         x-text="result.extraction_qualification"
                       ></td>
                       <td
-                        class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                        class="px-3 text-sm text-black w-24 overflow-hidden text-ellipsis whitespace-nowrap"
                         :class="applyTdBg(result.screening_status)"
                         x-text="result.screening_status"
                       ></td>
@@ -521,10 +521,14 @@
       },
 
       applyTdBg(screening_status) {
-        if (screening_status.indexOf("ic") != -1) {
-          return "!bg-orange-600 text-white";
+        if (screening_status == "ec") {
+          return "!bg-green-200";
+        } else if (screening_status.indexOf("p") != -1) {
+          return "!bg-slate-200";
+        } else if (screening_status.indexOf("ic") != -1) {
+          return "!bg-orange-200";
         } else if (screening_status.indexOf("r") != -1) {
-          return "!bg-red-600 text-white";
+          return "!bg-red-200";
         }
       },
 
