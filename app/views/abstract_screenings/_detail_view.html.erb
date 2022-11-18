@@ -68,6 +68,7 @@
         ></div>
       </div>
     </div>
+    <% if ProjectPolicy.new(current_user, @project).project_leader? %>
     <div class="overflow-y-scroll mt-6 h-[13rem] md:h-[17rem] border p-2">
       <div class="font-bold">Screening Results</div>
       <hr class="mt-0 mb-2" />
@@ -150,62 +151,14 @@
         </div>
       </template>
     </div>
-    <!-- <div class="mt-2 space-y-2 text-xs md:text-base">
-      <div class="flex justify-around">
-        <button
-          type="button"
-          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
-        >
-          AS Accept
-        </button>
-        <button
-          type="button"
-          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
-        >
-          AS Reject
-        </button>
-        <button
-          type="button"
-          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
-        >
-          AS Reset
-        </button>
+    <% else %>
+    <div class="overflow-y-scroll mt-6 h-[13rem] md:h-[17rem] border p-2">
+      <div class="font-bold">Screening Results</div>
+      <hr class="mt-0 mb-2" />
+      <div class="text-red-300 text-xs font-thin uppercase">
+        Must be Project Leader to see results
       </div>
-      <div class="flex justify-around">
-        <button
-          type="button"
-          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
-        >
-          FS Accept
-        </button>
-        <button
-          type="button"
-          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
-        >
-          FS Reject
-        </button>
-        <button
-          type="button"
-          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
-        >
-          FS Reset
-        </button>
-      </div>
-      <div class="flex justify-around">
-        <div class="w-1/4"></div>
-        <button
-          type="button"
-          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
-        >
-          Extraction Reject
-        </button>
-        <button
-          type="button"
-          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
-        >
-          Extraction Reset
-        </button>
-      </div>
-    </div> -->
+    </div>
+    <% end %>
   </div>
 </template>
