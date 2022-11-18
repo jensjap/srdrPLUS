@@ -136,11 +136,14 @@ class AbstractScreeningsController < ApplicationController
         @page = params[:page].present? ? params[:page].to_i : 1
         per_page = 15
         order = @order_by.present? ? { @order_by => @sort } : { 'name' => 'desc' }
+        where = { abstract_screening_id: @abstract_screening.id }
+        where[:user_id] = current_user.id unless ProjectPolicy.new(current_user, @project).project_leader?
         @abstract_screening_results =
-          AbstractScreeningResultSearchService.new(@abstract_screening, @query, @page,
-                                                   per_page, order).elastic_search
-        @total_pages = (@abstract_screening_results.response['hits']['total']['value'] / per_page) + 1
-        @es_hits = @abstract_screening_results.response['hits']['hits'].map { |hit| hit['_source'] }
+          AbstractScreeningResult
+          .search(@query,
+                  where:,
+                  limit: per_page, offset: per_page * (@page - 1), order:, load: false)
+        @total_pages = (@abstract_screening_results.count / per_page) + 1
       end
     end
   end
