@@ -229,7 +229,6 @@
         0: "Maybe",
         1: "Accepted",
       },
-      loading: false,
       citation: {
         abstract_screening_id: "",
         citation_id: "",
@@ -582,24 +581,12 @@
         }
       },
 
-      async awaitLoading(cb) {
-        if (this.loading) {
-          await new Promise((resolve, reject) => setTimeout(resolve, 50));
-          this.awaitLoading(cb);
-        } else {
-          cb();
-        }
-      },
-
       showConfirmation(label) {
         this.closeAllModals();
         this.confirmationModalLabel = label;
         this.confirmationModalText = this.confirmationModalTexts[label];
         this.confirmationModal = true;
-        setTimeout(
-          () => this.awaitLoading(() => (this.confirmationModal = false)),
-          1000
-        );
+        setTimeout(() => (this.confirmationModal = false), 1000);
       },
 
       async sendWw(word, weight, id, destroy) {
@@ -667,11 +654,6 @@
       },
 
       async fetchAsr(method) {
-        if (false) {
-          this.reasoningMenu = false;
-          this.showConfirmation(this.asr.label);
-        }
-        this.loading = true;
         const headers = {
           method,
           headers: {
@@ -693,16 +675,14 @@
           headers
         );
         const data = await response.json();
-
-        this.asr = data.asr;
-        this.citation = data.citation;
-
-        this.options = data.options;
-        this.word_weights = data.word_weights;
-
-        this.processWeights("title", "processedTitle");
-        this.processWeights("abstract", "processedAbstract");
-        this.loading = false;
+        if (method == "GET") {
+          this.asr = data.asr;
+          this.citation = data.citation;
+          this.options = data.options;
+          this.word_weights = data.word_weights;
+          this.processWeights("title", "processedTitle");
+          this.processWeights("abstract", "processedAbstract");
+        }
       },
     }));
   });

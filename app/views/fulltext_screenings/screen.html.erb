@@ -177,7 +177,6 @@
         0: "Maybe",
         1: "Accepted",
       },
-      loading: false,
       citation: {
         fulltext_screening_id: "",
         citation_id: "",
@@ -359,24 +358,12 @@
         }
       },
 
-      async awaitLoading(cb) {
-        if (this.loading) {
-          await new Promise((resolve, reject) => setTimeout(resolve, 50));
-          this.awaitLoading(cb);
-        } else {
-          cb();
-        }
-      },
-
       showConfirmation(label) {
         this.closeAllModals();
         this.confirmationModalLabel = label;
         this.confirmationModalText = this.confirmationModalTexts[label];
         this.confirmationModal = true;
-        setTimeout(
-          () => this.awaitLoading(() => (this.confirmationModal = false)),
-          1000
-        );
+        setTimeout(() => (this.confirmationModal = false), 1000);
       },
 
       async getFsrId(fsrId, beforeFsrId) {
@@ -418,11 +405,6 @@
       },
 
       async fetchFsr(method) {
-        if (false) {
-          this.reasoningMenu = false;
-          this.showConfirmation(this.fsr.label);
-        }
-        this.loading = true;
         const headers = {
           method,
           headers: {
@@ -445,10 +427,11 @@
         );
         const data = await response.json();
 
-        this.fsr = data.fsr;
-        this.citation = data.citation;
-        this.options = data.options;
-        this.loading = false;
+        if (method == "GET") {
+          this.fsr = data.fsr;
+          this.citation = data.citation;
+          this.options = data.options;
+        }
       },
     }));
   });
