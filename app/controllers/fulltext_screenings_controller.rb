@@ -94,7 +94,7 @@ class FulltextScreeningsController < ApplicationController
           .search(@query,
                   where:,
                   limit: per_page, offset: per_page * (@page - 1), order:, load: false)
-        @total_pages = (@fulltext_screening_results.count / per_page) + 1
+        @total_pages = (@fulltext_screening_results.total_count / per_page) + 1
       end
     end
   end

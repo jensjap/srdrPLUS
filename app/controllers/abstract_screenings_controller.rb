@@ -51,9 +51,12 @@ class AbstractScreeningsController < ApplicationController
         @page = params[:page].present? ? params[:page].to_i : 1
         per_page = 100
         order = @order_by.present? ? { @order_by => @sort } : {}
-        @citations_projects = CitationsProjectSearchService.new(@project, @query, @page, per_page, order).elastic_search
-        @total_pages = (@citations_projects.response['hits']['total']['value'] / per_page) + 1
-        @es_hits = @citations_projects.response['hits']['hits'].map { |hit| hit['_source'] }
+        @citations_projects =
+          CitationsProject
+          .search(@query,
+                  where: { project_id: @project.id },
+                  limit: per_page, offset: per_page * (@page - 1), order:, load: false)
+        @total_pages = (@citations_projects.total_count / per_page) + 1
       end
     end
   end
@@ -143,7 +146,7 @@ class AbstractScreeningsController < ApplicationController
           .search(@query,
                   where:,
                   limit: per_page, offset: per_page * (@page - 1), order:, load: false)
-        @total_pages = (@abstract_screening_results.count / per_page) + 1
+        @total_pages = (@abstract_screening_results.total_count / per_page) + 1
       end
     end
   end
