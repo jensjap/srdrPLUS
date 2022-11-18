@@ -123,9 +123,11 @@ Rails.application.routes.draw do
       resources :questions, only: [:show]
     end # END namespace :v2 do
 
-    namespace :fhir do
-      resources :citations
-    end # END namespace :fhir do
+    namespace :v3 do
+      resources :projects, shallow: true, only: [] do
+        resources :citations, only: [:index, :show]
+      end
+    end # END namespace :v3 do
 
 
   end # END namespace :api do

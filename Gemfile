@@ -40,7 +40,8 @@ gem 'devise'
 gem 'dotenv-rails'
 gem 'dropzonejs-rails' # Allows users to drop files to upload
 gem 'elasticsearch', '< 7.14'
-gem 'faker', github: 'stympy/faker'
+gem 'faker', github: 'faker-ruby/faker', branch: 'main'
+gem 'fhir_models', github: 'sleepwalk712/fhir_models'
 gem 'font-awesome-rails'
 gem 'foreman'
 gem 'foundation-icons-sass-rails' # Use Zurb Foundation as Front-End Framework
@@ -66,7 +67,7 @@ gem 'pundit' # authorizations.
 gem 'rack-attack' # Limit request rates
 gem 'rack-cors' # CORS.
 gem 'rails', '~> 7.0.3'
-gem 'redis'
+gem 'redis', '4.7.1'
 gem 'ref_parsers', '~> 0.2.0' # for parsing ris files.
 gem 'remotipart', github: 'mshibuya/remotipart'
 gem 'responders' # Help DRY up code.
@@ -78,7 +79,7 @@ gem 'searchkick'
 gem 'sentry-rails'
 gem 'sentry-ruby' # full-stack error tracking system
 gem 'sentry-sidekiq' # full-stack error tracking system
-gem 'sidekiq' # Background jobs.
+gem 'sidekiq', '<7' # Background jobs.
 gem 'sidekiq-cron' # Allows periodic background jobs
 gem 'simple_form'
 gem 'slim-rails'
