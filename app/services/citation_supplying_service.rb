@@ -1,20 +1,12 @@
 class CitationSupplyingService
-# TODO implement error msg in fhir format
+# TODO implement error msg in operation outcome
 
   def find_by_project_id(project_id)
-    # TODO check how to implement resource manager
+    # TODO check how to implement bundle
     citations = Project.find(project_id).citations.all
+    bundle = create_bundle(citations)
 
-    citations_in_fhir = []
-    for citation in citations do
-      if citation.valid?
-        citations_in_fhir.append(create_fhir_obj(citation))
-      else
-        citations_in_fhir.append(citation.validate)
-      end
-    end
-
-    return citations_in_fhir
+    return bundle
   end
 
   def find_by_citation_id(citation_id)
@@ -26,6 +18,24 @@ class CitationSupplyingService
   end
 
   private
+
+    def create_bundle(objs)
+      bundle = {
+        'type' => 'searchset',
+        'entry' => []
+      }
+
+      for obj in objs do
+        fhir_obj = create_fhir_obj(obj)
+        if fhir_obj.valid?
+          bundle['entry'].append(fhir_obj)
+        end
+      end
+
+      bundle = FHIR::Bundle.new(bundle)
+
+      return bundle
+    end
 
     def create_fhir_obj(raw)
       citation = {
