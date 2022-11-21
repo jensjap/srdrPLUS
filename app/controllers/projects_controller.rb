@@ -90,7 +90,7 @@ class ProjectsController < ApplicationController
       format.html do
         if no_leader?
           flash[:alert] = 'Must have at least one leader'
-          redirect_to(edit_project_path(@project, anchor: 'panel-projects-users'))
+          redirect_to(edit_project_path(@project, page: 'members_and_roles'))
         elsif @project.update(project_params)
           redirect_path = params.try(:[], :project).try(:[], :redirect_path)
           if redirect_path.present?
@@ -618,10 +618,10 @@ class ProjectsController < ApplicationController
 
   def no_leader?
     project_params[:projects_users_attributes] &&
-      project_params[:projects_users_attributes].values.any? { |key| key[:role_ids] } &&
-      project_params[:projects_users_attributes].values.map do |pua|
-        pua[:role_ids]
-      end.flatten.none? { |role_id| role_id == '1' }
+      project_params[:projects_users_attributes].values.any? { |key| key[:permissions] } &&
+      project_params[:projects_users_attributes].values.none? do |pua|
+        pua[:permissions].to_i.to_s(2)[-1] == '1'
+      end
   end
 
   def _check_valid_file_extension(file)

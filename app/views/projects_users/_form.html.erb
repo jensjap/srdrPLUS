@@ -1,0 +1,81 @@
+<tr class="nested-fields">
+  <td>
+    <%= f.association :user, collection: @project.users, label_method: :handle,
+    label: false %>
+  </td>
+  <td colspan="4" id="user-role-checkboxes">
+    <div
+      class="input check_boxes optional project_projects_users_roles"
+      x-data="{
+        permissions: <%= f.object.permissions %>
+      }"
+    >
+      <input
+        type="hidden"
+        name="project[projects_users_attributes][<%= f.index %>][permissions]"
+        x-model="permissions"
+        autocomplete="off"
+      />
+      <div class="checkbox">
+        <label>
+          <input
+            class="check_boxes optional myclass"
+            type="checkbox"
+            :checked="(permissions).toString(2).split('').reverse()[0] == '1'"
+            @click="if ((permissions).toString(2).split('').reverse()[0] == '1') {
+              permissions -= 1
+            } else {
+              permissions += 1
+            };"
+        /></label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input
+            class="check_boxes optional myclass"
+            type="checkbox"
+            :checked="(permissions).toString(2).split('').reverse()[1] == '1'"
+            @click="if ((permissions).toString(2).split('').reverse()[1] == '1') {
+              permissions -= 2
+            } else {
+              permissions += 2
+            };"
+        /></label>
+      </div>
+      <div class="checkbox">
+        <label
+          ><input
+            class="check_boxes optional myclass"
+            type="checkbox"
+            :checked="(permissions).toString(2).split('').reverse()[2] == '1'"
+            @click="if ((permissions).toString(2).split('').reverse()[2] == '1') {
+              permissions -= 4
+            } else {
+              permissions += 4
+            };"
+        /></label>
+      </div>
+      <div class="checkbox">
+        <label
+          ><input
+            class="check_boxes optional myclass"
+            type="checkbox"
+            :checked="(permissions).toString(2).split('').reverse()[3] == '1'"
+            @click="if ((permissions).toString(2).split('').reverse()[3] == '1') {
+              permissions -= 8
+            } else {
+              permissions += 8
+            };"
+        /></label>
+      </div>
+    </div>
+  </td>
+  <td>
+    <div
+      style="display: flex; align-items: center; justify-content: space-around"
+    >
+      <div class="links"><%= link_to_remove_association 'Remove', f %></div>
+    </div>
+  </td>
+  <td></td>
+</tr>

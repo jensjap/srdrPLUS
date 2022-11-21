@@ -107,10 +107,6 @@ class User < ApplicationRecord
   delegate :middle_name, to: :profile, allow_nil: true
   delegate :last_name, to: :profile, allow_nil: true
 
-  def highest_role_in_project(project)
-    Role.joins(:projects_users).where(projects_users: { user: self, project: }).first.try(:name)
-  end
-
   def handle
     if [first_name, middle_name, last_name].any?(&:present?)
       [first_name, middle_name, last_name].compact.join(' ')

@@ -26,6 +26,8 @@ class ApplicationPolicy
 
     @user = user
     @record = record
+    @projects_user = ProjectsUser.find_by(user:, project: record)
+    @permissions = @projects_user.try(:permissions) || 0
   end
 
   def index?
@@ -56,43 +58,27 @@ class ApplicationPolicy
     false
   end
 
-  def highest_role
-    @highest_role ||= user.highest_role_in_project(record)
-  end
-
   def project_leader?
-    highest_role && highest_role == LEADER
+    @permissions.to_s(2)[-1] == '1'
   end
 
   def project_consolidator?
-    highest_role && (
-      highest_role == LEADER ||
-      highest_role == CONSOLIDATOR
-    )
+    project_leader? || @permissions.to_s(2)[-2] == '1'
   end
 
   def project_contributor?
-    highest_role && (
-      highest_role == LEADER ||
-      highest_role == CONSOLIDATOR ||
-      highest_role == CONTRIBUTOR
-    )
+    project_leader? || project_consolidator? || @permissions.to_s(2)[-3] == '1'
   end
 
   def project_auditor?
-    highest_role && (
-      highest_role == LEADER ||
-      highest_role == CONSOLIDATOR ||
-      highest_role == CONTRIBUTOR ||
-      highest_role == AUDITOR
-    )
+    project_leader? || project_consolidator? || project_contributor? || @permissions.to_s(2)[-4] == '1'
   end
 
   def part_of_project?
-    highest_role.present?
+    !not_part_of_project?
   end
 
   def not_part_of_project?
-    highest_role.nil?
+    @permissions.zero?
   end
 end

@@ -78,18 +78,18 @@ class ProjectPolicy < ApplicationPolicy
         :id,
         :_destroy,
         :user_id,
-        { role_ids: [],
-          imports_attributes: [
-            :import_type_id, {
-              imported_files_attributes: [
-                :id,
-                :file_type_id,
-                :content,
-                { section: [:name],
-                  key_question: [:name] }
-              ]
-            }
-          ] }
+        :permissions,
+        { imports_attributes: [
+          :import_type_id, {
+            imported_files_attributes: [
+              :id,
+              :file_type_id,
+              :content,
+              { section: [:name],
+                key_question: [:name] }
+            ]
+          }
+        ] }
       ]
     },
     {
