@@ -13,8 +13,8 @@ GIT
     remotipart (1.4.4)
 
 GIT
-  remote: https://github.com/stympy/faker.git
-  revision: 2333f9ee4a4e1d8329e19f9e4b07e927648add7c
+  remote: https://github.com/sleepwalk712/fhir_models.git
+  revision: cdb11ea950742a7d8eb31b5d87752659f05b60da
   specs:
     fhir_models (4.2.2)
       bcp47 (>= 0.3)
@@ -113,17 +113,17 @@ GEM
     aws-partitions (1.603.0)
     aws-sdk-core (3.131.2)
       aws-eventstream (~> 1, >= 1.0.2)
-      aws-partitions (~> 1, >= 1.651.0)
-      aws-sigv4 (~> 1.5)
-      jmespath (~> 1, >= 1.6.1)
-    aws-sdk-kms (1.59.0)
-      aws-sdk-core (~> 3, >= 3.165.0)
+      aws-partitions (~> 1, >= 1.525.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-s3 (1.117.1)
-      aws-sdk-core (~> 3, >= 3.165.0)
+      jmespath (~> 1, >= 1.6.1)
+    aws-sdk-kms (1.57.0)
+      aws-sdk-core (~> 3, >= 3.127.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-s3 (1.114.0)
+      aws-sdk-core (~> 3, >= 3.127.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.4)
-    aws-sigv4 (1.5.2)
+    aws-sigv4 (1.5.0)
       aws-eventstream (~> 1, >= 1.0.2)
     babel-source (5.8.35)
     babel-transpiler (0.7.0)
