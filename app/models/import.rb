@@ -22,43 +22,43 @@ class Import < ApplicationRecord
   accepts_nested_attributes_for :imported_files
 
   def start_import_job
-    if self.import_type.name == "Distiller"
-      DistillerImportJob.set(wait: 1.minute).perform_later(self.id)
+    if import_type.name == 'Distiller'
+      DistillerImportJob.set(wait: 1.minute).perform_later(id)
       return
-    end  # if self.import_type.name == "Distiller"
+    end # if self.import_type.name == "Distiller"
 
-    for imported_file in self.imported_files
-      case self.import_type.name
-      when "Citation"
+    for imported_file in imported_files
+      case import_type.name
+      when 'Citation'
         case imported_file.file_type.name
-        when ".ris"
+        when '.ris'
           RisImportJob.set(wait: 1.minute).perform_later(imported_file.id)
-        when ".csv"
+        when '.csv'
           CsvImportJob.set(wait: 1.minute).perform_later(imported_file.id)
-        when ".enl"
+        when '.enl'
           EnlImportJob.set(wait: 1.minute).perform_later(imported_file.id)
-        when "PubMed"
+        when 'PubMed'
           PubmedImportJob.set(wait: 1.minute).perform_later(imported_file.id)
-        when ".json"
+        when '.json'
           CitationFhirImportJob.set(wait: 1.minute).perform_later(imported_file.id)
         else
           ## NOT SUPPORTED, WHAT TO DO?
         end
-      when "Project"
+      when 'Project'
         case imported_file.file_type.name
-        when ".json"
+        when '.json'
           JsonImportJob.set(wait: 1.minute).perform_later(imported_file.id)
-        when ".xlsx"
-          SimpleImportJob.set(wait: 1.minute).perform_later(imported_file.id)
+        when '.xlsx'
+          SimpleImportJob.set(wait: 1.minute).perform_later(imported_file.id, project.id)
         else
           ## NOT SUPPORTED, WHAT TO DO?
         end
-      when "Assignments and Mappings"
+      when 'Assignments and Mappings'
         case imported_file.file_type.name
-        when ".xlsx"
+        when '.xlsx'
           ImportAssignmentsAndMappingsJob.set(wait: 1.minute).perform_later(imported_file.id)
-        end  # case imported_file.file_type.name
-      end  # case self.import_type.name
-    end  # for imported_file in self.imported_files
-  end  # def start_import_job
+        end # case imported_file.file_type.name
+      end # case self.import_type.name
+    end # for imported_file in self.imported_files
+  end # def start_import_job
 end  # class Import < ApplicationRecord
