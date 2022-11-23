@@ -27,7 +27,7 @@ class CitationSupplyingService
       for obj in objs do
         fhir_obj = create_fhir_obj(obj)
         if fhir_obj.valid?
-          bundle['entry'].append(fhir_obj)
+          bundle['entry'].append({'resource' => fhir_obj})
         end
       end
 
