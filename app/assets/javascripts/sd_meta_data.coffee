@@ -405,6 +405,8 @@ document.addEventListener 'DOMContentLoaded', ->
     Collapser.initialize_listeners()
     initializeSwitches()
     bind_srdr20_saving_mechanism()
-    apply_all_select2()
+    setTimeout (->
+      apply_all_select2()
+    ), 50
     $( 'textarea' ).each () ->
       this.style.height = this.scrollHeight + "px"

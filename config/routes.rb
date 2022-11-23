@@ -1,6 +1,19 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
+  # Maintenance Routes
+  ################################
+  #get 'maintenance', to: 'static_pages#about'
+  #get '/' => redirect('/maintenance')
+  #get '*path' => redirect('/maintenance')
+  #put '/' => redirect('/maintenance')
+  #put '*path' => redirect('/maintenance')
+  #post '/' => redirect('/maintenance')
+  #post '*path' => redirect('/maintenance')
+  #delete '/' => redirect('/maintenance')
+  #delete '*path' => redirect('/maintenance')
+  ################################
+
   get 'public_data', to: 'public_data#show'
 
   resources :publishings, only: %i[new create destroy]
@@ -137,7 +150,6 @@ Rails.application.routes.draw do
   end
   resources :authors
   resources :comparisons
-  # resources :citations, only: [:new, :create, :edit, :update, :destroy, :show]
   resources :journals
   resources :keywords
   resources :labels
@@ -169,8 +181,27 @@ Rails.application.routes.draw do
 
   get 'sd_key_questions/:id/fuzzy_match', to: 'sd_key_questions#fuzzy_match'
 
+  resources :abstract_screening_results, only: %i[show update]
+  resources :fulltext_screening_results, only: %i[show update]
   resources :data_audits, only: %i[index update]
   resources :projects, concerns: :paginatable, shallow: true do
+    get 'citation_lifecycle_management', to: 'abstract_screenings#citation_lifecycle_management'
+    get 'kpis', to: 'abstract_screenings#kpis'
+
+    resources :abstract_screenings do
+      get 'rescreen', to: 'abstract_screenings#rescreen'
+      get 'screen', to: 'abstract_screenings#screen'
+      post 'label', to: 'abstract_screenings#label'
+      post 'update_word_weight', to: 'abstract_screenings#update_word_weight'
+    end
+    resources :fulltext_screenings do
+      get 'rescreen', to: 'fulltext_screenings#rescreen'
+      get 'screen', to: 'fulltext_screenings#screen'
+      post 'label', to: 'fulltext_screenings#label'
+    end
+
+    resources :screening_forms
+
     resource :data_audit, only: [:create]
     resources :sd_meta_data
     resources :teams, concerns: :invitable, only: %i[create update destroy]
@@ -304,5 +335,30 @@ Rails.application.routes.draw do
   resources :sections, only: [:index]
   resources :imports, only: [:create]
 
+  resources :screening_forms, only: [] do
+    resources :sf_questions, shallow: true
+  end
+
+  resources :sf_questions, only: [] do
+    resources :sf_rows, shallow: true
+    resources :sf_columns, shallow: true
+  end
+  resources :sf_cells do
+    resources :sf_options, shallow: true
+    resources :sf_abstract_records, only: %i[create destroy], shallow: true
+    resources :sf_fulltext_records, only: %i[create destroy], shallow: true
+  end
+
+  get '/sf_options/:id/existing_data_check' => 'sf_options#existing_data_check'
+
+  resources :abstract_screening_results, only: [] do
+    resources :sf_abstract_records, only: [:index]
+  end
+
+  resources :fulltext_screening_results, only: [] do
+    resources :sf_fulltext_records, only: [:index]
+  end
+
+  resources :screening_qualifications, only: %i[create]
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

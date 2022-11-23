@@ -18,7 +18,7 @@
 #
 
 class Project < ApplicationRecord
-  require "csv"
+  require 'csv'
 
   include SharedPublishableMethods
   include SharedQueryableMethods
@@ -26,26 +26,54 @@ class Project < ApplicationRecord
   attr_accessor :create_empty
 
   acts_as_paranoid
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    Publishing.with_deleted.where(publishable_type: self.class, publishable_id: id).each(&:really_destroy!)
+    KeyQuestionsProject
+      .with_deleted
+      .where(project_id: id)
+      .each(&:really_destroy!)
+    extractions.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    extraction_forms_projects.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    projects_users.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    citations_projects.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    tasks.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
+
   searchkick
 
   paginates_per 8
 
   scope :published, -> { joins(publishing: :approval) }
-  scope :pending, -> {
-          joins(:publishing).left_joins(publishing: :approval).where(publishings: { approvals: { id: nil } })
-        }
-  scope :draft, -> {
-          left_joins(:publishing).where(publishings: { id: nil })
-        }
-  scope :lead_by_current_user, -> { }
+  scope :pending, lambda {
+                    joins(:publishing).left_joins(publishing: :approval).where(publishings: { approvals: { id: nil } })
+                  }
+  scope :draft, lambda {
+                  left_joins(:publishing).where(publishings: { id: nil })
+                }
+  scope :lead_by_current_user, -> {}
 
   after_create :create_default_extraction_form, unless: :create_empty
   after_create :create_empty_extraction_form, if: :create_empty
-  after_create :create_default_perpetual_task
-  after_create :create_default_member
+  after_create :create_default_perpetual_task, :create_default_member
 
   has_many :extractions, dependent: :destroy, inverse_of: :project
-  has_many :teams, dependent: :destroy
+  has_many :teams, dependent: :destroy, inverse_of: :project
+  has_many :abstract_screenings, dependent: :destroy, inverse_of: :project
+  has_many :abstract_screening_results, through: :abstract_screenings
+  has_many :fulltext_screenings, dependent: :destroy, inverse_of: :project
+  has_many :fulltext_screening_results, through: :fulltext_screenings
+  has_one :screening_form, dependent: :destroy, inverse_of: :project
 
   has_one :data_audit, dependent: :destroy
   has_one :publishing, as: :publishable, dependent: :destroy
@@ -67,21 +95,21 @@ class Project < ApplicationRecord
   has_many :extraction_forms, through: :extraction_forms_projects, dependent: :destroy
 
   has_many :key_questions_projects,
-    -> { ordered },
-    dependent: :destroy, inverse_of: :project
+           -> { ordered },
+           dependent: :destroy, inverse_of: :project
   has_many :key_questions,
-    -> { joins(key_questions_projects: :ordering) },
-    through: :key_questions_projects, dependent: :destroy
+           -> { joins(key_questions_projects: :ordering) },
+           through: :key_questions_projects, dependent: :destroy
   ## this does not feel right - Birol
   # jens 2019-06-17: I believe we ought to define the ordering via a scope block in has_many.
-  #has_many :orderings, through: :key_questions_projects, dependent: :destroy
+  # has_many :orderings, through: :key_questions_projects, dependent: :destroy
 
   has_many :extraction_forms_projects_sections,
-    -> { ordered },
-    through: :extraction_forms_projects
+           -> { ordered },
+           through: :extraction_forms_projects
   has_many :questions,
-    -> { ordered },
-    through: :extraction_forms_projects_sections
+           -> { ordered },
+           through: :extraction_forms_projects_sections
 
   has_many :projects_users, dependent: :destroy, inverse_of: :project
   has_many :projects_users_roles, through: :projects_users, dependent: :destroy
@@ -91,12 +119,14 @@ class Project < ApplicationRecord
   has_many :citations, through: :citations_projects
 
   has_many :labels, through: :citations_projects
-  has_many :unlabeled_citations, -> { where(:labels => { :id => nil }) }, through: :citations_projects, source: :citations
+  has_many :unlabeled_citations, lambda {
+                                   where(labels: { id: nil })
+                                 }, through: :citations_projects, source: :citations
 
   has_many :tasks, dependent: :destroy, inverse_of: :project
   has_many :assignments, through: :tasks, dependent: :destroy
 
-  has_many :screening_options
+  has_many :screening_options, dependent: :destroy, inverse_of: :project
   has_many :screening_option_types, through: :screening_options
 
   has_many :sd_meta_data
@@ -108,109 +138,107 @@ class Project < ApplicationRecord
 
   validates :name, presence: true
 
-  #accepts_nested_attributes_for :extraction_forms_projects, reject_if: :all_blank, allow_destroy: true
-  #accepts_nested_attributes_for :key_questions_projects, reject_if: :all_blank, allow_destroy: true
+  # accepts_nested_attributes_for :extraction_forms_projects, reject_if: :all_blank, allow_destroy: true
+  # accepts_nested_attributes_for :key_questions_projects, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :key_questions
   accepts_nested_attributes_for :citations
   accepts_nested_attributes_for :citations_projects, allow_destroy: true
   accepts_nested_attributes_for :tasks, allow_destroy: true
   accepts_nested_attributes_for :assignments, allow_destroy: true
   accepts_nested_attributes_for :key_questions_projects, allow_destroy: true
-  #accepts_nested_attributes_for :orderings
+  # accepts_nested_attributes_for :orderings
   accepts_nested_attributes_for :projects_users, allow_destroy: true
   accepts_nested_attributes_for :screening_options, allow_destroy: true
   accepts_nested_attributes_for :imports, allow_destroy: true
   accepts_nested_attributes_for :imported_files, allow_destroy: true
 
   def type1s_used_by_projects_extractions(extraction_forms_projects_section_id)
-    Type1.
-      joins([{ extractions_extraction_forms_projects_sections_type1s: [{ extractions_extraction_forms_projects_section: [{ extraction: :project }] }] }]).
-      where({
-        extractions_extraction_forms_projects_sections_type1s: {
-          extractions_extraction_forms_projects_section: {
-              extractions: { project: self }
-          },
-          extractions_extraction_forms_projects_sections: { extraction_forms_projects_section: extraction_forms_projects_section_id }
-        }
-      })
+    Type1
+      .joins([{ extractions_extraction_forms_projects_sections_type1s: [{ extractions_extraction_forms_projects_section: [{ extraction: :project }] }] }])
+      .where({
+               extractions_extraction_forms_projects_sections_type1s: {
+                 extractions_extraction_forms_projects_section: {
+                   extractions: { project: self }
+                 },
+                 extractions_extraction_forms_projects_sections: { extraction_forms_projects_section: extraction_forms_projects_section_id }
+               }
+             })
   end
 
   def screening_teams
-    teams.where(team_type: TeamType.find_by(name: "Citation Screening Team")).or(teams.where(team_type: TeamType.find_by(name: "Citation Screening Blacklist")))
+    teams.where(team_type: TeamType.find_by(name: 'Citation Screening Team')).or(teams.where(team_type: TeamType.find_by(name: 'Citation Screening Blacklist')))
   end
 
   def public?
-    self.publishing.present? and self.publishing.approval.present?
+    publishing.present? and publishing.approval.present?
   end
 
   def duplicate_key_question?
-    kqps = self.key_questions_projects
-    if kqps.present?
-      return kqps.map(&:key_question).map(&:id).uniq.length < kqps.length
-    end
+    kqps = key_questions_projects
+    return kqps.map(&:key_question).map(&:id).uniq.length < kqps.length if kqps.present?
   end
 
   def duplicate_extraction_form?
-    self.extraction_forms.pluck(:name).uniq.length < self.extraction_forms.length
+    extraction_forms.pluck(:name).uniq.length < extraction_forms.length
   end
 
   def key_questions_projects_array_for_select
-    self.key_questions_projects.includes(:key_question).map { |kqp| [kqp.key_question.name, kqp.id] }
+    key_questions_projects.includes(:key_question).map { |kqp| [kqp.key_question.name, kqp.id] }
   end
 
   def publication_requested_at
-    if self.publishing.present?
-      return self.publishing.created_at
-    end
-    return nil
+    return publishing.created_at if publishing.present?
+
+    nil
   end
 
   def creator
     User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
-      .where(projects_users: { project_id: id })
-      .first
+        .where(projects_users: { project_id: id })
+        .first
   end
 
   def leaders
     User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
-      .where(projects_users: { project_id: id })
-      .where(projects_users: { projects_users_roles: { roles: { name: "Leader" } } })
+        .where(projects_users: { project_id: id })
+        .where(projects_users: { projects_users_roles: { roles: { name: 'Leader' } } })
   end
 
   def consolidators
     User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
-      .where(projects_users: { project_id: id })
-      .where(projects_users: { projects_users_roles: { roles: { name: "Consolidator" } } })
+        .where(projects_users: { project_id: id })
+        .where(projects_users: { projects_users_roles: { roles: { name: 'Consolidator' } } })
   end
 
   def contributors
     User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
-      .where(projects_users: { project_id: id })
-      .where(projects_users: { projects_users_roles: { roles: { name: "Contributor" } } })
+        .where(projects_users: { project_id: id })
+        .where(projects_users: { projects_users_roles: { roles: { name: 'Contributor' } } })
   end
 
   def auditors
     User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
-      .where(projects_users: { project_id: id })
-      .where(projects_users: { projects_users_roles: { roles: { name: "Auditor" } } })
+        .where(projects_users: { project_id: id })
+        .where(projects_users: { projects_users_roles: { roles: { name: 'Auditor' } } })
   end
 
   def members
     User.joins({ projects_users: :project })
-      .where(projects_users: { project_id: id })
+        .where(projects_users: { project_id: id })
   end
 
   def consolidated_extraction(citations_project_id, current_user_id)
-    consolidated_extraction = self.extractions.consolidated.find_by(citations_project_id: citations_project_id)
+    consolidated_extraction = extractions.consolidated.find_by(citations_project_id:)
     return consolidated_extraction if consolidated_extraction.present?
-    return self.extractions.create(
-             citations_project_id: citations_project_id,
-             projects_users_role: ProjectsUsersRole.find_or_create_by!(
-               projects_user: ProjectsUser.find_by(project: self, user_id: current_user_id),
-               role: Role.find_by(name: "Consolidator"),
-             ),
-             consolidated: true,
-           )
+
+    extractions.create(
+      citations_project_id:,
+      projects_users_role: ProjectsUsersRole.find_or_create_by!(
+        projects_user: ProjectsUser.find_by(project: self, user_id: current_user_id),
+        role: Role.find_by(name: 'Consolidator')
+      ),
+      consolidated: true
+    )
   end
 
   # returns nested hash:
@@ -223,12 +251,12 @@ class Project < ApplicationRecord
   #   ...
   # }
   def citation_groups
-    citation_groups = Hash.new
-    citation_groups[:citations_projects]      = Hash.new
-    citation_groups[:consolidations]          = Hash.new
-    citation_groups[:citations_project_ids]   = Array.new
+    citation_groups = {}
+    citation_groups[:citations_projects]      = {}
+    citation_groups[:consolidations]          = {}
+    citation_groups[:citations_project_ids]   = []
     citation_groups[:citations_project_count] = 0
-    self.extractions.includes([{ citations_project: [{ citation: :journal }] }, :extraction_checksum]).each do |e|
+    extractions.includes([{ citations_project: [{ citation: :journal }] }, :extraction_checksum]).each do |e|
       if citation_groups[:citations_projects].keys.include? e.citations_project_id
         citation_groups[:citations_projects][e.citations_project_id][:extractions] << e
 
@@ -243,15 +271,18 @@ class Project < ApplicationRecord
           end
         else
           citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy] =
-            discover_extraction_discrepancy(citation_groups[:citations_projects][e.citations_project_id][:extractions].first, e)
+            discover_extraction_discrepancy(
+              citation_groups[:citations_projects][e.citations_project_id][:extractions].first, e
+            )
         end
       else
         citation_groups[:citations_project_count] += 1
         citation_groups[:citations_project_ids] << e.citations_project_id
-        citation_groups[:citations_projects][e.citations_project_id] = Hash.new
+        citation_groups[:citations_projects][e.citations_project_id] = {}
         citation_groups[:citations_projects][e.citations_project_id][:citations_project_id] = e.citations_project_id
         citation_groups[:citations_projects][e.citations_project_id][:citation_id] = e.citation.id
-        citation_groups[:citations_projects][e.citations_project_id][:citation_name_short] = e.citation.name.to_s.truncate(32)
+        citation_groups[:citations_projects][e.citations_project_id][:citation_name_short] =
+          e.citation.name.to_s.truncate(32)
         citation_groups[:citations_projects][e.citations_project_id][:citation_name_long] = e.citation.name.to_s
         citation_groups[:citations_projects][e.citations_project_id][:citation_info] = e.citation.info_zinger
         citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy] = false
@@ -260,56 +291,26 @@ class Project < ApplicationRecord
       end
 
       # Move the consolidated extraction from the list of extractions into [Array] of consolidations.
-      if e.consolidated
-        citation_groups[:consolidations][e.citations_project_id] = e
-        citation_groups[:citations_projects][e.citations_project_id][:consolidated_extraction] = e
-        citation_groups[:citations_projects][e.citations_project_id][:extractions].delete(e)
-      end
+      next unless e.consolidated
+
+      citation_groups[:consolidations][e.citations_project_id] = e
+      citation_groups[:citations_projects][e.citations_project_id][:consolidated_extraction] = e
+      citation_groups[:citations_projects][e.citations_project_id][:extractions].delete(e)
     end
 
-    return citation_groups
+    citation_groups
   end
 
   def has_duplicate_citations?
     is_any_citation_added_to_project_multiple_times =
       citations_projects
-        .select(:citation_id, :project_id)
-        .group(:citation_id, :project_id)
-        .having("count(*) > 1").length > 0
+      .select(:citation_id, :project_id)
+      .group(:citation_id, :project_id)
+      .having('count(*) > 1').length > 0
 
     is_the_same_citation_added_to_the_database_multiple_times_and_referenced_multiple_times =
       citations
-        .select(:pmid)
-        .group(
-          :citation_type_id,
-          :name,
-          :refman,
-          :pmid,
-          :abstract)
-        .having("count(*) > 1")
-        .length > 0
-
-    return is_any_citation_added_to_project_multiple_times || is_the_same_citation_added_to_the_database_multiple_times_and_referenced_multiple_times
-  end
-
-  def dedupe_citations
-    # This takes care of citations that have been added to the project
-    # multiple times.
-    citations_projects
-      .group(:citation_id, :project_id)
-      .having("count(*) > 1")
-      .each do |cp|
-      cp.dedupe
-    end
-
-    sub_query = citations
-      .select(
-        :citation_type_id,
-        :name,
-        :refman,
-        :pmid,
-        :abstract
-      )
+      .select(:pmid)
       .group(
         :citation_type_id,
         :name,
@@ -317,16 +318,50 @@ class Project < ApplicationRecord
         :pmid,
         :abstract
       )
-      .having("count(*) > 1")
+      .having('count(*) > 1')
+      .length > 0
+
+    is_any_citation_added_to_project_multiple_times || is_the_same_citation_added_to_the_database_multiple_times_and_referenced_multiple_times
+  end
+
+  def dedupe_citations
+    # This takes care of citations that have been added to the project
+    # multiple times.
+    citations_projects
+      .group(:citation_id, :project_id)
+      .having('count(*) > 1')
+      .each do |cp|
+      cp.dedupe
+    end
+
+    sub_query = citations
+                .select(
+                  :citation_type_id,
+                  :name,
+                  :refman,
+                  :pmid,
+                  :abstract
+                )
+                .group(
+                  :citation_type_id,
+                  :name,
+                  :refman,
+                  :pmid,
+                  :abstract
+                )
+                .having('count(*) > 1')
     citations_that_have_multiple_entries = citations.joins("INNER JOIN (#{sub_query.to_sql}) as t1").distinct
 
     # Group citations and dedupe each group.
-    cthme_groups = citations_that_have_multiple_entries.group_b y { |i| [i.citation_type_id, i.name, i.refman, i.pmid, i.abstract] }
+    cthme_groups = citations_that_have_multiple_entries.group_b y { |i|
+                                                                  [i.citation_type_id, i.name, i.refman, i.pmid,
+                                                                   i.abstract]
+                                                                }
     cthme_groups.each do |cthme_group|
       master_citation = cthme_group[1][0]
       cthme_group[1][1..-1].each do |cit|
-        master_cp = CitationsProject.find_by(citation_id: master_citation.id, project_id: self.id)
-        cp_to_remove = CitationsProject.find_by(citation_id: cit.id, project_id: self.id)
+        master_cp = CitationsProject.find_by(citation_id: master_citation.id, project_id: id)
+        cp_to_remove = CitationsProject.find_by(citation_id: cit.id, project_id: id)
         CitationsProject.dedupe_update_associations(master_cp, cp_to_remove)
         cit.destroy
       end
@@ -334,11 +369,11 @@ class Project < ApplicationRecord
   end
 
   def key_questions_attributes=(attributes)
-    attributes.each do |i, kq_attrib|
-      kq = KeyQuestion.find_or_create_by name: kq_attrib["name"]
+    attributes.each do |_i, kq_attrib|
+      kq = KeyQuestion.find_or_create_by name: kq_attrib['name']
       KeyQuestionsProject.find_or_create_by project: self, key_question: kq
     end
-    #super(attributes)
+    # super(attributes)
   end
 
   def display
@@ -355,7 +390,8 @@ class Project < ApplicationRecord
     end
 
     return 0 if extractions.count.eql?(0)
-    return ((extractions.count.to_f - no_extractions_with_data) / extractions.count * 100).round(1).to_s + "%"
+
+    ((extractions.count.to_f - no_extractions_with_data) / extractions.count * 100).round(1).to_s + '%'
   end
 
   private
@@ -365,24 +401,24 @@ class Project < ApplicationRecord
     citations_need_fetching = []
 
     listOf_pmids.each do |pmid|
-      if c = Citation.find_by(pmid: pmid)
+      if c = Citation.find_by(pmid:)
         citations_already_in_system << c
       else
         citations_need_fetching << pmid
       end
     end
 
-    return citations_already_in_system, citations_need_fetching
+    [citations_already_in_system, citations_need_fetching]
   end
 
-  #def separate_pubmed_keywords( kw_string )
+  # def separate_pubmed_keywords( kw_string )
   #  return kw_string.split( "; " ).map { |str| str.strip }
-  #end
+  # end
 
   def create_default_extraction_form
     extraction_forms_projects.create!(
-      extraction_forms_project_type: ExtractionFormsProjectType.find_by(name: "Standard"),
-      extraction_form: ExtractionForm.find_by(name: "ef1"),
+      extraction_forms_project_type: ExtractionFormsProjectType.find_by(name: 'Standard'),
+      extraction_form: ExtractionForm.find_by(name: 'ef1')
     )
   end
 
@@ -395,10 +431,10 @@ class Project < ApplicationRecord
   end
 
   def create_default_perpetual_task
-    new_task = self.tasks.create!(task_type: TaskType.find_by(name: "Perpetual"))
-    #ProjectsUsersRole.by_project(@project).each do |pur|
+    new_task = tasks.create!(task_type: TaskType.find_by(name: 'Perpetual'))
+    # ProjectsUsersRole.by_project(@project).each do |pur|
     #  new_task.assignments << Assignment.create!(projects_users_role: pur)
-    #end
+    # end
   end
 
   def discover_extraction_discrepancy(extraction1, extraction2)
@@ -422,18 +458,18 @@ class Project < ApplicationRecord
     e1_checksum = extraction1.extraction_checksum
     e2_checksum = extraction2.extraction_checksum
 
-    if e1_checksum.is_stale then e1_checksum.update_hexdigest end
-    if e2_checksum.is_stale then e2_checksum.update_hexdigest end
+    e1_checksum.update_hexdigest if e1_checksum.is_stale
+    e2_checksum.update_hexdigest if e2_checksum.is_stale
 
-    return not(e1_checksum.hexdigest.eql? e2_checksum.hexdigest)
+    !e1_checksum.hexdigest.eql?(e2_checksum.hexdigest)
   end
 
   def create_default_member
     if User.try(:current)
-      projects_user = self.projects_users.select{ |pu| pu.user == User.current }.first
-      projects_user ||= ProjectsUser.create( user: User.current, project: self )
-      if not projects_user.roles.where( name: 'Leader' ).present?
-        projects_user.roles << Role.where( name: 'Leader' )
+      projects_user = projects_users.select { |pu| pu.user == User.current }.first
+      projects_user ||= ProjectsUser.create(user: User.current, project: self)
+      unless projects_user.roles.where(name: 'Leader').present?
+        projects_user.roles << Role.where(name: 'Leader')
         projects_user.save
       end
     end

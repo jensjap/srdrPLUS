@@ -52,36 +52,36 @@ class SdMetaDatum < ApplicationRecord
   attr_accessor :kqp_ids
 
   SECTIONS = [
-    "Title, Funding Sources, and Dates",
-    "Authors and Stakeholders",
-    "URL Links",
-    "Purpose, Analytic Framework, and Key Questions",
-    "PICODTS",
-    "Key Question Mapping",
-    "Search Strategy and Results of Screening",
-    "Risk of Bias and Overall Summary of Evidence",
-    "Results for Individual Outcomes"
+    'Title, Funding Sources, and Dates',
+    'Authors and Stakeholders',
+    'URL Links',
+    'Purpose, Analytic Framework, and Key Questions',
+    'PICODTS',
+    'Key Question Mapping',
+    'Search Strategy and Results of Screening',
+    'Risk of Bias and Overall Summary of Evidence',
+    'Results for Individual Outcomes'
   ].freeze
 
   default_scope { order(id: :desc) }
 
-  belongs_to :project, inverse_of: :sd_meta_data, optional: true, touch: true
+  belongs_to :project, inverse_of: :sd_meta_data, optional: true # , touch: true
   belongs_to :review_type, inverse_of: :sd_meta_data, optional: true
 
   has_many :sd_key_questions, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :key_questions, -> { distinct }, through: :sd_key_questions
 
   has_many :sd_result_items, -> { ordered }, dependent: :destroy
-  has_many :sd_narrative_results, through: :sd_result_items, dependent: :destroy
-  has_many :sd_evidence_tables, inverse_of: :sd_meta_datum, dependent: :destroy
-  has_many :sd_network_meta_analysis_results, through: :sd_result_items, dependent: :destroy
-  has_many :sd_pairwise_meta_analytic_results, through: :sd_result_items, dependent: :destroy
-  has_many :sd_meta_regression_analysis_results, through: :sd_result_items, dependent: :destroy
+  has_many :sd_narrative_results, -> { ordered }, through: :sd_result_items, dependent: :destroy
+  has_many :sd_evidence_tables, -> { ordered }, through: :sd_result_items, dependent: :destroy
+  has_many :sd_network_meta_analysis_results, -> { ordered }, through: :sd_result_items, dependent: :destroy
+  has_many :sd_pairwise_meta_analytic_results, -> { ordered }, through: :sd_result_items, dependent: :destroy
+  has_many :sd_meta_regression_analysis_results, -> { ordered }, through: :sd_result_items, dependent: :destroy
 
   has_many :sd_key_questions_projects, through: :sd_key_questions, inverse_of: :sd_meta_datum
   has_many :project_key_questions, through: :sd_key_questions_projects, source: :key_question
 
-  has_many :sd_key_questions_sd_picods, through: :sd_key_questions, dependent: :destroy
+  has_many :sd_key_questions_sd_picods, -> { ordered }, through: :sd_key_questions, dependent: :destroy
 
   has_many :sd_journal_article_urls, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
   has_many :sd_other_items, -> { ordered }, inverse_of: :sd_meta_datum, dependent: :destroy
@@ -129,13 +129,16 @@ class SdMetaDatum < ApplicationRecord
   accepts_nested_attributes_for :sd_result_items, allow_destroy: true
 
   def report
-    Report.all.find { |report_meta| report_meta.accession_id == self.report_accession_id }
+    Report.all.find { |report_meta| report_meta.accession_id == report_accession_id }
   end
 
   def create_fuzzy_matches
     sd_key_questions.each do |sd_kq|
       fuzzy_match = sd_kq.fuzzy_match
-      SdKeyQuestionsProject.create(sd_key_question_id: sd_kq.id, key_questions_project_id: fuzzy_match.id) if fuzzy_match
+      if fuzzy_match
+        SdKeyQuestionsProject.create(sd_key_question_id: sd_kq.id,
+                                     key_questions_project_id: fuzzy_match.id)
+      end
     end
   end
 
@@ -156,13 +159,13 @@ class SdMetaDatum < ApplicationRecord
 
   def section_statuses
     (0..8).to_a.map do |i|
-      section = "section_flag_" + i.to_s
+      section = 'section_flag_' + i.to_s
       self[section]
     end
   end
 
   def toggle_state
-    new_state = state == "DRAFT" ? "COMPLETED" : "DRAFT"
+    new_state = state == 'DRAFT' ? 'COMPLETED' : 'DRAFT'
     update(state: new_state)
   end
 
@@ -188,27 +191,23 @@ class SdMetaDatum < ApplicationRecord
 
   def check_publishing_eligibility
     errors = []
-    if self.report_title.blank? || self.date_of_publication_full_report.blank?
-       errors << 'Title, Funding Sources, and Dates'
-    end
+    errors << 'Title, Funding Sources, and Dates' if report_title.blank? || date_of_publication_full_report.blank?
 
-    if self.authors.blank? && self.organization.blank?
-       errors << 'Authors and Stakeholders'
-    end
+    errors << 'Authors and Stakeholders' if authors.blank? && organization.blank?
 
-    if self.sd_key_questions.blank? ||
+    if sd_key_questions.blank? ||
        sd_key_questions.any? { |sd_key_question| sd_key_question.sd_key_questions_key_question_types.blank? } ||
-       sd_key_questions.any? { |sd_key_question| !sd_key_question.includes_meta_analysis }
-      errors << 'URL Links'
+       sd_key_questions.any? { |sd_key_question| sd_key_question.includes_meta_analysis.nil? }
+      errors << 'Purpose, Analytic Framework, and Key Questions'
     end
 
-    if self.sd_picods.blank? ||
-      self.sd_picods.any? { |sd_picod| sd_picod.sd_key_questions_sd_picods.blank? } ||
-      self.sd_picods.any? { |sd_picod| sd_picod.data_analysis_level.blank? } ||
-      self.sd_picods.any? { |sd_picod| sd_picod.population.blank? } ||
-      self.sd_picods.any? { |sd_picod| sd_picod.interventions.blank? } ||
-      self.sd_picods.any? { |sd_picod| sd_picod.comparators.blank? } ||
-      self.sd_picods.any? { |sd_picod| sd_picod.outcomes.blank? }
+    if sd_picods.blank? ||
+       sd_picods.any? { |sd_picod| sd_picod.sd_key_questions_sd_picods.blank? } ||
+       sd_picods.any? { |sd_picod| sd_picod.data_analysis_level.blank? } ||
+       sd_picods.any? { |sd_picod| sd_picod.population.blank? } ||
+       sd_picods.any? { |sd_picod| sd_picod.interventions.blank? } ||
+       sd_picods.any? { |sd_picod| sd_picod.comparators.blank? } ||
+       sd_picods.any? { |sd_picod| sd_picod.outcomes.blank? }
       errors << 'PICODTS'
     end
 
@@ -220,13 +219,14 @@ class SdMetaDatum < ApplicationRecord
 
     if sd_result_items.blank? ||
        sd_result_items.any? { |sd_result_item| sd_result_item.sd_key_question.blank? } ||
-       sd_result_items.any? { |sd_result_item| sd_result_item.sd_pairwise_meta_analytic_results.blank? &&
+       sd_result_items.any? do |sd_result_item|
+         sd_result_item.sd_pairwise_meta_analytic_results.blank? &&
          sd_result_item.sd_pairwise_meta_analytic_results.blank? &&
          sd_result_item.sd_narrative_results.blank? &&
          sd_result_item.sd_evidence_tables.blank? &&
          sd_result_item.sd_network_meta_analysis_results.blank? &&
          sd_result_item.sd_meta_regression_analysis_results.blank?
-       }
+       end
       errors << 'Results for Individual Outcomes'
     end
 
@@ -238,7 +238,8 @@ class SdMetaDatum < ApplicationRecord
   end
 
   private
-    def set_report_title
-      self.update( report_title: self.report&.title )
-    end
+
+  def set_report_title
+    update(report_title: report&.title)
+  end
 end

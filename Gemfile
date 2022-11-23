@@ -20,6 +20,7 @@ group :development do
   gem 'bullet'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'web-console'
 end
 
 gem 'ahoy_matey'
@@ -51,7 +52,7 @@ gem 'gon' # Access ruby data in JavaScript.
 gem 'google-api-client' # Access Google sheets programmatically
 gem 'googleauth'
 gem 'httparty' # Simple calls to external API.
-gem 'jbuilder', '~> 2.10.1'
+gem 'jbuilder'
 gem 'jquery-datatables' # For making sortable searchable tables
 gem 'jquery-rails' # Use jquery as the JavaScript library
 gem 'kaminari' # Pagination.
@@ -86,7 +87,6 @@ gem 'slim-rails'
 gem 'sortable-rails' # List reordering, Drag & Drop.
 gem 'tailwindcss-rails', '~> 2.0'
 gem 'toastr_rails'
-gem 'turnout' # Easy maintenance mode
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby] # Windows does not include zoneinfo files
 gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
 gem 'zip-zip' # Spreadsheet reading.

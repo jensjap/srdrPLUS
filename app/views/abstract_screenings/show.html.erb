@@ -1,0 +1,720 @@
+<div class="px-4 sm:px-6 lg:px-8 py-4">
+  <div x-data="abstract_screening_results">
+    <div class="lg:flex lg:items-center">
+      <div class="lg:flex-auto">
+        <div class="flex flex-col md:flex-row justify-between mb-4">
+          <div>
+            <h1 class="text-xl font-semibold text-gray-900">
+              Abstract Screening Results
+            </h1>
+            <p class="mt-2 text-sm text-gray-700">
+              A list of all results for citations that have been labeled.
+            </p>
+          </div>
+          <div class="flex-col items-end">
+            <!-- prettier-ignore -->
+            <% if AbstractScreeningService.find_citation_id(@abstract_screening, current_user) %>
+            <%= link_to('Continue Screening',
+            abstract_screening_screen_path(@abstract_screening), class: "text-center mb-2
+            cursor-pointer inline-flex items-center justify-center rounded-md border
+            border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium
+            text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none
+            focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full
+            hover:no-underline hover:text-white") %>
+            <% else %>
+            <button
+              class="text-center mb-2 cursor-not-allowed saturate-[0.25] w-full inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
+            >
+              Nothing Left to Screen
+            </button>
+            <% end %>
+            <!-- prettier-ignore -->
+            <%= link_to('Back to Abstract Screenings',
+            project_abstract_screenings_path(@abstract_screening.project), class:
+            "text-center cursor-pointer inline-flex items-center justify-center rounded-md
+            border border-transparent bg-gray-700 px-4 py-2 text-sm font-medium
+            text-white shadow-sm hover:bg-gray-500 focus:outline-none focus:ring-2
+            focus:ring-indigo-500 focus:ring-offset-2 w-full hover:no-underline
+            hover:text-white") %>
+          </div>
+        </div>
+        <div class="flex flex-wrap lg:flex-nowrap gap-4">
+          <div class="text-xs w-full text-gray-700 p-2">
+            <div class="text-center border-b-2 border-gray-200">Options</div>
+            <div class="flex justify-between">
+              <div>Screening Type:</div>
+              <div>
+                <!-- prettier-ignore -->
+                <%= @abstract_screening.abstract_screening_type %>
+              </div>
+            </div>
+            <!-- prettier-ignore -->
+            <% if AbstractScreening::NON_PERPETUAL.include?(@abstract_screening.abstract_screening_type) %>
+            <div class="flex justify-between">
+              <div>No. of citations per user:</div>
+              <div><%= @abstract_screening.no_of_citations %></div>
+            </div>
+            <% end %>
+            <div class="flex justify-between">
+              <div>Exclusive users:</div>
+              <div><%= @abstract_screening.exclusive_users %></div>
+            </div>
+            <div class="flex justify-between">
+              <div>Only predefined reasons:</div>
+              <div><%= @abstract_screening.only_predefined_reasons %></div>
+            </div>
+            <div class="flex justify-between">
+              <div>Only predefined tags:</div>
+              <div><%= @abstract_screening.only_predefined_tags %></div>
+            </div>
+            <div class="flex justify-between">
+              <div>Hide author:</div>
+              <div><%= @abstract_screening.hide_author %></div>
+            </div>
+            <div class="flex justify-between">
+              <div>Hide journal:</div>
+              <div><%= @abstract_screening.hide_journal %></div>
+            </div>
+            <div class="flex justify-between">
+              <div>Tags required for:</div>
+              <div><%= @abstract_screening.tag_options.join(', ') %></div>
+            </div>
+            <div class="flex justify-between">
+              <div>Reasons required for:</div>
+              <div><%= @abstract_screening.reason_options.join(', ') %></div>
+            </div>
+            <div class="flex justify-between">
+              <div>Notes required for:</div>
+              <div><%= @abstract_screening.note_options.join(', ') %></div>
+            </div>
+          </div>
+          <div class="text-xs w-full text-gray-700 p-2">
+            <div class="text-center border-b-2 border-gray-200">Users</div>
+            <!-- prettier-ignore -->
+            <% users = @abstract_screening.abstract_screening_results.map(&:user) %>
+            <% users += @abstract_screening.users.to_a if @abstract_screening.exclusive_users %>
+            <% users.uniq.each do |user| %>
+            <div class="flex justify-between">
+              <div><%= user.handle %></div>
+              <div>
+                <!-- prettier-ignore -->
+                (<%= AbstractScreeningResult.where(user:, abstract_screening: @abstract_screening).where("label IS NOT NULL").count %>)
+              </div>
+            </div>
+            <% end %>
+          </div>
+          <div class="text-xs w-full text-gray-700 p-2">
+            <div class="text-center border-b-2 border-gray-200">
+              Predefined Reasons
+            </div>
+            <% @abstract_screening.reasons.map(&:name).each do |reason| %>
+            <!-- prettier-ignore -->
+            - <%= reason %><br />
+            <% end %>
+          </div>
+          <div class="text-xs w-full text-gray-700 p-2">
+            <div class="text-center border-b-2 border-gray-200">
+              Predefined Tags
+            </div>
+            <div>
+              <% @abstract_screening.tags.map(&:name).each do |tag| %>
+              <!-- prettier-ignore -->
+              - <%= tag %><br />
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="relative my-4">
+      <input
+        x-model.debounce.500ms="query"
+        @keyup.slash.window="$focus.focus($el)"
+        class="!p-4 text-center"
+        placeholder="To start searching, press '/'"
+        onfocus="this.placeholder = ''"
+        onblur="this.placeholder = 'To start searching, press \'/\''"
+        type="search"
+      />
+      <div
+        x-show="query != ''"
+        x-cloak
+        @click="query = ''"
+        class="cursor-pointer absolute top-2 right-2"
+      >
+        Clear Results (X)
+      </div>
+    </div>
+    <div class="mb-8 flex flex-col">
+      <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+          <div
+            class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
+          >
+            <table class="w-full divide-y divide-gray-300">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    scope="col"
+                    class="cursor-pointer py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                    @click="changeOrderBy('accession_number_alts')"
+                  >
+                    <div class="flex justify-between">
+                      Accession No.
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'accession_number_alts'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'accession_number_alts'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('author_map_string')"
+                  >
+                    <div class="flex justify-between">
+                      Authors
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'author_map_string'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'author_map_string'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('name')"
+                  >
+                    <div class="flex justify-between">
+                      Title
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'name'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'name'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('year')"
+                  >
+                    <div class="flex justify-between">
+                      Publication Date
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'year'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'year'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('user')"
+                  >
+                    <div class="flex justify-between">
+                      Participant
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'user'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'user'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('label')"
+                  >
+                    <div class="flex justify-between">
+                      Label
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'label'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'label'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('reasons')"
+                  >
+                    <div class="flex justify-between">
+                      Reason(s)
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'reasons'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'reasons'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('tags')"
+                  >
+                    <div class="flex justify-between">
+                      Tag(s)
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'tags'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'tags'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('notes')"
+                  >
+                    <div class="flex justify-between">
+                      Notes<template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'notes'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'notes'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                    <span class="sr-only">Edit</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <template x-if="results == null">
+                  <tr>
+                    <td>Loading..</td>
+                  </tr>
+                </template>
+                <template x-if="results != null && results.length == 0">
+                  <tr>
+                    <td>No results</td>
+                  </tr>
+                </template>
+                <template x-if="results != null">
+                  <template x-for="result in results">
+                    <tr>
+                      <td
+                        class="whitespace-nowrap pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                        x-text="result.accession_number_alts"
+                      ></td>
+                      <td
+                        class="px-3 text-sm text-gray-500 max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap"
+                        x-text="result.author_map_string"
+                      ></td>
+                      <td
+                        class="px-3 text-sm text-gray-500"
+                        x-text="result.name"
+                      ></td>
+                      <td
+                        class="px-3 text-sm text-gray-500"
+                        x-text="result.year"
+                      ></td>
+                      <td
+                        class="whitespace-nowrap px-3 text-sm text-gray-500"
+                        x-text="result.user"
+                      ></td>
+                      <td
+                        class="font-bold whitespace-nowrap px-3 text-sm text-gray-500"
+                        x-text="result.label"
+                      ></td>
+                      <td
+                        class="whitespace-nowrap px-3 text-sm text-gray-500"
+                        x-text="result.reasons"
+                      ></td>
+                      <td
+                        class="whitespace-nowrap px-3 text-sm text-gray-500"
+                        x-text="result.tags"
+                      ></td>
+                      <td
+                        class="whitespace-nowrap px-3 text-sm text-gray-500"
+                        x-text="result.notes"
+                      ></td>
+                      <td
+                        class="relative whitespace-nowrap pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+                      >
+                        <a
+                          :href="`/abstract_screenings/${result.abstract_screening_id}/screen?asr_id=${result.id}`"
+                          x-cloak
+                          x-show="result.user_id == <%= current_user.id %>"
+                          class="hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-1 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+                          >Screen Again</a
+                        >
+                      </td>
+                    </tr>
+                  </template>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div><%= render '/components/pagination' %></div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("abstract_screening_results", () => ({
+      results: null,
+      query: "",
+      base_url: "/abstract_screenings/<%= params[:id] %>",
+      pagination: {
+        base_url: this.base_url,
+        prev_page: "",
+        current_page: "",
+        next_page: "",
+        total_pages: "",
+        query: null,
+        order_by: null,
+        sort: null,
+      },
+
+      init() {
+        this.fetch_results();
+        this.$watch("query", (value, oldValue) => {
+          this.pagination.current_page = 1;
+          this.pagination.query = value;
+          this.pagination.order_by = null;
+          this.pagination.sort = null;
+          this.fetch_results();
+        });
+      },
+
+      changeOrderBy(order_by) {
+        if (this.pagination.order_by == order_by) {
+          if (this.pagination.sort == "asc") {
+            this.pagination.sort = "desc";
+          } else if (this.pagination.sort == "desc") {
+            this.pagination.order_by = null;
+            this.pagination.sort = null;
+          } else {
+            this.pagination.sort = "asc";
+          }
+        } else {
+          this.pagination.sort = "asc";
+          this.pagination.order_by = order_by;
+        }
+        this.fetch_results();
+      },
+
+      goToPage(page) {
+        this.pagination.current_page = page;
+        this.fetch_results();
+      },
+
+      query_url() {
+        let url = this.base_url;
+        let params = [];
+        if (this.pagination.query) {
+          params.push("query=" + escape(this.pagination.query));
+        }
+        if (this.pagination.order_by) {
+          params.push("order_by=" + this.pagination.order_by);
+        }
+        if (this.pagination.sort) {
+          params.push("sort=" + this.pagination.sort);
+        }
+        params.push(`page=${this.pagination.current_page}`);
+        return url + "?" + params.join("&");
+      },
+
+      async fetch_results() {
+        const response = await fetch(this.query_url(), {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.results = data.results;
+        this.pagination = data.pagination;
+      },
+    }));
+  });
+</script>

@@ -15,8 +15,6 @@ html class='no-js' lang='en'
       gtag('config', 'GTM-KFBGXK');
 
     script src="https://kit.fontawesome.com/a55e144d79.js" crossorigin="anonymous"
-    script defer="true" src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js"
-    script defer="true" src="https://unpkg.com/alpinejs@3.10.2/dist/cdn.min.js"
 
     = stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload"
 
@@ -29,6 +27,10 @@ html class='no-js' lang='en'
     / Select2 4.0.13
     = stylesheet_link_tag 'https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css'
     = javascript_include_tag 'https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js'
+
+    = javascript_include_tag 'https://unpkg.com/@alpinejs/focus@3.10.3/dist/cdn.min.js', defer: true
+    = javascript_include_tag 'https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js', defer: true
+    = javascript_include_tag 'https://unpkg.com/alpinejs@3.10.3/dist/cdn.min.js', defer: true
 
     = csrf_meta_tag
 

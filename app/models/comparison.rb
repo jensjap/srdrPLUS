@@ -11,6 +11,27 @@
 
 class Comparison < ApplicationRecord
   acts_as_paranoid
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    comparate_groups.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    comparable_elements.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    comparisons_arms_rssms.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    tps_comparisons_rssms.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    wacs_bacs_rssms.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    comparisons_result_statistic_sections.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
 
   belongs_to :result_statistic_section, inverse_of: :comparisons, optional: true
 
@@ -41,7 +62,7 @@ class Comparison < ApplicationRecord
       .where(
         timepoint_id: eefpst1rc_id,
         result_statistic_sections_measure: rssm)
-    Record.where(recordable: recordables).pluck(:name).join('\r')
+    Record.where(recordable: recordables.first).first.try(:name).to_s.gsub(/\P{Print}|\p{Cf}/, '')
   end
 
   # Fetch records for this particular comparison
@@ -51,7 +72,7 @@ class Comparison < ApplicationRecord
       .where(
         extractions_extraction_forms_projects_sections_type1_id: eefpst1_arm_id,
         result_statistic_sections_measure: rssm)
-    Record.where(recordable: recordables).pluck(:name).join('\r')
+    Record.where(recordable: recordables.first).first.try(:name).to_s.gsub(/\P{Print}|\p{Cf}/, '')
   end
 
   # Fetch records for this particular comparison
@@ -61,7 +82,7 @@ class Comparison < ApplicationRecord
       .where(
         bac_id: bac_id,
         result_statistic_sections_measure: rssm)
-    Record.where(recordable: recordables).pluck(:name).join('\r')
+    Record.where(recordable: recordables.first).first.try(:name).to_s.gsub(/\P{Print}|\p{Cf}/, '')
   end
 
   # This is meant to print out the comparison in pretty format.
@@ -77,11 +98,11 @@ class Comparison < ApplicationRecord
         if comparable.instance_of? ExtractionsExtractionFormsProjectsSectionsType1
           t1 = comparable.type1
           text += t1.name
-          text += " (#{ t1.description }), " if t1.description.present?
+          text += " (#{t1.description}), " if t1.description.present?
         elsif comparable.instance_of? ExtractionsExtractionFormsProjectsSectionsType1RowColumn
           tn = comparable.timepoint_name
           text += tn.name
-          text += " (#{ tn.unit }), " if tn.unit.present?
+          text += " (#{tn.unit}), " if tn.unit.present?
         end
       end
       text = text.gsub(/,\s$/, '') + ']'
@@ -111,6 +132,6 @@ class Comparison < ApplicationRecord
       text += ' vs. '
     end
 
-    return text[0..-6]
+    text[0..-6]
   end
 end

@@ -19,4 +19,12 @@ class Statusing < ApplicationRecord
   validates :statusable, :status, presence: true
 
   delegate :project, to: :statusable
+
+  after_commit :evaluate_screening_status_citations_project
+
+  def evaluate_screening_status_citations_project
+    return unless statusable.instance_of?(ExtractionsExtractionFormsProjectsSection)
+
+    statusable.citations_project.evaluate_screening_status
+  end
 end

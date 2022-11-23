@@ -1,0 +1,207 @@
+<template x-if="results !== null">
+  <div
+    class="fixed top-1/2 left-1/2 h-[32rem] -mt-[18rem] w-96 -ml-48 md:h-[40rem] md:-mt-[20rem] md:w-[48rem] md:-ml-[24rem] z-10 transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:p-6 border border-slate-200"
+    x-show="showDetailView"
+    x-cloak
+    x-transition:enter="ease-out duration-300"
+    x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+    x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+    x-transition:leave="ease-in duration-200"
+    x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+    x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+    @click.outside="showDetailView = !showDetailView"
+    @keyup.window.esc="showDetailView = false"
+  >
+    <div class="absolute top-0 right-0 pt-4 pr-4 block">
+      <button
+        type="button"
+        class="cursor-pointer rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        @click="showDetailView = false"
+      >
+        <span class="sr-only">Close</span>
+        <!-- Heroicon name: outline/x-mark -->
+        <svg
+          class="h-6 w-6"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </div>
+    <div class="overflow-y-scroll mt-6 h-[13rem] md:h-[17rem]">
+      <h3
+        class="text-lg font-medium leading-6 text-gray-900"
+        id="modal-title"
+        x-text="results[detailedResult].name"
+      ></h3>
+      <div class="mt-2">
+        <div class="text-sm text-gray-500">
+          Authors:
+          <span x-text="results[detailedResult].author_map_string"></span>
+        </div>
+        <div class="text-sm text-gray-500">
+          Acession No.:
+          <span x-text="results[detailedResult].accession_number_alts"></span>
+        </div>
+        <div class="text-sm text-gray-500">
+          Year:
+          <span x-text="results[detailedResult].year"></span>
+        </div>
+        <div class="text-sm text-gray-500">
+          Status:
+          <span x-text="results[detailedResult].screening_status"></span>
+        </div>
+        <div
+          x-text="results[detailedResult].abstract"
+          class="text-sm text-gray-500 my-4"
+        ></div>
+      </div>
+    </div>
+    <div class="overflow-y-scroll mt-6 h-[13rem] md:h-[17rem]">
+      <template
+        x-for="aso in results[detailedResult].abstract_screening_objects"
+      >
+        <div class="border border-slate-200 rounded-md">
+          <div
+            class="p-2 text-sm text-gray-500 border-b border-slate-200"
+            x-text="`Abstract Screening Type: ${aso.type}`"
+          ></div>
+          <template x-for="asr in aso.asrs">
+            <div class="p-2 border-b border-slate-200">
+              <div>
+                <div class="text-sm text-gray-500">
+                  Users:
+                  <span x-text="asr.user"></span>
+                </div>
+                <div class="text-sm text-gray-500">
+                  Label: <span x-text="asr.label"></span>
+                </div>
+                <div class="text-sm text-gray-500">
+                  Reasons: <span x-text="asr.reasons"></span>
+                </div>
+                <div class="text-sm text-gray-500">
+                  Tags: <span x-text="asr.tags"></span>
+                </div>
+                <div class="text-sm text-gray-500">
+                  Notes: <span x-text="asr.notes"></span>
+                </div>
+              </div>
+              <!-- <div>
+                <button
+                  class="text-xs text-white bg-srdr-primary hover:bg-srdr-secondary p-1 cursor-pointer w-full"
+                >
+                  Override Label
+                </button>
+              </div> -->
+            </div>
+          </template>
+        </div>
+      </template>
+      <template
+        x-for="fso in results[detailedResult].fulltext_screening_objects"
+      >
+        <div class="border border-slate-200 rounded-md">
+          <div
+            class="p-2 text-sm text-gray-500 border-b border-slate-200"
+            x-text="`Fulltext Screening Type: ${fso.type}`"
+          ></div>
+          <template x-for="fsr in fso.fsrs">
+            <div class="p-2 border-b border-slate-200">
+              <div>
+                <div class="text-sm text-gray-500">
+                  Users:
+                  <span x-text="fsr.user"></span>
+                </div>
+                <div class="text-sm text-gray-500">
+                  Label: <span x-text="fsr.label"></span>
+                </div>
+                <div class="text-sm text-gray-500">
+                  Reasons: <span x-text="fsr.reasons"></span>
+                </div>
+                <div class="text-sm text-gray-500">
+                  Tags: <span x-text="fsr.tags"></span>
+                </div>
+                <div class="text-sm text-gray-500">
+                  Notes: <span x-text="fsr.notes"></span>
+                </div>
+              </div>
+              <!-- <div>
+              <button
+                class="text-xs text-white bg-srdr-primary hover:bg-srdr-secondary p-1 cursor-pointer w-full"
+              >
+                Override Label
+              </button>
+            </div> -->
+            </div>
+          </template>
+        </div>
+      </template>
+    </div>
+    <!-- <div class="mt-2 space-y-2 text-xs md:text-base">
+      <div class="flex justify-around">
+        <button
+          type="button"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+        >
+          AS Accept
+        </button>
+        <button
+          type="button"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+        >
+          AS Reject
+        </button>
+        <button
+          type="button"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+        >
+          AS Reset
+        </button>
+      </div>
+      <div class="flex justify-around">
+        <button
+          type="button"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+        >
+          FS Accept
+        </button>
+        <button
+          type="button"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+        >
+          FS Reject
+        </button>
+        <button
+          type="button"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+        >
+          FS Reset
+        </button>
+      </div>
+      <div class="flex justify-around">
+        <div class="w-1/4"></div>
+        <button
+          type="button"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+        >
+          Extraction Reject
+        </button>
+        <button
+          type="button"
+          class="cursor-not-allowed inline-flex w-1/4 justify-center rounded-md border border-transparent bg-srdr-primary px-4 py-2 font-medium text-white shadow-sm hover:bg-srdr-secondary focus:outline-none focus:ring-2 focus:ring-srdr-primary focus:ring-offset-2 sm:text-sm"
+        >
+          Extraction Reset
+        </button>
+      </div>
+    </div> -->
+  </div>
+</template>

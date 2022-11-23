@@ -1,0 +1,28 @@
+<ul aria-label="Pagination" class="pagination" role="pagination">
+  <li>
+    <a @click="goToPage(1)">« First</a>
+  </li>
+  <li>
+    <a rel="prev" @click="goToPage(pagination.prev_page)">‹ Prev</a>
+  </li>
+  <!-- <li aria-hidden="true" class="ellipsis"></li> -->
+  <template x-for="i in pagination.total_pages">
+    <span>
+      <template x-if="pagination.current_page == i">
+        <li class="current" x-text="i"></li>
+      </template>
+      <template x-if="pagination.current_page != i">
+        <li>
+          <a @click="goToPage(i)" x-text="i"></a>
+        </li>
+      </template>
+    </span>
+  </template>
+  <!-- <li aria-hidden="true" class="ellipsis"></li> -->
+  <li>
+    <a rel="next" @click="goToPage(pagination.next_page)">Next ›</a>
+  </li>
+  <li>
+    <a @click="goToPage(pagination.total_pages)">Last »</a>
+  </li>
+</ul>

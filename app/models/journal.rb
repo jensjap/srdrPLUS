@@ -13,23 +13,30 @@
 #
 
 class Journal < ApplicationRecord
+  after_commit :reindex_citations_projects
+
   belongs_to :citation, optional: true
+  has_many :citations_projects, through: :citation
 
   def get_publication_year
     get_year_through_date || get_year_through_date_time || ''
   end
 
+  def reindex_citations_projects
+    citations_projects.each(&:reindex)
+  end
+
   private
 
-    def get_year_through_date
-      self.publication_date.to_date.strftime('%Y')
-    rescue
-      nil
-    end
+  def get_year_through_date
+    publication_date.to_date.strftime('%Y')
+  rescue StandardError
+    nil
+  end
 
-    def get_year_through_date_time
-      DateTime.strptime(self.publication_date, '%Y').strftime('%Y')
-    rescue
-      nil
-    end
+  def get_year_through_date_time
+    DateTime.strptime(publication_date, '%Y').strftime('%Y')
+  rescue StandardError
+    nil
+  end
 end

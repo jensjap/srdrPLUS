@@ -14,6 +14,13 @@ class ExtractionForm < ApplicationRecord
   include SharedSuggestableMethods
 
   acts_as_paranoid
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    extraction_forms_projects.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    Suggestion.with_deleted.where(suggestable_type: self.class, suggestable_id: id).each(&:really_destroy!)
+  end
 
   after_create :record_suggestor
 

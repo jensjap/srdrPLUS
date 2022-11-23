@@ -1,0 +1,707 @@
+<div class="p-4 lg:p-8" x-data="citation_lifecycle_management">
+  <!-- prettier-ignore -->
+  <%= render 'selection' %>
+  <%= render 'loading' %>
+  <%= render 'detail_view' %>
+  <%= render 'dashboard' %>
+  <div>
+    <div class="sm:flex sm:items-center">
+      <div class="sm:flex-auto">
+        <h1 class="text-xl font-bold">Citation Lifecycle Management</h1>
+        <p class="mt-2 text-sm text-gray-700">Promote or demote citations.</p>
+        <div class="relative">
+          <input
+            x-model.debounce.500ms="query"
+            @keyup.slash.window="$focus.focus($el)"
+            class="!p-4 text-center"
+            placeholder="To start searching, press '/'"
+            onfocus="this.placeholder = ''"
+            onblur="this.placeholder = 'To start searching, press \'/\''"
+            type="search"
+          />
+          <div
+            x-show="query != ''"
+            x-cloak
+            @click="query = ''"
+            class="cursor-pointer absolute top-2 right-2"
+          >
+            Clear Results (X)
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="my-4 flex flex-col">
+      <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+          <div
+            class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg mb-8"
+          >
+            <table class="w-full divide-y divide-gray-300">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th
+                    scope="col"
+                    class="cursor-pointer py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                    @click="changeOrderBy('accession_number_alts')"
+                  >
+                    <div class="flex justify-between">
+                      Accession No.
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'accession_number_alts'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'accession_number_alts'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('author_map_string')"
+                  >
+                    <div class="flex justify-between">
+                      Authors
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'author_map_string'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'author_map_string'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('name')"
+                  >
+                    <div class="flex justify-between">
+                      Title
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'name'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'name'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('year')"
+                  >
+                    <div class="flex justify-between">
+                      Pub Date
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'year'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'year'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('abstract_qualification')"
+                  >
+                    <div class="flex justify-between">
+                      Abstract
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'abstract_qualification'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'abstract_qualification'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('fulltext_qualification')"
+                  >
+                    <div class="flex justify-between">
+                      Fulltext
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'fulltext_qualification'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'fulltext_qualification'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('extraction_qualification')"
+                  >
+                    <div class="flex justify-between">
+                      Extraction
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'extraction_qualification'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'extraction_qualification'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('screening_status')"
+                  >
+                    <div class="flex justify-between">
+                      Sub Status
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'screening_status'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'screening_status'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 select-none"
+                  ></th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 select-none"
+                  ></th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <template x-if="results == null">
+                  <tr>
+                    <td>Loading..</td>
+                  </tr>
+                </template>
+                <template x-if="results != null && results.length == 0">
+                  <tr>
+                    <td>No results</td>
+                  </tr>
+                </template>
+                <template x-if="results != null">
+                  <template x-for="(result, i) in results">
+                    <tr
+                      :class="selected.some(selectedCp => selectedCp.citations_project_id == result.citations_project_id) ? '!bg-green-100' : '!bg-white'"
+                    >
+                      <td
+                        class="pl-4 pr-3 text-sm text-gray-500 sm:pl-6 w-32 overflow-hidden text-ellipsis whitespace-nowrap"
+                        x-text="result.accession_number_alts"
+                      ></td>
+                      <td
+                        class="px-3 text-sm text-gray-500 max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap"
+                        x-text="result.author_map_string"
+                      ></td>
+                      <td
+                        class="px-3 text-sm text-gray-500 max-w-[250px] overflow-hidden text-ellipsis whitespace-nowrap"
+                        x-text="result.name"
+                      ></td>
+                      <td
+                        class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                        x-text="result.year"
+                      ></td>
+                      <td
+                        class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                        x-text="result.abstract_qualification"
+                      ></td>
+                      <td
+                        class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                        x-text="result.fulltext_qualification"
+                      ></td>
+                      <td
+                        class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                        x-text="result.extraction_qualification"
+                      ></td>
+                      <td
+                        class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                        :class="applyTdBg(result.screening_status)"
+                        x-text="result.screening_status"
+                      ></td>
+                      <td
+                        class="cursor-pointer select-none px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                        @click.stop="if (showDetailView && detailedResult == i) { showDetailView = false } else { detailedResult = i; showDetailView = true }"
+                      >
+                        <div>See Details</div>
+                      </td>
+                      <td
+                        class="cursor-pointer select-none px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                        @click="toggleSelection(i)"
+                      >
+                        <div>Select Citation</div>
+                      </td>
+                    </tr>
+                  </template>
+                </template>
+              </tbody>
+            </table>
+          </div>
+          <div><%= render '/components/pagination' %></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("citation_lifecycle_management", () => ({
+      results: null,
+      query: "",
+      base_url:
+        "/projects/<%= params[:project_id] %>/citation_lifecycle_management",
+      pagination: {
+        base_url: this.base_url,
+        prev_page: "",
+        current_page: "",
+        next_page: "",
+        total_pages: "",
+        query: null,
+        order_by: null,
+        sort: null,
+      },
+      selected: [],
+      showLoading: false,
+      showDetailView: false,
+      detailedResult: 0,
+      lastIndexSelected: null,
+
+      init() {
+        window.shift = false;
+        window.onkeyup = () => (window.shift = false);
+        window.onkeydown = () => (window.shift = true);
+        this.fetch_results();
+        this.$watch("query", (value, oldValue) => {
+          this.pagination.current_page = 1;
+          this.pagination.query = value;
+          this.pagination.order_by = null;
+          this.pagination.sort = null;
+          this.fetch_results();
+        });
+      },
+
+      applyTdBg(screening_status) {
+        if (screening_status.indexOf("ic") != -1) {
+          return "!bg-orange-600 text-white";
+        } else if (screening_status.indexOf("r") != -1) {
+          return "!bg-red-600 text-white";
+        }
+      },
+
+      toggleSelection(resultsIndex) {
+        if (!window.shift) {
+          this.lastIndexSelected = resultsIndex;
+        }
+
+        let head = null;
+        let tail = null;
+        if (resultsIndex >= this.lastIndexSelected) {
+          head = this.lastIndexSelected;
+          tail = resultsIndex;
+        } else {
+          head = resultsIndex;
+          tail = this.lastIndexSelected;
+        }
+        if (window.shift && tail == resultsIndex) {
+          head += 1;
+        } else if (window.shift && head == resultsIndex) {
+          tail -= 1;
+        }
+        for (i = head; i <= tail; i++) {
+          if (
+            !this.selected.some(
+              (selectedCp) =>
+                selectedCp.citations_project_id ==
+                this.results[i].citations_project_id
+            )
+          ) {
+            this.selected.push(this.results[i]);
+          } else {
+            this.selected = this.selected.filter(
+              (selectedCp) =>
+                selectedCp.citations_project_id !=
+                this.results[i].citations_project_id
+            );
+          }
+        }
+        this.lastIndexSelected = resultsIndex;
+      },
+
+      changeOrderBy(order_by) {
+        if (this.pagination.order_by == order_by) {
+          if (this.pagination.sort == "asc") {
+            this.pagination.sort = "desc";
+          } else if (this.pagination.sort == "desc") {
+            this.pagination.order_by = null;
+            this.pagination.sort = null;
+          } else {
+            this.pagination.sort = "asc";
+          }
+        } else {
+          this.pagination.sort = "asc";
+          this.pagination.order_by = order_by;
+        }
+        this.fetch_results();
+      },
+
+      goToPage(page) {
+        this.pagination.current_page = page;
+        this.fetch_results();
+      },
+
+      query_url() {
+        let url = this.base_url;
+        let params = [];
+        if (this.pagination.query) {
+          params.push("query=" + escape(this.pagination.query));
+        }
+        if (this.pagination.order_by) {
+          params.push("order_by=" + this.pagination.order_by);
+        }
+        if (this.pagination.sort) {
+          params.push("sort=" + this.pagination.sort);
+        }
+        params.push(`page=${this.pagination.current_page}`);
+        return url + "?" + params.join("&");
+      },
+
+      async createScreeningQualification(qualification_type) {
+        this.showLoading = true;
+        const response = await fetch("/screening_qualifications", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          body: JSON.stringify({
+            qualification_type,
+            citations_project_ids: this.selected.map(
+              (cp) => cp.citations_project_id
+            ),
+          }),
+        });
+        const data = await response.json();
+        data.forEach((screeningStatus) => {
+          this.selected.forEach((selection) => {
+            if (
+              selection.citations_project_id ==
+              screeningStatus.citations_project_id
+            ) {
+              selection.screening_status = screeningStatus.screening_status;
+              selection.abstract_qualification =
+                screeningStatus.abstract_qualification;
+              selection.fulltext_qualification =
+                screeningStatus.fulltext_qualification;
+              selection.extraction_qualification =
+                screeningStatus.extraction_qualification;
+            }
+          });
+          this.results.forEach((result) => {
+            if (
+              result.citations_project_id ==
+              screeningStatus.citations_project_id
+            ) {
+              result.screening_status = screeningStatus.screening_status;
+              result.abstract_qualification =
+                screeningStatus.abstract_qualification;
+              result.fulltext_qualification =
+                screeningStatus.fulltext_qualification;
+              result.extraction_qualification =
+                screeningStatus.extraction_qualification;
+            }
+          });
+        });
+        Alpine.store("dashboard").fetch_kpis();
+        this.showLoading = false;
+      },
+
+      async fetch_results() {
+        const response = await fetch(this.query_url(), {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        const allResults = this.selected.concat(data.results);
+        const uniqueResults = [];
+        const lookup = {};
+        allResults.forEach((result) => {
+          if (!(result.citations_project_id in lookup)) {
+            lookup[result.citations_project_id] = true;
+            uniqueResults.push(result);
+          }
+        });
+        this.results = uniqueResults;
+        this.pagination = data.pagination;
+      },
+
+      async update_evaluation(citations_project_id, type) {
+        const response = await fetch(
+          `/citations_projects/${citations_project_id}/update_evaluation?page=<%= params[:page] %>&type=${type}`,
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await response.json();
+        for (let i = 0; i < this.results.length; i++) {
+          const citations_project = this.results[i];
+          if (
+            citations_project.citations_project_id == data.citations_project_id
+          ) {
+            citations_project.screening_status = data.screening_status;
+          }
+        }
+        Alpine.store("dashboard").fetch_kpis();
+      },
+    }));
+  });
+</script>

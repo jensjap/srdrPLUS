@@ -16,9 +16,15 @@
 
 class Task < ApplicationRecord
   acts_as_paranoid
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    assignments.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
 
   belongs_to :task_type
-  belongs_to :project, touch: true
+  belongs_to :project # , touch: true
 
   has_many :assignments, dependent: :destroy
   has_many :projects_users_roles, through: :assignments

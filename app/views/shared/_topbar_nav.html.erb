@@ -16,11 +16,17 @@
   members_and_roles: <%= @nav_buttons.include?('members_and_roles') %>,
   extractions_form_builder: <%= @nav_buttons.include?('extractions_form_builder') %>,
   citation_pool: <%= @nav_buttons.include?('citation_pool') %>,
+  lifecycle_management: <%= @nav_buttons.include?('lifecycle_management') %>,
+  abstract_screening: <%= @nav_buttons.include?('abstract_screening') %>,
+  fulltext_screening: <%= @nav_buttons.include?('fulltext_screening') %>,
+  abstract_form: <%= @nav_buttons.include?('abstract_form') %>,
+  fulltext_form: <%= @nav_buttons.include?('fulltext_form') %>,
   tasks: <%= @nav_buttons.include?('tasks') %>,
   screen: <%= @nav_buttons.include?('screen') %>,
   extractions: <%= @nav_buttons.include?('extractions') %>,
   comparison_tool: <%= @nav_buttons.include?('comparison_tool') %>,
   export_data: <%= @nav_buttons.include?('export_data') %>,
+  sr_360: <%= @nav_buttons.include?('sr_360') %>,
   import_tools: <%= @nav_buttons.include?('import_tools') %>,
   publication: <%= @nav_buttons.include?('publication') %>,
   signin: <%= @nav_buttons.include?('signin') %>,
@@ -274,7 +280,7 @@
     <div
       class="bg-srdr-secondary mx-auto px-4 lg:px-8 text-white overflow-x-auto whitespace-nowrap"
     >
-      <div class="flex h-8 items-center justify-between">
+      <div class="flex h-8 items-center">
         <div class="absolute">
           <!-- prettier-ignore -->
           <%= "Project ID##{project.id}: #{project.name}" %>
@@ -296,78 +302,123 @@
           <% end %>
         </div>
       </div>
-      <div class="flex h-12 items-center justify-between">
-        <div class="flex items-center space-x-3">
+      <div class="flex h-8 items-center justify-between">
+        <div class="flex items-center">
           <!-- Current: "rounded-md bg-srdr-secondary px-3 py-2 text-sm font-medium text-white" -->
           <a
             href="<%= edit_project_path(project) %>?page=info"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="project_info && 'bg-srdr-primary !text-white'"
             >Project Info</a
           >
           <a
             href="<%= edit_project_path(project) %>?page=key_questions"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="key_questions && 'bg-srdr-primary !text-white'"
             >Key Questions</a
           >
           <a
             href="<%= edit_project_path(project) %>?page=members_and_roles"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="members_and_roles && 'bg-srdr-primary !text-white'"
             >Member(s) & Role(s)</a
           >
-          <a
-            href="<%= build_extraction_forms_project_path(project.extraction_forms_projects.first, 'panel-tab': project.extraction_forms_projects.first.default_section_id) %>"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="extractions_form_builder && 'bg-srdr-primary !text-white'"
-            >Extractions Form Builder</a
-          >
+          <% if AbstractScreeningService.as_user?(current_user) %>
           <a
             href="<%= project_citations_path(project) %>"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="citation_pool && 'bg-srdr-primary !text-white'"
+            >Citations</a
+          >
+          <a
+            href="<%= project_citation_lifecycle_management_path(project) %>"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="lifecycle_management && 'bg-srdr-primary !text-white'"
+            >Citation Phase Management</a
+          >
+          <a
+            href="<%= project_screening_forms_path(project, form_type: 'abstract') %>"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="abstract_form && 'bg-srdr-primary !text-white'"
+            >A.S. Form Builder</a
+          >
+          <a
+            href="<%= project_abstract_screenings_path(project) %>"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="abstract_screening && 'bg-srdr-primary !text-white'"
+            >Abstract Screening</a
+          >
+          <a
+            href="<%= project_screening_forms_path(project, form_type: 'fulltext') %>"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="fulltext_form && 'bg-srdr-primary !text-white'"
+            >F.S. Form Builder</a
+          >
+          <a
+            href="<%= project_fulltext_screenings_path(project) %>"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="fulltext_screening && 'bg-srdr-primary !text-white'"
+            >Full-Text Screening</a
+          >
+          <% else %>
+          <a
+            href="<%= project_citations_path(project) %>"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="citation_pool && 'bg-srdr-primary !text-white'"
             >Citation Pool</a
           >
           <a
             href="<%= project_tasks_path(project) %>"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="tasks && 'bg-srdr-primary !text-white'"
             >Tasks</a
           >
           <a
             href="<%= next_assignment_project_path(project) %>"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="screen && 'bg-srdr-primary !text-white'"
             >Screen</a
           >
+          <% end %>
+          <a
+            href="<%= build_extraction_forms_project_path(project.extraction_forms_projects.first, 'panel-tab': project.extraction_forms_projects.first.default_section_id) %>"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="extractions_form_builder && 'bg-srdr-primary !text-white'"
+            >Extractions Form Builder</a
+          >
           <a
             href="<%= project_extractions_path(project) %>"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="extractions && 'bg-srdr-primary !text-white'"
             >Extractions</a
           >
           <a
             href="<%= export_data_project_path(project) %>"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="export_data && 'bg-srdr-primary !text-white'"
             >Export Data</a
           >
           <a
             href="<%= comparison_tool_project_extractions_path(project) %>"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="comparison_tool && 'bg-srdr-primary !text-white'"
             >Comparison Tool</a
           >
           <a
+            href="<%= project_sd_meta_data_path(project) %>"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            :class="sr_360 && 'bg-srdr-primary !text-white'"
+            >SR-360</a
+          >
+          <a
             href="<%= project_imports_path(project) %>"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="import_tools && 'bg-srdr-primary !text-white'"
             >Import Tools</a
           >
           <a
             href="<%= new_publishing_path(type: Project.to_s, id: project.id) %>"
-            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="publication && 'bg-srdr-primary !text-white'"
             >Publication</a
           >

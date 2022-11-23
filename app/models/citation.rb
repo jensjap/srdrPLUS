@@ -24,7 +24,19 @@ class Citation < ApplicationRecord
   include SharedProcessTokenMethods
 
   acts_as_paranoid
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    citations_projects.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    authors_citations.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
+
   searchkick
+
+  after_commit :reindex_citations_projects
 
   belongs_to :citation_type, optional: true
 
@@ -44,13 +56,13 @@ class Citation < ApplicationRecord
 
   # Redundant?
   def abstract_utf8
-    abstract = self.read_attribute(:abstract)
-    abstract.nil? ? '' : abstract.encode('utf-8', :invalid => :replace, :undef => :replace, :replace => '_')
+    abstract = read_attribute(:abstract)
+    abstract.nil? ? '' : abstract.encode('utf-8', invalid: :replace, undef: :replace, replace: '_')
   end
 
   # Without this Searchkick cannot create indices
   def abstract
-    (self.read_attribute(:abstract) || '').force_encoding('UTF-8')
+    (read_attribute(:abstract) || '').force_encoding('UTF-8')
   end
 
   def author_ids=(tokens)
@@ -63,40 +75,40 @@ class Citation < ApplicationRecord
 
   def accession_number_alts
     (pmid.present? && pmid) ||
-    (registry_number.present? && registry_number) ||
-    (refman.present? && refman) ||
-    (accession_number.present? && accession_number) ||
-    (doi.present? && doi) ||
-    (other.present? && other)
+      (registry_number.present? && registry_number) ||
+      (refman.present? && refman) ||
+      (accession_number.present? && accession_number) ||
+      (doi.present? && doi) ||
+      (other.present? && other)
   end
 
-#  def authors_citations_attributes=(attributes)
-#    attributes.sort_by{|k,v| v[:ordering_attributes][:position]}.each do |key, attribute_collection|
-#      ActiveRecord::Base.transaction do
-#        unless attribute_collection.has_key? 'id'
-#          author = Author.find_or_create_by(name: attribute_collection[:author_attributes][:name])
-#          authors_citation = AuthorsCitation.find_or_create_by(citation: self, author: author)
-#          attributes[key]['id'] = authors_citation.id.to_s
-#        else
-#          authors_citation = AuthorsCitation.find attribute_collection[:id]
-#        end
-#        authors_citation.ordering.update(position: attribute_collection[:ordering_attributes][:position])
-#      end
-#    end
-#    super
-#  end
+  #  def authors_citations_attributes=(attributes)
+  #    attributes.sort_by{|k,v| v[:ordering_attributes][:position]}.each do |key, attribute_collection|
+  #      ActiveRecord::Base.transaction do
+  #        unless attribute_collection.has_key? 'id'
+  #          author = Author.find_or_create_by(name: attribute_collection[:author_attributes][:name])
+  #          authors_citation = AuthorsCitation.find_or_create_by(citation: self, author: author)
+  #          attributes[key]['id'] = authors_citation.id.to_s
+  #        else
+  #          authors_citation = AuthorsCitation.find attribute_collection[:id]
+  #        end
+  #        authors_citation.ordering.update(position: attribute_collection[:ordering_attributes][:position])
+  #      end
+  #    end
+  #    super
+  #  end
 
-#  def authors_attributes=(attributes)
-#    attributes.each do |key, attribute_collection|
-#      unless attribute_collection.has_key? 'id'
-#        Author.transaction do
-#          author = Author.find_or_create_by(attribute_collection)
-#          authors << author unless authors.include? author
-#          attributes[key]['id'] = author.id.to_s
-#        end
-#      end
-#    end
-#  end
+  #  def authors_attributes=(attributes)
+  #    attributes.each do |key, attribute_collection|
+  #      unless attribute_collection.has_key? 'id'
+  #        Author.transaction do
+  #          author = Author.find_or_create_by(attribute_collection)
+  #          authors << author unless authors.include? author
+  #          attributes[key]['id'] = author.id.to_s
+  #        end
+  #      end
+  #    end
+  #  end
 
   def keyword_ids=(tokens)
     tokens.map do |token|
@@ -106,28 +118,31 @@ class Citation < ApplicationRecord
     super
   end
 
-#  def keywords_attributes=(attributes)
-#    attributes.each do |key, attribute_collection|
-#      unless attribute_collection.has_key? 'id'
-#        Keyword.transaction do
-#          keyword = Keyword.find_or_create_by!(attribute_collection)
-#          keywords << keyword unless keywords.include? keyword
-#          attributes[key]['id'] = keyword.id.to_s
-#        end
-#      end
-#    end
-#    super
-#  end
+  #  def keywords_attributes=(attributes)
+  #    attributes.each do |key, attribute_collection|
+  #      unless attribute_collection.has_key? 'id'
+  #        Keyword.transaction do
+  #          keyword = Keyword.find_or_create_by!(attribute_collection)
+  #          keywords << keyword unless keywords.include? keyword
+  #          attributes[key]['id'] = keyword.id.to_s
+  #        end
+  #      end
+  #    end
+  #    super
+  #  end
 
   def year
-    if journal.nil? or journal.publication_date.nil? then return '' end
+    return '' if journal.nil? or journal.publication_date.nil?
+
     year_match = journal.publication_date.match(/[1-2][0-9][0-9][0-9]/)
-    if year_match then return year_match[0] end
-    return journal.publication_date
+    return year_match[0] if year_match
+
+    journal.publication_date
   end
 
   def first_author
-    @fa ||= authors_citations.includes(:ordering, { citation: :authors}).order('orderings.position asc').first&.citation&.authors&.first&.name || ''
+    @fa ||= authors_citations.includes(:ordering,
+                                       { citation: :authors }).order('orderings.position asc').first&.citation&.authors&.first&.name || ''
   end
 
   # Citation information in one line.
@@ -136,13 +151,13 @@ class Citation < ApplicationRecord
     citation_info << first_author if first_author
     citation_info << year if year
     citation_info << pmid if pmid
-    return citation_info.join(', ')
+    citation_info.join(', ')
   end
 
   def handle
-    string_handle = ""
-#    string_handle += "Study Citation: #{ name } "
-#    string_handle += "(PMID: #{ pmid.to_s })" if pmid.present?
+    string_handle = ''
+    #    string_handle += "Study Citation: #{ name } "
+    #    string_handle += "(PMID: #{ pmid.to_s })" if pmid.present?
     string_handle += first_author
     string_handle += "\n"
     string_handle += year
@@ -151,16 +166,28 @@ class Citation < ApplicationRecord
     string_handle += "\n"
     string_handle += name || ''
 
-    return string_handle
+    string_handle
   end
 
   def label_method
-    pmid.present? ?
-      "<#{first_author}> <PMID: #{pmid}>" :
+    if pmid.present?
+      "<#{first_author}> <PMID: #{pmid}>"
+    else
       "<#{first_author}> #{name}"
+    end
+  end
+
+  def author_map_string
+    authors_citations.map do |ac|
+      [ac.ordering.position, ac.author.name]
+    end.sort { |a, b| (a[0] || 0) <=> (b[0] || 0) }.map { |a| a[1] }.join('; ')
+  end
+
+  def reindex_citations_projects
+    citations_projects.each(&:reindex)
   end
 
   def author_list_for_citation_references_in_brackets
-    authors.map{ |a| "[#{ a.name }]" }.join('')
+    authors.map { |a| "[#{a.name}]" }.join('')
   end
 end

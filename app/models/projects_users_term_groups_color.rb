@@ -11,6 +11,12 @@
 class ProjectsUsersTermGroupsColor < ApplicationRecord
   include SharedProcessTokenMethods
   acts_as_paranoid
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    projects_users_term_groups_colors_terms.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
 
   belongs_to :projects_user
   belongs_to :term_groups_color

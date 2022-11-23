@@ -1,0 +1,236 @@
+<div x-data="$store.dashboard">
+  <h1 class="text-xl font-bold">Citation Phase Management</h3>
+    <p class="mt-2 text-sm text-gray-700" x-text="`(Number of Citations: ${$store.dashboard.kpis.count})`"></p>
+  <dl class="mt-5 grid grid-cols-1 gap-3 lg:grid-cols-3">
+    <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
+      <dt class="text-sm font-medium text-gray-500 truncate">
+        I. Citation
+      </dt>
+      <dd class="mt-1 font-semibold text-gray-900">
+        <div>
+          <span
+            x-text="$store.dashboard.kpis.asu"
+            :class="$store.dashboard.show.asu ? '' : 'invisible'"
+            x-transition
+          >
+            ..
+          </span>
+          <span class="text-xs font-extralight text-gray-500"
+            >unscreened (asu)</span
+          >
+        </div>
+        <div>
+          <span
+            x-text="$store.dashboard.kpis.asps"
+            :class="$store.dashboard.show.asps ? '' : 'invisible'"
+            x-transition
+          >
+            ..
+          </span>
+          <span class="text-xs font-extralight text-gray-500"
+            >partially screened (asps)</span
+          >
+        </div>
+        <div>
+          <span
+            x-text="$store.dashboard.kpis.asic"
+            :class="$store.dashboard.show.asic ? '' : 'invisible'"
+            x-transition
+          >
+            ..
+          </span>
+          <span class="text-xs font-extralight text-gray-500"
+            >in conflict (asic)</span
+          >
+        </div>
+        <div>
+          <span
+            x-text="$store.dashboard.kpis.asr"
+            :class="$store.dashboard.show.asr ? '' : 'invisible'"
+            x-transition
+          >
+            ..
+          </span>
+          <span class="text-xs font-extralight text-gray-500"
+            >rejected (asr)</span
+          >
+        </div>
+      </dd>
+    </div>
+
+    <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
+      <dt class="text-sm font-medium text-gray-500 truncate">
+        II. Fulltext
+      </dt>
+      <dd class="mt-1 font-semibold text-gray-900">
+        <div>
+          <span
+            x-text="$store.dashboard.kpis.fsu"
+            :class="$store.dashboard.show.fsu ? '' : 'invisible'"
+            x-transition
+          >
+            ..
+          </span>
+          <span class="text-xs font-extralight text-gray-500"
+            >unscreened (fsu)</span
+          >
+        </div>
+        <div>
+          <span
+            x-text="$store.dashboard.kpis.fsps"
+            :class="$store.dashboard.show.fsps ? '' : 'invisible'"
+            x-transition
+          >
+            ..
+          </span>
+          <span class="text-xs font-extralight text-gray-500"
+            >partially screened (fsps)</span
+          >
+        </div>
+        <div>
+          <span
+            x-text="$store.dashboard.kpis.fsic"
+            :class="$store.dashboard.show.fsic ? '' : 'invisible'"
+            x-transition
+          >
+            ..
+          </span>
+          <span class="text-xs font-extralight text-gray-500"
+            >in conflict (fsic)</span
+          >
+        </div>
+        <div>
+          <span
+            x-text="$store.dashboard.kpis.fsr"
+            :class="$store.dashboard.show.fsr ? '' : 'invisible'"
+            x-transition
+          >
+            ..
+          </span>
+          <span class="text-xs font-extralight text-gray-500"
+            >rejected (fsr)</span
+          >
+        </div>
+      </dd>
+    </div>
+
+    <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
+      <dt class="text-sm font-medium text-gray-500 truncate">
+        III. Extraction
+      </dt>
+      <dd class="mt-1 font-semibold text-gray-900">
+        <div>
+          <div>
+            <span
+              x-text="$store.dashboard.kpis.ene"
+              :class="$store.dashboard.show.ene ? '' : 'invisible'"
+              x-transition
+            >
+              ..
+            </span>
+            <span class="text-xs font-extralight text-gray-500"
+              >need extraction (ene)</span
+            >
+          </div>
+          <div>
+            <span
+              x-text="$store.dashboard.kpis.eip"
+              :class="$store.dashboard.show.eip ? '' : 'invisible'"
+              x-transition
+            >
+              ..
+            </span>
+            <span class="text-xs font-extralight text-gray-500"
+              >in progress (eip)</span
+            >
+          </div>
+          <div>
+            <span
+              x-text="$store.dashboard.kpis.er"
+              :class="$store.dashboard.show.er ? '' : 'invisible'"
+              x-transition
+            >
+              ..
+            </span>
+            <span class="text-xs font-extralight text-gray-500">rejected (er)</span>
+          </div>
+          <div>
+            <span
+              x-text="$store.dashboard.kpis.ec"
+              :class="$store.dashboard.show.ec ? '' : 'invisible'"
+              x-transition
+            >
+              ..
+            </span>
+            <span class="text-xs font-extralight text-gray-500">complete (ec)</span>
+          </div>
+        </div>
+      </dd>
+    </div>
+  </dl>
+</div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.store("dashboard", {
+      kpis: {
+        count: '..',
+        asu: "..",
+        asps: "..",
+        asic: "..",
+        asr: "..",
+        fsu: "..",
+        fsps: "..",
+        fsic: "..",
+        fsr: "..",
+        ene: "..",
+        eip: "..",
+        er: "..",
+        ec: "..",
+      },
+
+      show: {
+        asu: true,
+        asps: true,
+        asic: true,
+        asr: true,
+        fsu: true,
+        fsps: true,
+        fsic: true,
+        fsr: true,
+        ene: true,
+        eip: true,
+        er: true,
+        ec: true,
+      },
+
+      init() {
+        this.fetch_kpis();
+      },
+
+      async fetch_kpis() {
+        const response = await fetch("/projects/<%= @project.id %>/kpis", {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        this.kpis = await response.json();
+      },
+    });
+  });
+
+  document.addEventListener("alpine:initialized", () => {
+    Object.keys(Alpine.store("dashboard").kpis).forEach(function (key) {
+      Alpine.store("dashboard").$watch("kpis." + key, (a, b) => {
+        if (a != b) {
+          Alpine.store("dashboard").show[key] = false;
+          setTimeout(() => {
+            Alpine.store("dashboard").show[key] = true;
+          }, 300);
+        }
+      });
+    });
+  });
+</script>

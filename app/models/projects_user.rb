@@ -15,8 +15,17 @@ class ProjectsUser < ApplicationRecord
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    projects_users_roles.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    projects_users_term_groups_colors.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
 
-  belongs_to :project, inverse_of: :projects_users, touch: true
+  belongs_to :project, inverse_of: :projects_users # , touch: true
   belongs_to :user, inverse_of: :projects_users
 
   has_many :projects_users_roles, dependent: :destroy, inverse_of: :projects_user

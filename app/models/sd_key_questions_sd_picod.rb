@@ -10,6 +10,10 @@
 #
 
 class SdKeyQuestionsSdPicod < ApplicationRecord
+  include SharedOrderableMethods
+
   belongs_to :sd_key_question, inverse_of: :sd_key_questions_sd_picods
   belongs_to :sd_picod, inverse_of: :sd_key_questions_sd_picods
+
+  has_one :ordering, as: :orderable, dependent: :destroy
 end

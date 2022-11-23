@@ -13,19 +13,30 @@
 
 class Label < ApplicationRecord
   acts_as_paranoid
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    Note.with_deleted.where(notable_type: self.class, notable_id: id).each(&:really_destroy!)
+    labels_reasons.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
 
-  scope :last_updated, -> ( projects_users_role, offset, count ) {
-                                                where( projects_users_role: projects_users_role )
-                                                .order( updated_at: :desc )
-                                                .distinct
-                                                .offset( offset )
-                                                .limit( count ) }
+  scope :last_updated, lambda { |projects_users_role, offset, count|
+                         where(projects_users_role:)
+                           .order(updated_at: :desc)
+                           .distinct
+                           .offset(offset)
+                           .limit(count)
+                       }
   belongs_to :citations_project
   belongs_to :projects_users_role
   belongs_to :label_type
 
   has_many :notes, as: :notable
+
+  ################################ CAUTION THIS DOESNT WORK
   has_many :tags, as: :taggable
+  ################################
 
   has_one :citation, through: :citations_project
   has_one :project, through: :citations_project

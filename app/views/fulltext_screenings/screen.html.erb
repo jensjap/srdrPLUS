@@ -1,0 +1,451 @@
+<div x-data="screenStore" @keyup.escape.window="closeAllModals()">
+  <!-- prettier-ignore -->
+  <%= render 'fulltext_screenings/screen/add_reasoning' %>
+  <%= render 'fulltext_screenings/screen/confirmation_modal' %>
+  <div
+    :class="desktop ? 'top-0 bottom-32 border-l border-b border-gray-600 fixed p-4 left-1/2 right-0 overflow-y-scroll bg-white' : ''"
+  >
+    <!-- prettier-ignore -->
+    <%= render 'fulltext_screenings/screen/reasoning_menu' %>
+    <%= render 'fulltext_screenings/screen/screening_form' %>
+  </div>
+  <div
+    class="mx-auto lg:mx-0 lg:w-1/2 h-32 absolute inset-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
+  >
+    <a
+      href="<%= fulltext_screening_path(params[:fulltext_screening_id]) %>"
+      class="cursor-pointer z-[5] absolute top-4 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+    >
+      <span class="sr-only">Close menu</span>
+      <!-- Heroicon name: outline/x -->
+      <svg
+        class="h-6 w-6"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </a>
+    <a
+      x-bind:href="`/fulltext_screenings/<%= params[:fulltext_screening_id] %>/screen?before_fsr_id=${fsr.id}`"
+      class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.333 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z"
+        />
+      </svg>
+    </a>
+    <div class="mr-20">
+      <div class="horizontal-scroll-wrapper">
+        <h1 class="px-8 text-base font-bold" x-text="citation.title"></h1>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mx-auto lg:mx-0 lg:w-1/2 h-auto block absolute inset-0 mt-32 overflow-y-auto overflow-x-hidden bg-gray-100"
+    :class="desktop ? '' : 'mb-32'"
+  >
+    <div class="vertical-scroll-wrapper">
+      <div class="vertical-scroll-wrapper-item">
+        <div class="px-8 leading-loose" x-text="citation.abstract"></div>
+        <hr />
+        <div
+          class="px-8 break-all leading-loose"
+          x-text="citation.keywords"
+        ></div>
+        <div class="px-8 break-all leading-loose" x-text="citation.id"></div>
+        <hr />
+        <div
+          class="px-8 break-all leading-loose"
+          x-text="citation.journal_meta_info"
+        ></div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    :class="desktop ? 'hidden' : 'mx-auto lg:mx-0 lg:w-1/2 absolute bottom-0 left-0 right-0 bg-gray-100 h-32'"
+  >
+    <div class="h-full text-white">
+      <div class="grid grid-cols-3 h-full">
+        <div
+          class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
+          @click="fsr.label = -1; if (requireReasoning()) { reasoningMenu = true } else { updateFsr(true) }"
+          :class="(fsr.label == -1 || fsr.label == null) ? '' : 'saturate-[0.1]'"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-10 w-10"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </div>
+        <div class="grid grid-rows-2">
+          <div
+            class="cursor-pointer border-b-4 bg-srdrpurple flex justify-center items-center"
+            @click="fsr.label = 0; if (requireReasoning()) { reasoningMenu = true } else { updateFsr(true) }"
+            :class="(fsr.label == 0 || fsr.label == null)? '' : 'saturate-[0.1]'"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-10 w-10"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <div
+            class="cursor-pointer border-t-2 bg-gray-500 flex justify-center items-center"
+            @click="fsr.label = null; reasoningMenu = !reasoningMenu"
+          >
+            <div class="space-y-2">
+              <div class="w-8 h-0.5 bg-white"></div>
+              <div class="w-8 h-0.5 bg-white"></div>
+              <div class="w-8 h-0.5 bg-white"></div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
+          @click="fsr.label = 1; if (requireReasoning()) { reasoningMenu = true } else { updateFsr(true) }"
+          :class="(fsr.label == 1 || fsr.label == null)? '' : 'saturate-[0.1]'"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-10 w-10"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("screenStore", () => ({
+      desktop: false,
+      reasoningMenu: false,
+      addReasonModal: { on: false, type: "" },
+      confirmationModalLabel: null,
+      confirmationModal: false,
+      confirmationModalText: "",
+      confirmationModalTexts: {
+        "-1": "Rejected",
+        0: "Maybe",
+        1: "Accepted",
+      },
+      loading: false,
+      citation: {
+        fulltext_screening_id: "",
+        citation_id: "",
+        title: "",
+        journal: "",
+        authors: "",
+        abstract: "",
+        keywords: "",
+        id: "",
+        journal_meta_info: "",
+      },
+      options: {
+        yes_tag_required: null,
+        no_tag_required: null,
+        maybe_tag_required: null,
+        yes_reason_required: null,
+        no_reason_required: null,
+        maybe_reason_required: null,
+        yes_note_required: null,
+        no_note_required: null,
+        maybe_note_required: null,
+        only_predefined_reasons: null,
+        only_predefined_tags: null,
+      },
+      fsr: {
+        id: null,
+        label: null,
+        predefined_reasons: {},
+        predefined_tags: {},
+        custom_reasons: {},
+        custom_tags: {},
+        notes: "",
+      },
+      cssWordClass: {
+        2: "text-green-500 font-black",
+        1: "text-green-500",
+        0: "",
+        "-1": "text-red-500",
+        "-2": "text-red-500 font-black",
+      },
+      textarea_keywords_and_phrases: "",
+      newCustomValue: "",
+      disable_textarea_keywords_and_phrases: false,
+
+      init() {
+        const url = new URL(window.location.href);
+        const fsr_id = url.searchParams.get("fsr_id");
+        const before_fsr_id = url.searchParams.get("before_fsr_id");
+        this.getFsrId(fsr_id, before_fsr_id);
+
+        const smallDevice = window.matchMedia("(min-width: 1024px)");
+        smallDevice.addListener(handleDeviceChange);
+        const that = this;
+        function handleDeviceChange(e) {
+          if (e.matches) {
+            that.desktop = true;
+          } else {
+            that.desktop = false;
+          }
+        }
+        handleDeviceChange(smallDevice);
+      },
+
+      requireReasoning() {
+        return (
+          (this.fsr.label == -1 &&
+            (this.options.no_tag_required ||
+              this.options.no_reason_required ||
+              this.options.no_note_required)) ||
+          (this.fsr.label == 0 &&
+            (this.options.maybe_tag_required ||
+              this.options.maybe_reason_required ||
+              this.options.maybe_note_required)) ||
+          (this.fsr.label == 1 &&
+            (this.options.yes_tag_required ||
+              this.options.yes_reason_required ||
+              this.options.yes_note_required))
+        );
+      },
+
+      hasSomeReason() {
+        return Object.keys({
+          ...this.fsr.predefined_reasons,
+          ...this.fsr.custom_reasons,
+        }).some(
+          (v) =>
+            this.fsr.predefined_reasons[v] == true ||
+            this.fsr.custom_reasons[v] == true
+        );
+      },
+
+      hasSomeTag() {
+        return Object.keys({
+          ...this.fsr.predefined_tags,
+          ...this.fsr.custom_tags,
+        }).some(
+          (v) =>
+            this.fsr.predefined_tags[v] == true ||
+            this.fsr.custom_tags[v] == true
+        );
+      },
+
+      hasSomeNote() {
+        return this.fsr.notes.length > 0;
+      },
+
+      satisfiesReasoning() {
+        if (this.fsr.label == null) return false;
+        let satisfactory = true;
+        if (this.fsr.label == -1) {
+          if (this.options.no_tag_required)
+            satisfactory = this.hasSomeTag() && satisfactory;
+          if (this.options.no_reason_required)
+            satisfactory = this.hasSomeReason() && satisfactory;
+          if (this.options.no_note_required)
+            satisfactory = this.hasSomeNote() && satisfactory;
+        }
+        if (this.fsr.label == 0) {
+          if (this.options.maybe_tag_required)
+            satisfactory = this.hasSomeTag() && satisfactory;
+          if (this.options.maybe_reason_required)
+            satisfactory = this.hasSomeReason() && satisfactory;
+          if (this.options.maybe_note_required)
+            satisfactory = this.hasSomeNote() && satisfactory;
+        }
+        if (this.fsr.label == 1) {
+          if (this.options.yes_tag_required)
+            satisfactory = this.hasSomeTag() && satisfactory;
+          if (this.options.yes_reason_required)
+            satisfactory = this.hasSomeReason() && satisfactory;
+          if (this.options.yes_note_required)
+            satisfactory = this.hasSomeNote() && satisfactory;
+        }
+        return satisfactory;
+      },
+
+      turnOffAllReasons() {
+        Object.keys(this.fsr.predefined_reasons).forEach(
+          (v) => (this.fsr.predefined_reasons[v] = false)
+        );
+        Object.keys(this.fsr.custom_reasons).forEach(
+          (v) => (this.fsr.custom_reasons[v] = false)
+        );
+      },
+
+      processNewCustomValue() {
+        if (this.newCustomValue.trim() == "") return;
+        this.addReasonModal.on = false;
+        if (this.addReasonModal.type == "Reason") {
+          this.turnOffAllReasons();
+          if (this.fsr.predefined_reasons[this.newCustomValue] == undefined) {
+            this.fsr.custom_reasons[this.newCustomValue] = true;
+          } else {
+            this.fsr.predefined_reasons[this.newCustomValue] = true;
+          }
+        } else {
+          if (this.fsr.predefined_tags[this.newCustomValue] == undefined) {
+            this.fsr.custom_tags[this.newCustomValue] = true;
+          } else {
+            this.fsr.predefined_tags[this.newCustomValue] = true;
+          }
+        }
+        this.newCustomValue = "";
+        this.updateFsr(false);
+      },
+
+      deleteCustomValue(type, key) {
+        if (confirm(`Would you like to delete "${key}" as a custom choice?`)) {
+          delete this.fsr[type][key];
+          this.updateFsr(false);
+        }
+      },
+
+      closeAllModals() {
+        if (this.addReasonModal.on) {
+          this.addReasonModal.on = false;
+        } else {
+          this.reasoningMenu = false;
+        }
+      },
+
+      async awaitLoading(cb) {
+        if (this.loading) {
+          await new Promise((resolve, reject) => setTimeout(resolve, 50));
+          this.awaitLoading(cb);
+        } else {
+          cb();
+        }
+      },
+
+      showConfirmation(label) {
+        this.closeAllModals();
+        this.confirmationModalLabel = label;
+        this.confirmationModalText = this.confirmationModalTexts[label];
+        this.confirmationModal = true;
+        setTimeout(
+          () => this.awaitLoading(() => (this.confirmationModal = false)),
+          1000
+        );
+      },
+
+      async getFsrId(fsrId, beforeFsrId) {
+        let url = "";
+        if (fsrId) {
+          url = `/fulltext_screenings/<%= params[:fulltext_screening_id] %>/screen?fsr_id=${fsrId}`;
+        } else if (beforeFsrId) {
+          url = `/fulltext_screenings/<%= params[:fulltext_screening_id] %>/screen?before_fsr_id=${beforeFsrId}`;
+        } else {
+          url = `/fulltext_screenings/<%= params[:fulltext_screening_id] %>/screen`;
+        }
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+
+        this.fsr.id = data.fsr_id;
+        if (this.fsr.id == null) {
+          window.location.href =
+            "/fulltext_screenings/<%= params[:fulltext_screening_id] %>?screening_finished=true";
+        }
+        this.getFsr();
+      },
+
+      async updateFsr(getNewFsrId) {
+        await this.fetchFsr("PATCH");
+        if (getNewFsrId) {
+          await this.getFsrId();
+          this.showConfirmation(this.fsr.label);
+        }
+      },
+
+      async getFsr() {
+        this.fetchFsr("GET");
+      },
+
+      async fetchFsr(method) {
+        if (false) {
+          this.reasoningMenu = false;
+          this.showConfirmation(this.fsr.label);
+        }
+        this.loading = true;
+        const headers = {
+          method,
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+        };
+
+        if (method == "PATCH") {
+          headers.body = JSON.stringify({
+            fsr: this.fsr,
+          });
+        }
+        const response = await fetch(
+          `/fulltext_screening_results/${this.fsr.id}`,
+          headers
+        );
+        const data = await response.json();
+
+        this.fsr = data.fsr;
+        this.citation = data.citation;
+        this.options = data.options;
+        this.loading = false;
+      },
+    }));
+  });
+</script>

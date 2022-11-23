@@ -13,8 +13,8 @@ GIT
     remotipart (1.4.4)
 
 GIT
-  remote: https://github.com/sleepwalk712/fhir_models.git
-  revision: cdb11ea950742a7d8eb31b5d87752659f05b60da
+  remote: https://github.com/stympy/faker.git
+  revision: 2333f9ee4a4e1d8329e19f9e4b07e927648add7c
   specs:
     fhir_models (4.2.2)
       bcp47 (>= 0.3)
@@ -110,8 +110,8 @@ GEM
       execjs (~> 2)
     awesome_print (1.9.2)
     aws-eventstream (1.2.0)
-    aws-partitions (1.660.0)
-    aws-sdk-core (3.167.0)
+    aws-partitions (1.603.0)
+    aws-sdk-core (3.131.2)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.651.0)
       aws-sigv4 (~> 1.5)
@@ -132,8 +132,9 @@ GEM
     bcp47 (0.3.3)
       i18n
     bcrypt (3.1.18)
-    bio (2.0.4)
-    bootsnap (1.13.0)
+    bindex (0.8.1)
+    bio (2.0.3)
+    bootsnap (1.12.0)
       msgpack (~> 1.2)
     builder (3.2.4)
     bullet (7.0.3)
@@ -247,7 +248,7 @@ GEM
     google-api-client (0.53.0)
       google-apis-core (~> 0.1)
       google-apis-generator (~> 0.1)
-    google-apis-core (0.9.1)
+    google-apis-core (0.7.0)
       addressable (~> 2.5, >= 2.5.1)
       googleauth (>= 0.16.2, < 2.a)
       httpclient (>= 2.8.1, < 3.a)
@@ -256,12 +257,12 @@ GEM
       retriable (>= 2.0, < 4.a)
       rexml
       webrick
-    google-apis-discovery_v1 (0.13.0)
-      google-apis-core (>= 0.9.1, < 2.a)
-    google-apis-generator (0.11.0)
+    google-apis-discovery_v1 (0.11.0)
+      google-apis-core (>= 0.7, < 2.a)
+    google-apis-generator (0.9.0)
       activesupport (>= 5.0)
       gems (~> 1.2)
-      google-apis-core (>= 0.9.1, < 2.a)
+      google-apis-core (>= 0.7, < 2.a)
       google-apis-discovery_v1 (~> 0.5)
       thor (>= 0.20, < 2.a)
     googleauth (1.3.0)
@@ -281,7 +282,8 @@ GEM
     httpclient (2.8.3)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
-    jbuilder (2.10.2)
+    jbuilder (2.11.5)
+      actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
     jmespath (1.6.1)
     jquery-datatables (1.10.20)
@@ -317,8 +319,8 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2022.0105)
     mini_mime (1.1.2)
-    minitest (5.16.3)
-    msgpack (1.6.0)
+    minitest (5.16.2)
+    msgpack (1.5.3)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.2.3)
@@ -371,8 +373,6 @@ GEM
     raabro (1.4.0)
     racc (1.6.0)
     rack (2.2.4)
-    rack-accept (0.4.5)
-      rack (>= 0.4)
     rack-attack (6.6.1)
       rack (>= 1.0, < 3)
     rack-cors (1.1.1)
@@ -517,12 +517,7 @@ GEM
     timeout (0.3.0)
     toastr_rails (2.1.3)
     trailblazer-option (0.1.2)
-    turnout (2.5.0)
-      i18n (>= 0.7, < 2)
-      rack (>= 1.3, < 3)
-      rack-accept (~> 0.4)
-      tilt (>= 1.4, < 3)
-    tzinfo (2.0.5)
+    tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     uber (0.1.0)
     uglifier (4.2.0)
@@ -532,6 +527,11 @@ GEM
     version_gem (1.1.1)
     warden (1.2.9)
       rack (>= 2.0.9)
+    web-console (4.2.0)
+      actionview (>= 6.0.0)
+      activemodel (>= 6.0.0)
+      bindex (>= 0.4.0)
+      railties (>= 6.0.0)
     webrick (1.7.0)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
@@ -578,7 +578,7 @@ DEPENDENCIES
   google-api-client
   googleauth
   httparty
-  jbuilder (~> 2.10.1)
+  jbuilder
   jquery-datatables
   jquery-rails
   kaminari
@@ -616,9 +616,9 @@ DEPENDENCIES
   spring-watcher-listen (~> 2.0.0)
   tailwindcss-rails (~> 2.0)
   toastr_rails
-  turnout
   tzinfo-data
   uglifier (>= 1.3.0)
+  web-console
   zip-zip
 
 BUNDLED WITH

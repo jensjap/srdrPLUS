@@ -1,5 +1,5 @@
 <%= simple_form_for(:general_search, defaults: { required: false }, url: searches_path, method: :get) do |f| %>
-  <%= f.input :name, label:, placeholder: 'What would you like to Systematically Review today?', input_html: { value: params.dig(:general_search, :name) } %>
+  <%= f.input :name, label:, placeholder: 'Enter your search term', input_html: { value: params.dig(:general_search, :name) } %>
 
   <div class='my-4'><%= f.button :submit, 'Search' %></div>
 <% end %>

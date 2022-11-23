@@ -9,6 +9,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        srdrpurple: {
+          DEFAULT: "#4c0d7d",
+          light: "#7438a4",
+        },
         "srdr-primary": "#4c0d7d",
         "srdr-secondary": "#33124b",
       },

@@ -14,6 +14,12 @@ class QuestionRow < ApplicationRecord
   attr_accessor :skip_callbacks
 
   acts_as_paranoid
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    question_row_columns.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
 
   after_create :create_default_question_row_columns, unless: :skip_callbacks
 
@@ -27,33 +33,33 @@ class QuestionRow < ApplicationRecord
 
   amoeba do
     enable
-    customize(lambda { |original, cloned|
+    customize(lambda { |_original, cloned|
       cloned.skip_callbacks = true
     })
   end
 
   private
 
-    def create_default_question_row_columns
-      if self.question.question_rows.first.question_row_columns.length == 0
-        # If this is the first/only row in the matrix then we default to creating
-        # (arbitrarily) 1 column.
-        self.question_row_columns.create(
+  def create_default_question_row_columns
+    if question.question_rows.first.question_row_columns.length == 0
+      # If this is the first/only row in the matrix then we default to creating
+      # (arbitrarily) 1 column.
+      question_row_columns.create(
+        question_row_column_type: QuestionRowColumnType.find_by(name: 'text')
+      )
+    else
+      # Otherwise, create the same number of columns as first row has.
+      question.question_rows.first.question_row_columns.count.times do |_c|
+        question_row_columns.create(
           question_row_column_type: QuestionRowColumnType.find_by(name: 'text')
         )
-      else
-        # Otherwise, create the same number of columns as first row has.
-        self.question.question_rows.first.question_row_columns.count.times do |c|
-          self.question_row_columns.create(
-            question_row_column_type: QuestionRowColumnType.find_by(name: 'text')
-          )
-        end
       end
-
-      #!!!!! Do we need this still????
-      # Newly created question_row_columns do not have their name field set.
-      # This triggers after_save :ensure_matrix_column_headers callback in
-      # question model to set the name field.
-      self.question.save
     end
+
+    # !!!!! Do we need this still????
+    # Newly created question_row_columns do not have their name field set.
+    # This triggers after_save :ensure_matrix_column_headers callback in
+    # question model to set the name field.
+    question.save
+  end
 end

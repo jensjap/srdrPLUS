@@ -35,19 +35,38 @@
 
 class User < ApplicationRecord
   acts_as_paranoid
+  before_destroy :really_destroy_children!
+  def really_destroy_children!
+    Profile.with_deleted.where(user_id: id).each(&:really_destroy!)
+    approvals.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    dispatches.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    projects_users.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    publishings.with_deleted.each do |child|
+      child.really_destroy!
+    end
+    suggestions.with_deleted.each do |child|
+      child.really_destroy!
+    end
+  end
 
-  devise :omniauthable, :omniauth_providers => [:google_oauth2]
+  devise :omniauthable, omniauth_providers: [:google_oauth2]
   has_secure_token :api_key
 
   after_create :ensure_profile_username_uniqueness
-  before_validation { self.user_type = UserType.where(user_type: 'Member').first if self.user_type.nil? }
+  before_validation { self.user_type = UserType.where(user_type: 'Member').first if user_type.nil? }
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          :confirmable, :lockable, :timeoutable, :omniauthable,
-         :authentication_keys => [:login]
+         authentication_keys: [:login]
 
   belongs_to :user_type
 
@@ -58,7 +77,7 @@ class User < ApplicationRecord
 
   has_many :approvals, dependent: :destroy, inverse_of: :user
 
-  #has_many :assignments, dependent: :destroy, inverse_of: :user
+  # has_many :assignments, dependent: :destroy, inverse_of: :user
 
   has_many :degrees, through: :profile
 
@@ -67,6 +86,7 @@ class User < ApplicationRecord
   has_many :projects_users, dependent: :destroy, inverse_of: :user
   has_many :projects_users_roles, through: :projects_users
   has_many :projects, through: :projects_users, dependent: :destroy
+  has_many :citations_projects, through: :projects
 
   has_many :imported_files, through: :projects_users, dependent: :destroy
 
@@ -74,13 +94,13 @@ class User < ApplicationRecord
 
   has_many :suggestions, dependent: :destroy, inverse_of: :user
 
-  #has_many :notes, dependent: :destroy, inverse_of: :user
+  # has_many :notes, dependent: :destroy, inverse_of: :user
 
   has_many :taggings, through: :projects_users, dependent: :destroy
   has_many :tags, through: :taggings, dependent: :destroy
 
-  has_many :visits, class_name: "Ahoy::Visit"
-  has_many :events, class_name: "Ahoy::Event"
+  has_many :visits, class_name: 'Ahoy::Visit'
+  has_many :events, class_name: 'Ahoy::Event'
 
   delegate :username, to: :profile, allow_nil: true
   delegate :first_name, to: :profile, allow_nil: true
@@ -88,7 +108,7 @@ class User < ApplicationRecord
   delegate :last_name, to: :profile, allow_nil: true
 
   def highest_role_in_project(project)
-    Role.joins(:projects_users).where(projects_users: { user: self, project: project }).first.try(:name)
+    Role.joins(:projects_users).where(projects_users: { user: self, project: }).first.try(:name)
   end
 
   def handle
@@ -109,9 +129,7 @@ class User < ApplicationRecord
     Thread.current[:user] = user
   end
 
-  def login=(login)
-    @login = login
-  end
+  attr_writer :login
 
   def login
     @login || email
@@ -120,17 +138,15 @@ class User < ApplicationRecord
   def self.find_first_by_auth_conditions(warden_conditions)
     conditions = warden_conditions.dup
     if login = conditions.delete(:login)
-      where(conditions).joins(:profile).where(["`profiles`.username = :value OR email = :value", { :value => login.downcase }]).first
+      where(conditions).joins(:profile).where(['`profiles`.username = :value OR email = :value',
+                                               { value: login.downcase }]).first
+    elsif conditions[:username].nil?
+      conditions[:email].downcase! if conditions[:email]
+      where(conditions).first
     else
-      if conditions[:username].nil?
-        conditions[:email].downcase! if conditions[:email]
-        where(conditions).first
-      else
-        where(username: conditions[:username]).first
-      end
+      where(username: conditions[:username]).first
     end
   end
-
 
   def self.from_omniauth(auth)
     # Either create a User record or update it based on the provider (Google) and the UID
@@ -151,12 +167,12 @@ class User < ApplicationRecord
   private
 
   def ensure_profile_username_uniqueness
-    _username = self.email.gsub(/@/, '_at_')
+    _username = email.gsub(/@/, '_at_')
     if Profile.find_by(username: _username)
       i = 0
       loop do
         i += 1
-        _username = _username + i.to_s
+        _username += i.to_s
         break unless Profile.find_by(username: _username)
       end
     end

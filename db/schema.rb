@@ -10,8 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
-  create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
+ActiveRecord::Schema[7.0].define(version: 2022_11_07_164651) do
+  create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
     t.boolean "journal_visible", default: true
@@ -20,7 +20,117 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
     t.index ["profile_id"], name: "index_abstrackr_settings_on_profile_id"
   end
 
-  create_table "action_types", id: :integer, charset: "utf8", force: :cascade do |t|
+  create_table "abstract_screening_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "abstract_screening_id"
+    t.bigint "user_id"
+    t.bigint "citations_project_id"
+    t.integer "label", limit: 1
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_id"], name: "index_abstract_screening_results_on_abstract_screening_id"
+    t.index ["citations_project_id"], name: "asr_on_cp"
+    t.index ["user_id"], name: "asr_on_u"
+  end
+
+  create_table "abstract_screening_results_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "abstract_screening_result_id", null: false
+    t.bigint "reason_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_result_id", "reason_id"], name: "asrr_asr_on_r", unique: true
+    t.index ["abstract_screening_result_id"], name: "asrr_on_asr"
+    t.index ["reason_id"], name: "asrr_on_r"
+  end
+
+  create_table "abstract_screening_results_tags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "abstract_screening_result_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_result_id", "tag_id"], name: "asrt_asr_on_t", unique: true
+    t.index ["abstract_screening_result_id"], name: "asrt_on_asr"
+    t.index ["tag_id"], name: "asrt_on_t"
+  end
+
+  create_table "abstract_screenings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "project_id"
+    t.string "abstract_screening_type", default: "single-perpetual", null: false
+    t.integer "no_of_citations", default: 0, null: false
+    t.boolean "exclusive_users", default: false, null: false
+    t.boolean "yes_tag_required", default: false, null: false
+    t.boolean "no_tag_required", default: false, null: false
+    t.boolean "maybe_tag_required", default: false, null: false
+    t.boolean "yes_reason_required", default: false, null: false
+    t.boolean "no_reason_required", default: false, null: false
+    t.boolean "maybe_reason_required", default: false, null: false
+    t.boolean "yes_note_required", default: false, null: false
+    t.boolean "no_note_required", default: false, null: false
+    t.boolean "maybe_note_required", default: false, null: false
+    t.boolean "only_predefined_reasons", default: false, null: false
+    t.boolean "only_predefined_tags", default: false, null: false
+    t.boolean "hide_author", default: false, null: false
+    t.boolean "hide_journal", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_abstract_screenings_on_project_id"
+  end
+
+  create_table "abstract_screenings_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "abstract_screening_id", null: false
+    t.bigint "reason_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_id", "reason_id"], name: "asr_as_on_r", unique: true
+    t.index ["abstract_screening_id"], name: "asr_on_as"
+    t.index ["reason_id"], name: "asr_on_r"
+  end
+
+  create_table "abstract_screenings_reasons_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "abstract_screening_id"
+    t.bigint "reason_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_id", "reason_id", "user_id"], name: "as_r_u", unique: true
+    t.index ["abstract_screening_id"], name: "asru_on_as"
+    t.index ["reason_id"], name: "asru_on_r"
+    t.index ["user_id"], name: "asru_on_u"
+  end
+
+  create_table "abstract_screenings_tags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "abstract_screening_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_id", "tag_id"], name: "ast_as_on_t", unique: true
+    t.index ["abstract_screening_id"], name: "ast_on_as"
+    t.index ["tag_id"], name: "ast_on_t"
+  end
+
+  create_table "abstract_screenings_tags_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "abstract_screening_id"
+    t.bigint "tag_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_id", "tag_id", "user_id"], name: "as_t_u", unique: true
+    t.index ["abstract_screening_id"], name: "astu_on_as"
+    t.index ["tag_id"], name: "astu_on_t"
+    t.index ["user_id"], name: "astu_on_u"
+  end
+
+  create_table "abstract_screenings_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "abstract_screening_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_id", "user_id"], name: "u_id_on_as_id", unique: true
+    t.index ["abstract_screening_id"], name: "asu_on_as"
+    t.index ["user_id"], name: "asu_on_u"
+  end
+
+  create_table "action_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -224,10 +334,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "consensus_type_id"
     t.boolean "pilot_flag"
+    t.string "screening_status", default: "asu"
     t.index ["active"], name: "index_citations_projects_on_active"
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id"
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id"
     t.index ["deleted_at"], name: "index_citations_projects_on_deleted_at"
+    t.index ["project_id", "active"], name: "index_citations_projects_on_project_id_and_active", comment: "speeds up the my projects page when projects have a lot of citations_projects"
     t.index ["project_id"], name: "index_citations_projects_on_project_id"
   end
 
@@ -472,8 +584,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
     t.index ["user_id"], name: "index_exported_files_on_user_id"
   end
 
-  create_table "exported_items", charset: "utf8", force: :cascade do |t|
-    t.integer "projects_user_id"
+  create_table "exported_items", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "export_type_id"
     t.text "external_url"
     t.datetime "deleted_at", precision: nil
@@ -483,7 +594,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
     t.bigint "project_id"
     t.index ["export_type_id"], name: "index_exported_items_on_export_type_id"
     t.index ["project_id"], name: "index_exported_items_on_project_id"
-    t.index ["projects_user_id"], name: "index_exported_items_on_projects_user_id"
   end
 
   create_table "extraction_checksums", charset: "utf8", force: :cascade do |t|
@@ -742,7 +852,117 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
     t.index ["deleted_at"], name: "index_frequencies_on_deleted_at"
   end
 
-  create_table "funding_sources", id: :integer, charset: "utf8", force: :cascade do |t|
+  create_table "fulltext_screening_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "fulltext_screening_id"
+    t.bigint "user_id"
+    t.bigint "citations_project_id"
+    t.integer "label", limit: 1
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["citations_project_id"], name: "fsr_on_cp"
+    t.index ["fulltext_screening_id"], name: "index_fulltext_screening_results_on_fulltext_screening_id"
+    t.index ["user_id"], name: "fsr_on_u"
+  end
+
+  create_table "fulltext_screening_results_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "fulltext_screening_result_id", null: false
+    t.bigint "reason_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fulltext_screening_result_id", "reason_id"], name: "fsrr_fsr_on_r", unique: true
+    t.index ["fulltext_screening_result_id"], name: "fsrr_on_fsr"
+    t.index ["reason_id"], name: "fsrr_on_r"
+  end
+
+  create_table "fulltext_screening_results_tags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "fulltext_screening_result_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fulltext_screening_result_id", "tag_id"], name: "fsrt_fsr_on_t", unique: true
+    t.index ["fulltext_screening_result_id"], name: "fsrt_on_fsr"
+    t.index ["tag_id"], name: "fsrt_on_t"
+  end
+
+  create_table "fulltext_screenings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "project_id"
+    t.string "fulltext_screening_type", default: "single-perpetual", null: false
+    t.integer "no_of_citations", default: 0, null: false
+    t.boolean "exclusive_users", default: false, null: false
+    t.boolean "yes_tag_required", default: false, null: false
+    t.boolean "no_tag_required", default: false, null: false
+    t.boolean "maybe_tag_required", default: false, null: false
+    t.boolean "yes_reason_required", default: false, null: false
+    t.boolean "no_reason_required", default: false, null: false
+    t.boolean "maybe_reason_required", default: false, null: false
+    t.boolean "yes_note_required", default: false, null: false
+    t.boolean "no_note_required", default: false, null: false
+    t.boolean "maybe_note_required", default: false, null: false
+    t.boolean "only_predefined_reasons", default: false, null: false
+    t.boolean "only_predefined_tags", default: false, null: false
+    t.boolean "hide_author", default: false, null: false
+    t.boolean "hide_journal", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_fulltext_screenings_on_project_id"
+  end
+
+  create_table "fulltext_screenings_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "fulltext_screening_id", null: false
+    t.bigint "reason_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fulltext_screening_id", "reason_id"], name: "fsr_fs_on_r", unique: true
+    t.index ["fulltext_screening_id"], name: "fsr_on_fs"
+    t.index ["reason_id"], name: "fsr_on_r"
+  end
+
+  create_table "fulltext_screenings_reasons_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "fulltext_screening_id"
+    t.bigint "reason_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fulltext_screening_id", "reason_id", "user_id"], name: "fs_r_u", unique: true
+    t.index ["fulltext_screening_id"], name: "fsru_on_fs"
+    t.index ["reason_id"], name: "fsru_on_r"
+    t.index ["user_id"], name: "fsru_on_u"
+  end
+
+  create_table "fulltext_screenings_tags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "fulltext_screening_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fulltext_screening_id", "tag_id"], name: "fst_fs_on_t", unique: true
+    t.index ["fulltext_screening_id"], name: "fst_on_fs"
+    t.index ["tag_id"], name: "fst_on_t"
+  end
+
+  create_table "fulltext_screenings_tags_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "fulltext_screening_id"
+    t.bigint "tag_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fulltext_screening_id", "tag_id", "user_id"], name: "fs_t_u", unique: true
+    t.index ["fulltext_screening_id"], name: "fstu_on_fs"
+    t.index ["tag_id"], name: "fstu_on_t"
+    t.index ["user_id"], name: "fstu_on_u"
+  end
+
+  create_table "fulltext_screenings_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "fulltext_screening_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fulltext_screening_id", "user_id"], name: "u_id_on_fs_id", unique: true
+    t.index ["fulltext_screening_id"], name: "fsu_on_fs"
+    t.index ["user_id"], name: "fsu_on_u"
+  end
+
+  create_table "funding_sources", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.text "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -1397,7 +1617,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
     t.index ["name"], name: "index_roles_on_name", unique: true
   end
 
-  create_table "screening_option_types", id: :integer, charset: "utf8", force: :cascade do |t|
+  create_table "screening_forms", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "project_id"
+    t.string "form_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_screening_forms_on_project_id"
+  end
+
+  create_table "screening_option_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -1414,7 +1642,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
     t.index ["screening_option_type_id"], name: "index_screening_options_on_screening_option_type_id"
   end
 
-  create_table "sd_analytic_frameworks", id: :integer, charset: "utf8", force: :cascade do |t|
+  create_table "screening_qualifications", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "citations_project_id"
+    t.bigint "user_id"
+    t.string "qualification_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["citations_project_id", "user_id", "qualification_type"], name: "cp_u_qt", unique: true
+    t.index ["citations_project_id"], name: "index_screening_qualifications_on_citations_project_id"
+    t.index ["user_id"], name: "index_screening_qualifications_on_user_id"
+  end
+
+  create_table "sd_analytic_frameworks", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "sd_meta_datum_id"
     t.text "name"
     t.datetime "created_at", precision: nil, null: false
@@ -1716,7 +1955,84 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
     t.index ["name"], name: "index_sections_on_name", unique: true
   end
 
-  create_table "statuses", charset: "utf8", force: :cascade do |t|
+  create_table "sf_abstract_records", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "value"
+    t.string "followup"
+    t.string "equality"
+    t.bigint "sf_cell_id"
+    t.bigint "abstract_screening_result_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_result_id"], name: "index_sf_abstract_records_on_abstract_screening_result_id"
+    t.index ["sf_cell_id"], name: "index_sf_abstract_records_on_sf_cell_id"
+  end
+
+  create_table "sf_cells", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "sf_row_id"
+    t.bigint "sf_column_id"
+    t.string "cell_type", null: false
+    t.integer "min", default: 0, null: false
+    t.integer "max", default: 255, null: false
+    t.boolean "with_equality", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sf_column_id"], name: "index_sf_cells_on_sf_column_id"
+    t.index ["sf_row_id", "sf_column_id"], name: "index_sf_cells_on_sf_row_id_and_sf_column_id", unique: true
+    t.index ["sf_row_id"], name: "index_sf_cells_on_sf_row_id"
+  end
+
+  create_table "sf_columns", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name"
+    t.bigint "sf_question_id"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sf_question_id"], name: "index_sf_columns_on_sf_question_id"
+  end
+
+  create_table "sf_fulltext_records", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "value"
+    t.string "followup"
+    t.string "equality"
+    t.bigint "sf_cell_id"
+    t.bigint "fulltext_screening_result_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["fulltext_screening_result_id"], name: "index_sf_fulltext_records_on_fulltext_screening_result_id"
+    t.index ["sf_cell_id"], name: "index_sf_fulltext_records_on_sf_cell_id"
+  end
+
+  create_table "sf_options", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "sf_cell_id"
+    t.string "name", null: false
+    t.boolean "with_followup", default: false, null: false
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name", "sf_cell_id"], name: "index_sf_options_on_name_and_sf_cell_id", unique: true
+    t.index ["sf_cell_id"], name: "index_sf_options_on_sf_cell_id"
+  end
+
+  create_table "sf_questions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "screening_form_id"
+    t.string "name"
+    t.text "description"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["screening_form_id"], name: "index_sf_questions_on_screening_form_id"
+  end
+
+  create_table "sf_rows", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name"
+    t.bigint "sf_question_id"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sf_question_id"], name: "index_sf_rows_on_sf_question_id"
+  end
+
+  create_table "statuses", charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
   end
 
@@ -1944,6 +2260,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
     t.index ["wac_id"], name: "index_wacs_bacs_rssms_on_wac_id"
   end
 
+  create_table "word_weights", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "abstract_screening_id"
+    t.integer "weight", limit: 1, null: false
+    t.string "word", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_id"], name: "ww_on_as"
+    t.index ["user_id", "abstract_screening_id", "word"], name: "u_as_w", unique: true
+    t.index ["user_id"], name: "ww_on_u"
+  end
+
   add_foreign_key "abstrackr_settings", "profiles"
   add_foreign_key "actions", "action_types"
   add_foreign_key "actions", "users"
@@ -1982,7 +2310,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_085850) do
   add_foreign_key "exported_files", "projects"
   add_foreign_key "exported_files", "users"
   add_foreign_key "exported_items", "export_types"
-  add_foreign_key "exported_items", "projects_users"
   add_foreign_key "extraction_forms_projects", "extraction_forms"
   add_foreign_key "extraction_forms_projects", "extraction_forms_project_types"
   add_foreign_key "extraction_forms_projects", "projects"
