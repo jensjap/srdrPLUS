@@ -1,5 +1,4 @@
 class Api::V3::CitationsController < ApplicationController
-  # TODO implement search parms logic
 
   before_action :set_project, only: [:index]
 #  before_action :set_citation, only: [:show]

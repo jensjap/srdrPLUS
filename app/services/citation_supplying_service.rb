@@ -2,9 +2,8 @@ class CitationSupplyingService
 # TODO implement error msg in operation outcome
 
   def find_by_project_id(project_id)
-    # TODO check how to implement bundle
     citations = Project.find(project_id).citations.all
-    bundle = create_bundle(citations)
+    bundle = create_bundle(objs=citations, type='collection')
 
     return bundle
   end
@@ -19,9 +18,9 @@ class CitationSupplyingService
 
   private
 
-    def create_bundle(objs)
+    def create_bundle(objs, type)
       bundle = {
-        'type' => 'searchset',
+        'type' => type,
         'entry' => []
       }
 
