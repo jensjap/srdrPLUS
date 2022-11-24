@@ -39,9 +39,6 @@ class Project < ApplicationRecord
     extraction_forms_projects.with_deleted.each do |child|
       child.really_destroy!
     end
-    projects_studies.with_deleted.each do |child|
-      child.really_destroy!
-    end
     projects_users.with_deleted.each do |child|
       child.really_destroy!
     end

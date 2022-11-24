@@ -184,7 +184,7 @@ class ExtractionFormsProject < ApplicationRecord
       # Restore the soft-deleted sections.
       efps.restore
       # Paranoia isn't restoring polymorphic associations. We do it here manually.
-      Ordering.with_deleted.find_by(orderable_type: efps.class.name, orderable_id: efps.id).restore
+      Ordering.with_deleted.find_by(orderable_type: efps.class.name, orderable_id: efps.id)&.restore
     end
 
     extraction_forms_projects_sections
@@ -201,7 +201,7 @@ class ExtractionFormsProject < ApplicationRecord
       if efps
         if efps.deleted?
           efps.restore
-          Ordering.with_deleted.find_by(orderable_type: efps.class.name, orderable_id: efps.id).restore
+          Ordering.with_deleted.find_by(orderable_type: efps.class.name, orderable_id: efps.id)&.restore
         end
 
       else
