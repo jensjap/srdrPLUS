@@ -65,28 +65,64 @@ class ExtractionsController < ApplicationController
   # POST /extractions
   # POST /extractions.json
   def create
-    lsof_extractions = []
-    params['extraction']['citation'].delete_if { |i| i == '' }.map(&:to_i).each do |citation_id|
-      lsof_extractions << @project.extractions.build(
-        citations_project: CitationsProject.find_by(citation_id:, project: @project),
-        projects_users_role_id: params['extraction']['projects_users_role_id'].to_i
-      )
-    end
-
     authorize(@project, policy_class: ExtractionPolicy)
 
+    succeeded = []
+    skipped = []
+    failed = []
+    extractions = []
+    projects_users_role = ProjectsUsersRole.find(params['extraction']['projects_users_role_id'])
+    params['extraction']['citation'].delete_if { |i| i == '' }.map(&:to_i).each do |citation_id|
+      citations_project = CitationsProject.find_by(citation_id:, project: @project)
+      extraction = Extraction.find_by(project: @project, citations_project:, projects_users_role:)
+      if params['extraction']['noDuplicates'] && extraction
+        skipped << extraction
+      else
+        extractions << @project.extractions.build(
+          citations_project:,
+          projects_users_role:
+        )
+      end
+    end
+
+    extractions.each do |extraction|
+      if extraction.save
+        succeeded << extraction
+      else
+        failed << extraction
+      end
+    end
+
     respond_to do |format|
-      lsof_extractions.map { |e| e.save }
       format.html do
-        if lsof_extractions.length == 0
+        if extractions.length.zero?
           redirect_to project_extractions_url(@project), notice: 'Please select a citation.'
-        elsif lsof_extractions.count == 1
-          redirect_to work_extraction_path(lsof_extractions.first), notice: 'Extraction was successfully created.'
+        elsif extractions.count != succeeded.count
+          failed_citation_names = failed.map { |extraction| extraction.citation.name }.join("\n\n")
+          error = "The following citations were unsuccessfully assigned: #{failed_citation_names}"
+          redirect_to project_extractions_url(@project), error:
+        elsif extractions.count == 1 && extractions.count == succeeded.count
+          redirect_to work_extraction_path(succeeded.first), notice: 'Extraction was successfully created.'
         else
           redirect_to project_extractions_url(@project), notice: 'Extractions were successfully created.'
         end
       end
-      format.json { render :show, status: :created, location: @extraction }
+      format.json do
+        render json: {
+          success: {
+            user_handle: projects_users_role.user.handle,
+            citation_names: succeeded.map { |extraction| extraction.citation.name }
+          },
+          error: {
+            user_handle: projects_users_role.user.handle,
+            citation_names: failed.map { |extraction| extraction.citation.name }
+          },
+          info: {
+            user_handle: projects_users_role.user.handle,
+            citation_names: skipped.map { |extraction| extraction.citation.name }
+          }
+        }
+      end
     rescue StandardError
       format.html { render :new }
       format.json { render json: lsof_extractions, status: :unprocessable_entity }
