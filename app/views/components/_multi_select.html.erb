@@ -9,13 +9,14 @@
         <div class="flex border border-gray-200 bg-white rounded">
           <div
             class="flex flex-auto flex-wrap h-8 cursor-pointer overflow-y-auto"
-            @click="open = !open"
+            @click="open = true;"
           >
             <input type="hidden" :name="`${pns}[${cns}][]`" value="" />
             <template x-for="selection in $data[pns][cns].selections">
               <div
-                class="cursor-pointer flex justify-center items-center m-1 font-light py-1 px-2 rounded-full text-white bg-srdrpurple border border-purple-300 hover:text-purple-400"
-                @click.stop="$data[pns][cns].selections = $data[pns][cns].selections.filter(s => s.key != selection.key); if ($data[pns][cns].selections.length == 0) { open = false }"
+                class="cursor-pointer flex justify-center items-center m-1 font-light py-1 px-2 rounded-full text-white border"
+                :class="!$data[pns][cns].options.some((o) => o.value == selection.value) ? 'bg-orange-500 hover:bg-orange-400' : 'bg-srdrpurple hover:bg-purple-800'"
+                @click.stop="$data[pns][cns].selections = $data[pns][cns].selections.filter(s => s.value != selection.value);"
               >
                 <input
                   type="hidden"
@@ -53,10 +54,17 @@
                   placeholder=""
                   class="bg-transparent p-1 px-2 appearance-none outline-none h-full w-full text-gray-800"
                   @keydown.enter.prevent="
-                  if (!$data[pns][cns].selections.some((s) => s.value == $el.value)) {
-                    $data[pns][cns].selections.push({ key: `_${$el.value}` , value: $el.value }); $data[pns][cns].options.push({ key: `_${$el.value}` , value: $el.value })
-                  };
-                  $el.value = ''"
+                    if ($el.value == '') { return }
+                    if (!$data[pns][cns].selections.some((s) => s.value == $el.value)) {
+                      $data[pns][cns].selections.push({ key: `_${$el.value}`, value: $el.value });
+                    };
+                    $el.value = '';
+                  "
+                  @keydown.backspace="
+                    if ($el.value == '') {
+                      $data[pns][cns].selections.pop()
+                    }
+                  "
                 />
               </div>
             </template>
@@ -120,11 +128,17 @@
           <template x-for="option in $data[pns][cns].options">
             <div
               class="cursor-pointer w-full border-gray-100 border-b hover:bg-purple-100"
-              @click="if ($data[pns][cns].selections.some((s) => s.key == option.key)) { $data[pns][cns].selections = $data[pns][cns].selections.filter(s => s.key != option.key) } else { $data[pns][cns].selections.push(option) }; if ($data[pns][cns].selections.length == 0) { open = false }"
+              @click="
+                if ($data[pns][cns].selections.some((s) => s.value == option.value)) {
+                  $data[pns][cns].selections = $data[pns][cns].selections.filter(s => s.value != option.value);
+                } else {
+                  $data[pns][cns].selections.push(option);
+                }
+              "
             >
               <div
                 class="flex w-full items-center p-1 border-transparent border-l-2 relative"
-                :class="$data[pns][cns].selections.some((s) => s.key == option.key) ? 'border-purple-600' : 'hover:border-purple-100'"
+                :class="$data[pns][cns].selections.some((s) => s.value == option.value) ? 'border-purple-600' : 'hover:border-purple-100'"
               >
                 <div class="w-full items-center flex">
                   <div class="mx-2 leading-6" x-text="option.value"></div>
