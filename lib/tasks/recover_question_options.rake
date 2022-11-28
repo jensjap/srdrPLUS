@@ -1,33 +1,90 @@
 require 'mysql2'
 
 def db
-  @client ||= Mysql2::Client.new(Rails.configuration.database_configuration['recovery'])
+  @db ||= Mysql2::Client.new(Rails.configuration.database_configuration['recovery'])
 end
 
 namespace(:db) do
   namespace(:recover_question_options) do
-    desc "Recover deleted question options from old db snapshot."
-    task :project => :environment do
-      initialize_variables()
-      main()
+    desc 'Recover deleted question options from old db snapshot.'
+    task project: :environment do
+      initialize_variables
+      main
     end  # task :project, [] => :environment do |task, args|
 
-    def initialize_variables()
-      @project_id = ENV['recover_question_option_project_id']
-      @project_q = db.query("SELECT * FROM projects WHERE id=#{@project_id}")
-    end  # def initialize_variables()
+    def initialize_variables
+      @logger             = Logger.new($stdout)
+      @logger.level       = 'info'
+      @project_id         = ENV['recover_question_option_project_id']
+      @recovery_project_q = db.query(
+        "SELECT
+        *
+        FROM
+        projects
+        WHERE id=#{@project_id}"
+      )
+      @project = Project.find(@project_id)
+    end  # def initialize_variables
 
-    def main()
-      logger = Logger.new(STDOUT)
-      logger.info "Working on the following project id: #{@project_id}"
-      logger.info "Found project with title: #{@project_q.pluck("name")}"
-      logger.info "Project object: #{@project_q.entries.first}"
+    def main
+      @logger.info "Working on the following project id: #{@project_id}"
+      @logger.info "Found project with title: #{@recovery_project_q.pluck('name')}"
+      @logger.info "Project object: #{@recovery_project_q.entries.first}"
 
-      #_get_all_multi_choice_questions_in_project()
-      #_get_options_for_multi_choice_questions()
-      #_compare_choices_for_the_same_question_id_in_current_db()
-      #_display_differences()
-      #_add_them_back_in()
-    end  # def main()
+      _get_all_multi_choice_qrc_in_project.each do |qrc|
+        _recover_options_for_multi_choice_qrc(qrc)
+      end  # _get_all_multi_choice_qrc_in_project.each do |qrc|
+    end  # def main
+
+    def _get_all_multi_choice_qrc_in_project
+      arr_multi_choice_qrc = []
+      efp = @project.extraction_forms_projects.first
+      efp.extraction_forms_projects_sections.each do |efps|
+        efps.questions.each do |question|
+          arr_multi_choice_qrc.concat question
+            .question_row_columns
+            .where(question_row_column_type: [5, 6, 7, 8, 9])
+        end  # efps.questions.each do |question|
+      end  # efp.extraction_forms_projects_sections.each do |efps|
+
+      arr_multi_choice_qrc.each do |qrc|
+        @logger.info "Found qrc with type #{qrc.question_row_column_type.name}"
+      end  # arr_multi_choice_qrc.each do |qrc|
+      @logger.info "Total qrc found: #{arr_multi_choice_qrc.size}"
+
+      arr_multi_choice_qrc
+    end  # def _get_all_multi_choice_qrc_in_project()
+
+    def _recover_options_for_multi_choice_qrc(qrc)
+      recovery_qrcqrco_q = db.query(
+        "SELECT
+        *
+        FROM
+        question_row_columns_question_row_column_options
+        WHERE question_row_column_id=#{qrc.id}
+        AND
+        question_row_column_option_id=1"
+      )
+      recovery_qrcqrco_q.each do |qrcqrco_q|
+        pid  = qrcqrco_q['id'].to_i
+        name = qrcqrco_q['name']
+        begin
+          @logger.info "Looking for id: #{pid} -- name: #{name}"
+          QuestionRowColumnsQuestionRowColumnOption.find(qrcqrco_q['id'])
+        rescue ActiveRecord::RecordNotFound => e
+          @logger.debug "Failed to find option -- #{e}"
+          @logger.info 'Creating a new one.'
+          _create_qrcqrco_with_primary_id_and_option_text(
+            qrcqrco_q['id'].to_i,
+            qrcqrco_q['name']
+          )
+        end
+      end  # recovery_qrcqrco_q.each do |qrcqrco|
+    end  # def _recover_options_for_multi_choice_qrc(qrc)
+
+    def _create_qrcqrco_with_primary_id_and_option_text(id, name)
+      @logger.info "#{id}"
+      @logger.info "#{name}"
+    end  # def _create_qrcqrco_with_primary_id_and_option_text(id, name)
   end  # namespace(:recover_question_options) do
 end  # namespace(:db) do
