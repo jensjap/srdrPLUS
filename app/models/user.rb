@@ -35,7 +35,7 @@
 
 class User < ApplicationRecord
   acts_as_paranoid
-  before_destroy :really_destroy_children!
+  #before_destroy :really_destroy_children!
   def really_destroy_children!
     Profile.with_deleted.where(user_id: id).each(&:really_destroy!)
     approvals.with_deleted.each do |child|

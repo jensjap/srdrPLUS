@@ -13,7 +13,7 @@
 # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1Row. This is meant to be Outcome Population.
 class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   acts_as_paranoid
-  before_destroy :really_destroy_children!
+  #before_destroy :really_destroy_children!
   def really_destroy_children!
     ComparableElement.with_deleted.where(comparable_type: self.class, comparable_id: id).each(&:really_destroy!)
     extractions_extraction_forms_projects_sections_type1_row_columns.with_deleted.each do |child|

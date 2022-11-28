@@ -21,7 +21,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
-  before_destroy :really_destroy_children!
+  #before_destroy :really_destroy_children!
   def really_destroy_children!
     ExtractionFormsProjectsSectionOption.with_deleted.where(extraction_forms_projects_section_id: id).each(&:really_destroy!)
     Ordering.with_deleted.where(orderable_type: self.class, orderable_id: id).each(&:really_destroy!)

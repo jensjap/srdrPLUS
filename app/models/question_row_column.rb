@@ -15,7 +15,7 @@ class QuestionRowColumn < ApplicationRecord
   attr_accessor :skip_callbacks
 
   acts_as_paranoid
-  before_destroy :really_destroy_children!
+  #before_destroy :really_destroy_children!
   def really_destroy_children!
     Dependency.with_deleted.where(prerequisitable_type: self.class, prerequisitable_id: id).each(&:really_destroy!)
     question_row_column_fields.with_deleted.each do |child|

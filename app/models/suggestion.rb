@@ -17,7 +17,7 @@ class Suggestion < ApplicationRecord
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
-  before_destroy :really_destroy_children!
+  #before_destroy :really_destroy_children!
   def really_destroy_children!
     Approval.with_deleted.where(approvable_type: self.class, approvable_id: id).each(&:really_destroy!)
   end

@@ -16,7 +16,7 @@ class ExtractionFormsProjectsSectionType < ApplicationRecord
   TYPE4   = 'Type 4'.freeze
 
   acts_as_paranoid
-  before_destroy :really_destroy_children!
+  #before_destroy :really_destroy_children!
   def really_destroy_children!
     extraction_forms_projects_sections.with_deleted.each do |child|
       child.really_destroy!

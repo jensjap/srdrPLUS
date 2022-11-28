@@ -16,7 +16,7 @@ class Extraction < ApplicationRecord
   include ConsolidationHelper
 
   acts_as_paranoid
-  before_destroy :really_destroy_children!
+  #before_destroy :really_destroy_children!
   def really_destroy_children!
     extractions_extraction_forms_projects_sections.with_deleted.each do |child|
       child.really_destroy!

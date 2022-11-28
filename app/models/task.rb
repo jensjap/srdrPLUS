@@ -16,7 +16,7 @@
 
 class Task < ApplicationRecord
   acts_as_paranoid
-  before_destroy :really_destroy_children!
+  #before_destroy :really_destroy_children!
   def really_destroy_children!
     assignments.with_deleted.each do |child|
       child.really_destroy!

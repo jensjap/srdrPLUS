@@ -13,7 +13,7 @@ class Measure < ApplicationRecord
   include SharedSuggestableMethods
 
   acts_as_paranoid
-  before_destroy :really_destroy_children!
+  #before_destroy :really_destroy_children!
   def really_destroy_children!
     Suggestion.with_deleted.where(suggestable_type: self.class, suggestable_id: id).each(&:really_destroy!)
     result_statistic_sections_measures.with_deleted.each do |child|

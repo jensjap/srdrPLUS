@@ -10,7 +10,7 @@
 #
 class FollowupField < ApplicationRecord
   acts_as_paranoid
-  before_destroy :really_destroy_children!
+  #before_destroy :really_destroy_children!
   def really_destroy_children!
     extractions_extraction_forms_projects_sections_followup_fields.with_deleted.each do |child|
       child.really_destroy!
