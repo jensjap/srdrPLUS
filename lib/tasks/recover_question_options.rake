@@ -69,15 +69,11 @@ namespace(:db) do
         pid  = qrcqrco_q['id'].to_i
         name = qrcqrco_q['name']
         begin
-          @logger.info "Looking for id: #{pid} -- name: #{name}"
-          QuestionRowColumnsQuestionRowColumnOption.find(qrcqrco_q['id'])
+          qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find(qrcqrco_q['id'])
         rescue ActiveRecord::RecordNotFound => e
-          @logger.debug "Failed to find option -- #{e}"
-          @logger.info 'Creating a new one.'
-          _create_qrcqrco_with_primary_id_and_option_text(
-            qrcqrco_q['id'].to_i,
-            qrcqrco_q['name']
-          )
+          @logger.info "Question: \"#{qrc.question.name}\""
+          @logger.info "  Recovery DB option: \"#{name}\""
+          @logger.info '  Failed to find option'
         end
       end  # recovery_qrcqrco_q.each do |qrcqrco|
     end  # def _recover_options_for_multi_choice_qrc(qrc)
