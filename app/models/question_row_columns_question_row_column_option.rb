@@ -47,14 +47,9 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
 
   def includes_followup=(bool)
     bool = ActiveModel::Type::Boolean.new.cast bool
-    if bool and !followup_field.present?
-      deleted_field = FollowupField.where(question_row_columns_question_row_column_option_id: id).only_deleted.first
-      if deleted_field.present?
-        deleted_field.restore recursive: true
-      else
-        build_followup_field.save
-      end
-    elsif !bool and followup_field.present?
+    if bool && !followup_field.present?
+      build_followup_field.save
+    elsif !bool && followup_field.present?
       followup_field.destroy.save
     end
   end
