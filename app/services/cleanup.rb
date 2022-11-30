@@ -32,7 +32,6 @@ class Cleanup
     ExtractionsExtractionFormsProjectsSectionsType1RowColumn,
     ExtractionsExtractionFormsProjectsSectionsType1Row,
     ExtractionsExtractionFormsProjectsSectionsType1,
-    # ExtractionsKeyQuestionsProject, # missing from DB
     ExtractionsProjectsUsersRole,
     FollowupField,
     Frequency,
