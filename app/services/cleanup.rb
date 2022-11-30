@@ -45,12 +45,11 @@ class Cleanup
     MessageType,
     Message,
     Note,
-    Ordering, # use raw sql delete
+    Ordering,
     Organization,
     PopulationName,
     Profile,
     Project,
-    # ProjectsStudy, # model removed
     ProjectsUser,
     ProjectsUsersRole,
     ProjectsUsersTermGroupsColor,
@@ -76,7 +75,6 @@ class Cleanup
     ResultStatisticSectionsMeasure,
     Role,
     Section,
-    # Study, # model removed
     Suggestion,
     Tag,
     Tagging,
