@@ -17,7 +17,7 @@ class ResultStatisticSectionsMeasure < ApplicationRecord
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
-  #before_destroy :really_destroy_children!
+  # before_destroy :really_destroy_children!
   def really_destroy_children!
     Ordering.with_deleted.where(orderable_type: self.class, orderable_id: id).each(&:really_destroy!)
     dependent_measures.with_deleted.each do |child|
@@ -60,11 +60,7 @@ class ResultStatisticSectionsMeasure < ApplicationRecord
 
   accepts_nested_attributes_for :measure
 
-  # delegate :extraction, to: :result_statistic_section
-
-  def extraction
-    ResultStatisticSection.with_deleted.find_by(id: result_statistic_section_id).try(:extraction)
-  end
+  delegate :extraction, to: :result_statistic_section
 
   private
 

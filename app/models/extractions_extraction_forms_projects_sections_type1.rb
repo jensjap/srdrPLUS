@@ -24,7 +24,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   has_one :status, through: :statusing
 
   acts_as_paranoid column: :active, sentinel_value: true
-  #before_destroy :really_destroy_children!
+  # before_destroy :really_destroy_children!
   def really_destroy_children!
     Ordering.with_deleted.where(orderable_type: self.class, orderable_id: id).each(&:really_destroy!)
     ComparableElement.with_deleted.where(comparable_type: self.class, comparable_id: id).each(&:really_destroy!)
@@ -97,11 +97,16 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   has_one :ordering, as: :orderable, dependent: :destroy
 
-  has_many :extractions_extraction_forms_projects_sections_type1_rows,                 dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
-  has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
-  has_many :extractions_extraction_forms_projects_sections_followup_fields,            dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
-  has_many :tps_arms_rssms,                                                            dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
-  has_many :comparisons_arms_rssms,                                                    dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :extractions_extraction_forms_projects_sections_type1_rows,                 dependent: :destroy,
+                                                                                       inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy,
+                                                                                       inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :extractions_extraction_forms_projects_sections_followup_fields,            dependent: :destroy,
+                                                                                       inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :tps_arms_rssms,                                                            dependent: :destroy,
+                                                                                       inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :comparisons_arms_rssms,                                                    dependent: :destroy,
+                                                                                       inverse_of: :extractions_extraction_forms_projects_sections_type1
 
   has_many :comparable_elements, as: :comparable, dependent: :destroy
 
@@ -110,12 +115,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   delegate :citation,          to: :extractions_extraction_forms_projects_section
   delegate :citations_project, to: :extractions_extraction_forms_projects_section
-  # delegate :extraction,        to: :extractions_extraction_forms_projects_section
-
-  def extraction
-    ExtractionsExtractionFormsProjectsSection.with_deleted.find_by(id: extractions_extraction_forms_projects_section_id).try(:extraction)
-  end
-
+  delegate :extraction,        to: :extractions_extraction_forms_projects_section
   delegate :project, to: :extractions_extraction_forms_projects_section
 
   validates :type1, uniqueness: { scope: %i[extractions_extraction_forms_projects_section type1_type] }
@@ -130,9 +130,10 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   # by timepoint, arm, and measure.
   def tps_arms_rssms_values(eefpst1rc_id, rssm)
     recordables = tps_arms_rssms
-      .where(
-        timepoint_id: eefpst1rc_id,
-        result_statistic_sections_measure: rssm)
+                  .where(
+                    timepoint_id: eefpst1rc_id,
+                    result_statistic_sections_measure: rssm
+                  )
 
     Record.where(recordable: recordables.first).first.try(:name).to_s.gsub(/\P{Print}|\p{Cf}/, '')
   end

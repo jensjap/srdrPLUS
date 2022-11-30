@@ -13,7 +13,7 @@
 # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1Row. This is meant to be Outcome Population.
 class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   acts_as_paranoid
-  #before_destroy :really_destroy_children!
+  # before_destroy :really_destroy_children!
   def really_destroy_children!
     ComparableElement.with_deleted.where(comparable_type: self.class, comparable_id: id).each(&:really_destroy!)
     extractions_extraction_forms_projects_sections_type1_row_columns.with_deleted.each do |child|
@@ -49,12 +49,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   accepts_nested_attributes_for :extractions_extraction_forms_projects_sections_type1_row_columns,
                                 reject_if: :all_blank, allow_destroy: true
 
-  # delegate :extraction, to: :extractions_extraction_forms_projects_sections_type1
-
-  def extraction
-    ExtractionsExtractionFormsProjectsSectionsType1.with_deleted.find_by(id: extractions_extraction_forms_projects_sections_type1_id).try(:extraction)
-  end
-
+  delegate :extraction, to: :extractions_extraction_forms_projects_sections_type1
   delegate :extractions_extraction_forms_projects_section, to: :extractions_extraction_forms_projects_sections_type1
 
   def descriptive_statistics_section
@@ -139,10 +134,10 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
     end
 
     if extractions_extraction_forms_projects_sections_type1
-      .extractions_extraction_forms_projects_sections_type1_rows
-      .first
-      .extractions_extraction_forms_projects_sections_type1_row_columns
-      .count == 0
+       .extractions_extraction_forms_projects_sections_type1_rows
+       .first
+       .extractions_extraction_forms_projects_sections_type1_row_columns
+       .count == 0
 
       # If this is the first/only row then we default to creating (arbitrarily) 1 column.
 
