@@ -17,10 +17,6 @@
 
 class CitationsProject < ApplicationRecord
   searchkick
-  include SharedParanoiaMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
-  # paginates_per 25
 
   scope :unlabeled,
         lambda { |project, count|

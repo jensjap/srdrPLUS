@@ -13,10 +13,7 @@
 #
 
 class ExtractionFormsProjectsSectionsType1 < ApplicationRecord
-  include SharedParanoiaMethods
   include SharedOrderableMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
 
   before_validation -> { set_ordering_scoped_by(:extraction_forms_projects_section_id) }, on: :create
 

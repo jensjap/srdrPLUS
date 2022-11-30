@@ -15,8 +15,6 @@ class ExtractionFormsProjectsSectionType < ApplicationRecord
   RESULTS = 'Results'.freeze
   TYPE4   = 'Type 4'.freeze
 
-  acts_as_paranoid
-
   has_many :extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction_forms_projects_section_type
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }

@@ -13,10 +13,6 @@
 #
 
 class TpsComparisonsRssm < ApplicationRecord
-  include SharedParanoiaMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
-
   belongs_to :comparison
   belongs_to :result_statistic_sections_measure
   belongs_to :timepoint,

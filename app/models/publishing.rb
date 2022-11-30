@@ -14,14 +14,11 @@
 
 class Publishing < ApplicationRecord
   include SharedApprovableMethods
-  include SharedParanoiaMethods
 
   attr_accessor :terms_agreement, :guidelines_agreement
 
   scope :unapproved, -> { left_outer_joins(:approval).where(approvals: { id: nil }) }
   scope :approved, -> { joins(:approval) }
-
-  acts_as_paranoid column: :active, sentinel_value: true
 
   belongs_to :publishable, polymorphic: true
   belongs_to :user, inverse_of: :publishings

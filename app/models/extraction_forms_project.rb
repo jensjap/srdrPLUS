@@ -27,11 +27,7 @@ class ExtractionFormsProject < ApplicationRecord
     'Diagnosis Details'
   ].freeze
 
-  include SharedParanoiaMethods
-
   attr_accessor :create_empty
-
-  acts_as_paranoid column: :active, sentinel_value: true
 
   # Get all ExtractionFormsProject items that are linked to a particular Extraction.
   # scope :by_extraction, -> (extraction_id) {

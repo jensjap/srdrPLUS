@@ -13,11 +13,8 @@
 #
 
 class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
-  include SharedParanoiaMethods
   include SharedQueryableMethods
   include SharedSuggestableMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
 
   after_create :set_default_values
   after_create :record_suggestor

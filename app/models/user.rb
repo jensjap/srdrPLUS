@@ -34,8 +34,6 @@
 #
 
 class User < ApplicationRecord
-  acts_as_paranoid
-
   devise :omniauthable, omniauth_providers: [:google_oauth2]
   has_secure_token :api_key
 

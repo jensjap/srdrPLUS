@@ -14,9 +14,6 @@
 
 class ResultStatisticSectionsMeasure < ApplicationRecord
   include SharedOrderableMethods
-  include SharedParanoiaMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
 
   after_commit :set_extraction_stale, on: %i[create update destroy]
 
@@ -46,6 +43,6 @@ class ResultStatisticSectionsMeasure < ApplicationRecord
   private
 
   def set_extraction_stale
-    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil? || extraction.deleted?
+    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil?
   end
 end

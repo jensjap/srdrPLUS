@@ -13,10 +13,6 @@
 #
 
 class Dispatch < ApplicationRecord
-  include SharedParanoiaMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
-
   belongs_to :dispatchable, polymorphic: true
   belongs_to :user, inverse_of: :dispatches
 

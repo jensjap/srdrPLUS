@@ -12,8 +12,6 @@
 #
 
 class LabelsReason < ApplicationRecord
-  acts_as_paranoid
-
   include SharedProcessTokenMethods
 
   belongs_to :label, inverse_of: :labels_reasons

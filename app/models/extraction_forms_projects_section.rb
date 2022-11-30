@@ -18,9 +18,6 @@
 class ExtractionFormsProjectsSection < ApplicationRecord
   include SharedOrderableMethods
   include SharedProcessTokenMethods
-  include SharedParanoiaMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
 
   scope :in_standard_extraction, lambda {
     joins(:extraction_forms_project)

@@ -13,8 +13,6 @@ class KeyQuestion < ApplicationRecord
   include SharedSuggestableMethods
   include SharedQueryableMethods
 
-  acts_as_paranoid
-
   after_create :record_suggestor
 
   has_one :suggestion, as: :suggestable, dependent: :destroy

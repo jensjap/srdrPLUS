@@ -18,8 +18,6 @@ class Author < ApplicationRecord
   has_many :citations, through: :authors_citations
   has_many :citations_projects, through: :citations
 
-  acts_as_paranoid
-
   def initials
     *rest, last = name.split
     (rest.map { |e| e[0] } << last).reverse!.map(&:capitalize).join(' ')

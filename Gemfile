@@ -60,7 +60,6 @@ gem 'net-ftp'
 gem 'net-smtp', require: false
 gem 'omniauth'
 gem 'omniauth-google-oauth2'
-gem 'paranoia', '~>2.2'
 gem 'passenger'
 gem 'puma' # Use Puma as the app server
 gem 'pundit' # authorizations.

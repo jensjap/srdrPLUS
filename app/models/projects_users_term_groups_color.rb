@@ -10,7 +10,6 @@
 
 class ProjectsUsersTermGroupsColor < ApplicationRecord
   include SharedProcessTokenMethods
-  acts_as_paranoid
 
   belongs_to :projects_user
   belongs_to :term_groups_color

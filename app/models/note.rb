@@ -13,8 +13,6 @@
 #
 
 class Note < ApplicationRecord
-  acts_as_paranoid
-
   belongs_to :projects_users_role
   belongs_to :notable, polymorphic: true
 

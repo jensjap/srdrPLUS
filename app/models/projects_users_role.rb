@@ -12,10 +12,6 @@
 #
 
 class ProjectsUsersRole < ApplicationRecord
-  include SharedParanoiaMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
-
   scope :by_project, ->(project) { joins(projects_user: :project).where(projects_users: { project: project.id }) }
 
   after_create :add_self_to_perpetual_task

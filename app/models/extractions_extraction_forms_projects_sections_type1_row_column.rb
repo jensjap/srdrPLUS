@@ -12,8 +12,6 @@
 
 # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1RowColumn. This is meant to be Outcome Timepoint.
 class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationRecord
-  acts_as_paranoid
-
   after_commit :ensure_timepoints_across_populations, on: %i[create update]
   after_commit :set_extraction_stale, on: %i[create update destroy]
 
@@ -64,7 +62,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
   private
 
   def set_extraction_stale
-    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil? || extraction.deleted?
+    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil?
   end
 
   def ensure_timepoints_across_populations

@@ -11,8 +11,6 @@
 #
 
 class PopulationName < ApplicationRecord
-  acts_as_paranoid
-
   has_many :extractions_extraction_forms_projects_sections_type1_rows, dependent: :destroy, inverse_of: :population_name
 
   validates :description, uniqueness: { scope: :name }

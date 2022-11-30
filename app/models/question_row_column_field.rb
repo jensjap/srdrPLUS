@@ -11,8 +11,6 @@
 #
 
 class QuestionRowColumnField < ApplicationRecord
-  acts_as_paranoid
-
   # after_create :create_default_question_row_column_fields_question_row_column_field_options
 
   belongs_to :question_row_column, inverse_of: :question_row_column_fields

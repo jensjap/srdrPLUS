@@ -12,10 +12,6 @@
 #
 
 class ProjectsUser < ApplicationRecord
-  include SharedParanoiaMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
-
   belongs_to :project, inverse_of: :projects_users # , touch: true
   belongs_to :user, inverse_of: :projects_users
 

@@ -13,8 +13,6 @@
 #
 
 class Tagging < ApplicationRecord
-  acts_as_paranoid
-
   include SharedProcessTokenMethods
 
   belongs_to :projects_users_role

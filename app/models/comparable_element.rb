@@ -11,8 +11,6 @@
 #
 
 class ComparableElement < ApplicationRecord
-  acts_as_paranoid
-
   after_destroy :destroy_comparisons
 
   belongs_to :comparable, polymorphic: true

@@ -14,8 +14,6 @@
 class QuestionRowColumn < ApplicationRecord
   attr_accessor :skip_callbacks
 
-  acts_as_paranoid
-
   after_create :create_default_question_row_column_options, unless: :skip_callbacks
   after_create :create_default_question_row_column_field, unless: :skip_callbacks
 

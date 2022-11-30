@@ -14,12 +14,9 @@
 #
 
 class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < ApplicationRecord
-  include SharedParanoiaMethods
   include SharedProcessTokenMethods
 
   self.table_name = 'eefps_qrcfs'
-
-  acts_as_paranoid column: :active, sentinel_value: true
 
   belongs_to :extractions_extraction_forms_projects_sections_type1,
              inverse_of: :extractions_extraction_forms_projects_sections_question_row_column_fields, optional: true

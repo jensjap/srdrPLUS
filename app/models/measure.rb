@@ -12,8 +12,6 @@
 class Measure < ApplicationRecord
   include SharedSuggestableMethods
 
-  acts_as_paranoid
-
   # scope :is_default, -> { where(default: true) }
   scope :result_statistic_section_type_defaults, lambda { |result_statistic_section_type_id|
     joins(:result_statistic_section_types_measures)

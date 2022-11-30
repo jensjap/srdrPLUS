@@ -11,8 +11,6 @@
 #
 
 class Reason < ApplicationRecord
-  acts_as_paranoid
-
   has_many :abstract_screening_results_reasons
   has_many :abstract_screening_results, through: :abstract_screening_results_reasons
   has_many :fulltext_screening_results_reasons

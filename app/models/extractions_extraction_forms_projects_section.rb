@@ -13,10 +13,7 @@
 #
 
 class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
-  include SharedParanoiaMethods
   include SharedProcessTokenMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
 
   # !!! Doesn't work
   #  scope :result_type_sections, -> () {

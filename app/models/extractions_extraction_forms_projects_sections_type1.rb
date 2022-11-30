@@ -17,13 +17,10 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   # Need this to accept an attribute on the fly when making bulk changes to the eefpst1 within consolidation tool.
   attr_writer :should
 
-  include SharedParanoiaMethods
   include SharedOrderableMethods
 
   has_one :statusing, as: :statusable, dependent: :destroy
   has_one :status, through: :statusing
-
-  acts_as_paranoid column: :active, sentinel_value: true
 
   after_commit :set_extraction_stale, on: %i[create update destroy]
 
@@ -208,7 +205,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   private
 
   def set_extraction_stale
-    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil? || extraction.deleted?
+    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil?
   end
 
   # Do not overwrite existing entries but associate to one that already exists or create a new one.

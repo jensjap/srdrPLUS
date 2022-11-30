@@ -15,8 +15,6 @@ class Role < ApplicationRecord
   CONTRIBUTOR  = 'Contributor'.freeze
   AUDITOR      = 'Auditor'.freeze
 
-  acts_as_paranoid
-
   has_many :projects_users_roles, dependent: :destroy, inverse_of: :role
   has_many :projects_users, through: :projects_users_roles, dependent: :destroy
 

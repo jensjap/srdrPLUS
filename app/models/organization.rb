@@ -13,8 +13,6 @@ class Organization < ApplicationRecord
   include SharedQueryableMethods
   include SharedSuggestableMethods
 
-  acts_as_paranoid
-
   after_create :record_suggestor
 
   has_one :suggestion, as: :suggestable, dependent: :destroy

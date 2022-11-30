@@ -21,6 +21,4 @@ class AuthorsCitation < ApplicationRecord
 
   accepts_nested_attributes_for :author
   accepts_nested_attributes_for :ordering
-
-  acts_as_paranoid
 end

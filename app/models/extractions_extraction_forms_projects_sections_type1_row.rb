@@ -12,8 +12,6 @@
 
 # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1Row. This is meant to be Outcome Population.
 class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
-  acts_as_paranoid
-
   # We need to create the four ResultStatisticSections:
   #   - Descriptive Statistics
   #   - Between Arm Comparisons
@@ -88,7 +86,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   private
 
   def set_extraction_stale
-    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil? || extraction.deleted?
+    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil?
   end
 
   def create_default_result_statistic_sections

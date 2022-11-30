@@ -10,8 +10,6 @@
 #
 
 class ComparateGroup < ApplicationRecord
-  acts_as_paranoid
-
   belongs_to :comparison, inverse_of: :comparate_groups
 
   has_many :comparates, inverse_of: :comparate_group, dependent: :destroy

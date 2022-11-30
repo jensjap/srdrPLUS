@@ -13,8 +13,6 @@ class Degree < ApplicationRecord
   include SharedQueryableMethods
   include SharedSuggestableMethods
 
-  acts_as_paranoid
-
   after_create :record_suggestor
 
   # before_destroy :raise_error

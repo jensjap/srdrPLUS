@@ -12,8 +12,6 @@
 #
 
 class Label < ApplicationRecord
-  acts_as_paranoid
-
   scope :last_updated, lambda { |projects_users_role, offset, count|
                          where(projects_users_role:)
                            .order(updated_at: :desc)

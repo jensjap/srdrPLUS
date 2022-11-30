@@ -23,8 +23,6 @@ class Citation < ApplicationRecord
   include SharedQueryableMethods
   include SharedProcessTokenMethods
 
-  acts_as_paranoid
-
   searchkick
 
   after_commit :reindex_citations_projects

@@ -12,8 +12,6 @@
 #
 
 class QualityDimensionQuestion < ApplicationRecord
-  acts_as_paranoid
-
   belongs_to :quality_dimension_section, inverse_of: :quality_dimension_questions
 
   has_many :dependencies, as: :dependable, dependent: :destroy

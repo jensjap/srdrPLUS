@@ -10,8 +10,6 @@
 #
 
 class Comparison < ApplicationRecord
-  acts_as_paranoid
-
   belongs_to :result_statistic_section, inverse_of: :comparisons, optional: true
 
   has_many :comparate_groups, inverse_of: :comparison, dependent: :destroy

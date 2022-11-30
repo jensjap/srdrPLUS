@@ -14,8 +14,6 @@ class Type1 < ApplicationRecord
   include SharedQueryableMethods
   include SharedSuggestableMethods
 
-  acts_as_paranoid
-
   default_scope { order(:id) }
 
   scope :uniq_by_section_name_and_not_included_in_efps, lambda { |efps_id|

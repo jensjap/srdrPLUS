@@ -17,8 +17,6 @@ class Question < ApplicationRecord
 
   attr_accessor :skip_callbacks
 
-  acts_as_paranoid
-
   after_create :create_default_question_row, unless: :skip_callbacks
   after_create :associate_kqs
   after_save :ensure_matrix_column_headers, unless: :skip_callbacks

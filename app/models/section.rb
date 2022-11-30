@@ -14,8 +14,6 @@ class Section < ApplicationRecord
   include SharedQueryableMethods
   include SharedSuggestableMethods
 
-  acts_as_paranoid
-
   scope :default_sections, -> { where(default: true) }
 
   after_create :record_suggestor

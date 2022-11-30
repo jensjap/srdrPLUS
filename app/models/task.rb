@@ -15,8 +15,6 @@
 #
 
 class Task < ApplicationRecord
-  acts_as_paranoid
-
   belongs_to :task_type
   belongs_to :project # , touch: true
 

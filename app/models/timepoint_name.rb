@@ -17,8 +17,6 @@ class TimepointName < ApplicationRecord
 
   include SharedQueryableMethods
 
-  acts_as_paranoid
-
   after_create :test_isValidUCUM
 
   has_many :extractions_extraction_forms_projects_sections_type1_row_columns, dependent: :destroy,

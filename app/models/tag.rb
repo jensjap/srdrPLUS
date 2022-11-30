@@ -10,8 +10,6 @@
 #
 
 class Tag < ApplicationRecord
-  acts_as_paranoid
-
   has_many :abstract_screening_results_tags
   has_many :abstract_screening_results, through: :abstract_screening_results_tags
   has_many :fulltext_screening_results_tags

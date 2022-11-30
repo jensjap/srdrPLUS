@@ -13,8 +13,6 @@
 class QuestionRow < ApplicationRecord
   attr_accessor :skip_callbacks
 
-  acts_as_paranoid
-
   after_create :create_default_question_row_columns, unless: :skip_callbacks
 
   belongs_to :question, inverse_of: :question_rows

@@ -11,8 +11,6 @@
 #
 
 class ResultStatisticSection < ApplicationRecord
-  acts_as_paranoid
-
   attr_accessor :comparison_type
 
   after_create :create_default_measures

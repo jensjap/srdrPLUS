@@ -10,7 +10,5 @@
 #
 
 class Frequency < ApplicationRecord
-  acts_as_paranoid
-
   has_many :message_types, dependent: :destroy, inverse_of: :frequency
 end
