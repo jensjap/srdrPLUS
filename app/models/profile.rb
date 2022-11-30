@@ -22,7 +22,6 @@ class Profile < ApplicationRecord
 
   acts_as_paranoid
 
-  #  after_restore :restore_relationships
   after_create :create_default_abstrackr_setting
 
   belongs_to :organization, inverse_of: :profiles, optional: true
