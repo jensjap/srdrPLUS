@@ -13,13 +13,6 @@
 
 class Label < ApplicationRecord
   acts_as_paranoid
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    Note.with_deleted.where(notable_type: self.class, notable_id: id).each(&:really_destroy!)
-    labels_reasons.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
 
   scope :last_updated, lambda { |projects_users_role, offset, count|
                          where(projects_users_role:)

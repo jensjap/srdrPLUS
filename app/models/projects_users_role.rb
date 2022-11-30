@@ -15,27 +15,6 @@ class ProjectsUsersRole < ApplicationRecord
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    assignments.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    extractions.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    taggings.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    labels_reasons.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    labels.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    notes.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
 
   scope :by_project, ->(project) { joins(projects_user: :project).where(projects_users: { project: project.id }) }
 

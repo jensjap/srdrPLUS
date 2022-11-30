@@ -24,26 +24,6 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   has_one :status, through: :statusing
 
   acts_as_paranoid column: :active, sentinel_value: true
-  # before_destroy :really_destroy_children!
-  def really_destroy_children!
-    Ordering.with_deleted.where(orderable_type: self.class, orderable_id: id).each(&:really_destroy!)
-    ComparableElement.with_deleted.where(comparable_type: self.class, comparable_id: id).each(&:really_destroy!)
-    extractions_extraction_forms_projects_sections_type1_rows.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    extractions_extraction_forms_projects_sections_question_row_column_fields.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    extractions_extraction_forms_projects_sections_followup_fields.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    tps_arms_rssms.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    comparisons_arms_rssms.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
 
   after_commit :set_extraction_stale, on: %i[create update destroy]
 

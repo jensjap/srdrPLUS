@@ -19,12 +19,6 @@ class ResultStatisticSectionTypesMeasure < ApplicationRecord
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    dependent_measures.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
 
   belongs_to :result_statistic_section_type, inverse_of: :result_statistic_section_types_measures
   belongs_to :measure,                       inverse_of: :result_statistic_section_types_measures

@@ -18,12 +18,6 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
   include SharedSuggestableMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    Suggestion.with_deleted.where(suggestable_type: self.class, suggestable_id: id).each(&:really_destroy!)
-    FollowupField.with_deleted.where(question_row_columns_question_row_column_option_id: id).each(&:really_destroy!)
-    Dependency.with_deleted.where(prerequisitable_type: self.class, prerequisitable_id: id).each(&:really_destroy!)
-  end
 
   after_create :set_default_values
   after_create :record_suggestor

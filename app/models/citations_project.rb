@@ -20,21 +20,6 @@ class CitationsProject < ApplicationRecord
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    extractions.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    labels.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    notes.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    taggings.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
   # paginates_per 25
 
   scope :unlabeled,

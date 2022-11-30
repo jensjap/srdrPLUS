@@ -20,10 +20,6 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < Applica
   self.table_name = 'eefps_qrcfs'
 
   acts_as_paranoid column: :active, sentinel_value: true
-  # before_destroy :really_destroy_children!
-  def really_destroy_children!
-    Record.with_deleted.where(recordable_type: self.class, recordable_id: id).each(&:really_destroy!)
-  end
 
   belongs_to :extractions_extraction_forms_projects_sections_type1,
              inverse_of: :extractions_extraction_forms_projects_sections_question_row_column_fields, optional: true

@@ -18,17 +18,6 @@ class Question < ApplicationRecord
   attr_accessor :skip_callbacks
 
   acts_as_paranoid
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    Ordering.with_deleted.where(orderable_type: self.class, orderable_id: id).each(&:really_destroy!)
-    Dependency.with_deleted.where(dependable_type: self.class, dependable_id: id).each(&:really_destroy!)
-    key_questions_projects_questions.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    question_rows.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
 
   after_create :create_default_question_row, unless: :skip_callbacks
   after_create :associate_kqs

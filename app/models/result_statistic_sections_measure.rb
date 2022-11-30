@@ -17,25 +17,6 @@ class ResultStatisticSectionsMeasure < ApplicationRecord
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
-  # before_destroy :really_destroy_children!
-  def really_destroy_children!
-    Ordering.with_deleted.where(orderable_type: self.class, orderable_id: id).each(&:really_destroy!)
-    dependent_measures.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    wacs_bacs_rssms.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    tps_arms_rssms.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    tps_comparisons_rssms.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    comparisons_arms_rssms.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
 
   after_commit :set_extraction_stale, on: %i[create update destroy]
 

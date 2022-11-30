@@ -11,12 +11,6 @@
 class ProjectsUsersTermGroupsColor < ApplicationRecord
   include SharedProcessTokenMethods
   acts_as_paranoid
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    projects_users_term_groups_colors_terms.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
 
   belongs_to :projects_user
   belongs_to :term_groups_color
@@ -29,23 +23,24 @@ class ProjectsUsersTermGroupsColor < ApplicationRecord
   accepts_nested_attributes_for :term_groups_color
 
   def term_ids=(tokens)
-    tokens.map { |token|
+    tokens.map do |token|
       resource = Term.new
       save_resource_name_with_token(resource, token)
-    }
+    end
     super
   end
 
   def term_group_name=(new_name)
     term_group = TermGroup.find_or_create_by(name: new_name)
-    term_groups_color = TermGroupsColor.find_or_create_by(term_group: term_group, color: self.color)
+    term_groups_color = TermGroupsColor.find_or_create_by(term_group:, color:)
     self.term_groups_color = term_groups_color
-    self.save
+    save
   end
+
   def term_group_name=(new_name)
     term_group = TermGroup.find_or_create_by(name: new_name)
-    term_groups_color = TermGroupsColor.find_or_create_by(term_group: term_group, color: self.color)
+    term_groups_color = TermGroupsColor.find_or_create_by(term_group:, color:)
     self.term_groups_color = term_groups_color
-    self.save
+    save
   end
 end

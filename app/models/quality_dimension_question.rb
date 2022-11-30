@@ -13,15 +13,6 @@
 
 class QualityDimensionQuestion < ApplicationRecord
   acts_as_paranoid
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    dependencies.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    quality_dimension_questions_quality_dimension_options.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
 
   belongs_to :quality_dimension_section, inverse_of: :quality_dimension_questions
 
