@@ -34,9 +34,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
     joins(:extraction_forms_project)
       .where(extraction_forms_projects: { extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::MINI_EXTRACTION) })
   }
-  ################################ CAUTION WHAT IS THIS FOR?
-  # after_commit :mark_as_deleted_or_restore_extraction_forms_projects_section_option
-  ################################
   after_create :create_extraction_forms_projects_section_option
 
   before_validation -> { set_ordering_scoped_by(:extraction_forms_project_id) }
@@ -133,16 +130,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   def parent_type
     errors[:base] << 'Parent Type must be of Type 1' unless link_to_type1.nil? ||
                                                             link_to_type1.extraction_forms_projects_section_type_id == 1
-  end
-
-  def mark_as_deleted_or_restore_extraction_forms_projects_section_option
-    if extraction_forms_projects_section_type_id == 2
-      option = ExtractionFormsProjectsSectionOption.with_deleted.find_or_create_by(extraction_forms_projects_section: self)
-      option.restore if option.deleted?
-    else
-      option = ExtractionFormsProjectsSectionOption.find_by(extraction_forms_projects_section: self)
-      option.destroy if option
-    end
   end
 
   def extraction_forms_projects_sections_type1s_without_total_arm
