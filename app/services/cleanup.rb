@@ -90,7 +90,18 @@ class Cleanup
 
   def self.really_destroy_all!
     ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0;')
-
+    restore_efps_sql = "
+      UPDATE `extraction_forms_projects_sections`
+      SET `extraction_forms_projects_sections`.`active` = TRUE, `extraction_forms_projects_sections`.`deleted_at` = NULL
+      WHERE `extraction_forms_projects_sections`.`section_id` IN (
+        SELECT `sections`.`id`
+        FROM `sections`
+        WHERE (sections.name IN (
+          'Diagnostic Tests','Diagnostic Test Details','Diagnoses','Diagnosis Details','Arms','Arm Details','Outcomes','Outcome Details'
+        ))
+      );
+    "
+    ActiveRecord::Base.connection.execute(restore_efps_sql)
     RELEVANT_CLASSES.each do |rc|
       table_name = rc.table_name
       sql = "DELETE FROM `#{table_name}` WHERE `#{table_name}`.`deleted_at` IS NOT NULL"
