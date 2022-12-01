@@ -21,6 +21,39 @@ class Import < ApplicationRecord
 
   accepts_nested_attributes_for :imported_files
 
+  def already_queued?
+    return false unless import_type.name == 'Project'
+
+    Sidekiq::ScheduledSet.new.each do |scheduled_job|
+      job_hash = JSON.parse(scheduled_job.value)['args'].try(:first) || {}
+      scheduled_job_class = job_hash['job_class']
+      scheduled_job_arguments = job_hash['arguments']
+
+      imported_files.each do |imported_file|
+        next unless imported_file.file_type.name == '.xlsx'
+
+        import_job_class = SimpleImportJob.to_s
+        import_job_arguments = [imported_file.id, project.id]
+        return true if scheduled_job_class == import_job_class && scheduled_job_arguments[1] == import_job_arguments[1]
+      end
+    end
+
+    workers = Sidekiq::Workers.new.to_a.map { |worker| worker[2]['payload']['args'].try(:first) || {} }
+    workers.each do |worker|
+      scheduled_job_class = worker['job_class']
+      scheduled_job_arguments = worker['arguments']
+
+      imported_files.each do |imported_file|
+        next unless imported_file.file_type.name == '.xlsx'
+
+        import_job_class = SimpleImportJob.to_s
+        import_job_arguments = [imported_file.id, project.id]
+        return true if scheduled_job_class == import_job_class && scheduled_job_arguments[1] == import_job_arguments[1]
+      end
+    end
+    false
+  end
+
   def start_import_job
     if import_type.name == 'Distiller'
       DistillerImportJob.set(wait: 1.minute).perform_later(id)
