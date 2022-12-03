@@ -26,6 +26,8 @@
 *.swn
 *.swm
 
+.env
+
 # DS_Store files.
 .DS_Store
 
@@ -34,8 +36,6 @@
 
 # Redis
 dump.rdb
-
-.env
 
 # Don't track any .xlsx files.
 *.xlsx
