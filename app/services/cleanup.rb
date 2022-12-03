@@ -33,7 +33,7 @@ class Cleanup
     ExtractionsExtractionFormsProjectsSectionsType1Row,
     ExtractionsExtractionFormsProjectsSectionsType1,
     # ExtractionsKeyQuestionsProject, # missing from DB
-    ExtractionsProjectsUsersRole,
+    # ExtractionsProjectsUsersRole, # removed
     FollowupField,
     Frequency,
     KeyQuestion,
