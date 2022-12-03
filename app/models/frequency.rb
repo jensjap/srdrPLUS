@@ -11,7 +11,7 @@
 
 class Frequency < ApplicationRecord
   acts_as_paranoid
-  before_destroy :really_destroy_children!
+  #before_destroy :really_destroy_children!
   def really_destroy_children!
     message_types.with_deleted.each do |child|
       child.really_destroy!

@@ -17,7 +17,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   include SharedProcessTokenMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
-  before_destroy :really_destroy_children!
+  #before_destroy :really_destroy_children!
   def really_destroy_children!
     ExtractionsExtractionFormsProjectsSectionsType1
       .with_deleted.where(extractions_extraction_forms_projects_section_id: id)

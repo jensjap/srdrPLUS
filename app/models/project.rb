@@ -26,7 +26,7 @@ class Project < ApplicationRecord
   attr_accessor :create_empty
 
   acts_as_paranoid
-  before_destroy :really_destroy_children!
+  #before_destroy :really_destroy_children!
   def really_destroy_children!
     Publishing.with_deleted.where(publishable_type: self.class, publishable_id: id).each(&:really_destroy!)
     KeyQuestionsProject

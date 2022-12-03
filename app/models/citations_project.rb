@@ -20,7 +20,7 @@ class CitationsProject < ApplicationRecord
   include SharedParanoiaMethods
 
   acts_as_paranoid column: :active, sentinel_value: true
-  before_destroy :really_destroy_children!
+  #before_destroy :really_destroy_children!
   def really_destroy_children!
     extractions.with_deleted.each do |child|
       child.really_destroy!

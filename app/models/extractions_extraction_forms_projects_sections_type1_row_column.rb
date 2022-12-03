@@ -13,7 +13,7 @@
 # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1RowColumn. This is meant to be Outcome Timepoint.
 class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationRecord
   acts_as_paranoid
-  before_destroy :really_destroy_children!
+  #before_destroy :really_destroy_children!
   def really_destroy_children!
     ComparableElement.with_deleted.where(comparable_type: self.class, comparable_id: id).each(&:really_destroy!)
     tps_arms_rssms.with_deleted.each do |child|

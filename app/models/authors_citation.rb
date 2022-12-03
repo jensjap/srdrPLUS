@@ -23,7 +23,7 @@ class AuthorsCitation < ApplicationRecord
   accepts_nested_attributes_for :ordering
 
   acts_as_paranoid
-  before_destroy :really_destroy_children!
+  #before_destroy :really_destroy_children!
   def really_destroy_children!
     Ordering.with_deleted.where(orderable_type: self.class, orderable_id: id).each(&:really_destroy!)
   end

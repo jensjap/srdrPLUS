@@ -22,7 +22,7 @@ class Publishing < ApplicationRecord
   scope :approved, -> { joins(:approval) }
 
   acts_as_paranoid column: :active, sentinel_value: true
-  before_destroy :really_destroy_children!
+  #before_destroy :really_destroy_children!
   def really_destroy_children!
     Publishing.with_deleted.where(publishable_type: self.class, publishable_id: id).each(&:really_destroy!)
   end
