@@ -33,7 +33,7 @@ class Cleanup
     ExtractionsExtractionFormsProjectsSectionsType1Row,
     ExtractionsExtractionFormsProjectsSectionsType1,
     ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption, # table name eefpsqrcf_qrcqrcos
-    ExtractionsProjectsUsersRole,
+    #ExtractionsProjectsUsersRole, # model was dropped.
     FollowupField,
     Frequency,
     KeyQuestion,
@@ -134,7 +134,6 @@ class Cleanup
     messages = []
     RELEVANT_CLASSES.each do |rc|
       count = rc.count
-      pre[rc.to_s] = count
       whitespace_count = 150 - rc.to_s.length - count.to_s.length
       messages << "#{rc}:#{' ' * whitespace_count}#{count}"
       total += count
