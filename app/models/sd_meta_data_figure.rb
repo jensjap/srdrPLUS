@@ -22,6 +22,8 @@ class SdMetaDataFigure < ApplicationRecord
 
   belongs_to :sd_figurable, polymorphic: true
 
+  after_create :follow_older_sibiling_values
+
   def pictures=(attachables)
     attachables = Array(attachables).compact_blank
 
@@ -29,5 +31,21 @@ class SdMetaDataFigure < ApplicationRecord
       attachment_changes['pictures'] =
         ActiveStorage::Attached::Changes::CreateMany.new('pictures', self, pictures.blobs + attachables)
     end
+  end
+
+  private
+
+  def follow_older_sibiling_values
+    return unless sd_figurable.instance_of?(SdPairwiseMetaAnalyticResult)
+
+    older_sibling = SdMetaDataFigure.where(sd_figurable:).where('id < ?',
+                                                                id).order(id: :desc).limit(1).first
+    return unless older_sibling.present?
+
+    self.outcome_type = older_sibling.outcome_type
+    self.intervention_name = older_sibling.intervention_name
+    self.comparator_name = older_sibling.comparator_name
+    self.effect_size_measure_name = older_sibling.effect_size_measure_name
+    save
   end
 end

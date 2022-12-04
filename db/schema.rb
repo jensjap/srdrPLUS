@@ -1773,7 +1773,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.string "sd_figurable_type"
     t.string "p_type"
     t.text "alt_text"
-    t.string "outcome_type"
+    t.string "outcome_type", default: "Categorical"
     t.string "intervention_name"
     t.string "comparator_name"
     t.string "effect_size_measure_name"

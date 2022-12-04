@@ -1,6 +1,6 @@
 class AddOutcomeDataToSdMetaDataFigures < ActiveRecord::Migration[7.0]
   def change
-    add_column :sd_meta_data_figures, :outcome_type, :string
+    add_column :sd_meta_data_figures, :outcome_type, :string, default: 'Categorical'
     add_column :sd_meta_data_figures, :intervention_name, :string
     add_column :sd_meta_data_figures, :comparator_name, :string
     add_column :sd_meta_data_figures, :effect_size_measure_name, :string

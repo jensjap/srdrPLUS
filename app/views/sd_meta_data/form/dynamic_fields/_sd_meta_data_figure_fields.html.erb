@@ -57,13 +57,80 @@
   <br />
   <!-- prettier-ignore -->
   <% if f.object.sd_figurable_type == SdPairwiseMetaAnalyticResult.to_s %>
-    <%= f.input :outcome_type, as: :select, collection: ['1', '2'] %>
+    <%= f.input :outcome_type, as: :select, collection: ['Categorical', 'Continuous'] %>
     <%= f.input :intervention_name %>
     <%= f.input :comparator_name %>
-    <%= f.input :effect_size_measure_name %>
-    <%= f.input :overall_effect_size %>
-    <%= f.input :overall_95_ci_low %>
-    <%= f.input :overall_95_ci_high %>
-    <%= f.input :overall_i_squared %>
+    <%= f.input :effect_size_measure_name, as: :select, collection: [f.object.effect_size_measure_name], selected: f.object.effect_size_measure_name, input_html: { class: "esmn-#{f.object.id}" } %>
+    <%= f.input :overall_effect_size, input_html: { class: "oes-#{f.object.id}" } %>
+    <%= f.input :overall_95_ci_low, input_html: { class: "ci-low-#{f.object.id}" } %>
+    <%= f.input :overall_95_ci_high, input_html: { class: "ci-high-#{f.object.id}" } %>
+    <%= f.input :overall_i_squared, input_html: { class: 'pairwise_logic', min: 0, max: 100 } %>
   <% end %>
+  <!-- prettier-ignore -->
 </div>
+
+<script>
+  <% if f.object.outcome_type == 'Categorical' %>
+    $('<%= ".oes-#{f.object.id}" %>').attr('min', 0)
+    $('<%= ".oes-#{f.object.id}" %>').attr('max', 100)
+    $('<%= ".ci-low-#{f.object.id}" %>').attr('min', 0)
+    $('<%= ".ci-low-#{f.object.id}" %>').attr('max', 100)
+    $('<%= ".ci-high-#{f.object.id}" %>').attr('min', 0)
+    $('<%= ".ci-high-#{f.object.id}" %>').attr('max', 100)
+  <% end %>
+
+  $('<%= ".esmn-#{f.object.id}" %>').empty();
+  $('<%= ".esmn-#{f.object.id}" %>').select2({
+    tags: true,
+    data: [
+      {
+        id: "<%= f.object.effect_size_measure_name %>",
+        text: "<%= f.object.effect_size_measure_name %>"
+      },
+      <% if f.object.outcome_type == 'Categorical' %>
+      {
+        id: "OR",
+        text: "OR",
+      },
+      {
+        id: "HR",
+        text: "HR",
+      },
+      {
+        id: "RR",
+        text: "RR",
+      },
+      {
+        id: "RD",
+        text: "RD",
+      },
+      {
+        id: "Percent",
+        text: "Percent",
+      },
+      {
+        id: "Proportion",
+        text: "Proportion",
+      },
+      <% elsif f.object.outcome_type == 'Continuous' %>
+      {
+        id: "Mean Difference",
+        text: "Mean Difference",
+      },
+      {
+        id: "Standardized Mean Difference",
+        text: "Standardized Mean Difference",
+      },
+      {
+        id: "Net Mean Difference",
+        text: "Net Mean Difference",
+      },
+      {
+        id: "Mean",
+        text: "Mean",
+      },
+      <% end %>
+    ],
+    val: "<%= f.object.effect_size_measure_name %>",
+  });
+</script>
