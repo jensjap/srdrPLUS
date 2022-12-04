@@ -13,12 +13,6 @@ class Organization < ApplicationRecord
   include SharedQueryableMethods
   include SharedSuggestableMethods
 
-  acts_as_paranoid
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    Suggestion.with_deleted.where(suggestable_type: self.class, suggestable_id: id).each(&:really_destroy!)
-  end
-
   after_create :record_suggestor
 
   has_one :suggestion, as: :suggestable, dependent: :destroy

@@ -11,14 +11,6 @@
 #
 
 class Reason < ApplicationRecord
-  acts_as_paranoid
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    labels_reasons.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-
   has_many :abstract_screening_results_reasons
   has_many :abstract_screening_results, through: :abstract_screening_results_reasons
   has_many :fulltext_screening_results_reasons

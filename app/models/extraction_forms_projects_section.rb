@@ -18,32 +18,6 @@
 class ExtractionFormsProjectsSection < ApplicationRecord
   include SharedOrderableMethods
   include SharedProcessTokenMethods
-  include SharedParanoiaMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    ExtractionFormsProjectsSectionOption.with_deleted.where(extraction_forms_projects_section_id: id).each(&:really_destroy!)
-    Ordering.with_deleted.where(orderable_type: self.class, orderable_id: id).each(&:really_destroy!)
-    ExtractionFormsProjectsSectionsType1
-      .with_deleted
-      .where(extraction_forms_projects_section_id: id)
-      .each(&:really_destroy!)
-    Question
-      .with_deleted
-      .where(extraction_forms_projects_section_id: id)
-      .each(&:really_destroy!)
-
-    extraction_forms_projects_section_type2s.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    extractions_extraction_forms_projects_sections.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    key_questions_projects.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
 
   scope :in_standard_extraction, lambda {
     joins(:extraction_forms_project)
@@ -57,9 +31,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
     joins(:extraction_forms_project)
       .where(extraction_forms_projects: { extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::MINI_EXTRACTION) })
   }
-  ################################ CAUTION WHAT IS THIS FOR?
-  # after_commit :mark_as_deleted_or_restore_extraction_forms_projects_section_option
-  ################################
   after_create :create_extraction_forms_projects_section_option
 
   before_validation -> { set_ordering_scoped_by(:extraction_forms_project_id) }
@@ -156,16 +127,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   def parent_type
     errors[:base] << 'Parent Type must be of Type 1' unless link_to_type1.nil? ||
                                                             link_to_type1.extraction_forms_projects_section_type_id == 1
-  end
-
-  def mark_as_deleted_or_restore_extraction_forms_projects_section_option
-    if extraction_forms_projects_section_type_id == 2
-      option = ExtractionFormsProjectsSectionOption.with_deleted.find_or_create_by(extraction_forms_projects_section: self)
-      option.restore if option.deleted?
-    else
-      option = ExtractionFormsProjectsSectionOption.find_by(extraction_forms_projects_section: self)
-      option.destroy if option
-    end
   end
 
   def extraction_forms_projects_sections_type1s_without_total_arm

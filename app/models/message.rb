@@ -17,8 +17,6 @@ class Message < ApplicationRecord
   include SharedDispatchableMethods
   include SharedQueryableMethods
 
-  acts_as_paranoid
-
   belongs_to :message_type, inverse_of: :messages
 
   has_one :frequency, through: :message_type

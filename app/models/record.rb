@@ -14,8 +14,6 @@
 class Record < ApplicationRecord
   include SharedProcessTokenMethods
 
-  acts_as_paranoid
-
   # after_commit :set_extraction_stale, on: [:create, :update, :destroy]
   after_commit :set_extraction_stale, on: [:update]
 
@@ -146,6 +144,6 @@ class Record < ApplicationRecord
                  else
                    recordable.result_statistic_section.extraction
                  end
-    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil? || extraction.deleted?
+    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil?
   end
 end

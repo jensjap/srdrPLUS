@@ -11,14 +11,6 @@
 #
 
 class MessageType < ApplicationRecord
-  acts_as_paranoid
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    messages.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-
   belongs_to :frequency, inverse_of: :message_types
 
   has_many :messages, dependent: :destroy, inverse_of: :message_type

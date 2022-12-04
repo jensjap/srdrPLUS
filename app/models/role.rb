@@ -15,14 +15,6 @@ class Role < ApplicationRecord
   CONTRIBUTOR  = 'Contributor'.freeze
   AUDITOR      = 'Auditor'.freeze
 
-  acts_as_paranoid
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    projects_users_roles.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-
   has_many :projects_users_roles, dependent: :destroy, inverse_of: :role
   has_many :projects_users, through: :projects_users_roles, dependent: :destroy
 

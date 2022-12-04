@@ -11,17 +11,6 @@
 #
 
 class ResultStatisticSection < ApplicationRecord
-  acts_as_paranoid
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    result_statistic_sections_measures.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    comparisons_result_statistic_sections.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-
   attr_accessor :comparison_type
 
   after_create :create_default_measures
@@ -64,12 +53,7 @@ class ResultStatisticSection < ApplicationRecord
   accepts_nested_attributes_for :result_statistic_sections_measures
   accepts_nested_attributes_for :measures
 
-  # delegate :extraction, to: :population
-
-  def extraction
-    ExtractionsExtractionFormsProjectsSectionsType1Row.with_deleted.find_by(id: population_id).try(:extraction)
-  end
-
+  delegate :extraction, to: :population
   delegate :project, to: :extraction
 
   def timepoints

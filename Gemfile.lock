@@ -360,9 +360,7 @@ GEM
       omniauth (~> 2.0)
     orm_adapter (0.5.0)
     os (1.1.4)
-    paranoia (2.6.0)
-      activerecord (>= 5.1, < 7.1)
-    passenger (6.0.15)
+    passenger (6.0.14)
       rack
       rake (>= 0.8.1)
     public_suffix (5.0.0)
@@ -587,7 +585,6 @@ DEPENDENCIES
   net-smtp
   omniauth
   omniauth-google-oauth2
-  paranoia (~> 2.2)
   passenger
   puma
   pundit

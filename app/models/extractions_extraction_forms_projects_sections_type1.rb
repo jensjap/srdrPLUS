@@ -17,33 +17,10 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   # Need this to accept an attribute on the fly when making bulk changes to the eefpst1 within consolidation tool.
   attr_writer :should
 
-  include SharedParanoiaMethods
   include SharedOrderableMethods
 
   has_one :statusing, as: :statusable, dependent: :destroy
   has_one :status, through: :statusing
-
-  acts_as_paranoid column: :active, sentinel_value: true
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    Ordering.with_deleted.where(orderable_type: self.class, orderable_id: id).each(&:really_destroy!)
-    ComparableElement.with_deleted.where(comparable_type: self.class, comparable_id: id).each(&:really_destroy!)
-    extractions_extraction_forms_projects_sections_type1_rows.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    extractions_extraction_forms_projects_sections_question_row_column_fields.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    extractions_extraction_forms_projects_sections_followup_fields.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    tps_arms_rssms.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    comparisons_arms_rssms.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
 
   after_commit :set_extraction_stale, on: %i[create update destroy]
 
@@ -97,11 +74,16 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   has_one :ordering, as: :orderable, dependent: :destroy
 
-  has_many :extractions_extraction_forms_projects_sections_type1_rows,                 dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
-  has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
-  has_many :extractions_extraction_forms_projects_sections_followup_fields,            dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
-  has_many :tps_arms_rssms,                                                            dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
-  has_many :comparisons_arms_rssms,                                                    dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :extractions_extraction_forms_projects_sections_type1_rows,                 dependent: :destroy,
+                                                                                       inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy,
+                                                                                       inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :extractions_extraction_forms_projects_sections_followup_fields,            dependent: :destroy,
+                                                                                       inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :tps_arms_rssms,                                                            dependent: :destroy,
+                                                                                       inverse_of: :extractions_extraction_forms_projects_sections_type1
+  has_many :comparisons_arms_rssms,                                                    dependent: :destroy,
+                                                                                       inverse_of: :extractions_extraction_forms_projects_sections_type1
 
   has_many :comparable_elements, as: :comparable, dependent: :destroy
 
@@ -110,12 +92,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   delegate :citation,          to: :extractions_extraction_forms_projects_section
   delegate :citations_project, to: :extractions_extraction_forms_projects_section
-  # delegate :extraction,        to: :extractions_extraction_forms_projects_section
-
-  def extraction
-    ExtractionsExtractionFormsProjectsSection.with_deleted.find_by(id: extractions_extraction_forms_projects_section_id).try(:extraction)
-  end
-
+  delegate :extraction,        to: :extractions_extraction_forms_projects_section
   delegate :project, to: :extractions_extraction_forms_projects_section
 
   validates :type1, uniqueness: { scope: %i[extractions_extraction_forms_projects_section type1_type] }
@@ -130,9 +107,10 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   # by timepoint, arm, and measure.
   def tps_arms_rssms_values(eefpst1rc_id, rssm)
     recordables = tps_arms_rssms
-      .where(
-        timepoint_id: eefpst1rc_id,
-        result_statistic_sections_measure: rssm)
+                  .where(
+                    timepoint_id: eefpst1rc_id,
+                    result_statistic_sections_measure: rssm
+                  )
 
     Record.where(recordable: recordables.first).first.try(:name).to_s.gsub(/\P{Print}|\p{Cf}/, '')
   end
@@ -227,7 +205,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   private
 
   def set_extraction_stale
-    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil? || extraction.deleted?
+    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil?
   end
 
   # Do not overwrite existing entries but associate to one that already exists or create a new one.

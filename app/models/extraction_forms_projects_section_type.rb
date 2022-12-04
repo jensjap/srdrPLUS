@@ -15,14 +15,6 @@ class ExtractionFormsProjectsSectionType < ApplicationRecord
   RESULTS = 'Results'.freeze
   TYPE4   = 'Type 4'.freeze
 
-  acts_as_paranoid
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    extraction_forms_projects_sections.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-
   has_many :extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction_forms_projects_section_type
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }

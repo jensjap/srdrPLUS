@@ -11,15 +11,6 @@
 #
 
 class QuestionRowColumnField < ApplicationRecord
-  acts_as_paranoid
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    Dependency.with_deleted.where(prerequisitable_type: self.class, prerequisitable_id: id).each(&:really_destroy!)
-    extractions_extraction_forms_projects_sections_question_row_column_fields.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-
   # after_create :create_default_question_row_column_fields_question_row_column_field_options
 
   belongs_to :question_row_column, inverse_of: :question_row_column_fields

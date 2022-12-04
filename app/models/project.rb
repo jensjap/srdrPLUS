@@ -25,31 +25,6 @@ class Project < ApplicationRecord
 
   attr_accessor :create_empty
 
-  acts_as_paranoid
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    Publishing.with_deleted.where(publishable_type: self.class, publishable_id: id).each(&:really_destroy!)
-    KeyQuestionsProject
-      .with_deleted
-      .where(project_id: id)
-      .each(&:really_destroy!)
-    extractions.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    extraction_forms_projects.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    projects_users.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    citations_projects.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    tasks.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-
   searchkick
 
   paginates_per 8

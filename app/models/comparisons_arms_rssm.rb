@@ -13,26 +13,13 @@
 #
 
 class ComparisonsArmsRssm < ApplicationRecord
-  include SharedParanoiaMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    Record.with_deleted.where(recordable_type: self.class, recordable_id: id).each(&:really_destroy!)
-  end
-
   belongs_to :comparison
   belongs_to :extractions_extraction_forms_projects_sections_type1
   belongs_to :result_statistic_sections_measure
 
   has_many :records, as: :recordable
 
-  # delegate :extraction,                                    to: :extractions_extraction_forms_projects_sections_type1
-
-  def extraction
-    ExtractionsExtractionFormsProjectsSectionsType1.with_deleted.find_by(id: extractions_extraction_forms_projects_sections_type1_id).try(:extraction)
-  end
-
+  delegate :extraction,                                    to: :extractions_extraction_forms_projects_sections_type1
   delegate :extractions_extraction_forms_projects_section, to: :extractions_extraction_forms_projects_sections_type1
   delegate :result_statistic_section,                      to: :result_statistic_sections_measure
 

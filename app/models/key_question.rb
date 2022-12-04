@@ -13,14 +13,6 @@ class KeyQuestion < ApplicationRecord
   include SharedSuggestableMethods
   include SharedQueryableMethods
 
-  acts_as_paranoid
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    key_questions_projects.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-
   after_create :record_suggestor
 
   has_one :suggestion, as: :suggestable, dependent: :destroy

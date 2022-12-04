@@ -14,18 +14,6 @@
 class QuestionRowColumn < ApplicationRecord
   attr_accessor :skip_callbacks
 
-  acts_as_paranoid
-  #before_destroy :really_destroy_children!
-  def really_destroy_children!
-    Dependency.with_deleted.where(prerequisitable_type: self.class, prerequisitable_id: id).each(&:really_destroy!)
-    question_row_column_fields.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    question_row_columns_question_row_column_options.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-
   after_create :create_default_question_row_column_options, unless: :skip_callbacks
   after_create :create_default_question_row_column_field, unless: :skip_callbacks
 
