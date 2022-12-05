@@ -32,3 +32,12 @@ json.options do
   json.only_predefined_reasons @abstract_screening.only_predefined_reasons
   json.only_predefined_tags @abstract_screening.only_predefined_tags
 end
+cps = @screened_cps.reverse.map do |asr|
+  {
+    asr_id: asr.id,
+    name: asr.citation.name,
+    authors: @abstract_screening.hide_author ? '<hidden>' : asr.citation.author_map_string,
+    label: asr.label
+  }
+end
+json.cps cps

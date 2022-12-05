@@ -1,17 +1,17 @@
-json.results @es_hits do |es_hit|
-  json.id                       es_hit['id']
-  json.abstract_screening_id    es_hit['abstract_screening_id']
-  json.accession_number_alts    es_hit['accession_number_alts']
-  json.author_map_string        es_hit['author_map_string']
-  json.name                     es_hit['name']
-  json.year                     es_hit['year']
-  json.user                     es_hit['user']
-  json.user_id                  es_hit['user_id']
-  json.label                    es_hit['label']
-  json.reasons                  es_hit['reasons']
-  json.tags                     es_hit['tags']
-  json.notes                    es_hit['notes']
-  json.updated_at               es_hit['updated_at']
+json.results @abstract_screening_results do |abstract_screening_result|
+  json.id                       abstract_screening_result['id']
+  json.abstract_screening_id    abstract_screening_result['abstract_screening_id']
+  json.accession_number_alts    abstract_screening_result['accession_number_alts']
+  json.author_map_string        abstract_screening_result['author_map_string']
+  json.name                     abstract_screening_result['name']
+  json.year                     abstract_screening_result['year']
+  json.user                     abstract_screening_result['user']
+  json.user_id                  abstract_screening_result['user_id']
+  json.label                    abstract_screening_result['label']
+  json.reasons                  abstract_screening_result['reasons']
+  json.tags                     abstract_screening_result['tags']
+  json.notes                    abstract_screening_result['notes']
+  json.updated_at               abstract_screening_result['updated_at']
 end
 json.pagination do
   json.prev_page    @page == 1 ? 1 : @page - 1

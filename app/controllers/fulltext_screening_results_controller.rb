@@ -5,6 +5,8 @@ class FulltextScreeningResultsController < ApplicationController
         @fulltext_screening_result = FulltextScreeningResult.find(params[:id])
         handle_reasons_and_tags
         @fulltext_screening_result.update(fsr_params)
+        @screened_cps = FulltextScreeningResult.where(user: current_user,
+                                                      fulltext_screening: @fulltext_screening_result.fulltext_screening)
         prepare_json_data
         render :show
       end
@@ -15,6 +17,8 @@ class FulltextScreeningResultsController < ApplicationController
     respond_to do |format|
       format.json do
         @fulltext_screening_result = FulltextScreeningResult.find(params[:id])
+        @screened_cps = FulltextScreeningResult.where(user: current_user,
+                                                      fulltext_screening: @fulltext_screening_result.fulltext_screening)
         prepare_json_data
       end
     end

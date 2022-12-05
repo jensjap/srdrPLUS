@@ -21,9 +21,6 @@ class Extraction < ApplicationRecord
     extractions_extraction_forms_projects_sections.with_deleted.each do |child|
       child.really_destroy!
     end
-    extractions_projects_users_roles.with_deleted.each do |child|
-      child.really_destroy!
-    end
   end
 
   # !!! We can't implement this without ensuring integrity of the extraction form. It is possible that the database
@@ -62,8 +59,6 @@ class Extraction < ApplicationRecord
   has_many :extractions_extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction
   has_many :extraction_forms_projects_sections, through: :extractions_extraction_forms_projects_sections,
                                                 dependent: :destroy
-
-  has_many :extractions_projects_users_roles, dependent: :destroy, inverse_of: :extraction
 
   has_many :extractions_key_questions_projects_selections, dependent: :destroy
   has_many :key_questions_projects, through: :extractions_key_questions_projects_selections

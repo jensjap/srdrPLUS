@@ -1,15 +1,7 @@
 class FulltextScreeningPolicy < ApplicationPolicy
   class Scope < ApplicationPolicy::Scope
     def resolve
-      if FulltextScreeningPolicy.new(user, scope).project_leader?
-        scope.fulltext_screenings
-      else
-        scope
-          .fulltext_screenings
-          .joins(fulltext_screenings_projects_users_roles: { projects_users_role: { projects_user: :user } })
-          .where(fulltext_screenings_projects_users_roles: { projects_users_roles: { projects_users: { user: } } })
-          .distinct
-      end
+      scope.fulltext_screenings
     end
   end
 

@@ -1,6 +1,7 @@
 <div class="p-4 lg:p-8" x-data="citation_lifecycle_management">
   <!-- prettier-ignore -->
   <%= render 'selection' %>
+  <%= render 'create_extractions' %>
   <%= render 'loading' %>
   <%= render 'detail_view' %>
   <%= render 'dashboard' %>
@@ -454,7 +455,7 @@
                         x-text="result.extraction_qualification"
                       ></td>
                       <td
-                        class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                        class="px-3 text-sm text-black w-24 overflow-hidden text-ellipsis whitespace-nowrap"
                         :class="applyTdBg(result.screening_status)"
                         x-text="result.screening_status"
                       ></td>
@@ -501,8 +502,10 @@
         sort: null,
       },
       selected: [],
+      users: [],
       showLoading: false,
       showDetailView: false,
+      showCreateExtractions: false,
       detailedResult: 0,
       lastIndexSelected: null,
 
@@ -521,10 +524,14 @@
       },
 
       applyTdBg(screening_status) {
-        if (screening_status.indexOf("ic") != -1) {
-          return "!bg-orange-600 text-white";
+        if (screening_status == "ec") {
+          return "!bg-green-200";
+        } else if (screening_status.indexOf("p") != -1) {
+          return "!bg-slate-200";
+        } else if (screening_status.indexOf("ic") != -1) {
+          return "!bg-orange-200";
         } else if (screening_status.indexOf("r") != -1) {
-          return "!bg-red-600 text-white";
+          return "!bg-red-200";
         }
       },
 
@@ -605,6 +612,59 @@
         return url + "?" + params.join("&");
       },
 
+      async createExtractions() {
+        this.showLoading = true;
+        const projects_users_role_ids = [];
+        this.users.forEach((user) => {
+          if (user.selected) {
+            projects_users_role_ids.push(user.projects_users_role_id);
+          }
+        });
+        for (const projects_users_role_id of projects_users_role_ids) {
+          const response = await fetch(
+            "/projects/<%= params[:project_id] %>/extractions",
+            {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                  .content,
+              },
+              body: JSON.stringify({
+                extraction: {
+                  citation: this.selected.map((cp) => cp.citation_id),
+                  projects_users_role_id,
+                  noDuplicates: true,
+                },
+              }),
+            }
+          );
+          const data = await response.json();
+          if (data.success.citation_names.length > 0) {
+            toastr.success(
+              data.success.citation_names.join("\n\n"),
+              `${data.success.user_handle} has been assigned`
+            );
+          }
+          if (data.error.citation_names.length > 0) {
+            toastr.error(
+              data.error.citation_names.join("\n\n"),
+              `${data.error.user_handle} encountered errors when assigning`
+            );
+          }
+          if (data.info.citation_names.length > 0) {
+            toastr.info(
+              data.info.citation_names.join("\n\n"),
+              `${data.info.user_handle} has skipped assignments (already exists)`
+            );
+          }
+        }
+        await this.createScreeningQualification(null);
+        this.showLoading = false;
+      },
+
       async createScreeningQualification(qualification_type) {
         this.showLoading = true;
         const response = await fetch("/screening_qualifications", {
@@ -678,6 +738,7 @@
         });
         this.results = uniqueResults;
         this.pagination = data.pagination;
+        this.users = data.users;
       },
 
       async update_evaluation(citations_project_id, type) {

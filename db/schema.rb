@@ -814,20 +814,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.index ["key_questions_project_id"], name: "index_ekqps_on_key_questions_projects_id"
   end
 
-  create_table "extractions_projects_users_roles", id: :integer, charset: "utf8mb3", force: :cascade do |t|
-    t.integer "extraction_id"
-    t.integer "projects_users_role_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_epur_on_active"
-    t.index ["deleted_at"], name: "index_epur_on_deleted_at"
-    t.index ["extraction_id", "projects_users_role_id", "active"], name: "index_epur_on_e_id_pur_id_active_uniq", unique: true
-    t.index ["extraction_id", "projects_users_role_id", "deleted_at"], name: "index_epur_on_e_id_pur_id_deleted_at_uniq", unique: true
-    t.index ["projects_users_role_id"], name: "index_epur_on_pur_id"
-  end
-
   create_table "file_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
@@ -2344,8 +2330,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "extractions_extraction_forms_projects_sections"
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "type1_types"
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "type1s"
-  add_foreign_key "extractions_projects_users_roles", "extractions"
-  add_foreign_key "extractions_projects_users_roles", "projects_users_roles"
   add_foreign_key "funding_sources_sd_meta_data", "funding_sources"
   add_foreign_key "funding_sources_sd_meta_data", "sd_meta_data"
   add_foreign_key "imported_files", "file_types"

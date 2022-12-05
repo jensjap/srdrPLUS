@@ -83,9 +83,23 @@ class CitationsProject < ApplicationRecord
   FS_IN_CONFLICT = 'fsic'.freeze
   FS_REJECTED = 'fsr'.freeze
   E_NEED_EXTRACTION = 'ene'.freeze
-  E_IN_PROGRESS = 'eic'.freeze
+  E_IN_PROGRESS = 'eip'.freeze
   E_REJECTED = 'er'.freeze
   E_COMPLETE = 'ec'.freeze
+  ALL = [
+    AS_UNSCREENED,
+    AS_PARTIALLY_SCREENED,
+    AS_IN_CONFLICT,
+    AS_REJECTED,
+    FS_UNSCREENED,
+    FS_PARTIALLY_SCREENED,
+    FS_IN_CONFLICT,
+    FS_REJECTED,
+    E_NEED_EXTRACTION,
+    E_IN_PROGRESS,
+    E_REJECTED,
+    E_COMPLETE
+  ]
 
   # We find all CitationsProject entries that have the exact same citation_id
   # and project_id. Then we pick the first (oldest) one. We refer to it as the

@@ -9,34 +9,22 @@
       = link_to 'Search for more Projects', '/searches', class: 'button'
   .grid-x.align-center-middle
     .cell.medium-9
-      ul.tabs data-tabs="true" id="projects-tabs"
-        li class="tabs-title is-active"
-          a data-tabs-target="panel1" href="#panel1" aria-selected="true" SRDR+ Projects
-        li class="tabs-title"
-          a data-tabs-target="panel2" href="#panel2" SRDR Projects
-
-      div class="tabs-content" data-tabs-content="projects-tabs"
-        div class="tabs-panel is-active" id="panel1"
-          - @projects.each do |project|
-            .cell.medium-12.recent-project
-              .grid-x.grid-padding-x.grid-padding-y
-                .cell.medium-4
-                  .small = "Published on #{ project.publishing.approval.created_at.to_datetime.strftime("%B %d, %Y") }"
-                  span.bold = project.name
-                  .small
-                    |
-                      #{ project.citations.count } Citations &bull; #{ project.key_questions.count } Key Questions &bull; #{ project.extractions.count } Extraction Forms
-                  .small
-                    = "Project created on #{ project.created_at.to_datetime.strftime("%B %d, %Y") } "
-                    br
-                    = "Last updated on #{ project.updated_at.to_datetime.strftime("%B %d, %Y") }"
-                .cell.medium-8
-                  .small.summary Objectives: #{ project.description }
-                  .small.bold = link_to public_data_path(type: 'project', id: project.id) do
-                    |READ MORE
-                    i.fas.fa-external-link-alt.fa-sm<
-          .cell.medium-12.mt-4 = paginate(@projects, theme: 'foundation')
-        div class="tabs-panel" id="panel2"
-          h4 = link_to 'https://srdr.ahrq.gov/projects/published', target: '_blank', data: { confirm: @exit_disclaimer } do
-            | Go to SRDR Projects
-            i.fas.fa-external-link-alt.fa-sm<
+      - @projects.each do |project|
+        .cell.medium-12.recent-project
+          .grid-x.grid-padding-x.grid-padding-y
+            .cell.medium-4
+              .small = "Published on #{ project.publishing.approval.created_at.to_datetime.strftime("%B %d, %Y") }"
+              span.bold = project.name
+              .small
+                |
+                  #{ project.citations.count } Citations &bull; #{ project.key_questions.count } Key Questions &bull; #{ project.extractions.count } Extraction Forms
+              .small
+                = "Project created on #{ project.created_at.to_datetime.strftime("%B %d, %Y") } "
+                br
+                = "Last updated on #{ project.updated_at.to_datetime.strftime("%B %d, %Y") }"
+            .cell.medium-8
+              .small.summary Objectives: #{ project.description }
+              .small.bold = link_to public_data_path(type: 'project', id: project.id) do
+                |READ MORE
+                i.fas.fa-external-link-alt.fa-sm<
+      .cell.medium-12.mt-4 = paginate(@projects, theme: 'foundation')

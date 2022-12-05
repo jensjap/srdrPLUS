@@ -5,6 +5,8 @@ class AbstractScreeningResultsController < ApplicationController
         @abstract_screening_result = AbstractScreeningResult.find(params[:id])
         handle_reasons_and_tags
         @abstract_screening_result.update(asr_params)
+        @screened_cps = AbstractScreeningResult.where(user: current_user,
+                                                      abstract_screening: @abstract_screening_result.abstract_screening)
         prepare_json_data
         render :show
       end
@@ -15,6 +17,8 @@ class AbstractScreeningResultsController < ApplicationController
     respond_to do |format|
       format.json do
         @abstract_screening_result = AbstractScreeningResult.find(params[:id])
+        @screened_cps = AbstractScreeningResult.where(user: current_user,
+                                                      abstract_screening: @abstract_screening_result.abstract_screening)
         prepare_json_data
       end
     end

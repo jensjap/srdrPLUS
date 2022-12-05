@@ -377,6 +377,8 @@
         });
       },
       async getData() {
+        this.questions = [];
+        this.screening_form = {};
         const response = await fetch(
           `/fulltext_screening_results/${this.fsr.id}/sf_fulltext_records`,
           {
@@ -390,7 +392,6 @@
         const data = await response.json();
         this.questions = data.sf_questions;
         this.screening_form = data.screening_form;
-        console.log(data);
       },
       async createOrUpdateRecord(cell, params) {
         const response = await fetch(
