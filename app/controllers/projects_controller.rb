@@ -613,7 +613,7 @@ class ProjectsController < ApplicationController
       unless current_user.admin?
         @approved_publishings = @approved_publishings
                                 .where(
-                                  '`projects`.`deleted_at` IS NULL AND `projects_users`.`active` = TRUE AND `projects_users`.`user_id` = ?',
+                                  '`projects_users`.`user_id` = ?',
                                   current_user.id.to_s
                                 )
       end
