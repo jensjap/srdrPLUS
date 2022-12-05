@@ -323,6 +323,11 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   #      end
   #    end
   #  end
+
+  def section_name
+    section.name
+  end
+
   private
 
   def sort_by_their_orderings(eefpst1s)

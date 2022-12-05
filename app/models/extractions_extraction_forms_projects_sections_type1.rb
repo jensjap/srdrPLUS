@@ -235,8 +235,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   #
   # We only need this to run for consolidated extractions. Once default populations and timepoints are present we update their names in ensure_matrix_column_headers.
   def create_default_type1_rows
-    if (extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes') ||
-       (extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Diagnoses') &&
+    if %w[Outcomes Diagnoses].include?(extractions_extraction_forms_projects_section.section_name) &&
        extractions_extraction_forms_projects_sections_type1_rows.blank?
       extractions_extraction_forms_projects_sections_type1_rows.create(population_name: PopulationName.first)
     end
@@ -265,5 +264,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   def create_default_draft_status
     create_statusing(status: Status.find_by(name: 'Draft'))
+  end
+
+  def section_name
+    extractions_extraction_forms_projects_section.section_name
   end
 end
