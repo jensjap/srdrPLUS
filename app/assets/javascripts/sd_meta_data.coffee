@@ -296,7 +296,7 @@ add_form_listeners =( form ) ->
   # Use this to keep track of the different timers.
   formId = $form.attr( 'id' )
 
-  $form.find( 'select, input[type="file"], input.fdp' ).on 'change', ( e ) ->
+  $form.find( 'select, input[type="file"], input.fdp, input[type="number"]' ).on 'change', ( e ) ->
     e.preventDefault()
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )

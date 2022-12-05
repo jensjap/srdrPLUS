@@ -5,14 +5,13 @@
 #  id                :integer          not null, primary key
 #  citation_id       :integer
 #  project_id        :integer
-#  screening_status  :string(255)      default("asu")
 #  deleted_at        :datetime
 #  active            :boolean
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  consensus_type_id :integer
 #  pilot_flag        :boolean
-#  screening_status  :string(255)      default("CP"), not null
+#  screening_status  :string(255)      default("asu")
 #
 
 class CitationsProject < ApplicationRecord
