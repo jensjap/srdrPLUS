@@ -70079,7 +70079,7 @@ function __guardMethod__(obj, methodName, transform) {
     var $form, formId;
     $form = $(form);
     formId = $form.attr('id');
-    $form.find('select, input[type="file"], input.fdp').on('change', function(e) {
+    $form.find('select, input[type="file"], input.fdp, input[type="number"]').on('change', function(e) {
       e.preventDefault();
       $form.addClass('dirty');
       return Timekeeper.create_timer_for_form($form[0], 750);
