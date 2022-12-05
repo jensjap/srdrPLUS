@@ -55,6 +55,7 @@
   </div>
   <% end %>
   <br />
+  <br />
   <!-- prettier-ignore -->
   <% if f.object.sd_figurable_type == SdPairwiseMetaAnalyticResult.to_s %>
     <%= f.input :outcome_type, as: :select, collection: ['Categorical', 'Continuous'] %>
@@ -64,7 +65,7 @@
     <%= f.input :overall_effect_size, input_html: { class: "oes-#{f.object.id}" } %>
     <%= f.input :overall_95_ci_low, input_html: { class: "ci-low-#{f.object.id}" } %>
     <%= f.input :overall_95_ci_high, input_html: { class: "ci-high-#{f.object.id}" } %>
-    <%= f.input :overall_i_squared, input_html: { class: 'pairwise_logic', min: 0, max: 100 } %>
+    <%= f.input :overall_i_squared, input_html: { class: "i-squared-#{f.object.id}", min: 0, max: 100 } %>
   <% end %>
   <!-- prettier-ignore -->
 </div>
@@ -72,12 +73,24 @@
 <script>
   <% if f.object.outcome_type == 'Categorical' %>
     $('<%= ".oes-#{f.object.id}" %>').attr('min', 0)
-    $('<%= ".oes-#{f.object.id}" %>').attr('max', 100)
+    if (!(parseFloat($('<%= ".oes-#{f.object.id}" %>').val()) >= 0)) {
+      $('<%= ".oes-#{f.object.id}" %>').addClass('!text-red-500')
+    }
+
     $('<%= ".ci-low-#{f.object.id}" %>').attr('min', 0)
-    $('<%= ".ci-low-#{f.object.id}" %>').attr('max', 100)
+    if (!(parseFloat($('<%= ".ci-low-#{f.object.id}" %>').val()) >= 0)) {
+      $('<%= ".ci-low-#{f.object.id}" %>').addClass('!text-red-500')
+    }
+
     $('<%= ".ci-high-#{f.object.id}" %>').attr('min', 0)
-    $('<%= ".ci-high-#{f.object.id}" %>').attr('max', 100)
+    if (!(parseFloat($('<%= ".ci-high-#{f.object.id}" %>').val()) >= 0)) {
+      $('<%= ".ci-high-#{f.object.id}" %>').addClass('!text-red-500')
+    }
   <% end %>
+
+  if (!(parseFloat($('<%= ".i-squared-#{f.object.id}" %>').val()) >= 0) || !(parseFloat($('<%= ".i-squared-#{f.object.id}" %>').val()) <= 100)) {
+    $('<%= ".i-squared-#{f.object.id}" %>').addClass('!text-red-500')
+  }
 
   $('<%= ".esmn-#{f.object.id}" %>').empty();
   $('<%= ".esmn-#{f.object.id}" %>').select2({
