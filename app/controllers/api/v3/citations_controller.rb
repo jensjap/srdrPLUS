@@ -1,4 +1,4 @@
-class Api::V3::CitationsController < ApplicationController
+class Api::V3::CitationsController < Api::V3::BaseController
   before_action :set_project, only: [:index]
   #  before_action :set_citation, only: [:show]
 
