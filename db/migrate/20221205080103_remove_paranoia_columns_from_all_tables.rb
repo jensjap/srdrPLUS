@@ -171,182 +171,98 @@ class RemoveParanoiaColumnsFromAllTables < ActiveRecord::Migration[7.0]
     remove_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures", if_exists: true
 
     # STEP 2
-    remove_index :approvals, name: 'index_approvals_on_type_id_user_id_deleted_at_uniq', if_exists: true
     remove_index :approvals, name: 'index_approvals_on_type_id_user_id_active_uniq', if_exists: true
-    remove_index :approvals, name: 'index_approvals_on_deleted_at', if_exists: true
-    remove_index :approvals, name: 'index_approvals_on_active', if_exists: true
-    remove_index :assignments, name: 'index_assignments_on_deleted_at', if_exists: true
-    remove_index :authors, name: 'index_authors_on_deleted_at', if_exists: true
-    remove_index :authors_citations, name: 'index_authors_citations_on_deleted_at', if_exists: true
-    remove_index :citations, name: 'index_citations_on_deleted_at', if_exists: true
-    remove_index :citations_projects, name: 'index_citations_projects_on_deleted_at', if_exists: true
-    remove_index :citations_projects, name: 'index_citations_projects_on_active', if_exists: true
+    remove_index :approvals, name: 'index_approvals_on_type_id_user_id_deleted_at_uniq', if_exists: true
+    add_index :approvals, ["approvable_type", "approvable_id", "user_id"], unique: true, if_not_exists: true
     remove_index :citations_projects, name: 'index_citations_projects_on_project_id_and_active', if_exists: true
-    remove_index :citations_tasks, name: 'index_citations_tasks_on_deleted_at', if_exists: true
-    remove_index :citations_tasks, name: 'index_citations_tasks_on_active', if_exists: true
-    remove_index :comparable_elements, name: 'index_comparable_elements_on_deleted_at', if_exists: true
-    remove_index :comparate_groups, name: 'index_comparate_groups_on_deleted_at', if_exists: true
-    remove_index :comparates, name: 'index_comparates_on_deleted_at', if_exists: true
-    remove_index :comparisons, name: 'index_comparisons_on_deleted_at', if_exists: true
-    remove_index :comparisons_arms_rssms, name: 'index_comparisons_arms_rssms_on_deleted_at', if_exists: true
-    remove_index :comparisons_arms_rssms, name: 'index_comparisons_arms_rssms_on_active', if_exists: true
-    remove_index :comparisons_result_statistic_sections, name: 'index_comparisons_result_statistic_sections_on_deleted_at', if_exists: true
-    remove_index :comparisons_result_statistic_sections, name: 'index_comparisons_result_statistic_sections_on_active', if_exists: true
-    remove_index :comparisons_result_statistic_sections, name: 'index_crss_on_c_id_rss_id_deleted_at', if_exists: true
     remove_index :comparisons_result_statistic_sections, name: 'index_crss_on_c_id_rss_id_active', if_exists: true
-    remove_index :degrees, name: 'index_degrees_on_deleted_at', if_exists: true
-    remove_index :degrees_profiles, name: 'index_dp_on_d_id_p_id_deleted_at_uniq', if_exists: true
+    remove_index :comparisons_result_statistic_sections, name: 'index_crss_on_c_id_rss_id_deleted_at', if_exists: true
+    add_index :comparisons_result_statistic_sections, ["comparison_id", "result_statistic_section_id"], if_not_exists: true, name: "index_crss_on_c_id_rss_id"
     remove_index :degrees_profiles, name: 'index_dp_on_d_id_p_id_active_uniq', if_exists: true
-    remove_index :degrees_profiles, name: 'index_degrees_profiles_on_deleted_at', if_exists: true
-    remove_index :degrees_profiles, name: 'index_degrees_profiles_on_active', if_exists: true
-    remove_index :dependencies, name: 'index_dependencies_on_dtype_did_ptype_pid_deleted_at_uniq', if_exists: true
+    remove_index :degrees_profiles, name: 'index_dp_on_d_id_p_id_deleted_at_uniq', if_exists: true
+    add_index :degrees_profiles, ["degree_id", "profile_id"], if_not_exists: true, unique: true
     remove_index :dependencies, name: 'index_dependencies_on_dtype_did_ptype_pid_active_uniq', if_exists: true
-    remove_index :dependencies, name: 'index_dependencies_on_deleted_at', if_exists: true
-    remove_index :dependencies, name: 'index_dependencies_on_active', if_exists: true
-    remove_index :dispatches, name: 'index_dispatches_on_deleted_at', if_exists: true
-    remove_index :dispatches, name: 'index_dispatches_on_active', if_exists: true
-    remove_index :eefps_qrcfs, name: 'index_eefps_qrcfs_on_deleted_at', if_exists: true
-    remove_index :eefps_qrcfs, name: 'index_eefps_qrcfs_on_active', if_exists: true
-    remove_index :eefps_qrcfs, name: 'index_eefpsqrcf_on_eefpst1_id_eefps_id_qrcf_id_deleted_at', if_exists: true
+    remove_index :dependencies, name: 'index_dependencies_on_dtype_did_ptype_pid_deleted_at_uniq', if_exists: true
+    add_index :dependencies, ["dependable_type", "dependable_id", "prerequisitable_type", "prerequisitable_id"], if_not_exists: true, name: "index_dependencies_on_dtype_did_ptype_pid_uniq", unique: true
     remove_index :eefps_qrcfs, name: 'index_eefpsqrcf_on_eefpst1_id_eefps_id_qrcf_id_active', if_exists: true
-    remove_index :eefpsqrcf_qrcqrcos, name: 'index_eefpsqrcf_qrcqrcos_on_deleted_at', if_exists: true
-    remove_index :eefpsqrcf_qrcqrcos, name: 'index_eefpsqrcf_qrcqrcos_on_active', if_exists: true
-    remove_index :eefpsqrcf_qrcqrcos, name: 'index_eefpsqrcfqrcqrco_on_eefps_qrcf_id_qrcqrco_id_deleted_at', if_exists: true
+    remove_index :eefps_qrcfs, name: 'index_eefpsqrcf_on_eefpst1_id_eefps_id_qrcf_id_deleted_at', if_exists: true
+    add_index :eefps_qrcfs, ["extractions_extraction_forms_projects_sections_type1_id", "extractions_extraction_forms_projects_section_id", "question_row_column_field_id"], if_not_exists: true, name: "index_eefpsqrcf_on_eefpst1_id_eefps_id_qrcf_id"
     remove_index :eefpsqrcf_qrcqrcos, name: 'index_eefpsqrcfqrcqrco_on_eefps_qrcf_id_qrcqrco_id_active', if_exists: true
-    remove_index :extraction_checksums, name: 'index_extraction_checksums_on_deleted_at', if_exists: true
-    remove_index :extraction_forms, name: 'index_extraction_forms_on_deleted_at', if_exists: true
-    remove_index :extraction_forms_project_types, name: 'index_extraction_forms_project_types_on_deleted_at', if_exists: true
-    remove_index :extraction_forms_projects, name: 'index_extraction_forms_projects_on_deleted_at', if_exists: true
-    remove_index :extraction_forms_projects, name: 'index_extraction_forms_projects_on_active', if_exists: true
-    remove_index :extraction_forms_projects, name: 'index_efp_on_ef_id_p_id_deleted_at', if_exists: true
+    remove_index :eefpsqrcf_qrcqrcos, name: 'index_eefpsqrcfqrcqrco_on_eefps_qrcf_id_qrcqrco_id_deleted_at', if_exists: true
+    add_index :eefpsqrcf_qrcqrcos, ["eefps_qrcf_id", "question_row_columns_question_row_column_option_id"], if_not_exists: true, name: "index_eefpsqrcfqrcqrco_on_eefps_qrcf_id_qrcqrco_id"
     remove_index :extraction_forms_projects, name: 'index_efp_on_ef_id_p_id_active', if_exists: true
-    remove_index :extraction_forms_projects, name: 'index_efp_on_efpt_id_ef_id_p_id_deleted_at', if_exists: true
+    remove_index :extraction_forms_projects, name: 'index_efp_on_ef_id_p_id_deleted_at', if_exists: true
+    add_index :extraction_forms_projects, ["extraction_form_id", "project_id"], if_not_exists: true, name: "index_efp_on_ef_id_p_id"
     remove_index :extraction_forms_projects, name: 'index_efp_on_efpt_id_ef_id_p_id_active', if_exists: true
-    remove_index :extraction_forms_projects_section_options, name: 'index_efpso_on_deleted_at', if_exists: true
-    remove_index :extraction_forms_projects_section_options, name: 'index_efpso_on_efps_id_deleted_at', if_exists: true
-    remove_index :extraction_forms_projects_section_types, name: 'index_extraction_forms_projects_section_types_on_deleted_at', if_exists: true
-    remove_index :extraction_forms_projects_sections, name: 'index_extraction_forms_projects_sections_on_deleted_at', if_exists: true
-    remove_index :extraction_forms_projects_sections, name: 'index_extraction_forms_projects_sections_on_active', if_exists: true
-    remove_index :extraction_forms_projects_sections, name: 'index_efps_on_efp_id_efpst_id_s_id_efps_id_deleted_at', if_exists: true
+    remove_index :extraction_forms_projects, name: 'index_efp_on_efpt_id_ef_id_p_id_deleted_at', if_exists: true
+    add_index :extraction_forms_projects, ["extraction_forms_project_type_id", "extraction_form_id", "project_id"], if_not_exists: true, name: "index_efp_on_efpt_id_ef_id_p_id"
     remove_index :extraction_forms_projects_sections, name: 'index_efps_on_efp_id_efpst_id_s_id_efps_id_active', if_exists: true
-    remove_index :extraction_forms_projects_sections_type1s, name: 'index_efpst1_on_efps_id_t1_id_t1_type_id_deleted_at_uniq', if_exists: true
+    remove_index :extraction_forms_projects_sections, name: 'index_efps_on_efp_id_efpst_id_s_id_efps_id_deleted_at', if_exists: true
+    add_index :extraction_forms_projects_sections, ["extraction_forms_project_id", "extraction_forms_projects_section_type_id", "section_id", "extraction_forms_projects_section_id"], if_not_exists: true, name: "index_efps_on_efp_id_efpst_id_s_id_efps_id"
     remove_index :extraction_forms_projects_sections_type1s, name: 'index_efpst1_on_efps_id_t1_id_t1_type_id_active_uniq', if_exists: true
-    remove_index :extraction_forms_projects_sections_type1s, name: 'index_extraction_forms_projects_sections_type1s_on_deleted_at', if_exists: true
-    remove_index :extraction_forms_projects_sections_type1s, name: 'index_extraction_forms_projects_sections_type1s_on_active', if_exists: true
-    remove_index :extraction_forms_projects_sections_type1s_timepoint_names, name: 'index_efpst1tn_on_deleted_at', if_exists: true
-    remove_index :extraction_forms_projects_sections_type1s_timepoint_names, name: 'index_efpst1tn_on_active', if_exists: true
-    remove_index :extraction_forms_projects_sections_type1s_timepoint_names, name: 'index_efpst1tn_on_efpst1_id_tn_id_deleted_at', if_exists: true
+    remove_index :extraction_forms_projects_sections_type1s, name: 'index_efpst1_on_efps_id_t1_id_t1_type_id_deleted_at_uniq', if_exists: true
+    add_index :extraction_forms_projects_sections_type1s, ["extraction_forms_projects_section_id", "type1_id", "type1_type_id"], if_not_exists: true, name: "index_efpst1_on_efps_id_t1_id_t1_type_id_uniq", unique: true
     remove_index :extraction_forms_projects_sections_type1s_timepoint_names, name: 'index_efpst1tn_on_efpst1_id_tn_id_active', if_exists: true
+    remove_index :extraction_forms_projects_sections_type1s_timepoint_names, name: 'index_efpst1tn_on_efpst1_id_tn_id_deleted_at', if_exists: true
+    add_index :extraction_forms_projects_sections_type1s_timepoint_names, ["extraction_forms_projects_sections_type1_id", "timepoint_name_id"], if_not_exists: true, name: "index_efpst1tn_on_efpst1_id_tn_id"
     remove_index :extractions, name: 'index_e_on_p_id_cp_id_pur_id_deleted_at_uniq', if_exists: true
-    remove_index :extractions, name: 'index_extractions_on_deleted_at', if_exists: true
-    remove_index :extractions_extraction_forms_projects_sections, name: 'index_eefps_on_deleted_at', if_exists: true
-    remove_index :extractions_extraction_forms_projects_sections, name: 'index_eefps_on_active', if_exists: true
-    remove_index :extractions_extraction_forms_projects_sections, name: 'index_eefps_on_e_id_efps_id_eefps_id_deleted_at', if_exists: true
+    add_index :extractions, ["project_id", "citations_project_id", "projects_users_role_id"], if_not_exists: true, name: "index_e_on_p_id_cp_id_pur_id_uniq", unique: true
     remove_index :extractions_extraction_forms_projects_sections, name: 'index_eefps_on_e_id_efps_id_eefps_id_active', if_exists: true
-    remove_index :extractions_extraction_forms_projects_sections_followup_fields, name: 'index_eefpsff_followup_fields_on_deleted_at', if_exists: true
-    remove_index :extractions_extraction_forms_projects_sections_type1_row_columns, name: 'index_eefpst1rc_on_deleted_at', if_exists: true
+    remove_index :extractions_extraction_forms_projects_sections, name: 'index_eefps_on_e_id_efps_id_eefps_id_deleted_at', if_exists: true
+    add_index :extractions_extraction_forms_projects_sections, ["extraction_id", "extraction_forms_projects_section_id", "extractions_extraction_forms_projects_section_id"], if_not_exists: true, name: "index_eefps_on_e_id_efps_id_eefps_id"
+    remove_index :extractions_extraction_forms_projects_sections_followup_fields, name: 'index_eefpsff_on_eefps_eefpst1_ff_id', if_exists: true
+    add_index :extractions_extraction_forms_projects_sections_followup_fields, ["extractions_extraction_forms_projects_section_id", "extractions_extraction_forms_projects_sections_type1_id", "followup_field_id"], if_not_exists: true, name: "index_eefpsff_on_eefps_eefpst1_ff_id", unique: true
     remove_index :extractions_extraction_forms_projects_sections_type1_row_columns, name: 'index_eefpst1rc_on_eefpst1r_id_tn_id_deleted_at', if_exists: true
-    remove_index :extractions_extraction_forms_projects_sections_type1_rows, name: 'index_eefpst1r_on_deleted_at', if_exists: true
+    add_index :extractions_extraction_forms_projects_sections_type1_row_columns, ["extractions_extraction_forms_projects_sections_type1_row_id", "timepoint_name_id"], if_not_exists: true, name: "index_eefpst1rc_on_eefpst1r_id_tn_id"
     remove_index :extractions_extraction_forms_projects_sections_type1_rows, name: 'index_eefpst1r_on_eefpst1_id_pn_id_deleted_at', if_exists: true
-    remove_index :extractions_extraction_forms_projects_sections_type1s, name: 'index_eefpst1_on_t1t_id_eefps_id_t1_id_deleted_at', if_exists: true
+    add_index :extractions_extraction_forms_projects_sections_type1_rows, ["extractions_extraction_forms_projects_sections_type1_id", "population_name_id"], if_not_exists: true, name: "index_eefpst1r_on_eefpst1_id_pn_id"
     remove_index :extractions_extraction_forms_projects_sections_type1s, name: 'index_eefpst1_on_t1t_id_eefps_id_t1_id_active', if_exists: true
-    remove_index :extractions_extraction_forms_projects_sections_type1s, name: 'index_eefpst1_on_deleted_at', if_exists: true
-    remove_index :extractions_extraction_forms_projects_sections_type1s, name: 'index_eefpst1_on_active', if_exists: true
-    remove_index :followup_fields, name: 'index_followup_fields_on_deleted_at', if_exists: true
-    remove_index :frequencies, name: 'index_frequencies_on_deleted_at', if_exists: true
-    remove_index :key_questions, name: 'index_key_questions_on_deleted_at', if_exists: true
-    remove_index :key_questions_projects, name: 'index_key_questions_projects_on_deleted_at', if_exists: true
-    remove_index :key_questions_projects, name: 'index_key_questions_projects_on_active', if_exists: true
-    remove_index :key_questions_projects, name: 'index_kqp_on_kq_id_p_id_deleted_at', if_exists: true
-    remove_index :key_questions_projects, name: 'index_kqp_on_kq_id_p_id_active', if_exists: true
-    remove_index :key_questions_projects, name: 'index_kqp_on_efps_id_kq_id_p_id_deleted_at', if_exists: true
+    remove_index :extractions_extraction_forms_projects_sections_type1s, name: 'index_eefpst1_on_t1t_id_eefps_id_t1_id_deleted_at', if_exists: true
+    add_index :extractions_extraction_forms_projects_sections_type1s, ["type1_type_id", "extractions_extraction_forms_projects_section_id", "type1_id"], if_not_exists: true, name: "index_eefpst1_on_t1t_id_eefps_id_t1_id", unique: true
     remove_index :key_questions_projects, name: 'index_kqp_on_efps_id_kq_id_p_id_active', if_exists: true
-    remove_index :keywords, name: 'index_keywords_on_deleted_at', if_exists: true
-    remove_index :labels, name: 'index_labels_on_deleted_at', if_exists: true
-    remove_index :labels_reasons, name: 'index_labels_reasons_on_deleted_at', if_exists: true
-    remove_index :measures, name: 'index_measures_on_deleted_at', if_exists: true
-    remove_index :message_types, name: 'index_message_types_on_deleted_at', if_exists: true
-    remove_index :messages, name: 'index_messages_on_deleted_at', if_exists: true
-    remove_index :notes, name: 'index_notes_on_deleted_at', if_exists: true
-    remove_index :orderings, name: 'index_orderings_on_type_id_deleted_at_uniq', if_exists: true
+    remove_index :key_questions_projects, name: 'index_kqp_on_efps_id_kq_id_p_id_deleted_at', if_exists: true
+    add_index :key_questions_projects, ["extraction_forms_projects_section_id", "key_question_id", "project_id"], if_not_exists: true, name: "index_kqp_on_efps_id_kq_id_p_id"
+    remove_index :key_questions_projects, name: 'index_kqp_on_kq_id_p_id_active', if_exists: true
+    remove_index :key_questions_projects, name: 'index_kqp_on_kq_id_p_id_deleted_at', if_exists: true
+    add_index :key_questions_projects, ["key_question_id", "project_id"], if_not_exists: true, name: "index_kqp_on_kq_id_p_id"
     remove_index :orderings, name: 'index_orderings_on_type_id_active_uniq', if_exists: true
-    remove_index :orderings, name: 'index_orderings_on_deleted_at', if_exists: true
-    remove_index :orderings, name: 'index_orderings_on_active', if_exists: true
-    remove_index :organizations, name: 'index_organizations_on_deleted_at', if_exists: true
-    remove_index :population_names, name: 'index_population_names_on_deleted_at', if_exists: true
-    remove_index :profiles, name: 'index_profiles_on_deleted_at', if_exists: true
-    remove_index :projects, name: 'index_projects_on_deleted_at', if_exists: true
-    remove_index :projects_users, name: 'index_pu_on_p_id_u_id_deleted_at_uniq', if_exists: true
+    remove_index :orderings, name: 'index_orderings_on_type_id_deleted_at_uniq', if_exists: true
+    add_index :orderings, ["orderable_type", "orderable_id"], if_not_exists: true, name: "index_orderings_on_type_id_uniq", unique: true
     remove_index :projects_users, name: 'index_pu_on_p_id_u_id_active_uniq', if_exists: true
-    remove_index :projects_users, name: 'index_projects_users_on_deleted_at', if_exists: true
-    remove_index :projects_users, name: 'index_projects_users_on_active', if_exists: true
-    remove_index :projects_users_roles, name: 'index_pur_on_pu_id_r_id_deleted_at_uniq', if_exists: true
+    remove_index :projects_users, name: 'index_pu_on_p_id_u_id_deleted_at_uniq', if_exists: true
+    add_index :projects_users, ["project_id", "user_id"], if_not_exists: true, name: "index_pu_on_p_id_u_id_uniq", unique: true
     remove_index :projects_users_roles, name: 'index_pur_on_pu_id_r_id_active_uniq', if_exists: true
-    remove_index :projects_users_roles, name: 'index_projects_users_roles_on_deleted_at', if_exists: true
-    remove_index :projects_users_roles, name: 'index_projects_users_roles_on_active', if_exists: true
-    remove_index :projects_users_roles_teams, name: 'index_projects_users_roles_teams_on_deleted_at', if_exists: true
-    remove_index :projects_users_roles_teams, name: 'index_projects_users_roles_teams_on_active', if_exists: true
-    remove_index :projects_users_term_groups_colors, name: 'index_projects_users_term_groups_colors_on_deleted_at', if_exists: true
-    remove_index :projects_users_term_groups_colors_terms, name: 'index_projects_users_term_groups_colors_terms_on_deleted_at', if_exists: true
-    remove_index :publishings, name: 'index_publishings_on_type_id_user_id_deleted_at_uniq', if_exists: true
+    remove_index :projects_users_roles, name: 'index_pur_on_pu_id_r_id_deleted_at_uniq', if_exists: true
+    add_index :projects_users_roles, ["projects_user_id", "role_id"], if_not_exists: true, name: "index_pur_on_pu_id_r_id_uniq", unique: true
     remove_index :publishings, name: 'index_publishings_on_type_id_user_id_active_uniq', if_exists: true
-    remove_index :publishings, name: 'index_publishings_on_deleted_at', if_exists: true
-    remove_index :publishings, name: 'index_publishings_on_active', if_exists: true
-    remove_index :quality_dimension_options, name: 'index_quality_dimension_options_on_deleted_at', if_exists: true
-    remove_index :quality_dimension_questions, name: 'index_quality_dimension_questions_on_deleted_at', if_exists: true
+    remove_index :publishings, name: 'index_publishings_on_type_id_user_id_deleted_at_uniq', if_exists: true
+    add_index :publishings, ["publishable_type", "publishable_id", "user_id"], if_not_exists: true, name: "index_publishings_on_type_id_user_id_uniq", unique: true
     remove_index :quality_dimension_questions_quality_dimension_options, name: 'index_qdq_id_qdo_id_active_uniq', if_exists: true
-    remove_index :quality_dimension_sections, name: 'index_quality_dimension_sections_on_deleted_at', if_exists: true
+    add_index :quality_dimension_questions_quality_dimension_options, ["quality_dimension_question_id", "quality_dimension_option_id"], if_not_exists: true, name: "index_qdq_id_qdo_id_uniq", unique: true
     remove_index :question_row_column_fields, name: 'index_question_row_column_fields_on_deleted_at', if_exists: true
-    remove_index :question_row_column_fields, name: 'index_qrcf_on_qrc_id_deleted_at', if_exists: true
-    remove_index :question_row_column_options, name: 'index_question_row_column_options_on_deleted_at', if_exists: true
-    remove_index :question_row_column_types, name: 'index_question_row_column_types_on_deleted_at', if_exists: true
-    remove_index :question_row_columns, name: 'index_question_row_columns_on_deleted_at', if_exists: true
+    add_index :question_row_column_fields, "question_row_column_id", if_not_exists: true
     remove_index :question_row_columns, name: 'index_qrc_on_qr_id_deleted_at', if_exists: true
     remove_index :question_row_columns, name: 'index_qrc_on_qr_id_qrct_id_deleted_at', if_exists: true
-    remove_index :question_row_columns_question_row_column_options, name: 'index_qrcqrco_on_deleted_at', if_exists: true
-    remove_index :question_row_columns_question_row_column_options, name: 'index_qrcqrco_on_active', if_exists: true
-    remove_index :question_row_columns_question_row_column_options, name: 'index_qrcqrco_on_qrc_id_qrco_id_deleted_at', if_exists: true
+    add_index :question_row_columns, ["question_row_id", "question_row_column_type_id"], if_not_exists: true, name: "index_qrc_on_qr_id_qrct_id"
     remove_index :question_row_columns_question_row_column_options, name: 'index_qrcqrco_on_qrc_id_qrco_id_active', if_exists: true
+    remove_index :question_row_columns_question_row_column_options, name: 'index_qrcqrco_on_qrc_id_qrco_id_deleted_at', if_exists: true
+    add_index :question_row_columns_question_row_column_options, ["question_row_column_id", "question_row_column_option_id"], if_not_exists: true, name: "index_qrcqrco_on_qrc_id_qrco_id"
     remove_index :question_rows, name: 'index_question_rows_on_deleted_at', if_exists: true
-    remove_index :question_rows, name: 'index_qr_on_q_id_deleted_at', if_exists: true
+    add_index :question_rows, "question_id", if_not_exists: true
     remove_index :questions, name: 'index_questions_on_deleted_at', if_exists: true
-    remove_index :questions, name: 'index_q_on_efps_id_deleted_at', if_exists: true
-    remove_index :reasons, name: 'index_reasons_on_deleted_at', if_exists: true
-    remove_index :records, name: 'index_records_on_deleted_at', if_exists: true
-    remove_index :result_statistic_section_types, name: 'index_result_statistic_section_types_on_deleted_at', if_exists: true
-    remove_index :result_statistic_section_types_measures, name: 'index_result_statistic_section_types_measures_on_deleted_at', if_exists: true
-    remove_index :result_statistic_section_types_measures, name: 'index_result_statistic_section_types_measures_on_active', if_exists: true
-    remove_index :result_statistic_sections, name: 'index_result_statistic_sections_on_deleted_at', if_exists: true
-    remove_index :result_statistic_sections_measures, name: 'index_result_statistic_sections_measures_on_deleted_at', if_exists: true
-    remove_index :result_statistic_sections_measures, name: 'index_result_statistic_sections_measures_on_active', if_exists: true
-    remove_index :result_statistic_sections_measures, name: 'index_rssm_on_m_id_rss_id_deleted_at', if_exists: true
+    add_index :questions, "extraction_forms_projects_section_id", if_not_exists: true
     remove_index :result_statistic_sections_measures, name: 'index_rssm_on_m_id_rss_id_active', if_exists: true
-    remove_index :roles, name: 'index_roles_on_deleted_at', if_exists: true
-    remove_index :sections, name: 'index_sections_on_deleted_at', if_exists: true
-    remove_index :statusings, name: 'index_statusings_on_type_id_status_id_deleted_at_uniq', if_exists: true
+    remove_index :result_statistic_sections_measures, name: 'index_rssm_on_m_id_rss_id_deleted_at', if_exists: true
+    add_index :result_statistic_sections_measures, ["measure_id", "result_statistic_section_id"], if_not_exists: true, name: "index_rssm_on_m_id_rss_id"
+    add_index :questions, "extraction_forms_projects_section_id", if_not_exists: true
     remove_index :statusings, name: 'index_statusings_on_type_id_status_id_active_uniq', if_exists: true
-    remove_index :statusings, name: 'index_statusings_on_deleted_at', if_exists: true
-    remove_index :statusings, name: 'index_statusings_on_active', if_exists: true
-    remove_index :suggestions, name: 'index_suggestions_on_type_id_user_id_deleted_at_uniq', if_exists: true
+    remove_index :statusings, name: 'index_statusings_on_type_id_status_id_deleted_at_uniq', if_exists: true
+    add_index :statusings, ["statusable_type", "statusable_id", "status_id"], if_not_exists: true, name: "index_statusings_on_type_id_status_id_uniq", unique: true
     remove_index :suggestions, name: 'index_suggestions_on_type_id_user_id_active_uniq', if_exists: true
-    remove_index :suggestions, name: 'index_suggestions_on_deleted_at', if_exists: true
-    remove_index :suggestions, name: 'index_suggestions_on_active', if_exists: true
-    remove_index :taggings, name: 'index_taggings_on_deleted_at', if_exists: true
-    remove_index :tags, name: 'index_tags_on_deleted_at', if_exists: true
-    remove_index :tasks, name: 'index_tasks_on_deleted_at', if_exists: true
-    remove_index :teams, name: 'index_teams_on_deleted_at', if_exists: true
-    remove_index :timepoint_names, name: 'index_timepoint_names_on_deleted_at', if_exists: true
-    remove_index :tps_arms_rssms, name: 'index_tps_arms_rssms_on_deleted_at', if_exists: true
-    remove_index :tps_arms_rssms, name: 'index_tps_arms_rssms_on_active', if_exists: true
-    remove_index :tps_comparisons_rssms, name: 'index_tps_comparisons_rssms_on_deleted_at', if_exists: true
-    remove_index :tps_comparisons_rssms, name: 'index_tps_comparisons_rssms_on_active', if_exists: true
-    remove_index :type1_types, name: 'index_type1_types_on_deleted_at', if_exists: true
-    remove_index :type1s, name: 'index_type1s_on_name_and_description_and_deleted_at', if_exists: true
-    remove_index :type1s, name: 'index_type1s_on_deleted_at', if_exists: true
+    remove_index :suggestions, name: 'index_suggestions_on_type_id_user_id_deleted_at_uniq', if_exists: true
+    add_index :suggestions, ["suggestable_type", "suggestable_id", "user_id"], if_not_exists: true, name: "index_suggestions_on_type_id_user_id_uniq", unique: true
     remove_index :users, name: 'index_users_on_email_and_deleted_at', if_exists: true
-    remove_index :users, name: 'index_users_on_deleted_at', if_exists: true
-    remove_index :wacs_bacs_rssms, name: 'index_wacs_bacs_rssms_on_deleted_at', if_exists: true
-    remove_index :wacs_bacs_rssms, name: 'index_wacs_bacs_rssms_on_active', if_exists: true
+    add_index :users, "email", if_not_exists: true, unique: true
 
     # STEP 3
     remove_column :approvals, :active, if_exists: true
@@ -468,6 +384,17 @@ class RemoveParanoiaColumnsFromAllTables < ActiveRecord::Migration[7.0]
     remove_column :users, :deleted_at, if_exists: true
     remove_column :wacs_bacs_rssms, :active, if_exists: true
     remove_column :wacs_bacs_rssms, :deleted_at, if_exists: true
+    # didn't use paranoia before
+    remove_column :exported_items, :deleted_at, if_exists: true
+    # didn't use paranoia before and do not have soft deleted records
+    remove_column :extraction_checksums, :deleted_at, if_exists: true
+    remove_column :projects_users_roles_teams, :deleted_at, if_exists: true
+    remove_column :projects_users_roles_teams, :active, if_exists: true
+    remove_column :sd_outcomes, :deleted_at, if_exists: true
+    remove_column :statusings, :deleted_at, if_exists: true
+    remove_column :statusings, :active, if_exists: true
+    remove_column :teams, :deleted_at, if_exists: true
+    remove_column :type1_types, :deleted_at, if_exists: true
 
     # STEP 4
     add_foreign_key "abstrackr_settings", "profiles", if_not_exists: true
