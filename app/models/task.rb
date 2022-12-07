@@ -18,7 +18,7 @@ class Task < ApplicationRecord
   belongs_to :task_type
   belongs_to :project # , touch: true
 
-  has_many :assignments, dependent: :destroy
+  has_many :assignments, dependent: :nullify
   has_many :projects_users_roles, through: :assignments
 
   accepts_nested_attributes_for :assignments

@@ -22,7 +22,7 @@ class ProjectsUsersRole < ApplicationRecord
   has_one :user, through: :projects_user
   has_one :project, through: :projects_user
 
-  has_many :assignments, dependent: :destroy, inverse_of: :projects_users_role
+  has_many :assignments, dependent: :nullify, inverse_of: :projects_users_role
   has_many :extractions, inverse_of: :projects_users_role, dependent: :destroy
 
   has_many :projects_users_roles_teams
