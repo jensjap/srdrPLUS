@@ -6,8 +6,6 @@
 #  timepoint_id                         :integer
 #  comparison_id                        :integer
 #  result_statistic_sections_measure_id :integer
-#  deleted_at                           :datetime
-#  active                               :boolean
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
 #

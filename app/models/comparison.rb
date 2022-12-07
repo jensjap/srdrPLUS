@@ -5,7 +5,6 @@
 #  id         :integer          not null, primary key
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  deleted_at :datetime
 #  is_anova   :boolean          default(FALSE), not null
 #
 

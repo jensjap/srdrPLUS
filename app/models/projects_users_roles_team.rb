@@ -5,8 +5,6 @@
 #  id                     :integer          not null, primary key
 #  projects_users_role_id :integer
 #  team_id                :integer
-#  deleted_at             :datetime
-#  active                 :boolean
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #

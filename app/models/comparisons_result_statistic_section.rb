@@ -5,8 +5,6 @@
 #  id                          :integer          not null, primary key
 #  comparison_id               :integer
 #  result_statistic_section_id :integer
-#  deleted_at                  :datetime
-#  active                      :boolean
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #

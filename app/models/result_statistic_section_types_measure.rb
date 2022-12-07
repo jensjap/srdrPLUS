@@ -5,8 +5,6 @@
 #  id                                        :integer          not null, primary key
 #  result_statistic_section_type_id          :integer
 #  measure_id                                :integer
-#  deleted_at                                :datetime
-#  active                                    :boolean
 #  created_at                                :datetime         not null
 #  updated_at                                :datetime         not null
 #  default                                   :boolean          default(FALSE)

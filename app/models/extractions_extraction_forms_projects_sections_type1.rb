@@ -7,8 +7,6 @@
 #  extractions_extraction_forms_projects_section_id :integer
 #  type1_id                                         :integer
 #  units                                            :string(255)
-#  deleted_at                                       :datetime
-#  active                                           :boolean
 #  created_at                                       :datetime         not null
 #  updated_at                                       :datetime         not null
 #

@@ -7,7 +7,7 @@
 #  sd_figurable_type        :string(255)
 #  p_type                   :string(255)
 #  alt_text                 :text(65535)
-#  outcome_type             :string(255)
+#  outcome_type             :string(255)      default("Categorical")
 #  intervention_name        :string(255)
 #  comparator_name          :string(255)
 #  effect_size_measure_name :string(255)

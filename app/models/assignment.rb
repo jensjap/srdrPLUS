@@ -9,7 +9,6 @@
 #  date_assigned          :datetime
 #  date_due               :datetime
 #  done                   :integer
-#  deleted_at             :datetime
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  projects_users_role_id :integer

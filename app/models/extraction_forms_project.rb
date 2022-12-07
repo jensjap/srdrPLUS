@@ -7,8 +7,6 @@
 #  extraction_form_id               :integer
 #  project_id                       :integer
 #  public                           :boolean          default(FALSE)
-#  deleted_at                       :datetime
-#  active                           :boolean
 #  created_at                       :datetime         not null
 #  updated_at                       :datetime         not null
 #

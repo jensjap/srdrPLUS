@@ -7,8 +7,6 @@
 #  extractions_extraction_forms_projects_section_id        :integer
 #  question_row_column_field_id                            :integer
 #  name                                                    :text(65535)
-#  deleted_at                                              :datetime
-#  active                                                  :boolean
 #  created_at                                              :datetime         not null
 #  updated_at                                              :datetime         not null
 #

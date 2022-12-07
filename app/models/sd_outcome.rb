@@ -6,7 +6,6 @@
 #  name                :string(255)
 #  sd_outcomeable_id   :bigint
 #  sd_outcomeable_type :string(255)
-#  deleted_at          :datetime
 #
 
 class SdOutcome < ApplicationRecord

@@ -7,7 +7,6 @@
 #  updated_at            :datetime         not null
 #  comparate_group_id    :integer
 #  comparable_element_id :integer
-#  deleted_at            :datetime
 #
 
 class Comparate < ApplicationRecord

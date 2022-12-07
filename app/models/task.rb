@@ -6,7 +6,6 @@
 #  task_type_id              :integer
 #  project_id                :integer
 #  num_assigned              :integer
-#  deleted_at                :datetime
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
 #  required_inclusion_reason :boolean          default(FALSE)

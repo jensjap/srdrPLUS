@@ -7,8 +7,6 @@
 #  extraction_forms_projects_section_type_id :integer
 #  section_id                                :integer
 #  extraction_forms_projects_section_id      :integer
-#  deleted_at                                :datetime
-#  active                                    :boolean
 #  created_at                                :datetime         not null
 #  updated_at                                :datetime         not null
 #  hidden                                    :boolean          default(FALSE)

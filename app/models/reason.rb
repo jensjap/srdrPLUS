@@ -6,7 +6,6 @@
 #  name          :string(1000)
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  deleted_at    :datetime
 #  label_type_id :integer
 #
 

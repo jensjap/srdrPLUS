@@ -6,7 +6,6 @@
 #  quality_dimension_section_id :integer
 #  name                         :string(255)
 #  description                  :text(65535)
-#  deleted_at                   :datetime
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
 #

@@ -5,7 +5,6 @@
 #  id                :integer          not null, primary key
 #  citation_type_id  :integer
 #  name              :string(500)
-#  deleted_at        :datetime
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  refman            :string(255)

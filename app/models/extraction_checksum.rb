@@ -5,7 +5,6 @@
 #  id            :bigint           not null, primary key
 #  extraction_id :bigint
 #  hexdigest     :string(255)
-#  deleted_at    :datetime
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  is_stale      :boolean

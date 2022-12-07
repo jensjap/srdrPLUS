@@ -6,8 +6,6 @@
 #  approvable_type :string(255)
 #  approvable_id   :integer
 #  user_id         :integer
-#  deleted_at      :datetime
-#  active          :boolean
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #

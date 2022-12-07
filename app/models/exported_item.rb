@@ -5,7 +5,6 @@
 #  id             :bigint           not null, primary key
 #  export_type_id :bigint
 #  external_url   :text(65535)
-#  deleted_at     :datetime
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  user_email     :string(255)

@@ -5,7 +5,6 @@
 #  id                               :integer          not null, primary key
 #  result_statistic_section_type_id :integer
 #  population_id                    :integer
-#  deleted_at                       :datetime
 #  created_at                       :datetime         not null
 #  updated_at                       :datetime         not null
 #

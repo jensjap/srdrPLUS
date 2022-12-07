@@ -7,7 +7,6 @@
 #  updated_at      :datetime         not null
 #  comparable_type :string(255)
 #  comparable_id   :integer
-#  deleted_at      :datetime
 #
 
 class ComparableElement < ApplicationRecord

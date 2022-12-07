@@ -7,8 +7,6 @@
 #  followup_field_id                                       :bigint
 #  created_at                                              :datetime         not null
 #  updated_at                                              :datetime         not null
-#  deleted_at                                              :datetime
-#  active                                                  :boolean
 #  extractions_extraction_forms_projects_sections_type1_id :bigint
 #
 class ExtractionsExtractionFormsProjectsSectionsFollowupField < ApplicationRecord

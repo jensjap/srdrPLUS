@@ -7,7 +7,6 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  projects_users_role_id :integer
-#  deleted_at             :datetime
 #  label_type_id          :integer
 #
 

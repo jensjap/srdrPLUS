@@ -5,7 +5,6 @@
 #  id                                                      :integer          not null, primary key
 #  extractions_extraction_forms_projects_sections_type1_id :integer
 #  population_name_id                                      :integer
-#  deleted_at                                              :datetime
 #  created_at                                              :datetime         not null
 #  updated_at                                              :datetime         not null
 #

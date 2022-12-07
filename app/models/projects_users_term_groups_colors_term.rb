@@ -5,7 +5,6 @@
 #  id                                  :integer          not null, primary key
 #  projects_users_term_groups_color_id :integer
 #  term_id                             :integer
-#  deleted_at                          :datetime
 #
 
 class ProjectsUsersTermGroupsColorsTerm < ApplicationRecord

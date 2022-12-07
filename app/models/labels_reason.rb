@@ -7,7 +7,6 @@
 #  reason_id              :integer
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  deleted_at             :datetime
 #  projects_users_role_id :integer
 #
 

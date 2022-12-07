@@ -5,8 +5,6 @@
 #  id                                                 :integer          not null, primary key
 #  eefps_qrcf_id                                      :integer
 #  question_row_columns_question_row_column_option_id :integer
-#  deleted_at                                         :datetime
-#  active                                             :boolean
 #  created_at                                         :datetime         not null
 #  updated_at                                         :datetime         not null
 #

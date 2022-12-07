@@ -11,7 +11,6 @@
 #  middle_name           :string(255)
 #  last_name             :string(255)
 #  advanced_mode         :boolean          default(FALSE)
-#  deleted_at            :datetime
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #  projects_paginate_per :integer

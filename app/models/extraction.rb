@@ -7,7 +7,6 @@
 #  citations_project_id   :integer
 #  projects_users_role_id :integer
 #  consolidated           :boolean          default(FALSE)
-#  deleted_at             :datetime
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #

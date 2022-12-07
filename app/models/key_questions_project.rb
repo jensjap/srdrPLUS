@@ -6,8 +6,6 @@
 #  extraction_forms_projects_section_id :integer
 #  key_question_id                      :integer
 #  project_id                           :integer
-#  deleted_at                           :datetime
-#  active                               :boolean
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
 #

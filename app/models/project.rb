@@ -11,7 +11,6 @@
 #  doi                     :string(255)
 #  notes                   :text(65535)
 #  funding_source          :string(255)
-#  deleted_at              :datetime
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
 #  authors_of_report       :text(65535)

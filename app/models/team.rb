@@ -7,7 +7,6 @@
 #  project_id   :integer
 #  enabled      :boolean
 #  name         :string(255)
-#  deleted_at   :datetime
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #
