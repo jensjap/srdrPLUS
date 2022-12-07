@@ -62,7 +62,7 @@ class Cleanup
     QualityDimensionSection,
     QuestionRowColumnField,
     QuestionRowColumnOption,
-    QuestionRowColumnType,
+    QuestionRowColumnType,dedupe_eefpsff
     QuestionRowColumn,
     QuestionRowColumnsQuestionRowColumnOption,
     QuestionRow,
@@ -151,8 +151,8 @@ class Cleanup
     grouped = Statusing.all.group_by { |model| [model.statusable_type, model.statusable_id, model.status_id] }
     number_of_destroyed = 0
     grouped.each_value do |duplicates|
-      duplicates.shift
       duplicates.sort_by!(&:id)
+      duplicates.shift
       duplicates.each.each do |duplicate|
         number_of_destroyed += 1 if duplicate.destroy
       end
@@ -170,8 +170,8 @@ class Cleanup
     end
     number_of_destroyed = 0
     grouped.each_value do |duplicates|
-      duplicates.shift
       duplicates.sort_by!(&:id)
+      duplicates.shift
       duplicates.each.each do |duplicate|
         number_of_destroyed += 1 if duplicate.destroy
       end
