@@ -3,7 +3,7 @@
   = simple_form_for(@citation, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.hidden_field :project_id, value: params[:project_id]
     = f.error_notification
-    |Accession Number
+    |Accession Number (e.g. PubMed ID)
     span data-tooltip="" tabindex="1" title="e.g. Pubmed ID, Cochrane, MBASE, etc."
       | &nbsp;
       i class="fi-info"
