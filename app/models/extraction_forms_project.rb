@@ -48,8 +48,13 @@ class ExtractionFormsProject < ApplicationRecord
 
   after_create :create_default_sections, unless: :create_empty
   after_create :create_default_arms, unless: :create_empty
-
   after_update :ensure_proper_sections
+
+  # Since has_many :extraction_forms_projects_sections uses lambda function to
+  # scope efps by efp.extraction_forms_project_type declaring dependent: :destroy
+  # on the has_many relationship will not find and destroy all of the efps.
+  # We need to destroy them manually using pure sql to find all the relevant efps.
+  before_destroy :destroy_extraction_forms_projects_sections
 
   belongs_to :extraction_forms_project_type, inverse_of: :extraction_forms_projects, optional: true
   belongs_to :extraction_form,               inverse_of: :extraction_forms_projects
@@ -68,7 +73,7 @@ class ExtractionFormsProject < ApplicationRecord
                ordered
              end
            },
-           dependent: :destroy, inverse_of: :extraction_forms_project
+           inverse_of: :extraction_forms_project
   has_many :key_questions_projects,
            -> { joins(extraction_forms_projects_section: :ordering) },
            through: :extraction_forms_projects_sections, dependent: :destroy
@@ -88,6 +93,12 @@ class ExtractionFormsProject < ApplicationRecord
   end
 
   private
+
+  def destroy_extraction_forms_projects_sections
+    ExtractionFormsProjectsSection
+      .where(extraction_forms_project: self)
+      .each(&:destroy)
+  end
 
   def create_default_sections
     if extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: 'Standard'))
