@@ -1,5 +1,6 @@
 class RemoveParanoiaColumnsFromAllTables < ActiveRecord::Migration[7.0]
   def change
+    ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0;')
     # STEP 1
     remove_foreign_key "abstrackr_settings", "profiles", if_exists: true
     remove_foreign_key "actions", "action_types", if_exists: true
@@ -206,7 +207,7 @@ class RemoveParanoiaColumnsFromAllTables < ActiveRecord::Migration[7.0]
     remove_index :extraction_forms_projects_sections_type1s_timepoint_names, name: 'index_efpst1tn_on_efpst1_id_tn_id_deleted_at', if_exists: true
     add_index :extraction_forms_projects_sections_type1s_timepoint_names, ["extraction_forms_projects_sections_type1_id", "timepoint_name_id"], if_not_exists: true, name: "index_efpst1tn_on_efpst1_id_tn_id"
     remove_index :extractions, name: 'index_e_on_p_id_cp_id_pur_id_deleted_at_uniq', if_exists: true
-    add_index :extractions, ["project_id", "citations_project_id", "projects_users_role_id"], if_not_exists: true, name: "index_e_on_p_id_cp_id_pur_id_uniq", unique: true
+    add_index :extractions, ["project_id", "citations_project_id", "projects_users_role_id"], if_not_exists: true, name: "index_e_on_p_id_cp_id_pur_id_uniq" # no longer make this unique
     remove_index :extractions_extraction_forms_projects_sections, name: 'index_eefps_on_e_id_efps_id_eefps_id_active', if_exists: true
     remove_index :extractions_extraction_forms_projects_sections, name: 'index_eefps_on_e_id_efps_id_eefps_id_deleted_at', if_exists: true
     add_index :extractions_extraction_forms_projects_sections, ["extraction_id", "extraction_forms_projects_section_id", "extractions_extraction_forms_projects_section_id"], if_not_exists: true, name: "index_eefps_on_e_id_efps_id_eefps_id"
@@ -242,25 +243,32 @@ class RemoveParanoiaColumnsFromAllTables < ActiveRecord::Migration[7.0]
     remove_index :question_row_column_fields, name: 'index_question_row_column_fields_on_deleted_at', if_exists: true
     add_index :question_row_column_fields, "question_row_column_id", if_not_exists: true
     remove_index :question_row_columns, name: 'index_qrc_on_qr_id_deleted_at', if_exists: true
+    remove_index :question_row_columns, name: 'index_qrc_on_qrct_id', if_exists: true # not needed, it'll be part of a composite index: index_qrc_on_qr_id_qrct_id
     remove_index :question_row_columns, name: 'index_qrc_on_qr_id_qrct_id_deleted_at', if_exists: true
     add_index :question_row_columns, ["question_row_id", "question_row_column_type_id"], if_not_exists: true, name: "index_qrc_on_qr_id_qrct_id"
+    remove_index :question_row_columns_question_row_column_options, name: 'index_qrcqrco_on_qrco_id', if_exists: true # not needed, it'll be part of a composite index: index_qrcqrco_on_qrc_id_qrco_id
     remove_index :question_row_columns_question_row_column_options, name: 'index_qrcqrco_on_qrc_id_qrco_id_active', if_exists: true
     remove_index :question_row_columns_question_row_column_options, name: 'index_qrcqrco_on_qrc_id_qrco_id_deleted_at', if_exists: true
     add_index :question_row_columns_question_row_column_options, ["question_row_column_id", "question_row_column_option_id"], if_not_exists: true, name: "index_qrcqrco_on_qrc_id_qrco_id"
-    remove_index :question_rows, name: 'index_question_rows_on_deleted_at', if_exists: true
+    remove_index :question_rows, name: 'index_qr_on_q_id_deleted_at', if_exists: true
     add_index :question_rows, "question_id", if_not_exists: true
-    remove_index :questions, name: 'index_questions_on_deleted_at', if_exists: true
+    remove_index :questions, name: 'index_q_on_efps_id_deleted_at', if_exists: true
     add_index :questions, "extraction_forms_projects_section_id", if_not_exists: true
+    remove_index :result_statistic_sections, name: 'index_rss_on_rsst_id_eefpst1rc_id_uniq', if_exists: true
+    add_index :result_statistic_sections, ["result_statistic_section_type_id", "population_id"], if_not_exists: true, name: "index_rss_on_rsst_id_eefpst1rc_id_uniq", unique: true
+    remove_index :result_statistic_sections_measures, name: 'index_rssm_on_rss_id', if_exists: true # not needed, it'll be part of a composite index: index_rssm_on_m_id_rss_id_rssm_id
+    remove_index :result_statistic_sections_measures, name: 'index_rssm_on_rssm_id', if_exists: true # not needed, it'll be part of a composite index: index_rssm_on_m_id_rss_id_rssm_id
     remove_index :result_statistic_sections_measures, name: 'index_rssm_on_m_id_rss_id_active', if_exists: true
     remove_index :result_statistic_sections_measures, name: 'index_rssm_on_m_id_rss_id_deleted_at', if_exists: true
-    add_index :result_statistic_sections_measures, ["measure_id", "result_statistic_section_id"], if_not_exists: true, name: "index_rssm_on_m_id_rss_id"
-    add_index :questions, "extraction_forms_projects_section_id", if_not_exists: true
+    add_index :result_statistic_sections_measures, ["measure_id", "result_statistic_section_id", "result_statistic_sections_measure_id"], if_not_exists: true, name: "index_rssm_on_m_id_rss_id_rssm_id"
     remove_index :statusings, name: 'index_statusings_on_type_id_status_id_active_uniq', if_exists: true
     remove_index :statusings, name: 'index_statusings_on_type_id_status_id_deleted_at_uniq', if_exists: true
     add_index :statusings, ["statusable_type", "statusable_id", "status_id"], if_not_exists: true, name: "index_statusings_on_type_id_status_id_uniq", unique: true
     remove_index :suggestions, name: 'index_suggestions_on_type_id_user_id_active_uniq', if_exists: true
     remove_index :suggestions, name: 'index_suggestions_on_type_id_user_id_deleted_at_uniq', if_exists: true
     add_index :suggestions, ["suggestable_type", "suggestable_id", "user_id"], if_not_exists: true, name: "index_suggestions_on_type_id_user_id_uniq", unique: true
+    remove_index :type1s, name: 'index_type1s_on_name_and_description_and_deleted_at', if_exists: true
+    add_index :type1s, ["name", "description"], if_not_exists: true, name: "index_type1s_on_name_and_description", length: { description: 255 }
     remove_index :users, name: 'index_users_on_email_and_deleted_at', if_exists: true
     add_index :users, "email", if_not_exists: true, unique: true
 
@@ -305,7 +313,6 @@ class RemoveParanoiaColumnsFromAllTables < ActiveRecord::Migration[7.0]
     remove_column :extractions, :deleted_at, if_exists: true
     remove_column :extractions_extraction_forms_projects_sections, :active, if_exists: true
     remove_column :extractions_extraction_forms_projects_sections, :deleted_at, if_exists: true
-    remove_index :extractions_extraction_forms_projects_sections_followup_fields, name: 'index_eefpsff_on_eefps_eefpst1_ff_id', if_exists: true
     remove_column :extractions_extraction_forms_projects_sections_followup_fields, :active, if_exists: true
     remove_column :extractions_extraction_forms_projects_sections_followup_fields, :deleted_at, if_exists: true
     remove_column :eefps_qrcfs, :active, if_exists: true
@@ -364,7 +371,6 @@ class RemoveParanoiaColumnsFromAllTables < ActiveRecord::Migration[7.0]
     remove_column :result_statistic_section_types, :deleted_at, if_exists: true
     remove_column :result_statistic_section_types_measures, :active, if_exists: true
     remove_column :result_statistic_section_types_measures, :deleted_at, if_exists: true
-    remove_index :result_statistic_sections, name: 'index_rss_on_rsst_id_eefpst1rc_id_uniq', if_exists: true
     remove_column :result_statistic_sections, :deleted_at, if_exists: true
     remove_column :result_statistic_sections_measures, :active, if_exists: true
     remove_column :result_statistic_sections_measures, :deleted_at, if_exists: true
@@ -427,7 +433,7 @@ class RemoveParanoiaColumnsFromAllTables < ActiveRecord::Migration[7.0]
     add_foreign_key "degrees_profiles", "profiles", if_not_exists: true
     add_foreign_key "dispatches", "users", if_not_exists: true
     add_foreign_key "eefps_qrcfs", "extractions_extraction_forms_projects_sections", if_not_exists: true
-    add_foreign_key "eefps_qrcfs", "extractions_extraction_forms_projects_sections_type1s", if_not_exists: true
+    # add_foreign_key "eefps_qrcfs", "extractions_extraction_forms_projects_sections_type1s", if_not_exists: true # this is an optional relationship
     add_foreign_key "eefps_qrcfs", "question_row_column_fields", if_not_exists: true
     add_foreign_key "eefpsqrcf_qrcqrcos", "eefps_qrcfs", if_not_exists: true
     add_foreign_key "eefpsqrcf_qrcqrcos", "question_row_columns_question_row_column_options", if_not_exists: true
@@ -565,5 +571,7 @@ class RemoveParanoiaColumnsFromAllTables < ActiveRecord::Migration[7.0]
     add_foreign_key "tps_comparisons_rssms", "result_statistic_sections_measures", if_not_exists: true
     add_foreign_key "users", "user_types", if_not_exists: true
     add_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures", if_not_exists: true
+  ensure
+    ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1;')
   end
 end

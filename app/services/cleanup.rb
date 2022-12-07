@@ -32,8 +32,7 @@ class Cleanup
     ExtractionsExtractionFormsProjectsSectionsType1RowColumn,
     ExtractionsExtractionFormsProjectsSectionsType1Row,
     ExtractionsExtractionFormsProjectsSectionsType1,
-    ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption, # table name eefpsqrcf_qrcqrcos
-    #ExtractionsProjectsUsersRole, # model was dropped.
+    ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption,
     FollowupField,
     Frequency,
     KeyQuestion,
@@ -141,5 +140,42 @@ class Cleanup
     puts messages
     puts "Total:#{' ' * (150 - 5 - total.to_s.length)}#{total}"
     ActiveRecord::Base.logger = old_logger
+  end
+
+  def self.dedupe_all
+    dedupe_statusing
+    dedupe_eefpsff
+  end
+
+  def self.dedupe_statusing
+    grouped = Statusing.all.group_by { |model| [model.statusable_type, model.statusable_id, model.status_id] }
+    number_of_destroyed = 0
+    grouped.each_value do |duplicates|
+      duplicates.shift
+      duplicates.sort_by!(&:id)
+      duplicates.each.each do |duplicate|
+        number_of_destroyed += 1 if duplicate.destroy
+      end
+    end
+    number_of_destroyed
+  end
+
+  def self.dedupe_eefpsff
+    grouped = ExtractionsExtractionFormsProjectsSectionsFollowupField.all.group_by do |model|
+      [
+        model.extractions_extraction_forms_projects_section_id,
+        model.extractions_extraction_forms_projects_sections_type1_id,
+        model.followup_field_id
+      ]
+    end
+    number_of_destroyed = 0
+    grouped.each_value do |duplicates|
+      duplicates.shift
+      duplicates.sort_by!(&:id)
+      duplicates.each.each do |duplicate|
+        number_of_destroyed += 1 if duplicate.destroy
+      end
+    end
+    number_of_destroyed
   end
 end

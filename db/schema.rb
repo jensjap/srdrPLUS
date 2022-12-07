@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_05_080103) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -244,14 +244,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.string "approvable_type"
     t.integer "approvable_id"
     t.integer "user_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_approvals_on_active"
-    t.index ["approvable_type", "approvable_id", "user_id", "active"], name: "index_approvals_on_type_id_user_id_active_uniq", unique: true
-    t.index ["approvable_type", "approvable_id", "user_id", "deleted_at"], name: "index_approvals_on_type_id_user_id_deleted_at_uniq", unique: true
-    t.index ["deleted_at"], name: "index_approvals_on_deleted_at"
+    t.index ["approvable_type", "approvable_id", "user_id"], name: "index_approvals_on_approvable_type_and_approvable_id_and_user_id", unique: true
     t.index ["user_id"], name: "index_approvals_on_user_id"
   end
 
@@ -262,12 +257,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.datetime "date_assigned", precision: nil
     t.datetime "date_due", precision: nil
     t.integer "done"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "projects_users_role_id"
     t.boolean "mutable", default: true
-    t.index ["deleted_at"], name: "index_assignments_on_deleted_at"
     t.index ["projects_users_role_id"], name: "index_assignments_on_projects_users_role_id"
     t.index ["task_id"], name: "index_assignments_on_task_id"
     t.index ["user_id"], name: "index_assignments_on_user_id"
@@ -277,18 +270,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.string "name", collation: "utf8mb3_general_ci"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.datetime "deleted_at", precision: nil
-    t.index ["deleted_at"], name: "index_authors_on_deleted_at"
     t.index ["name"], name: "index_authors_on_name"
   end
 
   create_table "authors_citations", charset: "utf8mb3", force: :cascade do |t|
     t.integer "citation_id", null: false
     t.integer "author_id", null: false
-    t.datetime "deleted_at", precision: nil
     t.index ["author_id"], name: "index_authors_citations_on_author_id"
     t.index ["citation_id", "author_id"], name: "index_authors_citations_on_citation_id_and_author_id"
-    t.index ["deleted_at"], name: "index_authors_citations_on_deleted_at"
   end
 
   create_table "citation_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -300,7 +289,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
   create_table "citations", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "citation_type_id"
     t.string "name", limit: 500, collation: "utf8mb3_general_ci"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "refman", collation: "utf8mb3_general_ci"
@@ -313,7 +301,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.string "other"
     t.string "accession_number"
     t.index ["citation_type_id"], name: "index_citations_on_citation_type_id"
-    t.index ["deleted_at"], name: "index_citations_on_deleted_at"
     t.index ["name"], name: "index_citations_on_name"
     t.index ["pmid"], name: "index_citations_on_pmid"
   end
@@ -328,18 +315,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
   create_table "citations_projects", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "citation_id"
     t.integer "project_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "consensus_type_id"
     t.boolean "pilot_flag"
     t.string "screening_status", default: "asu"
-    t.index ["active"], name: "index_citations_projects_on_active"
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id"
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id"
-    t.index ["deleted_at"], name: "index_citations_projects_on_deleted_at"
-    t.index ["project_id", "active"], name: "index_citations_projects_on_project_id_and_active", comment: "speeds up the my projects page when projects have a lot of citations_projects"
     t.index ["project_id"], name: "index_citations_projects_on_project_id"
   end
 
@@ -348,11 +330,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.integer "task_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
-    t.index ["active"], name: "index_citations_tasks_on_active"
     t.index ["citation_id"], name: "index_citations_tasks_on_citation_id"
-    t.index ["deleted_at"], name: "index_citations_tasks_on_deleted_at"
     t.index ["task_id"], name: "index_citations_tasks_on_task_id"
   end
 
@@ -384,18 +362,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.datetime "updated_at", precision: nil, null: false
     t.string "comparable_type"
     t.integer "comparable_id"
-    t.datetime "deleted_at", precision: nil
     t.index ["comparable_type", "comparable_id"], name: "index_comparable_elements_on_comparable_type_and_comparable_id"
-    t.index ["deleted_at"], name: "index_comparable_elements_on_deleted_at"
   end
 
   create_table "comparate_groups", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "comparison_id"
-    t.datetime "deleted_at", precision: nil
     t.index ["comparison_id"], name: "index_comparate_groups_on_comparison_id"
-    t.index ["deleted_at"], name: "index_comparate_groups_on_deleted_at"
   end
 
   create_table "comparates", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -403,31 +377,23 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "comparate_group_id"
     t.integer "comparable_element_id"
-    t.datetime "deleted_at", precision: nil
     t.index ["comparable_element_id"], name: "index_comparates_on_comparable_element_id"
     t.index ["comparate_group_id"], name: "index_comparates_on_comparate_group_id"
-    t.index ["deleted_at"], name: "index_comparates_on_deleted_at"
   end
 
   create_table "comparisons", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.datetime "deleted_at", precision: nil
     t.boolean "is_anova", default: false, null: false
-    t.index ["deleted_at"], name: "index_comparisons_on_deleted_at"
   end
 
   create_table "comparisons_arms_rssms", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "comparison_id"
     t.integer "extractions_extraction_forms_projects_sections_type1_id"
     t.integer "result_statistic_sections_measure_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_comparisons_arms_rssms_on_active"
     t.index ["comparison_id"], name: "index_comparisons_arms_rssms_on_comparison_id"
-    t.index ["deleted_at"], name: "index_comparisons_arms_rssms_on_deleted_at"
     t.index ["extractions_extraction_forms_projects_sections_type1_id"], name: "index_comparisons_arms_rssms_on_eefpst_id"
     t.index ["result_statistic_sections_measure_id"], name: "index_comparisons_arms_rssms_on_rssm_id"
   end
@@ -444,14 +410,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
   create_table "comparisons_result_statistic_sections", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "comparison_id"
     t.integer "result_statistic_section_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_comparisons_result_statistic_sections_on_active"
-    t.index ["comparison_id", "result_statistic_section_id", "active"], name: "index_crss_on_c_id_rss_id_active"
-    t.index ["comparison_id", "result_statistic_section_id", "deleted_at"], name: "index_crss_on_c_id_rss_id_deleted_at"
-    t.index ["deleted_at"], name: "index_comparisons_result_statistic_sections_on_deleted_at"
+    t.index ["comparison_id", "result_statistic_section_id"], name: "index_crss_on_c_id_rss_id"
     t.index ["result_statistic_section_id"], name: "index_crss_on_rss_id"
   end
 
@@ -484,24 +445,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
 
   create_table "degrees", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_degrees_on_deleted_at"
     t.index ["name"], name: "index_degrees_on_name", unique: true
   end
 
   create_table "degrees_profiles", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "degree_id"
     t.integer "profile_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_degrees_profiles_on_active"
-    t.index ["degree_id", "profile_id", "active"], name: "index_dp_on_d_id_p_id_active_uniq", unique: true
-    t.index ["degree_id", "profile_id", "deleted_at"], name: "index_dp_on_d_id_p_id_deleted_at_uniq", unique: true
-    t.index ["deleted_at"], name: "index_degrees_profiles_on_deleted_at"
+    t.index ["degree_id", "profile_id"], name: "index_degrees_profiles_on_degree_id_and_profile_id", unique: true
     t.index ["profile_id"], name: "index_degrees_profiles_on_profile_id"
   end
 
@@ -510,14 +464,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.integer "dependable_id"
     t.string "prerequisitable_type"
     t.integer "prerequisitable_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_dependencies_on_active"
-    t.index ["deleted_at"], name: "index_dependencies_on_deleted_at"
-    t.index ["dependable_type", "dependable_id", "prerequisitable_type", "prerequisitable_id", "active"], name: "index_dependencies_on_dtype_did_ptype_pid_active_uniq", unique: true
-    t.index ["dependable_type", "dependable_id", "prerequisitable_type", "prerequisitable_id", "deleted_at"], name: "index_dependencies_on_dtype_did_ptype_pid_deleted_at_uniq", unique: true
+    t.index ["dependable_type", "dependable_id", "prerequisitable_type", "prerequisitable_id"], name: "index_dependencies_on_dtype_did_ptype_pid_uniq", unique: true
     t.index ["prerequisitable_type", "prerequisitable_id"], name: "index_dependencies_on_ptype_pid"
   end
 
@@ -525,12 +474,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.string "dispatchable_type"
     t.integer "dispatchable_id"
     t.integer "user_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_dispatches_on_active"
-    t.index ["deleted_at"], name: "index_dispatches_on_deleted_at"
     t.index ["dispatchable_type", "dispatchable_id"], name: "index_dispatches_on_dispatchable_type_and_dispatchable_id"
     t.index ["user_id"], name: "index_dispatches_on_user_id"
   end
@@ -540,29 +485,19 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.integer "extractions_extraction_forms_projects_section_id"
     t.integer "question_row_column_field_id"
     t.text "name"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_eefps_qrcfs_on_active"
-    t.index ["deleted_at"], name: "index_eefps_qrcfs_on_deleted_at"
     t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpsqrcf_on_eefps_id"
-    t.index ["extractions_extraction_forms_projects_sections_type1_id", "extractions_extraction_forms_projects_section_id", "question_row_column_field_id", "active"], name: "index_eefpsqrcf_on_eefpst1_id_eefps_id_qrcf_id_active"
-    t.index ["extractions_extraction_forms_projects_sections_type1_id", "extractions_extraction_forms_projects_section_id", "question_row_column_field_id", "deleted_at"], name: "index_eefpsqrcf_on_eefpst1_id_eefps_id_qrcf_id_deleted_at"
+    t.index ["extractions_extraction_forms_projects_sections_type1_id", "extractions_extraction_forms_projects_section_id", "question_row_column_field_id"], name: "index_eefpsqrcf_on_eefpst1_id_eefps_id_qrcf_id"
     t.index ["question_row_column_field_id"], name: "index_eefpsqrcf_on_qrcf_id"
   end
 
   create_table "eefpsqrcf_qrcqrcos", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "eefps_qrcf_id"
     t.integer "question_row_columns_question_row_column_option_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_eefpsqrcf_qrcqrcos_on_active"
-    t.index ["deleted_at"], name: "index_eefpsqrcf_qrcqrcos_on_deleted_at"
-    t.index ["eefps_qrcf_id", "question_row_columns_question_row_column_option_id", "active"], name: "index_eefpsqrcfqrcqrco_on_eefps_qrcf_id_qrcqrco_id_active"
-    t.index ["eefps_qrcf_id", "question_row_columns_question_row_column_option_id", "deleted_at"], name: "index_eefpsqrcfqrcqrco_on_eefps_qrcf_id_qrcqrco_id_deleted_at"
+    t.index ["eefps_qrcf_id", "question_row_columns_question_row_column_option_id"], name: "index_eefpsqrcfqrcqrco_on_eefps_qrcf_id_qrcqrco_id"
     t.index ["question_row_columns_question_row_column_option_id"], name: "index_eefpsqrcfqrcqrco_on_qrcqrco_id"
   end
 
@@ -587,7 +522,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
   create_table "exported_items", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "export_type_id"
     t.text "external_url"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "user_email"
@@ -599,29 +533,23 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
   create_table "extraction_checksums", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "extraction_id"
     t.string "hexdigest"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.boolean "is_stale"
-    t.index ["deleted_at"], name: "index_extraction_checksums_on_deleted_at"
     t.index ["extraction_id"], name: "index_extraction_checksums_on_extraction_id"
   end
 
   create_table "extraction_forms", id: :integer, charset: "utf8mb3", collation: "utf8mb3_bin", force: :cascade do |t|
     t.string "name"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_extraction_forms_on_deleted_at"
     t.index ["name"], name: "index_extraction_forms_on_name", unique: true
   end
 
   create_table "extraction_forms_project_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_extraction_forms_project_types_on_deleted_at"
     t.index ["name"], name: "index_extraction_forms_project_types_on_name", unique: true
   end
 
@@ -630,16 +558,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.integer "extraction_form_id"
     t.integer "project_id"
     t.boolean "public", default: false
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_extraction_forms_projects_on_active"
-    t.index ["deleted_at"], name: "index_extraction_forms_projects_on_deleted_at"
-    t.index ["extraction_form_id", "project_id", "active"], name: "index_efp_on_ef_id_p_id_active"
-    t.index ["extraction_form_id", "project_id", "deleted_at"], name: "index_efp_on_ef_id_p_id_deleted_at"
-    t.index ["extraction_forms_project_type_id", "extraction_form_id", "project_id", "active"], name: "index_efp_on_efpt_id_ef_id_p_id_active"
-    t.index ["extraction_forms_project_type_id", "extraction_form_id", "project_id", "deleted_at"], name: "index_efp_on_efpt_id_ef_id_p_id_deleted_at"
+    t.index ["extraction_form_id", "project_id"], name: "index_efp_on_ef_id_p_id"
+    t.index ["extraction_forms_project_type_id", "extraction_form_id", "project_id"], name: "index_efp_on_efpt_id_ef_id_p_id"
     t.index ["project_id"], name: "index_efp_on_p_id"
   end
 
@@ -647,19 +569,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.integer "extraction_forms_projects_section_id"
     t.boolean "by_type1"
     t.boolean "include_total"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_efpso_on_deleted_at"
-    t.index ["extraction_forms_projects_section_id", "deleted_at"], name: "index_efpso_on_efps_id_deleted_at"
+    t.index ["extraction_forms_projects_section_id"], name: "index_efpso_on_efps_id_deleted_at"
   end
 
   create_table "extraction_forms_projects_section_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_extraction_forms_projects_section_types_on_deleted_at"
     t.index ["name"], name: "index_extraction_forms_projects_section_types_on_name", unique: true
   end
 
@@ -668,16 +586,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.integer "extraction_forms_projects_section_type_id"
     t.integer "section_id"
     t.integer "extraction_forms_projects_section_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.boolean "hidden", default: false
     t.string "helper_message"
-    t.index ["active"], name: "index_extraction_forms_projects_sections_on_active"
-    t.index ["deleted_at"], name: "index_extraction_forms_projects_sections_on_deleted_at"
-    t.index ["extraction_forms_project_id", "extraction_forms_projects_section_type_id", "section_id", "extraction_forms_projects_section_id", "active"], name: "index_efps_on_efp_id_efpst_id_s_id_efps_id_active"
-    t.index ["extraction_forms_project_id", "extraction_forms_projects_section_type_id", "section_id", "extraction_forms_projects_section_id", "deleted_at"], name: "index_efps_on_efp_id_efpst_id_s_id_efps_id_deleted_at"
+    t.index ["extraction_forms_project_id", "extraction_forms_projects_section_type_id", "section_id", "extraction_forms_projects_section_id"], name: "index_efps_on_efp_id_efpst_id_s_id_efps_id"
     t.index ["extraction_forms_projects_section_id"], name: "index_efps_on_efps_id"
     t.index ["extraction_forms_projects_section_type_id"], name: "index_efps_on_efpst_id"
     t.index ["section_id"], name: "index_efps_on_s_id"
@@ -696,14 +609,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.integer "extraction_forms_projects_section_id"
     t.integer "type1_id"
     t.integer "type1_type_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_extraction_forms_projects_sections_type1s_on_active"
-    t.index ["deleted_at"], name: "index_extraction_forms_projects_sections_type1s_on_deleted_at"
-    t.index ["extraction_forms_projects_section_id", "type1_id", "type1_type_id", "active"], name: "index_efpst1_on_efps_id_t1_id_t1_type_id_active_uniq", unique: true
-    t.index ["extraction_forms_projects_section_id", "type1_id", "type1_type_id", "deleted_at"], name: "index_efpst1_on_efps_id_t1_id_t1_type_id_deleted_at_uniq", unique: true
+    t.index ["extraction_forms_projects_section_id", "type1_id", "type1_type_id"], name: "index_efpst1_on_efps_id_t1_id_t1_type_id_uniq", unique: true
     t.index ["type1_id"], name: "index_efpst1_on_t1_id"
     t.index ["type1_type_id"], name: "index_efpst1_on_t1_type_id"
   end
@@ -711,14 +619,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
   create_table "extraction_forms_projects_sections_type1s_timepoint_names", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "extraction_forms_projects_sections_type1_id"
     t.integer "timepoint_name_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_efpst1tn_on_active"
-    t.index ["deleted_at"], name: "index_efpst1tn_on_deleted_at"
-    t.index ["extraction_forms_projects_sections_type1_id", "timepoint_name_id", "active"], name: "index_efpst1tn_on_efpst1_id_tn_id_active"
-    t.index ["extraction_forms_projects_sections_type1_id", "timepoint_name_id", "deleted_at"], name: "index_efpst1tn_on_efpst1_id_tn_id_deleted_at"
+    t.index ["extraction_forms_projects_sections_type1_id", "timepoint_name_id"], name: "index_efpst1tn_on_efpst1_id_tn_id"
     t.index ["timepoint_name_id"], name: "index_efpst1tn_on_tn_id"
   end
 
@@ -727,12 +630,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.integer "citations_project_id"
     t.integer "projects_users_role_id"
     t.boolean "consolidated", default: false
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["citations_project_id"], name: "index_extractions_on_citations_project_id"
-    t.index ["deleted_at"], name: "index_extractions_on_deleted_at"
-    t.index ["project_id", "citations_project_id", "projects_users_role_id", "deleted_at"], name: "index_e_on_p_id_cp_id_pur_id_deleted_at_uniq", unique: true
+    t.index ["project_id", "citations_project_id", "projects_users_role_id"], name: "index_e_on_p_id_cp_id_pur_id_uniq"
     t.index ["projects_users_role_id"], name: "index_extractions_on_projects_users_role_id"
   end
 
@@ -740,15 +641,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.integer "extraction_id"
     t.integer "extraction_forms_projects_section_id"
     t.integer "extractions_extraction_forms_projects_section_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_eefps_on_active"
-    t.index ["deleted_at"], name: "index_eefps_on_deleted_at"
     t.index ["extraction_forms_projects_section_id"], name: "index_eefps_on_efps_id"
-    t.index ["extraction_id", "extraction_forms_projects_section_id", "extractions_extraction_forms_projects_section_id", "active"], name: "index_eefps_on_e_id_efps_id_eefps_id_active"
-    t.index ["extraction_id", "extraction_forms_projects_section_id", "extractions_extraction_forms_projects_section_id", "deleted_at"], name: "index_eefps_on_e_id_efps_id_eefps_id_deleted_at"
+    t.index ["extraction_id", "extraction_forms_projects_section_id", "extractions_extraction_forms_projects_section_id"], name: "index_eefps_on_e_id_efps_id_eefps_id"
     t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefps_on_eefps_id"
   end
 
@@ -757,11 +653,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.bigint "followup_field_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.bigint "extractions_extraction_forms_projects_sections_type1_id"
-    t.index ["deleted_at"], name: "index_eefpsff_followup_fields_on_deleted_at"
-    t.index ["extractions_extraction_forms_projects_section_id", "extractions_extraction_forms_projects_sections_type1_id", "followup_field_id", "active"], name: "index_eefpsff_on_eefps_eefpst1_ff_id", unique: true
+    t.index ["extractions_extraction_forms_projects_section_id", "extractions_extraction_forms_projects_sections_type1_id", "followup_field_id"], name: "index_eefpsff_on_eefps_eefpst1_ff_id", unique: true
     t.index ["extractions_extraction_forms_projects_sections_type1_id"], name: "eefpst1_index"
     t.index ["followup_field_id"], name: "index_eefpsff_on_followup_field_id"
   end
@@ -769,22 +662,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
   create_table "extractions_extraction_forms_projects_sections_type1_row_columns", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "extractions_extraction_forms_projects_sections_type1_row_id"
     t.integer "timepoint_name_id"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_eefpst1rc_on_deleted_at"
-    t.index ["extractions_extraction_forms_projects_sections_type1_row_id", "timepoint_name_id", "deleted_at"], name: "index_eefpst1rc_on_eefpst1r_id_tn_id_deleted_at"
+    t.index ["extractions_extraction_forms_projects_sections_type1_row_id", "timepoint_name_id"], name: "index_eefpst1rc_on_eefpst1r_id_tn_id"
     t.index ["timepoint_name_id"], name: "index_eefpst1rc_on_tn_id"
   end
 
   create_table "extractions_extraction_forms_projects_sections_type1_rows", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "extractions_extraction_forms_projects_sections_type1_id"
     t.integer "population_name_id"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_eefpst1r_on_deleted_at"
-    t.index ["extractions_extraction_forms_projects_sections_type1_id", "population_name_id", "deleted_at"], name: "index_eefpst1r_on_eefpst1_id_pn_id_deleted_at"
+    t.index ["extractions_extraction_forms_projects_sections_type1_id", "population_name_id"], name: "index_eefpst1r_on_eefpst1_id_pn_id"
     t.index ["population_name_id"], name: "index_eefpst1r_on_pn_id"
   end
 
@@ -793,16 +682,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.integer "extractions_extraction_forms_projects_section_id"
     t.integer "type1_id"
     t.string "units"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_eefpst1_on_active"
-    t.index ["deleted_at"], name: "index_eefpst1_on_deleted_at"
     t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpst1_on_eefps_id"
     t.index ["type1_id"], name: "index_eefpst1_on_t1_id"
-    t.index ["type1_type_id", "extractions_extraction_forms_projects_section_id", "type1_id", "active"], name: "index_eefpst1_on_t1t_id_eefps_id_t1_id_active", unique: true
-    t.index ["type1_type_id", "extractions_extraction_forms_projects_section_id", "type1_id", "deleted_at"], name: "index_eefpst1_on_t1t_id_eefps_id_t1_id_deleted_at", unique: true
+    t.index ["type1_type_id", "extractions_extraction_forms_projects_section_id", "type1_id"], name: "index_eefpst1_on_t1t_id_eefps_id_t1_id", unique: true
   end
 
   create_table "extractions_key_questions_projects_selections", charset: "utf8mb3", force: :cascade do |t|
@@ -825,17 +709,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.bigint "question_row_columns_question_row_column_option_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.datetime "deleted_at", precision: nil
-    t.index ["deleted_at"], name: "index_followup_fields_on_deleted_at"
     t.index ["question_row_columns_question_row_column_option_id"], name: "index_followup_fields_on_qrcqrco_id"
   end
 
   create_table "frequencies", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_frequencies_on_deleted_at"
   end
 
   create_table "fulltext_screening_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -1024,10 +904,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
 
   create_table "key_questions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.text "name", collation: "utf8mb3_bin"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_key_questions_on_deleted_at"
     t.index ["name"], name: "index_key_questions_on_name", unique: true, length: 255
   end
 
@@ -1035,24 +913,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.integer "extraction_forms_projects_section_id"
     t.integer "key_question_id"
     t.integer "project_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_key_questions_projects_on_active"
-    t.index ["deleted_at"], name: "index_key_questions_projects_on_deleted_at"
-    t.index ["extraction_forms_projects_section_id", "key_question_id", "project_id", "active"], name: "index_kqp_on_efps_id_kq_id_p_id_active"
-    t.index ["extraction_forms_projects_section_id", "key_question_id", "project_id", "deleted_at"], name: "index_kqp_on_efps_id_kq_id_p_id_deleted_at"
-    t.index ["key_question_id", "project_id", "active"], name: "index_kqp_on_kq_id_p_id_active"
-    t.index ["key_question_id", "project_id", "deleted_at"], name: "index_kqp_on_kq_id_p_id_deleted_at"
+    t.index ["extraction_forms_projects_section_id", "key_question_id", "project_id"], name: "index_kqp_on_efps_id_kq_id_p_id"
+    t.index ["key_question_id", "project_id"], name: "index_kqp_on_kq_id_p_id"
     t.index ["project_id"], name: "index_kqp_on_p_id"
   end
 
   create_table "key_questions_projects_questions", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "key_questions_project_id"
     t.integer "question_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["key_questions_project_id"], name: "index_kqpq_on_kqp_id"
@@ -1063,8 +933,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.string "name", limit: 5000
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.datetime "deleted_at", precision: nil
-    t.index ["deleted_at"], name: "index_keywords_on_deleted_at"
   end
 
   create_table "label_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -1078,10 +946,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "projects_users_role_id"
-    t.datetime "deleted_at", precision: nil
     t.integer "label_type_id"
     t.index ["citations_project_id"], name: "index_labels_on_citations_project_id"
-    t.index ["deleted_at"], name: "index_labels_on_deleted_at"
     t.index ["label_type_id"], name: "index_labels_on_label_type_id"
     t.index ["projects_users_role_id"], name: "index_labels_on_projects_users_role_id"
   end
@@ -1091,9 +957,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.integer "reason_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.datetime "deleted_at", precision: nil
     t.integer "projects_users_role_id"
-    t.index ["deleted_at"], name: "index_labels_reasons_on_deleted_at"
     t.index ["label_id"], name: "index_labels_reasons_on_label_id"
     t.index ["projects_users_role_id"], name: "index_labels_reasons_on_projects_users_role_id"
     t.index ["reason_id"], name: "index_labels_reasons_on_reason_id"
@@ -1109,10 +973,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
 
   create_table "measures", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_measures_on_deleted_at"
   end
 
   create_table "mesh_descriptors", charset: "utf8mb3", force: :cascade do |t|
@@ -1134,10 +996,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
   create_table "message_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.integer "frequency_id"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_message_types_on_deleted_at"
     t.index ["frequency_id"], name: "index_message_types_on_frequency_id"
   end
 
@@ -1147,10 +1007,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.text "description"
     t.datetime "start_at", precision: nil
     t.datetime "end_at", precision: nil
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_messages_on_deleted_at"
     t.index ["message_type_id"], name: "index_messages_on_message_type_id"
   end
 
@@ -1161,8 +1019,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "projects_users_role_id"
-    t.datetime "deleted_at", precision: nil
-    t.index ["deleted_at"], name: "index_notes_on_deleted_at"
     t.index ["notable_type", "notable_id"], name: "index_notes_on_notable_type_and_notable_id"
     t.index ["projects_users_role_id"], name: "index_notes_on_projects_users_role_id"
   end
@@ -1212,22 +1068,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.string "orderable_type"
     t.integer "orderable_id"
     t.integer "position"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_orderings_on_active"
-    t.index ["deleted_at"], name: "index_orderings_on_deleted_at"
-    t.index ["orderable_type", "orderable_id", "active"], name: "index_orderings_on_type_id_active_uniq", unique: true
-    t.index ["orderable_type", "orderable_id", "deleted_at"], name: "index_orderings_on_type_id_deleted_at_uniq", unique: true
+    t.index ["orderable_type", "orderable_id"], name: "index_orderings_on_type_id_uniq", unique: true
   end
 
   create_table "organizations", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", collation: "utf8mb3_general_ci"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_organizations_on_deleted_at"
     t.index ["name"], name: "index_organizations_on_name", unique: true
   end
 
@@ -1243,10 +1092,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
   create_table "population_names", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.text "description", null: false
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_population_names_on_deleted_at"
   end
 
   create_table "predictions", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -1277,11 +1124,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.string "middle_name"
     t.string "last_name"
     t.boolean "advanced_mode", default: false
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "projects_paginate_per"
-    t.index ["deleted_at"], name: "index_profiles_on_deleted_at"
     t.index ["organization_id"], name: "index_profiles_on_organization_id"
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
     t.index ["username"], name: "index_profiles_on_username", unique: true
@@ -1296,50 +1141,34 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.string "doi"
     t.text "notes"
     t.string "funding_source"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.text "authors_of_report"
-    t.index ["deleted_at"], name: "index_projects_on_deleted_at"
   end
 
   create_table "projects_users", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "project_id"
     t.integer "user_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_projects_users_on_active"
-    t.index ["deleted_at"], name: "index_projects_users_on_deleted_at"
-    t.index ["project_id", "user_id", "active"], name: "index_pu_on_p_id_u_id_active_uniq", unique: true
-    t.index ["project_id", "user_id", "deleted_at"], name: "index_pu_on_p_id_u_id_deleted_at_uniq", unique: true
+    t.index ["project_id", "user_id"], name: "index_pu_on_p_id_u_id_uniq", unique: true
     t.index ["user_id"], name: "index_projects_users_on_user_id"
   end
 
   create_table "projects_users_roles", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "projects_user_id"
     t.integer "role_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_projects_users_roles_on_active"
-    t.index ["deleted_at"], name: "index_projects_users_roles_on_deleted_at"
-    t.index ["projects_user_id", "role_id", "active"], name: "index_pur_on_pu_id_r_id_active_uniq", unique: true
-    t.index ["projects_user_id", "role_id", "deleted_at"], name: "index_pur_on_pu_id_r_id_deleted_at_uniq", unique: true
+    t.index ["projects_user_id", "role_id"], name: "index_pur_on_pu_id_r_id_uniq", unique: true
     t.index ["role_id"], name: "index_projects_users_roles_on_role_id"
   end
 
   create_table "projects_users_roles_teams", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "projects_users_role_id"
     t.integer "team_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_projects_users_roles_teams_on_active"
-    t.index ["deleted_at"], name: "index_projects_users_roles_teams_on_deleted_at"
     t.index ["projects_users_role_id"], name: "index_projects_users_roles_teams_on_projects_users_role_id"
     t.index ["team_id"], name: "index_projects_users_roles_teams_on_team_id"
   end
@@ -1347,8 +1176,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
   create_table "projects_users_term_groups_colors", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "term_groups_color_id"
     t.integer "projects_user_id"
-    t.datetime "deleted_at", precision: nil
-    t.index ["deleted_at"], name: "index_projects_users_term_groups_colors_on_deleted_at"
     t.index ["projects_user_id"], name: "index_projects_users_term_groups_colors_on_projects_user_id"
     t.index ["term_groups_color_id"], name: "index_projects_users_term_groups_colors_on_term_groups_color_id"
   end
@@ -1356,8 +1183,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
   create_table "projects_users_term_groups_colors_terms", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "projects_users_term_groups_color_id"
     t.integer "term_id"
-    t.datetime "deleted_at", precision: nil
-    t.index ["deleted_at"], name: "index_projects_users_term_groups_colors_terms_on_deleted_at"
     t.index ["projects_users_term_groups_color_id"], name: "index_putgcp_on_putc_id"
     t.index ["term_id"], name: "index_putgcp_on_terms_id"
   end
@@ -1366,51 +1191,38 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.string "publishable_type"
     t.integer "publishable_id"
     t.integer "user_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_publishings_on_active"
-    t.index ["deleted_at"], name: "index_publishings_on_deleted_at"
-    t.index ["publishable_type", "publishable_id", "user_id", "active"], name: "index_publishings_on_type_id_user_id_active_uniq", unique: true
-    t.index ["publishable_type", "publishable_id", "user_id", "deleted_at"], name: "index_publishings_on_type_id_user_id_deleted_at_uniq", unique: true
+    t.index ["publishable_type", "publishable_id", "user_id"], name: "index_publishings_on_type_id_user_id_uniq", unique: true
     t.index ["user_id"], name: "index_publishings_on_user_id"
   end
 
   create_table "quality_dimension_options", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.text "name"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_quality_dimension_options_on_deleted_at"
   end
 
   create_table "quality_dimension_questions", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "quality_dimension_section_id"
     t.string "name"
     t.text "description"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_quality_dimension_questions_on_deleted_at"
     t.index ["quality_dimension_section_id"], name: "index_qdq_on_qds_id"
   end
 
   create_table "quality_dimension_questions_quality_dimension_options", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "quality_dimension_question_id"
     t.integer "quality_dimension_option_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["quality_dimension_option_id"], name: "index_qdqqdo_on_qdo_id"
-    t.index ["quality_dimension_question_id", "quality_dimension_option_id", "active"], name: "index_qdq_id_qdo_id_active_uniq", unique: true
+    t.index ["quality_dimension_question_id", "quality_dimension_option_id"], name: "index_qdq_id_qdo_id_uniq", unique: true
   end
 
   create_table "quality_dimension_section_groups", charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
   end
@@ -1418,99 +1230,78 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
   create_table "quality_dimension_sections", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.text "description"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "quality_dimension_section_group_id"
-    t.index ["deleted_at"], name: "index_quality_dimension_sections_on_deleted_at"
     t.index ["quality_dimension_section_group_id"], name: "index_qds_on_qdsg_id"
   end
 
   create_table "question_row_column_fields", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "question_row_column_id"
     t.string "name"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_question_row_column_fields_on_deleted_at"
-    t.index ["question_row_column_id", "deleted_at"], name: "index_qrcf_on_qrc_id_deleted_at"
+    t.index ["question_row_column_id"], name: "index_qrcf_on_qrc_id_deleted_at"
+    t.index ["question_row_column_id"], name: "index_question_row_column_fields_on_question_row_column_id"
   end
 
   create_table "question_row_column_options", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "description"
     t.string "field_type"
     t.string "label"
-    t.index ["deleted_at"], name: "index_question_row_column_options_on_deleted_at"
   end
 
   create_table "question_row_column_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_question_row_column_types_on_deleted_at"
   end
 
   create_table "question_row_columns", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "question_row_id"
     t.integer "question_row_column_type_id"
     t.string "name"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_question_row_columns_on_deleted_at"
-    t.index ["question_row_column_type_id"], name: "index_qrc_on_qrct_id"
-    t.index ["question_row_id", "deleted_at"], name: "index_qrc_on_qr_id_deleted_at"
-    t.index ["question_row_id", "question_row_column_type_id", "deleted_at"], name: "index_qrc_on_qr_id_qrct_id_deleted_at"
+    t.index ["question_row_column_type_id"], name: "fk_rails_9753342129"
+    t.index ["question_row_id", "question_row_column_type_id"], name: "index_qrc_on_qr_id_qrct_id"
   end
 
   create_table "question_row_columns_question_row_column_options", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "question_row_column_id"
     t.integer "question_row_column_option_id"
     t.text "name"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_qrcqrco_on_active"
-    t.index ["deleted_at"], name: "index_qrcqrco_on_deleted_at"
-    t.index ["question_row_column_id", "question_row_column_option_id", "active"], name: "index_qrcqrco_on_qrc_id_qrco_id_active"
-    t.index ["question_row_column_id", "question_row_column_option_id", "deleted_at"], name: "index_qrcqrco_on_qrc_id_qrco_id_deleted_at"
-    t.index ["question_row_column_option_id"], name: "index_qrcqrco_on_qrco_id"
+    t.index ["question_row_column_id", "question_row_column_option_id"], name: "index_qrcqrco_on_qrc_id_qrco_id"
+    t.index ["question_row_column_option_id"], name: "fk_rails_dd7bf341f1"
   end
 
   create_table "question_rows", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "question_id"
     t.string "name"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_question_rows_on_deleted_at"
-    t.index ["question_id", "deleted_at"], name: "index_qr_on_q_id_deleted_at"
+    t.index ["question_id"], name: "index_question_rows_on_question_id"
   end
 
   create_table "questions", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "extraction_forms_projects_section_id"
     t.text "name"
     t.text "description"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_questions_on_deleted_at"
-    t.index ["extraction_forms_projects_section_id", "deleted_at"], name: "index_q_on_efps_id_deleted_at"
+    t.index ["extraction_forms_projects_section_id"], name: "index_questions_on_extraction_forms_projects_section_id"
   end
 
   create_table "reasons", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name", limit: 1000
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.datetime "deleted_at", precision: nil
     t.integer "label_type_id"
-    t.index ["deleted_at"], name: "index_reasons_on_deleted_at"
     t.index ["label_type_id"], name: "index_reasons_on_label_type_id"
   end
 
@@ -1518,34 +1309,26 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.text "name"
     t.string "recordable_type"
     t.integer "recordable_id"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_records_on_deleted_at"
     t.index ["recordable_id"], name: "index_records_on_recordable_id"
     t.index ["recordable_type", "recordable_id"], name: "index_records_on_recordable_type_and_recordable_id"
   end
 
   create_table "result_statistic_section_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_result_statistic_section_types_on_deleted_at"
   end
 
   create_table "result_statistic_section_types_measures", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "result_statistic_section_type_id"
     t.integer "measure_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.boolean "default", default: false
     t.integer "type1_type_id"
     t.integer "result_statistic_section_types_measure_id"
-    t.index ["active"], name: "index_result_statistic_section_types_measures_on_active"
-    t.index ["deleted_at"], name: "index_result_statistic_section_types_measures_on_deleted_at"
     t.index ["measure_id"], name: "index_rsstm_on_m_id"
     t.index ["result_statistic_section_type_id"], name: "index_rsstm_on_rsst_id"
     t.index ["result_statistic_section_types_measure_id"], name: "index_rsstm_on_rsstm_id"
@@ -1555,28 +1338,21 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
   create_table "result_statistic_sections", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "result_statistic_section_type_id"
     t.integer "population_id"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_result_statistic_sections_on_deleted_at"
     t.index ["population_id"], name: "index_result_statistic_sections_on_population_id"
-    t.index ["result_statistic_section_type_id", "population_id", "deleted_at"], name: "index_rss_on_rsst_id_eefpst1rc_id_uniq", unique: true
+    t.index ["result_statistic_section_type_id", "population_id"], name: "index_rss_on_rsst_id_eefpst1rc_id_uniq", unique: true
   end
 
   create_table "result_statistic_sections_measures", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "measure_id"
     t.integer "result_statistic_section_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "result_statistic_sections_measure_id"
-    t.index ["active"], name: "index_result_statistic_sections_measures_on_active"
-    t.index ["deleted_at"], name: "index_result_statistic_sections_measures_on_deleted_at"
-    t.index ["measure_id", "result_statistic_section_id", "active"], name: "index_rssm_on_m_id_rss_id_active"
-    t.index ["measure_id", "result_statistic_section_id", "deleted_at"], name: "index_rssm_on_m_id_rss_id_deleted_at"
-    t.index ["result_statistic_section_id"], name: "index_rssm_on_rss_id"
-    t.index ["result_statistic_sections_measure_id"], name: "index_rssm_on_rssm_id"
+    t.index ["measure_id", "result_statistic_section_id", "result_statistic_sections_measure_id"], name: "index_rssm_on_m_id_rss_id_rssm_id"
+    t.index ["result_statistic_section_id"], name: "fk_rails_9c731fa440"
+    t.index ["result_statistic_sections_measure_id"], name: "fk_rails_13a8ed2ac3"
   end
 
   create_table "result_statistic_sections_measures_comparisons", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -1596,10 +1372,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
 
   create_table "roles", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_roles_on_deleted_at"
     t.index ["name"], name: "index_roles_on_name", unique: true
   end
 
@@ -1819,7 +1593,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.string "name"
     t.bigint "sd_outcomeable_id"
     t.string "sd_outcomeable_type"
-    t.datetime "deleted_at", precision: nil
     t.index ["name"], name: "index_sd_outcomes_on_name"
     t.index ["sd_outcomeable_id", "sd_outcomeable_type"], name: "index_sd_outcomes_on_sd_outcomeable_id_and_sd_outcomeable_type"
     t.index ["sd_outcomeable_type", "sd_outcomeable_id", "name"], name: "index_sd_outcomes_on_type_id_name", unique: true
@@ -1941,11 +1714,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
   create_table "sections", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.boolean "default", default: false
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["default"], name: "index_sections_on_default"
-    t.index ["deleted_at"], name: "index_sections_on_deleted_at"
     t.index ["name"], name: "index_sections_on_name", unique: true
   end
 
@@ -2034,29 +1805,19 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.string "statusable_type"
     t.bigint "statusable_id"
     t.bigint "status_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_statusings_on_active"
-    t.index ["deleted_at"], name: "index_statusings_on_deleted_at"
     t.index ["status_id"], name: "index_statusings_on_status_id"
-    t.index ["statusable_type", "statusable_id", "status_id", "active"], name: "index_statusings_on_type_id_status_id_active_uniq", unique: true
-    t.index ["statusable_type", "statusable_id", "status_id", "deleted_at"], name: "index_statusings_on_type_id_status_id_deleted_at_uniq", unique: true
+    t.index ["statusable_type", "statusable_id", "status_id"], name: "index_statusings_on_type_id_status_id_uniq", unique: true
   end
 
   create_table "suggestions", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "suggestable_type"
     t.integer "suggestable_id"
     t.integer "user_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_suggestions_on_active"
-    t.index ["deleted_at"], name: "index_suggestions_on_deleted_at"
-    t.index ["suggestable_type", "suggestable_id", "user_id", "active"], name: "index_suggestions_on_type_id_user_id_active_uniq", unique: true
-    t.index ["suggestable_type", "suggestable_id", "user_id", "deleted_at"], name: "index_suggestions_on_type_id_user_id_deleted_at_uniq", unique: true
+    t.index ["suggestable_type", "suggestable_id", "user_id"], name: "index_suggestions_on_type_id_user_id_uniq", unique: true
     t.index ["user_id"], name: "index_suggestions_on_user_id"
   end
 
@@ -2067,8 +1828,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "projects_users_role_id"
-    t.datetime "deleted_at", precision: nil
-    t.index ["deleted_at"], name: "index_taggings_on_deleted_at"
     t.index ["projects_users_role_id"], name: "index_taggings_on_projects_users_role_id"
     t.index ["tag_id"], name: "index_taggings_on_tag_id"
     t.index ["taggable_type", "taggable_id"], name: "index_taggings_on_taggable_type_and_taggable_id"
@@ -2078,8 +1837,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.datetime "deleted_at", precision: nil
-    t.index ["deleted_at"], name: "index_tags_on_deleted_at"
   end
 
   create_table "task_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -2092,13 +1849,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.integer "task_type_id"
     t.integer "project_id"
     t.integer "num_assigned"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.boolean "required_inclusion_reason", default: false
     t.boolean "required_exclusion_reason", default: false
     t.boolean "required_maybe_reason", default: false
-    t.index ["deleted_at"], name: "index_tasks_on_deleted_at"
     t.index ["project_id"], name: "index_tasks_on_project_id"
     t.index ["task_type_id"], name: "index_tasks_on_task_type_id"
   end
@@ -2114,10 +1869,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.integer "project_id"
     t.boolean "enabled"
     t.string "name"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_teams_on_deleted_at"
     t.index ["project_id"], name: "index_teams_on_project_id"
     t.index ["team_type_id"], name: "index_teams_on_team_type_id"
   end
@@ -2140,24 +1893,18 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
   create_table "timepoint_names", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.string "unit", default: "", null: false
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.boolean "isValidUCUM", default: false
     t.boolean "isValidUCUMTested", default: false
-    t.index ["deleted_at"], name: "index_timepoint_names_on_deleted_at"
   end
 
   create_table "tps_arms_rssms", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "timepoint_id"
     t.integer "extractions_extraction_forms_projects_sections_type1_id"
     t.integer "result_statistic_sections_measure_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_tps_arms_rssms_on_active"
-    t.index ["deleted_at"], name: "index_tps_arms_rssms_on_deleted_at"
     t.index ["extractions_extraction_forms_projects_sections_type1_id"], name: "index_tps_arms_rssms_on_eefpst_id"
     t.index ["result_statistic_sections_measure_id"], name: "index_tps_arms_rssms_on_rssm_id"
     t.index ["timepoint_id"], name: "index_tps_arms_rssms_on_timepoint_id"
@@ -2167,33 +1914,25 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.integer "timepoint_id"
     t.integer "comparison_id"
     t.integer "result_statistic_sections_measure_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_tps_comparisons_rssms_on_active"
     t.index ["comparison_id"], name: "index_tps_comparisons_rssms_on_comparison_id"
-    t.index ["deleted_at"], name: "index_tps_comparisons_rssms_on_deleted_at"
     t.index ["result_statistic_sections_measure_id"], name: "index_tps_comparisons_rssms_on_rssm_id"
     t.index ["timepoint_id"], name: "index_tps_comparisons_rssms_on_timepoint_id"
   end
 
   create_table "type1_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_type1_types_on_deleted_at"
   end
 
   create_table "type1s", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.text "description"
-    t.datetime "deleted_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["deleted_at"], name: "index_type1s_on_deleted_at"
-    t.index ["name", "description", "deleted_at"], name: "index_type1s_on_name_and_description_and_deleted_at", unique: true, length: { description: 255 }
+    t.index ["name", "description"], name: "index_type1s_on_name_and_description", length: { description: 255 }
   end
 
   create_table "user_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -2215,7 +1954,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.string "last_sign_in_ip"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.datetime "deleted_at", precision: nil
     t.string "confirmation_token"
     t.datetime "confirmed_at", precision: nil
     t.datetime "confirmation_sent_at", precision: nil
@@ -2232,8 +1970,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.string "refresh_token"
     t.string "api_key"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
-    t.index ["deleted_at"], name: "index_users_on_deleted_at"
-    t.index ["email", "deleted_at"], name: "index_users_on_email_and_deleted_at", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
     t.index ["user_type_id"], name: "index_users_on_user_type_id"
@@ -2243,13 +1980,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
     t.integer "wac_id"
     t.integer "bac_id"
     t.integer "result_statistic_sections_measure_id"
-    t.datetime "deleted_at", precision: nil
-    t.boolean "active"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["active"], name: "index_wacs_bacs_rssms_on_active"
     t.index ["bac_id"], name: "index_wacs_bacs_rssms_on_bac_id"
-    t.index ["deleted_at"], name: "index_wacs_bacs_rssms_on_deleted_at"
     t.index ["result_statistic_sections_measure_id"], name: "index_wacs_bacs_rssms_on_result_statistic_sections_measure_id"
     t.index ["wac_id"], name: "index_wacs_bacs_rssms_on_wac_id"
   end
@@ -2296,7 +2029,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_02_065032) do
   add_foreign_key "degrees_profiles", "profiles"
   add_foreign_key "dispatches", "users"
   add_foreign_key "eefps_qrcfs", "extractions_extraction_forms_projects_sections"
-  add_foreign_key "eefps_qrcfs", "extractions_extraction_forms_projects_sections_type1s"
   add_foreign_key "eefps_qrcfs", "question_row_column_fields"
   add_foreign_key "eefpsqrcf_qrcqrcos", "eefps_qrcfs"
   add_foreign_key "eefpsqrcf_qrcqrcos", "question_row_columns_question_row_column_options"
