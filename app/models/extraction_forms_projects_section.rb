@@ -54,7 +54,8 @@ class ExtractionFormsProjectsSection < ApplicationRecord
            through: :extraction_forms_projects_sections_type1s, dependent: :destroy
 
   has_many :extraction_forms_projects_section_type2s, class_name: 'ExtractionFormsProjectsSection',
-                                                      foreign_key: 'extraction_forms_projects_section_id'
+                                                      foreign_key: 'extraction_forms_projects_section_id',
+                                                      dependent: :nullify
 
   has_many :extractions_extraction_forms_projects_sections, dependent: :destroy,
                                                             inverse_of: :extraction_forms_projects_section
