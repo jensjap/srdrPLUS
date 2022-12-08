@@ -62,7 +62,7 @@ class Cleanup
     QualityDimensionSection,
     QuestionRowColumnField,
     QuestionRowColumnOption,
-    QuestionRowColumnType,dedupe_eefpsff
+    QuestionRowColumnType,
     QuestionRowColumn,
     QuestionRowColumnsQuestionRowColumnOption,
     QuestionRow,
