@@ -2029,6 +2029,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_05_080103) do
   add_foreign_key "degrees_profiles", "profiles"
   add_foreign_key "dispatches", "users"
   add_foreign_key "eefps_qrcfs", "extractions_extraction_forms_projects_sections"
+  add_foreign_key "eefps_qrcfs", "extractions_extraction_forms_projects_sections_type1s"
   add_foreign_key "eefps_qrcfs", "question_row_column_fields"
   add_foreign_key "eefpsqrcf_qrcqrcos", "eefps_qrcfs"
   add_foreign_key "eefpsqrcf_qrcqrcos", "question_row_columns_question_row_column_options"

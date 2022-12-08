@@ -178,4 +178,31 @@ class Cleanup
     end
     number_of_destroyed
   end
+
+  def self.dedupe_projects_user
+    grouped = ProjectsUser.all.group_by do |model|
+      [
+        model.project_id,
+        model.user_id
+      ]
+    end
+    number_of_destroyed = 0
+    skipped = 0
+    grouped.each_value do |duplicates|
+      duplicates.sort_by!(&:id)
+      duplicates.shift
+      duplicates.each.each do |duplicate|
+        if duplicate.projects_users_roles.blank? &&
+           duplicate.imports.blank? &&
+           duplicate.projects_users_term_groups_colors.blank? &&
+           duplicate.destroy
+          number_of_destroyed += 1
+        else
+          skipped += 1
+        end
+      end
+    end
+    puts "able to destroy: #{number_of_destroyed}"
+    puts "skipped: #{skipped}"
+  end
 end
