@@ -433,7 +433,7 @@ class RemoveParanoiaColumnsFromAllTables < ActiveRecord::Migration[7.0]
     add_foreign_key "degrees_profiles", "profiles", if_not_exists: true
     add_foreign_key "dispatches", "users", if_not_exists: true
     add_foreign_key "eefps_qrcfs", "extractions_extraction_forms_projects_sections", if_not_exists: true
-    # add_foreign_key "eefps_qrcfs", "extractions_extraction_forms_projects_sections_type1s", if_not_exists: true # this is an optional relationship
+    add_foreign_key "eefps_qrcfs", "extractions_extraction_forms_projects_sections_type1s", if_not_exists: true
     add_foreign_key "eefps_qrcfs", "question_row_column_fields", if_not_exists: true
     add_foreign_key "eefpsqrcf_qrcqrcos", "eefps_qrcfs", if_not_exists: true
     add_foreign_key "eefpsqrcf_qrcqrcos", "question_row_columns_question_row_column_options", if_not_exists: true

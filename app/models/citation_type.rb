@@ -13,5 +13,5 @@ class CitationType < ApplicationRecord
   SECONDARY = 'Secondary'.freeze
   ABSTRACKR = 'Abstrackr'.freeze
 
-  has_many :citations
+  has_many :citations, dependent: :nullify
 end

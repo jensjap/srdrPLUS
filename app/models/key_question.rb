@@ -20,7 +20,7 @@ class KeyQuestion < ApplicationRecord
   has_many :projects,         through: :key_questions_projects
   has_many :extraction_forms, through: :key_questions_projects
 
-  has_many :sd_key_questions, inverse_of: :key_question, dependent: :destroy
+  has_many :sd_key_questions, inverse_of: :key_question, dependent: :nullify
   has_many :sd_meta_data, through: :sd_key_questions
 
   validates :name, presence: true, uniqueness: { case_sensitive: true }
