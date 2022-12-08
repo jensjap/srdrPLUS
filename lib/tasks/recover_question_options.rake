@@ -11,6 +11,9 @@ def logger
 end
 
 def initialize_variables
+  raise 'Missing ENV value for `recover_question_option_project_id`' if ENV['recover_question_option_project_id'].blank?
+  raise 'Missing ENV value for `SRDRPLUS_DATABASE_RECOVERY_SCHEMA`' if ENV['SRDRPLUS_DATABASE_RECOVERY_SCHEMA'].blank?
+
   @project_id         = ENV['recover_question_option_project_id']
   @recovery_project_q = db.query(
     "SELECT
@@ -71,22 +74,13 @@ def _recover_options_for_multi_choice_qrc(qrc)
     name    = qrcqrco_q['name']
 
     qrcqrco = _find_qrcqrco(qrc_id, qrco_id, name)
-    if qrcqrco
+    if qrcqrco.present?
       # If qrcqrco is found then check whether the primary id matches.
       if qrcqrco.id.eql?(pid)
-        # The option might be soft-deleted. Restore if this is the case,
-        # do nothing otherwise.
-        if qrcqrco.deleted?
-          # Restore the soft-deleted option.
-          logger.info "Restored missing option: #{qrcqrco.name}"
-          qrcqrco.restore #!!!
-          @cnt_restores += 1
-        else
-          # Nothing to do, this option is present.
-          logger.debug 'Options already present:'
-          logger.debug "  Question: '#{qrcqrco.question.name}'"
-          logger.debug "  #{qrcqrco.name}"
-        end
+        # Nothing to do, this option is present.
+        logger.debug 'Options already present:'
+        logger.debug "  Question: '#{qrcqrco.question.name}'"
+        logger.debug "  #{qrcqrco.name}"
       else
         # Don't do anything, just report this.
         logger.debug '????????????????????????????????????????????????????????????????????'
@@ -112,17 +106,7 @@ def _recover_options_for_multi_choice_qrc(qrc)
 end
 
 def _find_qrcqrco(question_row_column_id, question_row_column_option_id, name)
-  qrcqrco = QuestionRowColumnsQuestionRowColumnOption
-    .find_by(
-      question_row_column_id:,
-      question_row_column_option_id:,
-      name:
-    )
-
-  return qrcqrco if qrcqrco.present?
-
   QuestionRowColumnsQuestionRowColumnOption
-    .with_deleted
     .find_by(
       question_row_column_id:,
       question_row_column_option_id:,
@@ -131,22 +115,35 @@ def _find_qrcqrco(question_row_column_id, question_row_column_option_id, name)
 end
 
 def _create_qrcqrco_with_primary_id_and_option_text(id, question_row_column_id, question_row_column_option_id, name)
-  #qrcqrco = QuestionRowColumnsQuestionRowColumnOption.new(id:, question_row_column_id: ,name:, question_row_column_option_id: 1)
-  qrcqrco = QuestionRowColumnsQuestionRowColumnOption.new(question_row_column_id: ,name:, question_row_column_option_id: 1)
-  if qrcqrco.save #!!!
-    @cnt_recreated += 1
-    logger.info 'Created missing option: '
-    logger.info "  id     : #{id}"
-    logger.info "  qrc_id : #{question_row_column_id}"
-    logger.info "  qrco_id: #{question_row_column_option_id}"
-    logger.info "  name   : #{name}"
-    logger.info '|=====================================|'
-    logger.info '|                Success              |'
-    logger.info '|=====================================|'
-  else
-    logger.info 'Failed to created qrcqrco.'
-    debugger
+  begin
+    # Try to create one with the original ID.
+    qrcqrco = QuestionRowColumnsQuestionRowColumnOption.new(
+      id:,
+      question_row_column_id:,
+      name:,
+      question_row_column_option_id: 1
+    )
+    qrcqrco.save
+    logger.info 'Successfully created QuestionRowColumnsQuestionRowColumnOption with original ID.'
+  rescue StandardError => e
+    logger.info 'Unable to create QuestionRowColumnsQuestionRowColumnOption with original ID.'
+    qrcqrco = QuestionRowColumnsQuestionRowColumnOption.new(
+      question_row_column_id:,
+      name:,
+      question_row_column_option_id: 1
+    )
+    qrcqrco.save
+    logger.info 'Created one with new ID.'
   end
+  @cnt_recreated += 1
+  logger.info 'Created missing option: '
+  logger.info "  id     : #{id}"
+  logger.info "  qrc_id : #{question_row_column_id}"
+  logger.info "  qrco_id: #{question_row_column_option_id}"
+  logger.info "  name   : #{name}"
+  logger.info '|=====================================|'
+  logger.info '|                Success              |'
+  logger.info '|=====================================|'
 end
 
 namespace(:recover_question_options) do
