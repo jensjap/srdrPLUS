@@ -148,8 +148,17 @@ class Cleanup
   end
 
   def self.dedupe_statusing
-    grouped = Statusing.all.group_by { |model| [model.statusable_type, model.statusable_id, model.status_id] }
     number_of_destroyed = 0
+    grouped = Statusing
+              .all
+              .group_by do |model|
+      [
+        model.statusable_type,
+        model.statusable_id,
+        model.status_id
+      ]
+    end
+    pre_grouped_size = grouped.size
     grouped.each_value do |duplicates|
       duplicates.sort_by!(&:id)
       duplicates.shift
@@ -157,18 +166,33 @@ class Cleanup
         number_of_destroyed += 1 if duplicate.destroy
       end
     end
+    grouped = Statusing
+              .all
+              .group_by do |model|
+      [
+        model.statusable_type,
+        model.statusable_id,
+        model.status_id
+      ]
+    end
+    post_grouped_size = grouped.size
+    raise unless pre_grouped_size.eql?(post_grouped_size)
+
     number_of_destroyed
   end
 
   def self.dedupe_eefpsff
-    grouped = ExtractionsExtractionFormsProjectsSectionsFollowupField.all.group_by do |model|
+    number_of_destroyed = 0
+    grouped = ExtractionsExtractionFormsProjectsSectionsFollowupField
+              .all
+              .group_by do |model|
       [
         model.extractions_extraction_forms_projects_section_id,
         model.extractions_extraction_forms_projects_sections_type1_id,
         model.followup_field_id
       ]
     end
-    number_of_destroyed = 0
+    pre_grouped_size = grouped.size
     grouped.each_value do |duplicates|
       duplicates.sort_by!(&:id)
       duplicates.shift
@@ -176,6 +200,18 @@ class Cleanup
         number_of_destroyed += 1 if duplicate.destroy
       end
     end
+    grouped = ExtractionsExtractionFormsProjectsSectionsFollowupField
+              .all
+              .group_by do |model|
+      [
+        model.extractions_extraction_forms_projects_section_id,
+        model.extractions_extraction_forms_projects_sections_type1_id,
+        model.followup_field_id
+      ]
+    end
+    post_grouped_size = grouped.size
+    raise unless pre_grouped_size.eql?(post_grouped_size)
+
     number_of_destroyed
   end
 
