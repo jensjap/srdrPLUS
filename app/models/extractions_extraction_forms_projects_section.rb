@@ -32,7 +32,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   has_many :link_to_type2s,
            class_name: 'ExtractionsExtractionFormsProjectsSection',
            foreign_key: 'extractions_extraction_forms_projects_section_id',
-           dependent: :destroy
+           dependent: :nullify
 
   has_many :extractions_extraction_forms_projects_sections_type1s,
            -> { ordered },

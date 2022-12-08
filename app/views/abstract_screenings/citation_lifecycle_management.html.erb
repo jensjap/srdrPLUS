@@ -46,7 +46,7 @@
                     @click="changeOrderBy('accession_number_alts')"
                   >
                     <div class="flex justify-between">
-                      Accession No.
+                      Accession No. (e.g. PubMed ID)
                       <template
                         x-if="pagination.sort == 'asc' && pagination.order_by == 'accession_number_alts'"
                       >
@@ -427,7 +427,7 @@
                       :class="selected.some(selectedCp => selectedCp.citations_project_id == result.citations_project_id) ? '!bg-green-100' : '!bg-white'"
                     >
                       <td
-                        class="pl-4 pr-3 text-sm text-gray-500 sm:pl-6 w-32 overflow-hidden text-ellipsis whitespace-nowrap"
+                        class="pl-4 pr-3 text-sm text-gray-500 max-w-[250px] sm:pl-6 w-32 overflow-hidden text-ellipsis whitespace-nowrap"
                         x-text="result.accession_number_alts"
                       ></td>
                       <td

@@ -28,7 +28,7 @@ class Citation < ApplicationRecord
 
   belongs_to :citation_type, optional: true
 
-  has_one :journal, dependent: :destroy
+  has_one :journal, dependent: :nullify
 
   has_many :citations_projects, dependent: :destroy, inverse_of: :citation
   has_many :projects, through: :citations_projects

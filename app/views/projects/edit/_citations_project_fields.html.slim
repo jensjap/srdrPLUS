@@ -1,7 +1,7 @@
 li.accordion-item.citation-row.nested-fields data-accordion-item=''
   a.citation-label.accordion-title href='#'
     span[style='font-weight:bold;']
-      | Accession No.
+      | Accession No. (e.g. PubMed ID)
     '
     .citation-numbers
       /= ( @citation_dict[ f.object.citation_id ].pmid || 'N/A' )

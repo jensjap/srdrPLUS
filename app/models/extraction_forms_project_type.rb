@@ -13,7 +13,7 @@ class ExtractionFormsProjectType < ApplicationRecord
   DIAGNOSTIC_TEST = 'Diagnostic Test'.freeze
   MINI_EXTRACTION = 'Citation Screening Extraction Form'.freeze
 
-  has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :extraction_forms_project_type
+  has_many :extraction_forms_projects, dependent: :nullify, inverse_of: :extraction_forms_project_type
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 end
