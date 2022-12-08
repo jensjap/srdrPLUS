@@ -216,14 +216,17 @@ class Cleanup
   end
 
   def self.dedupe_projects_user
-    grouped = ProjectsUser.all.group_by do |model|
+    number_of_destroyed = 0
+    skipped = 0
+    grouped = ProjectsUser
+              .all
+              .group_by do |model|
       [
         model.project_id,
         model.user_id
       ]
     end
-    number_of_destroyed = 0
-    skipped = 0
+    pre_grouped_size = grouped.size
     grouped.each_value do |duplicates|
       duplicates.sort_by!(&:id)
       duplicates.shift
@@ -238,6 +241,17 @@ class Cleanup
         end
       end
     end
+    grouped = ProjectsUser
+              .all
+              .group_by do |model|
+      [
+        model.project_id,
+        model.user_id
+      ]
+    end
+    pre_grouped_size = grouped.size
+    raise unless pre_grouped_size.eql?(post_grouped_size)
+
     puts "able to destroy: #{number_of_destroyed}"
     puts "skipped: #{skipped}"
   end
