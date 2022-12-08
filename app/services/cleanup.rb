@@ -145,6 +145,7 @@ class Cleanup
   def self.dedupe_all
     dedupe_statusing
     dedupe_eefpsff
+    dedupe_projects_user
   end
 
   def self.dedupe_statusing
@@ -249,7 +250,7 @@ class Cleanup
         model.user_id
       ]
     end
-    pre_grouped_size = grouped.size
+    post_grouped_size = grouped.size
     raise unless pre_grouped_size.eql?(post_grouped_size)
 
     puts "able to destroy: #{number_of_destroyed}"
