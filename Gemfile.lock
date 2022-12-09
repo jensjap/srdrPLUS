@@ -14,7 +14,7 @@ GIT
 
 GIT
   remote: https://github.com/sleepwalk712/fhir_models.git
-  revision: cdb11ea950742a7d8eb31b5d87752659f05b60da
+  revision: 8b2dd87dc00b7e7bda5cdf1286c92fc908e20f88
   specs:
     fhir_models (4.2.2)
       bcp47 (>= 0.3)

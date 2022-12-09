@@ -139,6 +139,7 @@ Rails.application.routes.draw do
     namespace :v3 do
       resources :projects, shallow: true, only: [] do
         resources :citations, only: %i[index show]
+        resources :key_questions, only: [:index, :show]
       end
     end # END namespace :v3 do
   end # END namespace :api do
