@@ -6,18 +6,9 @@
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  comparison_id :integer
-#  deleted_at    :datetime
 #
 
 class ComparateGroup < ApplicationRecord
-  acts_as_paranoid
-  before_destroy :really_destroy_children!
-  def really_destroy_children!
-    comparates.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-
   belongs_to :comparison, inverse_of: :comparate_groups
 
   has_many :comparates, inverse_of: :comparate_group, dependent: :destroy

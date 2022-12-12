@@ -5,21 +5,12 @@
 #  id          :integer          not null, primary key
 #  question_id :integer
 #  name        :string(255)
-#  deleted_at  :datetime
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #
 
 class QuestionRow < ApplicationRecord
   attr_accessor :skip_callbacks
-
-  acts_as_paranoid
-  before_destroy :really_destroy_children!
-  def really_destroy_children!
-    question_row_columns.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
 
   after_create :create_default_question_row_columns, unless: :skip_callbacks
 

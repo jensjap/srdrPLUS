@@ -7,28 +7,16 @@
 #  updated_at      :datetime         not null
 #  comparable_type :string(255)
 #  comparable_id   :integer
-#  deleted_at      :datetime
 #
 
 class ComparableElement < ApplicationRecord
-  acts_as_paranoid
-  before_destroy :really_destroy_children!
-  def really_destroy_children!
-    comparates.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-
-  after_destroy :destroy_comparisons
+  before_destroy :destroy_comparisons
 
   belongs_to :comparable, polymorphic: true
 
-  has_many :comparates, inverse_of: :comparable_element
+  has_many :comparates, dependent: :destroy, inverse_of: :comparable_element
   has_many :comparate_groups, through: :comparates
   has_many :comparisons, through: :comparate_groups
-  # !!! Birol: why is this has_one?
-  # has_one :comparate
-  # has_one :extractions_extraction_forms_projects_sections_type1s, :source => :comparable, :source_type => 'ExtractionsExtractionFormsProjectsSectionsType1'
 
   private
 

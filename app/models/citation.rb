@@ -5,7 +5,6 @@
 #  id                :integer          not null, primary key
 #  citation_type_id  :integer
 #  name              :string(500)
-#  deleted_at        :datetime
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  refman            :string(255)
@@ -23,24 +22,13 @@ class Citation < ApplicationRecord
   include SharedQueryableMethods
   include SharedProcessTokenMethods
 
-  acts_as_paranoid
-  before_destroy :really_destroy_children!
-  def really_destroy_children!
-    citations_projects.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    authors_citations.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-
   searchkick
 
   after_commit :reindex_citations_projects
 
   belongs_to :citation_type, optional: true
 
-  has_one :journal, dependent: :destroy
+  has_one :journal, dependent: :nullify
 
   has_many :citations_projects, dependent: :destroy, inverse_of: :citation
   has_many :projects, through: :citations_projects

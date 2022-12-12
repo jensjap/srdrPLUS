@@ -36,7 +36,7 @@ json.sf_questions @screening_form.sf_questions.order(:position) do |sf_question|
       cell = cell_hash[sf_row.id] && cell_hash[sf_row.id][sf_column.id]
       if cell
         sf_fulltext_records_hash = {}
-        cell.sf_fulltext_records.each do |sf_fulltext_record|
+        cell.sf_fulltext_records.where(fulltext_screening_result: @fulltext_screening_result).each do |sf_fulltext_record|
           sf_fulltext_records_hash[sf_fulltext_record.value] =
             { sf_fulltext_record_id: sf_fulltext_record.id, followup: sf_fulltext_record.followup }
         end

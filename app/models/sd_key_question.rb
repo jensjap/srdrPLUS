@@ -20,7 +20,7 @@ class SdKeyQuestion < ApplicationRecord
   belongs_to :sd_meta_datum, inverse_of: :sd_key_questions
   belongs_to :key_question, inverse_of: :sd_key_questions, optional: true
 
-  has_many :sd_result_items, inverse_of: :sd_key_question, dependent: :destroy
+  has_many :sd_result_items, inverse_of: :sd_key_question, dependent: :nullify
   has_many :sd_key_questions_key_question_types, inverse_of: :sd_key_question, dependent: :destroy
   has_many :key_question_types, through: :sd_key_questions_key_question_types
 
@@ -34,7 +34,7 @@ class SdKeyQuestion < ApplicationRecord
   has_many :sd_key_questions_sd_picods, inverse_of: :sd_key_question, dependent: :destroy
   has_many :sd_picods, through: :sd_key_questions_sd_picods
 
-  has_many :sd_summary_of_evidences, inverse_of: :sd_key_question, dependent: :destroy
+  has_many :sd_summary_of_evidences, inverse_of: :sd_key_question, dependent: :nullify
 
   has_one :ordering, as: :orderable, dependent: :destroy
 
@@ -46,7 +46,7 @@ class SdKeyQuestion < ApplicationRecord
   end
 
   def name
-    self.try(:key_question).try(:name)
+    try(:key_question).try(:name)
   end
 
   def key_question_type_ids=(tokens)
@@ -67,15 +67,15 @@ class SdKeyQuestion < ApplicationRecord
   end
 
   def fuzzy_match
-    fz = FuzzyMatch.new(self.sd_meta_datum.project.key_questions, read: :name)
-    fz.find(self.key_question.name)
+    fz = FuzzyMatch.new(sd_meta_datum.project.key_questions, read: :name)
+    fz.find(key_question.name)
   end
 
   def key_question_name
-    self.key_question&.name || ""
+    key_question&.name || ''
   end
 
   def key_question_name=(name)
-    self.update( key_question: KeyQuestion.find_or_create_by(name: name) )
+    update(key_question: KeyQuestion.find_or_create_by(name:))
   end
 end

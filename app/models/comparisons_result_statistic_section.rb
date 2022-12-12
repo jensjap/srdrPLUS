@@ -5,17 +5,11 @@
 #  id                          :integer          not null, primary key
 #  comparison_id               :integer
 #  result_statistic_section_id :integer
-#  deleted_at                  :datetime
-#  active                      :boolean
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #
 
 class ComparisonsResultStatisticSection < ApplicationRecord
-  include SharedParanoiaMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
-
   belongs_to :comparison
   belongs_to :result_statistic_section
 

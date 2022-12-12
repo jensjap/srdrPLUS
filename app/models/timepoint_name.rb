@@ -5,7 +5,6 @@
 #  id                :integer          not null, primary key
 #  name              :string(255)
 #  unit              :string(255)      default(""), not null
-#  deleted_at        :datetime
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  isValidUCUM       :boolean          default(FALSE)
@@ -16,17 +15,6 @@ class TimepointName < ApplicationRecord
   SERVICE_ADDRESS = 'https://ucum.nlm.nih.gov/ucum-service/v1/isValidUCUM/'.freeze
 
   include SharedQueryableMethods
-
-  acts_as_paranoid
-  before_destroy :really_destroy_children!
-  def really_destroy_children!
-    extractions_extraction_forms_projects_sections_type1_row_columns.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    extraction_forms_projects_sections_type1s_timepoint_names.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
 
   after_create :test_isValidUCUM
 

@@ -6,8 +6,6 @@
 #  statusable_type :string(255)
 #  statusable_id   :bigint
 #  status_id       :bigint
-#  deleted_at      :datetime
-#  active          :boolean
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #

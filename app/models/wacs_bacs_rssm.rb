@@ -6,20 +6,11 @@
 #  wac_id                               :integer
 #  bac_id                               :integer
 #  result_statistic_sections_measure_id :integer
-#  deleted_at                           :datetime
-#  active                               :boolean
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
 #
 
 class WacsBacsRssm < ApplicationRecord
-  include SharedParanoiaMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
-  def really_destroy_children!
-    Record.with_deleted.where(recordable_type: self.class, recordable_id: id).each(&:really_destroy!)
-  end
-
   belongs_to :wac, class_name: 'Comparison', foreign_key: 'wac_id', inverse_of: :wacs_bacs_rssms
   belongs_to :bac, class_name: 'Comparison', foreign_key: 'bac_id', inverse_of: :wacs_bacs_rssms
   belongs_to :result_statistic_sections_measure,                    inverse_of: :wacs_bacs_rssms

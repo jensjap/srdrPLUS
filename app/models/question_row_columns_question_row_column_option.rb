@@ -6,24 +6,13 @@
 #  question_row_column_id        :integer
 #  question_row_column_option_id :integer
 #  name                          :text(65535)
-#  deleted_at                    :datetime
-#  active                        :boolean
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
 #
 
 class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
-  include SharedParanoiaMethods
   include SharedQueryableMethods
   include SharedSuggestableMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
-  before_destroy :really_destroy_children!
-  def really_destroy_children!
-    Suggestion.with_deleted.where(suggestable_type: self.class, suggestable_id: id).each(&:really_destroy!)
-    FollowupField.with_deleted.where(question_row_columns_question_row_column_option_id: id).each(&:really_destroy!)
-    Dependency.with_deleted.where(prerequisitable_type: self.class, prerequisitable_id: id).each(&:really_destroy!)
-  end
 
   after_create :set_default_values
   after_create :record_suggestor
@@ -53,14 +42,9 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
 
   def includes_followup=(bool)
     bool = ActiveModel::Type::Boolean.new.cast bool
-    if bool and !followup_field.present?
-      deleted_field = FollowupField.where(question_row_columns_question_row_column_option_id: id).only_deleted.first
-      if deleted_field.present?
-        deleted_field.restore recursive: true
-      else
-        build_followup_field.save
-      end
-    elsif !bool and followup_field.present?
+    if bool && !followup_field.present?
+      build_followup_field.save
+    elsif !bool && followup_field.present?
       followup_field.destroy.save
     end
   end

@@ -1,0 +1,116 @@
+<div
+  class="relative z-10"
+  aria-labelledby="slide-over-title"
+  role="dialog"
+  aria-modal="true"
+  x-cloak
+  x-show="historyPanel"
+>
+  <div
+    class="fixed inset-0 bg-gray-500 bg-opacity-75"
+    x-show="historyPanel"
+    x-transition:enter="ease-out duration-500"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="ease-in duration-500"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+  ></div>
+
+  <div class="fixed inset-0 overflow-hidden">
+    <div class="absolute inset-0 overflow-hidden">
+      <div
+        class="pointer-events-none fixed inset-y-0 left-0 flex max-w-full pr-10"
+      >
+        <div
+          class="pointer-events-auto w-screen max-w-md"
+          x-show="historyPanel"
+          x-transition:enter="transform transition ease-in-out duration-500"
+          x-transition:enter-start="translate-x-[-100%]"
+          x-transition:enter-end="translate-x-0"
+          x-transition:leave="transform transition ease-in-out duration-500"
+          x-transition:leave-start="translate-x-0"
+          x-transition:leave-end="translate-x-[-100%]"
+          @click.outside="historyPanel = false"
+        >
+          <div class="flex h-full flex-col bg-white py-3 shadow-xl">
+            <div class="px-2 sm:px-4">
+              <div class="flex items-start justify-between">
+                <h2
+                  class="text-lg font-medium text-gray-900"
+                  id="slide-over-title"
+                >
+                  Label History
+                </h2>
+                <div class="ml-3 flex h-7 items-center">
+                  <button
+                    @click="historyPanel = false"
+                    type="button"
+                    class="cursor-pointer rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  >
+                    <span class="sr-only">Close panel</span>
+                    <!-- Heroicon name: outline/x-mark -->
+                    <svg
+                      class="h-6 w-6"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="relative mt-1 flex-1">
+              <div class="absolute inset-0 px-2 sm:px-4">
+                <div
+                  class="h-full overflow-y-scroll space-y-1 text-xs pr-2"
+                  aria-hidden="true"
+                >
+                  <div class="flex space-x-1 font-bold">
+                    <div
+                      class="w-1/2 overflow-hidden whitespace-nowrap overflow-ellipsis"
+                    >
+                      Title
+                    </div>
+                    <div
+                      class="w-1/2 overflow-hidden whitespace-nowrap overflow-ellipsis"
+                    >
+                      Authors
+                    </div>
+                    <div>Label</div>
+                  </div>
+                  <template x-for="cp in cps">
+                    <div
+                      class="cursor-pointer flex space-x-1 border-b"
+                      :class="cp.asr_id == asr.id ? 'bg-yellow-100' : ''"
+                      @click="getAsrId(cp.asr_id);"
+                    >
+                      <div
+                        class="w-1/2 overflow-hidden whitespace-nowrap overflow-ellipsis"
+                        x-text="cp.name"
+                      ></div>
+                      <div
+                        class="w-1/2 overflow-hidden whitespace-nowrap overflow-ellipsis"
+                        x-text="cp.authors"
+                      ></div>
+                      <div x-text="cp.label"></div>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

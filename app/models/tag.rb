@@ -6,18 +6,9 @@
 #  name       :string(255)
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  deleted_at :datetime
 #
 
 class Tag < ApplicationRecord
-  acts_as_paranoid
-  before_destroy :really_destroy_children!
-  def really_destroy_children!
-    taggings.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-
   has_many :abstract_screening_results_tags
   has_many :abstract_screening_results, through: :abstract_screening_results_tags
   has_many :fulltext_screening_results_tags

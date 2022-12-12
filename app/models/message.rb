@@ -8,7 +8,6 @@
 #  description     :text(65535)
 #  start_at        :datetime
 #  end_at          :datetime
-#  deleted_at      :datetime
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #
@@ -16,8 +15,6 @@
 class Message < ApplicationRecord
   include SharedDispatchableMethods
   include SharedQueryableMethods
-
-  acts_as_paranoid
 
   belongs_to :message_type, inverse_of: :messages
 

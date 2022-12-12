@@ -7,8 +7,6 @@
 #  extraction_forms_projects_section_type_id :integer
 #  section_id                                :integer
 #  extraction_forms_projects_section_id      :integer
-#  deleted_at                                :datetime
-#  active                                    :boolean
 #  created_at                                :datetime         not null
 #  updated_at                                :datetime         not null
 #  hidden                                    :boolean          default(FALSE)
@@ -18,32 +16,6 @@
 class ExtractionFormsProjectsSection < ApplicationRecord
   include SharedOrderableMethods
   include SharedProcessTokenMethods
-  include SharedParanoiaMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
-  before_destroy :really_destroy_children!
-  def really_destroy_children!
-    ExtractionFormsProjectsSectionOption.with_deleted.where(extraction_forms_projects_section_id: id).each(&:really_destroy!)
-    Ordering.with_deleted.where(orderable_type: self.class, orderable_id: id).each(&:really_destroy!)
-    ExtractionFormsProjectsSectionsType1
-      .with_deleted
-      .where(extraction_forms_projects_section_id: id)
-      .each(&:really_destroy!)
-    Question
-      .with_deleted
-      .where(extraction_forms_projects_section_id: id)
-      .each(&:really_destroy!)
-
-    extraction_forms_projects_section_type2s.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    extractions_extraction_forms_projects_sections.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    key_questions_projects.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
 
   scope :in_standard_extraction, lambda {
     joins(:extraction_forms_project)
@@ -57,9 +29,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
     joins(:extraction_forms_project)
       .where(extraction_forms_projects: { extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::MINI_EXTRACTION) })
   }
-  ################################ CAUTION WHAT IS THIS FOR?
-  # after_commit :mark_as_deleted_or_restore_extraction_forms_projects_section_option
-  ################################
   after_create :create_extraction_forms_projects_section_option
 
   before_validation -> { set_ordering_scoped_by(:extraction_forms_project_id) }
@@ -83,7 +52,8 @@ class ExtractionFormsProjectsSection < ApplicationRecord
            through: :extraction_forms_projects_sections_type1s, dependent: :destroy
 
   has_many :extraction_forms_projects_section_type2s, class_name: 'ExtractionFormsProjectsSection',
-                                                      foreign_key: 'extraction_forms_projects_section_id'
+                                                      foreign_key: 'extraction_forms_projects_section_id',
+                                                      dependent: :nullify
 
   has_many :extractions_extraction_forms_projects_sections, dependent: :destroy,
                                                             inverse_of: :extraction_forms_projects_section
@@ -158,16 +128,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
                                                             link_to_type1.extraction_forms_projects_section_type_id == 1
   end
 
-  def mark_as_deleted_or_restore_extraction_forms_projects_section_option
-    if extraction_forms_projects_section_type_id == 2
-      option = ExtractionFormsProjectsSectionOption.with_deleted.find_or_create_by(extraction_forms_projects_section: self)
-      option.restore if option.deleted?
-    else
-      option = ExtractionFormsProjectsSectionOption.find_by(extraction_forms_projects_section: self)
-      option.destroy if option
-    end
-  end
-
   def extraction_forms_projects_sections_type1s_without_total_arm
     extraction_forms_projects_sections_type1s
       .includes(:type1, :ordering, :type1_type, :extraction_forms_projects_sections_type1s_timepoint_names, :timepoint_names)
@@ -191,24 +151,21 @@ class ExtractionFormsProjectsSection < ApplicationRecord
       qrcqrco_id_dict = {}
       lsof_qdq_ids.each do |qdq_id|
         qdq = QualityDimensionQuestion.find(qdq_id)
-        q = efps.questions.create(name: qdq.name, description: qdq.description)
+        question = efps.questions.create(name: qdq.name, description: qdq.description)
 
         # Associate all key questions.
-        p = q.project
-        p.key_questions_projects.each do |kqp|
-          q.key_questions_projects << kqp
-        end
+        question.key_questions_projects = question.project.key_questions_projects
 
         # if there are no options, then this quality dimension is a text question
         if qdq.quality_dimension_options
-          qr_1 = q.question_rows.first
+          qr_1 = question.question_rows.first
           qr_1.update(name: 'Rating')
 
           # Set field type (dropdown) for first for cell 1x1:
           qrc_1 = qr_1.question_row_columns.first
           qrc_1.update(question_row_column_type_id: 6)
 
-          q.question_rows.create(name: 'Notes/Comments:')
+          question.question_rows.create(name: 'Notes/Comments:')
 
           # Iterate through options and add them.
           first = true
@@ -231,7 +188,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
           end # qdq.quality_dimension_options.each do |qdo|
         end
         qdq.dependencies.each do |prereq|
-          depen_arr << [q.id, prereq.prerequisitable_id]
+          depen_arr << [question.id, prereq.prerequisitable_id]
         end
       end # lsof_qdq_ids.each do |qdq_id|
       depen_arr.each do |q_id, prereq_id|
@@ -244,8 +201,8 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   end
 
   def ensure_sequential_questions
-    questions.each_with_index do |q, idx|
-      q.position = idx + 1
+    questions.each_with_index do |question, idx|
+      question.position = idx + 1
     end
   end
 end

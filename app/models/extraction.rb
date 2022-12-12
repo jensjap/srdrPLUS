@@ -7,24 +7,12 @@
 #  citations_project_id   :integer
 #  projects_users_role_id :integer
 #  consolidated           :boolean          default(FALSE)
-#  deleted_at             :datetime
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
 
 class Extraction < ApplicationRecord
   include ConsolidationHelper
-
-  acts_as_paranoid
-  before_destroy :really_destroy_children!
-  def really_destroy_children!
-    extractions_extraction_forms_projects_sections.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    extractions_projects_users_roles.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
 
   # !!! We can't implement this without ensuring integrity of the extraction form. It is possible that the database
   #    is rendered inconsistent if a project lead changes links between type1 and type2 after this hook is called.
@@ -62,8 +50,6 @@ class Extraction < ApplicationRecord
   has_many :extractions_extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction
   has_many :extraction_forms_projects_sections, through: :extractions_extraction_forms_projects_sections,
                                                 dependent: :destroy
-
-  has_many :extractions_projects_users_roles, dependent: :destroy, inverse_of: :extraction
 
   has_many :extractions_key_questions_projects_selections, dependent: :destroy
   has_many :key_questions_projects, through: :extractions_key_questions_projects_selections

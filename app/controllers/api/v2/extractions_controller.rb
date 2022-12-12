@@ -15,7 +15,6 @@ class Api::V2::ExtractionsController < Api::V2::BaseController
     property :citations_project_id, Integer
     property :projects_users_role_id, Integer
     property :consolidated, :boolean
-    property :deleted_at, DateTime
     property :created_at, DateTime
     property :updated_at, DateTime
   end

@@ -9,7 +9,6 @@ class Api::V2::KeyQuestionsController < Api::V2::BaseController
   def_param_group :key_question do
     property :id, Integer, desc: 'Resource ID.'
     property :name, String
-    property :deleted_at, DateTime
     property :created_at, DateTime
     property :updated_at, DateTime
     property :url, String
@@ -17,11 +16,11 @@ class Api::V2::KeyQuestionsController < Api::V2::BaseController
 
   api :GET, '/v2/key_questions/:id.json'
   param_group :resource_id, Api::V2::BaseController
-  def show
-  end
+  def show; end
 
   private
-    def set_key_question
-      @key_question = KeyQuestion.find(params[:id])
-    end
+
+  def set_key_question
+    @key_question = KeyQuestion.find(params[:id])
+  end
 end

@@ -5,38 +5,11 @@
 #  id               :integer          not null, primary key
 #  projects_user_id :integer
 #  role_id          :integer
-#  deleted_at       :datetime
-#  active           :boolean
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #
 
 class ProjectsUsersRole < ApplicationRecord
-  include SharedParanoiaMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
-  before_destroy :really_destroy_children!
-  def really_destroy_children!
-    assignments.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    extractions.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    taggings.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    labels_reasons.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    labels.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    notes.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-
   scope :by_project, ->(project) { joins(projects_user: :project).where(projects_users: { project: project.id }) }
 
   after_create :add_self_to_perpetual_task
@@ -47,7 +20,7 @@ class ProjectsUsersRole < ApplicationRecord
   has_one :user, through: :projects_user
   has_one :project, through: :projects_user
 
-  has_many :assignments, dependent: :destroy, inverse_of: :projects_users_role
+  has_many :assignments, dependent: :nullify, inverse_of: :projects_users_role
   has_many :extractions, inverse_of: :projects_users_role, dependent: :destroy
 
   has_many :projects_users_roles_teams

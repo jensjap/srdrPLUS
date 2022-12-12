@@ -9,12 +9,9 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  projects_users_role_id :integer
-#  deleted_at             :datetime
 #
 
 class Note < ApplicationRecord
-  acts_as_paranoid
-
   belongs_to :projects_users_role
   belongs_to :notable, polymorphic: true
 

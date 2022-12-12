@@ -5,9 +5,9 @@ json.items do
     json.extract! answer_choice, :id, :name
     if answer_choice.suggestion
       json.suggestion do
-        json.extract! answer_choice.suggestion.user.profile, :id, :first_name
+        json.extract! answer_choice.suggestion.user.profile, :id
+        json.set! :first_name, answer_choice.suggestion.user.handle
       end
     end
   end
 end
-

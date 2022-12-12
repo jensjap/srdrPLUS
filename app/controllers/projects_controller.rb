@@ -274,7 +274,16 @@ class ProjectsController < ApplicationController
     authorize(@import.project, policy_class: ImportPolicy)
 
     respond_to do |format|
-      if @import.save
+      if @import.already_queued?
+        flash[:error] =
+          'This import is already enqueued or in progress. You will be notified by email of its completion.'
+        format.json do
+          render json: {
+            message: 'This import is already enqueued or in progress. You will be notified by email of its completion.'
+          }, status: :unprocessable_entity
+        end
+        format.html { redirect_to project_imports_path(@project) }
+      elsif @import.save
         flash[:success] =
           "Import request of project '#{@project.name}'. You will be notified by email of its completion."
         format.json { render json: @import, status: :ok }
@@ -604,7 +613,7 @@ class ProjectsController < ApplicationController
       unless current_user.admin?
         @approved_publishings = @approved_publishings
                                 .where(
-                                  '`projects`.`deleted_at` IS NULL AND `projects_users`.`active` = TRUE AND `projects_users`.`user_id` = ?',
+                                  '`projects_users`.`user_id` = ?',
                                   current_user.id.to_s
                                 )
       end

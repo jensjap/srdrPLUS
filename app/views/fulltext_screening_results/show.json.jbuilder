@@ -31,3 +31,12 @@ json.options do
   json.only_predefined_reasons @fulltext_screening.only_predefined_reasons
   json.only_predefined_tags @fulltext_screening.only_predefined_tags
 end
+cps = @screened_cps.reverse.map do |fsr|
+  {
+    fsr_id: fsr.id,
+    name: fsr.citation.name,
+    authors: @fulltext_screening.hide_author ? '<hidden>' : fsr.citation.author_map_string,
+    label: fsr.label
+  }
+end
+json.cps cps

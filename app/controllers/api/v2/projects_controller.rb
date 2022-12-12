@@ -27,7 +27,6 @@ class Api::V2::ProjectsController < Api::V2::BaseController
       param :doi,               String, 'Document Object Identifier'
       param :notes,             String, 'Project notes'
       param :funding_source,    String, 'Who funds this project'
-      property :deleted_at,     DateTime
       property :created_at,     DateTime
       property :updated_at,     DateTime
       param :authors_of_report, String, 'Authors of Report'

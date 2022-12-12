@@ -6,32 +6,12 @@
 #  extraction_id                                    :integer
 #  extraction_forms_projects_section_id             :integer
 #  extractions_extraction_forms_projects_section_id :integer
-#  deleted_at                                       :datetime
-#  active                                           :boolean
 #  created_at                                       :datetime         not null
 #  updated_at                                       :datetime         not null
 #
 
 class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
-  include SharedParanoiaMethods
   include SharedProcessTokenMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
-  before_destroy :really_destroy_children!
-  def really_destroy_children!
-    ExtractionsExtractionFormsProjectsSectionsType1
-      .with_deleted.where(extractions_extraction_forms_projects_section_id: id)
-      .each(&:really_destroy!)
-    link_to_type2s.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    extractions_extraction_forms_projects_sections_question_row_column_fields.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    extractions_extraction_forms_projects_sections_followup_fields.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
 
   # !!! Doesn't work
   #  scope :result_type_sections, -> () {
@@ -52,7 +32,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   has_many :link_to_type2s,
            class_name: 'ExtractionsExtractionFormsProjectsSection',
            foreign_key: 'extractions_extraction_forms_projects_section_id',
-           dependent: :destroy
+           dependent: :nullify
 
   has_many :extractions_extraction_forms_projects_sections_type1s,
            -> { ordered },
@@ -341,6 +321,11 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   #      end
   #    end
   #  end
+
+  def section_name
+    section.name
+  end
+
   private
 
   def sort_by_their_orderings(eefpst1s)

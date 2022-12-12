@@ -1,7 +1,7 @@
 class AbstractScreeningsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: %i[update_word_weight kpis]
 
-  before_action :set_project, only: %i[index new create citation_lifecycle_management kpis]
+  before_action :set_project, only: %i[index new create citation_lifecycle_management export_screening_data kpis]
   before_action :set_abstract_screening, only: %i[update_word_weight screen]
   after_action :verify_authorized
 
@@ -51,9 +51,22 @@ class AbstractScreeningsController < ApplicationController
         @page = params[:page].present? ? params[:page].to_i : 1
         per_page = 100
         order = @order_by.present? ? { @order_by => @sort } : {}
-        @citations_projects = CitationsProjectSearchService.new(@project, @query, @page, per_page, order).elastic_search
-        @total_pages = (@citations_projects.response['hits']['total']['value'] / per_page) + 1
-        @es_hits = @citations_projects.response['hits']['hits'].map { |hit| hit['_source'] }
+        @citations_projects =
+          CitationsProject
+          .search(@query,
+                  where: { project_id: @project.id },
+                  limit: per_page, offset: per_page * (@page - 1), order:, load: false)
+        @total_pages = (@citations_projects.total_count / per_page) + 1
+      end
+    end
+  end
+
+  def export_screening_data
+    authorize(@project, policy_class: AbstractScreeningPolicy)
+    respond_to do |format|
+      format.xlsx do
+        response.headers['Content-Disposition'] =
+          "attachment; filename=\"screening_data_export_of_project_id_#{@project.id}.xlsx\""
       end
     end
   end
@@ -126,11 +139,14 @@ class AbstractScreeningsController < ApplicationController
         @page = params[:page].present? ? params[:page].to_i : 1
         per_page = 15
         order = @order_by.present? ? { @order_by => @sort } : { 'name' => 'desc' }
+        where = { abstract_screening_id: @abstract_screening.id }
+        where[:user_id] = current_user.id unless ProjectPolicy.new(current_user, @project).project_leader?
         @abstract_screening_results =
-          AbstractScreeningResultSearchService.new(@abstract_screening, @query, @page,
-                                                   per_page, order).elastic_search
-        @total_pages = (@abstract_screening_results.response['hits']['total']['value'] / per_page) + 1
-        @es_hits = @abstract_screening_results.response['hits']['hits'].map { |hit| hit['_source'] }
+          AbstractScreeningResult
+          .search(@query,
+                  where:,
+                  limit: per_page, offset: per_page * (@page - 1), order:, load: false)
+        @total_pages = (@abstract_screening_results.total_count / per_page) + 1
       end
     end
   end

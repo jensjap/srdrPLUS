@@ -4,7 +4,6 @@
 #
 #  id          :integer          not null, primary key
 #  name        :string(255)
-#  deleted_at  :datetime
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  description :string(255)
@@ -23,14 +22,6 @@ class QuestionRowColumnOption < ApplicationRecord
   EXPONENT        = 'exponent'.freeze
 
   ANSWER_CHOICE_QRCO = QuestionRowColumnOption.find_by(name: 'answer_choice')
-
-  acts_as_paranoid
-  before_destroy :really_destroy_children!
-  def really_destroy_children!
-    question_row_columns_question_row_column_options.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
 
   has_many :question_row_columns_question_row_column_options, dependent: :destroy,
                                                               inverse_of: :question_row_column_option

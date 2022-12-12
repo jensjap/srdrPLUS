@@ -4,7 +4,7 @@
   .announcement-content
     span <b>NEW!</b>
     span Click <a href='https://evsynthacademy.com/index.php/course/data-extraction-tools-for-systematic-reviews-a-focus-on-srdr/'>here</a> for a free, online course on various data extraction tools, with a focus on <b>SRDR+</b>.
-    span The course is offered through the <a href='https://evsynthacademy.com/'>Evidence Synthesis Academy</a>.
+    span The course is offered through the #{link_to('Evidence Synthesis Academy.', 'https://evsynthacademy.com/', target: '_blank', data: { confirm: @exit_disclaimer })}
 
 /.maintenance_announcement
   = render 'static_pages/maintenance_announcement'

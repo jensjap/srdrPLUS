@@ -11,18 +11,6 @@
     x-transition:leave-end="translate-y-full"
   >
     <div class="flex justify-center items-center">
-      <!-- <div
-        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
-        @click="selected = results"
-      >
-        Select All
-      </div>
-      <div
-        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
-        @click="selected = []"
-      >
-        Deselect All
-      </div> -->
       <div class="ml-8">
         <span
           class="text-white"
@@ -59,7 +47,13 @@
       >
         Extract Rejection
       </div>
+      <div
+        class="cursor-pointer p-2 m-2 text-xs bg-orange-700 hover:bg-orange-600 border-[1px] border-white text-white rounded-md drop-shadow-md ml-8 select-none"
+        :class="showCreateExtractions ? '!bg-orange-400' : ''"
+        @click="showCreateExtractions = true"
+      >
+        Extraction Menu
+      </div>
     </div>
-    <!-- /End replace -->
   </div>
 </div>

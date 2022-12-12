@@ -5,37 +5,15 @@
 #  id                :integer          not null, primary key
 #  citation_id       :integer
 #  project_id        :integer
-#  screening_status  :string(255)      default("asu")
-#  deleted_at        :datetime
-#  active            :boolean
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  consensus_type_id :integer
 #  pilot_flag        :boolean
-#  screening_status  :string(255)      default("CP"), not null
+#  screening_status  :string(255)      default("asu")
 #
 
 class CitationsProject < ApplicationRecord
   searchkick
-  include SharedParanoiaMethods
-
-  acts_as_paranoid column: :active, sentinel_value: true
-  before_destroy :really_destroy_children!
-  def really_destroy_children!
-    extractions.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    labels.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    notes.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    taggings.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-  # paginates_per 25
 
   scope :unlabeled,
         lambda { |project, count|
@@ -84,9 +62,23 @@ class CitationsProject < ApplicationRecord
   FS_IN_CONFLICT = 'fsic'.freeze
   FS_REJECTED = 'fsr'.freeze
   E_NEED_EXTRACTION = 'ene'.freeze
-  E_IN_PROGRESS = 'eic'.freeze
+  E_IN_PROGRESS = 'eip'.freeze
   E_REJECTED = 'er'.freeze
   E_COMPLETE = 'ec'.freeze
+  ALL = [
+    AS_UNSCREENED,
+    AS_PARTIALLY_SCREENED,
+    AS_IN_CONFLICT,
+    AS_REJECTED,
+    FS_UNSCREENED,
+    FS_PARTIALLY_SCREENED,
+    FS_IN_CONFLICT,
+    FS_REJECTED,
+    E_NEED_EXTRACTION,
+    E_IN_PROGRESS,
+    E_REJECTED,
+    E_COMPLETE
+  ]
 
   # We find all CitationsProject entries that have the exact same citation_id
   # and project_id. Then we pick the first (oldest) one. We refer to it as the

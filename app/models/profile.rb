@@ -11,7 +11,6 @@
 #  middle_name           :string(255)
 #  last_name             :string(255)
 #  advanced_mode         :boolean          default(FALSE)
-#  deleted_at            :datetime
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #  projects_paginate_per :integer
@@ -20,15 +19,6 @@
 class Profile < ApplicationRecord
   include SharedProcessTokenMethods
 
-  acts_as_paranoid
-  before_destroy :really_destroy_children!
-  def really_destroy_children!
-    degrees_profiles.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-
-  #  after_restore :restore_relationships
   after_create :create_default_abstrackr_setting
 
   belongs_to :organization, inverse_of: :profiles, optional: true

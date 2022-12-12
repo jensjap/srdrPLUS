@@ -15,7 +15,6 @@
 #  last_sign_in_ip        :string(255)
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  deleted_at             :datetime
 #  confirmation_token     :string(255)
 #  confirmed_at           :datetime
 #  confirmation_sent_at   :datetime
@@ -34,27 +33,6 @@
 #
 
 class User < ApplicationRecord
-  acts_as_paranoid
-  before_destroy :really_destroy_children!
-  def really_destroy_children!
-    Profile.with_deleted.where(user_id: id).each(&:really_destroy!)
-    approvals.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    dispatches.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    projects_users.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    publishings.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    suggestions.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-
   devise :omniauthable, omniauth_providers: [:google_oauth2]
   has_secure_token :api_key
 

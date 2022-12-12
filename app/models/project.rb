@@ -11,7 +11,6 @@
 #  doi                     :string(255)
 #  notes                   :text(65535)
 #  funding_source          :string(255)
-#  deleted_at              :datetime
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
 #  authors_of_report       :text(65535)
@@ -24,34 +23,6 @@ class Project < ApplicationRecord
   include SharedQueryableMethods
 
   attr_accessor :create_empty
-
-  acts_as_paranoid
-  before_destroy :really_destroy_children!
-  def really_destroy_children!
-    Publishing.with_deleted.where(publishable_type: self.class, publishable_id: id).each(&:really_destroy!)
-    KeyQuestionsProject
-      .with_deleted
-      .where(project_id: id)
-      .each(&:really_destroy!)
-    extractions.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    extraction_forms_projects.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    projects_studies.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    projects_users.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    citations_projects.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    tasks.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
 
   searchkick
 

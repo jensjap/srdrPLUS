@@ -5,36 +5,10 @@
 #  id         :integer          not null, primary key
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  deleted_at :datetime
 #  is_anova   :boolean          default(FALSE), not null
 #
 
 class Comparison < ApplicationRecord
-  acts_as_paranoid
-  before_destroy :really_destroy_children!
-  def really_destroy_children!
-    comparate_groups.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    comparable_elements.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    comparisons_arms_rssms.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    tps_comparisons_rssms.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    wacs_bacs_rssms.with_deleted.each do |child|
-      child.really_destroy!
-    end
-    comparisons_result_statistic_sections.with_deleted.each do |child|
-      child.really_destroy!
-    end
-  end
-
-  belongs_to :result_statistic_section, inverse_of: :comparisons, optional: true
-
   has_many :comparate_groups, inverse_of: :comparison, dependent: :destroy
   has_many :comparates, through: :comparate_groups, dependent: :destroy
 
@@ -59,9 +33,10 @@ class Comparison < ApplicationRecord
   # by timepoint, bac, and measure.
   def tps_comparisons_rssms_values(eefpst1rc_id, rssm)
     recordables = tps_comparisons_rssms
-      .where(
-        timepoint_id: eefpst1rc_id,
-        result_statistic_sections_measure: rssm)
+                  .where(
+                    timepoint_id: eefpst1rc_id,
+                    result_statistic_sections_measure: rssm
+                  )
     Record.where(recordable: recordables.first).first.try(:name).to_s.gsub(/\P{Print}|\p{Cf}/, '')
   end
 
@@ -69,9 +44,10 @@ class Comparison < ApplicationRecord
   # by wac, arm, and measure.
   def comparisons_arms_rssms_values(eefpst1_arm_id, rssm)
     recordables = comparisons_arms_rssms
-      .where(
-        extractions_extraction_forms_projects_sections_type1_id: eefpst1_arm_id,
-        result_statistic_sections_measure: rssm)
+                  .where(
+                    extractions_extraction_forms_projects_sections_type1_id: eefpst1_arm_id,
+                    result_statistic_sections_measure: rssm
+                  )
     Record.where(recordable: recordables.first).first.try(:name).to_s.gsub(/\P{Print}|\p{Cf}/, '')
   end
 
@@ -79,9 +55,10 @@ class Comparison < ApplicationRecord
   # by wac, bac, and measure.
   def wacs_bacs_rssms_values(bac_id, rssm)
     recordables = wacs_bacs_rssms
-      .where(
-        bac_id: bac_id,
-        result_statistic_sections_measure: rssm)
+                  .where(
+                    bac_id:,
+                    result_statistic_sections_measure: rssm
+                  )
     Record.where(recordable: recordables.first).first.try(:name).to_s.gsub(/\P{Print}|\p{Cf}/, '')
   end
 
@@ -109,7 +86,7 @@ class Comparison < ApplicationRecord
       text += ' vs. '
     end
 
-    return "[ID: #{self.id}] " + text[0..-6]
+    "[ID: #{id}] " + text[0..-6]
   end
 
   def tokenize

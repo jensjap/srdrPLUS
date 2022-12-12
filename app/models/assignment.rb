@@ -9,7 +9,6 @@
 #  date_assigned          :datetime
 #  date_due               :datetime
 #  done                   :integer
-#  deleted_at             :datetime
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  projects_users_role_id :integer
@@ -17,8 +16,6 @@
 #
 
 class Assignment < ApplicationRecord
-  acts_as_paranoid
-
   belongs_to :projects_users_role, optional: true
   belongs_to :task, optional: true
 

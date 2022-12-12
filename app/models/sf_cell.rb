@@ -18,4 +18,12 @@ class SfCell < ApplicationRecord
   has_many :sf_options, dependent: :destroy, inverse_of: :sf_cell
   has_many :sf_abstract_records, dependent: :destroy, inverse_of: :sf_cell
   has_many :sf_fulltext_records, dependent: :destroy, inverse_of: :sf_cell
+
+  TEXT = 'text'.freeze
+  NUMERIC = 'numeric'.freeze
+  CHECKBOX = 'checkbox'.freeze
+  DROPDOWN = 'dropdown'.freeze
+  RADIO = 'radio'.freeze
+  SELECT_ONE = 'select-one'.freeze
+  SELECT_MULTIPLE = 'select-multiple'.freeze
 end

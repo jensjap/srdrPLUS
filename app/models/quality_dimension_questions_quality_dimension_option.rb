@@ -5,15 +5,11 @@
 #  id                            :integer          not null, primary key
 #  quality_dimension_question_id :integer
 #  quality_dimension_option_id   :integer
-#  deleted_at                    :datetime
-#  active                        :boolean
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
 #
 
 class QualityDimensionQuestionsQualityDimensionOption < ApplicationRecord
-  acts_as_paranoid
-
   belongs_to :quality_dimension_question
   belongs_to :quality_dimension_option
 end

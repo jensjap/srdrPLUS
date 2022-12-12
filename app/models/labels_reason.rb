@@ -7,13 +7,10 @@
 #  reason_id              :integer
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  deleted_at             :datetime
 #  projects_users_role_id :integer
 #
 
 class LabelsReason < ApplicationRecord
-  acts_as_paranoid
-
   include SharedProcessTokenMethods
 
   belongs_to :label, inverse_of: :labels_reasons

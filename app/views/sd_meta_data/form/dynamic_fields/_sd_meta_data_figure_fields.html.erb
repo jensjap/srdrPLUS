@@ -1,0 +1,149 @@
+<div class="nested-fields">
+  <div class="text-right">
+    <!-- prettier-ignore -->
+    <%= link_to_remove_association "remove figure", f, data: { confirm: "This will remove the figure(s). Are you sure?" } %>
+  </div>
+  <!-- prettier-ignore -->
+  <% if defined?(p_type_collection) %>
+    <%= f.input :p_type, label: 'Type', include_blank: true, input_html: { class: 'apply-select2' }, collection: p_type_collection %>
+  <% end %>
+  <%= f.input :alt_text %>
+  <div style="margin-bottom: 4px">
+    <span class="text-bold">
+      <strong style="font-size: 12px; color: #333">Pictures</strong>
+    </span>
+    <span
+      class="import-tooltip-icon"
+      data-open="import-tooltip-content"
+      style="margin: 0 6px 0 3px"
+    >
+      <i class="fi-info cursor-pointer" style="color: #28b0f3; font-size: 20px">
+      </i>
+    </span>
+    <div
+      class="reveal"
+      data-reveal=""
+      id="import-tooltip-content"
+      style="font-size: large; line-height: 25px"
+    >
+      You can upload the following file formats:
+      <ul style="padding-top: 15px; font-size: large; line-height: 25px">
+        <li>JPG</li>
+        <li>GIF</li>
+        <li>PNG</li>
+      </ul>
+    </div>
+  </div>
+  <!-- prettier-ignore -->
+  <%= f.input :pictures, as: :file, label: false, input_html: { multiple: true, id: "#{dom_id(f.object)}", class: 'hide' } %>
+  <label
+    class="button !text-white !cursor-pointer"
+    for="<%= dom_id(f.object) %>"
+    >Choose File(s)</label
+  >
+  <!-- prettier-ignore -->
+  <% f.object.pictures.each do |picture| %>
+  <div class="hoverable-figure">
+    <div class="hover-message">
+      <!-- prettier-ignore -->
+      <%= link_to delete_image_attachment_picture_path(picture.id), method: :delete, data: { confirm: 'Are you sure?' }, remote: true, class: 'remove-figure' do %>
+        <%= fa_icon "close 2x" %>
+      <% end %>
+    </div>
+    <!-- prettier-ignore -->
+    <%= image_tag(picture, class: 'openable sd-image', title: f.object.alt_text || "" ) %>
+  </div>
+  <% end %>
+  <br />
+  <br />
+  <!-- prettier-ignore -->
+  <% if f.object.sd_figurable_type == SdPairwiseMetaAnalyticResult.to_s %>
+    <%= f.input :outcome_type, as: :select, collection: ['Categorical', 'Continuous'] %>
+    <%= f.input :intervention_name %>
+    <%= f.input :comparator_name %>
+    <%= f.input :effect_size_measure_name, as: :select, collection: [f.object.effect_size_measure_name], selected: f.object.effect_size_measure_name, input_html: { class: "esmn-#{f.object.id}" } %>
+    <%= f.input :overall_effect_size, input_html: { class: "oes-#{f.object.id}" } %>
+    <%= f.input :overall_95_ci_low, input_html: { class: "ci-low-#{f.object.id}" } %>
+    <%= f.input :overall_95_ci_high, input_html: { class: "ci-high-#{f.object.id}" } %>
+    <%= f.input :overall_i_squared, input_html: { class: "i-squared-#{f.object.id}", min: 0, max: 100 } %>
+  <% end %>
+  <!-- prettier-ignore -->
+</div>
+
+<script>
+  <% if f.object.outcome_type == 'Categorical' %>
+    $('<%= ".oes-#{f.object.id}" %>').attr('min', 0)
+    if (!(parseFloat($('<%= ".oes-#{f.object.id}" %>').val()) >= 0)) {
+      $('<%= ".oes-#{f.object.id}" %>').addClass('!text-red-500')
+    }
+
+    $('<%= ".ci-low-#{f.object.id}" %>').attr('min', 0)
+    if (!(parseFloat($('<%= ".ci-low-#{f.object.id}" %>').val()) >= 0)) {
+      $('<%= ".ci-low-#{f.object.id}" %>').addClass('!text-red-500')
+    }
+
+    $('<%= ".ci-high-#{f.object.id}" %>').attr('min', 0)
+    if (!(parseFloat($('<%= ".ci-high-#{f.object.id}" %>').val()) >= 0)) {
+      $('<%= ".ci-high-#{f.object.id}" %>').addClass('!text-red-500')
+    }
+  <% end %>
+
+  if (!(parseFloat($('<%= ".i-squared-#{f.object.id}" %>').val()) >= 0) || !(parseFloat($('<%= ".i-squared-#{f.object.id}" %>').val()) <= 100)) {
+    $('<%= ".i-squared-#{f.object.id}" %>').addClass('!text-red-500')
+  }
+
+  $('<%= ".esmn-#{f.object.id}" %>').empty();
+  $('<%= ".esmn-#{f.object.id}" %>').select2({
+    tags: true,
+    data: [
+      {
+        id: "<%= f.object.effect_size_measure_name %>",
+        text: "<%= f.object.effect_size_measure_name %>"
+      },
+      <% if f.object.outcome_type == 'Categorical' %>
+      {
+        id: "OR",
+        text: "OR",
+      },
+      {
+        id: "HR",
+        text: "HR",
+      },
+      {
+        id: "RR",
+        text: "RR",
+      },
+      {
+        id: "RD",
+        text: "RD",
+      },
+      {
+        id: "Percent",
+        text: "Percent",
+      },
+      {
+        id: "Proportion",
+        text: "Proportion",
+      },
+      <% elsif f.object.outcome_type == 'Continuous' %>
+      {
+        id: "Mean Difference",
+        text: "Mean Difference",
+      },
+      {
+        id: "Standardized Mean Difference",
+        text: "Standardized Mean Difference",
+      },
+      {
+        id: "Net Mean Difference",
+        text: "Net Mean Difference",
+      },
+      {
+        id: "Mean",
+        text: "Mean",
+      },
+      <% end %>
+    ],
+    val: "<%= f.object.effect_size_measure_name %>",
+  });
+</script>

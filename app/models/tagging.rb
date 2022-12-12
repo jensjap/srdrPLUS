@@ -9,12 +9,9 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  projects_users_role_id :integer
-#  deleted_at             :datetime
 #
 
 class Tagging < ApplicationRecord
-  acts_as_paranoid
-
   include SharedProcessTokenMethods
 
   belongs_to :projects_users_role
