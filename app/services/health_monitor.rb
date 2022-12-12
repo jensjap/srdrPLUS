@@ -99,13 +99,13 @@ class HealthMonitor
     Role => 4
   }
 
-  def perform_check
+  def self.perform_check
     cached_anomalies = anomalies
     cached_critical_table_count_differences = critical_table_count_differences
     unless cached_anomalies == {} && cached_critical_table_count_differences == {}
       HealthMonitorMailer.report_findings(anomalies, critical_table_count_differences).deliver_now
     end
-    save_counts
+    save_counts(current_counts)
   end
 
   def self.before_counts
@@ -138,10 +138,10 @@ class HealthMonitor
   end
 
   def self.critical_table_count_differences
-    cached_before_counts = before_counts
+    cached_current_counts = current_counts
     unhealthy_tables = {}
     CRITICAL_TABLES_AND_COUNT.each do |table, normal_count|
-      current_count = cached_before_counts[table.name]
+      current_count = cached_current_counts[table.name]
       next if current_count == normal_count
 
       unhealthy_tables[table.name] = { 'normal' => normal_count, 'current' => current_count }
