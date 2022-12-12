@@ -8,7 +8,7 @@
     <p>
       <% @anomalies.each do |table_name, count| %>
         <div>
-          <%= "#{table_name}: before #{count['before']} after #{count['after']}" %>
+          <%= "#{table_name}: before #{count['before']} after #{count['current']}" %>
         </div>
       <% end %>
       <br />
@@ -17,7 +17,7 @@
     <p>
       <% @find_critical_table_count_differences.each do |table_name, count| %>
         <div>
-          <%= "#{table_name}: normal #{count['normal']} now #{count['now']}" %>
+          <%= "#{table_name}: normal #{count['normal']} now #{count['current']}" %>
         </div>
       <% end %>
     </p>
