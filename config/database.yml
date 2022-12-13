@@ -13,22 +13,16 @@ default: &default
   adapter: mysql2
   encoding: utf8
   pool: 5
+  host: <%= ENV['SRDRPLUS_DATABASE_HOST'] %>
   username: <%= ENV['SRDRPLUS_DATABASE_USERNAME'] %>
   password: <%= ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
-  host: <%= ENV['SRDRPLUS_DATABASE_HOST'] %>
   reconnect: true
+  variables:
+    sql_mode: TRADITIONAL
 
 development:
   <<: *default
-  database: <%= ENV['SRDRPLUS_DATABASE_SCHEMA'] %>
-  variables:
-    sql_mode: TRADITIONAL
-
-recovery:
-  <<: *default
-  database: <%= ENV['SRDRPLUS_DATABASE_RECOVERY_SCHEMA'] %>
-  variables:
-    sql_mode: TRADITIONAL
+  database: srdrPLUS_development
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -58,18 +52,14 @@ test:
 #
 production:
   <<: *default
-  host: <%= ENV['SRDRPLUS_DATABASE_HOST'] %>
   database: <%= ENV['SRDRPLUS_DATABASE_SCHEMA'] %>
-  username: <%= ENV['SRDRPLUS_DATABASE_USERNAME'] %>
-  password: <%= ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
 
-# for importing legacy srdr data
+# For importing legacy srdr data.
 legacy_production:
-  adapter: mysql2
-  encoding: utf8
-  pool: 5
-  host: <%= ENV['SRDRPLUS_DATABASE_HOST'] %>
+  <<: *default
   database: <%= ENV['SRDR_LEGACY_DATABASE_SCHEMA'] %>
-  username: <%= ENV['SRDRPLUS_DATABASE_USERNAME'] %>
-  password: <%= ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
-  reconnect: true
+
+# DB Snapshot for recovery purposes.
+recovery:
+  <<: *default
+  database: <%= ENV['SRDRPLUS_DATABASE_RECOVERY_SCHEMA'] %>
