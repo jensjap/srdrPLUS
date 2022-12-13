@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+    <h1>Anomalies</h1>
+    <p>
+      <% @anomalies.each do |table_name, count| %>
+        <div>
+          <%= "#{table_name}: before #{count['before']} after #{count['current']}" %>
+        </div>
+      <% end %>
+      <br />
+    </p>
+    <h1>Critical Table Count Differences</h1>
+    <p>
+      <% @find_critical_table_count_differences.each do |table_name, count| %>
+        <div>
+          <%= "#{table_name}: normal #{count['normal']} now #{count['current']}" %>
+        </div>
+      <% end %>
+    </p>
+  </body>
+</html>

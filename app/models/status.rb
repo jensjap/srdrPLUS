@@ -7,16 +7,16 @@
 #
 
 class Status < ApplicationRecord
-  @@DRAFT     = 1
-  @@COMPLETED = 2
+  DRAFT = 'Draft'.freeze
+  COMPLETED = 'Completed'.freeze
 
   has_many :statusings, inverse_of: :status
 
   def self.DRAFT
-    self.find(@@DRAFT)
+    find_by(name: DRAFT)
   end
 
   def self.COMPLETED
-    self.find(@@COMPLETED)
+    find_by(name: COMPLETED)
   end
 end
