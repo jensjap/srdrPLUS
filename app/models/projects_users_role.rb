@@ -14,14 +14,14 @@ class ProjectsUsersRole < ApplicationRecord
 
   after_create :add_self_to_perpetual_task
 
-  belongs_to :projects_user, inverse_of: :projects_users_roles
-  belongs_to :role,          inverse_of: :projects_users_roles
+  belongs_to :projects_user
+  belongs_to :role, inverse_of: :projects_users_roles
 
   has_one :user, through: :projects_user
   has_one :project, through: :projects_user
 
   has_many :assignments, dependent: :nullify, inverse_of: :projects_users_role
-  has_many :extractions, inverse_of: :projects_users_role, dependent: :destroy
+  has_many :extractions, inverse_of: :projects_users_role, dependent: :nullify
 
   has_many :projects_users_roles_teams
   has_many :teams, through: :projects_users_roles_teams

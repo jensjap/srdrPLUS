@@ -1,4 +1,14 @@
 class MigratingRolesService
+  def self.migrate_extractions_to_users
+    Extraction.all.each do |extraction|
+      if pur = extraction.projects_users_role
+        extraction.update_column(:user_id, pur.user.id)
+      else
+        extraction.update_column(:projects_users_role_id, nil)
+      end
+    end
+  end
+
   def self.migrate_purs
     ProjectsUser.all.each do |pu|
       permissions = pu.projects_users_roles.inject(0) do |sum, pur|
