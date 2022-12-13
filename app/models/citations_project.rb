@@ -38,9 +38,6 @@ class CitationsProject < ApplicationRecord
   belongs_to :citation, inverse_of: :citations_projects
   belongs_to :project, inverse_of: :citations_projects # , touch: true
 
-  has_one :prediction, dependent: :destroy
-  has_one :priority, dependent: :destroy
-
   has_many :extractions, dependent: :destroy
   has_many :abstract_screening_results, dependent: :destroy
   has_many :fulltext_screening_results, dependent: :destroy

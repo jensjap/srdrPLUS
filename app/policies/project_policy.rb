@@ -91,15 +91,6 @@ class ProjectPolicy < ApplicationPolicy
           }
         ] }
       ]
-    },
-    {
-      screening_options_attributes: %i[
-        id
-        _destroy
-        project_id
-        label_type_id
-        screening_option_type_id
-      ]
     }
   ]
 
