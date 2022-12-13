@@ -18,7 +18,6 @@ module ProjectsHelper
   def add_submenu?(controller_name, action_name, controller, publishable_record)
     (controller_name.eql?('projects') && !action_name.eql?('index') && !action_name.eql?('new')) ||
       (controller_name.eql?('sd_meta_data') && (action_name.eql?('index') || action_name.eql?('show') || action_name.eql?('edit'))) ||
-      controller_name.eql?('assignments') ||
       controller_name.eql?('abstract_screenings') ||
       controller_name.eql?('fulltext_screenings') ||
       controller_name.eql?('screening_forms') ||

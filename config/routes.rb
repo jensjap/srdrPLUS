@@ -138,11 +138,9 @@ Rails.application.routes.draw do
 
     namespace :v3 do
       resources :projects, shallow: true, only: [] do
-        resources :citations, only: [:index, :show]
+        resources :citations, only: %i[index show]
       end
     end # END namespace :v3 do
-
-
   end # END namespace :api do
 
   resources :assignments do
@@ -159,10 +157,6 @@ Rails.application.routes.draw do
 
   concern :paginatable do
     get '(page/:page)', action: :index, on: :collection, as: ''
-  end
-
-  concern :invitable do
-    resources :invitations
   end
 
   resources :extractions_extraction_forms_projects_sections_type1s, only: [] do
@@ -205,11 +199,10 @@ Rails.application.routes.draw do
 
     resource :data_audit, only: [:create]
     resources :sd_meta_data
-    resources :teams, concerns: :invitable, only: %i[create update destroy]
+
     member do
       get 'export_data'
       get 'confirm_deletion'
-      get 'next_assignment'
       post 'import_csv'
       post 'import_ris'
       post 'import_endnote'

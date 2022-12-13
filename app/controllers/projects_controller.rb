@@ -4,7 +4,7 @@ class ProjectsController < ApplicationController
   before_action :set_project, only: %i[
     export_data show edit update destroy export export_to_gdrive
     export_assignments_and_mappings import_assignments_and_mappings simple_import
-    import_csv import_pubmed import_endnote import_ris next_assignment
+    import_csv import_pubmed import_endnote import_ris
     confirm_deletion dedupe_citations create_citation_screening_extraction_form
     create_full_text_screening_extraction_form
   ]
@@ -14,7 +14,7 @@ class ProjectsController < ApplicationController
   ]
   before_action :skip_policy_scope, except: %i[
     index show edit update destroy filter export export_to_gdrive import_csv
-    import_pubmed import_endnote import_ris next_assignment
+    import_pubmed import_endnote import_ris
   ]
 
   # GET /projects
@@ -335,14 +335,6 @@ class ProjectsController < ApplicationController
       "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
 
     redirect_to project_citations_path(@project)
-  end
-
-  def next_assignment
-    authorize(@project)
-    projects_user = ProjectsUser.where(project: @project, user: current_user).first
-    next_assignment = projects_user.assignments.first
-
-    redirect_to controller: :assignments, action: :screen, id: next_assignment.id
   end
 
   def dedupe_citations

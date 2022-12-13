@@ -42,7 +42,6 @@ class Project < ApplicationRecord
   after_create :create_default_perpetual_task, :create_default_member
 
   has_many :extractions, dependent: :destroy, inverse_of: :project
-  has_many :teams, dependent: :destroy, inverse_of: :project
   has_many :abstract_screenings, dependent: :destroy, inverse_of: :project
   has_many :abstract_screening_results, through: :abstract_screenings
   has_many :fulltext_screenings, dependent: :destroy, inverse_of: :project
@@ -137,10 +136,6 @@ class Project < ApplicationRecord
                  extractions_extraction_forms_projects_sections: { extraction_forms_projects_section: extraction_forms_projects_section_id }
                }
              })
-  end
-
-  def screening_teams
-    teams.where(team_type: TeamType.find_by(name: 'Citation Screening Team')).or(teams.where(team_type: TeamType.find_by(name: 'Citation Screening Blacklist')))
   end
 
   def public?

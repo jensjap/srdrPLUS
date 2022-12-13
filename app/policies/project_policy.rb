@@ -171,10 +171,6 @@ class ProjectPolicy < ApplicationPolicy
     project_leader?
   end
 
-  def next_assignment?
-    project_contributor?
-  end
-
   def dedupe_citations?
     project_leader?
   end

@@ -41,7 +41,8 @@ class Extraction < ApplicationRecord
 
   belongs_to :project,             inverse_of: :extractions # , touch: true
   belongs_to :citations_project,   inverse_of: :extractions
-  belongs_to :projects_users_role, inverse_of: :extractions
+  belongs_to :projects_users_role
+  belongs_to :user
 
   has_one :extraction_checksum, dependent: :destroy, inverse_of: :extraction
   has_one :statusing, as: :statusable, dependent: :destroy

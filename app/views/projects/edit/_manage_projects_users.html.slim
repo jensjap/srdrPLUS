@@ -13,8 +13,8 @@ div class="mx-auto p-4 lg:p-8"
             th
           tr
             th User
-            - Role.all.each do |role|
-              th = role.name
+            - ProjectsUser::ROLES.each do |role|
+              th = role
             th
             th
         tbody#projects-users-table
