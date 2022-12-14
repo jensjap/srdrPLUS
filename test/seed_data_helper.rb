@@ -1515,59 +1515,6 @@ module SeedDataExtended
             project_id: p.id
           )
         end
-
-        # Assignments.
-        p.tasks.each do |t|
-          case t.task_type.name
-          when 'Perpetual', 'Pilot'
-            Assignment.create([
-                                {
-                                  date_assigned: DateTime.now,
-                                  date_due: Date.today + 7,
-                                  projects_users_role: ProjectsUsersRole.find_by({
-                                                                                   projects_user: ProjectsUser.find_by({
-                                                                                                                         user: @screener_1, project: p
-                                                                                                                       }), role: Role.where(name: 'Contributor')
-                                                                                 }),
-                                  task_id: t.id
-                                },
-                                {
-                                  date_assigned: DateTime.now,
-                                  date_due: Date.today + 7,
-                                  projects_users_role: ProjectsUsersRole.find_by({
-                                                                                   projects_user: ProjectsUser.find_by({
-                                                                                                                         user: @screener_2, project: p
-                                                                                                                       }), role: Role.where(name: 'Contributor')
-                                                                                 }),
-                                  task_id: t.id
-                                },
-                                {
-                                  date_assigned: DateTime.now,
-                                  date_due: Date.today + 7,
-                                  projects_users_role: ProjectsUsersRole.find_by({
-                                                                                   projects_user: ProjectsUser.find_by({
-                                                                                                                         user: @screener_3, project: p
-                                                                                                                       }), role: Role.where(name: 'Contributor')
-                                                                                 }),
-                                  task_id: t.id
-                                }
-                              ])
-          when 'Advanced'
-            @screeners.sample(rand(3)).each do |s|
-              Assignment.create(
-                {
-                  date_assigned: DateTime.now,
-                  date_due: Date.today + 7,
-                  projects_users_role: ProjectsUsersRole.find_by({
-                                                                   projects_user: ProjectsUser.find_by({ user: s,
-                                                                                                         project: p }), role: Role.where(name: 'Contributor')
-                                                                 }),
-                  task_id: t.id
-                }
-              )
-            end
-          end
-        end
       end
 
       # Messages.
@@ -1577,36 +1524,6 @@ module SeedDataExtended
                               description: Faker::ChuckNorris.unique.fact,
                               start_at: 10.minute.ago)
         Faker::UniqueGenerator.clear
-      end
-
-      # Tags and Notes
-      CitationsProject.all.each do |cp|
-        5.times do
-          tag = Tag.create(name: Faker::Books::Lovecraft.word)
-          cp.taggings << Tagging.create(tag:, projects_users_role: ProjectsUsersRole.all.sample)
-          cp.notes << Note.create(value: Faker::Books::Lovecraft.sentence,
-                                  projects_users_role: ProjectsUsersRole.all.sample)
-        end
-      end
-
-      label_types = [LabelType.find_by(name: 'Yes'), LabelType.find_by(name: 'No'),
-                     LabelType.find_by(name: 'Maybe')]
-
-      200.times do
-        assignment = Assignment.all.sample
-        citations_project = assignment.task.project.citations_projects.sample
-        projects_users_role = assignment.projects_users_role
-        label_type = label_types.sample
-
-        label = Label.create({ label_type:, citations_project:,
-                               projects_users_role: })
-      end
-
-      # Reasons
-      Label.all.sample(150).each do |label|
-        reason = Reason.create(name: Faker::TvShows::RickAndMorty.quote)
-        label.labels_reasons << LabelsReason.create({ reason:,
-                                                      projects_users_role: label.project.projects_users_roles.all.sample })
       end
     end
   end
