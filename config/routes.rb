@@ -93,7 +93,6 @@ Rails.application.routes.draw do
       end
 
       resources :projects, shallow: true do
-        resources :projects_users_roles, only: [:index]
         resources :assignments do
           get 'screen', on: :member
           get 'history', on: :member
@@ -127,7 +126,6 @@ Rails.application.routes.draw do
         member do
           post :import_citations_fhir_json
         end
-        resources :projects_users_roles, only: [:index]
       end # END resources :projects, shallow: true do
 
       resources :extractions, only: [:show]
