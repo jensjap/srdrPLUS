@@ -217,6 +217,6 @@ class Extraction < ApplicationRecord
   end
 
   def evaluate_screening_status_citations_project
-    citations_project.evaluate_screening_status
+    citations_project.try(:evaluate_screening_status)
   end
 end
