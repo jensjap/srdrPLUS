@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_05_080103) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_14_142303) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -571,7 +571,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_05_080103) do
     t.boolean "include_total"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["extraction_forms_projects_section_id"], name: "index_efpso_on_efps_id_deleted_at"
+    t.index ["extraction_forms_projects_section_id"], name: "efpso_on_efps_id", unique: true
   end
 
   create_table "extraction_forms_projects_section_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
