@@ -90,11 +90,6 @@ class Project < ApplicationRecord
   has_many :citations_projects, dependent: :destroy, inverse_of: :project
   has_many :citations, through: :citations_projects
 
-  has_many :labels, through: :citations_projects
-  has_many :unlabeled_citations, lambda {
-                                   where(labels: { id: nil })
-                                 }, through: :citations_projects, source: :citations
-
   has_many :sd_meta_data
   has_many :imports, through: :projects_users, dependent: :destroy
   has_many :imported_files, through: :imports, dependent: :destroy

@@ -98,10 +98,6 @@ Rails.application.routes.draw do
           get 'history', on: :member
         end
         resources :citations, only: [:index] do
-          collection do
-            get 'labeled'
-            get 'unlabeled'
-          end
         end
         resources :extractions, only: [:index]
         resources :extraction_forms_projects do
@@ -211,10 +207,6 @@ Rails.application.routes.draw do
     end
 
     resources :citations do
-      collection do
-        get 'labeled'
-        get 'unlabeled'
-      end
     end
 
     resources :tasks
