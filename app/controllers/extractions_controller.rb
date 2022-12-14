@@ -21,17 +21,11 @@ class ExtractionsController < ApplicationController
                    .includes([
                                { citations_project: { citation: [:journal, :authors,
                                                                  { authors_citations: :ordering }] } },
-                               { extractions_extraction_forms_projects_sections: [:status] },
-                               { projects_users_role: [{ projects_user: { user: :profile } }, :role] }
+                               { extractions_extraction_forms_projects_sections: [:status] }
                              ])
     @extractions = ExtractionDecorator.decorate_collection(@extractions)
 
-    if @project.leaders.include? current_user
-      @projects_users_roles = ProjectsUsersRole
-                              .includes([{ projects_user: { user: :profile } }, :role])
-                              .where(projects_users: { project: @project })
-      @projects_users_roles = @projects_users_roles.sort_by { |pur| pur.role_id }.uniq { |pur| pur.user }
-    end
+    @users = @project.users if @project.leaders.include? current_user
   end
 
   # GET /extractions/1
@@ -43,12 +37,11 @@ class ExtractionsController < ApplicationController
     @extraction           = @project.extractions.new(citations_project: CitationsProject.new(project: @project))
     @citations_projects   = @project.citations_projects
     @citations            = @project.citations
-    @projects_users_roles = ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @project })
-    unless policy(@project).assign_extraction_to_any_user?
-      @projects_users_roles = @projects_users_roles.where(projects_users: { user: current_user })
-    end
-    @current_projects_users_role = ProjectsUsersRole.joins(:projects_user).where(projects_users: { user: current_user,
-                                                                                                   project: @project }).order(role_id: :asc).first
+    @users = if policy(@project).assign_extraction_to_any_user?
+               User.joins(:projects_user).where(projects_users: { project: @project })
+             else
+               [current_user]
+             end
     @existing_pmids = @project.extractions.map(&:citation).compact.map(&:pmid).join('//$$//')
 
     authorize(@extraction.project, policy_class: ExtractionPolicy)
@@ -56,9 +49,8 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/1/edit
   def edit
-    @citations_projects   = @extraction.project.citations_projects
-    @projects_users_roles = ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @extraction.project })
-
+    @citations_projects = @extraction.project.citations_projects
+    @users = User.joins(:projects_users).where(projects_users: { project: @extraction.project })
     authorize(@extraction.project, policy_class: ExtractionPolicy)
   end
 
@@ -71,16 +63,16 @@ class ExtractionsController < ApplicationController
     skipped = []
     failed = []
     extractions = []
-    projects_users_role = ProjectsUsersRole.find(params['extraction']['projects_users_role_id'])
+    user = User.find(params['extraction']['user_id'])
     params['extraction']['citation'].delete_if { |i| i == '' }.map(&:to_i).each do |citation_id|
       citations_project = CitationsProject.find_by(citation_id:, project: @project)
-      extraction = Extraction.find_by(project: @project, citations_project:, projects_users_role:)
+      extraction = Extraction.find_by(project: @project, citations_project:, user:)
       if params['extraction']['noDuplicates'] && extraction
         skipped << extraction
       else
         extractions << @project.extractions.build(
           citations_project:,
-          projects_users_role:
+          user:
         )
       end
     end
@@ -110,15 +102,15 @@ class ExtractionsController < ApplicationController
       format.json do
         render json: {
           success: {
-            user_handle: projects_users_role.user.handle,
+            user_handle: user.handle,
             citation_names: succeeded.map { |extraction| extraction.citation.name }
           },
           error: {
-            user_handle: projects_users_role.user.handle,
+            user_handle: user.handle,
             citation_names: failed.map { |extraction| extraction.citation.name }
           },
           info: {
-            user_handle: projects_users_role.user.handle,
+            user_handle: user.handle,
             citation_names: skipped.map { |extraction| extraction.citation.name }
           }
         }
@@ -331,8 +323,7 @@ class ExtractionsController < ApplicationController
                           extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options
                           question_row_columns_question_row_column_options
                         ]
-                      },
-                      projects_users_role: :projects_user
+                      }
                     )
                     .find(params[:id])
     end
@@ -342,7 +333,7 @@ class ExtractionsController < ApplicationController
     @extractions = policy_scope(Extraction)
                    .includes(
                      {
-                       projects_users_role: { projects_user: { user: :profile } }
+                       user: :profile
                      },
                      {
                        extractions_extraction_forms_projects_sections: [
@@ -365,7 +356,7 @@ class ExtractionsController < ApplicationController
   def extraction_params
     params
       .require(:extraction)
-      .permit(:projects_users_role_id,
+      .permit(:user_id,
               citations_project_ids: [],
               extractions_key_questions_project_ids: [],
               key_questions_project_ids: [])

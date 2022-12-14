@@ -30,18 +30,11 @@ class Extraction < ApplicationRecord
     ExtractionChecksum.create! extraction:
   end
 
-  scope :by_project_and_user, lambda { |project_id, user_id|
-    joins(projects_users_role: { projects_user: :user })
-      .where(project_id:)
-      .where(projects_users: { user_id: })
-  }
-
   scope :consolidated,   -> { where(consolidated: true) }
   scope :unconsolidated, -> { where(consolidated: false) }
 
   belongs_to :project,             inverse_of: :extractions # , touch: true
   belongs_to :citations_project,   inverse_of: :extractions
-  belongs_to :projects_users_role
   belongs_to :user
 
   has_one :extraction_checksum, dependent: :destroy, inverse_of: :extraction
@@ -56,7 +49,6 @@ class Extraction < ApplicationRecord
   has_many :key_questions_projects, through: :extractions_key_questions_projects_selections
 
   delegate :citation, to: :citations_project
-  delegate :user, to: :projects_users_role, allow_nil: true
   delegate :username, to: :user, allow_nil: true
 
   #  def to_builder
@@ -142,7 +134,8 @@ class Extraction < ApplicationRecord
       type2_eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.each do |eefps_qrcf|
         type1_eefpss.each do |type1_eefps|
           type1_eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-            values = type2_eefps.eefps_qrfc_values(eefpst1.id, eefps_qrcf.question_row_column_field.question_row_column)
+            values = type2_eefps.eefps_qrfc_values(eefpst1.id,
+                                                   eefps_qrcf.question_row_column_field.question_row_column)
             return true if values.present?
           end
         end

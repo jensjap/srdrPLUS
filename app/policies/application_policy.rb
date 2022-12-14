@@ -59,19 +59,19 @@ class ApplicationPolicy
   end
 
   def project_leader?
-    @permissions.to_s(2)[-1] == '1'
+    @projects_user.project_leader?
   end
 
   def project_consolidator?
-    project_leader? || @permissions.to_s(2)[-2] == '1'
+    @projects_user.project_consolidator?
   end
 
   def project_contributor?
-    project_leader? || project_consolidator? || @permissions.to_s(2)[-3] == '1'
+    @projects_user.project_contributor?
   end
 
   def project_auditor?
-    project_leader? || project_consolidator? || project_contributor? || @permissions.to_s(2)[-4] == '1'
+    @projects_user.project_auditor?
   end
 
   def part_of_project?
@@ -79,6 +79,6 @@ class ApplicationPolicy
   end
 
   def not_part_of_project?
-    @permissions.zero?
+    @projects_user.nil?
   end
 end

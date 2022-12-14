@@ -54,7 +54,7 @@ class SimpleExportJob::ExporterBase
           user.middle_name,
           user.last_name,
           user.email,
-          Extraction.by_project_and_user(@project.id, user.id).pluck(:id)
+          Extraction.where(project: @project, user:).pluck(:id)
         ]
       end
 

@@ -62,12 +62,12 @@ div class="p-4 lg:p-8"
               td
                 .projects-users-role dropdown-active='false'
                   span.projects-users-role-label data-extraction-id="#{ extraction.id.to_s }"
-                    = extraction.pur_handle
+                    = extraction.user_handle
                   .projects-users-role-select.hide
                     = form_with model: extraction, html: { remote: true } do |e_f|
-                      = e_f.select :projects_users_role_id, @projects_users_roles.map { |pur| [pur.handle, pur.id] }, input_html: { class: "index-extractions-select2" }, selected: extraction.projects_users_role.id
+                      = e_f.select :user_id, @users.map { |user| [user.handle, user.id] }, input_html: { class: "index-extractions-select2" }, selected: extraction.user.id
             - else
-              td = extraction.pur_handle
+              td = extraction.user_handle
 
             td data-sort="#{ extraction.progress_meter_width }"
               .success.progress data-allow-html="true" data-tooltip="" title="#{ extraction.tooltip_text }"

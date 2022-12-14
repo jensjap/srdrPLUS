@@ -498,21 +498,6 @@ class ProjectsController < ApplicationController
                              .group_by(&:project_id)
                              .count
 
-      @projects_lead_or_with_key_questions = ProjectsUsersRole
-                                             .where(projects_user: ProjectsUser
-          .where(
-            project_id: project_ids,
-            user_id: current_user
-          ),
-                                                    role: Role.where(name: 'Leader')).includes(projects_user: { project: [:key_questions_projects] })
-                                             .map do |pur|
-        [pur.project.id,
-         pur.project.key_questions_projects.present?]
-      end
-                                             .to_h
-
-      @projects_lead_or_with_key_questions.default = false
-
     elsif @project_status == 'draft'
       @projects = policy_scope(Project)
                   .draft
@@ -563,21 +548,6 @@ class ProjectsController < ApplicationController
                              .where(project_id: project_ids)
                              .group_by(&:project_id)
                              .count
-
-      @projects_lead_or_with_key_questions = ProjectsUsersRole
-                                             .where(projects_user: ProjectsUser
-          .where(
-            project_id: project_ids,
-            user_id: current_user
-          ),
-                                                    role: Role.where(name: 'Leader')).includes(projects_user: { project: [:key_questions_projects] })
-                                             .map do |pur|
-        [pur.project.id,
-         pur.project.key_questions_projects.present?]
-      end
-                                             .to_h
-
-      @projects_lead_or_with_key_questions.default = false
 
     elsif @project_status == 'pending'
       @unapproved_publishings = Publishing

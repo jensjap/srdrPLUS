@@ -3,10 +3,6 @@
   h4 No Projects found.
 
 - else
-  /ul.accordion data-accordion='' data-multi-expand='false' data-allow-all-closed='true'
-    - @projects.each do |project|
-      li.accordion-item data-accordion-item=''
-        = render 'projects/index/new_project_list_item', project: project
   ul style="list-style-type: none; margin: 0;"
     - @projects.each_with_index do |project, ix|
       li style="padding: 1rem; margin: 0; background-color: #{if ix % 2 == 0 then 'lavender' else 'transparent'}"

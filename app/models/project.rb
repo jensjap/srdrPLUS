@@ -39,7 +39,7 @@ class Project < ApplicationRecord
 
   after_create :create_default_extraction_form, unless: :create_empty
   after_create :create_empty_extraction_form, if: :create_empty
-  after_create :create_default_perpetual_task, :create_default_member
+  after_create :create_default_member
 
   has_many :extractions, dependent: :destroy, inverse_of: :project
   has_many :abstract_screenings, dependent: :destroy, inverse_of: :project
@@ -85,8 +85,7 @@ class Project < ApplicationRecord
            through: :extraction_forms_projects_sections
 
   has_many :projects_users, dependent: :destroy, inverse_of: :project
-  has_many :projects_users_roles, through: :projects_users, dependent: :destroy
-  has_many :users, through: :projects_users, dependent: :destroy
+  has_many :users, through: :projects_users
 
   has_many :citations_projects, dependent: :destroy, inverse_of: :project
   has_many :citations, through: :citations_projects
@@ -95,9 +94,6 @@ class Project < ApplicationRecord
   has_many :unlabeled_citations, lambda {
                                    where(labels: { id: nil })
                                  }, through: :citations_projects, source: :citations
-
-  has_many :tasks, dependent: :destroy, inverse_of: :project
-  has_many :assignments, through: :tasks, dependent: :destroy
 
   has_many :sd_meta_data
   has_many :imports, through: :projects_users, dependent: :destroy
@@ -113,8 +109,6 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :key_questions
   accepts_nested_attributes_for :citations
   accepts_nested_attributes_for :citations_projects, allow_destroy: true
-  accepts_nested_attributes_for :tasks, allow_destroy: true
-  accepts_nested_attributes_for :assignments, allow_destroy: true
   accepts_nested_attributes_for :key_questions_projects, allow_destroy: true
   # accepts_nested_attributes_for :orderings
   accepts_nested_attributes_for :projects_users, allow_destroy: true
@@ -158,33 +152,25 @@ class Project < ApplicationRecord
   end
 
   def creator
-    User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
+    User.joins({ projects_users: [:project] })
         .where(projects_users: { project_id: id })
         .first
   end
 
   def leaders
-    User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
-        .where(projects_users: { project_id: id })
-        .where(projects_users: { projects_users_roles: { roles: { name: 'Leader' } } })
+    projects_users.select(&:project_leader?).map(&:user)
   end
 
   def consolidators
-    User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
-        .where(projects_users: { project_id: id })
-        .where(projects_users: { projects_users_roles: { roles: { name: 'Consolidator' } } })
+    projects_users.select(&:project_consolidator?).map(&:user)
   end
 
   def contributors
-    User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
-        .where(projects_users: { project_id: id })
-        .where(projects_users: { projects_users_roles: { roles: { name: 'Contributor' } } })
+    projects_users.select(&:project_contributor?).map(&:user)
   end
 
   def auditors
-    User.joins({ projects_users: [:project, { projects_users_roles: :role }] })
-        .where(projects_users: { project_id: id })
-        .where(projects_users: { projects_users_roles: { roles: { name: 'Auditor' } } })
+    projects_users.select(&:project_auditor?).map(&:user)
   end
 
   def members
@@ -198,10 +184,7 @@ class Project < ApplicationRecord
 
     extractions.create(
       citations_project_id:,
-      projects_users_role: ProjectsUsersRole.find_or_create_by!(
-        projects_user: ProjectsUser.find_by(project: self, user_id: current_user_id),
-        role: Role.find_by(name: 'Consolidator')
-      ),
+      user_id: current_user_id,
       consolidated: true
     )
   end
@@ -395,13 +378,6 @@ class Project < ApplicationRecord
     efp.save!
   end
 
-  def create_default_perpetual_task
-    new_task = tasks.create!(task_type: TaskType.find_by(name: 'Perpetual'))
-    # ProjectsUsersRole.by_project(@project).each do |pur|
-    #  new_task.assignments << Assignment.create!(projects_users_role: pur)
-    # end
-  end
-
   def discover_extraction_discrepancy(extraction1, extraction2)
     #      e1 = Extraction.find(extraction1_id)
     #      e1_json = ApplicationController.new.view_context.render(
@@ -430,13 +406,13 @@ class Project < ApplicationRecord
   end
 
   def create_default_member
-    if User.try(:current)
-      projects_user = projects_users.select { |pu| pu.user == User.current }.first
-      projects_user ||= ProjectsUser.create(user: User.current, project: self)
-      unless projects_user.roles.where(name: 'Leader').present?
-        projects_user.roles << Role.where(name: 'Leader')
-        projects_user.save
-      end
+    attempted_current_user = User.try(:current)
+    return unless attempted_current_user && projects_users.none? { |pu| pu.project_leader? }
+
+    if (current_user_pu = ProjectsUser.find_by(project: self, user: attempted_current_user))
+      current_user_pu.make_leader!
+    else
+      ProjectsUser.create!(user: User.current, project: self, permissions: 1)
     end
   end
 end
