@@ -1,7 +1,7 @@
 require 'mysql2'
 
-def db
-  @db ||= Mysql2::Client.new(Rails.configuration.database_configuration['recovery'])
+def db_recovery
+  @db_recovery ||= Mysql2::Client.new(Rails.configuration.database_configuration['recovery'])
 end
 
 def logger
@@ -10,12 +10,12 @@ def logger
   @logger
 end
 
-def initialize_variables
+def initialize_recovery_variables
   raise 'Missing ENV value for `recover_question_option_project_id`' if ENV['recover_question_option_project_id'].blank?
   raise 'Missing ENV value for `SRDRPLUS_DATABASE_RECOVERY_SCHEMA`' if ENV['SRDRPLUS_DATABASE_RECOVERY_SCHEMA'].blank?
 
   @project_id         = ENV['recover_question_option_project_id']
-  @recovery_project_q = db.query(
+  @recovery_project_q = db_recovery.query(
     "SELECT
     *
     FROM
@@ -56,7 +56,7 @@ def _get_all_multi_choice_qrc_in_project
 end
 
 def _recover_options_for_multi_choice_qrc(qrc)
-  recovery_qrcqrco_q = db.query(
+  recovery_qrcqrco_q = db_recovery.query(
     "SELECT
     *
     FROM
@@ -147,9 +147,9 @@ def _create_qrcqrco_with_primary_id_and_option_text(id, question_row_column_id, 
 end
 
 namespace(:recover_question_options) do
-  desc 'Recover deleted question options from old db snapshot.'
+  desc 'Recover deleted question options from old db_recovery snapshot.'
   task project: :environment do
-    initialize_variables
+    initialize_recovery_variables
     main
   end
 end
