@@ -66,20 +66,18 @@ class ExtractionsController < ApplicationController
     user = User.find(params['extraction']['user_id'])
     params['extraction']['citation'].delete_if { |i| i == '' }.map(&:to_i).each do |citation_id|
       citations_project = CitationsProject.find_by(citation_id:, project: @project)
-      extraction = Extraction.find_by(project: @project, citations_project:, user:)
+      extraction = Extraction.find_by(project: @project, citations_project:)
       if params['extraction']['noDuplicates'] && extraction
         skipped << extraction
-      else
-        extractions << @project.extractions.build(
-          citations_project:,
-          user:
-        )
+        next
       end
-    end
 
-    extractions.each do |extraction|
-      if extraction.save
-        succeeded << extraction
+      new_extraction = @project.extractions.build(
+        citations_project:,
+        user:
+      )
+      if new_extraction.save
+        succeeded << new_extraction
       else
         failed << extraction
       end

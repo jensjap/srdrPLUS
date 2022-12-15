@@ -6,6 +6,7 @@
 #  project_id             :integer
 #  citations_project_id   :integer
 #  projects_users_role_id :integer
+#  user_id                :integer
 #  consolidated           :boolean          default(FALSE)
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null

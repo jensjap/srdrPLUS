@@ -23,10 +23,40 @@ class ProjectsUser < ApplicationRecord
   accepts_nested_attributes_for :imports, allow_destroy: true
   accepts_nested_attributes_for :imported_files, allow_destroy: true
 
+  def highest_role_string
+    if project_leader?
+      'Leader'
+    elsif project_consolidator?
+      'Consolidator'
+    elsif project_contributor?
+      'Contributor'
+    elsif project_auditor?
+      'Auditor'
+    end
+  end
+
   def make_leader!
     return if project_leader?
 
     update!(permissions: permissions + 1)
+  end
+
+  def make_consolidator!
+    return if project_consolidator?
+
+    update!(permissions: permissions + 2)
+  end
+
+  def make_contributor!
+    return if project_contributor?
+
+    update!(permissions: permissions + 4)
+  end
+
+  def make_auditor!
+    return if project_auditor?
+
+    update!(permissions: permissions + 8)
   end
 
   def project_leader?

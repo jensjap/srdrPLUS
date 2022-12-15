@@ -451,29 +451,19 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
       project: @project
     )
 
-    # Find ProjectsUsersRole with Contributor role.
+    # Find ProjectsUser with Contributor permissions.
     pu = ProjectsUser.find_or_create_by(
       project: @project,
       user:
     )
 
-    # If this user is not a Contributor then make him one.
-    pur = ProjectsUsersRole.find_by(
-      projects_user: pu,
-      role: @@LEADER_ROLE
-    )
-    unless pur.present?
-      pur = ProjectsUsersRole.find_or_create_by(
-        projects_user: pu,
-        role: @@CONTRIBUTOR_ROLE
-      )
-    end # unless pur.present?
+    pu.make_contributor!
 
     # Find or create Extraction.
     Extraction.find_or_create_by(
       project: @project,
       citations_project:,
-      projects_users_role: pur,
+      user: pu.user,
       consolidated: false
     )
   end # def _retrieve_extraction_record(user, citation)

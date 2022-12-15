@@ -98,72 +98,10 @@ json.project do
             end
           end
         end
-        json.labels do
-          cp.labels.each do |ll|
-            json.set! ll.id do
-              json.labeler_user_id ll.projects_users_role.user.id
-              json.labeler_role_id ll.projects_users_role.role.id
-              json.label_type do
-                json.id ll.label_type.id
-                json.name ll.label_type.name
-              end
-
-              json.set! :reasons do
-                ll.reasons.each do |r|
-                  json.set! r.id do
-                    json.name r.name
-                  end
-                end
-              end
-            end
-          end
-        end
-
-        json.tags do
-          cp.taggings.each do |tt|
-            json.set! tt.tag.id do
-              json.creator_user_id tt.projects_users_role.user.id
-              json.creator_role_id tt.projects_users_role.role.id
-              json.name tt.tag.name
-            end
-          end
-        end
-
-        json.notes do
-          cp.notes.each do |n|
-            json.set! n.id do
-              json.creator_user_id n.projects_users_role.user.id
-              json.creator_role_id n.projects_users_role.role.id
-              json.value n.value
-            end
-          end
-        end
       end
     end
   end
 
-  json.tasks do
-    @project.tasks.each do |tt|
-      json.set! tt.id do
-        json.task_type do
-          json.id tt.task_type.id
-          json.name tt.task_type.name
-        end
-        json.num_assigned tt.num_assigned
-        json.set! :assignments do
-          tt.assignments.each do |a|
-            json.set! a.id do
-              json.assignee_user_id a.projects_users_role.user.id
-              json.assignee_role_id a.projects_users_role.role.id
-              json.done_so_far a.done_so_far
-              json.date_due a.date_due
-              json.done a.done
-            end
-          end
-        end
-      end
-    end
-  end
 
   json.extraction_forms do
     @project.extraction_forms_projects.each do |efp|
@@ -287,8 +225,8 @@ json.project do
     @project.extractions.each do |ex|
       json.set! ex.id do
         json.citation_id ex.citations_project.citation.id
-        json.extractor_user_id ex.projects_users_role.user.id
-        json.extractor_role_id ex.projects_users_role.role.id
+        json.extractor_user_id ex.user.id
+        json.extractor_role ex.projects_user.highest_role_string
         json.sections do
           ex.extractions_extraction_forms_projects_sections.each do |eefps|
             json.set! eefps.extraction_forms_projects_section.id do
