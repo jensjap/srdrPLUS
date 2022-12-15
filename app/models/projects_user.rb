@@ -15,6 +15,8 @@ class ProjectsUser < ApplicationRecord
   belongs_to :project, inverse_of: :projects_users # , touch: true
   belongs_to :user, inverse_of: :projects_users
 
+  has_many :projects_users_roles, dependent: :nullify
+
   has_many :imports, dependent: :destroy
   has_many :imported_files, through: :imports
 
