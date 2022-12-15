@@ -31,7 +31,7 @@ class HealthMonitorService
     ComparisonsArmsRssm,
     ComparisonsMeasure,
     ComparisonsResultStatisticSection,
-    ConsensusType,
+    # ConsensusType,
     DataAnalysisLevel,
     DataAudit,
     Degree,
@@ -187,8 +187,8 @@ class HealthMonitorService
     TpsComparisonsRssm,
     Type1,
     Type1Type,
-    User,
-    UserType,
+    User, # TODO: merge
+    UserType, # TODO: merge
     WacsBacsRssm,
     WordWeight
   ].freeze
