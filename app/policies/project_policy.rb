@@ -8,19 +8,9 @@ class ProjectPolicy < ApplicationPolicy
     :methodology_description,
     :prospero,
     :doi,
-    :notes,
     :funding_source,
     {
       mesh_descriptor_ids: []
-    },
-    {
-      tasks_attributes: [
-        :id,
-        :name,
-        :num_assigned,
-        :task_type_id,
-        { projects_users_role_ids: [] }
-      ]
     },
     {
       citations_attributes: [
