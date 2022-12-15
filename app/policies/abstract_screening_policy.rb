@@ -37,16 +37,8 @@ class AbstractScreeningPolicy < ApplicationPolicy
     part_of_project?
   end
 
-  def label?
-    record.nil? || record.user == user
-  end
-
   def new?
     project_leader?
-  end
-
-  def rescreen?
-    record.user == user
   end
 
   def screen?
