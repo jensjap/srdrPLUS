@@ -65,25 +65,8 @@ Rails.application.routes.draw do
       resources :keywords, only: [:index]
       resources :users, only: [:index]
       resources :authors, only: [:index]
-      resources :colors, only: [:index]
       resources :keywords, only: [:index]
-      resources :terms, only: [:index]
       resources :timepoint_names, only: [:index]
-
-      resources :labels_reasons, only: %i[create destroy]
-      resources :projects_users_term_groups_colors, only: %i[create update destroy] do
-        resources :terms, only: [:index]
-      end
-      resources :projects_users_term_groups_colors_terms, only: %i[create destroy]
-      resources :taggings, only: %i[create destroy]
-
-      resources :notes, only: %i[create update destroy]
-
-      resources :assignments do
-        resources :reasons, only: [:index]
-        resources :tags, only: [:index]
-        resources :projects_users_term_groups_colors, only: %i[create index]
-      end
 
       resources :citations, only: [:index] do
         collection do
@@ -93,10 +76,6 @@ Rails.application.routes.draw do
       end
 
       resources :projects, shallow: true do
-        resources :assignments do
-          get 'screen', on: :member
-          get 'history', on: :member
-        end
         resources :citations, only: [:index] do
         end
         resources :extractions, only: [:index]
@@ -137,15 +116,10 @@ Rails.application.routes.draw do
     end # END namespace :v3 do
   end # END namespace :api do
 
-  resources :assignments do
-    get 'screen', on: :member
-  end
   resources :authors
   resources :comparisons
   resources :journals
   resources :keywords
-  resources :labels
-  # resources :tasks
   resources :records, only: [:update]
   resources :statusings, only: [:update]
 
@@ -178,15 +152,11 @@ Rails.application.routes.draw do
     get 'kpis', to: 'abstract_screenings#kpis'
 
     resources :abstract_screenings do
-      get 'rescreen', to: 'abstract_screenings#rescreen'
       get 'screen', to: 'abstract_screenings#screen'
-      post 'label', to: 'abstract_screenings#label'
       post 'update_word_weight', to: 'abstract_screenings#update_word_weight'
     end
     resources :fulltext_screenings do
-      get 'rescreen', to: 'fulltext_screenings#rescreen'
       get 'screen', to: 'fulltext_screenings#screen'
-      post 'label', to: 'fulltext_screenings#label'
     end
 
     resources :screening_forms
@@ -209,7 +179,6 @@ Rails.application.routes.draw do
     resources :citations do
     end
 
-    resources :tasks
     resources :extractions do
       collection do
         get 'comparison_tool'
