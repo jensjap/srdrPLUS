@@ -3,6 +3,7 @@ require 'rubyXL/convenience_methods'
 
 class ImportAssignmentsAndMappingsJob < ApplicationJob
   include ImportJobs::PubmedCitationImporter
+  include ImportHelpers::ImportAssignmentsAndMappingsJobHelpers
 
   queue_as :default
 
@@ -32,7 +33,8 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     @imported_file = ImportedFile.find(args.first)
     @project       = Project.find(@imported_file.project.id)
 
-    buffer = @imported_file.content.download
+    buffer = get_buffer_from_imported_file(@imported_file)
+
     _parse_workbook(buffer)
     _sort_out_worksheets     unless @dict_errors[:parse_error_found]
     _process_worksheets_data unless @dict_errors[:wb_errors_found]
@@ -229,8 +231,9 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     data_rows.each do |row|
       next if row[1].blank?
 
-      email         = row[0]&.value
-      wb_cit_ref_id = row[1]&.value&.to_i
+      email          = row[0]&.value
+      wb_cit_ref_ids = row[1]&.value&.to_s&.split(',')&.map(&:to_i)
+      wb_cit_ref_id  = wb_cit_ref_ids.first
 
       user = User.find_by(email: email)
       unless user.present? && (@project.leaders.include?(user) || @project.contributors.include?(user))
@@ -243,17 +246,21 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
         next
       end
 
-      _sort_row_data(user.email, user.id, wb_cit_ref_id, row)
+      wb_cit_ref_ids.each do |wb_cit_ref_id|
+        _sort_row_data(user.email, user.id, wb_cit_ref_id, row)
+      end
     end
   end
 
   def _build_header_index_lookup_dict(header_row)
     # Trust the database first in regards to the sections present.
     @lsof_type1_section_names = @project
-                                .extraction_forms_projects_sections
-                                .includes(:section)
-                                .joins(:extraction_forms_projects_section_type)
-                                .where(extraction_forms_projects_section_types:
+      .extraction_forms_projects
+      .first
+      .extraction_forms_projects_sections
+      .includes(:section)
+      .joins(:extraction_forms_projects_section_type)
+      .where(extraction_forms_projects_section_types:
         { name: 'Type 1' })
       &.map(&:section)
       &.map(&:name)
@@ -505,10 +512,12 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   #   "id"=>"299951"}
   def _add_generic_type1_to_extraction(extraction, type1_section_name, type1_name, type1_description)
     efps = @project
-           .extraction_forms_projects_sections
-           .joins(:section)
-           .where(sections: { name: type1_section_name })
-           .first
+      .extraction_forms_projects
+      .first
+      .extraction_forms_projects_sections
+      .joins(:section)
+      .where(sections: { name: type1_section_name })
+      .first
     eefps = ExtractionsExtractionFormsProjectsSection
             .find_by(extraction:, extraction_forms_projects_section: efps)
     n_hash = {
@@ -537,6 +546,8 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
 
     # Find the appropriate ExtractionFormsProjectsSection.
     efps = @project
+      .extraction_forms_projects
+      .first
       .extraction_forms_projects_sections
       .joins(:section)
       .where(sections: { name: type1_section_name })
