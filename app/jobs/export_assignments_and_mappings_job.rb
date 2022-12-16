@@ -68,6 +68,8 @@ class ExportAssignmentsAndMappingsJob < ApplicationJob
   def _gather_lsof_type1_names()
     # Iterate over all type 1 sections in project and return an array with names.
     return @project
+      .extraction_forms_projects
+      .first
       .extraction_forms_projects_sections
       .includes(:section)
       .joins(:extraction_forms_projects_section_type)
