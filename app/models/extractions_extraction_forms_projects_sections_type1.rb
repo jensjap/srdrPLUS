@@ -200,7 +200,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   private
 
   def set_extraction_stale
-    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil?
+    extraction.set_stale(true)
   end
 
   # Do not overwrite existing entries but associate to one that already exists or create a new one.
