@@ -56,9 +56,6 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
       .where(type1_id:)
   }
 
-  # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1Row. This is meant to be Outcome Timepoint.
-  # TEMPORARILY DISABLED -Birol
-  # !!! jens 2020/05/13: Why is this disabled?
   after_create :create_default_type1_rows
 
   after_save :ensure_matrix_column_headers
