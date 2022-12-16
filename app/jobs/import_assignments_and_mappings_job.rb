@@ -1,7 +1,5 @@
 require 'rubyXL'
 require 'rubyXL/convenience_methods'
-#require 'date'
-#require "import_jobs/pubmed_citation_importer"
 
 class ImportAssignmentsAndMappingsJob < ApplicationJob
   include ImportJobs::PubmedCitationImporter
@@ -39,7 +37,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     _sort_out_worksheets     unless @dict_errors[:parse_error_found]
     _process_worksheets_data unless @dict_errors[:wb_errors_found]
     _insert_wb_data_into_db  unless @dict_errors[:ws_errors_found]
-  end  # def perform(*args)
+  end
 
   private
 
@@ -50,7 +48,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   rescue RuntimeError => e
     puts "  @dict_errors[:parse_error_found] = true"
     @dict_errors[:parse_error_found] = true
-  end  # def _parse_workbook(buffer)
+  end
 
   # Build a dictionary with all worksheets.
   #   Three keys
@@ -80,8 +78,8 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
         puts "  Found Unknown Worksheet Names.."
         @wb_worksheets[:unknowns] << ws
 
-      end # case ws.sheet_name
-    end # @wb.worksheets.each do |ws|
+      end
+    end
 
     # Check for problems and record in @dict_errors[:wb_errors] if present, then
     #   toggle @dict_errors[:wb_errors_found] to true
@@ -101,8 +99,8 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
       @dict_errors[:wb_errors] << 'No "Workbook Citation References" worksheets found.'
       @dict_errors[:wb_errors_found] = true
 
-    end # if @wb[:aam].length > 1
-  end # def _sort_out_worksheets
+    end
+  end
 
   def _process_worksheets_data
     # Since all other sections will reference the 'Workbook Citation References' section,
@@ -113,7 +111,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     # we would not have continued.
     _process_workbook_citation_references_section(@wb_worksheets[:wcr].first)
     _process_assignments_and_mappings_section(@wb_worksheets[:aam].first)
-  end # def _process_worksheets_data
+  end
 
   # Populate @wb_data under key :wcr.
   def _process_workbook_citation_references_section(ws)
@@ -146,8 +144,8 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
         "authors"       => authors,
         "year"          => year,
         "citation_id"   => _find_citation_id_in_db(pmid, citation_name, authors, year) }
-    end  # data_rows.each do |row|
-  end  # def _process_workbook_citation_references_section(ws)
+    end
+  end
 
   # Find the number of rows based on presence of data in specificied column.
   def _find_number_of_data_rows(rows, col=0)
@@ -166,7 +164,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
 
     # Subtract 1 for header row.
     return cnt_data_rows-1
-  end  # def _find_number_of_data_rows(rows)
+  end
 
   # Try to find citation in the following order by:
   #   1. pmid
@@ -202,7 +200,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     @dict_errors[:ws_errors_found] = true
 
     return nil
-  end  # def _find_citation_id_in_db(pmid, citation_name, authors, year)
+  end
 
   def _create_citation_from_citation_name__authors__year(citation_name, authors, year)
     citation = Citation.create(name: citation_name)
@@ -213,7 +211,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     citation.save
 
     return citation
-  end  # def _create_citation_from_citation_name__authors__year(citation_name, authors, year)
+  end
 
   # Populate @wb_data under key :aam.
   #   The number of sections is variable. Thus the number of key-value pairs is also
@@ -237,17 +235,17 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
       user = User.find_by(email: email)
       unless user.present? && (@project.leaders.include?(user) || @project.contributors.include?(user))
         user = @project.leaders.first
-      end  # unless user.present? && (@project.leaders.include?(user) || @project.contributors.include?(user))
+      end
 
       if wb_cit_ref_id.blank? || wb_cit_ref_id.eql?(0)
         @dict_errors[:ws_errors] << "Row with invalid Workbook Reference ID found. #{row.cells.to_a}"
         @dict_errors[:ws_errors_found] = true
         next
-      end  # if wb_cit_ref_id.blank? || wb_cit_ref_id.eql?(0)
+      end
 
       _sort_row_data(user.email, user.id, wb_cit_ref_id, row)
-    end # data_rows.each do |row|
-  end # def _process_assignments_and_mappings_section(ws)
+    end
+  end
 
   def _build_header_index_lookup_dict(header_row)
     # Trust the database first in regards to the sections present.
@@ -283,10 +281,10 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
           @dict_header_index_lookup["#{type1_section_name.singularize} Type"] = cell.column
         when re_match_targets
           @dict_header_index_lookup["#{ cell.value.strip }"] = cell.column
-        end # case cell.value
-      end # header_row.cells.each do |cell|
-    end # @lsof_type1_section_names.each do |type1_section_name|
-  end # def _build_header_index_lookup_dict(header_row)
+        end
+      end
+    end
+  end
 
   # All data is sorted into the following structure:
   #   @wb_data => {
@@ -369,17 +367,17 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
         )
 
       end
-    end # @lsof_type1_section_names.each do |type1_section_name|
-  end # def _sort_row_data(user_email, user_id, wb_cit_ref_id, row)
+    end
+  end
 
   def _insert_wb_data_into_db
     puts "Inserting data into db.."
     @wb_data[:aam].each do |user_email, dict_wb_citation_reference_ids|
       dict_wb_citation_reference_ids.each do |_wb_cit_ref_id, dict_type1_data|
         _process_assignments_and_mappings_extraction_data(user_email, dict_type1_data)
-      end # dict_wb_citation_reference_ids.each do |wb_cit_ref_id, dict_type1_data|
-    end # @wb_data[:aam].each do |user_email, dict_wb_citation_reference_ids|
-  end # def _insert_wb_data_into_db
+      end
+    end
+  end
 
   def _process_assignments_and_mappings_extraction_data(user_email, data)
     user = User.find_by(email: user_email)
@@ -402,9 +400,9 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
       else
         _insert_generic_type1_data(extraction, type1_section_name, data)
 
-      end # case type1_section_name
-    end # @lsof_type1_section_names.each do |type1_section_name|
-  end # def _process_assignments_and_mappings_extraction_data(user_email, data)
+      end
+    end
+  end
 
   # Params:
 
@@ -424,8 +422,8 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
         @@TYPE1_TYPE[lsof_type1_info[2]],
         data["Populations"],
         data["Timepoints"]) unless lsof_type1_info[0].blank?
-    end  # data[type1_section_name].each do |lsof_type1_info|
-  end  # def _insert_outcome_type1_data(extraction, type1_section_name, data)
+    end
+  end
 
   def _insert_generic_type1_data(extraction, type1_section_name, data)
     data[type1_section_name].each do |lsof_type1_info|
@@ -441,8 +439,8 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
         type1_section_name,
         lsof_type1_info[0],
         lsof_type1_info[1]) unless lsof_type1_info[0].blank?
-    end  # data[type1_section_name].each do |lsof_type1_info|
-  end  # def _insert_generic_type1_data(extraction, type1_section_name, data)
+    end
+  end
 
   def _retrieve_extraction_record(user, citation)
     # CitationsProject may or not exist. Call find_or_create_by.
@@ -476,7 +474,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
       projects_users_role: pur,
       consolidated: false
     )
-  end # def _retrieve_extraction_record(user, citation)
+  end
 
   def _toggle_true_all_kqs_for_extraction(extraction)
     @project.key_questions_projects.each do |kqp|
@@ -484,8 +482,8 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
         extraction:,
         key_questions_project: kqp
       )
-    end # @project.key_quesetions_projects.each do |kqp|
-  end # def _toggle_true_all_kqs_for_extraction(extraction)
+    end
+  end
 
   # Find appropriate EEFPS and add type1.
   #
@@ -525,7 +523,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     }
 
     eefps.update(n_hash) if eefps.present? && !type1_section_name.eql?('Outcomes')
-  end # def _add_generic_type1_to_extraction(extraction, type1_section_name, type1_name, type1_description)
+  end
 
   def _add_outcome_type1_to_extraction(
     extraction,
@@ -597,7 +595,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
               unit: timepoint_info[1].to_s
             )
           )
-      end  # lsof_timepoints.each do |timepoint_info|
-    end  # lsof_populations.each do |population_info|
-  end  # def _add_outcome_type1_to_extraction(extraction, type1_section_name, type1_name, type1_description, type1_type_id, lsof_populations, lsof_timepoints)
-end  # class ImportAssignmentsAndMappingsJob < ApplicationJob
+      end
+    end
+  end
+end
