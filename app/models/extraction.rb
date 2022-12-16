@@ -217,6 +217,8 @@ class Extraction < ApplicationRecord
   end
 
   def evaluate_screening_status_citations_project
+    return if citations_project.marked_for_destruction?
+
     citations_project.try(:evaluate_screening_status)
   end
 end
