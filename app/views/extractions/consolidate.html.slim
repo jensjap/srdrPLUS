@@ -1,5 +1,15 @@
 - provide(:title, "#{ action_name } #{ controller_name }".titleize)
 
+div style='margin-left: 34px;'
+  h5
+    = "Consolidated Extraction assigned to "
+    span style="font-weight: bold"
+      = @consolidated_extraction.user.handle
+
+div style='margin: 0 34px; border-color: #bbb6dd; padding: 0; width: auto;'
+  h6 style='margin: 0;'
+    = @consolidated_extraction.citation.handle.split("\n").join(" - ")
+
 #spinner-modal.reveal.large data-reveal='' data-options='closeOnClick:false;closeOnEsc:false;'
   .spinner.float-left
   h2 Please wait for page to reload..
