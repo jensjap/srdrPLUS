@@ -31,33 +31,6 @@ json.project do
             end
           end
         end
-        json.roles do
-          pu.roles.each do |r|
-            json.set! r.id do
-              json.name r.name
-            end
-          end
-        end
-
-        json.term_groups do
-          pu.projects_users_term_groups_colors.each do |putgc|
-            json.set! putgc.term_group.id do
-              json.color do
-                json.id putgc.color.id
-                json.name putgc.color.name
-                json.hex_code putgc.color.hex_code
-              end
-              json.name putgc.term_group.name
-              json.set! :terms do
-                putgc.terms.each do |term|
-                  json.set! term.id do
-                    json.name term.name
-                  end
-                end
-              end
-            end
-          end
-        end
       end
     end
   end
@@ -66,7 +39,7 @@ json.project do
     @project.key_questions_projects.each do |kqp|
       json.set! kqp.key_question.id do
         json.name kqp.key_question.name
-        #json.position kqp.ordering.position  ####### need to make sure kqp has ordering and position -Birol
+        # json.position kqp.ordering.position  ####### need to make sure kqp has ordering and position -Birol
       end
     end
   end
@@ -102,11 +75,9 @@ json.project do
     end
   end
 
-
   json.extraction_forms do
     @project.extraction_forms_projects.each do |efp|
       json.set! efp.id do
-
         json.sections do
           efp.extraction_forms_projects_sections.each do |efps|
             json.set! efps.id do
@@ -149,9 +120,7 @@ json.project do
                 end
               end
 
-              if efps.link_to_type1.present?
-                json.link_to_type1 efps.link_to_type1.id
-              end
+              json.link_to_type1 efps.link_to_type1.id if efps.link_to_type1.present?
 
               json.questions do
                 efps.questions.each do |q|
@@ -369,9 +338,7 @@ json.project do
                 end
               end
 
-              if eefps.link_to_type1.present?
-                json.link_to_type1 eefps.link_to_type1.id
-              end
+              json.link_to_type1 eefps.link_to_type1.id if eefps.link_to_type1.present?
 
               json.records do
                 Record.where(recordable: eefps.extractions_extraction_forms_projects_sections_question_row_column_fields).each do |r|

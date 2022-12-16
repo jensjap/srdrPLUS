@@ -37,6 +37,15 @@ class ProjectsUser < ApplicationRecord
     end
   end
 
+  def roles_string
+    roles = []
+    roles << 'Leader' if project_leader?
+    roles << 'Consolidator' if project_consolidator?
+    roles << 'Contributor' if project_contributor?
+    roles << 'Auditor' if project_auditor?
+    roles.join(', ')
+  end
+
   def make_leader!
     return if project_leader?
 
