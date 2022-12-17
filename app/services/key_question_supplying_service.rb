@@ -36,7 +36,7 @@ class KeyQuestionSupplyingService
   def create_fhir_obj(raw)
     key_question = {
       'status' => 'active',
-      'id' => raw.id,
+      'id' => '2' + '-' + raw.id.to_s,
     }
 
     title = raw.kq_name

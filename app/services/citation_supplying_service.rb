@@ -38,7 +38,7 @@ class CitationSupplyingService
   def create_fhir_obj(raw)
     citation = {
       'status' => 'active',
-      'id' => raw.id,
+      'id' => '1' + '-' + raw.id.to_s,
       'citedArtifact' => {
         'identifier' => [],
         'title' => [],
