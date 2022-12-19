@@ -58,6 +58,12 @@ class Extraction < ApplicationRecord
   #    end
   #  end
 
+  def set_stale(state)
+    extraction_checksum.save
+    extraction_checksum.is_stale = state
+    extraction_checksum.save
+  end
+
   def ensure_extraction_form_structure
     # self.project.extraction_forms_projects.includes([:extraction_forms_projects_sections, :extraction_form]).each do |efp|
     # NOTE This method assumes that self is not a mini-extraction
@@ -212,6 +218,8 @@ class Extraction < ApplicationRecord
   end
 
   def evaluate_screening_status_citations_project
-    citations_project.evaluate_screening_status
+    return if citations_project.marked_for_destruction?
+
+    citations_project.try(:evaluate_screening_status)
   end
 end

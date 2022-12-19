@@ -22,7 +22,8 @@ class Statusing < ApplicationRecord
 
   def evaluate_screening_status_citations_project
     return unless statusable.instance_of?(ExtractionsExtractionFormsProjectsSection)
+    return if statusable.try(:citations_project).try(:marked_for_destruction?)
 
-    statusable.citations_project.evaluate_screening_status
+    statusable.try(:citations_project).try(:evaluate_screening_status)
   end
 end
