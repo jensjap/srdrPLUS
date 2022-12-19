@@ -38,7 +38,7 @@ class ExtractionsController < ApplicationController
     @citations_projects   = @project.citations_projects
     @citations            = @project.citations
     @users = if policy(@project).assign_extraction_to_any_user?
-               User.joins(:projects_user).where(projects_users: { project: @project })
+               User.joins(:projects_users).where(projects_users: { project: @project })
              else
                [current_user]
              end
