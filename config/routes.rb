@@ -141,6 +141,9 @@ Rails.application.routes.draw do
         resources :citations, only: %i[index show]
         resources :key_questions, only: [:index, :show]
       end
+      resources :extraction_forms_projects, shallow: true, only: [] do
+        resources :extraction_forms_projects_sections, only: [:index, :show]
+      end
     end # END namespace :v3 do
   end # END namespace :api do
 
