@@ -1428,12 +1428,12 @@ module SeedDataExtended
         p.users << @screener_3
 
         # Seed ProjectsUsersRole.
-        ProjectsUser.find_by(project: p, user: @superadmin).roles  << Role.where(name: 'Contributor')
-        ProjectsUser.find_by(project: p, user: @contributor).roles << Role.where(name: 'Leader')
-        ProjectsUser.find_by(project: p, user: @contributor).roles << Role.where(name: 'Contributor')
-        ProjectsUser.find_by(project: p, user: @screener_1).roles << Role.where(name: 'Contributor')
-        ProjectsUser.find_by(project: p, user: @screener_2).roles << Role.where(name: 'Contributor')
-        ProjectsUser.find_by(project: p, user: @screener_3).roles << Role.where(name: 'Contributor')
+        ProjectsUser.find_by(project: p, user: @superadmin).make_contributor!
+        ProjectsUser.find_by(project: p, user: @contributor).make_leader!
+        ProjectsUser.find_by(project: p, user: @contributor).make_contributor!
+        ProjectsUser.find_by(project: p, user: @screener_1).make_contributor!
+        ProjectsUser.find_by(project: p, user: @screener_2).make_contributor!
+        ProjectsUser.find_by(project: p, user: @screener_3).make_contributor!
 
         # Assign a random sample of 50 citations to project.
         p.citations = Citation.all.sample(50)
