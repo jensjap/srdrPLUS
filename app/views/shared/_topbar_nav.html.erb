@@ -323,7 +323,6 @@
             :class="members_and_roles && 'bg-srdr-primary !text-white'"
             >Member(s) & Role(s)</a
           >
-          <% if AbstractScreeningService.as_user?(current_user) %>
           <a
             href="<%= project_citations_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
@@ -360,26 +359,6 @@
             :class="fulltext_screening && 'bg-srdr-primary !text-white'"
             >Full-Text Screening</a
           >
-          <% else %>
-          <a
-            href="<%= project_citations_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="citation_pool && 'bg-srdr-primary !text-white'"
-            >Citation Pool</a
-          >
-          <a
-            href="<%= project_tasks_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="tasks && 'bg-srdr-primary !text-white'"
-            >Tasks</a
-          >
-          <a
-            href="<%= next_assignment_project_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="screen && 'bg-srdr-primary !text-white'"
-            >Screen</a
-          >
-          <% end %>
           <a
             href="<%= build_extraction_forms_project_path(project.extraction_forms_projects.first, 'panel-tab': project.extraction_forms_projects.first.default_section_id) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
