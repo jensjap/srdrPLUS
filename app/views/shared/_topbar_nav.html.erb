@@ -19,7 +19,7 @@
   lifecycle_management: <%= @nav_buttons.include?('lifecycle_management') %>,
   abstract_screening: <%= @nav_buttons.include?('abstract_screening') %>,
   fulltext_screening: <%= @nav_buttons.include?('fulltext_screening') %>,
-  abstract_form: <%= @nav_buttons.include?('abstract_form') %>,
+  screening_forms: <%= @nav_buttons.include?('screening_forms') %>,
   fulltext_form: <%= @nav_buttons.include?('fulltext_form') %>,
   tasks: <%= @nav_buttons.include?('tasks') %>,
   screen: <%= @nav_buttons.include?('screen') %>,
@@ -338,10 +338,10 @@
           >
           <% end %>
           <a
-            href="<%= project_screening_forms_path(project, form_type: 'abstract') %>"
+            href="<%= project_screening_forms_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="abstract_form && 'bg-srdr-primary !text-white'"
-            >A.S. Form Builder</a
+            :class="screening_forms && 'bg-srdr-primary !text-white'"
+            >Screening Form Builder</a
           >
           <a
             href="<%= project_abstract_screenings_path(project) %>"
@@ -350,12 +350,6 @@
             >Abstract Screening</a
           >
           <% if AbstractScreeningService.as_user?(current_user) %>
-          <a
-            href="<%= project_screening_forms_path(project, form_type: 'fulltext') %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="fulltext_form && 'bg-srdr-primary !text-white'"
-            >F.S. Form Builder</a
-          >
           <a
             href="<%= project_fulltext_screenings_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
