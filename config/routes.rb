@@ -138,11 +138,9 @@ Rails.application.routes.draw do
 
     namespace :v3 do
       resources :projects, shallow: true, only: [] do
-        resources :citations, only: [:index, :show]
+        resources :citations, only: %i[index show]
       end
     end # END namespace :v3 do
-
-
   end # END namespace :api do
 
   resources :assignments do
@@ -207,7 +205,6 @@ Rails.application.routes.draw do
     resources :sd_meta_data
     resources :teams, concerns: :invitable, only: %i[create update destroy]
     member do
-      get 'export_data'
       get 'confirm_deletion'
       get 'next_assignment'
       post 'import_csv'
