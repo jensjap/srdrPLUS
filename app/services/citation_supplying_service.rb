@@ -39,6 +39,13 @@ class CitationSupplyingService
     citation = {
       'status' => 'active',
       'id' => '1' + '-' + raw.id.to_s,
+      'identifier' => [{
+        'type' => {
+          'text' => 'SRDR+ Object Identifier'
+        },
+        'system' => 'https://srdrplus.ahrq.gov/',
+        'value' => 'Citation/' + raw.id.to_s
+      }],
       'citedArtifact' => {
         'identifier' => [],
         'title' => [],

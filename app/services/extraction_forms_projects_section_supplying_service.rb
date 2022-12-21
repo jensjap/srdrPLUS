@@ -35,6 +35,13 @@ class ExtractionFormsProjectsSectionSupplyingService
         'status' => 'draft',
         'id' => '3' + '-' + raw.id.to_s,
         'title' => raw.section_label,
+        'identifier' => [{
+          'type' => {
+            'text' => 'SRDR+ Object Identifier'
+          },
+          'system' => 'https://srdrplus.ahrq.gov/',
+          'value' => 'ExtractionFormsProjectsSection/' + raw.id.to_s
+        }],
         'characteristic' => []
       }
       for row in raw.extraction_forms_projects_sections_type1s do
@@ -52,6 +59,13 @@ class ExtractionFormsProjectsSectionSupplyingService
         'status' => 'active',
         'id' => '3' + '-' + raw.id.to_s,
         'title' => raw.section_label,
+        'identifier' => [{
+          'type' => {
+            'text' => 'SRDR+ Object Identifier'
+          },
+          'system' => 'https://srdrplus.ahrq.gov/',
+          'value' => 'ExtractionFormsProjectsSection/' + raw.id.to_s
+        }],
         'item' => []
       }
       for question in raw.questions do
@@ -160,6 +174,13 @@ class ExtractionFormsProjectsSectionSupplyingService
         'status' => 'draft',
         'id' => '3' + '-' + raw.id.to_s,
         'title' => raw.section_label,
+        'identifier' => [{
+          'type' => {
+            'text' => 'SRDR+ Object Identifier'
+          },
+          'system' => 'https://srdrplus.ahrq.gov/',
+          'value' => 'ExtractionFormsProjectsSection/' + raw.id.to_s
+        }],
         'characteristic' => []
       }
       for row in raw.extraction_forms_projects_sections_type1s do
