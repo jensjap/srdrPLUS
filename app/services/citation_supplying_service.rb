@@ -93,14 +93,14 @@ class CitationSupplyingService
     end
 
     title = raw.name
-    if title
+    if !title.empty?
       citation['citedArtifact']['title'].append({
                                                   'text' => title
                                                 })
     end
 
     abstract = raw.abstract
-    if abstract
+    if !abstract.empty?
       citation['citedArtifact']['abstract'].append({
                                                      'text' => abstract
                                                    })
