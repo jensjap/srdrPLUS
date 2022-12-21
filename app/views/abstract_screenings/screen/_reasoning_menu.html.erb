@@ -127,276 +127,324 @@
             </div>
           </template>
           <div class="min-h-[100px]">
-            <h2 class="flex justify-between">
+            <div>
               <div class="text-xl">Reason</div>
               <div
                 class="text-xs flex items-end gap-x-1 font-bold"
                 x-show="options.no_reason_required || options.yes_reason_required || options.maybe_reason_required"
-              ><div>
-                <span>Required for labels:</span>
-                <span :class="(asr.label == -1 && !hasSomeReason()) ? 'text-red-600' : ''" x-show="options.no_reason_required">No</span>
-                <span :class="(asr.label == 0 && !hasSomeReason()) ? 'text-red-600' : ''" x-show="options.maybe_reason_required">Maybe</span>
-                <span :class="(asr.label == 1 && !hasSomeReason()) ? 'text-red-600' : ''" x-show="options.yes_reason_required">Yes</span>
-              </div>
-            </h2>
-            <hr class="m-0" />
-            <label for="notes" class="block text-sm text-gray-700"
-              >Select up to one reason</label
-            >
-            <div class="grid grid-rows sm:grid-cols-6 gap-4 mt-4 mb-8">
-              <template
-                x-for="[key, value] in Object.entries(asr.predefined_reasons)"
               >
-                <span
-                  :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
-                  @click="turnOffAllReasons(); asr.predefined_reasons[key] = !value; updateAsr(false)"
-                  class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
-                  x-text="key"
-                >
-                </span>
-              </template>
-              <template x-for="[key, value] in Object.entries(asr.custom_reasons)">
-                <div class="relative">
+                <div>
+                  <span>Required for labels:</span>
                   <span
-                    :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
-                    @click="turnOffAllReasons(); asr.custom_reasons[key] = !value; updateAsr(false)"
-                    class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
-                    x-text="key"
+                    :class="(asr.label == -1 && !hasSomeReason()) ? 'text-red-600' : ''"
+                    x-show="options.no_reason_required"
+                    >No</span
                   >
-                  </span>
-                  <button
-                    type="button"
-                    class="cursor-pointer absolute top-0 right-0 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white bg-red-500"
-                    @click="deleteCustomValue('custom_reasons', key)"
-                  >
-                    <span class="sr-only">remove custom reason</span>
-                    <svg
-                      class="h-2 w-2"
-                      stroke="currentColor"
-                      fill="none"
-                      viewBox="0 0 8 8"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-width="1.5"
-                        d="M1 1l6 6m0-6L1 7"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </template>
-              <span
-                @click="addReasonModal = { on: true, type: 'Reason' }; $nextTick(() => { $refs.newCustomValueInput.focus() })"
-                class="drop-shadow select-none cursor-pointer justify-center inline-flex items-center text-green-900 font-black"
-                x-show="!options.only_predefined_reasons"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-8 w-8"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="1"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </span>
-            </div>
-          </div>
-
-          <div class="min-h-[100px]">
-            <h2 class="flex justify-between">
-              <div class="text-xl">Tags</div>
-              <div
-                class="text-xs flex items-end gap-x-1 font-bold"
-                x-show="options.no_tag_required || options.yes_tag_required || options.maybe_tag_required"
-             ><div>
-                <span>Required for labels:</span>
-                <span :class="(asr.label == -1 && !hasSomeTag()) ? 'text-red-600' : ''" x-show="options.no_tag_required">No</span>
-                <span :class="(asr.label == 0 && !hasSomeTag()) ? 'text-red-600' : ''" x-show="options.maybe_tag_required">Maybe</span>
-                <span :class="(asr.label == 1 && !hasSomeTag()) ? 'text-red-600' : ''" x-show="options.yes_tag_required">Yes</span>
-              </div>
-            </h2>
-            <hr class="m-0" />
-            <label for="notes" class="block text-sm text-gray-700"
-              >Select tags</label
-            >
-            <div class="grid grid-rows sm:grid-cols-6 gap-4 mt-4 mb-8">
-              <template x-for="[key, value] in Object.entries(asr.predefined_tags)">
-                <span
-                  :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
-                  @click="asr.predefined_tags[key] = !value; updateAsr(false)"
-                  class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
-                  x-text="key"
-                >
-                </span>
-              </template>
-              <template x-for="[key, value] in Object.entries(asr.custom_tags)">
-                <div class="relative">
                   <span
-                    :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
-                    @click="asr.custom_tags[key] = !value; updateAsr(false)"
-                    class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
-                    x-text="key"
+                    :class="(asr.label == 0 && !hasSomeReason()) ? 'text-red-600' : ''"
+                    x-show="options.maybe_reason_required"
+                    >Maybe</span
                   >
-                  </span>
-                  <button
-                    type="button"
-                    class="cursor-pointer absolute top-0 right-0 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white bg-red-500"
-                    @click="deleteCustomValue('custom_tags', key)"
+                  <span
+                    :class="(asr.label == 1 && !hasSomeReason()) ? 'text-red-600' : ''"
+                    x-show="options.yes_reason_required"
+                    >Yes</span
                   >
-                    <span class="sr-only">Remove large option</span>
-                    <svg
-                      class="h-2 w-2"
-                      stroke="currentColor"
-                      fill="none"
-                      viewBox="0 0 8 8"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-width="1.5"
-                        d="M1 1l6 6m0-6L1 7"
-                      />
-                    </svg>
-                  </button>
                 </div>
-              </template>
-              <span
-                @click="addReasonModal = { on: true, type: 'Tag' }; $nextTick(() => { $refs.newCustomValueInput.focus(); });"
-                class="drop-shadow select-none cursor-pointer justify-center inline-flex items-center text-green-900 font-black"
-                x-show="!options.only_predefined_tags"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-8 w-8"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="1"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </span>
-            </div>
-          </div>
-          <div class="min-h-[100px]">
-            <h2 class="flex justify-between">
-              <div class="text-xl">Notes</div>
-              <div
-                class="text-xs flex items-end gap-x-1 font-bold"
-                x-show="options.no_note_required || options.yes_note_required || options.maybe_note_required"
-              ><div>
-                <span>Required for labels:</span>
-                <span :class="(asr.label == -1 && !hasSomeNote()) ? 'text-red-600' : ''" x-show="options.no_note_required">No</span>
-                <span :class="(asr.label == 0 && !hasSomeNote()) ? 'text-red-600' : ''" x-show="options.maybe_note_required">Maybe</span>
-                <span :class="(asr.label == 1 && !hasSomeNote()) ? 'text-red-600' : ''" x-show="options.yes_note_required">Yes</span>
               </div>
-            </h2>
-            <hr class="m-0" />
-            <div>
+              <hr class="m-0" />
               <label for="notes" class="block text-sm text-gray-700"
-                >Write in notes</label
+                >Select up to one reason</label
               >
-              <div class="mt-1 mb-8">
-                <textarea
-                  rows="4"
-                  columns="30"
-                  name="notes"
-                  id="notes"
-                  x-model="asr.notes"
-                  class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"
-                  @input.debounce.500ms="updateAsr(false)"
-                ></textarea>
+              <div class="grid grid-rows sm:grid-cols-6 gap-4 mt-4 mb-8">
+                <template
+                  x-for="[key, value] in Object.entries(asr.predefined_reasons)"
+                >
+                  <span
+                    :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
+                    @click="turnOffAllReasons(); asr.predefined_reasons[key] = !value; updateAsr(false)"
+                    class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
+                    x-text="key"
+                  >
+                  </span>
+                </template>
+                <template
+                  x-for="[key, value] in Object.entries(asr.custom_reasons)"
+                >
+                  <div class="relative">
+                    <span
+                      :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
+                      @click="turnOffAllReasons(); asr.custom_reasons[key] = !value; updateAsr(false)"
+                      class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
+                      x-text="key"
+                    >
+                    </span>
+                    <button
+                      type="button"
+                      class="cursor-pointer absolute top-0 right-0 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white bg-red-500"
+                      @click="deleteCustomValue('custom_reasons', key)"
+                    >
+                      <span class="sr-only">remove custom reason</span>
+                      <svg
+                        class="h-2 w-2"
+                        stroke="currentColor"
+                        fill="none"
+                        viewBox="0 0 8 8"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-width="1.5"
+                          d="M1 1l6 6m0-6L1 7"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </template>
+                <span
+                  @click="addReasonModal = { on: true, type: 'Reason' }; $nextTick(() => { $refs.newCustomValueInput.focus() })"
+                  class="drop-shadow select-none cursor-pointer justify-center inline-flex items-center text-green-900 font-black"
+                  x-show="!options.only_predefined_reasons"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-8 w-8"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </span>
+              </div>
+            </div>
+
+            <div class="min-h-[100px]">
+              <div>
+                <div class="text-xl">Tags</div>
+                <div
+                  class="text-xs flex items-end gap-x-1 font-bold"
+                  x-show="options.no_tag_required || options.yes_tag_required || options.maybe_tag_required"
+                >
+                  <div>
+                    <span>Required for labels:</span>
+                    <span
+                      :class="(asr.label == -1 && !hasSomeTag()) ? 'text-red-600' : ''"
+                      x-show="options.no_tag_required"
+                      >No</span
+                    >
+                    <span
+                      :class="(asr.label == 0 && !hasSomeTag()) ? 'text-red-600' : ''"
+                      x-show="options.maybe_tag_required"
+                      >Maybe</span
+                    >
+                    <span
+                      :class="(asr.label == 1 && !hasSomeTag()) ? 'text-red-600' : ''"
+                      x-show="options.yes_tag_required"
+                      >Yes</span
+                    >
+                  </div>
+                </div>
+                <hr class="m-0" />
+                <label for="notes" class="block text-sm text-gray-700"
+                  >Select tags</label
+                >
+                <div class="grid grid-rows sm:grid-cols-6 gap-4 mt-4 mb-8">
+                  <template
+                    x-for="[key, value] in Object.entries(asr.predefined_tags)"
+                  >
+                    <span
+                      :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
+                      @click="asr.predefined_tags[key] = !value; updateAsr(false)"
+                      class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
+                      x-text="key"
+                    >
+                    </span>
+                  </template>
+                  <template
+                    x-for="[key, value] in Object.entries(asr.custom_tags)"
+                  >
+                    <div class="relative">
+                      <span
+                        :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
+                        @click="asr.custom_tags[key] = !value; updateAsr(false)"
+                        class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
+                        x-text="key"
+                      >
+                      </span>
+                      <button
+                        type="button"
+                        class="cursor-pointer absolute top-0 right-0 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white bg-red-500"
+                        @click="deleteCustomValue('custom_tags', key)"
+                      >
+                        <span class="sr-only">Remove large option</span>
+                        <svg
+                          class="h-2 w-2"
+                          stroke="currentColor"
+                          fill="none"
+                          viewBox="0 0 8 8"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-width="1.5"
+                            d="M1 1l6 6m0-6L1 7"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </template>
+                  <span
+                    @click="addReasonModal = { on: true, type: 'Tag' }; $nextTick(() => { $refs.newCustomValueInput.focus(); });"
+                    class="drop-shadow select-none cursor-pointer justify-center inline-flex items-center text-green-900 font-black"
+                    x-show="!options.only_predefined_tags"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-8 w-8"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      stroke-width="1"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+              <div class="min-h-[100px]">
+                <div>
+                  <div class="text-xl">Notes</div>
+                  <div
+                    class="text-xs flex items-end gap-x-1 font-bold"
+                    x-show="options.no_note_required || options.yes_note_required || options.maybe_note_required"
+                  >
+                    <div>
+                      <span>Required for labels:</span>
+                      <span
+                        :class="(asr.label == -1 && !hasSomeNote()) ? 'text-red-600' : ''"
+                        x-show="options.no_note_required"
+                        >No</span
+                      >
+                      <span
+                        :class="(asr.label == 0 && !hasSomeNote()) ? 'text-red-600' : ''"
+                        x-show="options.maybe_note_required"
+                        >Maybe</span
+                      >
+                      <span
+                        :class="(asr.label == 1 && !hasSomeNote()) ? 'text-red-600' : ''"
+                        x-show="options.yes_note_required"
+                        >Yes</span
+                      >
+                    </div>
+                  </div>
+                  <hr class="m-0" />
+                  <div>
+                    <label for="notes" class="block text-sm text-gray-700"
+                      >Write in notes</label
+                    >
+                    <div class="mt-1 mb-8">
+                      <textarea
+                        rows="4"
+                        columns="30"
+                        name="notes"
+                        id="notes"
+                        x-model="asr.notes"
+                        class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"
+                        @input.debounce.500ms="updateAsr(false)"
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                :class="desktop ? 'hidden' : 'fixed bottom-0 h-24 mb-5 mx-5 left-0 right-0 flex flex-col justify-center items-center content-center'"
+                x-show="asr.label !== null"
+              >
+                <button
+                  type="button"
+                  class="cursor-pointer justify-center m-auto w-full h-20 inline-flex items-center border border-transparent text-xl font-medium rounded-md shadow-sm text-white bg-green-900 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  :class="satisfiesReasoning() ? '' : 'cursor-not-allowed bg-gray-900 hover:bg-gray-700'"
+                  @click="if (satisfiesReasoning()) updateAsr(true)"
+                  x-text="satisfiesReasoning() ? 'Submit' : 'Please fill in the required data above'"
+                ></button>
               </div>
             </div>
           </div>
         </div>
-        <div
-          :class="desktop ? 'hidden' : 'fixed bottom-0 h-24 mb-5 mx-5 left-0 right-0 flex flex-col justify-center items-center content-center'"
-          x-show="asr.label !== null"
-        >
-          <button
-            type="button"
-            class="cursor-pointer justify-center m-auto w-full h-20 inline-flex items-center border border-transparent text-xl font-medium rounded-md shadow-sm text-white bg-green-900 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            :class="satisfiesReasoning() ? '' : 'cursor-not-allowed bg-gray-900 hover:bg-gray-700'"
-            @click="if (satisfiesReasoning()) updateAsr(true)"
-            x-text="satisfiesReasoning() ? 'Submit' : 'Please fill in the required data above'"
-          ></button>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <div
-    x-show="desktop"
-    class="border-l border-gray-600 fixed bottom-0 right-0 w-1/2 h-32 text-white"
-  >
-    <div class="grid grid-cols-3 h-full">
-      <div
-        class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
-        @click="asr.label = -1; if (satisfiesReasoning()) { updateAsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
-        :class="(asr.label == -1 || asr.label == null) ? '' : 'saturate-[0.1]'"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-10 w-10"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </div>
-      <div :class="desktop ? 'grid grid-rows-1' : 'grid grid-rows-2'">
         <div
-          class="cursor-pointer bg-srdrpurple flex justify-center items-center"
-          @click="asr.label = 0; if (satisfiesReasoning()) { updateAsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
-          :class="(asr.label == 0 || asr.label == null)? '' : 'saturate-[0.1]'"
+          x-show="desktop"
+          class="border-l border-gray-600 fixed bottom-0 right-0 w-1/2 h-32 text-white"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-10 w-10"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
+          <div class="grid grid-cols-3 h-full">
+            <div
+              class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
+              @click="asr.label = -1; if (satisfiesReasoning()) { updateAsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+              :class="(asr.label == -1 || asr.label == null) ? '' : 'saturate-[0.1]'"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-10 w-10"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </div>
+            <div :class="desktop ? 'grid grid-rows-1' : 'grid grid-rows-2'">
+              <div
+                class="cursor-pointer bg-srdrpurple flex justify-center items-center"
+                @click="asr.label = 0; if (satisfiesReasoning()) { updateAsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+                :class="(asr.label == 0 || asr.label == null)? '' : 'saturate-[0.1]'"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-10 w-10"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div
+              class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
+              @click="asr.label = 1; if (satisfiesReasoning()) { updateAsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+              :class="(asr.label == 1 || asr.label == null)? '' : 'saturate-[0.1]'"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-10 w-10"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </div>
+          </div>
         </div>
-      </div>
-      <div
-        class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
-        @click="asr.label = 1; if (satisfiesReasoning()) { updateAsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
-        :class="(asr.label == 1 || asr.label == null)? '' : 'saturate-[0.1]'"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-10 w-10"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-            clip-rule="evenodd"
-          />
-        </svg>
       </div>
     </div>
   </div>
