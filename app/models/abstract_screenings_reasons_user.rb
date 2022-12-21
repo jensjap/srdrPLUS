@@ -8,8 +8,11 @@
 #  user_id               :bigint
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  position              :integer
 #
 class AbstractScreeningsReasonsUser < ApplicationRecord
+  before_create :put_last
+
   belongs_to :abstract_screening
   belongs_to :reason
   belongs_to :user
@@ -20,5 +23,12 @@ class AbstractScreeningsReasonsUser < ApplicationRecord
       hash[asru.reason.name] = false
       hash
     end
+  end
+
+  private
+
+  def put_last
+    max_position = AbstractScreeningsReasonsUser.where(abstract_screening:, user:).maximum(:position)
+    self.position = max_position ? max_position + 1 : 1
   end
 end

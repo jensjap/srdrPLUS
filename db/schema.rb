@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_05_080103) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_21_083241) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -92,6 +92,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_05_080103) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "position"
     t.index ["abstract_screening_id", "reason_id", "user_id"], name: "as_r_u", unique: true
     t.index ["abstract_screening_id"], name: "asru_on_as"
     t.index ["reason_id"], name: "asru_on_r"
@@ -114,6 +115,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_05_080103) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "position"
     t.index ["abstract_screening_id", "tag_id", "user_id"], name: "as_t_u", unique: true
     t.index ["abstract_screening_id"], name: "astu_on_as"
     t.index ["tag_id"], name: "astu_on_t"
@@ -571,7 +573,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_05_080103) do
     t.boolean "include_total"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.index ["extraction_forms_projects_section_id"], name: "index_efpso_on_efps_id_deleted_at"
+    t.index ["extraction_forms_projects_section_id"], name: "efpso_on_efps_id", unique: true
   end
 
   create_table "extraction_forms_projects_section_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -632,9 +634,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_05_080103) do
     t.boolean "consolidated", default: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "user_id"
     t.index ["citations_project_id"], name: "index_extractions_on_citations_project_id"
     t.index ["project_id", "citations_project_id", "projects_users_role_id"], name: "index_e_on_p_id_cp_id_pur_id_uniq"
     t.index ["projects_users_role_id"], name: "index_extractions_on_projects_users_role_id"
+    t.index ["user_id"], name: "index_extractions_on_user_id"
   end
 
   create_table "extractions_extraction_forms_projects_sections", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -1151,6 +1155,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_05_080103) do
     t.integer "user_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "permissions", default: 0, null: false
     t.index ["project_id", "user_id"], name: "index_pu_on_p_id_u_id_uniq", unique: true
     t.index ["user_id"], name: "index_projects_users_on_user_id"
   end
@@ -2053,6 +2058,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_05_080103) do
   add_foreign_key "extractions", "citations_projects"
   add_foreign_key "extractions", "projects"
   add_foreign_key "extractions", "projects_users_roles"
+  add_foreign_key "extractions", "users"
   add_foreign_key "extractions_extraction_forms_projects_sections", "extraction_forms_projects_sections"
   add_foreign_key "extractions_extraction_forms_projects_sections", "extractions"
   add_foreign_key "extractions_extraction_forms_projects_sections", "extractions_extraction_forms_projects_sections"
