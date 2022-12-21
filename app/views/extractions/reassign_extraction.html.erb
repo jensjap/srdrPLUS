@@ -42,6 +42,7 @@
           <select
             name="extraction[citations_project_id]"
             id="citations_project_id"
+            required
           >
             <!-- prettier-ignore -->
             <% @extraction.project.citations_projects.reject { |cp| cp == @extraction.citations_project }.each do |citations_project| %>
