@@ -89,14 +89,25 @@ class ExtractionFormsProjectsSectionSupplyingService
             }
 
             if row_column.question_row_column_type.id == 1
-              item['text'] = 'string, between ' + row_column.question_row_columns_question_row_column_options[1]['name'] + ' to ' + row_column.question_row_columns_question_row_column_options[2]['name'] + ' character'
               item['type'] = 'text'
               item['maxLength'] = row_column.question_row_columns_question_row_column_options[2]['name'].to_i
+              item['extension'] = [{
+                'url' => 'http://hl7.org/fhir/StructureDefinition/minLength',
+                'valueInteger' => row_column.question_row_columns_question_row_column_options[1]['name'].to_i
+              }]
             elsif row_column.question_row_column_type.id == 2
-              item['text'] = 'integer, between ' + row_column.question_row_columns_question_row_column_options[4]['name'] + ' to ' + row_column.question_row_columns_question_row_column_options[5]['name']
+              item['extension'] = [
+                {
+                  'url' => 'http://hl7.org/fhir/StructureDefinition/minValue',
+                  'valueInteger' => row_column.question_row_columns_question_row_column_options[4]['name'].to_i
+                },
+                {
+                  'url' => 'http://hl7.org/fhir/StructureDefinition/maxValue',
+                  'valueInteger' => row_column.question_row_columns_question_row_column_options[5]['name'].to_i
+                }
+              ]
               item['type'] = 'integer'
             elsif row_column.question_row_column_type.id == 5
-              item['text'] = 'checkbox'
               item['type'] = 'text'
               item['repeats'] = true
               item['answerConstraint'] = 'optionsOnly'
@@ -109,7 +120,6 @@ class ExtractionFormsProjectsSectionSupplyingService
                 end
               end
             elsif row_column.question_row_column_type.id == 6
-              item['text'] = 'dropdown'
               item['type'] = 'text'
               item['repeats'] = false
               item['answerConstraint'] = 'optionsOnly'
@@ -122,7 +132,6 @@ class ExtractionFormsProjectsSectionSupplyingService
                 end
               end
             elsif row_column.question_row_column_type.id == 7
-              item['text'] = 'radio'
               item['type'] = 'text'
               item['repeats'] = false
               item['answerConstraint'] = 'optionsOnly'
@@ -135,7 +144,6 @@ class ExtractionFormsProjectsSectionSupplyingService
                 end
               end
             elsif row_column.question_row_column_type.id == 8
-              item['text'] = 'select one with write-in option'
               item['type'] = 'text'
               item['repeats'] = false
               item['answerConstraint'] = 'optionsOrString'
@@ -148,7 +156,6 @@ class ExtractionFormsProjectsSectionSupplyingService
                 end
               end
             elsif row_column.question_row_column_type.id == 9
-              item['text'] = 'select multiple with write-in option'
               item['type'] = 'text'
               item['repeats'] = true
               item['answerConstraint'] = 'optionsOrString'
