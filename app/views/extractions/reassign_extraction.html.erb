@@ -1,0 +1,65 @@
+<div class="p-4 lg:p-8">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-xl font-bold">Reassign Extraction</h1>
+      <p class="mt-2 text-sm text-gray-700">
+        Move extraction to another citation
+      </p>
+    </div>
+  </div>
+  <div>
+    <form action="/extractions/<%= @extraction.id %>" method="post">
+      <input name="_method" type="hidden" value="patch" />
+      <!-- prettier-ignore -->
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <%= hidden_field_tag :redirect_to, "/projects/#{@extraction.project.id}/extractions" %>
+      <div class="grid grid-cols-3 gap-4">
+        <div
+          class="flex justify-center items-center border-2 border-srdr-primary rounded-md p-4"
+        >
+          <%= "#{@extraction.citation.first_author}:
+          #{@extraction.citation.name}" %>
+        </div>
+        <div class="flex justify-center items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5"
+            />
+          </svg>
+        </div>
+        <div
+          class="flex justify-center items-center border-2 border-srdr-primary rounded-md p-4"
+        >
+          <select
+            name="extraction[citations_project_id]"
+            id="citations_project_id"
+          >
+            <!-- prettier-ignore -->
+            <% @extraction.project.citations_projects.reject { |cp| cp == @extraction.citations_project }.each do |citations_project| %>
+            <option value="<%= citations_project.id %>">
+              <!-- prettier-ignore -->
+              <%= "#{citations_project.citation.first_author}: #{citations_project.citation.name}" %>
+            </option>
+            <% end %>
+          </select>
+        </div>
+      </div>
+      <div>
+        <input
+          type="submit"
+          value="Reassign"
+          class="w-full p-8 text-white font-bold bg-srdr-primary my-8 cursor-pointer"
+        />
+      </div>
+    </form>
+  </div>
+</div>
