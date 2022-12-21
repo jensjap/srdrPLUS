@@ -171,11 +171,45 @@
                 <template
                   x-for="[key, value] in Object.entries(asr.custom_reasons)"
                 >
-                  <div class="relative">
+                  <div
+                    class="relative"
+                    draggable="true"
+                    x-on:dragstart="(e) => {
+                      dragValue = key;
+                      dragType = 'customReason';
+                    }"
+                    x-on:dragover.prevent="(e) => {
+                      dropValue = key;
+                      dropType = 'customReason';
+                    }"
+                    x-on:dragleave.prevent="(e) =>
+                    {
+                      dropValue = null;
+                      dropType = null;
+                    }"
+                    x-on:drop.prevent="(e) => {
+                      if (dragType == dropType && dragValue != dropValue) {
+                        console.log(dragValue)
+                        console.log(dragType)
+                        console.log(dropValue)
+                        console.log(dropType)
+                      }
+                    }"
+                    x-on:dragend.prevent="(e) => {
+                      dragValue = null;
+                      dragType = null;
+                      dropValue = null;
+                      dropType = null;
+                    }"
+                  >
                     <span
-                      :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
+                      :class="{
+                        'w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black': true,
+                        'bg-srdrpurple': value,
+                        'bg-white text-black': !value,
+                        'bg-purple-400 !text-white': (dropValue == key && dropType == dragType && dragValue != dropValue && dragType == 'customReason')
+                      }"
                       @click="turnOffAllReasons(); asr.custom_reasons[key] = !value; updateAsr(false)"
-                      class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
                       x-text="key"
                     >
                     </span>
@@ -268,11 +302,44 @@
                   <template
                     x-for="[key, value] in Object.entries(asr.custom_tags)"
                   >
-                    <div class="relative">
+                    <div
+                      class="relative"
+                      draggable="true"
+                      x-on:dragstart="(e) => {
+                        dragValue = key;
+                        dragType = 'customTag';
+                      }"
+                      x-on:dragover.prevent="(e) => {
+                        dropValue = key;
+                        dropType = 'customTag';
+                      }"
+                      x-on:dragleave.prevent="(e) => {
+                        dropValue = null;
+                        dropType = null;
+                      }"
+                      x-on:drop.prevent="(e) => {
+                        if (dragType == dropType && dragValue != dropValue) {
+                          console.log(dragValue)
+                          console.log(dragType)
+                          console.log(dropValue)
+                          console.log(dropType)
+                        }
+                      }"
+                      x-on:dragend.prevent="(e) => {
+                        dragValue = null;
+                        dragType = null;
+                        dropValue = null;
+                        dropType = null;
+                      }"
+                    >
                       <span
-                        :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
+                        :class="{
+                          'w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black': true,
+                          'bg-srdrpurple': value,
+                          'bg-white text-black': !value,
+                          'bg-purple-400 !text-white': (dropValue == key && dropType == dragType && dragValue != dropValue && dragType == 'customTag')
+                        }"
                         @click="asr.custom_tags[key] = !value; updateAsr(false)"
-                        class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
                         x-text="key"
                       >
                       </span>
