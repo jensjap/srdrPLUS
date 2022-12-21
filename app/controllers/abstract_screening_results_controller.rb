@@ -29,7 +29,7 @@ class AbstractScreeningResultsController < ApplicationController
   def handle_reasons_and_tags
     abstract_screening = @abstract_screening_result.abstract_screening
 
-    other_asr_params['predefined_reasons'].merge(other_asr_params['custom_reasons']).each do |name, value|
+    reasons_and_tags_params['predefined_reasons'].merge(reasons_and_tags_params['custom_reasons']).each do |name, value|
       reason = Reason.find_or_create_by!(name:)
       unless abstract_screening.reasons.include?(reason)
         AbstractScreeningsReasonsUser
@@ -48,14 +48,14 @@ class AbstractScreeningResultsController < ApplicationController
     end
 
     AbstractScreeningsReasonsUser.where(user: current_user, abstract_screening:).each do |asru|
-      next if other_asr_params['custom_reasons'].key?(asru.reason.name)
+      next if reasons_and_tags_params['custom_reasons'].key?(asru.reason.name)
 
       asru.destroy
       AbstractScreeningResultsReason.find_by(reason: asru.reason,
                                              abstract_screening_result: @abstract_screening_result)&.destroy
     end
 
-    other_asr_params['predefined_tags'].merge(other_asr_params['custom_tags']).each do |name, value|
+    reasons_and_tags_params['predefined_tags'].merge(reasons_and_tags_params['custom_tags']).each do |name, value|
       tag = Tag.find_or_create_by!(name:)
       unless abstract_screening.tags.include?(tag)
         AbstractScreeningsTagsUser
@@ -74,7 +74,7 @@ class AbstractScreeningResultsController < ApplicationController
     end
 
     AbstractScreeningsTagsUser.where(user: current_user, abstract_screening:).each do |astu|
-      next if other_asr_params['custom_tags'].key?(astu.tag.name)
+      next if reasons_and_tags_params['custom_tags'].key?(astu.tag.name)
 
       astu.destroy
       AbstractScreeningResultsTag.find_by(tag: astu.tag,
@@ -117,7 +117,7 @@ class AbstractScreeningResultsController < ApplicationController
       )
   end
 
-  def other_asr_params
+  def reasons_and_tags_params
     params.require(:asr).permit(
       predefined_reasons: {},
       predefined_tags: {},
