@@ -37,6 +37,13 @@ class KeyQuestionSupplyingService
     key_question = {
       'status' => 'active',
       'id' => '2' + '-' + raw.id.to_s,
+      'identifier' => [{
+        'type' => {
+          'text' => 'SRDR+ Object Identifier'
+        },
+        'system' => 'https://srdrplus.ahrq.gov/',
+        'value' => 'KeyQuestion/' + raw.id.to_s
+      }]
     }
 
     title = raw.kq_name
