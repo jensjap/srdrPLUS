@@ -33,13 +33,23 @@
         @click.outside="addReasonModal.on = false"
       >
         <div>
-          <h1 class="text-2xl mb-4" x-text="`Add ${addReasonModal.type}`"></h1>
+          <h1
+            class="text-2xl mb-4"
+            x-text="`${addReasonModal.action} ${addReasonModal.type == 'custom_reasons' ? 'Reason' : 'Tag' }`"
+          ></h1>
           <input
+            x-trap="addReasonModal.on"
             x-ref="newCustomValueInput"
             x-model="newCustomValue"
             placeholder="Enter here.."
             class="!h-10 !p-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-            @keydown.enter="createCustomValue()"
+            @keydown.enter="
+              if (newCustomValue.trim() == '') return;
+              if (addReasonModal.action == 'Update' ) {
+                updateCustomValue(addReasonModal.type, { id: updateCustomId, newCustomValue: newCustomValue.trim() })
+              } else {
+                createCustomValue()
+              }"
           />
         </div>
         <div
@@ -49,8 +59,14 @@
             type="button"
             class="cursor-pointer w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-srdrpurple text-base font-medium text-white hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:col-start-2 sm:text-sm"
             :class="newCustomValue.trim() == '' ? 'cursor-not-allowed bg-gray-700' : ''"
-            @click.stop="createCustomValue()"
-            x-text="`Add ${addReasonModal.type}`"
+            @click.stop="
+              if (newCustomValue.trim() == '') return;
+              if (addReasonModal.action == 'Update' ) {
+                updateCustomValue(addReasonModal.type, { id: updateCustomId, newCustomValue: newCustomValue.trim() })
+              } else {
+                createCustomValue()
+              }"
+            x-text="`${addReasonModal.action} ${addReasonModal.type == 'custom_reasons' ? 'Reason' : 'Tag' }`"
           ></button>
           <button
             type="button"

@@ -14,10 +14,15 @@ class AbstractScreeningsTagsUsersController < ApplicationController
   def update
     respond_to do |format|
       format.json do
+        name = params[:newCustomValue]
         abstract_screenings_tags_user = AbstractScreeningsTagsUser.find_or_create_by!(
           id: params[:id], user: current_user
         )
-        abstract_screenings_tags_user.update(position: params[:position])
+        abstract_screenings_tags_user.update(position: params[:position]) if params[:position]
+        if name
+          tag = Tag.find_or_create_by!(name:)
+          abstract_screenings_tags_user.update(tag:)
+        end
         render json: {}, status: :ok
       end
     end

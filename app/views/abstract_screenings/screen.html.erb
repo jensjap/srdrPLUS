@@ -240,7 +240,7 @@
       weighingScreen: false,
       word_weight_menu: false,
       reasoningMenu: false,
-      addReasonModal: { on: false, type: "" },
+      addReasonModal: { on: false, type: "", action: "" },
       historyPanel: false,
       confirmationModalLabel: null,
       confirmationModal: false,
@@ -295,6 +295,7 @@
       },
       textarea_keywords_and_phrases: "",
       newCustomValue: "",
+      updateCustomId: null,
       processedTitle: [],
       processedAbstract: "",
       disable_textarea_keywords_and_phrases: false,
@@ -400,10 +401,10 @@
 
       async createCustomValue() {
         let url;
-        if (this.addReasonModal.type == "Reason") {
+        if (this.addReasonModal.type == "custom_reasons") {
           url =
             "/abstract_screenings/<%= params[:abstract_screening_id] %>/abstract_screenings_reasons_users";
-        } else if (this.addReasonModal.type == "Tag") {
+        } else if (this.addReasonModal.type == "custom_tags") {
           url =
             "/abstract_screenings/<%= params[:abstract_screening_id] %>/abstract_screenings_tags_users";
         }
@@ -429,6 +430,7 @@
       async updateCustomValue(type, values) {
         const id = values.id;
         const position = values.position;
+        const newCustomValue = values.newCustomValue || false;
         let url;
         if (type == "custom_reasons") {
           url = `/abstract_screenings_reasons_users/${id}`;
@@ -446,10 +448,13 @@
           },
           body: JSON.stringify({
             position,
+            newCustomValue,
           }),
         });
         await response.json();
         await this.getAsr();
+        this.addReasonModal.on = false;
+        this.newCustomValue = "";
       },
 
       async deleteCustomValue(type, index) {

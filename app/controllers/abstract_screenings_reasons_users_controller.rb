@@ -14,10 +14,15 @@ class AbstractScreeningsReasonsUsersController < ApplicationController
   def update
     respond_to do |format|
       format.json do
+        name = params[:newCustomValue]
         abstract_screenings_reasons_user = AbstractScreeningsReasonsUser.find_or_create_by!(
           id: params[:id], user: current_user
         )
-        abstract_screenings_reasons_user.update(position: params[:position])
+        abstract_screenings_reasons_user.update(position: params[:position]) if params[:position]
+        if name
+          reason = Reason.find_or_create_by!(name:)
+          abstract_screenings_reasons_user.update(reason:)
+        end
         render json: {}, status: :ok
       end
     end
