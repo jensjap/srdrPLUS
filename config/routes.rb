@@ -138,11 +138,9 @@ Rails.application.routes.draw do
 
     namespace :v3 do
       resources :projects, shallow: true, only: [] do
-        resources :citations, only: [:index, :show]
+        resources :citations, only: %i[index show]
       end
     end # END namespace :v3 do
-
-
   end # END namespace :api do
 
   resources :assignments do
@@ -180,6 +178,11 @@ Rails.application.routes.draw do
   end
 
   get 'sd_key_questions/:id/fuzzy_match', to: 'sd_key_questions#fuzzy_match'
+
+  resources :abstract_screenings, shallow: true, only: [] do
+    resources :abstract_screenings_tags_users
+    resources :abstract_screenings_reasons_users
+  end
 
   resources :abstract_screening_results, only: %i[show update]
   resources :fulltext_screening_results, only: %i[show update]

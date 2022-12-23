@@ -157,66 +157,60 @@
                 >Select up to one reason</label
               >
               <div class="grid grid-rows sm:grid-cols-6 gap-4 mt-4 mb-8">
-                <template
-                  x-for="[key, value] in Object.entries(asr.predefined_reasons)"
-                >
+                <template x-for="(reason, index) in asr.predefined_reasons">
                   <span
-                    :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
-                    @click="turnOffAllReasons(); asr.predefined_reasons[key] = !value; updateAsr(false)"
+                    :class=" asr.predefined_reasons[index].selected ? 'bg-srdrpurple' : 'bg-white text-black'"
+                    @click="const value = asr.predefined_reasons[index].selected; turnOffAllReasons(); asr.predefined_reasons[index].selected = !value; updateAsr(false)"
                     class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
-                    x-text="key"
+                    x-text="asr.predefined_reasons[index].name"
                   >
                   </span>
                 </template>
-                <template
-                  x-for="[key, value] in Object.entries(asr.custom_reasons)"
-                >
+                <template x-for="(reason, index) in asr.custom_reasons">
                   <div
                     class="relative"
                     draggable="true"
                     x-on:dragstart="(e) => {
-                      dragValue = key;
-                      dragType = 'customReason';
+                      dragIndex = index;
+                      dragType = 'custom_reasons';
                     }"
                     x-on:dragover.prevent="(e) => {
-                      dropValue = key;
-                      dropType = 'customReason';
+                      dropIndex = index;
+                      dropType = 'custom_reasons';
                     }"
                     x-on:dragleave.prevent="(e) =>
                     {
-                      dropValue = null;
+                      dropIndex = null;
                       dropType = null;
                     }"
                     x-on:drop.prevent="(e) => {
-                      if (dragType == dropType && dragValue != dropValue) {
-                        console.log(dragValue)
-                        console.log(dragType)
-                        console.log(dropValue)
-                        console.log(dropType)
+                      if (dragType == dropType && dragIndex != dropIndex) {
+                        updateCustomValue(dragType, { id: asr[dragType][dragIndex].id, position: asr[dropType][dropIndex].position })
+                        updateCustomValue(dropType, { id: asr[dropType][dropIndex].id, position: asr[dragType][dragIndex].position })
                       }
                     }"
                     x-on:dragend.prevent="(e) => {
-                      dragValue = null;
+                      dragIndex = null;
                       dragType = null;
-                      dropValue = null;
+                      dropIndex = null;
                       dropType = null;
                     }"
                   >
                     <span
                       :class="{
                         'w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black': true,
-                        'bg-srdrpurple': value,
-                        'bg-white text-black': !value,
-                        'bg-purple-400 !text-white': (dropValue == key && dropType == dragType && dragValue != dropValue && dragType == 'customReason')
+                        'bg-srdrpurple': asr.custom_reasons[index].selected,
+                        'bg-white text-black': !asr.custom_reasons[index].selected,
+                        'bg-purple-400 !text-white': (dropIndex == index && dropType == dragType && dragIndex != dropIndex && dragType == 'custom_reasons')
                       }"
-                      @click="turnOffAllReasons(); asr.custom_reasons[key] = !value; updateAsr(false)"
-                      x-text="key"
+                      @click="const value = asr.custom_reasons[index].selected; turnOffAllReasons(); asr.custom_reasons[index].selected = !value; updateAsr(false)"
+                      x-text="asr.custom_reasons[index].name"
                     >
                     </span>
                     <button
                       type="button"
                       class="cursor-pointer absolute top-0 right-0 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white bg-red-500"
-                      @click="deleteCustomValue('custom_reasons', key)"
+                      @click="deleteCustomValue('custom_reasons', index)"
                     >
                       <span class="sr-only">remove custom reason</span>
                       <svg
@@ -288,65 +282,59 @@
                   >Select tags</label
                 >
                 <div class="grid grid-rows sm:grid-cols-6 gap-4 mt-4 mb-8">
-                  <template
-                    x-for="[key, value] in Object.entries(asr.predefined_tags)"
-                  >
+                  <template x-for="(tag, index) in asr.predefined_tags">
                     <span
-                      :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
-                      @click="asr.predefined_tags[key] = !value; updateAsr(false)"
+                      :class="asr.predefined_tags[index].selected ? 'bg-srdrpurple' : 'bg-white text-black'"
+                      @click="asr.predefined_tags[index].selected = !asr.predefined_tags[index].selected; updateAsr(false)"
                       class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
-                      x-text="key"
+                      x-text="asr.predefined_tags[index].name"
                     >
                     </span>
                   </template>
-                  <template
-                    x-for="[key, value] in Object.entries(asr.custom_tags)"
-                  >
+                  <template x-for="(tag, index) in asr.custom_tags">
                     <div
                       class="relative"
                       draggable="true"
                       x-on:dragstart="(e) => {
-                        dragValue = key;
-                        dragType = 'customTag';
+                        dragIndex = index;
+                        dragType = 'custom_tags';
                       }"
                       x-on:dragover.prevent="(e) => {
-                        dropValue = key;
-                        dropType = 'customTag';
+                        dropIndex = index;
+                        dropType = 'custom_tags';
                       }"
                       x-on:dragleave.prevent="(e) => {
-                        dropValue = null;
+                        dropIndex = null;
                         dropType = null;
                       }"
                       x-on:drop.prevent="(e) => {
-                        if (dragType == dropType && dragValue != dropValue) {
-                          console.log(dragValue)
-                          console.log(dragType)
-                          console.log(dropValue)
-                          console.log(dropType)
+                        if (dragType == dropType && dragIndex != dropIndex) {
+                          updateCustomValue(dragType, { id: asr[dragType][dragIndex].id, position: asr[dropType][dropIndex].position })
+                          updateCustomValue(dropType, { id: asr[dropType][dropIndex].id, position: asr[dragType][dragIndex].position })
                         }
                       }"
                       x-on:dragend.prevent="(e) => {
-                        dragValue = null;
+                        dragIndex = null;
                         dragType = null;
-                        dropValue = null;
+                        dropIndex = null;
                         dropType = null;
                       }"
                     >
                       <span
                         :class="{
                           'w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black': true,
-                          'bg-srdrpurple': value,
-                          'bg-white text-black': !value,
-                          'bg-purple-400 !text-white': (dropValue == key && dropType == dragType && dragValue != dropValue && dragType == 'customTag')
+                          'bg-srdrpurple': asr.custom_tags[index].selected,
+                          'bg-white text-black': !asr.custom_tags[index].selected,
+                          'bg-purple-400 !text-white': (dropIndex == index && dropType == dragType && dragIndex != dropIndex && dragType == 'custom_tags')
                         }"
-                        @click="asr.custom_tags[key] = !value; updateAsr(false)"
-                        x-text="key"
+                        @click="asr.custom_tags[index].selected = !asr.custom_tags[index].selected; updateAsr(false)"
+                        x-text="asr.custom_tags[index].name"
                       >
                       </span>
                       <button
                         type="button"
                         class="cursor-pointer absolute top-0 right-0 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white bg-red-500"
-                        @click="deleteCustomValue('custom_tags', key)"
+                        @click="deleteCustomValue('custom_tags', index)"
                       >
                         <span class="sr-only">Remove large option</span>
                         <svg

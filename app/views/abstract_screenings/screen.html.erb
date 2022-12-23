@@ -277,10 +277,10 @@
       asr: {
         id: null,
         label: null,
-        predefined_reasons: {},
-        predefined_tags: {},
-        custom_reasons: {},
-        custom_tags: {},
+        predefined_reasons: [],
+        predefined_tags: [],
+        custom_reasons: [],
+        custom_tags: [],
         notes: "",
       },
       cps: [],
@@ -298,9 +298,9 @@
       processedTitle: [],
       processedAbstract: "",
       disable_textarea_keywords_and_phrases: false,
-      dragValue: null,
+      dragIndex: null,
       dragType: null,
-      dropValue: null,
+      dropIndex: null,
       dropType: null,
 
       init() {
@@ -344,25 +344,15 @@
       },
 
       hasSomeReason() {
-        return Object.keys({
-          ...this.asr.predefined_reasons,
-          ...this.asr.custom_reasons,
-        }).some(
-          (v) =>
-            this.asr.predefined_reasons[v] == true ||
-            this.asr.custom_reasons[v] == true
-        );
+        return this.asr.predefined_reasons
+          .concat(this.asr.custom_reasons)
+          .some((v) => v.selected);
       },
 
       hasSomeTag() {
-        return Object.keys({
-          ...this.asr.predefined_tags,
-          ...this.asr.custom_tags,
-        }).some(
-          (v) =>
-            this.asr.predefined_tags[v] == true ||
-            this.asr.custom_tags[v] == true
-        );
+        return this.asr.predefined_tags
+          .concat(this.asr.custom_tags)
+          .some((v) => v.selected);
       },
 
       hasSomeNote() {
@@ -400,39 +390,97 @@
       },
 
       turnOffAllReasons() {
-        Object.keys(this.asr.predefined_reasons).forEach(
-          (v) => (this.asr.predefined_reasons[v] = false)
-        );
-        Object.keys(this.asr.custom_reasons).forEach(
-          (v) => (this.asr.custom_reasons[v] = false)
-        );
-      },
-
-      processNewCustomValue() {
-        if (this.newCustomValue.trim() == "") return;
-        this.addReasonModal.on = false;
-        if (this.addReasonModal.type == "Reason") {
-          this.turnOffAllReasons();
-          if (this.asr.predefined_reasons[this.newCustomValue] == undefined) {
-            this.asr.custom_reasons[this.newCustomValue] = true;
-          } else {
-            this.asr.predefined_reasons[this.newCustomValue] = true;
-          }
-        } else {
-          if (this.asr.predefined_tags[this.newCustomValue] == undefined) {
-            this.asr.custom_tags[this.newCustomValue] = true;
-          } else {
-            this.asr.predefined_tags[this.newCustomValue] = true;
-          }
+        for (var i = 0; i < this.asr.predefined_reasons.length; i++) {
+          this.asr.predefined_reasons[i].selected = false;
         }
-        this.newCustomValue = "";
-        this.updateAsr(false);
+        for (var i = 0; i < this.asr.custom_reasons.length; i++) {
+          this.asr.custom_reasons[i].selected = false;
+        }
       },
 
-      deleteCustomValue(type, key) {
-        if (confirm(`Would you like to delete "${key}" as a custom choice?`)) {
-          delete this.asr[type][key];
-          this.updateAsr(false);
+      async createCustomValue() {
+        let url;
+        if (this.addReasonModal.type == "Reason") {
+          url =
+            "/abstract_screenings/<%= params[:abstract_screening_id] %>/abstract_screenings_reasons_users";
+        } else if (this.addReasonModal.type == "Tag") {
+          url =
+            "/abstract_screenings/<%= params[:abstract_screening_id] %>/abstract_screenings_tags_users";
+        }
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          body: JSON.stringify({
+            name: this.newCustomValue.trim(),
+          }),
+        });
+        await response.json();
+        await this.getAsr();
+        this.addReasonModal.on = false;
+        this.newCustomValue = "";
+      },
+
+      async updateCustomValue(type, values) {
+        const id = values.id;
+        const position = values.position;
+        let url;
+        if (type == "custom_reasons") {
+          url = `/abstract_screenings_reasons_users/${id}`;
+        } else if (type == "custom_tags") {
+          url = `/abstract_screenings_tags_users/${id}`;
+        }
+        const response = await fetch(url, {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          body: JSON.stringify({
+            position,
+          }),
+        });
+        await response.json();
+        await this.getAsr();
+      },
+
+      async deleteCustomValue(type, index) {
+        const id = this.asr[type][index].id;
+        if (
+          confirm(
+            `Would you like to delete "${this.asr[type][index].name}" as a custom choice?`
+          )
+        ) {
+          let url;
+          if (type == "custom_reasons") {
+            url = `/abstract_screenings_reasons_users/${id}`;
+          } else if (type == "custom_tags") {
+            url = `/abstract_screenings_tags_users/${id}`;
+          }
+          const response = await fetch(url, {
+            method: "DELETE",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            body: JSON.stringify({
+              id,
+              destroyExistingValues: true,
+            }),
+          });
+          await response.json();
+          await this.getAsr();
         }
       },
 

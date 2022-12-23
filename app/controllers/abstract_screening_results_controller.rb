@@ -29,56 +29,24 @@ class AbstractScreeningResultsController < ApplicationController
   def handle_reasons_and_tags
     abstract_screening = @abstract_screening_result.abstract_screening
 
-    reasons_and_tags_params['predefined_reasons'].merge(reasons_and_tags_params['custom_reasons']).each do |name, value|
-      reason = Reason.find_or_create_by!(name:)
-      unless abstract_screening.reasons.include?(reason)
-        AbstractScreeningsReasonsUser
-          .find_or_create_by!(
-            reason:, user: current_user,
-            abstract_screening:
-          )
-      end
-      if value
-        AbstractScreeningResultsReason
-          .find_or_create_by!(reason:, abstract_screening_result: @abstract_screening_result)
+    reasons_and_tags_params['predefined_reasons'].concat(reasons_and_tags_params['custom_reasons']).each do |reason_object|
+      if reason_object[:selected]
+        AbstractScreeningResultsReason.find_or_create_by(reason_id: reason_object[:reason_id],
+                                                         abstract_screening_result: @abstract_screening_result)
       else
-        AbstractScreeningResultsReason
-          .find_by(reason:, abstract_screening_result: @abstract_screening_result)&.destroy
+        AbstractScreeningResultsReason.where(reason_id: reason_object[:reason_id],
+                                             abstract_screening_result: @abstract_screening_result).destroy_all
       end
     end
 
-    AbstractScreeningsReasonsUser.where(user: current_user, abstract_screening:).each do |asru|
-      next if reasons_and_tags_params['custom_reasons'].key?(asru.reason.name)
-
-      asru.destroy
-      AbstractScreeningResultsReason.find_by(reason: asru.reason,
-                                             abstract_screening_result: @abstract_screening_result)&.destroy
-    end
-
-    reasons_and_tags_params['predefined_tags'].merge(reasons_and_tags_params['custom_tags']).each do |name, value|
-      tag = Tag.find_or_create_by!(name:)
-      unless abstract_screening.tags.include?(tag)
-        AbstractScreeningsTagsUser
-          .find_or_create_by!(
-            tag:, user: current_user,
-            abstract_screening:
-          )
-      end
-      if value
-        AbstractScreeningResultsTag
-          .find_or_create_by!(tag:, abstract_screening_result: @abstract_screening_result)
+    reasons_and_tags_params['predefined_tags'].concat(reasons_and_tags_params['custom_tags']).each do |tag_object|
+      if tag_object[:selected]
+        AbstractScreeningResultsTag.find_or_create_by(tag_id: tag_object[:tag_id],
+                                                      abstract_screening_result: @abstract_screening_result)
       else
-        AbstractScreeningResultsTag
-          .find_by(tag:, abstract_screening_result: @abstract_screening_result)&.destroy
+        AbstractScreeningResultsTag.where(tag_id: tag_object[:tag_id],
+                                          abstract_screening_result: @abstract_screening_result).destroy_all
       end
-    end
-
-    AbstractScreeningsTagsUser.where(user: current_user, abstract_screening:).each do |astu|
-      next if reasons_and_tags_params['custom_tags'].key?(astu.tag.name)
-
-      astu.destroy
-      AbstractScreeningResultsTag.find_by(tag: astu.tag,
-                                          abstract_screening_result: @abstract_screening_result)&.destroy
     end
   end
 
@@ -89,22 +57,30 @@ class AbstractScreeningResultsController < ApplicationController
     @custom_reasons = AbstractScreeningsReasonsUser.custom_reasons_object(@abstract_screening, current_user)
     @custom_tags = AbstractScreeningsTagsUser.custom_tags_object(@abstract_screening, current_user)
 
-    @abstract_screening_result.reasons.each do |reason|
-      name = reason.name
-      if @predefined_reasons.key?(name)
-        @predefined_reasons[name] = true
-      else
-        @custom_reasons[name] = true
-      end
+    @predefined_reasons.map! do |predefined_reason|
+      predefined_reason[:selected] = true if @abstract_screening_result.reasons.any? do |reason|
+                                               reason.id == predefined_reason[:reason_id]
+                                             end
+      predefined_reason
     end
 
-    @abstract_screening_result&.tags&.each do |tag|
-      name = tag.name
-      if @predefined_tags.key?(name)
-        @predefined_tags[name] = true
-      else
-        @custom_tags[name] = true
-      end
+    @custom_reasons.map! do |custom_reason|
+      custom_reason[:selected] = true if @abstract_screening_result.reasons.any? do |reason|
+                                           reason.id == custom_reason[:reason_id]
+                                         end
+      custom_reason
+    end
+
+    @predefined_tags.map! do |predefined_tag|
+      predefined_tag[:selected] = true if @abstract_screening_result.tags.any? do |tag|
+                                            tag.id == predefined_tag[:tag_id]
+                                          end
+      predefined_tag
+    end
+
+    @custom_tags.map! do |custom_tag|
+      custom_tag[:selected] = true if @abstract_screening_result.tags.any? { |tag| tag.id == custom_tag[:tag_id] }
+      custom_tag
     end
   end
 
@@ -119,10 +95,10 @@ class AbstractScreeningResultsController < ApplicationController
 
   def reasons_and_tags_params
     params.require(:asr).permit(
-      predefined_reasons: {},
-      predefined_tags: {},
-      custom_reasons: {},
-      custom_tags: {}
+      predefined_reasons: %i[id reason_id name position selected],
+      predefined_tags: %i[id tag_id name position selected],
+      custom_reasons: %i[id reason_id name position selected],
+      custom_tags: %i[id tag_id name position selected]
     )
   end
 end

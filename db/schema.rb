@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_21_083241) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_21_092357) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -81,6 +81,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_21_083241) do
     t.bigint "reason_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "position"
     t.index ["abstract_screening_id", "reason_id"], name: "asr_as_on_r", unique: true
     t.index ["abstract_screening_id"], name: "asr_on_as"
     t.index ["reason_id"], name: "asr_on_r"
@@ -104,6 +105,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_21_083241) do
     t.bigint "tag_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "position"
     t.index ["abstract_screening_id", "tag_id"], name: "ast_as_on_t", unique: true
     t.index ["abstract_screening_id"], name: "ast_on_as"
     t.index ["tag_id"], name: "ast_on_t"
