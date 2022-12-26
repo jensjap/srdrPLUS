@@ -184,6 +184,11 @@ Rails.application.routes.draw do
     resources :abstract_screenings_reasons_users
   end
 
+  resources :fulltext_screenings, shallow: true, only: [] do
+    resources :fulltext_screenings_tags_users
+    resources :fulltext_screenings_reasons_users
+  end
+
   resources :abstract_screening_results, only: %i[show update]
   resources :fulltext_screening_results, only: %i[show update]
   resources :data_audits, only: %i[index update]

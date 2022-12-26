@@ -157,32 +157,81 @@
                 >Select up to one reason</label
               >
               <div class="grid grid-rows sm:grid-cols-6 gap-4 mt-4 mb-8">
-                <template
-                  x-for="[key, value] in Object.entries(fsr.predefined_reasons)"
-                >
+                <template x-for="(reason, index) in fsr.predefined_reasons">
                   <span
-                    :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
-                    @click="turnOffAllReasons(); fsr.predefined_reasons[key] = !value; updateFsr(false)"
+                    :class=" reason.selected ? 'bg-srdrpurple' : 'bg-white text-black'"
+                    @click="const value = reason.selected; turnOffAllReasons(); reason.selected = !value; updateFsr(false)"
                     class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
-                    x-text="key"
+                    x-text="reason.name"
                   >
                   </span>
                 </template>
-                <template
-                  x-for="[key, value] in Object.entries(fsr.custom_reasons)"
-                >
-                  <div class="relative">
+                <template x-for="(reason, index) in fsr.custom_reasons">
+                  <div
+                    class="relative"
+                    draggable="true"
+                    x-on:dragstart="(e) => {
+                      dragIndex = index;
+                      dragType = 'custom_reasons';
+                    }"
+                    x-on:dragover.prevent="(e) => {
+                      dropIndex = index;
+                      dropType = 'custom_reasons';
+                    }"
+                    x-on:dragleave.prevent="(e) =>
+                    {
+                      dropIndex = null;
+                      dropType = null;
+                    }"
+                    x-on:drop.prevent="(e) => {
+                      if (dragType == dropType && dragIndex != dropIndex) {
+                        updateCustomValue(dragType, { id: fsr[dragType][dragIndex].id, position: dropIndex })
+                        updateCustomValue(dropType, { id: fsr[dropType][dropIndex].id, position: dragIndex })
+                      }
+                    }"
+                    x-on:dragend.prevent="(e) => {
+                      dragIndex = null;
+                      dragType = null;
+                      dropIndex = null;
+                      dropType = null;
+                    }"
+                  >
                     <span
-                      :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
-                      @click="turnOffAllReasons(); fsr.custom_reasons[key] = !value; updateFsr(false)"
-                      class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
-                      x-text="key"
+                      :class="{
+                        'w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black': true,
+                        'bg-srdrpurple': reason.selected,
+                        'bg-white text-black': !reason.selected,
+                        'bg-purple-400 !text-white': (dropIndex == index && dropType == dragType && dragIndex != dropIndex && dragType == 'custom_reasons')
+                      }"
+                      @click="const value = reason.selected; turnOffAllReasons(); reason.selected = !value; updateFsr(false)"
+                      x-text="reason.name"
                     >
                     </span>
                     <button
                       type="button"
+                      class="cursor-pointer absolute top-0 right-5 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-gray-400"
+                      @click="addReasonModal.on = true; addReasonModal.type = 'custom_reasons'; addReasonModal.action = 'Update'; newCustomValue = reason.name; updateCustomId = reason.id"
+                    >
+                      <span class="sr-only">edit custom reason</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-6 h-6"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
                       class="cursor-pointer absolute top-0 right-0 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white bg-red-500"
-                      @click="deleteCustomValue('custom_reasons', key)"
+                      @click="deleteCustomValue('custom_reasons', index)"
                     >
                       <span class="sr-only">remove custom reason</span>
                       <svg
@@ -201,7 +250,7 @@
                   </div>
                 </template>
                 <span
-                  @click="addReasonModal = { on: true, type: 'Reason' }; $nextTick(() => { $refs.newCustomValueInput.focus() })"
+                  @click="addReasonModal = { on: true, type: 'custom_reasons', action: 'Create' }"
                   class="drop-shadow select-none cursor-pointer justify-center inline-flex items-center text-green-900 font-black"
                   x-show="!options.only_predefined_reasons"
                 >
@@ -254,32 +303,80 @@
                   >Select tags</label
                 >
                 <div class="grid grid-rows sm:grid-cols-6 gap-4 mt-4 mb-8">
-                  <template
-                    x-for="[key, value] in Object.entries(fsr.predefined_tags)"
-                  >
+                  <template x-for="(tag, index) in fsr.predefined_tags">
                     <span
-                      :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
-                      @click="fsr.predefined_tags[key] = !value; updateFsr(false)"
+                      :class="tag.selected ? 'bg-srdrpurple' : 'bg-white text-black'"
+                      @click="tag.selected = !tag.selected; updateFsr(false)"
                       class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
-                      x-text="key"
+                      x-text="tag.name"
                     >
                     </span>
                   </template>
-                  <template
-                    x-for="[key, value] in Object.entries(fsr.custom_tags)"
-                  >
-                    <div class="relative">
+                  <template x-for="(tag, index) in fsr.custom_tags">
+                    <div
+                      class="relative"
+                      draggable="true"
+                      x-on:dragstart="(e) => {
+                        dragIndex = index;
+                        dragType = 'custom_tags';
+                      }"
+                      x-on:dragover.prevent="(e) => {
+                        dropIndex = index;
+                        dropType = 'custom_tags';
+                      }"
+                      x-on:dragleave.prevent="(e) => {
+                        dropIndex = null;
+                        dropType = null;
+                      }"
+                      x-on:drop.prevent="(e) => {
+                        if (dragType == dropType && dragIndex != dropIndex) {
+                          updateCustomValue(dragType, { id: fsr[dragType][dragIndex].id, position: fsr[dropType][dropIndex].position })
+                          updateCustomValue(dropType, { id: fsr[dropType][dropIndex].id, position: fsr[dragType][dragIndex].position })
+                        }
+                      }"
+                      x-on:dragend.prevent="(e) => {
+                        dragIndex = null;
+                        dragType = null;
+                        dropIndex = null;
+                        dropType = null;
+                      }"
+                    >
                       <span
-                        :class="value ? 'bg-srdrpurple' : 'bg-white text-black'"
-                        @click="fsr.custom_tags[key] = !value; updateFsr(false)"
-                        class="w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
-                        x-text="key"
+                        :class="{
+                          'w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black': true,
+                          'bg-srdrpurple': tag.selected,
+                          'bg-white text-black': !tag.selected,
+                          'bg-purple-400 !text-white': (dropIndex == index && dropType == dragType && dragIndex != dropIndex && dragType == 'custom_tags')
+                        }"
+                        @click="tag.selected = !tag.selected; updateFsr(false)"
+                        x-text="tag.name"
                       >
                       </span>
                       <button
                         type="button"
+                        class="cursor-pointer absolute top-0 right-5 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-gray-400"
+                        @click="addReasonModal.on = true; addReasonModal.type = 'custom_tags'; addReasonModal.action = 'Update'; newCustomValue = tag.name; updateCustomId = tag.id"
+                      >
+                        <span class="sr-only">edit custom tag</span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="w-6 h-6"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
+                          />
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
                         class="cursor-pointer absolute top-0 right-0 flex-shrink-0 ml-0.5 h-4 w-4 rounded-full inline-flex items-center justify-center text-white bg-red-500"
-                        @click="deleteCustomValue('custom_tags', key)"
+                        @click="deleteCustomValue('custom_tags', index)"
                       >
                         <span class="sr-only">Remove large option</span>
                         <svg
@@ -298,7 +395,7 @@
                     </div>
                   </template>
                   <span
-                    @click="addReasonModal = { on: true, type: 'Tag' }; $nextTick(() => { $refs.newCustomValueInput.focus(); });"
+                    @click="addReasonModal = { on: true, type: 'custom_tags', action: 'Create' }"
                     class="drop-shadow select-none cursor-pointer justify-center inline-flex items-center text-green-900 font-black"
                     x-show="!options.only_predefined_tags"
                   >

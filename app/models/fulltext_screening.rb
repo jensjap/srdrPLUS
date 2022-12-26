@@ -67,16 +67,28 @@ class FulltextScreening < ApplicationRecord
   end
 
   def reasons_object
-    reasons.each_with_object({}) do |reason, hash|
-      hash[reason.name] = false
-      hash
+    fulltext_screenings_reasons = FulltextScreeningsReason.where(fulltext_screening: self).order(:position).includes(:reason)
+    fulltext_screenings_reasons.map do |fulltext_screenings_reason|
+      {
+        id: fulltext_screenings_reason.id,
+        reason_id: fulltext_screenings_reason.reason_id,
+        name: fulltext_screenings_reason.reason.name,
+        position: fulltext_screenings_reason.position,
+        selected: false
+      }
     end
   end
 
   def tags_object
-    tags.each_with_object({}) do |tag, hash|
-      hash[tag.name] = false
-      hash
+    fulltext_screenings_tags = FulltextScreeningsTag.where(fulltext_screening: self).order(:position).includes(:tag)
+    fulltext_screenings_tags.map do |fulltext_screenings_tag|
+      {
+        id: fulltext_screenings_tag.id,
+        tag_id: fulltext_screenings_tag.tag_id,
+        name: fulltext_screenings_tag.tag.name,
+        position: fulltext_screenings_tag.position,
+        selected: false
+      }
     end
   end
 

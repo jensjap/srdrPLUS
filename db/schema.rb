@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_21_092357) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_26_011514) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -785,6 +785,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_21_092357) do
     t.bigint "reason_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "position"
     t.index ["fulltext_screening_id", "reason_id"], name: "fsr_fs_on_r", unique: true
     t.index ["fulltext_screening_id"], name: "fsr_on_fs"
     t.index ["reason_id"], name: "fsr_on_r"
@@ -796,6 +797,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_21_092357) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "position"
     t.index ["fulltext_screening_id", "reason_id", "user_id"], name: "fs_r_u", unique: true
     t.index ["fulltext_screening_id"], name: "fsru_on_fs"
     t.index ["reason_id"], name: "fsru_on_r"
@@ -807,6 +809,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_21_092357) do
     t.bigint "tag_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "position"
     t.index ["fulltext_screening_id", "tag_id"], name: "fst_fs_on_t", unique: true
     t.index ["fulltext_screening_id"], name: "fst_on_fs"
     t.index ["tag_id"], name: "fst_on_t"
@@ -818,6 +821,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_21_092357) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "position"
     t.index ["fulltext_screening_id", "tag_id", "user_id"], name: "fs_t_u", unique: true
     t.index ["fulltext_screening_id"], name: "fstu_on_fs"
     t.index ["tag_id"], name: "fstu_on_t"
