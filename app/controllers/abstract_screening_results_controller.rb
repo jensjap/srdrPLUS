@@ -27,8 +27,6 @@ class AbstractScreeningResultsController < ApplicationController
   private
 
   def handle_reasons_and_tags
-    abstract_screening = @abstract_screening_result.abstract_screening
-
     reasons_and_tags_params['predefined_reasons'].concat(reasons_and_tags_params['custom_reasons']).each do |reason_object|
       if reason_object[:selected]
         AbstractScreeningResultsReason.find_or_create_by(reason_id: reason_object[:reason_id],
