@@ -18,10 +18,23 @@ class AbstractScreeningsReasonsUsersController < ApplicationController
         abstract_screenings_reasons_user = AbstractScreeningsReasonsUser.find_or_create_by!(
           id: params[:id], user: current_user
         )
-        abstract_screenings_reasons_user.update(position: params[:position]) if params[:position]
+        abstract_screenings_reasons_user.update!(position: params[:position]) if params[:position]
         if name
           reason = Reason.find_or_create_by!(name:)
-          abstract_screenings_reasons_user.update(reason:)
+          asrrs =
+            AbstractScreeningResultsReason
+            .joins(:reason, abstract_screening_result: :abstract_screening)
+            .where(
+              reason: abstract_screenings_reasons_user.reason,
+              abstract_screening_result: {
+                abstract_screening_result: {
+                  abstract_screening: abstract_screenings_reasons_user.abstract_screening,
+                  user_id: current_user.id
+                }
+              }
+            )
+          asrrs.each { |asrt| asrt.update!(reason:) }
+          abstract_screenings_reasons_user.update!(reason:)
         end
         render json: {}, status: :ok
       end

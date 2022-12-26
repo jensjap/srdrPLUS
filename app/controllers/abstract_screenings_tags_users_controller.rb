@@ -18,10 +18,23 @@ class AbstractScreeningsTagsUsersController < ApplicationController
         abstract_screenings_tags_user = AbstractScreeningsTagsUser.find_or_create_by!(
           id: params[:id], user: current_user
         )
-        abstract_screenings_tags_user.update(position: params[:position]) if params[:position]
+        abstract_screenings_tags_user.update!(position: params[:position]) if params[:position]
         if name
           tag = Tag.find_or_create_by!(name:)
-          abstract_screenings_tags_user.update(tag:)
+          asrts =
+            AbstractScreeningResultsTag
+            .joins(:tag, abstract_screening_result: :abstract_screening)
+            .where(
+              tag: abstract_screenings_tags_user.tag,
+              abstract_screening_result: {
+                abstract_screening_result: {
+                  abstract_screening: abstract_screenings_tags_user.abstract_screening,
+                  user_id: current_user.id
+                }
+              }
+            )
+          asrts.each { |asrt| asrt.update!(tag:) }
+          abstract_screenings_tags_user.update!(tag:)
         end
         render json: {}, status: :ok
       end
