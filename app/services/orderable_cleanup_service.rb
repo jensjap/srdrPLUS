@@ -22,6 +22,19 @@ class OrderableCleanupService
     SdSummaryOfEvidence
   ]
 
+  def self.perform_check
+    cached_mocs = missing_ordering_counts
+    if cached_mocs.values.any?(&:positive?)
+      HealthMonitorMailer.report_findings('missing_ordering_counts',
+                                          cached_mocs).deliver_now
+    end
+    cached_oocs = orphan_ordering_counts
+    if cached_oocs.values.any?(&:positive?)
+      HealthMonitorMailer.report_findings('orphan_ordering_counts',
+                                          cached_oocs).deliver_now
+    end
+  end
+
   def self.cleanup!
     fix_missing_orderings
     delete_orphan_orderings!

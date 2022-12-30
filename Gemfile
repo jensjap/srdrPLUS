@@ -88,4 +88,5 @@ gem 'tailwindcss-rails', '~> 2.0'
 gem 'toastr_rails'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby] # Windows does not include zoneinfo files
 gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
+gem 'whenever', require: false
 gem 'zip-zip' # Spreadsheet reading.

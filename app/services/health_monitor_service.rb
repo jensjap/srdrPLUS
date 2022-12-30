@@ -1,4 +1,4 @@
-class HealthMonitor
+class HealthMonitorService
   ALL_TABLES = [
     Admin,
     Approval,
@@ -101,9 +101,10 @@ class HealthMonitor
 
   def self.perform_check
     cached_anomalies = anomalies
-    cached_critical_table_count_differences = critical_table_count_differences
-    unless cached_anomalies == {} && cached_critical_table_count_differences == {}
-      HealthMonitorMailer.report_findings(anomalies, critical_table_count_differences).deliver_now
+    cached_ctcds = critical_table_count_differences
+    HealthMonitorMailer.report_findings('anomalies', anomalies).deliver_now unless cached_anomalies == {}
+    unless cached_ctcds == {}
+      HealthMonitorMailer.report_findings('critical_table_count_differences', cached_ctcds).deliver_now
     end
     save_counts(current_counts)
   end
