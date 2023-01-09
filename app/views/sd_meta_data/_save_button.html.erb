@@ -1,0 +1,43 @@
+<div
+  x-data="$store.sdMetaDataStore"
+  class="pointer-events-none fixed inset-x-0 bottom-0 flex max-w-full z-10"
+>
+  <div
+    class="pointer-events-auto w-screen backdrop-blur-sm bg-srdr-secondary/80"
+    x-show="showSaveMenu"
+    x-cloak
+    x-transition:enter="transform transition ease-in-out duration-350 sm:duration-350"
+    x-transition:enter-start="translate-y-full"
+    x-transition:enter-end="translate-y-0"
+    x-transition:leave="transform transition ease-in-out duration-350 sm:duration-350"
+    x-transition:leave-start="translate-y-0"
+    x-transition:leave-end="translate-y-full"
+  >
+    <div class="flex justify-center items-center">
+      <div
+        id="save-dirty-forms-button"
+        class="cursor-pointer p-2 m-2 text-xs bg-srdr-secondary border-[1px] border-white text-white rounded-md drop-shadow-md"
+      >
+        Save Changes
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.store("sdMetaDataStore", {
+      showSaveMenu: false,
+
+      init() {},
+
+      hideSaveButtonMenu() {
+        this.showSaveMenu = false;
+      },
+
+      showSaveButtonMenu() {
+        this.showSaveMenu = true;
+      },
+    });
+  });
+</script>

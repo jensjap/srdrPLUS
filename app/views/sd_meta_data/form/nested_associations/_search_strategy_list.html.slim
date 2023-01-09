@@ -1,4 +1,4 @@
-= simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+= simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: :sd_search_strategies, class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
   = f.input :item_id, as: :hidden, input_html: { value: 44 }
   .orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
     = f.simple_fields_for :sd_search_strategies do |sd_search_strategy|

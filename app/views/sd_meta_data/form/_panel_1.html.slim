@@ -11,31 +11,31 @@
 
     div data-row-span="1"
       .sd-item data-field-span="1"
-        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: :organization, class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :organization, label: 'Organization of Authors of Full Report (Required)', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="1"
       .sd-item data-field-span="1"
-        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: :authors, class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :authors, label: 'Authors of Full Report (Required)', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="1"
       .sd-item data-field-span="1"
-        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: :authors_conflict_of_interest_of_full_report, class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :authors_conflict_of_interest_of_full_report, label: 'Conflicts of Interest of Authors of Full Report', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="1"
       .sd-item data-field-span="1"
-        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: :stakeholders_key_informants, class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :stakeholders_key_informants, label: 'Stakeholders Involved - Key Informants', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="1"
       .sd-item data-field-span="1"
-        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: :stakeholders_technical_experts, class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :stakeholders_technical_experts, label: 'Stakeholders Involved - Technical Expert Panel', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="1"
       .sd-item data-field-span="1"
-        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: :stakeholders_peer_reviewers, class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :stakeholders_peer_reviewers, label: 'Stakeholders Involved - Peer Reviewers', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="1"
       .sd-item data-field-span="1"
-        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: :stakeholders_others, class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :stakeholders_others, label: 'Stakeholders Involved - Others', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="2"
       .sd-item data-field-span="1"

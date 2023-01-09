@@ -13,14 +13,11 @@
     toastr.warning('<%= @errors.join(', ') %>');
   <% else %>
     //toastr.success('Data saved!')
-    $('.dirty').removeClass('dirty');
     $( '.preview-button' ).removeAttr( 'disabled' );
 
     infoDiv.show().animate( { opacity: 0.4 } );
     infoDiv.show().delay( 500 ).animate( { opacity: 0 } );
 
-    <% if @report_title_updated %>
-      location.reload();
-    <% end %>
+    $('#report-title').text('<%= @sd_meta_datum.report_title %>');
   <% end %>
 } )();
