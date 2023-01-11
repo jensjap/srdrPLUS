@@ -186,8 +186,8 @@ Rails.application.routes.draw do
   resources :data_audits, only: %i[index update]
   resources :projects, concerns: :paginatable, shallow: true do
     get 'citation_lifecycle_management', to: 'abstract_screenings#citation_lifecycle_management'
-    get 'export_screening_data', to: 'abstract_screenings#export_screening_data'
     get 'kpis', to: 'abstract_screenings#kpis'
+    post 'export_screening_data', to: 'abstract_screenings#export_screening_data'
 
     resources :abstract_screenings do
       get 'rescreen', to: 'abstract_screenings#rescreen'

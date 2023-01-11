@@ -281,7 +281,7 @@
       class="bg-srdr-secondary mx-auto px-4 lg:px-8 text-white overflow-x-auto whitespace-nowrap"
     >
       <div class="flex h-8 items-center">
-        <div class="absolute">
+        <div class="">
           <!-- prettier-ignore -->
           <%= "Project ID##{project.id}: #{project.name}" %>
           <% if project.publishing.present? && project.publishing.approval.present? %>
@@ -323,19 +323,20 @@
             :class="members_and_roles && 'bg-srdr-primary !text-white'"
             >Member(s) & Role(s)</a
           >
-          <% if AbstractScreeningService.as_user?(current_user) %>
           <a
             href="<%= project_citations_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="citation_pool && 'bg-srdr-primary !text-white'"
             >Citations</a
           >
+          <% if AbstractScreeningService.as_user?(current_user) %>
           <a
             href="<%= project_citation_lifecycle_management_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="lifecycle_management && 'bg-srdr-primary !text-white'"
             >Citation Phase Management</a
           >
+          <% end %>
           <a
             href="<%= project_screening_forms_path(project, form_type: 'abstract') %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
@@ -348,6 +349,7 @@
             :class="abstract_screening && 'bg-srdr-primary !text-white'"
             >Abstract Screening</a
           >
+          <% if AbstractScreeningService.as_user?(current_user) %>
           <a
             href="<%= project_screening_forms_path(project, form_type: 'fulltext') %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
@@ -359,25 +361,6 @@
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="fulltext_screening && 'bg-srdr-primary !text-white'"
             >Full-Text Screening</a
-          >
-          <% else %>
-          <a
-            href="<%= project_citations_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="citation_pool && 'bg-srdr-primary !text-white'"
-            >Citation Pool</a
-          >
-          <a
-            href="<%= project_tasks_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="tasks && 'bg-srdr-primary !text-white'"
-            >Tasks</a
-          >
-          <a
-            href="<%= next_assignment_project_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="screen && 'bg-srdr-primary !text-white'"
-            >Screen</a
           >
           <% end %>
           <a

@@ -42,7 +42,7 @@ div class="p-4 lg:p-8"
   .grid-x
     .cell.small-12
       h1.text-xl Step 3 - Export Project Data
-      = link_to "Get Export", export_project_path(@project, export_type_name: '.xlsx legacy'), method: :post, class: "button"
+      = link_to "Get Skeleton Export (Legacy Format)", export_project_path(@project, export_type_name: '.xlsx legacy'), method: :post, class: "button"
 
   br/
   hr
