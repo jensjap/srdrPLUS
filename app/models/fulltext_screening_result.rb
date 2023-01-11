@@ -27,7 +27,7 @@ class FulltextScreeningResult < ApplicationRecord
   delegate :project, to: :fulltext_screening
   delegate :citation, to: :citations_project
 
-  after_commit :evaluate_screening_qualifications
+  after_save :evaluate_screening_qualifications
 
   def evaluate_screening_qualifications
     if citations_project
