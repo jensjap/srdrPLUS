@@ -69926,7 +69926,9 @@ function __guardMethod__(obj, methodName, transform) {
       return;
     }
     $('.preview-button').attr('disabled', '');
-    return send_async_form(form);
+    send_async_form(form);
+    $(form).removeClass('dirty');
+    return Alpine.store('sdMetaDataStore').hideSaveButtonMenu();
   };
 
   restrictedCharacters = {
@@ -70082,18 +70084,18 @@ function __guardMethod__(obj, methodName, transform) {
     $form.find('select, input[type="file"], input.fdp, input[type="number"]').on('change', function(e) {
       e.preventDefault();
       $form.addClass('dirty');
-      return Timekeeper.create_timer_for_form($form[0], 750);
+      return Timekeeper.create_timer_for_form($form[0], 10);
     });
     $form.on('cocoon:after-insert cocoon:after-remove', function(e) {
       $form.addClass('dirty');
-      return Timekeeper.create_timer_for_form($form[0], 750);
+      return Timekeeper.create_timer_for_form($form[0], 10);
     });
     $("a.remove-figure[data-remote]").on("ajax:success", function(event) {
       return $(this).parent().closest('div').fadeOut();
     });
     $form.find('input[type="text"], textarea').on('paste', function(e) {
       $form.addClass('dirty');
-      return Timekeeper.create_timer_for_form($form[0], 750);
+      return Alpine.store('sdMetaDataStore').showSaveButtonMenu();
     });
     return $form.find('input[type="text"], textarea').keyup(function(e) {
       var code;
@@ -70103,7 +70105,7 @@ function __guardMethod__(obj, methodName, transform) {
         return;
       }
       $form.addClass('dirty');
-      return Timekeeper.create_timer_for_form($form[0], 750);
+      return Alpine.store('sdMetaDataStore').showSaveButtonMenu();
     });
   };
 
@@ -70210,8 +70212,15 @@ function __guardMethod__(obj, methodName, transform) {
       setTimeout((function() {
         return apply_all_select2();
       }), 50);
-      return $('textarea').each(function() {
+      $('textarea').each(function() {
         return this.style.height = this.scrollHeight + "px";
+      });
+      return $(document).on('click', '#save-dirty-forms-button', function() {
+        return $('form.dirty').each((function(_this) {
+          return function(i, form) {
+            return validate_and_send_async_form(form);
+          };
+        })(this));
       });
     })();
   });

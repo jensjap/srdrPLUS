@@ -18,7 +18,7 @@ class Statusing < ApplicationRecord
 
   delegate :project, to: :statusable
 
-  after_commit :evaluate_screening_status_citations_project
+  after_save :evaluate_screening_status_citations_project
 
   def evaluate_screening_status_citations_project
     return unless statusable.instance_of?(ExtractionsExtractionFormsProjectsSection)

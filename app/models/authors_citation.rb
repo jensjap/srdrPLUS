@@ -14,6 +14,7 @@ class AuthorsCitation < ApplicationRecord
 
   belongs_to :author
   belongs_to :citation
+
   has_one :ordering, as: :orderable, dependent: :destroy
 
   delegate :position, to: :ordering

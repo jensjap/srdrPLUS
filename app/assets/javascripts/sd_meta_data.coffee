@@ -173,6 +173,8 @@ validate_and_send_async_form = ( form ) ->
     return
   $( '.preview-button' ).attr( 'disabled', '' )
   send_async_form( form )
+  $(form).removeClass('dirty')
+  Alpine.store('sdMetaDataStore').hideSaveButtonMenu()
 
 restrictedCharacters =
   '<': '&lt;'
@@ -296,26 +298,35 @@ add_form_listeners =( form ) ->
   # Use this to keep track of the different timers.
   formId = $form.attr( 'id' )
 
-  $form.find( 'select, input[type="file"], input.fdp, input[type="number"]' ).on 'change', ( e ) ->
+  $form.find( 'input[type="file"]' ).on 'change', ( e ) ->
     e.preventDefault()
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
-    Timekeeper.create_timer_for_form $form[0], 750
+    Timekeeper.create_timer_for_form $form[0], 10
+    # Alpine.store('sdMetaDataStore').showSaveButtonMenu()
+
+  $form.find( 'select, input.fdp, input[type="number"]' ).on 'change', ( e ) ->
+    e.preventDefault()
+    # Mark form as 'dirty'.
+    $form.addClass( 'dirty' )
+    # Timekeeper.create_timer_for_form $form[0], 10
+    Alpine.store('sdMetaDataStore').showSaveButtonMenu()
 
   $form.on 'cocoon:after-insert cocoon:after-remove', ( e ) ->
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
-    Timekeeper.create_timer_for_form $form[0], 750
+    Timekeeper.create_timer_for_form $form[0], 10
 
   $( "a.remove-figure[data-remote]" ).on "ajax:success",  ( event ) ->
     $( this ).parent().closest( 'div' ).fadeOut();
 
   $form.find('input[type="text"], textarea').on 'paste', ( e ) ->
     $form.addClass( 'dirty' )
-    Timekeeper.create_timer_for_form $form[0], 750
+    # Timekeeper.create_timer_for_form $form[0], 750
+    Alpine.store('sdMetaDataStore').showSaveButtonMenu()
 
   # Text Field.
-  $form.find('input[type="text"], textarea').keyup ( e ) ->
+  $form.find('input[type="text"], textarea, input[type="number"]').keyup ( e ) ->
 #    if !!$(e.target).val()
 #      StatusChecker.remove_highlights()
     e.preventDefault()
@@ -328,7 +339,8 @@ add_form_listeners =( form ) ->
 
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
-    Timekeeper.create_timer_for_form $form[0], 750
+    # Timekeeper.create_timer_for_form $form[0], 1500
+    Alpine.store('sdMetaDataStore').showSaveButtonMenu()
 
 bind_srdr20_saving_mechanism = () ->
   $( 'form.sd-form' ).each ( i, form ) ->
@@ -410,3 +422,6 @@ document.addEventListener 'DOMContentLoaded', ->
     ), 50
     $( 'textarea' ).each () ->
       this.style.height = this.scrollHeight + "px"
+    $( document ).on 'click', '#save-dirty-forms-button', ->
+      $('form.dirty').each (i, form) =>
+        validate_and_send_async_form(form)

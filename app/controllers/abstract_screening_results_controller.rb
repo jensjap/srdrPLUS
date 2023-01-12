@@ -2,11 +2,15 @@ class AbstractScreeningResultsController < ApplicationController
   def update
     respond_to do |format|
       format.json do
-        @abstract_screening_result = AbstractScreeningResult.find(params[:id])
+        @abstract_screening_result = AbstractScreeningResult
+          .includes(citations_project: :citation)
+          .find(params[:id])
         handle_reasons_and_tags
         @abstract_screening_result.update(asr_params)
-        @screened_cps = AbstractScreeningResult.where(user: current_user,
-                                                      abstract_screening: @abstract_screening_result.abstract_screening)
+        @screened_cps = AbstractScreeningResult
+          .includes(citations_project: :citation)
+          .where(user: current_user,
+                 abstract_screening: @abstract_screening_result.abstract_screening)
         prepare_json_data
         render :show
       end
@@ -16,9 +20,13 @@ class AbstractScreeningResultsController < ApplicationController
   def show
     respond_to do |format|
       format.json do
-        @abstract_screening_result = AbstractScreeningResult.find(params[:id])
-        @screened_cps = AbstractScreeningResult.where(user: current_user,
-                                                      abstract_screening: @abstract_screening_result.abstract_screening)
+        @abstract_screening_result = AbstractScreeningResult
+          .includes(citations_project: :citation)
+          .find(params[:id])
+        @screened_cps = AbstractScreeningResult
+          .includes(citations_project: :citation)
+          .where(user: current_user,
+                 abstract_screening: @abstract_screening_result.abstract_screening)
         prepare_json_data
       end
     end
