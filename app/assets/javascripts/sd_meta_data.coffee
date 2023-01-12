@@ -298,12 +298,19 @@ add_form_listeners =( form ) ->
   # Use this to keep track of the different timers.
   formId = $form.attr( 'id' )
 
-  $form.find( 'select, input[type="file"], input.fdp, input[type="number"]' ).on 'change', ( e ) ->
+  $form.find( 'input[type="file"]' ).on 'change', ( e ) ->
     e.preventDefault()
     # Mark form as 'dirty'.
     $form.addClass( 'dirty' )
     Timekeeper.create_timer_for_form $form[0], 10
     # Alpine.store('sdMetaDataStore').showSaveButtonMenu()
+
+  $form.find( 'select, input.fdp, input[type="number"]' ).on 'change', ( e ) ->
+    e.preventDefault()
+    # Mark form as 'dirty'.
+    $form.addClass( 'dirty' )
+    # Timekeeper.create_timer_for_form $form[0], 10
+    Alpine.store('sdMetaDataStore').showSaveButtonMenu()
 
   $form.on 'cocoon:after-insert cocoon:after-remove', ( e ) ->
     # Mark form as 'dirty'.
@@ -319,7 +326,7 @@ add_form_listeners =( form ) ->
     Alpine.store('sdMetaDataStore').showSaveButtonMenu()
 
   # Text Field.
-  $form.find('input[type="text"], textarea').keyup ( e ) ->
+  $form.find('input[type="text"], textarea, input[type="number"]').keyup ( e ) ->
 #    if !!$(e.target).val()
 #      StatusChecker.remove_highlights()
     e.preventDefault()
