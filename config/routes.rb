@@ -245,6 +245,7 @@ Rails.application.routes.draw do
 
       member do
         get 'work'
+        get 'reassign_extraction'
         put 'update_kqp_selections'
         get 'change_outcome_in_results_section', constraints: { format: 'js' }
       end
