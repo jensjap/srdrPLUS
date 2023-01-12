@@ -70081,10 +70081,15 @@ function __guardMethod__(obj, methodName, transform) {
     var $form, formId;
     $form = $(form);
     formId = $form.attr('id');
-    $form.find('select, input[type="file"], input.fdp, input[type="number"]').on('change', function(e) {
+    $form.find('input[type="file"]').on('change', function(e) {
       e.preventDefault();
       $form.addClass('dirty');
       return Timekeeper.create_timer_for_form($form[0], 10);
+    });
+    $form.find('select, input.fdp, input[type="number"]').on('change', function(e) {
+      e.preventDefault();
+      $form.addClass('dirty');
+      return Alpine.store('sdMetaDataStore').showSaveButtonMenu();
     });
     $form.on('cocoon:after-insert cocoon:after-remove', function(e) {
       $form.addClass('dirty');
@@ -70097,7 +70102,7 @@ function __guardMethod__(obj, methodName, transform) {
       $form.addClass('dirty');
       return Alpine.store('sdMetaDataStore').showSaveButtonMenu();
     });
-    return $form.find('input[type="text"], textarea').keyup(function(e) {
+    return $form.find('input[type="text"], textarea, input[type="number"]').keyup(function(e) {
       var code;
       e.preventDefault();
       code = e.keyCode || e.which;
