@@ -1,0 +1,2 @@
+module FulltextScreeningsTagsUsersHelper
+end
