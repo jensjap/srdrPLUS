@@ -22,7 +22,7 @@ class Citation < ApplicationRecord
   include SharedQueryableMethods
   include SharedProcessTokenMethods
 
-  searchkick
+  searchkick callbacks: :async
 
   after_commit :reindex_citations_projects
 

@@ -13,7 +13,7 @@
 #
 
 class CitationsProject < ApplicationRecord
-  searchkick
+  searchkick callbacks: :async
 
   scope :unlabeled,
         lambda { |project, count|
@@ -257,6 +257,6 @@ class CitationsProject < ApplicationRecord
       update(screening_status: AS_UNSCREENED)
     end
 
-    reindex
+    reindex(mode: :async)
   end
 end
