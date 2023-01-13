@@ -20,345 +20,359 @@
     right: 8px;
   }
 </style>
-<div x-data="screeningFormData" x-show="questions.length > 0">
+<div x-data="screeningFormData">
   <div class="py-2">
     <h1 class="text-xl">Screening Form</h1>
     <hr class="m-0" />
   </div>
-  <div class="py-2">
-    <template
-      x-for="(question, question_index) in questions"
-      :key="question.id"
-    >
-      <div class="relative shadow-md rounded-md mb-8 border">
-        <div class="flex">
-          <div class="grow overflow-auto">
-            <div class="py-2 px-4">
-              <h2
-                class="text-lg"
-                x-text="`${question_index + 1}. ${question.name || ''}`"
-              ></h2>
-              <p class="m-0" x-text="question.description"></p>
-            </div>
-            <div class="py-2 px-4 overflow-auto block">
-              <table
-                class="h-0 w-0 table-auto border-separate border-spacing-1"
-              >
-                <thead>
-                  <tr>
-                    <td class="bg-white"></td>
-                    <template
-                      x-for="(column, column_index) in question.columns"
-                    >
-                      <th>
-                        <div class="flex justify-center items-center">
-                          <div
-                            class="grow whitespace-nowrap"
-                            x-text="column.title"
-                          ></div>
-                        </div>
-                      </th>
-                    </template>
-                  </tr>
-                </thead>
-                <tbody>
-                  <template x-for="(row, row_index) in (question.rows)">
+  <template x-if="questions == null">
+    <div class="py-2">Loading...</div>
+  </template>
+  <template x-if="questions && questions.length == 0">
+    <div class="py-2">No Screening Form</div>
+  </template>
+  <template x-if="questions && questions.length > 0">
+    <div class="py-2">
+      <template
+        x-for="(question, question_index) in questions"
+        :key="question.id"
+      >
+        <div class="relative shadow-md rounded-md mb-8 border">
+          <div class="flex">
+            <div class="grow overflow-auto">
+              <div class="py-2 px-4">
+                <h2
+                  class="text-lg"
+                  x-text="`${question_index + 1}. ${question.name || ''}`"
+                ></h2>
+                <p class="m-0" x-text="question.description"></p>
+              </div>
+              <div class="py-2 px-4 overflow-auto block">
+                <table
+                  class="h-0 w-0 table-auto border-separate border-spacing-1"
+                >
+                  <thead>
                     <tr>
-                      <th>
-                        <div class="h-full flex justify-center items-start">
-                          <div
-                            class="grow whitespace-nowrap"
-                            x-text="question.rows[row_index] !== undefined && question.rows[row_index].title"
-                          ></div>
-                        </div>
-                      </th>
-
+                      <td class="bg-white"></td>
                       <template
                         x-for="(column, column_index) in question.columns"
                       >
-                        <td>
-                          <template
-                            x-if="question.cells[row_index] !== undefined &&  question.cells[row_index][column_index] !== undefined && question.cells[row_index][column_index] !== null"
-                          >
+                        <th>
+                          <div class="flex justify-center items-center">
                             <div
-                              class="flex justify-center items-stretch h-full"
+                              class="grow whitespace-nowrap"
+                              x-text="column.title"
+                            ></div>
+                          </div>
+                        </th>
+                      </template>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template x-for="(row, row_index) in (question.rows)">
+                      <tr>
+                        <th>
+                          <div class="h-full flex justify-center items-start">
+                            <div
+                              class="grow whitespace-nowrap"
+                              x-text="question.rows[row_index] !== undefined && question.rows[row_index].title"
+                            ></div>
+                          </div>
+                        </th>
+
+                        <template
+                          x-for="(column, column_index) in question.columns"
+                        >
+                          <td>
+                            <template
+                              x-if="question.cells[row_index] !== undefined &&  question.cells[row_index][column_index] !== undefined && question.cells[row_index][column_index] !== null"
                             >
-                              <div class="grow">
-                                <template
-                                  x-if="question.cells[row_index][column_index].cell_type == 'text'"
-                                >
-                                  <div>
-                                    <template
-                                      x-if="question.cells[row_index][column_index].sf_records.length == 0"
-                                    >
-                                      <input
-                                        type="text"
-                                        :minlength="question.cells[row_index][column_index].min"
-                                        :maxlength="question.cells[row_index][column_index].max"
-                                        x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
-                                      />
-                                    </template>
-                                    <template
-                                      x-if="question.cells[row_index][column_index].sf_records.length != 0"
-                                    >
+                              <div
+                                class="flex justify-center items-stretch h-full"
+                              >
+                                <div class="grow">
+                                  <template
+                                    x-if="question.cells[row_index][column_index].cell_type == 'text'"
+                                  >
+                                    <div>
                                       <template
-                                        x-for="sf_record in question.cells[row_index][column_index].sf_records"
+                                        x-if="question.cells[row_index][column_index].sf_records.length == 0"
                                       >
                                         <input
                                           type="text"
                                           :minlength="question.cells[row_index][column_index].min"
                                           :maxlength="question.cells[row_index][column_index].max"
                                           x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
-                                          :value="sf_record.value"
-                                        /> </template
-                                    ></template>
-                                  </div>
-                                </template>
-                                <template
-                                  x-if="question.cells[row_index][column_index].cell_type == 'numeric'"
-                                >
-                                  <div>
-                                    <template
-                                      x-if="question.cells[row_index][column_index].sf_records.length == 0"
-                                    >
-                                      <div>
-                                        <label>
-                                          <select>
-                                            <option value=""></option>
-                                            <option value="~">~</option>
-                                            <option value="<">&lt;</option>
-                                            <option value=">">&gt;</option>
-                                            <option value="≤">≤</option>
-                                            <option value="≥">≥</option>
-                                          </select></label
-                                        >
-                                        <input
-                                          type="number"
-                                          :min="question.cells[row_index][column_index].min"
-                                          :max="question.cells[row_index][column_index].max"
-                                          x-on:change.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
-                                          x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
                                         />
-                                      </div>
-                                    </template>
-                                    <template
-                                      x-if="question.cells[row_index][column_index].sf_records.length != 0"
-                                    >
+                                      </template>
                                       <template
-                                        x-for="sf_record in question.cells[row_index][column_index].sf_records"
-                                        ><div class="flex">
-                                          <div class="w-16">
-                                            <select
-                                              x-model="sf_record.equality"
-                                              x-on:change="createOrUpdateRecord(question.cells[row_index][column_index], { equality: $el.value })"
-                                            >
+                                        x-if="question.cells[row_index][column_index].sf_records.length != 0"
+                                      >
+                                        <template
+                                          x-for="sf_record in question.cells[row_index][column_index].sf_records"
+                                        >
+                                          <input
+                                            type="text"
+                                            :minlength="question.cells[row_index][column_index].min"
+                                            :maxlength="question.cells[row_index][column_index].max"
+                                            x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
+                                            :value="sf_record.value"
+                                          /> </template
+                                      ></template>
+                                    </div>
+                                  </template>
+                                  <template
+                                    x-if="question.cells[row_index][column_index].cell_type == 'numeric'"
+                                  >
+                                    <div>
+                                      <template
+                                        x-if="question.cells[row_index][column_index].sf_records.length == 0"
+                                      >
+                                        <div>
+                                          <label>
+                                            <select>
                                               <option value=""></option>
                                               <option value="~">~</option>
                                               <option value="<">&lt;</option>
                                               <option value=">">&gt;</option>
                                               <option value="≤">≤</option>
                                               <option value="≥">≥</option>
-                                            </select>
-                                          </div>
+                                            </select></label
+                                          >
                                           <input
                                             type="number"
                                             :min="question.cells[row_index][column_index].min"
                                             :max="question.cells[row_index][column_index].max"
                                             x-on:change.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
                                             x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
-                                            :value="sf_record.value"
-                                          /></div></template
-                                    ></template>
-                                  </div>
-                                </template>
-                                <template
-                                  x-if="question.cells[row_index][column_index].cell_type == 'checkbox'"
-                                >
-                                  <div
-                                    class="h-full block whitespace-nowrap min-h-[96px]"
-                                  >
-                                    <template
-                                      x-for="(option, option_index) in question.cells[row_index][column_index].options"
-                                    >
-                                      <label
-                                        class="flex justify-between cursor-pointer"
-                                        :for="`cellId-${question.cells[row_index][column_index].id}-optionId-${option.id}`"
-                                      >
-                                        <div
-                                          class="flex justify-center items-center mr-4 grow"
-                                        >
-                                          <div
-                                            class="min-w-[6rem] grow mr-2"
-                                            x-text="option.name"
-                                          ></div>
-                                          <input
-                                            class="!m-0 cursor-pointer"
-                                            type="checkbox"
-                                            :checked="option.sf_abstract_record_id"
-                                            :name="`cellId-${question.cells[row_index][column_index].id}-optionId-${option.id}`"
-                                            x-model="option.sf_abstract_record_id"
-                                            @click="if ($el.checked) { createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name }) } else { deleteRecord(question.cells[row_index][column_index], { value: option.name }); option.followup = null }"
                                           />
                                         </div>
-                                        <div class="w-24">
-                                          <template x-if="option.with_followup">
+                                      </template>
+                                      <template
+                                        x-if="question.cells[row_index][column_index].sf_records.length != 0"
+                                      >
+                                        <template
+                                          x-for="sf_record in question.cells[row_index][column_index].sf_records"
+                                          ><div class="flex">
+                                            <div class="w-16">
+                                              <select
+                                                x-model="sf_record.equality"
+                                                x-on:change="createOrUpdateRecord(question.cells[row_index][column_index], { equality: $el.value })"
+                                              >
+                                                <option value=""></option>
+                                                <option value="~">~</option>
+                                                <option value="<">&lt;</option>
+                                                <option value=">">&gt;</option>
+                                                <option value="≤">≤</option>
+                                                <option value="≥">≥</option>
+                                              </select>
+                                            </div>
                                             <input
-                                              class="!m-0 !min-w-[6rem]"
-                                              type="text"
-                                              :disabled="!option.sf_abstract_record_id"
-                                              x-model="option.followup"
-                                              x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name, followup: option.followup })"
-                                            />
-                                          </template>
-                                        </div>
-                                      </label>
-                                    </template>
-                                  </div>
-                                </template>
-                                <template
-                                  x-if="question.cells[row_index][column_index].cell_type == 'dropdown'"
-                                >
-                                  <div
-                                    class="h-full block whitespace-nowrap min-h-[96px]"
+                                              type="number"
+                                              :min="question.cells[row_index][column_index].min"
+                                              :max="question.cells[row_index][column_index].max"
+                                              x-on:change.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
+                                              x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
+                                              :value="sf_record.value"
+                                            /></div></template
+                                      ></template>
+                                    </div>
+                                  </template>
+                                  <template
+                                    x-if="question.cells[row_index][column_index].cell_type == 'checkbox'"
                                   >
-                                    <select
-                                      @change="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
+                                    <div
+                                      class="h-full block whitespace-nowrap min-h-[96px]"
                                     >
-                                      <option value=""></option>
                                       <template
                                         x-for="(option, option_index) in question.cells[row_index][column_index].options"
                                       >
-                                        <option
-                                          :value="option.name"
-                                          x-text="option.name"
-                                          :selected="option.sf_abstract_record_id !== null"
-                                        ></option>
-                                      </template>
-                                    </select>
-                                  </div>
-                                </template>
-                                <template
-                                  x-if="question.cells[row_index][column_index].cell_type == 'radio'"
-                                >
-                                  <div
-                                    class="h-full block whitespace-nowrap min-h-[96px]"
-                                  >
-                                    <template
-                                      x-for="(option, option_index) in question.cells[row_index][column_index].options"
-                                    >
-                                      <label
-                                        class="flex cursor-pointer"
-                                        :for="`cellId-${question.cells[row_index][column_index].id}-optionId-${option.id}`"
-                                      >
-                                        <div
-                                          class="flex justify-center items-center mr-4 grow"
+                                        <label
+                                          class="flex justify-between cursor-pointer"
+                                          :for="`cellId-${question.cells[row_index][column_index].id}-optionId-${option.id}`"
                                         >
                                           <div
-                                            class="min-w-[6rem] grow mr-2"
-                                            x-text="option.name"
-                                          ></div>
-                                          <input
-                                            class="!m-0 cursor-pointer"
-                                            type="radio"
-                                            :name="`cellId-${question.cells[row_index][column_index].id}-optionId-${option.id}`"
+                                            class="flex justify-center items-center mr-4 grow"
+                                          >
+                                            <div
+                                              class="min-w-[6rem] grow mr-2"
+                                              x-text="option.name"
+                                            ></div>
+                                            <input
+                                              class="!m-0 cursor-pointer"
+                                              type="checkbox"
+                                              :checked="option.sf_abstract_record_id"
+                                              :name="`cellId-${question.cells[row_index][column_index].id}-optionId-${option.id}`"
+                                              x-model="option.sf_abstract_record_id"
+                                              @click="if ($el.checked) { createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name }) } else { deleteRecord(question.cells[row_index][column_index], { value: option.name }); option.followup = null }"
+                                            />
+                                          </div>
+                                          <div class="w-24">
+                                            <template
+                                              x-if="option.with_followup"
+                                            >
+                                              <input
+                                                class="!m-0 !min-w-[6rem]"
+                                                type="text"
+                                                :disabled="!option.sf_abstract_record_id"
+                                                x-model="option.followup"
+                                                x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name, followup: option.followup })"
+                                              />
+                                            </template>
+                                          </div>
+                                        </label>
+                                      </template>
+                                    </div>
+                                  </template>
+                                  <template
+                                    x-if="question.cells[row_index][column_index].cell_type == 'dropdown'"
+                                  >
+                                    <div
+                                      class="h-full block whitespace-nowrap min-h-[96px]"
+                                    >
+                                      <select
+                                        @change="createOrUpdateRecord(question.cells[row_index][column_index], { value: $el.value })"
+                                      >
+                                        <option value=""></option>
+                                        <template
+                                          x-for="(option, option_index) in question.cells[row_index][column_index].options"
+                                        >
+                                          <option
                                             :value="option.name"
-                                            x-model="question.cells[row_index][column_index].radio_selected"
-                                            @change="createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name, followup: option.followup })"
-                                          />
-                                        </div>
-                                        <div class="w-24">
-                                          <template x-if="option.with_followup">
+                                            x-text="option.name"
+                                            :selected="option.sf_abstract_record_id !== null"
+                                          ></option>
+                                        </template>
+                                      </select>
+                                    </div>
+                                  </template>
+                                  <template
+                                    x-if="question.cells[row_index][column_index].cell_type == 'radio'"
+                                  >
+                                    <div
+                                      class="h-full block whitespace-nowrap min-h-[96px]"
+                                    >
+                                      <template
+                                        x-for="(option, option_index) in question.cells[row_index][column_index].options"
+                                      >
+                                        <label
+                                          class="flex cursor-pointer"
+                                          :for="`cellId-${question.cells[row_index][column_index].id}-optionId-${option.id}`"
+                                        >
+                                          <div
+                                            class="flex justify-center items-center mr-4 grow"
+                                          >
+                                            <div
+                                              class="min-w-[6rem] grow mr-2"
+                                              x-text="option.name"
+                                            ></div>
                                             <input
-                                              class="!m-0 !min-w-[6rem]"
-                                              type="text"
-                                              :disabled="question.cells[row_index][column_index].radio_selected != option.name"
-                                              :value="if (question.cells[row_index][column_index].radio_selected == option.name) { return option.followup } else { return null }"
-                                              x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name, followup: $el.value })"
+                                              class="!m-0 cursor-pointer"
+                                              type="radio"
+                                              :name="`cellId-${question.cells[row_index][column_index].id}-optionId-${option.id}`"
+                                              :value="option.name"
+                                              x-model="question.cells[row_index][column_index].radio_selected"
+                                              @change="createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name, followup: option.followup })"
                                             />
-                                          </template>
-                                        </div>
-                                      </label>
-                                    </template>
-                                    <button
-                                      class="m-0 mt-2 p-1 bg-gray-800 text-white w-full"
-                                      @click="createOrUpdateRecord(question.cells[row_index][column_index], { value: '', followup: '' }); question.cells[row_index][column_index].radio_selected = ''"
-                                    >
-                                      Clear
-                                    </button>
-                                  </div>
-                                </template>
-                                <template
-                                  x-if="question.cells[row_index][column_index].cell_type == 'select-one'"
-                                  ><div
-                                    class="h-full block whitespace-nowrap min-h-[96px]"
-                                  >
-                                    <select
-                                      style="width: 100%"
-                                      :id="`cellId-${question.cells[row_index][column_index].id}`"
-                                      x-effect="$nextTick(() => bootSelect2(question.cells[row_index][column_index], false, true))"
-                                    >
-                                      <option value=""></option>
-                                      <template
-                                        x-for="(option, option_index) in question.cells[row_index][column_index].options"
-                                      >
-                                        <option
-                                          :value="option.name"
-                                          :selected="question.cells[row_index][column_index].sf_records.map(sf_record => String(sf_record.value)).includes(String(option.name))"
-                                          x-text="option.name"
-                                        ></option>
+                                          </div>
+                                          <div class="w-24">
+                                            <template
+                                              x-if="option.with_followup"
+                                            >
+                                              <input
+                                                class="!m-0 !min-w-[6rem]"
+                                                type="text"
+                                                :disabled="question.cells[row_index][column_index].radio_selected != option.name"
+                                                :value="if (question.cells[row_index][column_index].radio_selected == option.name) { return option.followup } else { return null }"
+                                                x-on:keyup.debounce.500ms="createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name, followup: $el.value })"
+                                              />
+                                            </template>
+                                          </div>
+                                        </label>
                                       </template>
-                                    </select>
-                                  </div>
-                                </template>
-                                <template
-                                  x-if="question.cells[row_index][column_index].cell_type == 'select-multiple'"
-                                >
-                                  <div
-                                    class="h-full block whitespace-nowrap min-h-[96px]"
-                                  >
-                                    <select
-                                      style="width: 100%"
-                                      :id="`cellId-${question.cells[row_index][column_index].id}`"
-                                      x-effect="$nextTick(() => bootSelect2(question.cells[row_index][column_index], true, true))"
-                                      multiple
-                                    >
-                                      <template
-                                        x-for="(option, option_index) in question.cells[row_index][column_index].options"
+                                      <button
+                                        class="m-0 mt-2 p-1 bg-gray-800 text-white w-full"
+                                        @click="createOrUpdateRecord(question.cells[row_index][column_index], { value: '', followup: '' }); question.cells[row_index][column_index].radio_selected = ''"
                                       >
-                                        <option
-                                          :value="option.name"
-                                          :selected="question.cells[row_index][column_index].sf_records.map(sf_record => String(sf_record.value)).includes(String(option.name))"
-                                          x-text="option.name"
-                                        ></option>
-                                      </template>
-                                    </select>
-                                  </div>
-                                </template>
+                                        Clear
+                                      </button>
+                                    </div>
+                                  </template>
+                                  <template
+                                    x-if="question.cells[row_index][column_index].cell_type == 'select-one'"
+                                    ><div
+                                      class="h-full block whitespace-nowrap min-h-[96px]"
+                                    >
+                                      <select
+                                        style="width: 100%"
+                                        :id="`cellId-${question.cells[row_index][column_index].id}`"
+                                        x-effect="$nextTick(() => bootSelect2(question.cells[row_index][column_index], false, true))"
+                                      >
+                                        <option value=""></option>
+                                        <template
+                                          x-for="(option, option_index) in question.cells[row_index][column_index].options"
+                                        >
+                                          <option
+                                            :value="option.name"
+                                            :selected="question.cells[row_index][column_index].sf_records.map(sf_record => String(sf_record.value)).includes(String(option.name))"
+                                            x-text="option.name"
+                                          ></option>
+                                        </template>
+                                      </select>
+                                    </div>
+                                  </template>
+                                  <template
+                                    x-if="question.cells[row_index][column_index].cell_type == 'select-multiple'"
+                                  >
+                                    <div
+                                      class="h-full block whitespace-nowrap min-h-[96px]"
+                                    >
+                                      <select
+                                        style="width: 100%"
+                                        :id="`cellId-${question.cells[row_index][column_index].id}`"
+                                        x-effect="$nextTick(() => bootSelect2(question.cells[row_index][column_index], true, true))"
+                                        multiple
+                                      >
+                                        <template
+                                          x-for="(option, option_index) in question.cells[row_index][column_index].options"
+                                        >
+                                          <option
+                                            :value="option.name"
+                                            :selected="question.cells[row_index][column_index].sf_records.map(sf_record => String(sf_record.value)).includes(String(option.name))"
+                                            x-text="option.name"
+                                          ></option>
+                                        </template>
+                                      </select>
+                                    </div>
+                                  </template>
+                                </div>
                               </div>
-                            </div>
-                          </template>
-                        </td>
-                      </template>
-                    </tr>
-                  </template>
-                </tbody>
-              </table>
+                            </template>
+                          </td>
+                        </template>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </template>
-  </div>
+      </template>
+    </div>
+  </template>
 </div>
 
 <script>
   document.addEventListener("alpine:init", () => {
     Alpine.data("screeningFormData", () => ({
-      questions: [],
+      questions: null,
       screening_form: {},
       init() {
-        this.$watch("asr.id", (value) => {
-          this.getData();
+        this.$watch("asr.id", (value, oldValue) => {
+          if (value != oldValue) {
+            this.getData();
+          }
         });
       },
       bootSelect2(cell, multiple, tags) {
@@ -377,7 +391,7 @@
         });
       },
       async getData() {
-        this.questions = [];
+        this.questions = null;
         this.screening_form = {};
         const response = await fetch(
           `/abstract_screening_results/${this.asr.id}/sf_abstract_records`,
