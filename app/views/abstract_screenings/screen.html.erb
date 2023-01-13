@@ -63,25 +63,6 @@
         />
       </svg>
     </button>
-    <!-- <a
-      x-bind:href="`/abstract_screenings/<%= params[:abstract_screening_id] %>/screen?before_asr_id=${asr.id}`"
-      class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-6 w-6"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.333 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z"
-        />
-      </svg>
-    </a> -->
     <button
       @click="historyPanel = true"
       class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
@@ -162,7 +143,7 @@
       <div class="grid grid-cols-3 h-full">
         <div
           class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
-          @click="asr.label = -1; if (requireReasoning()) { reasoningMenu = true } else { updateAsr(true) }"
+          @click="asr.label = -1; if (requireReasoning()) { reasoningMenu = true } else { updateAsr('label') }"
           :class="(asr.label == -1 || asr.label == null) ? '' : 'saturate-[0.1]'"
         >
           <svg
@@ -181,7 +162,7 @@
         <div class="grid grid-rows-2">
           <div
             class="cursor-pointer border-b-4 bg-srdrpurple flex justify-center items-center"
-            @click="asr.label = 0; if (requireReasoning()) { reasoningMenu = true } else { updateAsr(true) }"
+            @click="asr.label = 0; if (requireReasoning()) { reasoningMenu = true } else { updateAsr('label') }"
             :class="(asr.label == 0 || asr.label == null)? '' : 'saturate-[0.1]'"
           >
             <svg
@@ -212,7 +193,7 @@
         </div>
         <div
           class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
-          @click="asr.label = 1; if (requireReasoning()) { reasoningMenu = true } else { updateAsr(true) }"
+          @click="asr.label = 1; if (requireReasoning()) { reasoningMenu = true } else { updateAsr('label') }"
           :class="(asr.label == 1 || asr.label == null)? '' : 'saturate-[0.1]'"
         >
           <svg
@@ -701,7 +682,6 @@
         this.confirmationModalLabel = label;
         this.confirmationModalText = this.confirmationModalTexts[label];
         this.confirmationModal = true;
-        setTimeout(() => (this.confirmationModal = false), 1000);
       },
 
       async sendWw(word, weight, id, destroy) {
@@ -756,19 +736,19 @@
         this.getAsr();
       },
 
-      async updateAsr(getNewAsrId) {
-        await this.fetchAsr("PATCH");
-        if (getNewAsrId) {
-          await this.getAsrId();
+      async updateAsr(submissionType) {
+        if (submissionType === "label") {
           this.showConfirmation(this.asr.label);
         }
+        await this.fetchAsr("PATCH", submissionType);
+        this.confirmationModal = false;
       },
 
       async getAsr() {
         this.fetchAsr("GET");
       },
 
-      async fetchAsr(method) {
+      async fetchAsr(method, submissionType) {
         baseUrl = window.location.href.split("?")[0];
         window.history.pushState("", "", baseUrl);
         const headers = {
@@ -785,6 +765,7 @@
         if (method == "PATCH") {
           headers.body = JSON.stringify({
             asr: this.asr,
+            submissionType,
           });
         }
         const response = await fetch(
@@ -792,7 +773,7 @@
           headers
         );
         const data = await response.json();
-        if (method == "GET") {
+        if (submissionType !== "notes") {
           this.asr = data.asr;
           this.citation = data.citation;
           this.options = data.options;
@@ -800,7 +781,12 @@
           this.processWeights("title", "processedTitle");
           this.processWeights("abstract", "processedAbstract");
         }
-        this.cps = data.cps;
+        if (
+          method == "GET" ||
+          (method == "PATCH" && submissionType == "label")
+        ) {
+          this.cps = data.cps;
+        }
       },
     }));
   });
