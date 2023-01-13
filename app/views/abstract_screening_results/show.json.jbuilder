@@ -36,7 +36,6 @@ cps = @screened_cps.reverse.map do |asr|
   {
     asr_id: asr.id,
     name: asr.citation.name,
-    authors: @abstract_screening.hide_author ? '<hidden>' : asr.citation.author_map_string,
     label: asr.label
   }
 end

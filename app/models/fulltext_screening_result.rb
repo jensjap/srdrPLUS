@@ -12,7 +12,7 @@
 #  updated_at            :datetime         not null
 #
 class FulltextScreeningResult < ApplicationRecord
-  searchkick
+  searchkick callbacks: :async
 
   belongs_to :fulltext_screening
   belongs_to :citations_project

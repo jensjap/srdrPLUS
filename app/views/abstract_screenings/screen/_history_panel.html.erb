@@ -77,16 +77,15 @@
                 >
                   <div class="flex space-x-1 font-bold">
                     <div
-                      class="w-1/2 overflow-hidden whitespace-nowrap overflow-ellipsis"
+                      class="w-11/12 overflow-hidden whitespace-nowrap overflow-ellipsis"
                     >
                       Title
                     </div>
                     <div
-                      class="w-1/2 overflow-hidden whitespace-nowrap overflow-ellipsis"
+                      class="w-1/12 overflow-hidden whitespace-nowrap overflow-ellipsis"
                     >
-                      Authors
+                      Label
                     </div>
-                    <div>Label</div>
                   </div>
                   <template x-for="cp in cps">
                     <div
@@ -95,11 +94,11 @@
                       @click="getAsrId(cp.asr_id);"
                     >
                       <div
-                        class="w-1/2 overflow-hidden whitespace-nowrap overflow-ellipsis"
+                        class="w-11/12 overflow-hidden whitespace-nowrap overflow-ellipsis"
                         x-text="cp.name"
                       ></div>
                       <div
-                        class="w-1/2 overflow-hidden whitespace-nowrap overflow-ellipsis"
+                        class="w-1/12 overflow-hidden whitespace-nowrap overflow-ellipsis"
                         x-text="cp.authors"
                       ></div>
                       <div x-text="cp.label"></div>

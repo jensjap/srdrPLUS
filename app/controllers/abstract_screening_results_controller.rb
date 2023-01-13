@@ -3,16 +3,32 @@ class AbstractScreeningResultsController < ApplicationController
     respond_to do |format|
       format.json do
         @abstract_screening_result = AbstractScreeningResult
-          .includes(citations_project: :citation)
-          .find(params[:id])
-        handle_reasons_and_tags
-        @abstract_screening_result.update(asr_params)
-        @screened_cps = AbstractScreeningResult
-          .includes(citations_project: :citation)
-          .where(user: current_user,
-                 abstract_screening: @abstract_screening_result.abstract_screening)
-        prepare_json_data
-        render :show
+                                     .includes(citations_project: :citation)
+                                     .find(params[:id])
+        case params[:submissionType]
+        when 'label'
+          @abstract_screening_result.update(asr_params)
+          @abstract_screening_result =
+            AbstractScreeningService.find_or_create_asr(
+              @abstract_screening_result.abstract_screening, current_user
+            )
+          prepare_json_data
+          @screened_cps =
+            AbstractScreeningResult
+            .includes(citations_project: :citation)
+            .where(user: current_user,
+                   abstract_screening: @abstract_screening_result.abstract_screening)
+          render :show
+        when 'reasons_and_tags'
+          @screened_cps = []
+          handle_reasons_and_tags
+          prepare_json_data
+          render :show
+        when 'notes'
+          @abstract_screening_result.update(notes: params[:asr][:notes])
+          @screened_cps = []
+          render json: {}
+        end
       end
     end
   end
@@ -21,12 +37,13 @@ class AbstractScreeningResultsController < ApplicationController
     respond_to do |format|
       format.json do
         @abstract_screening_result = AbstractScreeningResult
-          .includes(citations_project: :citation)
-          .find(params[:id])
+                                     .includes(citations_project: { citation: { authors_citations: %i[author
+                                                                                                      ordering] } })
+                                     .find(params[:id])
         @screened_cps = AbstractScreeningResult
-          .includes(citations_project: :citation)
-          .where(user: current_user,
-                 abstract_screening: @abstract_screening_result.abstract_screening)
+                        .includes(citations_project: :citation)
+                        .where(user: current_user,
+                               abstract_screening: @abstract_screening_result.abstract_screening)
         prepare_json_data
       end
     end

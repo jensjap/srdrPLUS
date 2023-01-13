@@ -160,7 +160,7 @@
                 <template x-for="(reason, index) in asr.predefined_reasons">
                   <span
                     :class=" reason.selected ? 'bg-srdrpurple' : 'bg-white text-black'"
-                    @click="const value = reason.selected; turnOffAllReasons(); reason.selected = !value; updateAsr(false)"
+                    @click="const value = reason.selected; turnOffAllReasons(); reason.selected = !value; updateAsr('reasons_and_tags')"
                     class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
                     x-text="reason.name"
                   >
@@ -203,7 +203,7 @@
                         'bg-white text-black': !reason.selected,
                         'bg-purple-400 !text-white': (dropIndex == index && dropType == dragType && dragIndex != dropIndex && dragType == 'custom_reasons')
                       }"
-                      @click="const value = reason.selected; turnOffAllReasons(); reason.selected = !value; updateAsr(false)"
+                      @click="const value = reason.selected; turnOffAllReasons(); reason.selected = !value; updateAsr('reasons_and_tags')"
                       x-text="reason.name"
                     >
                     </span>
@@ -306,7 +306,7 @@
                   <template x-for="(tag, index) in asr.predefined_tags">
                     <span
                       :class="tag.selected ? 'bg-srdrpurple' : 'bg-white text-black'"
-                      @click="tag.selected = !tag.selected; updateAsr(false)"
+                      @click="tag.selected = !tag.selected; updateAsr('reasons_and_tags')"
                       class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
                       x-text="tag.name"
                     >
@@ -348,7 +348,7 @@
                           'bg-white text-black': !tag.selected,
                           'bg-purple-400 !text-white': (dropIndex == index && dropType == dragType && dragIndex != dropIndex && dragType == 'custom_tags')
                         }"
-                        @click="tag.selected = !tag.selected; updateAsr(false)"
+                        @click="tag.selected = !tag.selected; updateAsr('reasons_and_tags')"
                         x-text="tag.name"
                       >
                       </span>
@@ -455,7 +455,7 @@
                         id="notes"
                         x-model="asr.notes"
                         class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"
-                        @input.debounce.500ms="updateAsr(false)"
+                        @input.debounce.500ms="updateAsr('notes')"
                       ></textarea>
                     </div>
                   </div>
@@ -469,7 +469,7 @@
                   type="button"
                   class="cursor-pointer justify-center m-auto w-full h-20 inline-flex items-center border border-transparent text-xl font-medium rounded-md shadow-sm text-white bg-green-900 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   :class="satisfiesReasoning() ? '' : 'cursor-not-allowed bg-gray-900 hover:bg-gray-700'"
-                  @click="if (satisfiesReasoning()) updateAsr(true)"
+                  @click="if (satisfiesReasoning()) updateAsr('label')"
                   x-text="satisfiesReasoning() ? 'Submit' : 'Please fill in the required data above'"
                 ></button>
               </div>
@@ -484,7 +484,7 @@
           <div class="grid grid-cols-3 h-full">
             <div
               class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
-              @click="asr.label = -1; if (satisfiesReasoning()) { updateAsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+              @click="asr.label = -1; if (satisfiesReasoning()) { updateAsr('label') } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
               :class="(asr.label == -1 || asr.label == null) ? '' : 'saturate-[0.1]'"
             >
               <svg
@@ -503,7 +503,7 @@
             <div :class="desktop ? 'grid grid-rows-1' : 'grid grid-rows-2'">
               <div
                 class="cursor-pointer bg-srdrpurple flex justify-center items-center"
-                @click="asr.label = 0; if (satisfiesReasoning()) { updateAsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+                @click="asr.label = 0; if (satisfiesReasoning()) { updateAsr('label') } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
                 :class="(asr.label == 0 || asr.label == null)? '' : 'saturate-[0.1]'"
               >
                 <svg
@@ -524,7 +524,7 @@
             </div>
             <div
               class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
-              @click="asr.label = 1; if (satisfiesReasoning()) { updateAsr(true) } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+              @click="asr.label = 1; if (satisfiesReasoning()) { updateAsr('label') } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
               :class="(asr.label == 1 || asr.label == null)? '' : 'saturate-[0.1]'"
             >
               <svg
