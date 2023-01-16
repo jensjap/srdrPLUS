@@ -193,6 +193,8 @@ Rails.application.routes.draw do
   resources :fulltext_screening_results, only: %i[show update]
   resources :data_audits, only: %i[index update]
   resources :projects, concerns: :paginatable, shallow: true do
+    get 'consolidations', to: 'consolidations#index'
+
     get 'citation_lifecycle_management', to: 'abstract_screenings#citation_lifecycle_management'
     get 'kpis', to: 'abstract_screenings#kpis'
     post 'export_screening_data', to: 'abstract_screenings#export_screening_data'

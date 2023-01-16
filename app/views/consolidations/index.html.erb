@@ -1,0 +1,98 @@
+<div class="p-4 lg:p-8" x-data="consolidations">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-xl font-bold">Comparison Tool</h1>
+      <p class="mt-2 text-sm text-gray-700">
+        Create consolidated extractions by quickly identifying differences among
+        extractions of the same citation
+      </p>
+    </div>
+  </div>
+  <div class="mt-8 flex flex-col">
+    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+        <div
+          class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
+        >
+          <table class="min-w-full divide-y divide-gray-300">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                >
+                  Citation
+                </th>
+                <th
+                  scope="col"
+                  class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900"
+                >
+                  No. of Extractions
+                </th>
+                <th
+                  scope="col"
+                  class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900"
+                >
+                  Differences Found
+                </th>
+                <th scope="col" class="text-right py-3.5 pl-3 pr-4 sm:pr-6">
+                  Consolidated Extraction
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+              <!-- prettier-ignore -->
+              <template x-for="citation in Object.keys(citationsHash)">
+              <tr>
+                <td
+                  class="overflow-hidden py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                >
+                  <div x-text="citationsHash[citation].citation_title"></div>
+                </td>
+                <td
+                  class="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                >
+                  <div x-text="citationsHash[citation].extractions && citationsHash[citation].extractions.length"></div>
+                </td>
+                <td
+                  class="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                >
+                  <div x-text="citationsHash[citation].differences"></div>
+                </td>
+                <td
+                  class="text-center whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-6"
+                >
+
+                </td>
+              </tr>
+            </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("consolidations", () => ({
+      citationsHash: {},
+
+      init() {
+        this.fetch_results();
+      },
+
+      async fetch_results() {
+        const response = await fetch(location.href, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.citationsHash = data;
+      },
+    }));
+  });
+</script>

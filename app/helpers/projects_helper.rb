@@ -32,7 +32,8 @@ module ProjectsHelper
       (controller_name.eql?('extractions_extraction_forms_projects_sections_type1s') && action_name.eql?('edit')) ||
       (controller_name.eql?('extraction_forms_projects_sections') && action_name.eql?('preview')) ||
       (controller_name.eql?('imports') && (action_name.eql?('new') || action_name.eql?('index'))) ||
-      (controller.instance_of?(PublishingsController) && publishable_record.instance_of?(Project) && controller.action_name == 'new')
+      (controller.instance_of?(PublishingsController) && publishable_record.instance_of?(Project) && controller.action_name == 'new') ||
+      (controller_name.eql?('consolidations') && action_name.eql?('index'))
   end
 
   def find_project(project, extraction, extraction_forms_project, question, extraction_forms_projects_section, publishable_record)
