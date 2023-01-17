@@ -11,64 +11,111 @@
   <div class="mt-8 flex flex-col">
     <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
       <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-        <div
-          class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
-        >
-          <table class="min-w-full divide-y divide-gray-300">
-            <thead class="bg-gray-50">
-              <tr>
-                <th
-                  scope="col"
-                  class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-                >
-                  Citation
-                </th>
-                <th
-                  scope="col"
-                  class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900"
-                >
-                  No. of Extractions
-                </th>
-                <th
-                  scope="col"
-                  class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900"
-                >
-                  Differences Found
-                </th>
-                <th scope="col" class="text-right py-3.5 pl-3 pr-4 sm:pr-6">
-                  Consolidated Extraction
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 bg-white">
-              <!-- prettier-ignore -->
-              <template x-for="citation in Object.keys(citationsHash)">
-              <tr>
-                <td
-                  class="overflow-hidden py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
-                >
-                  <div x-text="citationsHash[citation].citation_title"></div>
-                </td>
-                <td
-                  class="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500"
-                >
-                  <div x-text="citationsHash[citation].extractions && citationsHash[citation].extractions.length"></div>
-                </td>
-                <td
-                  class="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500"
-                >
-                  <div x-text="citationsHash[citation].differences"></div>
-                </td>
-                <td
-                  class="text-center whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-6"
-                >
-
-                </td>
-              </tr>
-            </template>
-            </tbody>
-          </table>
-        </div>
+        <template x-if="citationsHash == null"><div>Loading...</div></template>
+        <template x-if="citationsHash != null">
+          <div
+            class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
+          >
+            <table
+              class="min-w-full divide-y divide-gray-300 overflow-y-scroll h-[30vw] block"
+            >
+              <thead class="bg-gray-50 !sticky top-0 z-[5]">
+                <tr>
+                  <th
+                    scope="col"
+                    class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                  >
+                    Citation
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900"
+                  >
+                    No. of Extractions
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900"
+                  >
+                    Differences Found
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900"
+                  >
+                    Consolidated Extraction Exists?
+                  </th>
+                  <th scope="col" class="text-center py-3.5 pl-3 pr-4 sm:pr-6">
+                    Consolidated Extraction
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <template x-for="citation in Object.keys(citationsHash)">
+                  <tr>
+                    <td
+                      class="overflow-hidden py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                    >
+                      <div
+                        x-text="citationsHash[citation].citation_title"
+                      ></div>
+                    </td>
+                    <td
+                      class="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                    >
+                      <div
+                        x-text="citationsHash[citation].extractions && citationsHash[citation].extractions.length"
+                      ></div>
+                    </td>
+                    <td
+                      class="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                    >
+                      <div
+                        class="p-1"
+                        x-text="citationsHash[citation].differences ? 'Yes' : 'No'"
+                        :class="citationsHash[citation].differences ? 'text-red-800' : 'text-green-800'"
+                      ></div>
+                    </td>
+                    <td
+                      class="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                    >
+                      <div
+                        class="p-1"
+                        x-text="
+                          if (citationsHash[citation].consolidated_extraction_status == null) {
+                            return 'No'
+                          } else {
+                            return citationsHash[citation].consolidated_extraction_status
+                          }
+                        "
+                        :class="
+                          {
+                            'text-red-800': citationsHash[citation].consolidated_extraction_status == null,
+                            'text-yellow-800': citationsHash[citation].consolidated_extraction_status == 'Draft',
+                            'text-green-800': citationsHash[citation].consolidated_extraction_status == 'Complete'
+                          }
+                        "
+                      ></div>
+                    </td>
+                    <td
+                      class="text-center whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-6"
+                    >
+                      <div
+                        class="p-1 drop-shadow rounded bg-srdrpurple text-white cursor-pointer"
+                        :class="
+                        {
+                          'bg-green-800': citationsHash[citation].consolidated_extraction_status == null
+                        }
+                      "
+                        x-text="citationsHash[citation].consolidated_extraction_status == 'Draft' ? 'Continue' : 'Create'"
+                      ></div>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </template>
       </div>
     </div>
   </div>
@@ -76,7 +123,7 @@
 <script>
   document.addEventListener("alpine:init", () => {
     Alpine.data("consolidations", () => ({
-      citationsHash: {},
+      citationsHash: null,
 
       init() {
         this.fetch_results();
