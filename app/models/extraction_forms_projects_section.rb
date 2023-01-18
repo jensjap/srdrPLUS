@@ -192,6 +192,11 @@ class ExtractionFormsProjectsSection < ApplicationRecord
         end
       end # lsof_qdq_ids.each do |qdq_id|
       depen_arr.each do |q_id, prereq_id|
+        # Only build Dependency if the Prerequesite exists.
+        next unless QuestionRowColumnsQuestionRowColumnOption
+                    .where(id: qrcqrco_id_dict[prereq_id])
+                    .present?
+
         Dependency.find_or_create_by! dependable_type: 'Question',
                                       dependable_id: q_id,
                                       prerequisitable_type: 'QuestionRowColumnsQuestionRowColumnOption',
