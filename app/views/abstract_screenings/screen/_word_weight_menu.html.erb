@@ -59,12 +59,12 @@
 
         <div :class="desktop ? '' : 'fixed inset-5 overflow-y-scroll'">
           <div class="mb-4">
-            <h1 class="text-xl flex items-center">Keywords and Phrases</h1>
+            <h1 class="text-xl flex items-center">Terms and Phrases</h1>
             <hr class="m-0" />
           </div>
           <template x-if="Object.keys(word_weights).length == 0">
             <div class="text-gray-400">
-              No keywords or phrases yet. Fill in the box below or click on the
+              No terms or phrases yet. Fill in the box below or click on the
               abstract to get started.
             </div>
           </template>
@@ -150,13 +150,13 @@
               class="cursor-pointer bg-gray-400 text-white rounded p-2 my-4 mr-4"
               @click="paste_textarea_keywords_and_phrases"
             >
-              Copy existing keywords and phrases into text area
+              Copy existing terms and phrases into text area
             </button>
             <button
               class="cursor-pointer bg-srdrpurple text-white rounded p-2 my-4"
               @click="process_textarea_keywords_and_phrases"
             >
-              Add or Update Keywords and Phrases
+              Add or Update Terms and Phrases
             </button>
           </div>
         </div>
