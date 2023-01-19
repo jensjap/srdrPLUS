@@ -1,0 +1,34 @@
+<div class="column row" style="margin-bottom: 3vh">
+  <h6 style="font-weight: bold; margin: 20px 0 0 0">SRDR+ Project</h6>
+  <%= link_to(@project.try(:name) || 'None', project_path(@project), target:
+  '_blank') %>
+
+  <h6 style="font-weight: bold; margin: 20px 0 0">
+    Source Systematic Review Report
+  </h6>
+  <% if @systematic_review_report %><a
+    data-toggle="offCanvasRightReportHtml"
+    id="report-title"
+    ><%= @sd_meta_datum.try(:report_title) || @report.try(:title) ||
+    @sd_meta_datum.report_file.filename || 'None' %>
+  </a>
+  <% end %>
+</div>
+<div class="column row" id="complete-form">
+  <%= render 'sd_meta_data/form/form' %>
+</div>
+<div id="systematic_review_report_pdf_container"></div>
+<script>
+  var initPage = function () {
+    offCanvasRightReportHtml_iframe =
+      document.getElementById("htmlReportIframe");
+
+    offCanvasRightReportHtml_iframe.src = "#{ @report_html_path }";
+  };
+
+  initPage(); //this triggers the loading at the time the script is full
+
+  document.addEventListener("DOMContentLoaded", initPage); //this set the trigger for page changes
+</script>
+
+<%= render 'save_button' %>

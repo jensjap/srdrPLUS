@@ -34,6 +34,11 @@ class ExtractionsController < ApplicationController
     end
   end
 
+  def reassign_extraction
+    @nav_buttons.push('extractions', 'my_projects')
+    @extraction = Extraction.find(params[:id])
+  end
+
   # GET /extractions/1
   # GET /extractions/1.json
   def show; end
@@ -133,13 +138,16 @@ class ExtractionsController < ApplicationController
   # PATCH/PUT /extractions/1.json
   def update
     authorize(@extraction.project, policy_class: ExtractionPolicy)
+    redirect_path = params[:redirect_to]
 
     respond_to do |format|
       if @extraction.update(extraction_params)
         format.html do
-          redirect_to work_extraction_path(@extraction,
-                                           'panel-tab': params[:extraction][:extraction_forms_projects_section_id]),
-                      notice: t('success')
+          redirect_to(
+            redirect_path || work_extraction_path(@extraction,
+                                                  'panel-tab': params[:extraction][:extraction_forms_projects_section_id]),
+            notice: t('success')
+          )
         end
         format.json { render :show, status: :ok, location: @extraction }
         format.js
@@ -366,6 +374,7 @@ class ExtractionsController < ApplicationController
     params
       .require(:extraction)
       .permit(:projects_users_role_id,
+              :citations_project_id,
               citations_project_ids: [],
               extractions_key_questions_project_ids: [],
               key_questions_project_ids: [])

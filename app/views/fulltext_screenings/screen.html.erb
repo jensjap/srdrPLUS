@@ -188,7 +188,7 @@
     Alpine.data("screenStore", () => ({
       desktop: false,
       reasoningMenu: false,
-      addReasonModal: { on: false, type: "" },
+      addReasonModal: { on: false, type: "", action: "" },
       historyPanel: false,
       confirmationModalLabel: null,
       confirmationModal: false,
@@ -225,10 +225,10 @@
       fsr: {
         id: null,
         label: null,
-        predefined_reasons: {},
-        predefined_tags: {},
-        custom_reasons: {},
-        custom_tags: {},
+        predefined_reasons: [],
+        predefined_tags: [],
+        custom_reasons: [],
+        custom_tags: [],
         notes: "",
       },
       cps: [],
@@ -241,7 +241,12 @@
       },
       textarea_keywords_and_phrases: "",
       newCustomValue: "",
+      updateCustomId: null,
       disable_textarea_keywords_and_phrases: false,
+      dragIndex: null,
+      dragType: null,
+      dropIndex: null,
+      dropType: null,
 
       init() {
         const url = new URL(window.location.href);
@@ -280,25 +285,15 @@
       },
 
       hasSomeReason() {
-        return Object.keys({
-          ...this.fsr.predefined_reasons,
-          ...this.fsr.custom_reasons,
-        }).some(
-          (v) =>
-            this.fsr.predefined_reasons[v] == true ||
-            this.fsr.custom_reasons[v] == true
-        );
+        return this.fsr.predefined_reasons
+          .concat(this.fsr.custom_reasons)
+          .some((v) => v.selected);
       },
 
       hasSomeTag() {
-        return Object.keys({
-          ...this.fsr.predefined_tags,
-          ...this.fsr.custom_tags,
-        }).some(
-          (v) =>
-            this.fsr.predefined_tags[v] == true ||
-            this.fsr.custom_tags[v] == true
-        );
+        return this.fsr.predefined_tags
+          .concat(this.fsr.custom_tags)
+          .some((v) => v.selected);
       },
 
       hasSomeNote() {
@@ -336,39 +331,137 @@
       },
 
       turnOffAllReasons() {
-        Object.keys(this.fsr.predefined_reasons).forEach(
-          (v) => (this.fsr.predefined_reasons[v] = false)
-        );
-        Object.keys(this.fsr.custom_reasons).forEach(
-          (v) => (this.fsr.custom_reasons[v] = false)
-        );
-      },
-
-      processNewCustomValue() {
-        if (this.newCustomValue.trim() == "") return;
-        this.addReasonModal.on = false;
-        if (this.addReasonModal.type == "Reason") {
-          this.turnOffAllReasons();
-          if (this.fsr.predefined_reasons[this.newCustomValue] == undefined) {
-            this.fsr.custom_reasons[this.newCustomValue] = true;
-          } else {
-            this.fsr.predefined_reasons[this.newCustomValue] = true;
-          }
-        } else {
-          if (this.fsr.predefined_tags[this.newCustomValue] == undefined) {
-            this.fsr.custom_tags[this.newCustomValue] = true;
-          } else {
-            this.fsr.predefined_tags[this.newCustomValue] = true;
-          }
+        for (var i = 0; i < this.fsr.predefined_reasons.length; i++) {
+          this.fsr.predefined_reasons[i].selected = false;
         }
-        this.newCustomValue = "";
-        this.updateFsr(false);
+        for (var i = 0; i < this.fsr.custom_reasons.length; i++) {
+          this.fsr.custom_reasons[i].selected = false;
+        }
       },
 
-      deleteCustomValue(type, key) {
-        if (confirm(`Would you like to delete "${key}" as a custom choice?`)) {
-          delete this.fsr[type][key];
-          this.updateFsr(false);
+      invalidCustomValue() {
+        if (this.newCustomValue == "") {
+          toastr.error("This field cannot be empty.");
+          return true;
+        }
+
+        if (
+          this.addReasonModal.type == "custom_reasons" &&
+          (this.fsr["custom_reasons"].some(
+            (custom_reason) => custom_reason.name == this.newCustomValue
+          ) ||
+            this.fsr["predefined_reasons"].some(
+              (predefined_reason) =>
+                predefined_reason.name == this.newCustomValue
+            ))
+        ) {
+          toastr.error("This value has already been taken.");
+          return true;
+        }
+
+        if (
+          this.addReasonModal.type == "custom_tags" &&
+          (this.fsr["custom_tags"].some(
+            (custom_tag) => custom_tag.name == this.newCustomValue
+          ) ||
+            this.fsr["predefined_tags"].some(
+              (predefined_tag) => predefined_tag.name == this.newCustomValue
+            ))
+        ) {
+          toastr.error("This value has already been taken.");
+          return true;
+        }
+
+        return false;
+      },
+
+      async createCustomValue() {
+        let url;
+        if (this.addReasonModal.type == "custom_reasons") {
+          url =
+            "/fulltext_screenings/<%= params[:fulltext_screening_id] %>/fulltext_screenings_reasons_users";
+        } else if (this.addReasonModal.type == "custom_tags") {
+          url =
+            "/fulltext_screenings/<%= params[:fulltext_screening_id] %>/fulltext_screenings_tags_users";
+        }
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          body: JSON.stringify({
+            name: this.newCustomValue.trim(),
+          }),
+        });
+        await response.json();
+        await this.getFsr();
+        this.addReasonModal.on = false;
+        this.newCustomValue = "";
+      },
+
+      async updateCustomValue(type, values) {
+        const id = values.id;
+        const position = values.position;
+        const newCustomValue = values.newCustomValue || false;
+        let url;
+        if (type == "custom_reasons") {
+          url = `/fulltext_screenings_reasons_users/${id}`;
+        } else if (type == "custom_tags") {
+          url = `/fulltext_screenings_tags_users/${id}`;
+        }
+        const response = await fetch(url, {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          body: JSON.stringify({
+            position,
+            newCustomValue,
+          }),
+        });
+        await response.json();
+        await this.getFsr();
+        this.addReasonModal.on = false;
+        this.newCustomValue = "";
+      },
+
+      async deleteCustomValue(type, index) {
+        const id = this.fsr[type][index].id;
+        if (
+          confirm(
+            `Would you like to delete "${this.fsr[type][index].name}" as a custom choice?`
+          )
+        ) {
+          let url;
+          if (type == "custom_reasons") {
+            url = `/fulltext_screenings_reasons_users/${id}`;
+          } else if (type == "custom_tags") {
+            url = `/fulltext_screenings_tags_users/${id}`;
+          }
+          const response = await fetch(url, {
+            method: "DELETE",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            body: JSON.stringify({
+              id,
+              destroyExistingValues: true,
+            }),
+          });
+          await response.json();
+          await this.getFsr();
         }
       },
 

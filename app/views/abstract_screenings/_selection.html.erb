@@ -10,46 +10,46 @@
     x-transition:leave-start="translate-y-0"
     x-transition:leave-end="translate-y-full"
   >
-    <div class="flex justify-center items-center">
-      <div class="ml-8">
+    <div class="flex justify-center items-center overflow-x-auto">
+      <div class="h-full p-2 m-1 mr-6">
         <span
           class="text-white"
           x-text="`Toggle ${selected.length} Citation(s)`"
         ></span>
       </div>
       <div
-        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
+        class="cursor-pointer text-center h-full p-2 m-1 text-xs bg-green-800 hover:bg-green-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
         @click="createScreeningQualification('as-accepted')"
       >
         Abstract Screening Acceptance
       </div>
       <div
-        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
+        class="cursor-pointer text-center h-full p-2 m-1 mr-6 text-xs bg-red-800 hover:bg-red-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
         @click="createScreeningQualification('as-rejected')"
       >
         Abstract Screening Rejection
       </div>
       <div
-        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
+        class="cursor-pointer text-center h-full p-2 m-1 text-xs bg-green-800 hover:bg-green-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
         @click="createScreeningQualification('fs-accepted')"
       >
         Full-Text Screening Acceptance
       </div>
       <div
-        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
+        class="cursor-pointer text-center h-full p-2 m-1 mr-6 text-xs bg-red-800 hover:bg-red-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
         @click="createScreeningQualification('fs-rejected')"
       >
         Full-Text Screening Rejection
       </div>
       <div
-        class="cursor-pointer p-2 m-2 text-xs bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md"
+        class="cursor-pointer text-center h-full p-2 m-1 mr-6 text-xs bg-red-800 hover:bg-red-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
         @click="createScreeningQualification('e-rejected')"
       >
         Extract Rejection
       </div>
       <div
-        class="cursor-pointer p-2 m-2 text-xs bg-orange-700 hover:bg-orange-600 border-[1px] border-white text-white rounded-md drop-shadow-md ml-8 select-none"
-        :class="showCreateExtractions ? '!bg-orange-400' : ''"
+        class="cursor-pointer text-center h-full p-2 m-1 text-xs bg-srdr-secondary hover:bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md select-none"
+        :class="showCreateExtractions ? '!bg-srdr-primary' : ''"
         @click="showCreateExtractions = true"
       >
         Extraction Menu

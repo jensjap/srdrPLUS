@@ -65,7 +65,7 @@
     <%= f.input :overall_effect_size, input_html: { class: "oes-#{f.object.id}" } %>
     <%= f.input :overall_95_ci_low, input_html: { class: "ci-low-#{f.object.id}" } %>
     <%= f.input :overall_95_ci_high, input_html: { class: "ci-high-#{f.object.id}" } %>
-    <%= f.input :overall_i_squared, input_html: { class: "i-squared-#{f.object.id}", min: 0, max: 100 } %>
+    <%= f.input :overall_i_squared, label: "Overall I Squared (%)", input_html: { class: "i-squared-#{f.object.id}", min: 0, max: 100 } %>
   <% end %>
   <!-- prettier-ignore -->
 </div>

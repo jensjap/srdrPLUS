@@ -9,6 +9,7 @@
 #  consolidated           :boolean          default(FALSE)
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  user_id                :integer
 #
 
 class Extraction < ApplicationRecord
@@ -23,7 +24,7 @@ class Extraction < ApplicationRecord
   after_create :ensure_extraction_form_structure
   after_create :create_default_arms
   after_create :create_default_status
-  after_commit :evaluate_screening_status_citations_project
+  after_save :evaluate_screening_status_citations_project
 
   # create checksums without delay after create and update, since extractions/index would be incorrect.
   after_create do |extraction|

@@ -67,16 +67,28 @@ class AbstractScreening < ApplicationRecord
   end
 
   def reasons_object
-    reasons.each_with_object({}) do |reason, hash|
-      hash[reason.name] = false
-      hash
+    abstract_screenings_reasons = AbstractScreeningsReason.where(abstract_screening: self).order(:position).includes(:reason)
+    abstract_screenings_reasons.map do |abstract_screenings_reason|
+      {
+        id: abstract_screenings_reason.id,
+        reason_id: abstract_screenings_reason.reason_id,
+        name: abstract_screenings_reason.reason.name,
+        position: abstract_screenings_reason.position,
+        selected: false
+      }
     end
   end
 
   def tags_object
-    tags.each_with_object({}) do |tag, hash|
-      hash[tag.name] = false
-      hash
+    abstract_screenings_tags = AbstractScreeningsTag.where(abstract_screening: self).order(:position).includes(:tag)
+    abstract_screenings_tags.map do |abstract_screenings_tag|
+      {
+        id: abstract_screenings_tag.id,
+        tag_id: abstract_screenings_tag.tag_id,
+        name: abstract_screenings_tag.tag.name,
+        position: abstract_screenings_tag.position,
+        selected: false
+      }
     end
   end
 

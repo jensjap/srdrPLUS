@@ -179,13 +179,23 @@ Rails.application.routes.draw do
 
   get 'sd_key_questions/:id/fuzzy_match', to: 'sd_key_questions#fuzzy_match'
 
+  resources :abstract_screenings, shallow: true, only: [] do
+    resources :abstract_screenings_tags_users
+    resources :abstract_screenings_reasons_users
+  end
+
+  resources :fulltext_screenings, shallow: true, only: [] do
+    resources :fulltext_screenings_tags_users
+    resources :fulltext_screenings_reasons_users
+  end
+
   resources :abstract_screening_results, only: %i[show update]
   resources :fulltext_screening_results, only: %i[show update]
   resources :data_audits, only: %i[index update]
   resources :projects, concerns: :paginatable, shallow: true do
     get 'citation_lifecycle_management', to: 'abstract_screenings#citation_lifecycle_management'
-    get 'export_screening_data', to: 'abstract_screenings#export_screening_data'
     get 'kpis', to: 'abstract_screenings#kpis'
+    post 'export_screening_data', to: 'abstract_screenings#export_screening_data'
 
     resources :abstract_screenings do
       get 'rescreen', to: 'abstract_screenings#rescreen'
@@ -234,6 +244,7 @@ Rails.application.routes.draw do
 
       member do
         get 'work'
+        get 'reassign_extraction'
         put 'update_kqp_selections'
         get 'change_outcome_in_results_section', constraints: { format: 'js' }
       end

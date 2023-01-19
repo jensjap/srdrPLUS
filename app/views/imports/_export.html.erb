@@ -32,10 +32,11 @@
 
     <br />
     <hr />
-    <p>Export Citation Screening Labels:</p>
+    <p>Export Project Screening Labels:</p>
     <!-- prettier-ignore -->
-    <%= link_to('Export Screening Data in XLSX',
-      "#{project_export_screening_data_path(@project)}.xlsx", class:
-      "button expanded start-citation-labels-export-button") %>
+    <%= link_to "Export Screening Data in XLSX",
+          "#{project_export_screening_data_path(@project)}.xlsx",
+          method: :post,
+          class: 'button expanded start-citation-labels-export-button' %>
   </div>
 </div>
