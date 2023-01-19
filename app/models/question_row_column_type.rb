@@ -19,6 +19,14 @@ class QuestionRowColumnType < ApplicationRecord
   SELECT2_SINGLE = 'select2_single'.freeze
   SELECT2_MULTI = 'select2_multi'.freeze
 
+  MULTI_SELECTION_TYPES = [
+    CHECKBOX,
+    DROPDOWN,
+    RADIO,
+    SELECT2_SINGLE,
+    SELECT2_MULTI
+  ]
+
   DEFAULT_QRC_TYPES = ['Text Field (alphanumeric)',
                        'Numeric Field (numeric)',
                        'Checkbox (select multiple)',

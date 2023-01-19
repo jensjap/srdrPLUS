@@ -1,0 +1,65 @@
+<div x-data="consolidate">
+  <!-- prettier-ignore -->
+  <%= render 'consolidations/partials/efps_sidebar' %>
+  <% efps = ExtractionFormsProject.find_by(project: @project).extraction_forms_projects_sections.fifth %>
+  <div
+    class="p-4 lg:p-8 pb-0 lg:pb-0 sm:flex sm:items-center z-5 !sticky top-32 bg-white"
+  >
+    <div class="sm:flex-auto mb-6">
+      <div>
+        <h1 class="text-xl font-bold">
+          Consolidate Section:
+          <span
+            class="bg-red-700 cursor-pointer text-white p-1 rounded"
+            :class="master_hash.current_citations_project?.section_name ? '!bg-srdrpurple' : '' "
+            @click="efps_sidebar = true"
+            x-text="master_hash.current_citations_project?.section_name ? master_hash.current_citations_project?.section_name : 'Loading...'"
+            >Loading...</span
+          >
+        </h1>
+      </div>
+      <div>
+        <div class="text-sm text-gray-700">
+          <%= @citations_project.citation.name %>
+        </div>
+        <div class="text-sm text-gray-700">
+          <%= @citations_project.citation.author_map_string %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="px-4 lg:px-8" id="json"></div>
+</div>
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("consolidate", () => ({
+      efps_sidebar: false,
+      efps_sections: [],
+      master_hash: {},
+
+      init() {
+        this.fetch_efps();
+      },
+
+      async fetch_efps(efps_id) {
+        this.master_hash = {};
+        let query_param = "";
+        if (efps_id) {
+          query_param = `&efps_id=${efps_id}`;
+        }
+        const response = await fetch(location.href + query_param, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.efps_sections = data.efps_sections;
+        this.master_hash = data.master_hash;
+        $("#json").empty();
+        $("#json").append("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
+      },
+    }));
+  });
+</script>

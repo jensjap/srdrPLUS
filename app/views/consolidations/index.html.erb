@@ -51,20 +51,22 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
-                <template x-for="citation in Object.keys(citationsHash)">
+                <template
+                  x-for="citations_project_id in Object.keys(citationsHash)"
+                >
                   <tr>
                     <td
                       class="overflow-hidden py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
                     >
                       <div
-                        x-text="citationsHash[citation].citation_title"
+                        x-text="citationsHash[citations_project_id].citation_title"
                       ></div>
                     </td>
                     <td
                       class="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500"
                     >
                       <div
-                        x-text="citationsHash[citation].extractions && citationsHash[citation].extractions.length"
+                        x-text="citationsHash[citations_project_id].extractions && citationsHash[citations_project_id].extractions.length"
                       ></div>
                     </td>
                     <td
@@ -72,8 +74,8 @@
                     >
                       <div
                         class="p-1"
-                        x-text="citationsHash[citation].differences ? 'Yes' : 'No'"
-                        :class="citationsHash[citation].differences ? 'text-red-800' : 'text-green-800'"
+                        x-text="citationsHash[citations_project_id].differences ? 'Yes' : 'No'"
+                        :class="citationsHash[citations_project_id].differences ? 'text-red-800' : 'text-green-800'"
                       ></div>
                     </td>
                     <td
@@ -82,17 +84,17 @@
                       <div
                         class="p-1"
                         x-text="
-                          if (citationsHash[citation].consolidated_extraction_status == null) {
+                          if (citationsHash[citations_project_id].consolidated_extraction_status == null) {
                             return 'No'
                           } else {
-                            return citationsHash[citation].consolidated_extraction_status
+                            return citationsHash[citations_project_id].consolidated_extraction_status
                           }
                         "
                         :class="
                           {
-                            'text-red-800': citationsHash[citation].consolidated_extraction_status == null,
-                            'text-yellow-800': citationsHash[citation].consolidated_extraction_status == 'Draft',
-                            'text-green-800': citationsHash[citation].consolidated_extraction_status == 'Complete'
+                            'text-red-800': citationsHash[citations_project_id].consolidated_extraction_status == null,
+                            'text-yellow-800': citationsHash[citations_project_id].consolidated_extraction_status == 'Draft',
+                            'text-green-800': citationsHash[citations_project_id].consolidated_extraction_status == 'Complete'
                           }
                         "
                       ></div>
@@ -100,15 +102,29 @@
                     <td
                       class="text-center whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-6"
                     >
-                      <div
-                        class="p-1 drop-shadow rounded bg-srdrpurple text-white cursor-pointer"
-                        :class="
-                        {
-                          'bg-green-800': citationsHash[citation].consolidated_extraction_status == null
-                        }
-                      "
-                        x-text="citationsHash[citation].consolidated_extraction_status == 'Draft' ? 'Continue' : 'Create'"
-                      ></div>
+                      <template
+                        x-if="citationsHash[citations_project_id].consolidated_extraction_status == null"
+                      >
+                        <div
+                          class="p-1 drop-shadow rounded bg-green-800 text-white cursor-pointer"
+                          @click="createConsolidatedExtraction(citations_project_id)"
+                        >
+                          Create
+                        </div>
+                      </template>
+                      <template
+                        x-if="citationsHash[citations_project_id].consolidated_extraction_status != null"
+                      >
+                        <a
+                          :href="`/consolidations/null?citations_project_id=${citations_project_id}`"
+                        >
+                          <div
+                            class="p-1 drop-shadow rounded bg-srdrpurple text-white cursor-pointer"
+                          >
+                            Continue
+                          </div>
+                        </a>
+                      </template>
                     </td>
                   </tr>
                 </template>
@@ -139,6 +155,29 @@
         });
         const data = await response.json();
         this.citationsHash = data;
+        console.log(data);
+      },
+
+      async createConsolidatedExtraction(citations_project_id) {
+        const response = await fetch(location.href, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          body: JSON.stringify({
+            citations_project_id,
+          }),
+        });
+        const data = await response.json();
+        this.citationsHash[
+          data.citations_project_id
+        ].consolidated_extraction_status = "Draft";
+        this.citationsHash[data.citations_project_id].consolidated_extraction =
+          data;
       },
     }));
   });

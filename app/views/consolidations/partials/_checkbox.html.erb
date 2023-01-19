@@ -1,0 +1,32 @@
+<div><%= "QRC:#{qrc.id}:#{qrc.question_row_column_type.name}" %></div>
+<!-- prettier-ignore -->
+<% qrc.question_row_columns_question_row_column_options.where(question_row_column_option_id: 1).each do |qrcqrco| %>
+<div>
+  <input
+    type="checkbox"
+    id="<%= qrcqrco.name %>"
+    name="<%= qrcqrco.name %>"
+    class="!m-0"
+    checked
+    disabled
+  />
+  <input
+    type="checkbox"
+    id="<%= qrcqrco.name %>"
+    name="<%= qrcqrco.name %>"
+    class="!m-0"
+    checked
+    disabled
+  />
+  <input
+    type="checkbox"
+    id="<%= qrcqrco.name %>"
+    name="<%= qrcqrco.name %>"
+    class="!m-0"
+    checked
+    disabled
+  />
+  <label for="<%= qrcqrco.name %>"><%= qrcqrco.name %></label>
+</div>
+<!-- prettier-ignore -->
+<% end %>
