@@ -1,24 +1,37 @@
-<div><%= "QRC:#{qrc.id}:#{qrc.question_row_column_type.name}" %></div>
-<div class="flex">
-  <input
-    type="text"
-    id="<%= qrc.name %>"
-    name="<%= qrc.name %>"
-    class="!m-0"
-    disabled
-  />
-  <input
-    type="text"
-    id="<%= qrc.name %>"
-    name="<%= qrc.name %>"
-    class="!m-0"
-    disabled
-  />
-  <input
-    type="text"
-    id="<%= qrc.name %>"
-    name="<%= qrc.name %>"
-    class="!m-0"
-    disabled
-  />
-</div>
+<template x-if="qrc.type_name == 'text'">
+  <div>
+    <div class="flex">
+      <textarea
+        class="!resize-none"
+        name=""
+        id=""
+        cols="20"
+        rows="3"
+        disabled
+      ></textarea>
+      <textarea
+        class="!resize-none"
+        name=""
+        id=""
+        cols="20"
+        rows="3"
+        disabled
+      ></textarea>
+      <textarea
+        class="!resize-none"
+        name=""
+        id=""
+        cols="20"
+        rows="3"
+        disabled
+      ></textarea>
+      <textarea
+        class="!resize-none"
+        name=""
+        id=""
+        cols="20"
+        rows="3"
+      ></textarea>
+    </div>
+  </div>
+</template>

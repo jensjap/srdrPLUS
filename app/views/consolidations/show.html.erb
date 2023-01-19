@@ -3,7 +3,7 @@
   <%= render 'consolidations/partials/efps_sidebar' %>
   <% efps = ExtractionFormsProject.find_by(project: @project).extraction_forms_projects_sections.fifth %>
   <div
-    class="p-4 lg:p-8 pb-0 lg:pb-0 sm:flex sm:items-center z-5 !sticky top-32 bg-white"
+    class="p-4 lg:p-8 pb-0 lg:pb-0 sm:flex sm:items-center z-5 !sticky top-32 bg-gray-100"
   >
     <div class="sm:flex-auto mb-6">
       <div>
@@ -11,9 +11,9 @@
           Consolidate Section:
           <span
             class="bg-red-700 cursor-pointer text-white p-1 rounded"
-            :class="master_hash.current_citations_project?.section_name ? '!bg-srdrpurple' : '' "
+            :class="mh.current_citations_project?.section_name ? '!bg-srdrpurple' : '' "
             @click="efps_sidebar = true"
-            x-text="master_hash.current_citations_project?.section_name ? master_hash.current_citations_project?.section_name : 'Loading...'"
+            x-text="mh.current_citations_project?.section_name ? mh.current_citations_project?.section_name : 'Loading...'"
             >Loading...</span
           >
         </h1>
@@ -28,21 +28,71 @@
       </div>
     </div>
   </div>
-  <div class="px-4 lg:px-8" id="json"></div>
+  <div class="px-4 lg:px-8 space-y-2">
+    <template x-for="(question, question_index) in mh.questions">
+      <div class="">
+        <div class="text-gray-700">
+          <div
+            class="font-bold"
+            x-text="`${question_index + 1}. ${question.name}`"
+          ></div>
+          <div class="italic" x-text="question.description"></div>
+        </div>
+        <div class="space-y-2">
+          <template
+            x-for="(section_eefpst1, section_eefpst1_index) in mh.current_citations_project.section_eefpst1s"
+          >
+            <div class="pb-4">
+              <div
+                class="p-1 rounded-sm"
+                :class="{
+                  'bg-green-200': section_eefpst1_index % 10 == 0,
+                  'bg-red-200': section_eefpst1_index % 10 == 1,
+                  'bg-blue-200': section_eefpst1_index % 10 == 2,
+                  'bg-yellow-200': section_eefpst1_index % 10 == 3,
+                  'bg-gray-200': section_eefpst1_index % 10 == 4,
+                  'bg-orange-200': section_eefpst1_index % 10 == 5,
+                  'bg-purple-200': section_eefpst1_index % 10 == 6,
+                  'bg-rose-200': section_eefpst1_index % 10 == 7,
+                  'bg-indigo-200': section_eefpst1_index % 10 == 8,
+                  'bg-teal-200': section_eefpst1_index % 10 == 9,
+                }"
+                x-text="`${section_eefpst1.name} (${section_eefpst1.description})`"
+              ></div>
+              <div class="">
+                <template x-for="(qr, qr_index) in question.rows">
+                  <div class="flex">
+                    <template x-for="(qrc, qrc_index) in qr.columns">
+                      <%= render 'consolidations/partials/type2' %>
+                    </template>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </template>
+  </div>
+  <div class="px-4 lg:px-8 space-y-2" id="json"></div>
 </div>
 <script>
   document.addEventListener("alpine:init", () => {
     Alpine.data("consolidate", () => ({
       efps_sidebar: false,
       efps_sections: [],
-      master_hash: {},
+      mh: {
+        current_citations_project: {
+          section_eefpst1s: [],
+        },
+      },
 
       init() {
-        this.fetch_efps();
+        this.fetch_efps(1266);
       },
 
       async fetch_efps(efps_id) {
-        this.master_hash = {};
+        this.mh = {};
         let query_param = "";
         if (efps_id) {
           query_param = `&efps_id=${efps_id}`;
@@ -56,7 +106,8 @@
         });
         const data = await response.json();
         this.efps_sections = data.efps_sections;
-        this.master_hash = data.master_hash;
+        this.mh = data.mh;
+
         $("#json").empty();
         $("#json").append("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
       },

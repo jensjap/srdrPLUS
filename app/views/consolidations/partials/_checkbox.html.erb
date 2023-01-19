@@ -1,32 +1,35 @@
-<div><%= "QRC:#{qrc.id}:#{qrc.question_row_column_type.name}" %></div>
-<!-- prettier-ignore -->
-<% qrc.question_row_columns_question_row_column_options.where(question_row_column_option_id: 1).each do |qrcqrco| %>
-<div>
-  <input
-    type="checkbox"
-    id="<%= qrcqrco.name %>"
-    name="<%= qrcqrco.name %>"
-    class="!m-0"
-    checked
-    disabled
-  />
-  <input
-    type="checkbox"
-    id="<%= qrcqrco.name %>"
-    name="<%= qrcqrco.name %>"
-    class="!m-0"
-    checked
-    disabled
-  />
-  <input
-    type="checkbox"
-    id="<%= qrcqrco.name %>"
-    name="<%= qrcqrco.name %>"
-    class="!m-0"
-    checked
-    disabled
-  />
-  <label for="<%= qrcqrco.name %>"><%= qrcqrco.name %></label>
-</div>
-<!-- prettier-ignore -->
-<% end %>
+<template x-if="qrc.type_name == 'checkbox'">
+  <div>
+    <template x-for="selection_option in qrc.selection_options">
+      <div>
+        <input
+          type="checkbox"
+          :name="selection_option.name"
+          class="!m-0 hover:!bg-slate-200 checked:bg-slate-200"
+          checked
+          disabled
+        />
+        <input
+          type="checkbox"
+          :name="selection_option.name"
+          class="!m-0 hover:!bg-slate-200 checked:bg-slate-200"
+          checked
+          disabled
+        />
+        <input
+          type="checkbox"
+          :name="selection_option.name"
+          class="!m-0 hover:!bg-slate-200 checked:bg-slate-200"
+          checked
+          disabled
+        />
+        <input
+          type="checkbox"
+          :name="selection_option.name"
+          class="cursor-pointer !m-0"
+        />
+        <label x-text="selection_option.name"></label>
+      </div>
+    </template>
+  </div>
+</template>

@@ -30,7 +30,7 @@ class ConsolidationsController < ApplicationController
           ExtractionFormsProject.find_by(project: @project).extraction_forms_projects_sections.first
         return render json: {
           efps_sections: ConsolidationService.efps_sections(@project),
-          master_hash: ConsolidationService.efps(efps, @citations_project)
+          mh: ConsolidationService.efps(efps, @citations_project)
         }
       end
     end

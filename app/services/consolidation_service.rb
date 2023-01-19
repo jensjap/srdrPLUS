@@ -16,7 +16,7 @@ class ConsolidationService
     # questions #
     # 1. how to determine order among eefps type1s and populate their records in a hash while keeping that order
 
-    master_hash = {
+    mh = {
       efps: {},
       eefps: {},
       questions: [],
@@ -30,7 +30,7 @@ class ConsolidationService
     efpss.map do |iefps|
       efpso = iefps.extraction_forms_projects_section_option
       efpso = { by_type1: efpso.by_type1, include_total: efpso.include_total }
-      master_hash[:efps][iefps.id] = {
+      mh[:efps][iefps.id] = {
         data_type: 'efps',
         section_id: iefps.section_id,
         section_name: iefps.section.name,
@@ -45,14 +45,14 @@ class ConsolidationService
              .where(extraction: extractions, extraction_forms_projects_section: efpss)
              .uniq { |ieefpss| [ieefpss.extraction_id, ieefpss.extraction_forms_projects_section_id] }
     current_section_eefpss = eefpss.select { |eefps| eefps.extraction_forms_projects_section_id == efps.id }
-    all_section_eefpst1s = []
+    section_eefpst1s = []
     eefpss.each do |eefps|
       extraction = eefps.extraction
       parent_eefps_id = eefps.link_to_type1&.id
       efps_id = eefps.extraction_forms_projects_section_id
-      section_id = master_hash[:efps][efps_id][:section_id]
-      section_name = master_hash[:efps][efps_id][:section_name]
-      efpso = master_hash[:efps][efps_id][:efpso]
+      section_id = mh[:efps][efps_id][:section_id]
+      section_name = mh[:efps][efps_id][:section_name]
+      efpso = mh[:efps][efps_id][:efpso]
       linked_section = eefpss.find { |cached_eefpss| cached_eefpss.id == parent_eefps_id }
 
       by_type1 = efpso[:by_type1]
@@ -76,20 +76,20 @@ class ConsolidationService
             description: eefpst1.type1.description }
         end
       type1s.each do |type1|
-        next unless efps_id == efps.id && all_section_eefpst1s.all? do |section_eefpst1|
+        next unless efps_id == efps.id && section_eefpst1s.all? do |section_eefpst1|
                       section_eefpst1[:type1_id] != type1[:type1_id]
                     end
 
-        all_section_eefpst1s << type1
+        section_eefpst1s << type1
       end
 
-      master_hash[:eefps][eefps.id] = {
+      mh[:eefps][eefps.id] = {
         data_type: 'eefps',
         extraction_id: extraction.id,
         section_id:,
         section_name:,
         efps_id:,
-        type_id: master_hash[:efps][eefps.extraction_forms_projects_section_id][:efpst_id],
+        type_id: mh[:efps][eefps.extraction_forms_projects_section_id][:efpst_id],
         parent_eefps_id:,
         children_eefps_ids: eefps.link_to_type2s.map(&:id),
         type1s:,
@@ -107,7 +107,7 @@ class ConsolidationService
         rows: []
       }
 
-      master_hash[:questions] << question_hash
+      mh[:questions] << question_hash
       question.question_rows.each do |question_row|
         question_row_hash = {
           question_row_id: question_row.id,
@@ -143,20 +143,20 @@ class ConsolidationService
       end
     end
 
-    all_section_eefpst1_ids = all_section_eefpst1s.map do |all_section_eefpst1|
+    all_section_eefpst1_ids = section_eefpst1s.map do |all_section_eefpst1|
       all_section_eefpst1[:extractions_extraction_forms_projects_sections_type1_id]
     end
 
     # ensures eefpsqrcf exist
     current_section_eefpss.each do |current_section_eefps|
       qrcfs.each do |qrcf|
-        if all_section_eefpst1s.empty?
+        if section_eefpst1s.empty?
           ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(
             extractions_extraction_forms_projects_section: current_section_eefps,
             question_row_column_field: qrcf
           )
         else
-          all_section_eefpst1s.each do |all_section_eefpst1|
+          section_eefpst1s.each do |all_section_eefpst1|
             unless current_section_eefps.id == all_section_eefpst1[:extractions_extraction_forms_projects_section_id]
               next
             end
@@ -187,18 +187,21 @@ class ConsolidationService
 
     records = Record.where(recordable: eefpsqrcfs)
     citation = citations_project.citation
-    master_hash[:current_citations_project] = {
+    mh[:current_citations_project] = {
       project_id: project.id,
       citation_id: citation.id,
       citations_project_id: citations_project.id,
       efps_id: efps.id,
       efpst_id: efps.extraction_forms_projects_section_type_id,
       section_name: efps.section.name,
-      all_section_eefpst1s:,
+      section_eefpst1s:,
       current_section_eefpss:,
+      by_arms:
+        efps.link_to_type1.present? &&
+        (mh[:efps][efps.id][:efpso][:by_type1] || mh[:efps][efps.id][:efpso][:include_total]).present?,
       records:
     }
-    master_hash
+    mh
   end
 
   def self.project_citations_grouping_hash(project)
