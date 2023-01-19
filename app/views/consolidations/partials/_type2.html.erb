@@ -1,10 +1,18 @@
-<div class="mr-2">
-  <!-- prettier-ignore -->
-  <%= render('consolidations/partials/checkbox') %>
-  <%= render('consolidations/partials/dropdown') %>
-  <%= render('consolidations/partials/numeric') %>
-  <%= render('consolidations/partials/radio') %>
-  <%= render('consolidations/partials/select2_multi') %>
-  <%= render('consolidations/partials/select2_single') %>
-  <%= render('consolidations/partials/text') %>
+<div>
+  <template x-for="(qr, qr_index) in question.rows">
+    <div class="flex">
+      <template x-for="(qrc, qrc_index) in qr.columns">
+        <div class="mr-2">
+          <!-- prettier-ignore -->
+          <%= render('consolidations/partials/checkbox') %>
+          <%= render('consolidations/partials/dropdown') %>
+          <%= render('consolidations/partials/numeric') %>
+          <%= render('consolidations/partials/radio') %>
+          <%= render('consolidations/partials/select2_multi') %>
+          <%= render('consolidations/partials/select2_single') %>
+          <%= render('consolidations/partials/text') %>
+        </div>
+      </template>
+    </div>
+  </template>
 </div>

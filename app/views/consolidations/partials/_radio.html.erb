@@ -1,0 +1,28 @@
+<template x-if="qrc.type_name == 'radio'">
+  <div>
+    <template x-for="selection_option in qrc.selection_options">
+      <div>
+        <template
+          x-for="(eefps, eefps_index) in mh.current_citations_project.current_section_eefpss"
+        >
+          <input
+            type="radio"
+            class="!m-0 hover:!bg-slate-200 checked:bg-slate-200"
+            checked
+            disabled
+        /></template>
+        <input
+          :name="selection_option.question_row_column_id"
+          type="radio"
+          class="cursor-pointer !m-0"
+        />
+        <label x-text="selection_option.name"></label>
+      </div>
+    </template>
+    <div
+      class="cursor-pointer text-center text-white text-xs rounded-md bg-gray-400"
+    >
+      Clear
+    </div>
+  </div>
+</template>

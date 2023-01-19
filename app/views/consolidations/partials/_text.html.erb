@@ -1,30 +1,18 @@
 <template x-if="qrc.type_name == 'text'">
   <div>
     <div class="flex">
-      <textarea
-        class="!resize-none"
-        name=""
-        id=""
-        cols="20"
-        rows="3"
-        disabled
-      ></textarea>
-      <textarea
-        class="!resize-none"
-        name=""
-        id=""
-        cols="20"
-        rows="3"
-        disabled
-      ></textarea>
-      <textarea
-        class="!resize-none"
-        name=""
-        id=""
-        cols="20"
-        rows="3"
-        disabled
-      ></textarea>
+      <template
+        x-for="(eefps, eefps_index) in mh.current_citations_project.current_section_eefpss"
+      >
+        <textarea
+          class="!resize-none"
+          name=""
+          id=""
+          cols="20"
+          rows="3"
+          disabled
+        ></textarea>
+      </template>
       <textarea
         class="!resize-none"
         name=""

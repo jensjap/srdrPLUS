@@ -1,28 +1,17 @@
 <template x-if="qrc.type_name == 'checkbox'">
   <div>
     <template x-for="selection_option in qrc.selection_options">
-      <div>
-        <input
-          type="checkbox"
-          :name="selection_option.name"
-          class="!m-0 hover:!bg-slate-200 checked:bg-slate-200"
-          checked
-          disabled
-        />
-        <input
-          type="checkbox"
-          :name="selection_option.name"
-          class="!m-0 hover:!bg-slate-200 checked:bg-slate-200"
-          checked
-          disabled
-        />
-        <input
-          type="checkbox"
-          :name="selection_option.name"
-          class="!m-0 hover:!bg-slate-200 checked:bg-slate-200"
-          checked
-          disabled
-        />
+      <div class="whitespace-nowrap">
+        <template
+          x-for="(eefps, eefps_index) in mh.current_citations_project.current_section_eefpss"
+        >
+          <input
+            type="checkbox"
+            :name="selection_option.name"
+            class="!m-0 hover:!bg-slate-200 checked:bg-slate-200"
+            checked
+            disabled
+        /></template>
         <input
           type="checkbox"
           :name="selection_option.name"
