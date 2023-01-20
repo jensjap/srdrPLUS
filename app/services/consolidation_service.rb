@@ -24,7 +24,7 @@ class ConsolidationService
     }
     project = citations_project.project
 
-    extractions = Extraction.where(citations_project:)
+    extractions = Extraction.where(citations_project:).where.not(consolidated: true)
     efpss = ExtractionFormsProject.find_by(project:).extraction_forms_projects_sections.includes(:section)
 
     efpss.map do |iefps|
@@ -185,7 +185,26 @@ class ConsolidationService
       Record.find_or_create_by(recordable: eefpsqrcf)
     end
 
-    records = Record.where(recordable: eefpsqrcfs)
+    cell_lookups = {}
+    Record.where(recordable: eefpsqrcfs).each do |record|
+      begin
+        name = JSON.parse(record.name)
+      rescue JSON::ParserError, TypeError
+        name = record.name
+      end
+      eefpsqrcf = record.recordable
+      eefpst1_id = eefpsqrcf.extractions_extraction_forms_projects_sections_type1_id
+      eefps_id = eefpsqrcf.extractions_extraction_forms_projects_section_id
+      qrcf_id = eefpsqrcf.question_row_column_field_id
+      if name.instance_of?(Array)
+        name.each do |id|
+          cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}-#{id}"] = true
+        end
+      else
+        cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}"] = name
+      end
+    end
+
     citation = citations_project.citation
     mh[:current_citations_project] = {
       project_id: project.id,
@@ -199,7 +218,7 @@ class ConsolidationService
       by_arms:
         efps.link_to_type1.present? &&
         (mh[:efps][efps.id][:efpso][:by_type1] || mh[:efps][efps.id][:efpso][:include_total]).present?,
-      records:
+      cell_lookups:
     }
     mh
   end

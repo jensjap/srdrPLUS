@@ -3,7 +3,7 @@
     <template x-for="selection_option in qrc.selection_options">
       <div>
         <template
-          x-for="(eefps, eefps_index) in mh.current_citations_project.current_section_eefpss"
+          x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
         >
           <input
             type="radio"

@@ -3,14 +3,24 @@
     <template x-for="selection_option in qrc.selection_options">
       <div class="whitespace-nowrap">
         <template
-          x-for="(eefps, eefps_index) in mh.current_citations_project.current_section_eefpss"
+          x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
         >
           <input
             type="checkbox"
             :name="selection_option.name"
             class="!m-0 hover:!bg-slate-200 checked:bg-slate-200"
-            checked
+            :checked="
+              ''; let a
+              if (typeof section_eefpst1 === 'undefined') {
+                a = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
+              } else {
+                a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
+              }
+              const b = mh?.current_citations_project?.cell_lookups[a]
+              return b ? true : false
+            "
             disabled
+            title=""
         /></template>
         <input
           type="checkbox"
