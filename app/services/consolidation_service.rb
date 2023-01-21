@@ -22,9 +22,13 @@ class ConsolidationService
       questions: [],
       current_citations_project: {}
     }
+    extractions_lookup = {}
     project = citations_project.project
 
-    extractions = Extraction.where(citations_project:).where.not(consolidated: true)
+    extractions = Extraction.includes(projects_users_role: { projects_user: :user }).where(citations_project:).where.not(consolidated: true)
+    extractions.each do |extraction|
+      extractions_lookup[extraction.id] = extraction.user.email.split('@').first
+    end
     efpss = ExtractionFormsProject.find_by(project:).extraction_forms_projects_sections.includes(:section)
 
     efpss.map do |iefps|
@@ -218,7 +222,8 @@ class ConsolidationService
       by_arms:
         efps.link_to_type1.present? &&
         (mh[:efps][efps.id][:efpso][:by_type1] || mh[:efps][efps.id][:efpso][:include_total]).present?,
-      cell_lookups:
+      cell_lookups:,
+      extractions_lookup:
     }
     mh
   end
