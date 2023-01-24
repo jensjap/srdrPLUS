@@ -7,7 +7,7 @@
 #  reason_id             :bigint           not null
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
-#  position :integer
+#  position              :integer
 #
 class FulltextScreeningsReason < ApplicationRecord
   belongs_to :fulltext_screening

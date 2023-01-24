@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_26_011514) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_20_000628) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1548,10 +1548,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_26_011514) do
     t.string "intervention_name"
     t.string "comparator_name"
     t.string "effect_size_measure_name"
-    t.float "overall_effect_size"
-    t.float "overall_95_ci_low"
-    t.float "overall_95_ci_high"
-    t.float "overall_i_squared"
+    t.string "overall_effect_size"
+    t.string "overall_95_ci_low"
+    t.string "overall_95_ci_high"
+    t.string "overall_i_squared"
+    t.text "other_heterogeneity_statistics"
     t.index ["sd_figurable_id", "sd_figurable_type"], name: "index_sd_analysis_figures_on_type_id"
   end
 
