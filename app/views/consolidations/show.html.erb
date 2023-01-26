@@ -103,10 +103,10 @@
       mh: null,
 
       init() {
-        this.fetch_efps(1266, true);
+        this.fetch_efps();
       },
 
-      async fetch_efps(efps_id, noUpdate = false) {
+      async fetch_efps(efps_id) {
         this.mh = null;
         let query_param = "";
         if (efps_id) {
