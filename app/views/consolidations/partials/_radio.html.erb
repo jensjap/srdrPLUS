@@ -15,12 +15,14 @@
           :name="selection_option.question_row_column_id"
           type="radio"
           class="cursor-pointer !m-0"
+          :class="`${qrc.question_row_column_id}-consolidated`"
         />
         <label x-text="selection_option.name"></label>
       </div>
     </template>
     <div
       class="cursor-pointer text-center text-white text-xs rounded-md bg-gray-400"
+      @click="Array.from(document.getElementsByClassName(`${qrc.question_row_column_id}-consolidated`)).forEach((el) => { el.checked = false })"
     >
       Clear
     </div>
