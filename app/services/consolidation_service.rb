@@ -22,6 +22,7 @@ class ConsolidationService
       questions: [],
       current_citations_project: {}
     }
+    qrcf_lookups = {}
     extractions_lookup = {}
     project = citations_project.project
 
@@ -123,6 +124,10 @@ class ConsolidationService
           qrcf = question_row_column.question_row_column_fields.first
           qrcfs << qrcf
           type_name = question_row_column.question_row_column_type.name
+          qrcf_lookups[qrcf.id] = {
+            qrcf_id: qrcf.id,
+            type_name:
+          }
           selection_options = question_row_column.question_row_columns_question_row_column_options.select do |qrcqrco|
             if QuestionRowColumnType::MULTI_SELECTION_TYPES.include?(type_name)
               qrcqrco.question_row_column_option_id == 1
@@ -200,10 +205,13 @@ class ConsolidationService
       eefpst1_id = eefpsqrcf.extractions_extraction_forms_projects_sections_type1_id
       eefps_id = eefpsqrcf.extractions_extraction_forms_projects_section_id
       qrcf_id = eefpsqrcf.question_row_column_field_id
-      if name.instance_of?(Array)
+      if QuestionRowColumnType::MULTI_ANSWER_TYPES.include?(qrcf_lookups[qrcf_id][:type_name]) &&
+         name.instance_of?(Array)
         name.each do |id|
           cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}-#{id}"] = true
         end
+      elsif qrcf_lookups[qrcf_id][:type_name] == QuestionRowColumnType::RADIO
+        cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}-#{name}"] = true
       else
         cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}"] = name
       end

@@ -27,6 +27,13 @@ class QuestionRowColumnType < ApplicationRecord
     SELECT2_MULTI
   ]
 
+  MULTI_ANSWER_TYPES = [
+    CHECKBOX,
+    DROPDOWN,
+    SELECT2_SINGLE,
+    SELECT2_MULTI
+  ]
+
   DEFAULT_QRC_TYPES = ['Text Field (alphanumeric)',
                        'Numeric Field (numeric)',
                        'Checkbox (select multiple)',
