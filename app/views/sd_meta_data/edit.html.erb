@@ -22,8 +22,7 @@
   var initPage = function () {
     offCanvasRightReportHtml_iframe =
       document.getElementById("htmlReportIframe");
-
-    offCanvasRightReportHtml_iframe.src = "#{ @report_html_path }";
+    offCanvasRightReportHtml_iframe.src = "<%= @report_html_path %>";
   };
 
   initPage(); //this triggers the loading at the time the script is full
