@@ -39,7 +39,6 @@
             :name="selection_option.name"
             class="cursor-pointer !m-0"
             @click="
-              console.log($el)
               if ($el.checked && selection_option.followup_field_id) {
                 document.getElementById(`followup-field-id-${selection_option.followup_field_id}`).disabled = false
               } else if (selection_option.followup_field_id) {
