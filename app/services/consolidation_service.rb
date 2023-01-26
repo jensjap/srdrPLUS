@@ -33,7 +33,7 @@ class ConsolidationService
     efpss = ExtractionFormsProject.find_by(project:).extraction_forms_projects_sections.includes(:section)
 
     efpss.map do |iefps|
-      efpso = iefps.extraction_forms_projects_section_option
+      efpso = ExtractionFormsProjectsSectionOption.find_or_create_by(extraction_forms_projects_section: iefps)
       efpso = { by_type1: efpso.by_type1, include_total: efpso.include_total }
       mh[:efps][iefps.id] = {
         data_type: 'efps',
@@ -128,13 +128,27 @@ class ConsolidationService
             qrcf_id: qrcf.id,
             type_name:
           }
-          selection_options = question_row_column.question_row_columns_question_row_column_options.select do |qrcqrco|
+          selection_options = []
+          question_row_column.question_row_columns_question_row_column_options.each do |qrcqrco|
+            followup_field_id = qrcqrco&.followup_field&.id
             if QuestionRowColumnType::MULTI_SELECTION_TYPES.include?(type_name)
-              qrcqrco.question_row_column_option_id == 1
-            elsif QuestionRowColumnType::TEXT
-              [2, 3].include?(qrcqrco.question_row_column_option_id)
-            elsif QuestionRowColumnType::NUMERIC
-              [4, 5, 6].include?(qrcqrco.question_row_column_option_id)
+              next unless qrcqrco.question_row_column_option_id == 1
+
+              qrcqrco_json = qrcqrco.as_json
+              qrcqrco_json[:followup_field_id] = followup_field_id
+              selection_options << qrcqrco_json
+            elsif type_name == QuestionRowColumnType::TEXT
+              next unless [2, 3].include?(qrcqrco.question_row_column_option_id)
+
+              qrcqrco_json = qrcqrco.as_json
+              qrcqrco_json[:followup_field_id] = followup_field_id
+              selection_options << qrcqrco_json
+            elsif type_name == QuestionRowColumnType::NUMERIC
+              next unless [4, 5, 6].include?(qrcqrco.question_row_column_option_id)
+
+              qrcqrco_json = qrcqrco.as_json
+              qrcqrco_json[:followup_field_id] = followup_field_id
+              selection_options << qrcqrco_json
             else
               false
             end

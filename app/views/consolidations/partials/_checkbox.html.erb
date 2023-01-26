@@ -1,15 +1,16 @@
 <template x-if="qrc.type_name == 'checkbox'">
   <div>
     <template x-for="selection_option in qrc.selection_options">
-      <div class="whitespace-nowrap">
+      <div class="whitespace-nowrap flex">
         <template
           x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
         >
-          <input
-            type="checkbox"
-            :name="selection_option.name"
-            class="!m-0 hover:!bg-slate-200 checked:bg-slate-200"
-            :checked="
+          <div class="flex mr-2">
+            <input
+              type="checkbox"
+              :name="selection_option.name"
+              class="!m-0 hover:!bg-slate-200 checked:bg-slate-200"
+              :checked="
               ''; let a
               if (typeof section_eefpst1 === 'undefined') {
                 a = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
@@ -19,14 +20,47 @@
               const b = mh?.current_citations_project?.cell_lookups[a]
               return b ? true : false
             "
-            disabled
-            :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
-        /></template>
-        <input
-          type="checkbox"
-          :name="selection_option.name"
-          class="cursor-pointer !m-0"
-        />
+              disabled
+              :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+            />
+            <template x-if="selection_option.followup_field_id">
+              <input disabled class="!w-24 !h-4" type="text" />
+            </template>
+            <template
+              x-if="!selection_option.followup_field_id && qrc.selection_options.some(so => so.followup_field_id)"
+            >
+              <div class="!w-24 !h-4"></div>
+            </template>
+          </div>
+        </template>
+        <div class="flex mr-2">
+          <input
+            type="checkbox"
+            :name="selection_option.name"
+            class="cursor-pointer !m-0"
+            @click="
+              console.log($el)
+              if ($el.checked && selection_option.followup_field_id) {
+                document.getElementById(`followup-field-id-${selection_option.followup_field_id}`).disabled = false
+              } else if (selection_option.followup_field_id) {
+                document.getElementById(`followup-field-id-${selection_option.followup_field_id}`).disabled = true
+              }
+            "
+          />
+          <template x-if="selection_option.followup_field_id">
+            <input
+              :id="`followup-field-id-${selection_option.followup_field_id}`"
+              class="!w-24 !h-4"
+              type="text"
+              :disabled="true"
+            />
+          </template>
+          <template
+            x-if="!selection_option.followup_field_id && qrc.selection_options.some(so => so.followup_field_id)"
+          >
+            <div class="!w-24 !h-4"></div>
+          </template>
+        </div>
         <label x-text="selection_option.name"></label>
       </div>
     </template>
