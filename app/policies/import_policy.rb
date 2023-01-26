@@ -1,4 +1,8 @@
 class ImportPolicy < ApplicationPolicy
+  def index?
+    project_auditor? || @record.public?
+  end
+
   def create?
     project_contributor?
   end
