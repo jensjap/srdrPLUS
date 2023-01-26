@@ -103,6 +103,7 @@ class ConsolidationService
     end
 
     qrcfs = []
+    ffs = []
 
     efps.questions.each do |question|
       question_hash = {
@@ -130,7 +131,9 @@ class ConsolidationService
           }
           selection_options = []
           question_row_column.question_row_columns_question_row_column_options.each do |qrcqrco|
-            followup_field_id = qrcqrco&.followup_field&.id
+            ff = qrcqrco.followup_field
+            ffs << ff if ff.present?
+            followup_field_id = ff&.id
             if QuestionRowColumnType::MULTI_SELECTION_TYPES.include?(type_name)
               next unless qrcqrco.question_row_column_option_id == 1
 
@@ -203,9 +206,18 @@ class ConsolidationService
       eefpsqrcfs = eefpsqrcfs.where(extractions_extraction_forms_projects_sections_type1_id: all_section_eefpst1_ids)
     end
 
+    eefpsffs = ExtractionsExtractionFormsProjectsSectionsFollowupField.where(
+      extractions_extraction_forms_projects_section: current_section_eefpss,
+      followup_field: ffs
+    )
+
     # ensures records exist
     eefpsqrcfs.each do |eefpsqrcf|
       Record.find_or_create_by(recordable: eefpsqrcf)
+    end
+
+    eefpsffs.each do |eefpsff|
+      Record.find_or_create_by(recordable: eefpsff)
     end
 
     cell_lookups = {}
@@ -229,6 +241,15 @@ class ConsolidationService
       else
         cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}"] = name
       end
+    end
+
+    Record.where(recordable: eefpsffs).each do |record|
+      name = record.name
+      eefpsff = record.recordable
+      eefpst1_id = eefpsff.extractions_extraction_forms_projects_sections_type1_id
+      eefps_id = eefpsff.extractions_extraction_forms_projects_section_id
+      ff_id = eefpsff.followup_field_id
+      cell_lookups["#{ff_id}-#{eefps_id}-#{eefpst1_id}"] = name
     end
 
     citation = citations_project.citation
