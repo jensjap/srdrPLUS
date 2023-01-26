@@ -3,7 +3,7 @@ class ConsolidationsController < ApplicationController
 
   def index
     authorize(@project, policy_class: ConsolidationPolicy)
-    @nav_buttons.push('comparison_tool')
+    @nav_buttons.push('comparison_tool', 'my_projects')
     respond_to do |format|
       format.json do
         return render json: ConsolidationService.project_citations_grouping_hash(@project)
@@ -22,7 +22,7 @@ class ConsolidationsController < ApplicationController
     authorize(@project, policy_class: ConsolidationPolicy)
     respond_to do |format|
       format.html do
-        @nav_buttons.push('comparison_tool')
+        @nav_buttons.push('comparison_tool', 'my_projects')
       end
       format.json do
         efps =
