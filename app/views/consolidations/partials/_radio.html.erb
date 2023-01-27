@@ -8,24 +8,59 @@
           <div class="flex mr-2">
             <input
               type="radio"
-              class="!m-0 hover:!bg-slate-200 checked:bg-slate-200"
+              class="!m-0"
+              :name="eefps.consolidated ? selection_option.question_row_column_id : ''"
+              :class="eefps.consolidated ? `${qrc.question_row_column_id}-consolidated` : 'hover:!bg-slate-200 checked:bg-slate-200'"
               :checked="
-              ''; let a
-              if (typeof section_eefpst1 === 'undefined') {
-                a = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
-              } else {
-                a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
-              }
-              const b = mh?.current_citations_project?.cell_lookups[a]
-              return b ? true : false
-            "
-              disabled
+                ''; let a
+                if (typeof section_eefpst1 === 'undefined') {
+                  a = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
+                } else {
+                  a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
+                }
+                const b = mh?.current_citations_project?.cell_lookups[a]
+                return b ? true : false
+              "
+              :disabled="!eefps.consolidated"
+              @click="
+                if (!eefps.consolidated) return;
+                ''; let a
+                if (typeof section_eefpst1 === 'undefined') {
+                  a = `${qrc.qrcf.id}-${eefps.id}-`
+                } else {
+                  a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                }
+                Array.from(document.getElementsByClassName(a)).forEach((el) => { el.disabled = true })
+                if (selection_option.followup_field_id) {
+                  document.getElementById(`followup-field-id-${selection_option.followup_field_id}`).disabled = false
+                }
+              "
             />
             <template x-if="selection_option.followup_field_id">
               <input
-                disabled
+                :id="eefps.consolidated ? `followup-field-id-${selection_option.followup_field_id}` : ''"
                 class="!w-24 !h-4"
+                :class="
+                  ''; let a
+                  if (typeof section_eefpst1 === 'undefined') {
+                    a = `${qrc.qrcf.id}-${eefps.id}-`
+                  } else {
+                    a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                  }
+                  return a
+                "
                 type="text"
+                :disabled="
+                  ''; let a
+                  if (!eefps.consolidated) return true;
+                  if (typeof section_eefpst1 === 'undefined') {
+                    a = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
+                  } else {
+                    a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
+                  }
+                  const b = mh?.current_citations_project?.cell_lookups[a]
+                  return b ? false : true
+                "
                 :value="
                   ''; let a
                   if (typeof section_eefpst1 === 'undefined') {
@@ -44,34 +79,6 @@
             </template>
           </div>
         </template>
-        <div class="flex mr-2">
-          <input
-            :name="selection_option.question_row_column_id"
-            type="radio"
-            class="cursor-pointer !m-0"
-            :class="`${qrc.question_row_column_id}-consolidated`"
-            @click="
-              if ($el.checked && selection_option.followup_field_id) {
-                document.getElementById(`followup-field-id-${selection_option.followup_field_id}`).disabled = false
-              } else if (selection_option.followup_field_id) {
-                document.getElementById(`followup-field-id-${selection_option.followup_field_id}`).disabled = true
-              }
-            "
-          />
-          <template x-if="selection_option.followup_field_id">
-            <input
-              :id="`followup-field-id-${selection_option.followup_field_id}`"
-              class="!w-24 !h-4"
-              type="text"
-              :disabled="true"
-            />
-          </template>
-          <template
-            x-if="!selection_option.followup_field_id && qrc.selection_options.some(so => so.followup_field_id)"
-          >
-            <div class="!w-24 !h-4"></div>
-          </template>
-        </div>
         <label x-text="selection_option.name"></label>
       </div>
     </template>

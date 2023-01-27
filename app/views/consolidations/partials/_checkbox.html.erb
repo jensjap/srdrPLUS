@@ -34,13 +34,7 @@
             />
             <template x-if="selection_option.followup_field_id">
               <input
-                :id="
-                  if (eefps.consolidated) {
-                    return `followup-field-id-${selection_option.followup_field_id}`
-                  } else {
-                    null
-                  }
-                "
+                :id="eefps.consolidated ? `followup-field-id-${selection_option.followup_field_id}` : ''"
                 :disabled="
                   ''; let a
                   if (!eefps.consolidated) return true;
