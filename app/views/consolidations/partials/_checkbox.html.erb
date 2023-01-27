@@ -26,7 +26,7 @@
             <template x-if="selection_option.followup_field_id">
               <input
                 disabled
-                class="!w-24 !h-4"
+                class="!w-28 !h-4"
                 type="text"
                 :value="
                   ''; let a
@@ -42,7 +42,7 @@
             <template
               x-if="!selection_option.followup_field_id && qrc.selection_options.some(so => so.followup_field_id)"
             >
-              <div class="!w-24 !h-4"></div>
+              <div class="!w-28 !h-4"></div>
             </template>
           </div>
         </template>
@@ -62,7 +62,7 @@
           <template x-if="selection_option.followup_field_id">
             <input
               :id="`followup-field-id-${selection_option.followup_field_id}`"
-              class="!w-24 !h-4"
+              class="!w-28 !h-4"
               type="text"
               :disabled="true"
             />
@@ -70,7 +70,7 @@
           <template
             x-if="!selection_option.followup_field_id && qrc.selection_options.some(so => so.followup_field_id)"
           >
-            <div class="!w-24 !h-4"></div>
+            <div class="!w-28 !h-4"></div>
           </template>
         </div>
         <label x-text="selection_option.name"></label>
