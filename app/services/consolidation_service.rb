@@ -249,7 +249,9 @@ class ConsolidationService
         name.each do |id|
           cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}-#{id}"] = true
         end
-      elsif qrcf_lookups[qrcf_id][:type_name] == QuestionRowColumnType::RADIO || qrcf_lookups[qrcf_id][:type_name] == QuestionRowColumnType::DROPDOWN
+      elsif qrcf_lookups[qrcf_id][:type_name] == QuestionRowColumnType::RADIO ||
+            qrcf_lookups[qrcf_id][:type_name] == QuestionRowColumnType::DROPDOWN ||
+            qrcf_lookups[qrcf_id][:type_name] == QuestionRowColumnType::SELECT2_SINGLE
         cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}-#{name}"] = true
       else
         cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}"] = name

@@ -30,7 +30,6 @@ class QuestionRowColumnType < ApplicationRecord
   MULTI_ANSWER_TYPES = [
     CHECKBOX,
     DROPDOWN,
-    SELECT2_SINGLE,
     SELECT2_MULTI
   ]
 
