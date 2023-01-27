@@ -122,9 +122,21 @@ class ConsolidationService
         }
         question_hash[:rows] << question_row_hash
         question_row.question_row_columns.each do |question_row_column|
-          qrcf = question_row_column.question_row_column_fields.first
-          qrcfs << qrcf
           type_name = question_row_column.question_row_column_type.name
+
+          if type_name == 'numeric'
+            equality_qrcf = question_row_column.question_row_column_fields.first
+            qrcf = question_row_column.question_row_column_fields.second
+            qrcfs << equality_qrcf
+            qrcf_lookups[equality_qrcf.id] = {
+              qrcf_id: equality_qrcf.id,
+              type_name:
+            }
+          else
+            qrcf = question_row_column.question_row_column_fields.first
+          end
+
+          qrcfs << qrcf
           qrcf_lookups[qrcf.id] = {
             qrcf_id: qrcf.id,
             type_name:
@@ -162,7 +174,8 @@ class ConsolidationService
             question_row_column_name: question_row_column.name,
             type_name:,
             selection_options:,
-            qrcf:
+            qrcf:,
+            equality_qrcf:
           }
           question_row_hash[:columns] << question_row_column_hash
         end

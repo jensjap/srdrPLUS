@@ -1,3 +1,60 @@
 <template x-if="qrc.type_name == 'numeric'">
-  <div>[numeric field here]</div>
+  <div class="flex">
+    <template
+      x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
+    >
+      <div class="flex mr-2">
+        <template x-if="qrc.selection_options[0].name == '1'">
+          <input
+            class="!w-4"
+            type="text"
+            disabled
+            :value="
+                ''; let a
+                if (typeof section_eefpst1 === 'undefined') {
+                  a = `${qrc.equality_qrcf.id}-${eefps.id}-`
+                } else {
+                  a = `${qrc.equality_qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                }
+                const b = mh?.current_citations_project?.cell_lookups[a]
+                return b
+              "
+          />
+        </template>
+        <input
+          class="!w-20"
+          type="number"
+          disabled
+          :value="
+              ''; let a
+              if (typeof section_eefpst1 === 'undefined') {
+                a = `${qrc.qrcf.id}-${eefps.id}-`
+              } else {
+                a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+              }
+              const b = mh?.current_citations_project?.cell_lookups[a]
+              return b
+            "
+        />
+      </div>
+    </template>
+    <div class="flex">
+      <template x-if="qrc.selection_options[0].name == '1'">
+        <select class="!w-4">
+          <option value=""></option>
+          <option value="~">~</option>
+          <option value="<">&lt;</option>
+          <option value=">">&gt;</option>
+          <option value="≤">≤</option>
+          <option value="≥">≥</option>
+        </select>
+      </template>
+      <input
+        class="!w-20"
+        type="number"
+        :min="qrc.selection_options[1].name"
+        :max="qrc.selection_options[2].name"
+      />
+    </div>
+  </div>
 </template>
