@@ -3,7 +3,7 @@
     <template
       x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
     >
-      <select class="w-32 mr-2" disabled>
+      <select class="w-32 mr-2" :disabled="!eefps.consolidated">
         <option value=""></option>
         <template x-for="selection_option in qrc.selection_options">
           <option
@@ -24,15 +24,5 @@
         </template>
       </select>
     </template>
-    <select name="" id="" class="w-32">
-      <option value=""></option>
-      <template x-for="selection_option in qrc.selection_options">
-        <option
-          x-text="selection_option.name"
-          type="radio"
-          class="!m-0 hover:!bg-slate-200 checked:bg-slate-200"
-        ></option>
-      </template>
-    </select>
   </div>
 </template>
