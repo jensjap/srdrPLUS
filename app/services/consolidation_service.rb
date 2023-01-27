@@ -146,7 +146,7 @@ class ConsolidationService
             ff = qrcqrco.followup_field
             ffs << ff if ff.present?
             followup_field_id = ff&.id
-            if QuestionRowColumnType::MULTI_SELECTION_TYPES.include?(type_name)
+            if QuestionRowColumnType::OPTION_SELECTION_TYPES.include?(type_name)
               next unless qrcqrco.question_row_column_option_id == 1
 
               qrcqrco_json = qrcqrco.as_json
@@ -244,14 +244,12 @@ class ConsolidationService
       eefpst1_id = eefpsqrcf.extractions_extraction_forms_projects_sections_type1_id
       eefps_id = eefpsqrcf.extractions_extraction_forms_projects_section_id
       qrcf_id = eefpsqrcf.question_row_column_field_id
-      if QuestionRowColumnType::MULTI_ANSWER_TYPES.include?(qrcf_lookups[qrcf_id][:type_name]) &&
+      if QuestionRowColumnType::CHECKBOX == qrcf_lookups[qrcf_id][:type_name] &&
          name.instance_of?(Array)
         name.each do |id|
           cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}-#{id}"] = true
         end
-      elsif qrcf_lookups[qrcf_id][:type_name] == QuestionRowColumnType::RADIO ||
-            qrcf_lookups[qrcf_id][:type_name] == QuestionRowColumnType::DROPDOWN ||
-            qrcf_lookups[qrcf_id][:type_name] == QuestionRowColumnType::SELECT2_SINGLE
+      elsif QuestionRowColumnType::SINGLE_OPTION_ANSWER_TYPES.include?(qrcf_lookups[qrcf_id][:type_name])
         cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}-#{name}"] = true
       else
         cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}"] = name
