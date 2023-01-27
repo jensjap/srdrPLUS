@@ -265,6 +265,25 @@ class ConsolidationService
       cell_lookups["#{ff_id}-#{eefps_id}-#{eefpst1_id}"] = name
     end
 
+    eefpsqrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.where(
+      extractions_extraction_forms_projects_section: current_section_eefpss,
+      question_row_column_field_id: qrcfs
+    )
+
+    eefpsqrcfqrcqrco_lookups = {}
+    ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption.where(
+      extractions_extraction_forms_projects_sections_question_row_column_field: eefpsqrcf
+    ).each do |eefpsqrcfqrcqrco|
+      eefpsqrcf = eefpsqrcfqrcqrco.extractions_extraction_forms_projects_sections_question_row_column_field
+      eefps = eefpsqrcf.extractions_extraction_forms_projects_section
+      eefpst1_id = eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.id
+      qrcf_id = eefpsqrcfqrcqrco.extractions_extraction_forms_projects_sections_question_row_column_field.question_row_column_field.id
+      qrcqrco_name = eefpsqrcfqrcqrco.question_row_columns_question_row_column_option.name
+      lookup_key = "#{qrcf_id}-#{eefps.id}-#{eefpst1_id}"
+      eefpsqrcfqrcqrco_lookups[lookup_key] ||= []
+      eefpsqrcfqrcqrco_lookups[lookup_key] << qrcqrco_name
+    end
+
     citation = citations_project.citation
     mh[:current_citations_project] = {
       project_id: project.id,
@@ -279,7 +298,8 @@ class ConsolidationService
         efps.link_to_type1.present? &&
         (mh[:efps][efps.id][:efpso][:by_type1] || mh[:efps][efps.id][:efpso][:include_total]).present?,
       cell_lookups:,
-      extractions_lookup:
+      extractions_lookup:,
+      eefpsqrcfqrcqrco_lookups:
     }
     mh
   end

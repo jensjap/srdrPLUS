@@ -1,3 +1,30 @@
 <template x-if="qrc.type_name == 'select2_multi'">
-  <div>[select2_multi field here]</div>
+  <div class="flex">
+    <template
+      x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
+    >
+      <div
+        class="flex items-start flex-wrap border border-gray-400 rounded-sm h-16 w-64 overflow-auto mr-2 cursor-not-allowed bg-gray-100"
+      >
+        <template x-if="typeof section_eefpst1 === 'undefined'">
+          <template
+            x-for="optionName in mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[`${qrc.qrcf.id}-${eefps.id}-`]"
+          >
+            <div class="border rounded-md p-1 m-1" x-text="optionName"></div>
+          </template>
+        </template>
+        <template x-if="typeof section_eefpst1 !== 'undefined'">
+          <template
+            x-for="optionName in mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[`${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`]"
+          >
+            <div class="border rounded-md p-1 m-1" x-text="optionName"></div>
+          </template>
+        </template>
+      </div>
+    </template>
+    <input
+      class="border border-gray-400 rounded-sm !h-16 !w-64 overflow-auto mr-2"
+      type="text"
+    />
+  </div>
 </template>
