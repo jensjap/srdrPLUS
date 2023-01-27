@@ -26,7 +26,7 @@ class ConsolidationService
     extractions_lookup = {}
     project = citations_project.project
 
-    extractions = Extraction.includes(projects_users_role: { projects_user: :user }).where(citations_project:).where.not(consolidated: true)
+    extractions = Extraction.includes(projects_users_role: { projects_user: :user }).where(citations_project:)
     extractions.each do |extraction|
       extractions_lookup[extraction.id] = extraction.user.email.split('@').first
     end
@@ -50,6 +50,8 @@ class ConsolidationService
              .where(extraction: extractions, extraction_forms_projects_section: efpss)
              .uniq { |ieefpss| [ieefpss.extraction_id, ieefpss.extraction_forms_projects_section_id] }
     current_section_eefpss = eefpss.select { |eefps| eefps.extraction_forms_projects_section_id == efps.id }
+    current_section_eefpss.sort_by! { |eefps| eefps.extraction.consolidated ? 999_999_999 : eefps.extraction.id }
+
     section_eefpst1s = []
     eefpss.each do |eefps|
       extraction = eefps.extraction
@@ -285,6 +287,11 @@ class ConsolidationService
     end
 
     citation = citations_project.citation
+    current_section_eefpss.map! do |eefps|
+      as_json = eefps.as_json
+      as_json[:consolidated] = eefps.extraction.consolidated
+      as_json
+    end
     mh[:current_citations_project] = {
       project_id: project.id,
       citation_id: citation.id,
