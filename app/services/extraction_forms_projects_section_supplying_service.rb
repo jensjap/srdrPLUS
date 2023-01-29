@@ -71,10 +71,12 @@ class ExtractionFormsProjectsSectionSupplyingService
       for question in raw.questions do
         question_item = {
           'linkId' => question.id.to_s,
-          'text' => 'position:' + question.position.to_s,
+          #'text' => 'position:' + question.position.to_s,
+          'text' => question.name,
           'type' => 'group',
           'item' => []
         }
+
         for row in question.question_rows do
           row_item = {
             'linkId' => question.id.to_s + '-' + row.id.to_s,
@@ -99,82 +101,142 @@ class ExtractionFormsProjectsSectionSupplyingService
               item['extension'] = [
                 {
                   'url' => 'http://hl7.org/fhir/StructureDefinition/minValue',
-                  'valueInteger' => row_column.question_row_columns_question_row_column_options[4]['name'].to_i
+                  'valueDecimal' => row_column.question_row_columns_question_row_column_options[4]['name']
                 },
                 {
                   'url' => 'http://hl7.org/fhir/StructureDefinition/maxValue',
-                  'valueInteger' => row_column.question_row_columns_question_row_column_options[5]['name'].to_i
+                  'valueDecimal' => row_column.question_row_columns_question_row_column_options[5]['name']
                 }
               ]
-              item['type'] = 'integer'
+              item['type'] = 'decimal'
             elsif row_column.question_row_column_type.id == 5
               item['type'] = 'text'
               item['repeats'] = true
               item['answerConstraint'] = 'optionsOnly'
-              item['answerOption'] = []
-              for candidate in row_column.question_row_columns_question_row_column_options do
-                if candidate['question_row_column_option_id'] == 1
-                  item['answerOption'].append({
-                    'valueString' => candidate['name']
-                  })
+              
+              if not row_column.question_row_columns_question_row_column_options.nil?
+                item['answerOption'] = []
+                for candidate in row_column.question_row_columns_question_row_column_options do
+                  if candidate['question_row_column_option_id'] == 1
+                    if not candidate['name'].empty?
+                      item['answerOption'].append({
+                        'valueString' => candidate['name']
+                      })
+                    end
+                  end
                 end
               end
             elsif row_column.question_row_column_type.id == 6
               item['type'] = 'text'
               item['repeats'] = false
               item['answerConstraint'] = 'optionsOnly'
-              item['answerOption'] = []
-              for candidate in row_column.question_row_columns_question_row_column_options do
-                if candidate['question_row_column_option_id'] == 1
-                  item['answerOption'].append({
-                    'valueString' => candidate['name']
-                  })
+              
+              if not row_column.question_row_columns_question_row_column_options.nil?
+                item['answerOption'] = []
+                for candidate in row_column.question_row_columns_question_row_column_options do
+                  if candidate['question_row_column_option_id'] == 1
+                    if not candidate['name'].empty?
+                      item['answerOption'].append({
+                        'valueString' => candidate['name']
+                      })
+                    end
+                  end
                 end
               end
             elsif row_column.question_row_column_type.id == 7
               item['type'] = 'text'
               item['repeats'] = false
               item['answerConstraint'] = 'optionsOnly'
-              item['answerOption'] = []
-              for candidate in row_column.question_row_columns_question_row_column_options do
-                if candidate['question_row_column_option_id'] == 1
-                  item['answerOption'].append({
-                    'valueString' => candidate['name']
-                  })
+              
+              if not row_column.question_row_columns_question_row_column_options.nil?
+                item['answerOption'] = []
+                for candidate in row_column.question_row_columns_question_row_column_options do
+                  if candidate['question_row_column_option_id'] == 1
+                    if not candidate['name'].empty?
+                      item['answerOption'].append({
+                        'valueString' => candidate['name']
+                      })
+                    end
+                  end
                 end
               end
             elsif row_column.question_row_column_type.id == 8
               item['type'] = 'text'
               item['repeats'] = false
               item['answerConstraint'] = 'optionsOrString'
-              item['answerOption'] = []
-              for candidate in row_column.question_row_columns_question_row_column_options do
-                if candidate['question_row_column_option_id'] == 1
-                  item['answerOption'].append({
-                    'valueString' => candidate['name']
-                  })
+              
+              if not row_column.question_row_columns_question_row_column_options.nil?
+                item['answerOption'] = []
+                for candidate in row_column.question_row_columns_question_row_column_options do
+                  if candidate['question_row_column_option_id'] == 1
+                    if not candidate['name'].empty?
+                      item['answerOption'].append({
+                        'valueString' => candidate['name']
+                      })
+                    end
+                  end
                 end
               end
             elsif row_column.question_row_column_type.id == 9
               item['type'] = 'text'
               item['repeats'] = true
               item['answerConstraint'] = 'optionsOrString'
-              item['answerOption'] = []
-              for candidate in row_column.question_row_columns_question_row_column_options do
-                if candidate['question_row_column_option_id'] == 1
-                  item['answerOption'].append({
-                    'valueString' => candidate['name']
-                  })
+              
+              if not row_column.question_row_columns_question_row_column_options.nil?
+                item['answerOption'] = []
+                for candidate in row_column.question_row_columns_question_row_column_options do
+                  if candidate['question_row_column_option_id'] == 1
+                    if not candidate['name'].empty?
+                      item['answerOption'].append({
+                        'valueString' => candidate['name']
+                      })
+                    end
+                  end
                 end
               end
             end
-
             row_item['item'].append(item)
           end
           question_item['item'].append(row_item)
         end
+
+        if not question.dependencies.empty?
+          question_item['enableWhen'] = []
+          question_item['enableBehavior'] = 'any'
+          dependencies = question.dependencies
+          for dependency in dependencies do
+            id = dependency.prerequisitable_id
+            if dependency.prerequisitable_type == 'QuestionRowColumnsQuestionRowColumnOption'
+              option = QuestionRowColumnsQuestionRowColumnOption.find(id)
+              row_column_id = option.question_row_column_id
+              row_column = QuestionRowColumn.find(row_column_id)
+              row_id = row_column.question_row_id
+              question_id = QuestionRow.find(row_id).question_id
+              link_id = question_id.to_s + '-' + row_id.to_s + '-' + row_column_id.to_s
+              enable_condition = {
+                'question' => link_id,
+                'operator' => '=',
+                'answerString' => option.name
+              }
+              question_item['enableWhen'].append(enable_condition)
+            elsif dependency.prerequisitable_type == 'QuestionRowColumn'
+              row_column_id = id
+              row_column = QuestionRowColumn.find(row_column_id)
+              row_id = row_column.question_row_id
+              question_id = QuestionRow.find(row_id).question_id
+              link_id = question_id.to_s + '-' + row_id.to_s + '-' + row_column_id.to_s
+              enable_condition = {
+                'question' => link_id,
+                'operator' => 'exists',
+                'answerBoolean' => true
+              }
+              question_item['enableWhen'].append(enable_condition)
+            end
+          end
+        end
         extraction_forms_projects_sections['item'].append(question_item)
       end
+
       return FHIR::Questionnaire.new(extraction_forms_projects_sections)
     elsif raw.extraction_forms_projects_section_type_id == 4
       extraction_forms_projects_sections = {
