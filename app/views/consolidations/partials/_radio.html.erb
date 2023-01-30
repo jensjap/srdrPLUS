@@ -1,16 +1,32 @@
 <template x-if="qrc.type_name == 'radio'">
-  <div>
-    <template x-for="selection_option in qrc.selection_options">
-      <div class="whitespace-nowrap flex">
-        <template
-          x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
-        >
+  <div class="flex">
+    <template
+      x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
+    >
+      <div>
+        <template x-for="selection_option in qrc.selection_options">
           <div class="flex mr-2">
             <input
               type="radio"
               class="!m-0"
-              :name="eefps.consolidated ? selection_option.question_row_column_id : ''"
-              :class="eefps.consolidated ? `${qrc.question_row_column_id}-consolidated` : 'hover:!bg-slate-200 checked:bg-slate-200'"
+              :name="
+                ''; let a
+                if (typeof section_eefpst1 === 'undefined') {
+                  a = `${qrc.qrcf.id}-${eefps.id}`
+                } else {
+                  a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                }
+                return a
+              "
+              :class="
+                ''; let a
+                if (typeof section_eefpst1 === 'undefined') {
+                  a = `${qrc.qrcf.id}-${eefps.id}`
+                } else {
+                  a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                }
+                return eefps.consolidated ? a : `${a} hover:!bg-slate-200 checked:bg-slate-200`
+              "
               :checked="
                 ''; let a
                 if (typeof section_eefpst1 === 'undefined') {
@@ -23,31 +39,44 @@
               "
               :disabled="!eefps.consolidated"
               @click="
-                if (!eefps.consolidated) return;
                 ''; let a
                 if (typeof section_eefpst1 === 'undefined') {
-                  a = `${qrc.qrcf.id}-${eefps.id}-`
+                  a = `${qrc.qrcf.id}-${eefps.id}`
                 } else {
                   a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
                 }
-                Array.from(document.getElementsByClassName(a)).forEach((el) => { el.disabled = true })
+                Array.from(document.getElementsByClassName(`follow-up-${a}`)).forEach((el) => { el.disabled = true })
+                ''; let b
+                if (typeof section_eefpst1 === 'undefined') {
+                  b = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
+                } else {
+                  b = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
+                }
                 if (selection_option.followup_field_id) {
-                  document.getElementById(`followup-field-id-${selection_option.followup_field_id}`).disabled = false
+                  document.getElementById(`follow-up-${b}`).disabled = false
                 }
               "
             />
             <template x-if="selection_option.followup_field_id">
               <input
-                :id="eefps.consolidated ? `followup-field-id-${selection_option.followup_field_id}` : ''"
+                :id="
+                  ''; let a
+                  if (typeof section_eefpst1 === 'undefined') {
+                    a = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
+                  } else {
+                    a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
+                  }
+                  return `follow-up-${a}`
+                "
                 class="!w-24 !h-4"
                 :class="
                   ''; let a
                   if (typeof section_eefpst1 === 'undefined') {
-                    a = `${qrc.qrcf.id}-${eefps.id}-`
+                    a = `${qrc.qrcf.id}-${eefps.id}`
                   } else {
                     a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
                   }
-                  return a
+                  return `follow-up-${a}`
                 "
                 type="text"
                 :disabled="
@@ -77,16 +106,35 @@
             >
               <div class="!w-24 !h-4"></div>
             </template>
+            <label
+              x-show="eefps.consolidated"
+              x-text="selection_option.name"
+            ></label>
           </div>
         </template>
-        <label x-text="selection_option.name"></label>
+        <div
+          x-show="eefps.consolidated"
+          class="cursor-pointer text-center text-white text-xs rounded-md bg-gray-400"
+          @click="
+            ''; let a
+            if (typeof section_eefpst1 === 'undefined') {
+              a = `${qrc.qrcf.id}-${eefps.id}`
+            } else {
+              a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+            }
+            Array.from(document.getElementsByClassName(a)).forEach((el) => { el.checked = false })
+            ''; let b
+            if (typeof section_eefpst1 === 'undefined') {
+              b = `${qrc.qrcf.id}-${eefps.id}`
+            } else {
+              b = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+            }
+            Array.from(document.getElementsByClassName(`follow-up-${b}`)).forEach((el) => { el.disabled = true })
+          "
+        >
+          Clear
+        </div>
       </div>
     </template>
-    <div
-      class="cursor-pointer text-center text-white text-xs rounded-md bg-gray-400"
-      @click="Array.from(document.getElementsByClassName(`${qrc.question_row_column_id}-consolidated`)).forEach((el) => { el.checked = false })"
-    >
-      Clear
-    </div>
   </div>
 </template>
