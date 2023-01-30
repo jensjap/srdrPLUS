@@ -7,6 +7,7 @@
         <template x-for="selection_option in qrc.selection_options">
           <div class="flex mr-2">
             <input
+              :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
               type="checkbox"
               class="!m-0"
               :name="
@@ -54,6 +55,7 @@
             />
             <template x-if="selection_option.followup_field_id">
               <input
+                :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
                 :id="
                   ''; let a
                   if (typeof section_eefpst1 === 'undefined') {

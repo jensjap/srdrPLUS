@@ -7,6 +7,7 @@
         <template x-if="qrc.selection_options[0].name == '1'">
           <template x-if="qrc.selection_options[0].name == '1'">
             <select
+              :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
               class="!w-12 text-center"
               type="text"
               :disabled="!eefps.consolidated"
@@ -31,6 +32,7 @@
           </template>
         </template>
         <input
+          :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
           class="!w-20"
           type="number"
           :min="qrc.selection_options[1].name"

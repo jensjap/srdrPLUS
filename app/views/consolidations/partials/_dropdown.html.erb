@@ -3,7 +3,11 @@
     <template
       x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
     >
-      <select class="w-32 mr-2" :disabled="!eefps.consolidated">
+      <select
+        :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+        class="w-32 mr-2"
+        :disabled="!eefps.consolidated"
+      >
         <option value=""></option>
         <template x-for="selection_option in qrc.selection_options">
           <option
