@@ -20,7 +20,7 @@
             } else {
               a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
             }
-            const b = mh?.current_citations_project?.cell_lookups[a]
+            const b = mh?.current_citations_project?.cell_lookups[a]?.value
             return b
           "
           :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"

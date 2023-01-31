@@ -3,36 +3,47 @@
     <template
       x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
     >
-      <select class="w-32 mr-2" disabled>
-        <option value=""></option>
-        <template x-for="selection_option in qrc.selection_options">
-          <option
-            x-text="selection_option.name"
-            type="radio"
-            class="!m-0 hover:!bg-slate-200 checked:bg-slate-200"
-            :selected="
-              ''; let a
-              if (typeof section_eefpst1 === 'undefined') {
-                a = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
-              } else {
-                a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
-              }
-              const b = mh?.current_citations_project?.cell_lookups[a]
-              return b ? true : false
-            "
-          ></option>
+      <div class="w-64">
+        <template
+          x-if="typeof section_eefpst1 === 'undefined' || section_eefpst1?.eefpst1_lookups[eefps.id]"
+        >
+          <select
+            :disabled="!eefps.consolidated"
+            x-effect="$nextTick(() => {
+            ''; let a
+            if (typeof section_eefpst1 === 'undefined') {
+              a = `record_id-${qrc.qrcf.id}-${eefps.id}-`
+            } else {
+              a = `record_id-${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
+            }
+            bootSelect2($el, mh?.current_citations_project?.cell_lookups[a], false, true)
+          })"
+          >
+            <option></option>
+            <template x-for="selection_option in qrc.selection_options">
+              <option
+                :value="selection_option.id"
+                :selected="
+                ''; let a
+                if (typeof section_eefpst1 === 'undefined') {
+                  a = `${qrc.qrcf.id}-${eefps.id}-`
+                } else {
+                  a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
+                }
+                const b = mh?.current_citations_project?.cell_lookups[a]?.value
+                return selection_option.id == b
+              "
+                x-text="selection_option.name"
+              ></option>
+            </template>
+          </select>
         </template>
-      </select>
+        <template
+          x-if="typeof section_eefpst1 !== 'undefined' && section_eefpst1?.eefpst1_lookups[eefps.id] === undefined"
+        >
+          <div>No Arm Available</div>
+        </template>
+      </div>
     </template>
-    <select name="" id="" class="w-32">
-      <option value=""></option>
-      <template x-for="selection_option in qrc.selection_options">
-        <option
-          x-text="selection_option.name"
-          type="radio"
-          class="!m-0 hover:!bg-slate-200 checked:bg-slate-200"
-        ></option>
-      </template>
-    </select>
   </div>
 </template>

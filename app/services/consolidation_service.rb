@@ -52,11 +52,14 @@ class ConsolidationService
     current_section_eefpss = eefpss.select { |eefps| eefps.extraction_forms_projects_section_id == efps.id }
     current_section_eefpss.sort_by! { |eefps| eefps.extraction.consolidated ? 999_999_999 : eefps.extraction.id }
 
-    section_eefpst1s = []
+    current_section_eefpst1s = []
+    current_section_eefpst1_objects = []
     eefpss.each do |eefps|
+      efps_id = eefps.extraction_forms_projects_section_id
+      next if efps_id != efps.id
+
       extraction = eefps.extraction
       parent_eefps_id = eefps.link_to_type1&.id
-      efps_id = eefps.extraction_forms_projects_section_id
       section_id = mh[:efps][efps_id][:section_id]
       section_name = mh[:efps][efps_id][:section_name]
       efpso = mh[:efps][efps_id][:efpso]
@@ -64,7 +67,7 @@ class ConsolidationService
 
       by_type1 = efpso[:by_type1]
       include_total = efpso[:include_total]
-      type1s =
+      linked_eefpst1s =
         if linked_section.nil?
           []
         elsif by_type1 && include_total && linked_section.eefpst1s_without_total.count > 1
@@ -82,12 +85,28 @@ class ConsolidationService
             name: eefpst1.type1.name,
             description: eefpst1.type1.description }
         end
-      type1s.each do |type1|
-        next unless efps_id == efps.id && section_eefpst1s.all? do |section_eefpst1|
-                      section_eefpst1[:type1_id] != type1[:type1_id]
-                    end
 
-        section_eefpst1s << type1
+      linked_eefpst1s.each do |eefpst1|
+        current_section_eefpst1_objects << eefpst1
+        type1_id = eefpst1[:type1_id]
+        eefps_id = eefps.id
+
+        if current_section_eefpst1s.any? { |current_section_eefpst1| current_section_eefpst1[:type1_id] == type1_id }
+          current_section_eefpst1s.each do |current_section_eefpst1|
+            if current_section_eefpst1[:type1_id] == type1_id
+              current_section_eefpst1[:eefpst1_lookups][eefps_id] =
+                eefpst1[:extractions_extraction_forms_projects_sections_type1_id]
+            end
+          end
+        else
+          current_section_eefpst1 = {}
+          current_section_eefpst1[:type1_id] = eefpst1[:type1_id]
+          current_section_eefpst1[:name] = eefpst1[:name]
+          current_section_eefpst1[:description] = eefpst1[:description]
+          current_section_eefpst1[:eefpst1_lookups] =
+            { eefps_id => eefpst1[:extractions_extraction_forms_projects_sections_type1_id] }
+          current_section_eefpst1s << current_section_eefpst1
+        end
       end
 
       mh[:eefps][eefps.id] = {
@@ -99,7 +118,6 @@ class ConsolidationService
         type_id: mh[:efps][eefps.extraction_forms_projects_section_id][:efpst_id],
         parent_eefps_id:,
         children_eefps_ids: eefps.link_to_type2s.map(&:id),
-        type1s:,
         efpso:
       }
     end
@@ -152,6 +170,7 @@ class ConsolidationService
               next unless qrcqrco.question_row_column_option_id == 1
 
               qrcqrco_json = qrcqrco.as_json
+              qrcqrco_json['data_type'] = qrcqrco.class.to_s
               qrcqrco_json[:followup_field_id] = followup_field_id
               selection_options << qrcqrco_json
             elsif type_name == QuestionRowColumnType::TEXT
@@ -184,28 +203,24 @@ class ConsolidationService
       end
     end
 
-    all_section_eefpst1_ids = section_eefpst1s.map do |all_section_eefpst1|
-      all_section_eefpst1[:extractions_extraction_forms_projects_sections_type1_id]
-    end
-
     # ensures eefpsqrcf exist
     current_section_eefpss.each do |current_section_eefps|
       qrcfs.each do |qrcf|
-        if section_eefpst1s.empty?
+        if current_section_eefpst1_objects.empty?
           ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(
             extractions_extraction_forms_projects_section: current_section_eefps,
             question_row_column_field: qrcf
           )
         else
-          section_eefpst1s.each do |all_section_eefpst1|
-            unless current_section_eefps.id == all_section_eefpst1[:extractions_extraction_forms_projects_section_id]
+          current_section_eefpst1_objects.each do |current_section_eefpst1_object|
+            unless current_section_eefps.extractions_extraction_forms_projects_section_id == current_section_eefpst1_object[:extractions_extraction_forms_projects_section_id]
               next
             end
 
             ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(
               extractions_extraction_forms_projects_section: current_section_eefps,
               question_row_column_field: qrcf,
-              extractions_extraction_forms_projects_sections_type1_id: all_section_eefpst1[:extractions_extraction_forms_projects_sections_type1_id]
+              extractions_extraction_forms_projects_sections_type1_id: current_section_eefpst1_object[:extractions_extraction_forms_projects_sections_type1_id]
             )
           end
         end
@@ -217,8 +232,11 @@ class ConsolidationService
       question_row_column_field: qrcfs
     )
 
-    unless all_section_eefpst1_ids.empty?
-      eefpsqrcfs = eefpsqrcfs.where(extractions_extraction_forms_projects_sections_type1_id: all_section_eefpst1_ids)
+    unless current_section_eefpst1_objects.empty?
+      eefpst1_ids = current_section_eefpst1_objects.map do |current_section_eefpst1_object|
+        current_section_eefpst1_object[:extractions_extraction_forms_projects_sections_type1_id]
+      end
+      eefpsqrcfs = eefpsqrcfs.where(extractions_extraction_forms_projects_sections_type1_id: eefpst1_ids)
     end
 
     eefpsffs = ExtractionsExtractionFormsProjectsSectionsFollowupField.where(
@@ -246,15 +264,17 @@ class ConsolidationService
       eefpst1_id = eefpsqrcf.extractions_extraction_forms_projects_sections_type1_id
       eefps_id = eefpsqrcf.extractions_extraction_forms_projects_section_id
       qrcf_id = eefpsqrcf.question_row_column_field_id
-      if QuestionRowColumnType::CHECKBOX == qrcf_lookups[qrcf_id][:type_name] &&
-         name.instance_of?(Array)
+
+      cell_lookups["record_id-#{qrcf_id}-#{eefps_id}-#{eefpst1_id}"] = record.id
+
+      if QuestionRowColumnType::CHECKBOX == qrcf_lookups[qrcf_id][:type_name] && name.instance_of?(Array)
         name.each do |id|
-          cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}-#{id}"] = true
+          cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}-#{id}"] = { id: record.id, value: true }
         end
       elsif QuestionRowColumnType::SINGLE_OPTION_ANSWER_TYPES.include?(qrcf_lookups[qrcf_id][:type_name])
-        cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}-#{name}"] = true
+        cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}-#{name}"] = { id: record.id, value: true }
       else
-        cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}"] = name
+        cell_lookups["#{qrcf_id}-#{eefps_id}-#{eefpst1_id}"] = { id: record.id, value: name }
       end
     end
 
@@ -264,26 +284,24 @@ class ConsolidationService
       eefpst1_id = eefpsff.extractions_extraction_forms_projects_sections_type1_id
       eefps_id = eefpsff.extractions_extraction_forms_projects_section_id
       ff_id = eefpsff.followup_field_id
-      cell_lookups["#{ff_id}-#{eefps_id}-#{eefpst1_id}"] = name
+      cell_lookups["record_id-ff-#{ff_id}-#{eefps_id}-#{eefpst1_id}"] = record.id
+      cell_lookups["ff-#{ff_id}-#{eefps_id}-#{eefpst1_id}"] = { id: record.id, value: name }
     end
-
-    eefpsqrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.where(
-      extractions_extraction_forms_projects_section: current_section_eefpss,
-      question_row_column_field_id: qrcfs
-    )
 
     eefpsqrcfqrcqrco_lookups = {}
     ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption.where(
-      extractions_extraction_forms_projects_sections_question_row_column_field: eefpsqrcf
+      extractions_extraction_forms_projects_sections_question_row_column_field: eefpsqrcfs
     ).each do |eefpsqrcfqrcqrco|
       eefpsqrcf = eefpsqrcfqrcqrco.extractions_extraction_forms_projects_sections_question_row_column_field
       eefps = eefpsqrcf.extractions_extraction_forms_projects_section
       eefpst1_id = eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.id
       qrcf_id = eefpsqrcfqrcqrco.extractions_extraction_forms_projects_sections_question_row_column_field.question_row_column_field.id
-      qrcqrco_name = eefpsqrcfqrcqrco.question_row_columns_question_row_column_option.name
       lookup_key = "#{qrcf_id}-#{eefps.id}-#{eefpst1_id}"
       eefpsqrcfqrcqrco_lookups[lookup_key] ||= []
-      eefpsqrcfqrcqrco_lookups[lookup_key] << qrcqrco_name
+      eefpsqrcfqrcqrco_lookups[lookup_key] << {
+        id: eefpsqrcfqrcqrco.question_row_columns_question_row_column_option.id,
+        name: eefpsqrcfqrcqrco.question_row_columns_question_row_column_option.name
+      }
     end
 
     citation = citations_project.citation
@@ -299,7 +317,7 @@ class ConsolidationService
       efps_id: efps.id,
       efpst_id: efps.extraction_forms_projects_section_type_id,
       section_name: efps.section.name,
-      section_eefpst1s:,
+      current_section_eefpst1s:,
       current_section_eefpss:,
       by_arms:
         efps.link_to_type1.present? &&

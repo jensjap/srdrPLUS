@@ -29,8 +29,7 @@ class QuestionRowColumnType < ApplicationRecord
 
   SINGLE_OPTION_ANSWER_TYPES = [
     RADIO,
-    DROPDOWN,
-    SELECT2_SINGLE
+    DROPDOWN
   ]
 
   DEFAULT_QRC_TYPES = ['Text Field (alphanumeric)',

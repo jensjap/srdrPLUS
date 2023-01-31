@@ -46,8 +46,8 @@
             <div class="space-y-2">
               <template x-if="mh?.current_citations_project?.by_arms">
                 <template
-                  x-for="(section_eefpst1, section_eefpst1_index) in mh?.current_citations_project?.section_eefpst1s"
-                  :key="section_eefpst1.extractions_extraction_forms_projects_sections_type1_id"
+                  x-for="(section_eefpst1, section_eefpst1_index) in mh?.current_citations_project?.current_section_eefpst1s"
+                  :key="section_eefpst1.type1_id"
                 >
                   <div
                     class="pb-4 rounded-sm overflow-clip"
@@ -104,6 +104,42 @@
 
       init() {
         this.fetch_efps();
+      },
+
+      bootSelect2(selectionField, record_id, multiple, tags) {
+        const that = this;
+        $(selectionField).select2({
+          multiple,
+          tags,
+          allowClear: true,
+          placeholder: "Select...",
+        });
+        $(selectionField).on("select2:select select2:unselect", function (e) {
+          const value = $(this).val();
+          that.updateRecord(record_id, value);
+        });
+      },
+
+      async updateRecord(record_id, value) {
+        const response = await fetch(`/records/${record_id}`, {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+          body: JSON.stringify({
+            record: { name: value },
+          }),
+        });
+        if (response.status != 200) {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        } else {
+          toastr.success("Saved successfully", null, { timeOut: 1000 });
+        }
       },
 
       async fetch_efps(efps_id) {
