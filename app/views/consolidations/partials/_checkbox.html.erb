@@ -4,133 +4,144 @@
       x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
     >
       <div>
-        <template x-for="selection_option in qrc.selection_options">
-          <div class="flex mr-2">
-            <input
-              :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
-              type="checkbox"
-              class="!m-0"
-              :name="
-                ''; let a
-                if (typeof section_eefpst1 === 'undefined') {
-                  a = `${qrc.qrcf.id}-${eefps.id}`
-                } else {
-                  a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
-                }
-                return a
-              "
-              :class="
-                ''; let a
-                if (typeof section_eefpst1 === 'undefined') {
-                  a = `${qrc.qrcf.id}-${eefps.id}`
-                } else {
-                  a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
-                }
-                return eefps.consolidated ? a : `${a} hover:!bg-slate-200 checked:bg-slate-200`
-              "
-              :checked="
-                ''; let a
-                if (typeof section_eefpst1 === 'undefined') {
-                  a = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
-                } else {
-                  a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
-                }
-                const b = mh?.current_citations_project?.cell_lookups[a]?.value
-                return b ? true : false
-              "
-              :disabled="!eefps.consolidated"
-              @click="
-                if (!eefps.consolidated) return
-                if (typeof section_eefpst1 === 'undefined') {
-                  b = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
-                } else {
-                  b = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
-                }
-                if (selection_option.followup_field_id && $el.checked) {
-                  document.getElementById(`follow-up-${b}`).disabled = false
-                } else if(selection_option.followup_field_id) {
-                  document.getElementById(`follow-up-${b}`).disabled = true
-                }
-              "
-            />
-            <template x-if="selection_option.followup_field_id">
-              <input
-                :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
-                :id="
-                  ''; let a
-                  if (typeof section_eefpst1 === 'undefined') {
-                    a = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
-                  } else {
-                    a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
-                  }
-                  return `follow-up-${a}`
-                "
-                class="!w-24 !h-4"
-                :class="
+        <template
+          x-if="typeof section_eefpst1 === 'undefined' || section_eefpst1?.eefpst1_lookups[eefps.id]"
+        >
+          <div>
+            <template x-for="selection_option in qrc.selection_options">
+              <div class="flex mr-2">
+                <input
+                  :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+                  type="checkbox"
+                  class="!m-0"
+                  :name="
                   ''; let a
                   if (typeof section_eefpst1 === 'undefined') {
                     a = `${qrc.qrcf.id}-${eefps.id}`
                   } else {
                     a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
                   }
-                  return `follow-up-${a}`
+                  return a
                 "
-                type="text"
-                :disabled="
+                  :class="
                   ''; let a
-                  if (!eefps.consolidated) return true;
+                  if (typeof section_eefpst1 === 'undefined') {
+                    a = `${qrc.qrcf.id}-${eefps.id}`
+                  } else {
+                    a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                  }
+                  return eefps.consolidated ? a : `${a} hover:!bg-slate-200 checked:bg-slate-200`
+                "
+                  :checked="
+                  ''; let a
                   if (typeof section_eefpst1 === 'undefined') {
                     a = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
                   } else {
                     a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
                   }
                   const b = mh?.current_citations_project?.cell_lookups[a]?.value
-                  return b ? false : true
+                  return b ? true : false
                 "
-                :value="
-                  ''; let a
+                  :disabled="!eefps.consolidated"
+                  @click="
+                  if (!eefps.consolidated) return
                   if (typeof section_eefpst1 === 'undefined') {
-                    a = `ff-${selection_option.followup_field_id}-${eefps.id}-`
+                    b = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
                   } else {
-                    a = `ff-${selection_option.followup_field_id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                    b = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
                   }
-                  return mh?.current_citations_project?.cell_lookups[a]?.value
+                  if (selection_option.followup_field_id && $el.checked) {
+                    document.getElementById(`follow-up-${b}`).disabled = false
+                  } else if(selection_option.followup_field_id) {
+                    document.getElementById(`follow-up-${b}`).disabled = true
+                  }
                 "
-              />
+                />
+                <template x-if="selection_option.followup_field_id">
+                  <input
+                    :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+                    :id="
+                    ''; let a
+                    if (typeof section_eefpst1 === 'undefined') {
+                      a = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
+                    } else {
+                      a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
+                    }
+                    return `follow-up-${a}`
+                  "
+                    class="!w-24 !h-4"
+                    :class="
+                    ''; let a
+                    if (typeof section_eefpst1 === 'undefined') {
+                      a = `${qrc.qrcf.id}-${eefps.id}`
+                    } else {
+                      a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                    }
+                    return `follow-up-${a}`
+                  "
+                    type="text"
+                    :disabled="
+                    ''; let a
+                    if (!eefps.consolidated) return true;
+                    if (typeof section_eefpst1 === 'undefined') {
+                      a = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
+                    } else {
+                      a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
+                    }
+                    const b = mh?.current_citations_project?.cell_lookups[a]?.value
+                    return b ? false : true
+                  "
+                    :value="
+                    ''; let a
+                    if (typeof section_eefpst1 === 'undefined') {
+                      a = `ff-${selection_option.followup_field_id}-${eefps.id}-`
+                    } else {
+                      a = `ff-${selection_option.followup_field_id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                    }
+                    return mh?.current_citations_project?.cell_lookups[a]?.value
+                  "
+                  />
+                </template>
+                <template
+                  x-if="!selection_option.followup_field_id && qrc.selection_options.some(so => so.followup_field_id)"
+                >
+                  <div class="!w-24 !h-4"></div>
+                </template>
+                <label
+                  x-show="eefps.consolidated"
+                  x-text="selection_option.name"
+                ></label>
+              </div>
             </template>
-            <template
-              x-if="!selection_option.followup_field_id && qrc.selection_options.some(so => so.followup_field_id)"
-            >
-              <div class="!w-24 !h-4"></div>
-            </template>
-            <label
+            <div
               x-show="eefps.consolidated"
-              x-text="selection_option.name"
-            ></label>
+              class="cursor-pointer text-center text-white text-xs rounded-md bg-gray-400"
+              @click="
+              ''; let a
+              if (typeof section_eefpst1 === 'undefined') {
+                a = `${qrc.qrcf.id}-${eefps.id}`
+              } else {
+                a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+              }
+              Array.from(document.getElementsByClassName(a)).forEach((el) => { el.checked = false })
+              ''; let b
+              if (typeof section_eefpst1 === 'undefined') {
+                b = `${qrc.qrcf.id}-${eefps.id}`
+              } else {
+                b = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+              }
+              Array.from(document.getElementsByClassName(`follow-up-${b}`)).forEach((el) => { el.disabled = true })
+            "
+            >
+              Clear
+            </div>
           </div>
         </template>
-        <div
-          x-show="eefps.consolidated"
-          class="cursor-pointer text-center text-white text-xs rounded-md bg-gray-400"
-          @click="
-            ''; let a
-            if (typeof section_eefpst1 === 'undefined') {
-              a = `${qrc.qrcf.id}-${eefps.id}`
-            } else {
-              a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
-            }
-            Array.from(document.getElementsByClassName(a)).forEach((el) => { el.checked = false })
-            ''; let b
-            if (typeof section_eefpst1 === 'undefined') {
-              b = `${qrc.qrcf.id}-${eefps.id}`
-            } else {
-              b = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
-            }
-            Array.from(document.getElementsByClassName(`follow-up-${b}`)).forEach((el) => { el.disabled = true })
-          "
+        <template
+          x-if="typeof section_eefpst1 !== 'undefined' && section_eefpst1?.eefpst1_lookups[eefps.id] === undefined"
         >
-          Clear
-        </div>
+          <div>No Arm Available</div>
+        </template>
       </div>
     </template>
   </div>
