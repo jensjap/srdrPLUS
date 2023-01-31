@@ -9,6 +9,15 @@
             x-if="typeof section_eefpst1 === 'undefined' || section_eefpst1?.eefpst1_lookups[eefps.id]"
           >
             <textarea
+              @input.debounce.1000ms="
+                ''; let a
+                if (typeof section_eefpst1 === 'undefined') {
+                  a = `record_id-${qrc.qrcf.id}-${eefps.id}-`
+                } else {
+                  a = `record_id-${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
+                }
+                updateRecord(mh?.current_citations_project?.cell_lookups[a], $el.value)
+              "
               class="!resize-none"
               name=""
               id=""
