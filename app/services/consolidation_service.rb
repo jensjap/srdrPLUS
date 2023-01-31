@@ -65,16 +65,21 @@ class ConsolidationService
       section_id = mh[:efps][efps_id][:section_id]
       section_name = mh[:efps][efps_id][:section_name]
       efpso = mh[:efps][efps_id][:efpso]
-      parent_eefps = eefpss.find { |ieefps| ieefps.id == parent_eefps_id }
-
+      if efps.extraction_forms_projects_section_type_id == 1
+        parent_eefps = eefps
+      elsif efps.extraction_forms_projects_section_type_id == 2
+        parent_eefps = eefpss.find { |ieefps| ieefps.id == parent_eefps_id }
+      end
       by_type1 = efpso[:by_type1]
       include_total = efpso[:include_total]
       parent_eefps_eefpst1s =
-        if parent_eefps.nil?
+        if efps.extraction_forms_projects_section_type_id == 1
+          parent_eefps.extractions_extraction_forms_projects_sections_type1s
+        elsif parent_eefps.nil?
           []
         elsif by_type1 && include_total && parent_eefps.eefpst1s_without_total.count > 1
           parent_eefps.eefpst1s_with_total
-        elsif by_type1 && !include_total
+        elsif by_type1
           parent_eefps.eefpst1s_without_total
         elsif !by_type1 && include_total
           parent_eefps.eefpst1s_only_total

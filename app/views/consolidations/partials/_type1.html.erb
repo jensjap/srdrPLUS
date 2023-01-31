@@ -1,0 +1,37 @@
+<div class="px-4 lg:px-8 space-y-2">
+  <table class="table-auto">
+    <thead>
+      <tr>
+        <th class="text-left">Arm Name</th>
+        <template
+          x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
+        >
+          <th
+            class="text-center"
+            x-text="`ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+          ></th>
+        </template>
+      </tr>
+    </thead>
+    <tbody>
+      <template
+        x-for="(section_eefpst1, section_eefpst1_index) in mh?.current_citations_project?.current_section_eefpst1s"
+      >
+        <tr>
+          <td
+            class="text-left"
+            x-text="`${section_eefpst1.name} (${section_eefpst1.description})`"
+          ></td>
+          <template
+            x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
+          >
+            <td
+              class="text-center"
+              x-text="section_eefpst1?.eefpst1_lookups[eefps.id] === undefined ? 'Does NOT Exist' : 'Exists'"
+            ></td>
+          </template>
+        </tr>
+      </template>
+    </tbody>
+  </table>
+</div>

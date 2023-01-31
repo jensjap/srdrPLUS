@@ -1,0 +1,31 @@
+<div>
+  <template x-for="(qr, qr_index) in question.rows">
+    <div class="flex">
+      <div
+        class="flex justify-center items-center p-2 pl-0 text-xs font-thin text-gray-500 w-6"
+        style="writing-mode: vertical-lr"
+        x-text="qr.name"
+      ></div>
+      <div class="flex overflow-x-auto">
+        <div class="flex flex-shrink-0">
+          <template x-for="(qrc, qrc_index) in qr.columns">
+            <div class="mr-2">
+              <div
+                class="flex justify-center items-center p-2 pb-0 text-xs text-gray-500 font-thin border-b-2 h-6"
+                x-text="qrc.question_row_column_name"
+              ></div>
+              <!-- prettier-ignore -->
+              <%= render('consolidations/partials/checkbox') %>
+              <%= render('consolidations/partials/dropdown') %>
+              <%= render('consolidations/partials/numeric') %>
+              <%= render('consolidations/partials/radio') %>
+              <%= render('consolidations/partials/select2_multi') %>
+              <%= render('consolidations/partials/select2_single') %>
+              <%= render('consolidations/partials/text') %>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+  </template>
+</div>
