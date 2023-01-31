@@ -14,6 +14,7 @@
                   :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
                   type="checkbox"
                   class="!m-0 cursor-pointer"
+                  :value="selection_option.id"
                   :name="
                     ''; let a
                     if (typeof section_eefpst1 === 'undefined') {
@@ -55,6 +56,27 @@
                     } else if(selection_option.followup_field_id) {
                       document.getElementById(`follow-up-${b}`).disabled = true
                     }
+
+                    ''; let a
+                    if (typeof section_eefpst1 === 'undefined') {
+                      a = `${qrc.qrcf.id}-${eefps.id}`
+                    } else {
+                      a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
+                    }
+
+                    ''; let record_id_key
+                    if (typeof section_eefpst1 === 'undefined') {
+                      record_id_key = `record_id-${qrc.qrcf.id}-${eefps.id}-`
+                    } else {
+                      record_id_key = `record_id-${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
+                    }
+                    const newVal = ['']
+                    document.getElementsByName(a).forEach(el => {
+                      if (el.checked) {
+                        newVal.push(el.value)
+                      }
+                    })
+                    updateRecord(mh?.current_citations_project?.cell_lookups[record_id_key], JSON.stringify(newVal))
                   "
                 />
                 <template x-if="selection_option.followup_field_id">
@@ -100,6 +122,15 @@
                       }
                       return mh?.current_citations_project?.cell_lookups[a]?.value
                     "
+                    @input.debounce.1000ms="
+                      ''; let a
+                      if (typeof section_eefpst1 === 'undefined') {
+                        a = `record_id-ff-${selection_option.followup_field_id}-${eefps.id}-`
+                      } else {
+                        a = `record_id-ff-${selection_option.followup_field_id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
+                      }
+                      updateRecord(mh?.current_citations_project?.cell_lookups[a], $el.value)
+                    "
                   />
                 </template>
                 <template
@@ -131,6 +162,15 @@
                   b = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
                 }
                 Array.from(document.getElementsByClassName(`follow-up-${b}`)).forEach((el) => { el.disabled = true })
+
+                ''; let record_id_key
+                if (typeof section_eefpst1 === 'undefined') {
+                  record_id_key = `record_id-${qrc.qrcf.id}-${eefps.id}-`
+                } else {
+                  record_id_key = `record_id-${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
+                }
+                const newVal = ['']
+                updateRecord(mh?.current_citations_project?.cell_lookups[record_id_key], JSON.stringify(newVal))
               "
             >
               Clear
