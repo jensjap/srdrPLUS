@@ -32,7 +32,7 @@ class ConsolidationService
     end
     efpss = ExtractionFormsProject.find_by(project:).extraction_forms_projects_sections.includes(:section)
 
-    efpss.map do |iefps|
+    efpss.each do |iefps|
       efpso = ExtractionFormsProjectsSectionOption.find_or_create_by(extraction_forms_projects_section: iefps)
       efpso = { by_type1: efpso.by_type1, include_total: efpso.include_total }
       mh[:efps][iefps.id] = {
@@ -54,7 +54,9 @@ class ConsolidationService
 
     current_section_eefpst1s = []
     current_section_eefpst1_objects = []
-    eefpss.each do |eefps|
+
+    # to do: check if we need eefpss or current_section_eefpss
+    current_section_eefpss.each do |eefps|
       efps_id = eefps.extraction_forms_projects_section_id
       next if efps_id != efps.id
 
@@ -63,33 +65,34 @@ class ConsolidationService
       section_id = mh[:efps][efps_id][:section_id]
       section_name = mh[:efps][efps_id][:section_name]
       efpso = mh[:efps][efps_id][:efpso]
-      linked_section = eefpss.find { |cached_eefpss| cached_eefpss.id == parent_eefps_id }
+      parent_eefps = eefpss.find { |ieefps| ieefps.id == parent_eefps_id }
 
       by_type1 = efpso[:by_type1]
       include_total = efpso[:include_total]
-      linked_eefpst1s =
-        if linked_section.nil?
+      parent_eefps_eefpst1s =
+        if parent_eefps.nil?
           []
-        elsif by_type1 && include_total && linked_section.eefpst1s_without_total.count > 1
-          linked_section.eefpst1s_with_total
+        elsif by_type1 && include_total && parent_eefps.eefpst1s_without_total.count > 1
+          parent_eefps.eefpst1s_with_total
         elsif by_type1 && !include_total
-          linked_section.eefpst1s_without_total
+          parent_eefps.eefpst1s_without_total
         elsif !by_type1 && include_total
-          linked_section.eefpst1s_only_total
+          parent_eefps.eefpst1s_only_total
         else
           []
-        end.map do |eefpst1|
-          { extractions_extraction_forms_projects_sections_type1_id: eefpst1.id,
-            extractions_extraction_forms_projects_section_id: eefpst1.extractions_extraction_forms_projects_section_id,
-            type1_id: eefpst1.type1.id,
-            name: eefpst1.type1.name,
-            description: eefpst1.type1.description }
         end
+      parent_eefps_eefpst1s = parent_eefps_eefpst1s.map do |eefpst1|
+        { extractions_extraction_forms_projects_sections_type1_id: eefpst1.id,
+          extractions_extraction_forms_projects_section_id: eefps.id,
+          type1_id: eefpst1.type1.id,
+          name: eefpst1.type1.name,
+          description: eefpst1.type1.description }
+      end
 
-      linked_eefpst1s.each do |eefpst1|
+      parent_eefps_eefpst1s.each do |eefpst1|
         current_section_eefpst1_objects << eefpst1
         type1_id = eefpst1[:type1_id]
-        eefps_id = eefps.id
+        eefps_id = eefpst1[:extractions_extraction_forms_projects_section_id]
 
         if current_section_eefpst1s.any? { |current_section_eefpst1| current_section_eefpst1[:type1_id] == type1_id }
           current_section_eefpst1s.each do |current_section_eefpst1|
@@ -100,7 +103,7 @@ class ConsolidationService
           end
         else
           current_section_eefpst1 = {}
-          current_section_eefpst1[:type1_id] = eefpst1[:type1_id]
+          current_section_eefpst1[:type1_id] = type1_id
           current_section_eefpst1[:name] = eefpst1[:name]
           current_section_eefpst1[:description] = eefpst1[:description]
           current_section_eefpst1[:eefpst1_lookups] =

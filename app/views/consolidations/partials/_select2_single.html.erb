@@ -41,7 +41,11 @@
         <template
           x-if="typeof section_eefpst1 !== 'undefined' && section_eefpst1?.eefpst1_lookups[eefps.id] === undefined"
         >
-          <div>No Arm Available</div>
+          <div
+            :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+          >
+            No Arm Available
+          </div>
         </template>
       </div>
     </template>
