@@ -2,52 +2,42 @@
   <div class="flex">
     <template
       x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
-      ><div>
-        <template x-if="typeof section_eefpst1 === 'undefined'">
-          <div class="w-64">
-            <select
-              :disabled="!eefps.consolidated"
-              x-effect="$nextTick(() => bootSelect2($el, true, true))"
-              multiple
-            >
-              <template x-for="option in qrc.selection_options">
-                <option
-                  :value="option.id"
-                  :selected="
-                    ''; let a
+    >
+      <div class="w-64">
+        <template
+          x-if="typeof section_eefpst1 === 'undefined' || section_eefpst1?.eefpst1_lookups[eefps.id]"
+        >
+          <select
+            :disabled="!eefps.consolidated"
+            x-effect="$nextTick(() => bootSelect2($el, true, true))"
+            multiple
+          >
+            <template x-for="option in qrc.selection_options">
+              <option
+                :value="option.id"
+                :selected="
+                  ''; let a
+                  if (typeof section_eefpst1 !== 'undefined') {
                     if (mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[`${qrc.qrcf.id}-${eefps.id}-`]) {
                       return mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[`${qrc.qrcf.id}-${eefps.id}-`].some(o => o.id == option.id)
                     }
                     return false
-                  "
-                  x-text="option.name"
-                ></option>
-              </template>
-            </select>
-          </div>
-        </template>
-        <template x-if="typeof section_eefpst1 !== 'undefined'">
-          <div class="w-64">
-            <select
-              :disabled="!eefps.consolidated"
-              x-effect="$nextTick(() => bootSelect2($el, true, true))"
-              multiple
-            >
-              <template x-for="option in qrc.selection_options">
-                <option
-                  :value="option.id"
-                  :selected="
-                    ''; let a
+                  } else {
                     if (mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[`${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`]) {
                       return mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[`${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`].some(o => o.id == option.id)
                     }
-                    return false
-                  "
-                  x-text="option.name"
-                ></option>
-              </template>
-            </select>
-          </div>
+                  }
+                  return false
+                "
+                x-text="option.name"
+              ></option>
+            </template>
+          </select>
+        </template>
+        <template
+          x-if="typeof section_eefpst1 !== 'undefined' && section_eefpst1?.eefpst1_lookups[eefps.id] === undefined"
+        >
+          <div>No Arm Available</div>
         </template>
       </div>
     </template>
