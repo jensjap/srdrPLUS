@@ -8,7 +8,7 @@
           <template x-if="qrc.selection_options[0].name == '1'">
             <select
               :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
-              class="!w-12 text-center"
+              class="!w-12 text-center cursor-pointer"
               type="text"
               :disabled="!eefps.consolidated"
               :value="
@@ -39,15 +39,15 @@
           :max="qrc.selection_options[2].name"
           :disabled="!eefps.consolidated"
           :value="
-              ''; let a
-              if (typeof section_eefpst1 === 'undefined') {
-                a = `${qrc.qrcf.id}-${eefps.id}-`
-              } else {
-                a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
-              }
-              const b = mh?.current_citations_project?.cell_lookups[a]?.value
-              return b
-            "
+            ''; let a
+            if (typeof section_eefpst1 === 'undefined') {
+              a = `${qrc.qrcf.id}-${eefps.id}-`
+            } else {
+              a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+            }
+            const b = mh?.current_citations_project?.cell_lookups[a]?.value
+            return b
+          "
         />
       </div>
     </template>
