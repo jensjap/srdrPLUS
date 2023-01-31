@@ -23,8 +23,8 @@
                     }
                     return false
                   } else {
-                    if (mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[`${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`]) {
-                      return mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[`${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`].some(o => o.id == option.id)
+                    if (mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[`${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`]) {
+                      return mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[`${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`].some(o => o.id == option.id)
                     }
                   }
                   return false

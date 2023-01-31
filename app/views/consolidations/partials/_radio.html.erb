@@ -19,7 +19,7 @@
                     if (typeof section_eefpst1 === 'undefined') {
                       a = `${qrc.qrcf.id}-${eefps.id}`
                     } else {
-                      a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                      a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
                     }
                     return a
                   "
@@ -28,7 +28,7 @@
                     if (typeof section_eefpst1 === 'undefined') {
                       a = `${qrc.qrcf.id}-${eefps.id}`
                     } else {
-                      a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                      a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
                     }
                     return eefps.consolidated ? a : `${a} hover:!bg-slate-200 checked:bg-slate-200`
                   "
@@ -37,7 +37,7 @@
                     if (typeof section_eefpst1 === 'undefined') {
                       a = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
                     } else {
-                      a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
+                      a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}-${selection_option.id}`
                     }
                     const b = mh?.current_citations_project?.cell_lookups[a]?.value
                     return b ? true : false
@@ -48,14 +48,14 @@
                     if (typeof section_eefpst1 === 'undefined') {
                       a = `${qrc.qrcf.id}-${eefps.id}`
                     } else {
-                      a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                      a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
                     }
                     Array.from(document.getElementsByClassName(`follow-up-${a}`)).forEach((el) => { el.disabled = true })
                     ''; let b
                     if (typeof section_eefpst1 === 'undefined') {
                       b = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
                     } else {
-                      b = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
+                      b = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}-${selection_option.id}`
                     }
                     if (selection_option.followup_field_id) {
                       document.getElementById(`follow-up-${b}`).disabled = false
@@ -70,7 +70,7 @@
                       if (typeof section_eefpst1 === 'undefined') {
                         a = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
                       } else {
-                        a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
+                        a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}-${selection_option.id}`
                       }
                       return `follow-up-${a}`
                     "
@@ -80,7 +80,7 @@
                       if (typeof section_eefpst1 === 'undefined') {
                         a = `${qrc.qrcf.id}-${eefps.id}`
                       } else {
-                        a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                        a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
                       }
                       return `follow-up-${a}`
                     "
@@ -91,7 +91,7 @@
                       if (typeof section_eefpst1 === 'undefined') {
                         a = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
                       } else {
-                        a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}-${selection_option.id}`
+                        a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}-${selection_option.id}`
                       }
                       const b = mh?.current_citations_project?.cell_lookups[a]?.value
                       return b ? false : true
@@ -101,7 +101,7 @@
                       if (typeof section_eefpst1 === 'undefined') {
                         a = `ff-${selection_option.followup_field_id}-${eefps.id}-`
                       } else {
-                        a = `ff-${selection_option.followup_field_id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                        a = `ff-${selection_option.followup_field_id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
                       }
                       return mh?.current_citations_project?.cell_lookups[a]?.value
                     "
@@ -126,14 +126,14 @@
                 if (typeof section_eefpst1 === 'undefined') {
                   a = `${qrc.qrcf.id}-${eefps.id}`
                 } else {
-                  a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                  a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
                 }
                 Array.from(document.getElementsByClassName(a)).forEach((el) => { el.checked = false })
                 ''; let b
                 if (typeof section_eefpst1 === 'undefined') {
                   b = `${qrc.qrcf.id}-${eefps.id}`
                 } else {
-                  b = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                  b = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
                 }
                 Array.from(document.getElementsByClassName(`follow-up-${b}`)).forEach((el) => { el.disabled = true })
               "

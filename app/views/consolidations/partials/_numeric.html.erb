@@ -20,7 +20,7 @@
                     if (typeof section_eefpst1 === 'undefined') {
                       a = `${qrc.equality_qrcf.id}-${eefps.id}-`
                     } else {
-                      a = `${qrc.equality_qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                      a = `${qrc.equality_qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
                     }
                     const b = mh?.current_citations_project?.cell_lookups[a]?.value
                     return b
@@ -47,7 +47,7 @@
                 if (typeof section_eefpst1 === 'undefined') {
                   a = `${qrc.qrcf.id}-${eefps.id}-`
                 } else {
-                  a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                  a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
                 }
                 const b = mh?.current_citations_project?.cell_lookups[a]?.value
                 return b
