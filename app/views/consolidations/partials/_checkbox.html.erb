@@ -13,7 +13,7 @@
                 <input
                   :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
                   type="checkbox"
-                  class="!m-0"
+                  class="!m-0 cursor-pointer"
                   :name="
                   ''; let a
                   if (typeof section_eefpst1 === 'undefined') {
@@ -117,21 +117,21 @@
               x-show="eefps.consolidated"
               class="cursor-pointer text-center text-white text-xs rounded-md bg-gray-400"
               @click="
-              ''; let a
-              if (typeof section_eefpst1 === 'undefined') {
-                a = `${qrc.qrcf.id}-${eefps.id}`
-              } else {
-                a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
-              }
-              Array.from(document.getElementsByClassName(a)).forEach((el) => { el.checked = false })
-              ''; let b
-              if (typeof section_eefpst1 === 'undefined') {
-                b = `${qrc.qrcf.id}-${eefps.id}`
-              } else {
-                b = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
-              }
-              Array.from(document.getElementsByClassName(`follow-up-${b}`)).forEach((el) => { el.disabled = true })
-            "
+                ''; let a
+                if (typeof section_eefpst1 === 'undefined') {
+                  a = `${qrc.qrcf.id}-${eefps.id}`
+                } else {
+                  a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                }
+                Array.from(document.getElementsByClassName(a)).forEach((el) => { el.checked = false })
+                ''; let b
+                if (typeof section_eefpst1 === 'undefined') {
+                  b = `${qrc.qrcf.id}-${eefps.id}`
+                } else {
+                  b = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1.extractions_extraction_forms_projects_sections_type1_id}`
+                }
+                Array.from(document.getElementsByClassName(`follow-up-${b}`)).forEach((el) => { el.disabled = true })
+              "
             >
               Clear
             </div>
