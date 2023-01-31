@@ -11,6 +11,15 @@
             <template x-if="qrc.selection_options[0].name == '1'">
               <template x-if="qrc.selection_options[0].name == '1'">
                 <select
+                  @input.debounce.1000ms="
+                    ''; let a
+                    if (typeof section_eefpst1 === 'undefined') {
+                      a = `record_id-${qrc.equality_qrcf.id}-${eefps.id}-`
+                    } else {
+                      a = `record_id-${qrc.equality_qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
+                    }
+                    updateRecord(mh?.current_citations_project?.cell_lookups[a], $el.value)
+                  "
                   :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
                   class="!w-12 text-center cursor-pointer"
                   type="text"
@@ -37,6 +46,15 @@
             </template>
             <input
               :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+              @input.debounce.1000ms="
+                ''; let a
+                if (typeof section_eefpst1 === 'undefined') {
+                  a = `record_id-${qrc.qrcf.id}-${eefps.id}-`
+                } else {
+                  a = `record_id-${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
+                }
+                updateRecord(mh?.current_citations_project?.cell_lookups[a], $el.value)
+              "
               class="!w-20"
               type="number"
               :min="qrc.selection_options[1].name"
