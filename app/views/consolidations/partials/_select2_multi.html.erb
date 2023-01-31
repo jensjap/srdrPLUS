@@ -9,7 +9,11 @@
         >
           <select
             :disabled="!eefps.consolidated"
-            x-effect="$nextTick(() => bootSelect2($el, true, true))"
+            x-effect="$nextTick(() => {
+              ''; let a
+              a = `eefps-${eefps.id}-qrcf-${qrc.qrcf.id}`
+              bootSelect2($el, mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[a], true, true)
+            })"
             multiple
           >
             <template x-for="option in qrc.selection_options">
@@ -17,17 +21,13 @@
                 :value="option.id"
                 :selected="
                   ''; let a
-                  if (typeof section_eefpst1 !== 'undefined') {
-                    if (mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[`${qrc.qrcf.id}-${eefps.id}-`]) {
-                      return mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[`${qrc.qrcf.id}-${eefps.id}-`].some(o => o.id == option.id)
-                    }
-                    return false
+                  if (typeof section_eefpst1 === 'undefined') {
+                    a = `${qrc.qrcf.id}-${eefps.id}-`
                   } else {
-                    if (mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[`${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`]) {
-                      return mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[`${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`].some(o => o.id == option.id)
-                    }
+                    a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
                   }
-                  return false
+                  if (mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[a] === undefined) return false
+                  return mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[a].some(o => o.id == option.id)
                 "
                 x-text="option.name"
               ></option>

@@ -306,6 +306,10 @@ class ConsolidationService
         name: eefpsqrcfqrcqrco.question_row_columns_question_row_column_option.name
       }
     end
+    eefpsqrcfs.each do |eefpsqrcf|
+      eefpsqrcfqrcqrco_lookups["eefps-#{eefpsqrcf.extractions_extraction_forms_projects_section_id}-qrcf-#{eefpsqrcf.question_row_column_field_id}"] =
+        eefpsqrcf.id
+    end
 
     citation = citations_project.citation
     current_section_eefpss.map! do |eefps|
