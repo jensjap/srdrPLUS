@@ -13,8 +13,24 @@ class ExtractionSupplyingService
   def find_by_extraction_id(id)
     extraction = Extraction.find(id)
     fhir_extraction_sections = []
-    
-    extraction_sections = extraction.extractions_extraction_forms_projects_sections
+
+    #!!! This will return filtered section list based on the type of Extraction we are working on:
+    #    i.e. Standard Type extraction will ignore Diagnostic sections and
+    #         Diagnostic Type extraction will ignore Standard sections.
+    #extraction = Extraction.first
+    #extraction.extraction_forms_projects_sections.first.extraction_forms_project.extraction_forms_projects_sections
+
+    efpss = extraction.extraction_forms_projects_sections.first.extraction_forms_project.extraction_forms_projects_sections
+    extraction_sections = []
+    for efps in efpss do
+      eefpss = efps.extractions_extraction_forms_projects_sections
+      for eefps in eefpss do
+        if eefps.extraction_id == id.to_i
+          extraction_sections.append(eefps)
+        end
+      end
+    end
+    return create_fhir_obj(extraction_sections[3])
     for extraction_section in extraction_sections do
       fhir_extraction_sections.append(create_fhir_obj(extraction_section))
     end
@@ -60,7 +76,9 @@ class ExtractionSupplyingService
         }],
         'characteristic' => []
       }
-      for row in form.extraction_forms_projects_sections_type1s do
+      #!!! use raw here to get the Diagnostic test -- index (type1_type_id=5) and reference (type1_type_id=6) test.
+      #    index and reference tests from the extraction and not the suggested list.
+      for row in raw.extractions_extraction_forms_projects_sections_type1s do
         info = Type1.find(row['type1_id'])
         eefps['characteristic'].append({
           'description' => info['description'],
@@ -100,14 +118,15 @@ class ExtractionSupplyingService
 
       restriction_symbol = ''
 
-      for question_row_column_field in raw.question_row_column_fields do
+      for eefpsqrf in raw.extractions_extraction_forms_projects_sections_question_row_column_fields do
+        question_row_column_field = eefpsqrf.question_row_column_field
         question_row_column_id = question_row_column_field.question_row_column_id
         question_row_column = QuestionRowColumn.find(question_row_column_id)
         ans_form = question_row_column.question_row_columns_question_row_column_options
         question_row_id = question_row_column.question_row_id
         question_id = QuestionRow.find(question_row_id).question_id
         type = question_row_column.question_row_column_type.id
-        value = question_row_column_field.extractions_extraction_forms_projects_sections_question_row_column_fields[0].records[0]['name']
+        value = eefpsqrf.records[0]['name']
 
         if value.nil?
           if type != 9
