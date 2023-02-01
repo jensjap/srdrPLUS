@@ -47,7 +47,10 @@
               role="list"
               class="flex-1 divide-y divide-gray-200 overflow-y-auto"
             >
-              <template x-for="efps_section in efps_sections">
+              <template
+                x-for="efps_section in efps_sections"
+                :key="efps_section.efps_id"
+              >
                 <li class="cursor-pointer">
                   <div
                     class="group relative flex items-center p-2 m-1 bg-srdrpurple text-white rounded text-sm font-bold text-center"

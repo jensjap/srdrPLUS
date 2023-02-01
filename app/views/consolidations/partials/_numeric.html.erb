@@ -2,6 +2,7 @@
   <div class="flex">
     <template
       x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
+      :key="eefps.id"
     >
       <div>
         <template

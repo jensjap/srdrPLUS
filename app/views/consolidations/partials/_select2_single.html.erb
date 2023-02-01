@@ -20,7 +20,10 @@
             })"
           >
             <option></option>
-            <template x-for="selection_option in qrc.selection_options">
+            <template
+              x-for="selection_option in qrc.selection_options"
+              :key="selection_option.id"
+            >
               <option
                 :value="selection_option.id"
                 :selected="

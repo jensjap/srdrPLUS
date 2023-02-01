@@ -5,6 +5,7 @@
         <th class="text-left">Arm Name</th>
         <template
           x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
+          :key="eefps.id"
         >
           <th
             class="text-center"
@@ -16,6 +17,7 @@
     <tbody>
       <template
         x-for="(section_eefpst1, section_eefpst1_index) in mh?.current_citations_project?.current_section_eefpst1s"
+        :key="section_eefpst1.type1_id"
       >
         <tr>
           <td
@@ -24,6 +26,7 @@
           ></td>
           <template
             x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
+            :key="eefps.id"
           >
             <td class="text-center">
               <span

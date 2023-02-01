@@ -2,6 +2,7 @@
   <div class="flex">
     <template
       x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
+      :key="eefps.id"
     >
       <div class="w-64">
         <template
@@ -16,7 +17,7 @@
             })"
             multiple
           >
-            <template x-for="option in qrc.selection_options">
+            <template x-for="option in qrc.selection_options" :key="option.id">
               <option
                 :value="option.id"
                 :selected="

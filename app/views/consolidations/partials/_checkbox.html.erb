@@ -2,13 +2,17 @@
   <div class="flex">
     <template
       x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
+      :key="eefps.id"
     >
       <div class="flex">
         <template
           x-if="typeof section_eefpst1 === 'undefined' || section_eefpst1?.eefpst1_lookups[eefps.id]"
         >
           <div>
-            <template x-for="selection_option in qrc.selection_options">
+            <template
+              x-for="selection_option in qrc.selection_options"
+              :key="selection_option.id"
+            >
               <div class="flex mr-2">
                 <input
                   :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
@@ -191,7 +195,10 @@
           x-if="eefps.consolidated && typeof section_eefpst1 !== 'undefined' && section_eefpst1?.eefpst1_lookups[eefps.id] === undefined"
         >
           <div>
-            <template x-for="selection_option in qrc.selection_options">
+            <template
+              x-for="selection_option in qrc.selection_options"
+              :key="selection_option.id"
+            >
               <label x-text="selection_option.name"></label>
             </template>
           </div>

@@ -53,6 +53,7 @@
               <tbody class="divide-y divide-gray-200 bg-white">
                 <template
                   x-for="citations_project_id in Object.keys(citationsHash)"
+                  :key="citations_project_id"
                 >
                   <tr>
                     <td
