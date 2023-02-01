@@ -42,9 +42,75 @@
       efps_sidebar: false,
       efps_sections: [],
       mh: null,
+      arm: {
+        name: "",
+        description: "",
+      },
 
       init() {
         this.fetch_efps();
+      },
+
+      async createArm(lookup, eefps_id, name, description) {
+        const params = {
+          extractions_extraction_forms_projects_section: {
+            extractions_extraction_forms_projects_sections_type1s_attributes: {
+              0: {
+                type1_attributes: {
+                  name,
+                  description,
+                },
+              },
+            },
+          },
+        };
+
+        const response = await fetch(
+          `/extractions_extraction_forms_projects_sections/${eefps_id}`,
+          {
+            method: "PATCH",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+        const data = await response.json();
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Saved successfully", null, { timeOut: 1000 });
+          lookup[eefps_id] =
+            data.extractions_extraction_forms_projects_sections_type1_id;
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+
+      async deleteArm(lookup, eefps_id) {
+        const response = await fetch(
+          `/extractions_extraction_forms_projects_sections_type1s/${lookup[eefps_id]}`,
+          {
+            method: "DELETE",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+          }
+        );
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Deleted successfully", null, { timeOut: 1000 });
+          lookup[eefps_id] = undefined;
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
       },
 
       bootSelect2(selectionField, record_id, multiple, tags) {
@@ -105,10 +171,10 @@
           credentials: "same-origin",
           body: JSON.stringify(params),
         });
-        if (response.status != 200) {
-          toastr.error("We've encountered an error", null, { timeOut: 1000 });
-        } else {
+        if (response.status >= 200 && response.status < 300) {
           toastr.success("Saved successfully", null, { timeOut: 1000 });
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
       },
 

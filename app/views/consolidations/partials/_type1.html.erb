@@ -25,10 +25,35 @@
           <template
             x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
           >
-            <td
-              class="text-center"
-              x-text="section_eefpst1?.eefpst1_lookups[eefps.id] === undefined ? 'Does NOT Exist' : 'Exists'"
-            ></td>
+            <td class="text-center">
+              <span
+                :class="section_eefpst1?.eefpst1_lookups[eefps.id] === undefined ? 'text-red-500' : 'text-green-500'"
+                x-text="section_eefpst1?.eefpst1_lookups[eefps.id] === undefined ? 'Does NOT Exist' : 'Exists'"
+              ></span>
+              <template
+                x-if="eefps?.consolidated && section_eefpst1?.eefpst1_lookups[eefps.id] === undefined"
+              >
+                <span
+                  class="ml-2 bg-srdr-primary text-xs text-white p-1 rounded-md cursor-pointer"
+                  @click="createArm(section_eefpst1.eefpst1_lookups, eefps.id, section_eefpst1.name, section_eefpst1.description)"
+                >
+                  Create
+                </span>
+              </template>
+              <template
+                x-if="eefps?.consolidated && section_eefpst1?.eefpst1_lookups[eefps.id] !== undefined"
+              >
+                <span
+                  class="ml-2 bg-red-700 text-xs text-white p-1 rounded-md cursor-pointer"
+                  @click="
+                    if (confirm(`Are you sure you want to delete '${section_eefpst1.name}'`)) {
+                      deleteArm(section_eefpst1.eefpst1_lookups, eefps.id);
+                    }"
+                >
+                  Delete
+                </span>
+              </template>
+            </td>
           </template>
         </tr>
       </template>
