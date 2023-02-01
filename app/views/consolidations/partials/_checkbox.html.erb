@@ -3,7 +3,7 @@
     <template
       x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
     >
-      <div>
+      <div class="flex">
         <template
           x-if="typeof section_eefpst1 === 'undefined' || section_eefpst1?.eefpst1_lookups[eefps.id]"
         >
@@ -146,7 +146,7 @@
             </template>
             <div
               x-show="eefps.consolidated"
-              class="cursor-pointer text-center text-white text-xs rounded-md bg-gray-400"
+              class="cursor-pointer text-center text-white text-xs rounded-md p-1 bg-gray-400"
               @click="
                 ''; let a
                 if (typeof section_eefpst1 === 'undefined') {
@@ -184,6 +184,15 @@
             :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
           >
             No Arm Available
+          </div>
+        </template>
+        <template
+          x-if="eefps.consolidated && typeof section_eefpst1 !== 'undefined' && section_eefpst1?.eefpst1_lookups[eefps.id] === undefined"
+        >
+          <div>
+            <template x-for="selection_option in qrc.selection_options">
+              <label x-text="selection_option.name"></label>
+            </template>
           </div>
         </template>
       </div>
