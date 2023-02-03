@@ -30,7 +30,6 @@ class ExtractionSupplyingService
         end
       end
     end
-    return create_fhir_obj(extraction_sections[3])
     for extraction_section in extraction_sections do
       fhir_extraction_sections.append(create_fhir_obj(extraction_section))
     end
@@ -124,7 +123,9 @@ class ExtractionSupplyingService
         question_row_column = QuestionRowColumn.find(question_row_column_id)
         ans_form = question_row_column.question_row_columns_question_row_column_options
         question_row_id = question_row_column.question_row_id
-        question_id = QuestionRow.find(question_row_id).question_id
+        question_row = QuestionRow.find(question_row_id)
+        question_id = question_row.question_id
+        question = Question.find(question_id)
         type = question_row_column.question_row_column_type.id
         value = eefpsqrf.records[0]['name']
 
@@ -135,7 +136,7 @@ class ExtractionSupplyingService
         else
           if type != 9
             item = {
-              'linkId' => question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
+              'linkId' => question.position.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
             }
           end
         end
@@ -143,7 +144,10 @@ class ExtractionSupplyingService
         followups = {}
         for followup in raw.extractions_extraction_forms_projects_sections_followup_fields do
           followups = followups.merge({
-            FollowupField.find(followup.followup_field_id).question_row_columns_question_row_column_option_id => followup.records[0]['name']
+            FollowupField.find(followup.followup_field_id).question_row_columns_question_row_column_option_id => {
+              'name' => followup.records[0]['name'],
+              'id' => followup.followup_field_id
+            }
           })
         end
 
@@ -174,12 +178,15 @@ class ExtractionSupplyingService
               'valueString' => name
             }
             
-            if followups.has_key?(checkbox_id)
-              item['text'] = followups[checkbox_id]
-            else
-              item['text'] = ''
-            end
             eefps['item'].append(item.dup)
+            if followups.has_key?(checkbox_id)
+              followup_item = {}
+              followup_item['linkId'] = item['linkId'] + '-' + followups[checkbox_id]['id'].to_s
+              followup_item['answer'] = {
+                'valueString' => followups[checkbox_id]['name']
+              }
+              eefps['item'].append(followup_item)
+            end
           end
         elsif type == 6
           name = ans_form.find(value)['name']
@@ -192,12 +199,15 @@ class ExtractionSupplyingService
           item['answer'] = {
             'valueString' => name
           }
-          if followups.has_key?(value.to_i)
-            item['text'] = followups[value.to_i]
-          else
-            item['text'] = ''
-          end
           eefps['item'].append(item)
+          if followups.has_key?(value.to_i)
+            followup_item = {}
+            followup_item['linkId'] = item['linkId'] + '-' + followups[value.to_i]['id'].to_s
+            followup_item['answer'] = {
+              'valueString' => followups[value.to_i]['name']
+            }
+            eefps['item'].append(followup_item)
+          end
         elsif type == 8
           name = ans_form.find(value)['name']
           item['answer'] = {
@@ -206,7 +216,7 @@ class ExtractionSupplyingService
           eefps['item'].append(item)
         elsif type == 9
           item = {
-            'linkId' => question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
+            'linkId' => question.position.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
           }
           for dicts in question_row_column_field.extractions_extraction_forms_projects_sections_question_row_column_fields[0].extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options do
             value = dicts.question_row_columns_question_row_column_option_id
