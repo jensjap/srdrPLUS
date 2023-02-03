@@ -69,24 +69,26 @@ class ExtractionFormsProjectsSectionSupplyingService
         'item' => []
       }
       for question in raw.questions do
+        question_linkid = question.position.to_s + '-' + question.id.to_s
         question_item = {
-          'linkId' => question.id.to_s,
-          #'text' => 'position:' + question.position.to_s,
+          'linkId' => question_linkid,
           'text' => question.name,
           'type' => 'group',
           'item' => []
         }
 
         for row in question.question_rows do
+          question_row_linkid = question_linkid + '-' + row.id.to_s
           row_item = {
-            'linkId' => question.id.to_s + '-' + row.id.to_s,
+            'linkId' => question_row_linkid,
             'text' => row.name,
             'type' => 'group',
             'item' => []
           }
           for row_column in row.question_row_columns do
+            question_row_column_linkid = question_row_linkid + '-' + row_column.id.to_s
             item = {
-              'linkId' => question.id.to_s + '-' + row.id.to_s + '-' + row_column.id.to_s,
+              'linkId' => question_row_column_linkid,
               'text' => row_column.name
             }
 
@@ -122,6 +124,19 @@ class ExtractionFormsProjectsSectionSupplyingService
                       item['answerOption'].append({
                         'valueString' => candidate['name']
                       })
+                      if not candidate.followup_field.nil?
+                        item['type'] = 'question'
+                        item['item'] = {
+                          'linkId' => question_row_column_linkid + '-' + candidate.followup_field.id.to_s,
+                          'type' => 'text',
+                          'answerOption' => 'valueString',
+                          'enableWhen' => {
+                            'question' => question_row_column_linkid,
+                            'operator' => '=',
+                            'answerString' => candidate['name']
+                          }
+                        }
+                      end
                     end
                   end
                 end
@@ -156,6 +171,19 @@ class ExtractionFormsProjectsSectionSupplyingService
                       item['answerOption'].append({
                         'valueString' => candidate['name']
                       })
+                      if not candidate.followup_field.nil?
+                        item['type'] = 'question'
+                        item['item'] = {
+                          'linkId' => question_row_column_linkid + '-' + candidate.followup_field.id.to_s,
+                          'type' => 'text',
+                          'answerOption' => 'valueString',
+                          'enableWhen' => {
+                            'question' => question_row_column_linkid,
+                            'operator' => '=',
+                            'answerString' => candidate['name']
+                          }
+                        }
+                      end
                     end
                   end
                 end
