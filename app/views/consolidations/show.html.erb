@@ -48,7 +48,7 @@
       },
 
       init() {
-        this.fetch_efps();
+        this.fetch_efps(<%= params[:efps_id] %>);
       },
 
       async createArm(lookup, eefps_id, name, description) {

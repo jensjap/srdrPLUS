@@ -52,11 +52,11 @@
                 :key="efps_section.efps_id"
               >
                 <li class="cursor-pointer">
-                  <div
+                  <a
                     class="group relative flex items-center p-2 m-1 bg-srdrpurple text-white rounded text-sm font-bold text-center"
-                    @click="efps_sidebar = false; fetch_efps(efps_section.efps_id)"
+                    :href="`null?citations_project_id=${mh.current_citations_project.citations_project_id}&efps_id=${efps_section.efps_id}`"
                     x-text="efps_section.name"
-                  ></div>
+                  ></a>
                 </li>
               </template>
             </ul>
