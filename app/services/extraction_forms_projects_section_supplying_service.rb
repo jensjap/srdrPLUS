@@ -110,7 +110,7 @@ class ExtractionFormsProjectsSectionSupplyingService
                   'valueDecimal' => row_column.question_row_columns_question_row_column_options[5]['name']
                 }
               ]
-              item['type'] = 'decimal'
+              item['type'] = 'question'
             elsif row_column.question_row_column_type.id == 5
               item['type'] = 'text'
               item['repeats'] = true
