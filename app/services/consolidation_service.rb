@@ -252,8 +252,14 @@ class ConsolidationService
       followup_field: ffs
     )
 
+    missing_eefpsqrcfs =
+      ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField
+      .joins('LEFT JOIN records ON eefps_qrcfs.id = records.recordable_id')
+      .where(id: eefpsqrcfs.map(&:id))
+      .where(records: { id: nil })
+
     # ensures records exist
-    eefpsqrcfs.each do |eefpsqrcf|
+    missing_eefpsqrcfs.each do |eefpsqrcf|
       Record.find_or_create_by(recordable: eefpsqrcf)
     end
 
@@ -262,7 +268,12 @@ class ConsolidationService
     end
 
     cell_lookups = {}
-    Record.where(recordable: eefpsqrcfs).each do |record|
+    Record
+      .includes(:recordable)
+      .joins('INNER JOIN eefps_qrcfs ON eefps_qrcfs.id = records.recordable_id')
+      .where(recordable_id: eefpsqrcfs.map(&:id))
+      .where(recordable_type: ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField)
+      .each do |record|
       begin
         name = JSON.parse(record.name)
       rescue JSON::ParserError, TypeError
