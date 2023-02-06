@@ -30,24 +30,30 @@ class ConsolidationService
     extractions.each do |extraction|
       extractions_lookup[extraction.id] = extraction.user.email.split('@').first
     end
-    efpss = ExtractionFormsProject.find_by(project:).extraction_forms_projects_sections.includes(:section)
+    efpss = ExtractionFormsProject
+            .find_by(project:)
+            .extraction_forms_projects_sections
+            .includes(:section, :extraction_forms_projects_section_option)
 
     efpss.each do |iefps|
-      efpso = ExtractionFormsProjectsSectionOption.find_or_create_by(extraction_forms_projects_section: iefps)
+      efpso = if iefps.extraction_forms_projects_section_option.present?
+                iefps.extraction_forms_projects_section_option
+              else
+                ExtractionFormsProjectsSectionOption.find_or_create_by(extraction_forms_projects_section: iefps)
+              end
       efpso = { by_type1: efpso.by_type1, include_total: efpso.include_total }
       mh[:efps][iefps.id] = {
         data_type: 'efps',
         section_id: iefps.section_id,
         section_name: iefps.section.name,
         efpst_id: iefps.extraction_forms_projects_section_type_id,
-        parent_efps_id: iefps.link_to_type1&.id,
-        children_efps_ids: iefps.extraction_forms_projects_section_type2s.map(&:id),
         efpso:
       }
     end
 
     eefpss = ExtractionsExtractionFormsProjectsSection
              .where(extraction: extractions, extraction_forms_projects_section: efpss)
+             .includes(:extraction)
              .uniq { |ieefpss| [ieefpss.extraction_id, ieefpss.extraction_forms_projects_section_id] }
     current_section_eefpss = eefpss.select { |eefps| eefps.extraction_forms_projects_section_id == efps.id }
     current_section_eefpss.sort_by! { |eefps| eefps.extraction.consolidated ? 999_999_999 : eefps.extraction.id }
@@ -221,17 +227,36 @@ class ConsolidationService
       end
     end
 
+    available_eefpsqrcf_hash = {}
+    ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.where(
+      extractions_extraction_forms_projects_section: current_section_eefpss,
+      question_row_column_field: qrcfs
+    ).each do |available_eefpsqrcf|
+      key = [
+        available_eefpsqrcf.question_row_column_field_id,
+        available_eefpsqrcf.extractions_extraction_forms_projects_section_id,
+        available_eefpsqrcf.extractions_extraction_forms_projects_sections_type1_id
+      ].join('-')
+      available_eefpsqrcf_hash[key] = true
+    end
+
     # ensures eefpsqrcf exist
     current_section_eefpss.each do |current_section_eefps|
       qrcfs.each do |qrcf|
-        if current_section_eefpst1_objects.empty?
+        if current_section_eefpst1_objects.empty? && available_eefpsqrcf_hash["#{qrcf.id}-#{current_section_eefps.id}"].nil?
           ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(
             extractions_extraction_forms_projects_section: current_section_eefps,
             question_row_column_field: qrcf
           )
         else
           current_section_eefpst1_objects.each do |current_section_eefpst1_object|
-            unless current_section_eefps.id == current_section_eefpst1_object[:extractions_extraction_forms_projects_section_id]
+            key = [
+              qrcf.id,
+              current_section_eefps.id,
+              current_section_eefpst1_object[:extractions_extraction_forms_projects_sections_type1_id]
+            ].join('-')
+            if current_section_eefps.id != current_section_eefpst1_object[:extractions_extraction_forms_projects_section_id] ||
+               available_eefpsqrcf_hash[key].present?
               next
             end
 
