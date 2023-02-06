@@ -14,12 +14,6 @@ class ExtractionSupplyingService
     extraction = Extraction.find(id)
     fhir_extraction_sections = []
 
-    #!!! This will return filtered section list based on the type of Extraction we are working on:
-    #    i.e. Standard Type extraction will ignore Diagnostic sections and
-    #         Diagnostic Type extraction will ignore Standard sections.
-    #extraction = Extraction.first
-    #extraction.extraction_forms_projects_sections.first.extraction_forms_project.extraction_forms_projects_sections
-
     efpss = extraction.extraction_forms_projects_sections.first.extraction_forms_project.extraction_forms_projects_sections
     extraction_sections = []
     for efps in efpss do
@@ -75,8 +69,6 @@ class ExtractionSupplyingService
         }],
         'characteristic' => []
       }
-      #!!! use raw here to get the Diagnostic test -- index (type1_type_id=5) and reference (type1_type_id=6) test.
-      #    index and reference tests from the extraction and not the suggested list.
       for row in raw.extractions_extraction_forms_projects_sections_type1s do
         info = Type1.find(row['type1_id'])
         eefps['characteristic'].append({
@@ -128,6 +120,11 @@ class ExtractionSupplyingService
         question = Question.find(question_id)
         type = question_row_column.question_row_column_type.id
         value = eefpsqrf.records[0]['name']
+        if not eefpsqrf.extractions_extraction_forms_projects_sections_type1.nil?
+          type1 = eefpsqrf.extractions_extraction_forms_projects_sections_type1.type1
+        else
+          type1 = nil
+        end
 
         if value.nil?
           if type != 9
@@ -138,6 +135,9 @@ class ExtractionSupplyingService
             item = {
               'linkId' => question.position.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
             }
+            if not type1.nil?
+              item['text'] = type1.name
+            end
           end
         end
 
@@ -161,10 +161,16 @@ class ExtractionSupplyingService
             item['answer'] = {
               'valueDecimal' => value
             }
-            unless restriction_symbol.empty?
-              item['text'] = restriction_symbol
-            end
             eefps['item'].append(item)
+            unless restriction_symbol.empty?
+              symbol_item = {
+                'linkId' => question.position.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s,
+                'answer' => {
+                  'valueString' => restriction_symbol
+                }
+              }
+              eefps['item'].append(symbol_item)
+            end
             restriction_symbol = ''
           else
             restriction_symbol = value
@@ -218,6 +224,9 @@ class ExtractionSupplyingService
           item = {
             'linkId' => question.position.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
           }
+          if not type1.nil?
+            item['text'] = type1.name
+          end
           for dicts in question_row_column_field.extractions_extraction_forms_projects_sections_question_row_column_fields[0].extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options do
             value = dicts.question_row_columns_question_row_column_option_id
             name = ans_form.find(value)['name']
@@ -239,20 +248,12 @@ class ExtractionSupplyingService
       project = Project.find(extraction.project_id)
       efp_type_id = extraction.extraction_forms_projects_sections.first.extraction_forms_project.extraction_forms_project_type_id
       if efp_type_id == 1
-        arms = ExtractionsExtractionFormsProjectsSectionsType1
-          .by_section_name_and_extraction_id_and_extraction_forms_project_id(
-            'Arms',
-            raw.extraction_id,
-            project.extraction_forms_projects.first.id
-          )
         outcomes = ExtractionsExtractionFormsProjectsSectionsType1
           .by_section_name_and_extraction_id_and_extraction_forms_project_id(
             'Outcomes',
             raw.extraction_id,
             project.extraction_forms_projects.first.id
           )
-        #arm_eefps_id = arms[0].extractions_extraction_forms_projects_section_id
-        #outcome_eefps_id = outcomes[0].extractions_extraction_forms_projects_section_id
         evidences = []
 
         for outcome in outcomes do
@@ -416,8 +417,69 @@ class ExtractionSupplyingService
         end
 
       else
-        #TODO Add another result type after bug fixed
-        return
+        outcomes = ExtractionsExtractionFormsProjectsSectionsType1
+          .by_section_name_and_extraction_id_and_extraction_forms_project_id(
+            'Diagnoses',
+            raw.extraction_id,
+            project.extraction_forms_projects.first.id
+          )
+        evidences = [] 
+
+        for outcome in outcomes do
+          if outcome.status['name'] == 'Draft'
+            outcome_status = 'draft'
+          elsif outcome.status['name'] == 'Completed'
+            outcome_status = 'active'
+          end
+
+          outcome_name = Type1.find(outcome.type1_id)['name']
+          populations = outcome.extractions_extraction_forms_projects_sections_type1_rows
+
+          for population in populations do
+            population_name = PopulationName.find(population.population_name_id)['name']
+            result_statistic_sections = population.result_statistic_sections
+
+            for sec_num in [4, 5, 6, 7] do
+              for result_statistic_sections_measure in result_statistic_sections[sec_num].result_statistic_sections_measures do
+                measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
+                for tps_comparisons_rssm in result_statistic_sections_measure.tps_comparisons_rssms do
+                  record = tps_comparisons_rssm.records[0]['name']
+                  if record.nil?
+                    next
+                  end
+                  record_id = tps_comparisons_rssm.records[0]['id']
+                  time_point = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find(tps_comparisons_rssm.timepoint_id)
+                  time_point_name = time_point.timepoint_name['name'] + ' ' + time_point.timepoint_name['unit']
+                  comparison = Comparison.find(tps_comparisons_rssm.comparison_id)
+                  arm_names = []
+                  for comparate_group in comparison.comparate_groups do
+                    comparable_elements = comparate_group.comparable_elements
+                    arm_names.append(Type1.find(ExtractionsExtractionFormsProjectsSectionsType1.find(comparable_elements[0].comparable_id).type1_id)['name'])
+                  end
+
+                  evidence = get_evidence_obj(
+                    record_id,
+                    outcome_status,
+                    population_name,
+                    arm_names,
+                    outcome_name,
+                    [time_point_name],
+                    record,
+                    measure_name
+                  )
+
+                  evidences.append(evidence)
+                end
+              end
+            end
+          end
+        end
+
+        if evidences.empty?
+          return
+        else
+          return create_bundle(fhir_objs=evidences, type='collection')
+        end
       end
     end
   end
