@@ -133,7 +133,17 @@ class ConsolidationService
     qrcfs = []
     ffs = []
 
-    efps.questions.each do |question|
+    efps
+      .questions
+      .includes(
+        question_rows: {
+          question_row_columns: [
+            :question_row_column_type,
+            :question_row_column_fields,
+            { question_row_columns_question_row_column_options: :followup_field }
+          ]
+        }
+      ).each do |question|
       question_hash = {
         question_id: question.id,
         name: question.name,
