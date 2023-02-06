@@ -1,6 +1,7 @@
 <div x-data="consolidate">
   <!-- prettier-ignore -->
   <%= render 'consolidations/partials/efps_sidebar' %>
+  <%= render 'consolidations/partials/type1_change_modal' %>
   <% efps = ExtractionFormsProject.find_by(project: @project).extraction_forms_projects_sections.fifth %>
   <div
     class="px-4 lg:px-8 py-1 sm:flex sm:items-center z-[5] !sticky top-32 bg-gray-100"
@@ -42,13 +43,91 @@
       efps_sidebar: false,
       efps_sections: [],
       mh: null,
-      arm: {
+      newType1: {
         name: "",
         description: "",
+      },
+      newType1Index: 0,
+      oldType1: {
+        name: "",
+        description: "",
+      },
+      type1_change_modal: false,
+      scopeOfChange: 'false',
+      type1_previews: {
+        loading: true,
+        false: [],
+        citations: [],
+        project: []
       },
 
       init() {
         this.fetch_efps(<%= params[:efps_id] %>);
+      },
+
+      async getArmData(type1_id, efps_id, eefps_id) {
+        const response = await fetch(
+          `/projects/${this.mh?.current_citations_project?.project_id}/extractions/edit_type1_across_extractions?` +
+          new URLSearchParams({
+            type1_id,
+            efps_id,
+            eefps_id
+           }),
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin"
+          }
+        );
+        const data = await response.json();
+        if (response.status >= 200 && response.status < 300) {
+          this.type1_previews = data;
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+
+      },
+
+      async updateArmsData(eefpst1_id, name, description) {
+        const params = {
+          extractions_extraction_forms_projects_sections_type1: {
+            should: { propagate: this.scopeOfChange },
+            type1_attributes: {
+              name,
+              description
+            }
+          }
+        }
+
+        const response = await fetch(
+          `/extractions_extraction_forms_projects_sections_type1s/${eefpst1_id}`,
+          {
+            method: "PATCH",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+        const data = await response.json();
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Saved successfully", null, { timeOut: 1000 });
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+        this.fetch_efps(this.mh?.current_citations_project?.efps_id);
+        this.type1_change_modal = false
       },
 
       async createArm(lookup, eefps_id, name, description) {

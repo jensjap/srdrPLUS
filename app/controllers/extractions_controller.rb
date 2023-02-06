@@ -4,7 +4,7 @@ class ExtractionsController < ApplicationController
   before_action :set_project,
                 only: %i[index new create comparison_tool compare consolidate edit_type1_across_extractions]
   before_action :set_extraction, only: %i[show edit update destroy work update_kqp_selections]
-  before_action :set_extractions, only: %i[consolidate edit_type1_across_extractions]
+  before_action :set_extractions, only: %i[consolidate]
   before_action :ensure_extraction_form_structure, only: %i[consolidate work]
   before_action :set_eefps_by_efps_dict, only: [:work]
 
@@ -311,8 +311,13 @@ class ExtractionsController < ApplicationController
     )
 
     @preview_type1_change_propagation = @eefpst1.preview_type1_change_propagation
-
-    render layout: false
+    respond_to do |format|
+      format.html do
+        render layout: false
+      end
+      format.json do
+      end
+    end
   end
 
   private
