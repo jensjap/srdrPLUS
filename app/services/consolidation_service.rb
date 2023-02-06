@@ -221,7 +221,7 @@ class ConsolidationService
           )
         else
           current_section_eefpst1_objects.each do |current_section_eefpst1_object|
-            unless current_section_eefps.extractions_extraction_forms_projects_section_id == current_section_eefpst1_object[:extractions_extraction_forms_projects_section_id]
+            unless current_section_eefps.id == current_section_eefpst1_object[:extractions_extraction_forms_projects_section_id]
               next
             end
 
