@@ -2,6 +2,7 @@ class Api::V3::ExtractionsController < Api::V3::BaseController
   before_action :set_project, only: [:index]
 
   def index
+    authorize(@project, policy_class: ExtractionPolicy)
     @extractions = ExtractionSupplyingService.new.find_by_project_id(@project.id)
     respond_to do |format|
       format.fhir_xml { render xml: @extractions }
