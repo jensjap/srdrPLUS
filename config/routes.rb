@@ -137,7 +137,7 @@ Rails.application.routes.draw do
     end # END namespace :v2 do
 
     namespace :v3 do
-      resources :projects, shallow: true, only: [] do
+      resources :projects, shallow: true, only: [:show] do
         resources :citations, only: %i[index show]
         resources :key_questions, only: [:index, :show]
         resources :extractions, only: [:index, :show]
