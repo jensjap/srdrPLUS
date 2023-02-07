@@ -162,6 +162,7 @@
     class="w-full bg-srdrpurple rounded-md p-2 text-white text-center cursor-pointer"
     :class="type1_previews.loading ? 'bg-gray-500 text-gray-400 cursor-not-allowed' : ''"
     @click="if (type1_previews.loading) return;
+      type1_previews.loading = true;
       updateArmsData(oldType1.id, newType1.name, newType1.description);
     "
   >

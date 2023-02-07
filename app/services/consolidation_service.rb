@@ -58,6 +58,21 @@ class ConsolidationService
     current_section_eefpss = eefpss.select { |eefps| eefps.extraction_forms_projects_section_id == efps.id }
     current_section_eefpss.sort_by! { |eefps| eefps.extraction.consolidated ? 999_999_999 : eefps.extraction.id }
 
+    consolidated_extraction_eefps = current_section_eefpss.last
+    consolidated_extraction_eefps_id = consolidated_extraction_eefps.id
+    consolidated_extraction_eefpst1s = consolidated_extraction_eefps
+                                       .extractions_extraction_forms_projects_sections_type1s
+                                       .includes(:ordering, :type1)
+    consolidated_extraction_eefpst1s = consolidated_extraction_eefpst1s.map do |consolidated_extraction_eefpst1|
+      {
+        id: consolidated_extraction_eefpst1.id,
+        name: consolidated_extraction_eefpst1.type1.name,
+        description: consolidated_extraction_eefpst1.type1.description,
+        ordering_id: consolidated_extraction_eefpst1.ordering.id,
+        position: consolidated_extraction_eefpst1.ordering.position
+      }
+    end
+
     current_section_eefpst1s = []
     current_section_eefpst1_objects = []
 
@@ -382,7 +397,9 @@ class ConsolidationService
         (mh[:efps][efps.id][:efpso][:by_type1] || mh[:efps][efps.id][:efpso][:include_total]).present?,
       cell_lookups:,
       extractions_lookup:,
-      eefpsqrcfqrcqrco_lookups:
+      eefpsqrcfqrcqrco_lookups:,
+      consolidated_extraction_eefpst1s:,
+      consolidated_extraction_eefps_id:
     }
     mh
   end

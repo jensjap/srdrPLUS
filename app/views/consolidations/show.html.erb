@@ -53,26 +53,41 @@
         description: "",
       },
       type1_change_modal: false,
-      scopeOfChange: 'false',
+      scopeOfChange: "false",
       type1_previews: {
         loading: true,
         false: [],
         citations: [],
-        project: []
+        project: [],
       },
+      extraction_eefpst1s: [
+        { name: "name", description: "description", id: 1, position: 1 },
+      ],
 
       init() {
-        this.fetch_efps(<%= params[:efps_id] %>);
+        this.fetch_efps(this.efps_id());
+      },
+
+      efps_id() {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        return urlParams.get("efps_id");
+      },
+
+      initializeOrderings() {
+        $(".orderable-list").each((_index, orderableElement) => {
+          attachOrderable(orderableElement);
+        });
       },
 
       async getArmData(type1_id, efps_id, eefps_id) {
         const response = await fetch(
           `/projects/${this.mh?.current_citations_project?.project_id}/extractions/edit_type1_across_extractions?` +
-          new URLSearchParams({
-            type1_id,
-            efps_id,
-            eefps_id
-           }),
+            new URLSearchParams({
+              type1_id,
+              efps_id,
+              eefps_id,
+            }),
           {
             method: "GET",
             headers: {
@@ -82,7 +97,7 @@
               "X-CSRF-Token": document.querySelector("[name='csrf-token']")
                 .content,
             },
-            credentials: "same-origin"
+            credentials: "same-origin",
           }
         );
         const data = await response.json();
@@ -91,7 +106,6 @@
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
-
       },
 
       async updateArmsData(eefpst1_id, name, description) {
@@ -100,10 +114,10 @@
             should: { propagate: this.scopeOfChange },
             type1_attributes: {
               name,
-              description
-            }
-          }
-        }
+              description,
+            },
+          },
+        };
 
         const response = await fetch(
           `/extractions_extraction_forms_projects_sections_type1s/${eefpst1_id}`,
@@ -127,10 +141,10 @@
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
         this.fetch_efps(this.mh?.current_citations_project?.efps_id);
-        this.type1_change_modal = false
+        this.type1_change_modal = false;
       },
 
-      async createArm(lookup, eefps_id, name, description) {
+      async createArm(eefps_id, name, description) {
         const params = {
           extractions_extraction_forms_projects_section: {
             extractions_extraction_forms_projects_sections_type1s_attributes: {
@@ -162,16 +176,15 @@
         const data = await response.json();
         if (response.status >= 200 && response.status < 300) {
           toastr.success("Saved successfully", null, { timeOut: 1000 });
-          lookup[eefps_id] =
-            data.extractions_extraction_forms_projects_sections_type1_id;
+          this.fetch_efps(this.mh?.current_citations_project?.efps_id);
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
       },
 
-      async deleteArm(lookup, eefps_id) {
+      async deleteArm(eefpst1_id) {
         const response = await fetch(
-          `/extractions_extraction_forms_projects_sections_type1s/${lookup[eefps_id]}`,
+          `/extractions_extraction_forms_projects_sections_type1s/${eefpst1_id}`,
           {
             method: "DELETE",
             headers: {
@@ -186,7 +199,7 @@
         );
         if (response.status >= 200 && response.status < 300) {
           toastr.success("Deleted successfully", null, { timeOut: 1000 });
-          lookup[eefps_id] = undefined;
+          this.fetch_efps(this.mh?.current_citations_project?.efps_id);
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
