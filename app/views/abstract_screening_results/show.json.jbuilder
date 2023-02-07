@@ -12,8 +12,8 @@ end
 json.citation do
   json.citation_id @abstract_screening_result.citation.id
   json.title @abstract_screening_result.citation.name
-  json.journal @abstract_screening.hide_journal ? '<hidden>' : @abstract_screening_result.citation.journal.name
-  json.authors @abstract_screening.hide_author ? '<hidden>' : @abstract_screening_result.citation.author_map_string
+  json.journal @abstract_screening.hide_journal ? '<hidden>' : @abstract_screening_result&.citation&.journal&.name
+  json.authors @abstract_screening.hide_author ? '<hidden>' : @abstract_screening_result&.citation&.author_map_string
   json.abstract @abstract_screening_result.citation.abstract
   json.keywords @abstract_screening_result.citation.keywords.map(&:name).join(',')
   json.id @abstract_screening_result.citation.accession_number_alts
