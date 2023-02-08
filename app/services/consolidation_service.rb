@@ -74,15 +74,15 @@ class ConsolidationService
                                          }
                                        )
     consolidated_extraction_eefpst1s = consolidated_extraction_eefpst1s.map do |consolidated_extraction_eefpst1|
-      eefpstr1s = consolidated_extraction_eefpst1.extractions_extraction_forms_projects_sections_type1_rows
+      eefpst1rs = consolidated_extraction_eefpst1.extractions_extraction_forms_projects_sections_type1_rows
       populations = []
       timepoints = []
-      eefpstr1s.each do |eefpst1r|
-        populations << eefpst1r.population_name
+      eefpst1rs.each do |eefpst1r|
+        populations << eefpst1r.population_name.as_json.merge(id: eefpst1r.id)
       end
-      if eefpstr1s.present?
-        eefpstr1s.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
-          timepoints << eefpst1rc.timepoint_name
+      if eefpst1rs.present?
+        eefpst1rs.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+          timepoints << eefpst1rc.timepoint_name.as_json.merge(id: eefpst1rc.id)
         end
       end
       {
@@ -132,24 +132,42 @@ class ConsolidationService
           []
         end
       parent_eefps_eefpst1s = parent_eefps_eefpst1s.map do |eefpst1|
+        eefpst1rs = eefpst1.extractions_extraction_forms_projects_sections_type1_rows
+        populations = []
+        timepoints = []
+        eefpst1rs.each do |eefpst1r|
+          populations << eefpst1r.population_name.as_json.merge(id: eefpst1r.id)
+        end
+        if eefpst1rs.present?
+          eefpst1rs.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+            timepoints << eefpst1rc.timepoint_name.as_json.merge(id: eefpst1rc.id)
+          end
+        end
         { extractions_extraction_forms_projects_sections_type1_id: eefpst1.id,
           extractions_extraction_forms_projects_section_id: eefps.id,
           type1_id: eefpst1.type1_id,
           name: eefpst1.type1.name,
-          description: eefpst1.type1.description }
+          description: eefpst1.type1.description,
+          type1_type_name: eefpst1&.type1_type&.name,
+          populations:,
+          timepoints: }
       end
 
       parent_eefps_eefpst1s.each do |eefpst1|
         current_section_eefpst1_objects << eefpst1
         type1_id = eefpst1[:type1_id]
         eefps_id = eefpst1[:extractions_extraction_forms_projects_section_id]
+        populations = eefpst1[:populations]
+        timepoints = eefpst1[:timepoints]
 
         if current_section_eefpst1s.any? { |current_section_eefpst1| current_section_eefpst1[:type1_id] == type1_id }
           current_section_eefpst1s.each do |current_section_eefpst1|
-            if current_section_eefpst1[:type1_id] == type1_id
-              current_section_eefpst1[:eefpst1_lookups][eefps_id] =
-                eefpst1[:extractions_extraction_forms_projects_sections_type1_id]
-            end
+            next unless current_section_eefpst1[:type1_id] == type1_id
+
+            current_section_eefpst1[:eefpst1_lookups][eefps_id] =
+              eefpst1[:extractions_extraction_forms_projects_sections_type1_id]
+            current_section_eefpst1[:population_lookups][eefps_id] = populations
+            current_section_eefpst1[:timepoint_lookups][eefps_id] = timepoints
           end
         else
           current_section_eefpst1 = {}
@@ -158,6 +176,9 @@ class ConsolidationService
           current_section_eefpst1[:description] = eefpst1[:description]
           current_section_eefpst1[:eefpst1_lookups] =
             { eefps_id => eefpst1[:extractions_extraction_forms_projects_sections_type1_id] }
+          current_section_eefpst1[:population_lookups] = { eefps_id => populations }
+          current_section_eefpst1[:timepoint_lookups] = { eefps_id => timepoints }
+          current_section_eefpst1[:type1_type_name] = eefpst1[:type1_type_name]
           current_section_eefpst1s << current_section_eefpst1
         end
       end

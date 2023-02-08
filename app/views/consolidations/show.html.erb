@@ -111,7 +111,7 @@
         const timepointName = this.$refs.timepointName.value;
         const timepointUnit = this.$refs.timepointUnit.value;
         if (timepointName.trim() === "") {
-          toastr.error("Population name must not be blank", null, {
+          toastr.error("Timepoint name must not be blank", null, {
             timeOut: 1000,
           });
           return;
@@ -216,7 +216,9 @@
 
       async createArm(eefps_id, name, description) {
         if (name.trim() === "") {
-          toastr.error("Name cannot be blank", null, { timeOut: 1000 });
+          toastr.error("Outcome domain cannot be blank", null, {
+            timeOut: 1000,
+          });
           return;
         }
         const params = {

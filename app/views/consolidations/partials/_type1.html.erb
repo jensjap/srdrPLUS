@@ -100,7 +100,7 @@
                 class="!px-1 !text-xs"
                 x-ref="new_eefpst1_name"
                 type="text"
-                placeholder="Name"
+                placeholder="Domain"
             /></label>
             <label class="text-xs"
               >Specific measurement (i.e., tool/definition/specific outcome)
@@ -108,7 +108,7 @@
                 class="!px-1 !text-xs"
                 x-ref="new_eefpst1_description"
                 type="text"
-                placeholder="Description"
+                placeholder="Measurement"
             /></label>
             <label class="text-xs"
               >Units
@@ -273,57 +273,95 @@
               :key="eefps.id"
             >
               <td class="text-center">
-                <span
-                  :class="section_eefpst1?.eefpst1_lookups[eefps.id] === undefined ? 'text-red-500' : 'text-green-500'"
-                  x-text="section_eefpst1?.eefpst1_lookups[eefps.id] === undefined ? 'Does NOT Exist' : 'Exists'"
-                ></span>
-                <template
-                  x-if="eefps?.consolidated && section_eefpst1?.eefpst1_lookups[eefps.id] === undefined"
-                >
-                  <span
-                    class="ml-2 bg-srdr-primary text-xs text-white p-1 rounded-md cursor-pointer"
-                    @click="createArm(eefps.id, section_eefpst1.name, section_eefpst1.description)"
-                  >
-                    Create
-                  </span>
-                </template>
-                <template
-                  x-if="eefps?.consolidated && section_eefpst1?.eefpst1_lookups[eefps.id] !== undefined"
-                >
-                  <span
-                    class="ml-2 bg-red-700 text-xs text-white p-1 rounded-md cursor-pointer"
-                    @click="
-                    if (confirm(`Are you sure you want to delete '${section_eefpst1.name}'`)) {
-                      deleteArm(section_eefpst1.eefpst1_lookups[eefps.id]);
-                    }"
-                  >
-                    Delete
-                  </span>
-                </template>
-                <template
-                  x-if="section_eefpst1?.eefpst1_lookups[eefps.id] !== undefined"
-                >
-                  <span
-                    class="ml-2 bg-orange-500 text-xs text-white p-1 rounded-md cursor-pointer"
-                    @click="type1_previews = {
-                        loading: true,
-                        false: [],
-                        citations: [],
-                        project: []
-                      };
-                      scopeOfChange = 'false';
-                      type1_change_modal = true;
-                      getArmData(section_eefpst1.type1_id, eefps.extraction_forms_projects_section_id, eefps.id);
-                      oldType1.id = section_eefpst1?.eefpst1_lookups[eefps.id];
-                      oldType1.name = section_eefpst1?.name;
-                      oldType1.description = section_eefpst1?.description;
-                      newType1.name = oldType1.name
-                      newType1.description = oldType1.description
-                    "
-                  >
-                    Change
-                  </span>
-                </template>
+                <table>
+                  <thead>
+                    <tr>
+                      <th colspan="2">
+                        <span
+                          class="!text-xs"
+                          :class="section_eefpst1?.eefpst1_lookups[eefps.id] === undefined ? 'text-red-500' : 'text-green-500'"
+                          x-text="section_eefpst1?.eefpst1_lookups[eefps.id] === undefined ? 'Does NOT Exist' : 'Exists'"
+                        ></span>
+                        <template
+                          x-if="eefps?.consolidated && section_eefpst1?.eefpst1_lookups[eefps.id] === undefined"
+                        >
+                          <span
+                            class="ml-2 bg-srdr-primary text-xs text-white p-1 rounded-md cursor-pointer"
+                            @click="createArm(eefps.id, section_eefpst1.name, section_eefpst1.description)"
+                          >
+                            Create
+                          </span>
+                        </template>
+                        <template
+                          x-if="eefps?.consolidated && section_eefpst1?.eefpst1_lookups[eefps.id] !== undefined"
+                        >
+                          <span
+                            class="ml-2 bg-red-700 text-xs text-white p-1 rounded-md cursor-pointer"
+                            @click="if (confirm(`Are you sure you want to delete '${section_eefpst1.name}'`)) {
+                            deleteArm(section_eefpst1.eefpst1_lookups[eefps.id]);
+                          }"
+                          >
+                            Delete
+                          </span>
+                        </template>
+                        <template
+                          x-if="section_eefpst1?.eefpst1_lookups[eefps.id] !== undefined"
+                        >
+                          <span
+                            class="ml-2 bg-orange-500 text-xs text-white p-1 rounded-md cursor-pointer"
+                            @click="type1_previews = {
+                              loading: true,
+                              false: [],
+                              citations: [],
+                              project: []
+                            };
+                            scopeOfChange = 'false';
+                            type1_change_modal = true;
+                            getArmData(section_eefpst1.type1_id, eefps.extraction_forms_projects_section_id, eefps.id);
+                            oldType1.id = section_eefpst1?.eefpst1_lookups[eefps.id];
+                            oldType1.name = section_eefpst1?.name;
+                            oldType1.description = section_eefpst1?.description;
+                            newType1.name = oldType1.name
+                            newType1.description = oldType1.description
+                          "
+                          >
+                            Change
+                          </span>
+                        </template>
+                      </th>
+                    </tr>
+                    <tr>
+                      <th class="!text-xs">Populations</th>
+                      <th class="!text-xs">Timepoints</th>
+                    </tr>
+                  </thead>
+                  <tr class="text-left">
+                    <td>
+                      <ul>
+                        <template
+                          x-for="population in section_eefpst1.population_lookups[eefps.id]"
+                        >
+                          <li
+                            class="!text-xs"
+                            x-text="`${population.name} (${population.description})`"
+                          ></li>
+                        </template>
+                      </ul>
+                    </td>
+                    <td>
+                      <ul>
+                        <template
+                          x-for="timepoint in section_eefpst1.timepoint_lookups[eefps.id]"
+                        >
+                          <li
+                            class="!text-xs"
+                            x-text="`${timepoint.name} (${timepoint.unit})`"
+                          ></li>
+                        </template>
+                      </ul>
+                    </td>
+                  </tr>
+                </table>
               </td>
             </template>
           </tr>
