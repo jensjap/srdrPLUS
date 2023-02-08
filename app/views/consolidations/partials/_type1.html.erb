@@ -8,8 +8,17 @@
       <thead>
         <tr>
           <th class="w-20"></th>
+          <template x-if="isOutcome()">
+            <th class="text-left">Type</th>
+          </template>
           <th class="text-left">Name</th>
           <th class="text-left">Description</th>
+          <template x-if="isOutcome()">
+            <th class="text-left">Populations</th>
+          </template>
+          <template x-if="isOutcome()">
+            <th class="text-left">Timepoints</th>
+          </template>
         </tr>
       </thead>
       <tbody
@@ -31,8 +40,35 @@
                 aria-hidden="true"
               ></i>
             </td>
+            <template x-if="isOutcome()">
+              <td x-text="extraction_eefpst1.type1_type_id"></td>
+            </template>
             <td x-text="extraction_eefpst1.name"></td>
             <td x-text="extraction_eefpst1.description"></td>
+            <template x-if="isOutcome()">
+              <td>
+                <ul>
+                  <template
+                    x-for="population in extraction_eefpst1.populations"
+                  >
+                    <li
+                      x-text="`${population.name} (${population.description})`"
+                    ></li>
+                  </template>
+                </ul>
+              </td>
+            </template>
+            <template x-if="isOutcome()">
+              <td>
+                <ul>
+                  <template x-for="timepoint in extraction_eefpst1.timepoints">
+                    <li
+                      x-text="`${timepoint.name} (${timepoint.description})`"
+                    ></li>
+                  </template>
+                </ul>
+              </td>
+            </template>
           </tr>
         </template>
       </tbody>

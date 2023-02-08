@@ -62,14 +62,38 @@ class ConsolidationService
     consolidated_extraction_eefps_id = consolidated_extraction_eefps.id
     consolidated_extraction_eefpst1s = consolidated_extraction_eefps
                                        .extractions_extraction_forms_projects_sections_type1s
-                                       .includes(:ordering, :type1)
+                                       .includes(
+                                         :ordering,
+                                         :type1,
+                                         :type1_type,
+                                         {
+                                           extractions_extraction_forms_projects_sections_type1_rows: [
+                                             :population_name,
+                                             { extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name }
+                                           ]
+                                         }
+                                       )
     consolidated_extraction_eefpst1s = consolidated_extraction_eefpst1s.map do |consolidated_extraction_eefpst1|
+      eefpstr1s = consolidated_extraction_eefpst1.extractions_extraction_forms_projects_sections_type1_rows
+      populations = []
+      timepoints = []
+      eefpstr1s.each do |eefpst1r|
+        populations << eefpst1r.population_name
+      end
+      if eefpstr1s.present?
+        eefpstr1s.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+          timepoints << eefpst1rc.timepoint_name
+        end
+      end
       {
         id: consolidated_extraction_eefpst1.id,
+        type1_type_id: consolidated_extraction_eefpst1&.type1_type&.name,
         name: consolidated_extraction_eefpst1.type1.name,
         description: consolidated_extraction_eefpst1.type1.description,
         ordering_id: consolidated_extraction_eefpst1.ordering.id,
-        position: consolidated_extraction_eefpst1.ordering.position
+        position: consolidated_extraction_eefpst1.ordering.position,
+        populations:,
+        timepoints:
       }
     end
 
@@ -95,7 +119,7 @@ class ConsolidationService
       include_total = efpso[:include_total]
       parent_eefps_eefpst1s =
         if efps.extraction_forms_projects_section_type_id == 1
-          parent_eefps.extractions_extraction_forms_projects_sections_type1s
+          parent_eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1)
         elsif parent_eefps.nil?
           []
         elsif by_type1 && include_total && parent_eefps.eefpst1s_without_total.count > 1
@@ -110,7 +134,7 @@ class ConsolidationService
       parent_eefps_eefpst1s = parent_eefps_eefpst1s.map do |eefpst1|
         { extractions_extraction_forms_projects_sections_type1_id: eefpst1.id,
           extractions_extraction_forms_projects_section_id: eefps.id,
-          type1_id: eefpst1.type1.id,
+          type1_id: eefpst1.type1_id,
           name: eefpst1.type1.name,
           description: eefpst1.type1.description }
       end

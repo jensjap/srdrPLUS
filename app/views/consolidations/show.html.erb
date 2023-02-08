@@ -140,6 +140,10 @@
         return urlParams.get("efps_id");
       },
 
+      isOutcome() {
+        return this.mh?.current_citations_project?.section_name === "Outcomes";
+      },
+
       initializeOrderings() {
         $(".orderable-list").each((_index, orderableElement) => {
           attachOrderable(orderableElement);
@@ -228,7 +232,7 @@
           },
         };
 
-        if (this.mh?.current_citations_project?.section_name === "Outcomes") {
+        if (this.isOutcome()) {
           const eefpst1_attributes =
             params.extractions_extraction_forms_projects_section
               .extractions_extraction_forms_projects_sections_type1s_attributes[0];
