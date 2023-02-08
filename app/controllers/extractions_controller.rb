@@ -367,11 +367,8 @@ class ExtractionsController < ApplicationController
   end
 
   def ensure_extraction_form_structure
-    if @extractions
-      @extractions.each { |extraction| extraction.ensure_extraction_form_structure }
-    else
-      @extraction.ensure_extraction_form_structure
-    end
+    @extractions&.each(&:ensure_extraction_form_structure)
+    @extraction&.ensure_extraction_form_structure
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
