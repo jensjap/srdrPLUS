@@ -246,7 +246,8 @@
     <table class="table-auto">
       <thead>
         <tr>
-          <th class="text-left">Name</th>
+          <th class="text-left">Type</th>
+          <th class="text-left">Domain (Measurement)</th>
           <template
             x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
             :key="eefps.id"
@@ -264,6 +265,7 @@
           :key="section_eefpst1.type1_id"
         >
           <tr>
+            <td class="text-left" x-text="section_eefpst1.type1_type_name"></td>
             <td
               class="text-left"
               x-text="`${section_eefpst1.name} (${section_eefpst1.description})`"
