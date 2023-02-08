@@ -87,7 +87,7 @@ class ConsolidationService
       end
       {
         id: consolidated_extraction_eefpst1.id,
-        type1_type_id: consolidated_extraction_eefpst1&.type1_type&.name,
+        type1_type_name: consolidated_extraction_eefpst1&.type1_type&.name,
         name: consolidated_extraction_eefpst1.type1.name,
         description: consolidated_extraction_eefpst1.type1.description,
         ordering_id: consolidated_extraction_eefpst1.ordering.id,
