@@ -35,7 +35,7 @@
   <template x-if="mh?.current_citations_project?.efpst_id == 2">
     <%= render 'consolidations/partials/type2' %>
   </template>
-  <div class="px-4 lg:px-8 space-y-2 h-64 overflow-auto" id="json"></div>
+  <!-- <div class="px-4 lg:px-8 space-y-2 h-64 overflow-auto" id="json"></div> -->
 </div>
 <script>
   document.addEventListener("alpine:init", () => {
@@ -80,7 +80,87 @@
         this.fetch_efps(this.efps_id());
       },
 
-      addPopulation() {
+      async deletePopulation(eefpst1_id, eefpst1r_id) {
+        const params = {
+          extractions_extraction_forms_projects_sections_type1: {
+            extractions_extraction_forms_projects_sections_type1_rows_attributes:
+              {
+                0: {
+                  _destroy: 1,
+                  id: eefpst1r_id,
+                },
+              },
+          },
+        };
+
+        const response = await fetch(
+          `/extractions_extraction_forms_projects_sections_type1s/${eefpst1_id}`,
+          {
+            method: "PATCH",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Deleted successfully", null, { timeOut: 1000 });
+          this.fetch_efps(this.mh?.current_citations_project?.efps_id);
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+
+      async deleteTimepoint(eefpst1_id, eefpst1r_id, eefpst1rc_id) {
+        const params = {
+          extractions_extraction_forms_projects_sections_type1: {
+            extractions_extraction_forms_projects_sections_type1_rows_attributes:
+              {
+                0: {
+                  id: eefpst1r_id,
+                  extractions_extraction_forms_projects_sections_type1_row_columns_attributes:
+                    {
+                      0: {
+                        _destroy: 1,
+                        id: eefpst1rc_id,
+                      },
+                    },
+                },
+              },
+          },
+        };
+
+        const response = await fetch(
+          `/extractions_extraction_forms_projects_sections_type1s/${eefpst1_id}`,
+          {
+            method: "PATCH",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Deleted successfully", null, { timeOut: 1000 });
+          this.fetch_efps(this.mh?.current_citations_project?.efps_id);
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+
+      addToNewPopulation() {
         const populationName = this.$refs.populationName.value;
         const populationDescription = this.$refs.populationDescription.value;
         if (populationName.trim() === "") {
@@ -107,7 +187,7 @@
         }
       },
 
-      addTimepoint() {
+      addToNewTimepoint() {
         const timepointName = this.$refs.timepointName.value;
         const timepointUnit = this.$refs.timepointUnit.value;
         if (timepointName.trim() === "") {
@@ -263,20 +343,22 @@
                 name: population.name,
                 description: population.description,
               };
-              eefpst1_attributes.extractions_extraction_forms_projects_sections_type1_rows_attributes[
-                populationIndex
-              ].extractions_extraction_forms_projects_sections_type1_row_columns_attributes ||=
-                {};
-              eefpst1_attributes.extractions_extraction_forms_projects_sections_type1_rows_attributes[
-                populationIndex
-              ].extractions_extraction_forms_projects_sections_type1_row_columns_attributes[
-                timepointIndex
-              ] = {
-                timepoint_name_attributes: {
-                  name: timepoint.name,
-                  unit: timepoint.unit,
-                },
-              };
+              if (populationIndex === 0) {
+                eefpst1_attributes.extractions_extraction_forms_projects_sections_type1_rows_attributes[
+                  populationIndex
+                ].extractions_extraction_forms_projects_sections_type1_row_columns_attributes ||=
+                  {};
+                eefpst1_attributes.extractions_extraction_forms_projects_sections_type1_rows_attributes[
+                  populationIndex
+                ].extractions_extraction_forms_projects_sections_type1_row_columns_attributes[
+                  timepointIndex
+                ] = {
+                  timepoint_name_attributes: {
+                    name: timepoint.name,
+                    unit: timepoint.unit,
+                  },
+                };
+              }
             }
           }
         }
