@@ -1,8 +1,8 @@
 <div class="px-4 lg:px-8">
   <div class="mt-6">
     <h3 class="text-base font-bold">
-      Extraction
-      <span x-text="mh?.current_citations_project?.section_name"></span>
+      <span x-text="mh?.current_citations_project?.section_name"></span> of
+      Consolidated Extraction
     </h3>
     <table>
       <thead>
@@ -44,22 +44,165 @@
       <span x-text="mh?.current_citations_project?.section_name"></span>
       to Consolidated Extraction
     </h3>
-    <div class="space-y-1">
-      <input x-ref="new_eefpst1_name" type="text" placeholder="Name" />
-      <input
-        x-ref="new_eefpst1_description"
-        type="text"
-        placeholder="Description"
-      />
-    </div>
-    <div
-      class="rounded-md bg-srdrpurple text-white text-center p-2 my-4 cursor-pointer"
-      @click="createArm(mh?.current_citations_project?.consolidated_extraction_eefps_id, $refs.new_eefpst1_name.value, $refs.new_eefpst1_description.value)
-        $refs.new_eefpst1_name.value = ''
-        $refs.new_eefpst1_description.value = ''
-      "
-    >
-      Add to <span x-text="mh?.current_citations_project?.section_name"></span>
+    <div class="border-2 rounded-md p-2">
+      <div class="flex space-x-4">
+        <div class="flex-1">
+          <div class="">
+            <label class="text-xs"
+              >Outcome Type
+              <select
+                class="!px-1 !text-xs cursor-pointer"
+                name="pets"
+                id="pet-select"
+                x-ref="new_eefpst1_type"
+              >
+                <option value="1">Categorical</option>
+                <option value="2">Continuous</option>
+              </select>
+            </label>
+            <label class="text-xs"
+              >Domain
+              <input
+                class="!px-1 !text-xs"
+                x-ref="new_eefpst1_name"
+                type="text"
+                placeholder="Name"
+            /></label>
+            <label class="text-xs"
+              >Specific measurement (i.e., tool/definition/specific outcome)
+              <input
+                class="!px-1 !text-xs"
+                x-ref="new_eefpst1_description"
+                type="text"
+                placeholder="Description"
+            /></label>
+            <label class="text-xs"
+              >Units
+              <input
+                x-ref="new_eefpst1_units"
+                class="!px-1 !text-xs"
+                type="text"
+            /></label>
+          </div>
+        </div>
+        <div class="flex-1">
+          <div class="flex space-x-2">
+            <div class="flex-1">
+              <label class="text-xs">Populations</label>
+              <ul>
+                <template x-for="(population, populationIndex) in populations">
+                  <li class="text-xs">
+                    <div class="flex">
+                      <span
+                        x-text="`${population.name} (${population.description})`"
+                      ></span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="ml-1 cursor-pointer w-4 h-4"
+                        @click="if (populations.length > 1) {
+                          populations.splice(populationIndex, 1)
+                        } else {
+                          toastr.error('At least one population is required', null, { timeOut: 1000 });
+                        }"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                        />
+                      </svg>
+                    </div>
+                  </li>
+                </template>
+              </ul>
+              <input
+                x-ref="populationName"
+                placeholder="Name"
+                class="!mt-2 !px-1 !text-xs"
+                type="text"
+                @keyup.enter="addPopulation()"
+              />
+              <input
+                x-ref="populationDescription"
+                placeholder="Description"
+                class="!mt-1 !px-1 !text-xs"
+                type="text"
+                @keyup.enter="addPopulation()"
+              />
+              <div
+                class="bg-srdr-secondary text-xs text-white p-2 rounded-md text-center mt-2 cursor-pointer"
+                @click="addPopulation()"
+              >
+                Add Population
+              </div>
+            </div>
+            <div class="flex-1">
+              <label class="text-xs">Timepoints</label>
+              <ul>
+                <template x-for="(timepoint, timepointIndex) in timepoints">
+                  <li class="text-xs">
+                    <div class="flex">
+                      <span
+                        x-text="`${timepoint.name} (${timepoint.unit})`"
+                      ></span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="ml-1 cursor-pointer w-4 h-4"
+                        @click="if (timepoints.length > 1) {
+                          timepoints.splice(timepointIndex, 1)
+                        } else {
+                          toastr.error('At least one timepoint is required', null, { timeOut: 1000 });
+                        }"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                        />
+                      </svg>
+                    </div>
+                  </li>
+                </template>
+              </ul>
+              <input
+                x-ref="timepointName"
+                placeholder="Name"
+                class="!mt-2 !px-1 !text-xs"
+                type="text"
+                @keyup.enter="addTimepoint()"
+              />
+              <input
+                x-ref="timepointUnit"
+                placeholder="Unit"
+                class="!mt-1 !px-1 !text-xs"
+                type="text"
+                @keyup.enter="addTimepoint()"
+              />
+              <div
+                class="bg-srdr-secondary text-xs text-white p-2 rounded-md text-center mt-2 cursor-pointer"
+                @click="addTimepoint()"
+              >
+                Add Timepoint
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="rounded-md bg-srdrpurple text-white text-center p-2 mt-4 cursor-pointer"
+        @click="createArm(mh?.current_citations_project?.consolidated_extraction_eefps_id, $refs.new_eefpst1_name.value, $refs.new_eefpst1_description.value)"
+      >
+        Add to
+        <span x-text="mh?.current_citations_project?.section_name"></span>
+      </div>
     </div>
   </div>
   <div class="mt-6 overflow-auto">
@@ -129,20 +272,20 @@
                   <span
                     class="ml-2 bg-orange-500 text-xs text-white p-1 rounded-md cursor-pointer"
                     @click="type1_previews = {
-                      loading: true,
-                      false: [],
-                      citations: [],
-                      project: []
-                    };
-                    scopeOfChange = 'false';
-                    type1_change_modal = true;
-                    getArmData(section_eefpst1.type1_id, eefps.extraction_forms_projects_section_id, eefps.id);
-                    oldType1.id = section_eefpst1?.eefpst1_lookups[eefps.id];
-                    oldType1.name = section_eefpst1?.name;
-                    oldType1.description = section_eefpst1?.description;
-                    newType1.name = oldType1.name
-                    newType1.description = oldType1.description
-                  "
+                        loading: true,
+                        false: [],
+                        citations: [],
+                        project: []
+                      };
+                      scopeOfChange = 'false';
+                      type1_change_modal = true;
+                      getArmData(section_eefpst1.type1_id, eefps.extraction_forms_projects_section_id, eefps.id);
+                      oldType1.id = section_eefpst1?.eefpst1_lookups[eefps.id];
+                      oldType1.name = section_eefpst1?.name;
+                      oldType1.description = section_eefpst1?.description;
+                      newType1.name = oldType1.name
+                      newType1.description = oldType1.description
+                    "
                   >
                     Change
                   </span>

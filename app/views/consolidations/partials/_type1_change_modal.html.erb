@@ -55,10 +55,11 @@
         @change="
           newType1.name = type1_previews.all_type1s[$el.value]?.name;
           newType1.description = type1_previews.all_type1s[$el.value]?.description;
+          newType1Index = null;
         "
         x-model="newType1Index"
       >
-        <option value="0"></option>
+        <option value="null" disabled>Pre-fill from existing</option>
         <template
           x-for="(all_type1, all_type1_index) in type1_previews?.all_type1s"
         >

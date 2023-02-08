@@ -47,7 +47,7 @@
         name: "",
         description: "",
       },
-      newType1Index: 0,
+      newType1Index: null,
       oldType1: {
         name: "",
         description: "",
@@ -63,9 +63,75 @@
       extraction_eefpst1s: [
         { name: "name", description: "description", id: 1, position: 1 },
       ],
+      populations: [
+        {
+          name: "All Participants",
+          description: "All patients enrolled in this study.",
+        },
+      ],
+      timepoints: [
+        {
+          name: "Baseline",
+          description: "",
+        },
+      ],
 
       init() {
         this.fetch_efps(this.efps_id());
+      },
+
+      addPopulation() {
+        const populationName = this.$refs.populationName.value;
+        const populationDescription = this.$refs.populationDescription.value;
+        if (populationName.trim() === "") {
+          toastr.error("Population name must not be blank", null, {
+            timeOut: 1000,
+          });
+          return;
+        }
+        if (
+          this.populations.some(
+            (population) =>
+              population.name === populationName &&
+              population.description === populationDescription
+          )
+        ) {
+          toastr.error("Duplicate", null, { timeOut: 1000 });
+        } else {
+          this.populations.push({
+            name: populationName,
+            description: populationDescription,
+          });
+          this.$refs.populationName.value = "";
+          this.$refs.populationDescription.value = "";
+        }
+      },
+
+      addTimepoint() {
+        const timepointName = this.$refs.timepointName.value;
+        const timepointUnit = this.$refs.timepointUnit.value;
+        if (timepointName.trim() === "") {
+          toastr.error("Population name must not be blank", null, {
+            timeOut: 1000,
+          });
+          return;
+        }
+        if (
+          this.timepoints.some(
+            (timepoint) =>
+              timepoint.name === timepointName &&
+              timepoint.unit === timepointUnit
+          )
+        ) {
+          toastr.error("Duplicate", null, { timeOut: 1000 });
+        } else {
+          this.timepoints.push({
+            name: timepointName,
+            unit: timepointUnit,
+          });
+          this.$refs.timepointName.value = "";
+          this.$refs.timepointUnit.value = "";
+        }
       },
 
       efps_id() {
@@ -145,6 +211,10 @@
       },
 
       async createArm(eefps_id, name, description) {
+        if (name.trim() === "") {
+          toastr.error("Name cannot be blank", null, { timeOut: 1000 });
+          return;
+        }
         const params = {
           extractions_extraction_forms_projects_section: {
             extractions_extraction_forms_projects_sections_type1s_attributes: {
@@ -157,6 +227,53 @@
             },
           },
         };
+
+        if (this.mh?.current_citations_project?.section_name === "Outcomes") {
+          const eefpst1_attributes =
+            params.extractions_extraction_forms_projects_section
+              .extractions_extraction_forms_projects_sections_type1s_attributes[0];
+          eefpst1_attributes.units = this.$refs.new_eefpst1_units.value;
+          eefpst1_attributes.type1_type_id = this.$refs.new_eefpst1_type.value;
+          for (
+            let populationIndex = 0;
+            populationIndex < this.populations.length;
+            populationIndex++
+          ) {
+            const population = this.populations[populationIndex];
+            for (
+              let timepointIndex = 0;
+              timepointIndex < this.timepoints.length;
+              timepointIndex++
+            ) {
+              const timepoint = this.timepoints[timepointIndex];
+              eefpst1_attributes.extractions_extraction_forms_projects_sections_type1_rows_attributes ||=
+                {};
+              eefpst1_attributes.extractions_extraction_forms_projects_sections_type1_rows_attributes[
+                populationIndex
+              ] ||= {};
+              eefpst1_attributes.extractions_extraction_forms_projects_sections_type1_rows_attributes[
+                populationIndex
+              ].population_name_attributes = {
+                name: population.name,
+                description: population.description,
+              };
+              eefpst1_attributes.extractions_extraction_forms_projects_sections_type1_rows_attributes[
+                populationIndex
+              ].extractions_extraction_forms_projects_sections_type1_row_columns_attributes ||=
+                {};
+              eefpst1_attributes.extractions_extraction_forms_projects_sections_type1_rows_attributes[
+                populationIndex
+              ].extractions_extraction_forms_projects_sections_type1_row_columns_attributes[
+                timepointIndex
+              ] = {
+                timepoint_name_attributes: {
+                  name: timepoint.name,
+                  unit: timepoint.unit,
+                },
+              };
+            }
+          }
+        }
 
         const response = await fetch(
           `/extractions_extraction_forms_projects_sections/${eefps_id}`,
@@ -177,6 +294,22 @@
         if (response.status >= 200 && response.status < 300) {
           toastr.success("Saved successfully", null, { timeOut: 1000 });
           this.fetch_efps(this.mh?.current_citations_project?.efps_id);
+          this.$refs.new_eefpst1_name.value = "";
+          this.$refs.new_eefpst1_description.value = "";
+          this.$refs.new_eefpst1_units.value = "";
+          this.$refs.new_eefpst1_type.value = 1;
+          this.populations = [
+            {
+              name: "All Participants",
+              description: "All patients enrolled in this study.",
+            },
+          ];
+          this.timepoints = [
+            {
+              name: "Baseline",
+              description: "",
+            },
+          ];
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
