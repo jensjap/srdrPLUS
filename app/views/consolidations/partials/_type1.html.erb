@@ -62,9 +62,7 @@
               <td>
                 <ul>
                   <template x-for="timepoint in extraction_eefpst1.timepoints">
-                    <li
-                      x-text="`${timepoint.name} (${timepoint.description})`"
-                    ></li>
+                    <li x-text="`${timepoint.name} (${timepoint.unit})`"></li>
                   </template>
                 </ul>
               </td>
