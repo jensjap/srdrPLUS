@@ -122,7 +122,17 @@ class ConsolidationService
       include_total = efpso[:include_total]
       parent_eefps_eefpst1s =
         if efps.extraction_forms_projects_section_type_id == 1
-          parent_eefps.extractions_extraction_forms_projects_sections_type1s.includes(:type1)
+          parent_eefps.extractions_extraction_forms_projects_sections_type1s.includes(
+            :ordering,
+            :type1,
+            :type1_type,
+            {
+              extractions_extraction_forms_projects_sections_type1_rows: [
+                :population_name,
+                { extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name }
+              ]
+            }
+          )
         elsif parent_eefps.nil?
           []
         elsif by_type1 && include_total && parent_eefps.eefpst1s_without_total.count > 1
