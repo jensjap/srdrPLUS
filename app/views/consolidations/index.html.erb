@@ -1,7 +1,14 @@
 <div class="p-4 lg:p-8" x-data="consolidations">
   <div class="sm:flex sm:items-center">
     <div class="sm:flex-auto">
-      <h1 class="text-xl font-bold">Comparison Tool</h1>
+      <h1 class="text-xl font-bold">
+        Comparison Tool
+        <a
+          class="text-base"
+          href="/projects/<%= @project.id %>/consolidations?consolidation_beta_opt_out=true"
+          >To go back to the old comparison tool click here</a
+        >
+      </h1>
       <p class="mt-2 text-sm text-gray-700">
         Create consolidated extractions by quickly identifying differences among
         extractions of the same citation

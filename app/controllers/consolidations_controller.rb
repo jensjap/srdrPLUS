@@ -2,6 +2,11 @@ class ConsolidationsController < ApplicationController
   before_action :set_project, only: %i[index create]
 
   def index
+    cookies[:consolidation_beta] = true if params[:consolidation_beta_opt_in]
+    cookies.delete(:consolidation_beta) if params[:consolidation_beta_opt_out]
+
+    return redirect_to "/projects/#{@project.id}/extractions/comparison_tool" unless cookies[:consolidation_beta]
+
     authorize(@project, policy_class: ConsolidationPolicy)
     @nav_buttons.push('comparison_tool', 'my_projects')
     respond_to do |format|

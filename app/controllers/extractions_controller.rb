@@ -265,6 +265,8 @@ class ExtractionsController < ApplicationController
 
   # GET /projects/1/extractions/comparison_tool
   def comparison_tool
+    return redirect_to "/projects/#{@project.id}/consolidations" if cookies[:consolidation_beta]
+
     authorize(@project, policy_class: ExtractionPolicy)
     @nav_buttons.push('comparison_tool', 'my_projects')
     @citation_groups = @project.citation_groups
