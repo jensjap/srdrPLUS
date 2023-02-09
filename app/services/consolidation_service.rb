@@ -78,11 +78,13 @@ class ConsolidationService
       populations = []
       timepoints = []
       eefpst1rs.sort_by { |eefpst1r| eefpst1r.id }.each do |eefpst1r|
-        populations << eefpst1r.population_name.as_json.merge(id: eefpst1r.id)
+        populations << eefpst1r.population_name.as_json.merge(eefpst1r_id: eefpst1r.id)
       end
       if eefpst1rs.present?
-        eefpst1rs.first.extractions_extraction_forms_projects_sections_type1_row_columns.sort_by { |eefpst1rc| eefpst1rc.id }.each do |eefpst1rc|
-          timepoints << eefpst1rc.timepoint_name.as_json.merge(id: eefpst1rc.id,
+        eefpst1rs.first.extractions_extraction_forms_projects_sections_type1_row_columns.sort_by do |eefpst1rc|
+          eefpst1rc.id
+        end.each do |eefpst1rc|
+          timepoints << eefpst1rc.timepoint_name.as_json.merge(eefpst1rc_id: eefpst1rc.id,
                                                                eefpst1r_id: eefpst1rc.extractions_extraction_forms_projects_sections_type1_row_id)
         end
       end
@@ -137,11 +139,11 @@ class ConsolidationService
         populations = []
         timepoints = []
         eefpst1rs.each do |eefpst1r|
-          populations << eefpst1r.population_name.as_json.merge(id: eefpst1r.id)
+          populations << eefpst1r.population_name.as_json.merge(eefpst1r_id: eefpst1r.id)
         end
         if eefpst1rs.present?
           eefpst1rs.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
-            timepoints << eefpst1rc.timepoint_name.as_json.merge(id: eefpst1rc.id,
+            timepoints << eefpst1rc.timepoint_name.as_json.merge(eefpst1rc_id: eefpst1rc.id,
                                                                  eefpst1r_id: eefpst1rc.extractions_extraction_forms_projects_sections_type1_row_id)
           end
         end

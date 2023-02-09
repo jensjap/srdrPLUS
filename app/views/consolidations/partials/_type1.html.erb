@@ -59,7 +59,6 @@
                         <span
                           class="text-sm"
                           x-text="`${population.name} (${population.description})`"
-                          :title="population.id"
                         ></span>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -68,6 +67,16 @@
                           stroke-width="1.5"
                           stroke="currentColor"
                           class="cursor-pointer text-orange-600 w-4 h-4"
+                          @click="changeTPModal = true;
+                            type1_previews.loading = false;
+                            change_type = 'Population';
+                            change_ids = { eefpst1r_id: population.eefpst1r_id };
+                            old_eefpst1 = extraction_eefpst1;
+                            old_tp_name = population.name;
+                            old_tp_description_unit = population.description;
+                            new_tp_name = population.name;
+                            new_tp_description_unit = population.description;
+                          "
                         >
                           <path
                             stroke-linecap="round"
@@ -82,7 +91,7 @@
                           stroke-width="1.5"
                           stroke="currentColor"
                           class="cursor-pointer text-red-900 w-4 h-4"
-                          @click="if (confirm(`Are you sure you want to delete '${population.name}'`)) deletePopulation(extraction_eefpst1.id, population.id)"
+                          @click="if (confirm(`Are you sure you want to delete '${population.name}'`)) deletePopulation(extraction_eefpst1.id, population.eefpst1r_id)"
                         >
                           <path
                             stroke-linecap="round"
@@ -119,7 +128,6 @@
                         <span
                           class="text-sm"
                           x-text="`${timepoint.name} (${timepoint.unit})`"
-                          :title="timepoint.id"
                         ></span>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -128,6 +136,16 @@
                           stroke-width="1.5"
                           stroke="currentColor"
                           class="cursor-pointer text-orange-600 w-4 h-4"
+                          @click="changeTPModal = true;
+                            type1_previews.loading = false;
+                            change_type = 'Timepoint';
+                            change_ids = { eefpst1r_id: timepoint.eefpst1r_id, eefpst1rc_id: timepoint.eefpst1rc_id };
+                            old_eefpst1 = extraction_eefpst1;
+                            old_tp_name = timepoint.name;
+                            old_tp_description_unit = timepoint.unit;
+                            new_tp_name = timepoint.name;
+                            new_tp_description_unit = timepoint.unit;
+                          "
                         >
                           <path
                             stroke-linecap="round"
@@ -142,7 +160,7 @@
                           stroke-width="1.5"
                           stroke="currentColor"
                           class="cursor-pointer text-red-900 w-4 h-4"
-                          @click="if (confirm(`Are you sure you want to delete '${timepoint.name}'`)) deleteTimepoint(extraction_eefpst1.id, timepoint.eefpst1r_id, timepoint.id)"
+                          @click="if (confirm(`Are you sure you want to delete '${timepoint.name}'`)) deleteTimepoint(extraction_eefpst1.id, timepoint.eefpst1r_id, timepoint.eefpst1rc_id)"
                         >
                           <path
                             stroke-linecap="round"
@@ -243,7 +261,7 @@
                         @click="if (populations.length > 1) {
                           populations.splice(populationIndex, 1)
                         } else {
-                          toastr.error('At least one population is required', null, { timeOut: 1000 });
+                          toastr.error('At least one population is required.  Add another before removing this one.', null, { timeOut: 1000 });
                         }"
                       >
                         <path
@@ -296,7 +314,7 @@
                         @click="if (timepoints.length > 1) {
                           timepoints.splice(timepointIndex, 1)
                         } else {
-                          toastr.error('At least one timepoint is required', null, { timeOut: 1000 });
+                          toastr.error('At least one timepoint is required. Add another before removing this one.', null, { timeOut: 1000 });
                         }"
                       >
                         <path

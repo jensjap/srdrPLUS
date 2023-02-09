@@ -2,6 +2,7 @@
   <!-- prettier-ignore -->
   <%= render 'consolidations/partials/efps_sidebar' %>
   <%= render 'consolidations/partials/type1_change_modal' %>
+  <%= render 'consolidations/partials/change_tp_modal' %>
   <% efps = ExtractionFormsProject.find_by(project: @project).extraction_forms_projects_sections.fifth %>
   <div
     class="px-4 lg:px-8 py-1 sm:flex sm:items-center z-[5] !sticky top-32 bg-gray-100"
@@ -75,9 +76,84 @@
           description: "",
         },
       ],
+      changeTPModal: false,
+      addTimepointModal: false,
+      change_type: "",
+      change_ids: {},
+      old_eefpst1: {},
+      old_tp_name: "",
+      old_tp_description_unit: "",
+      new_tp_name: "",
+      new_tp_description_unit: "",
 
       init() {
         this.fetch_efps(this.efps_id());
+      },
+
+      async updateTP() {
+        let params;
+        if (this.change_type == "Population") {
+          params = {
+            extractions_extraction_forms_projects_sections_type1: {
+              extractions_extraction_forms_projects_sections_type1_rows_attributes:
+                {
+                  0: {
+                    id: this.change_ids.eefpst1r_id,
+                    population_name_attributes: {
+                      name: this.new_tp_name,
+                      description: this.new_tp_description_unit,
+                    },
+                  },
+                },
+            },
+          };
+        } else {
+          params = {
+            extractions_extraction_forms_projects_sections_type1: {
+              extractions_extraction_forms_projects_sections_type1_rows_attributes:
+                {
+                  0: {
+                    id: this.change_ids.eefpst1r_id,
+                    extractions_extraction_forms_projects_sections_type1_row_columns_attributes:
+                      {
+                        0: {
+                          id: this.change_ids.eefpst1rc_id,
+                          timepoint_name_attributes: {
+                            name: this.new_tp_name,
+                            unit: this.new_tp_description_unit,
+                          },
+                        },
+                      },
+                  },
+                },
+            },
+          };
+        }
+
+        const response = await fetch(
+          `/extractions_extraction_forms_projects_sections_type1s/${this.old_eefpst1.id}`,
+          {
+            method: "PATCH",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+
+        if (response.status >= 200 && response.status < 300) {
+          this.type1_previews.loading = false;
+          this.changeTPModal = false;
+          toastr.success("Updated successfully", null, { timeOut: 1000 });
+          this.fetch_efps(this.mh?.current_citations_project?.efps_id);
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
       },
 
       async deletePopulation(eefpst1_id, eefpst1r_id) {
