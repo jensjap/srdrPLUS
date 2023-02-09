@@ -1,4 +1,5 @@
 class Api::V3::ProjectsController < Api::V3::BaseController
+  before_action :set_project, only: [:show]
 
   def show
     authorize(@project, policy_class: ProjectPolicy)
