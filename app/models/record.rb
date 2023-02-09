@@ -130,6 +130,23 @@ class Record < ApplicationRecord
     end
   end
 
+  def extraction
+    case recordable_type
+    when 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
+      recordable.extraction
+    when 'TpsArmsRssm'
+      recordable.extraction
+    when 'TpsComparisonsRssm'
+      recordable.extraction
+    when 'ComparisonsArmsRssm'
+      recordable.extraction
+    when 'WacsBacsRssm'
+      recordable.result_statistic_sections_measure.extraction
+    when 'ExtractionsExtractionFormsProjectsSectionsFollowupField'
+      recordable.extraction
+    end
+  end
+
   private
 
   def set_extraction_stale

@@ -6,7 +6,7 @@ class RecordsController < ApplicationController
   def update
     respond_to do |format|
       begin
-        authorized = policy(@record.project).update?
+        authorized = policy(@record.extraction).update?
         if authorized
           return_val = @record.update(record_params)
           error_message = @record.errors.full_messages.to_s

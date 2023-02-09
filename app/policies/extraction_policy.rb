@@ -24,7 +24,8 @@ class ExtractionPolicy < ApplicationPolicy
   end
 
   def update?
-    project_contributor?
+    record.assigned_to?(user) ||
+      user.role_in_project_includes?(record.project, Role::LEADER)
   end
 
   def destroy?
@@ -32,7 +33,11 @@ class ExtractionPolicy < ApplicationPolicy
   end
 
   def work?
-    project_auditor? || @user.admin?
+    return true if user.admin?
+
+    record.assigned_to?(user) ||
+      user.role_in_project_includes?(record.project, Role::LEADER) ||
+      user.role_in_project_includes?(record.project, Role::AUDITOR)
   end
 
   def comparison_tool?

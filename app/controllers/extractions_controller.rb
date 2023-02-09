@@ -137,7 +137,7 @@ class ExtractionsController < ApplicationController
   # PATCH/PUT /extractions/1
   # PATCH/PUT /extractions/1.json
   def update
-    authorize(@extraction.project, policy_class: ExtractionPolicy)
+    authorize(@extraction)
     redirect_path = params[:redirect_to]
 
     respond_to do |format|
@@ -189,7 +189,7 @@ class ExtractionsController < ApplicationController
   # GET /extractions/1/work
   def work
     @project = @extraction.project
-    authorize(@project, policy_class: ExtractionPolicy)
+    authorize(@extraction)
     @nav_buttons.push('extractions', 'my_projects')
 
     set_extraction_forms_projects
