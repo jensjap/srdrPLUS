@@ -377,7 +377,7 @@ namespace :abstrackr do
         label = Label.create!({ value: old_l['label'], citations_project: citations_project, user_id: user_dict[old_l['user_id']]})
       else
         if citations_project.nil?
-          my_log(log_file, "PID: " + pid.to_s + " ciations_project does not exist. old citation id: " + (old_l['study_id'] || "nil").to_s)
+          my_log(log_file, "PID: " + pid.to_s + " citations_project does not exist. old citation id: " + (old_l['study_id'] || "nil").to_s)
         else
           my_log(log_file, "PID: " + pid.to_s + " user does not exist. old user id: " + (old_l['user_id'] || "nil").to_s)
         end
