@@ -87,8 +87,11 @@ documentCode = ->
     dt = $('table.extractions-list').DataTable({
       "columnDefs": [{ "orderable": false, "targets": "_all" }],
       "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
+      "pageLength": -1,
       "pagingType": "full_numbers",
       "stateSave": true,
+      "stateSaveParams": (settings, data) ->
+        data.search.search = ""
       "stateDuration": 0,
       "stateSaveCallback": (settings, data) ->
         localStorage.setItem('DataTables-' + tableKey, JSON.stringify(data))
