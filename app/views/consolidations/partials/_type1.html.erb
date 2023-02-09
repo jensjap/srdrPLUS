@@ -102,21 +102,31 @@
                       </div>
                     </li>
                   </template>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="cursor-pointer w-4 h-4 -ml-4"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
                 </ul>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="cursor-pointer w-4 h-4 ml-4"
+                  @click="changeTPModal = true;
+                      type1_previews.loading = false;
+                      change_type = 'Population';
+                      change_ids = { new: true };
+                      old_eefpst1 = extraction_eefpst1;
+                      old_tp_name = '';
+                      old_tp_description_unit = '';
+                      new_tp_name = '';
+                      new_tp_description_unit = '';
+                    "
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
               </td>
             </template>
             <template x-if="isOutcome()">
@@ -171,21 +181,31 @@
                       </div>
                     </li>
                   </template>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="cursor-pointer w-4 h-4 -ml-4"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
                 </ul>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="cursor-pointer w-4 h-4 ml-4"
+                  @click="changeTPModal = true;
+                    type1_previews.loading = false;
+                    change_type = 'Timepoint';
+                    change_ids = { new: true, eefpst1r_id: extraction_eefpst1.populations[0].eefpst1r_id };
+                    old_eefpst1 = extraction_eefpst1;
+                    old_tp_name = '';
+                    old_tp_description_unit = '';
+                    new_tp_name = '';
+                    new_tp_description_unit = '';
+                  "
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
               </td>
             </template>
           </tr>
