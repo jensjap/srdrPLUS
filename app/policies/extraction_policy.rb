@@ -28,6 +28,11 @@ class ExtractionPolicy < ApplicationPolicy
       user.role_in_project_includes?(record.project, Role::LEADER)
   end
 
+  def update_kqp_selections?
+    record.assigned_to?(user) ||
+      user.role_in_project_includes?(record.project, Role::LEADER)
+  end
+
   def destroy?
     project_leader?
   end

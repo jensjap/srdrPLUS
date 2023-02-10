@@ -160,6 +160,11 @@ class ExtractionsController < ApplicationController
   end
 
   def update_kqp_selections
+    @info = if policy(@extraction).update_kqp_selections?
+              [true, 'Saved!', '#410093']
+            else
+              [true, 'You are not authorized to make changes', 'red']
+            end
     respond_to do |format|
       format.js do
         @extraction.extractions_key_questions_projects_selections.destroy_all
@@ -201,7 +206,14 @@ class ExtractionsController < ApplicationController
       format.js do
         @load_js = params['load-js']
         @ajax_section_loading_index = params['ajax-section-loading-index']
-        @efp = ExtractionFormsProject.find(params[:efp_id])
+        @efp = if params.key?(:efp_id)
+                 ExtractionFormsProject.find(params[:efp_id])
+               else
+                 @extraction
+                   .extraction_forms_projects_sections
+                   .first
+                   .extraction_forms_project
+               end
         unless @panel_tab_id == 'keyquestions'
           @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
 
