@@ -3,6 +3,14 @@ class ImportPolicy < ApplicationPolicy
     project_auditor? || @record.public?
   end
 
+  def show?
+    project_contributor?
+  end
+
+  def start?
+    project_contributor?
+  end
+
   def create?
     project_contributor?
   end

@@ -1,5 +1,5 @@
 module ImportJobs::RisCitationImporter
-  def import_citations_from_ris(imported_file)
+  def import_citations_from_ris(imported_file, preview = false)
     key_counter = 0
 
     # creates a new parser of type RIS
@@ -10,6 +10,7 @@ module ImportJobs::RisCitationImporter
 
     return false unless file_string
 
+    preview_citations = []
     h_arr = []
     successful_refman_arr = []
     failed_refman_arr = []
@@ -18,7 +19,11 @@ module ImportJobs::RisCitationImporter
       # CITATION_BATCH_SIZE is defined in config/initializers/sidekiq.rb
       if h_arr.length >= CITATION_BATCH_SIZE
         begin
-          imported_file.project.citations << Citation.create!(h_arr)
+          if preview
+            preview_citations += h_arr.dup
+          else
+            imported_file.project.citations << Citation.create!(h_arr)
+          end
           successful_refman_arr << h_arr.map { |h| h[:refman] }
         rescue StandardError
           failed_refman_arr << h_arr.map { |h| h[:refman] }
@@ -28,7 +33,11 @@ module ImportJobs::RisCitationImporter
       cit_h.clear
     end
     # imported_file.project.citations << Citation.create(h_arr)
-    { imported_refmans: successful_refman_arr, failed_refmans: failed_refman_arr }
+    if preview
+      { count: preview_citations.length, citations: preview_citations[0..2] }
+    else
+      { imported_refmans: successful_refman_arr, failed_refmans: failed_refman_arr }
+    end
   end
 
   def get_row_hash(cit_h, key_counter)

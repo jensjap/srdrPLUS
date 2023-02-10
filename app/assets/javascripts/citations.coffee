@@ -85,8 +85,8 @@ document.addEventListener 'DOMContentLoaded', ->
         )
 
         this.on('success', (file, response) ->
-          toastr.success('Citation file successfully uploaded. You will be notified by email when citation import finishes.')
           wrapperThis.removeFile(file)
+          window.location.href = '/imports/' + response.id
         )
         this.on('error', (file, error_message) ->
           toastr.error("ERROR: Cannot upload citation file. #{ error_message }")

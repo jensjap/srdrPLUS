@@ -216,6 +216,7 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if @import.save
+        @import.start_import_job
         flash[:success] =
           "Import request of Assignments and Mappings submitted for project '#{@project.name}'. You will be notified by email of its completion."
         format.json { render json: @import, status: :ok }
@@ -279,6 +280,7 @@ class ProjectsController < ApplicationController
         end
         format.html { redirect_to project_imports_path(@project) }
       elsif @import.save
+        @import.start_import_job
         flash[:success] =
           "Import request of project '#{@project.name}'. You will be notified by email of its completion."
         format.json { render json: @import, status: :ok }

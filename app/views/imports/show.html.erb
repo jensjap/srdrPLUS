@@ -1,0 +1,60 @@
+<div class="p-4 lg:p-8">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-xl font-bold">Import Citations</h1>
+      <p class="mt-2 text-sm text-gray-700">
+        Please review the first (up to) 3 citations of each file that you
+        uploaded. We've found a total of <%= @previews.sum { |preview|
+        preview[:count] } %> citations. Please click on '<b>Start Import</b>' to
+        confirm.
+      </p>
+    </div>
+    <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+      <%= link_to('Start Import', "/imports/#{@import.id}/start", method: :post,
+      class: "inline-flex items-center justify-center rounded-md border
+      border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white
+      shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2
+      focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
+      hover:text-white") %>
+    </div>
+  </div>
+  <div>
+    <!-- prettier-ignore -->
+    <% @previews.each do |preview| %>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Authors</th>
+          <th>Journals</th>
+          <th>Refman</th>
+          <th>Pmid</th>
+          <th>Abstract</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- prettier-ignore -->
+        <% preview[:citations].each do |citation| %>
+        <tr>
+          <td><%= citation['name'] %></td>
+          <td>
+            <ul>
+              <!-- prettier-ignore -->
+              <% citation['authors_citations_attributes']&.each do |_, authors_citations_attributes| %>
+              <!-- prettier-ignore -->
+              <li><%= authors_citations_attributes[:author_attributes] && authors_citations_attributes[:author_attributes][:name] %></li>
+              <!-- prettier-ignore -->
+              <% end %>
+            </ul>
+          </td>
+          <td><%= citation['journal_attributes']&.values&.join(', ') %></td>
+          <td><%= citation['refman'] %></td>
+          <td><%= citation['pmid'] %></td>
+          <td><%= citation['abstract'] %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <% end %>
+  </div>
+</div>
