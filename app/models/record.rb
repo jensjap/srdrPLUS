@@ -20,56 +20,16 @@ class Record < ApplicationRecord
 
   validate :check_constraints
 
-  # So close, but doesn't work. This is nice because SimpleForm would automatically read the min and max constraints
-  #  validates_length_of :name,
-  #    minimum: self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 2).name.to_i,
-  #    maximum: self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.find_by(question_row_column_option_id: 3).name.to_i,
-  #    allow_blank: true,
-  #    on: :update,
-  #    if: -> { self.recordable.question_row_column_field.question_row_column.question_row_column_type == QuestionRowColumnType.find_by(name: 'text') }
-
-  #  def update(params)
-  #    token        = params[:name]
-  #    select2      = params[:select2].eql?('true') ? true : false
-  #    select2Multi = params[:select2Multi].eql?('true') ? true : false
-  #
-  #    if select2
-  #      #resource = self.recordable.question_row_column_field.question_row_column_fields_question_row_column_field_options.build(question_row_column_field_option_id: 1)
-  #      resource = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.build(question_row_column_option_id: 1)
-  #      save_resource_name_with_token(resource, token)
-  #    elsif select2Multi
-  #      token.each do |t|
-  #        resource = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.build(question_row_column_option_id: 1)
-  #        save_resource_name_with_token(resource, t)
-  #      end
-  #    end
-  #
-  #    params.delete(:select2)
-  #    params.delete(:select2Multi)
-  #    super
-  #  end
+  delegate :extraction, to: :recordable
 
   def name=(token)
     if !token.instance_of?(Array) && (recordable.instance_of? ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField)
       resource = recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.build(question_row_column_option_id: 1)
       save_resource_name_with_token(resource, token)
     end
-    #      else
-    #        byebug
-    #        token.each do |t|
-    #          resource = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.build(question_row_column_option_id: 1)
-    #          name = save_resource_name_with_token(resource, t).to_i
-    #        end
+
     super
   end
-
-  #  def name1=(tokens)
-  #    tokens.each do |token|
-  #      resource = self.recordable.question_row_column_field.question_row_column.question_row_columns_question_row_column_options.build(question_row_column_option_id: 1)
-  #      save_resource_name_with_token(resource, token)
-  #    end
-  #    super
-  #  end
 
   def check_constraints
     case recordable
@@ -130,36 +90,11 @@ class Record < ApplicationRecord
     end
   end
 
-  def extraction
-    case recordable_type
-    when 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
-      recordable.extraction
-    when 'TpsArmsRssm'
-      recordable.extraction
-    when 'TpsComparisonsRssm'
-      recordable.extraction
-    when 'ComparisonsArmsRssm'
-      recordable.extraction
-    when 'WacsBacsRssm'
-      recordable.result_statistic_sections_measure.extraction
-    when 'ExtractionsExtractionFormsProjectsSectionsFollowupField'
-      recordable.extraction
-    end
-  end
-
   private
 
   def set_extraction_stale
-    #    time_now = DateTime.now.to_i
-    #    UpdateExtractionChecksumJob.set(wait: 2.minute).perform_later(time_now.to_i, self.id)
-    extraction = nil
-    extraction = case recordable.class.name
-                 when 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField',
-      'ExtractionsExtractionFormsProjectsSectionsFollowupField'
-                   recordable.extraction
-                 else
-                   recordable.result_statistic_section.extraction
-                 end
-    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil?
+    recordable.extraction.extraction_checksum.update!(is_stale: true)
+  rescue => exception
+    Sentry.capture_exception(exception)
   end
 end
