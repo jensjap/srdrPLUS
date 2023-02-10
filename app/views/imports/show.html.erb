@@ -1,14 +1,15 @@
+<% total = @previews.sum { |preview| preview[:count] } %>
 <div class="p-4 lg:p-8">
   <div class="sm:flex sm:items-center">
     <div class="sm:flex-auto">
       <h1 class="text-xl font-bold">Import Citations</h1>
       <p class="mt-2 text-sm text-gray-700">
         Please review the first (up to) 3 citations of each file that you
-        uploaded. We've found a total of <%= @previews.sum { |preview|
-        preview[:count] } %> citations. Please click on '<b>Start Import</b>' to
-        confirm.
+        uploaded. We've found a total of <%= total %> citations. Please click on
+        '<b>Start Import</b>' to confirm.
       </p>
     </div>
+    <% if total <= 100_000 %>
     <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
       <%= link_to('Start Import', "/imports/#{@import.id}/start", method: :post,
       class: "inline-flex items-center justify-center rounded-md border
@@ -17,10 +18,13 @@
       focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
       hover:text-white") %>
     </div>
+    <% end %>
   </div>
   <div>
     <!-- prettier-ignore -->
-    <% @previews.each do |preview| %>
+    <% if @previews.sum { |preview| preview[:count] } <= 100_000 %>
+    <% @previews.each_with_index do |preview, index| %>
+    <h2 class="text-base font-bold"><%= "Preview of File: #{index + 1}" %></h2>
     <table>
       <thead>
         <tr>
@@ -55,6 +59,11 @@
         <% end %>
       </tbody>
     </table>
+    <% end %> <% else %>
+    <h1 class="text-xl">
+      I'm sorry but the number of citations (<%= total %>) exceeds the maximum
+      of 100,000. Please contact us if you'd like to continue this import.
+    </h1>
     <% end %>
   </div>
 </div>
