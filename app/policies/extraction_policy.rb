@@ -7,6 +7,10 @@ class ExtractionPolicy < ApplicationPolicy
     end
   end
 
+  def index?
+    project_contributor?
+  end
+
   def show?
     project_consolidator?
   end

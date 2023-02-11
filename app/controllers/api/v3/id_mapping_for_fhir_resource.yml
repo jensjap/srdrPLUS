@@ -1,0 +1,9 @@
+# We use "resource_number-resource_id" to represent id in fhir resource.
+# For example, if resource number for citation is "1", citation id is "52",
+# then this citation fhir id should be "1-52".
+
+citation: "1"
+key_question: "2"
+extraction_forms_projects_section: "3"
+extractions_extraction_forms_projects_section: "4"
+record: "5"
