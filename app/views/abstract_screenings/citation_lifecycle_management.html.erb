@@ -614,13 +614,13 @@
 
       async createExtractions() {
         this.showLoading = true;
-        const projects_users_role_ids = [];
+        const selectedUsers = [];
         this.users.forEach((user) => {
           if (user.selected) {
-            projects_users_role_ids.push(user.projects_users_role_id);
+            selectedUsers.push(user);
           }
         });
-        for (const projects_users_role_id of projects_users_role_ids) {
+        for (const user of selectedUsers) {
           const response = await fetch(
             "/projects/<%= params[:project_id] %>/extractions",
             {
@@ -635,7 +635,7 @@
               body: JSON.stringify({
                 extraction: {
                   citation: this.selected.map((cp) => cp.citation_id),
-                  projects_users_role_id,
+                  user_id: user.id,
                   noDuplicates: true,
                 },
               }),

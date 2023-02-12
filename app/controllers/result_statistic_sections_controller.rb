@@ -176,7 +176,7 @@ class ResultStatisticSectionsController < ApplicationController
 
   def set_extractions
     @extractions = Extraction
-                   .includes(projects_users_role: { projects_user: { user: :profile } })
+                   .includes(user: :profile)
                    .where(id: extraction_ids_params)
   end
 

@@ -28,10 +28,9 @@ json.pagination do
   json.order_by     @order_by
   json.sort         @sort
 end
-users = @project.projects_users_roles.sort_by { |pur| pur.role_id }.uniq { |pur| pur.user }
-users = users.sort_by { |pur| pur.user.handle.downcase }
-json.users users do |pur|
-  json.projects_users_role_id pur.id
-  json.handle pur.user.handle
+users = @project.users.sort_by { |user| user.handle.downcase }
+json.users users do |user|
+  json.id user.id
+  json.handle user.handle
   json.selected true
 end

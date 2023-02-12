@@ -62,7 +62,6 @@ class User < ApplicationRecord
   has_many :dispatches, dependent: :destroy, inverse_of: :user
 
   has_many :projects_users, dependent: :destroy, inverse_of: :user
-  has_many :projects_users_roles, through: :projects_users
   has_many :projects, through: :projects_users, dependent: :destroy
   has_many :citations_projects, through: :projects
 
@@ -84,10 +83,6 @@ class User < ApplicationRecord
   delegate :first_name, to: :profile, allow_nil: true
   delegate :middle_name, to: :profile, allow_nil: true
   delegate :last_name, to: :profile, allow_nil: true
-
-  def highest_role_in_project(project)
-    Role.joins(:projects_users).where(projects_users: { user: self, project: }).first.try(:name)
-  end
 
   def handle
     if [first_name, middle_name, last_name].any?(&:present?)

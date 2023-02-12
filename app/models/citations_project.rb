@@ -15,41 +15,13 @@
 class CitationsProject < ApplicationRecord
   searchkick callbacks: :async
 
-  scope :unlabeled,
-        lambda { |project, count|
-          includes(citation: [{ authors_citations: [:author] }, :keywords, :journal])
-            .left_outer_joins(:labels)
-            .where(labels: { id: nil },
-                   project_id: project.id)
-            .distinct
-            .limit(count)
-        }
-
-  scope :labeled,
-        lambda { |project, count|
-          includes({ :citation => [{ authors_citations: [:author] }, :keywords, :journal],
-                     labels => [:reasons] })
-            .joins(:labels)
-            .where(project_id: project.id)
-            .distinct
-            .limit(count)
-        }
-
   belongs_to :citation, inverse_of: :citations_projects
   belongs_to :project, inverse_of: :citations_projects # , touch: true
-
-  has_one :prediction, dependent: :destroy
-  has_one :priority, dependent: :destroy
 
   has_many :extractions, dependent: :destroy
   has_many :abstract_screening_results, dependent: :destroy
   has_many :fulltext_screening_results, dependent: :destroy
   has_many :screening_qualifications, dependent: :destroy
-
-  has_many :labels, dependent: :destroy
-  has_many :notes, as: :notable, dependent: :destroy
-  has_many :taggings, as: :taggable, dependent: :destroy
-  has_many :tags, through: :taggings
 
   accepts_nested_attributes_for :citation, reject_if: :all_blank
 

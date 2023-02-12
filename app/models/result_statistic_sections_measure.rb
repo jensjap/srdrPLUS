@@ -36,7 +36,8 @@ class ResultStatisticSectionsMeasure < ApplicationRecord
 
   accepts_nested_attributes_for :measure
 
-  delegate :extraction, to: :result_statistic_section
+  delegate :extraction,                                    to: :result_statistic_section
+  delegate :extractions_extraction_forms_projects_section, to: :result_statistic_section
 
   private
 

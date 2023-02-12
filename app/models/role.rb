@@ -13,11 +13,4 @@ class Role < ApplicationRecord
   CONSOLIDATOR = 'Consolidator'.freeze
   CONTRIBUTOR  = 'Contributor'.freeze
   AUDITOR      = 'Auditor'.freeze
-
-  has_many :projects_users_roles, dependent: :destroy, inverse_of: :role
-  has_many :projects_users, through: :projects_users_roles, dependent: :destroy
-
-  has_many :invitations, as: :invitable, dependent: :destroy
-
-  validates :name, presence: true, uniqueness: { case_sensitive: false }
 end

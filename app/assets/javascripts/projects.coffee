@@ -131,15 +131,6 @@ documentCode = ->
 
   ########## TASK MANAGEMENT
   if $( 'body.projects.edit' ).length == 1
-    $( '.project_tasks_projects_users_roles select' ).select2()
-    #### LISTENERS
-    $( '.tasks-container' ).on 'cocoon:before-insert', ( e, insertedItem ) ->
-      insertedItem.fadeIn 'slow'
-      insertedItem.css('display', 'flex')
-    $( '.tasks-container' ).on 'cocoon:after-insert', ( e, insertedItem ) ->
-      insertedItem.addClass( 'new-task' )
-      $( insertedItem ).find( '.project_tasks_projects_users_roles select' ).select2()
-
     ######### PROJECTS USERS
     ## still inside projects edit view
     $( ".project_projects_users_user select" ).select2

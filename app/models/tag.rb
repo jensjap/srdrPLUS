@@ -15,18 +15,4 @@ class Tag < ApplicationRecord
   has_many :fulltext_screening_results, through: :fulltext_screening_results_tags
 
   include SharedQueryableMethods
-
-  has_many :taggings
-
-  scope :by_project_lead, lambda { |project|
-                            joins(:taggings).where(taggings: { projects_users_role_id: project.projects_users_roles.where(role: Role.find_by(name: 'Leader')) }).order(:name).distinct
-                          }
-
-  scope :by_user, lambda { |user|
-                    joins(:taggings).where(taggings: { projects_users_role_id: user.projects_users_roles }).order(:name).distinct
-                  }
-
-  scope :by_projects_user, lambda { |projects_user|
-                             joins(:taggings).where(taggings: { projects_users_role_id: projects_user.projects_users_roles }).order(:name).distinct
-                           }
 end

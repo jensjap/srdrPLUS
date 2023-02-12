@@ -1,0 +1,16 @@
+( function() {
+  let infoDiv = $( ".record-info" );
+
+  // Update message. @info = [success, message, color]
+  infoDiv.html( "<%= @info[1] %>" );
+  infoDiv.css( 'color', "<%= @info[2] %>" );
+
+  // Animate @info message.
+  infoDiv.css( 'z-index', '1000' );
+  infoDiv.show().animate( { opacity: 0.7 } );
+  infoDiv.show().delay( 200 ).animate( { opacity: 0 } );
+  infoDiv.delay(10).queue(function (next) {
+     $(this).css('z-index', '-1000');
+     next();
+  });
+} )();

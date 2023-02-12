@@ -1,7 +1,0 @@
-- if team.enabled
-  = link_to "#panel-team-#{ team.id }", title: "Citation Screening Team #{ team.name }" do
-    span> = team.name
-    i.fi-check style='color: green;'
-
-- else
-  = link_to team.name, "#panel-team-#{ team.id }", title: "Citation Screening Team #{ team.name }"

@@ -52,7 +52,8 @@ class ResultStatisticSection < ApplicationRecord
   accepts_nested_attributes_for :result_statistic_sections_measures
   accepts_nested_attributes_for :measures
 
-  delegate :extraction, to: :population
+  delegate :extraction,                                    to: :population
+  delegate :extractions_extraction_forms_projects_section, to: :population
   delegate :project, to: :extraction
 
   def timepoints

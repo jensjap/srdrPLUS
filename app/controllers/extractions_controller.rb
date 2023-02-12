@@ -3,7 +3,7 @@ class ExtractionsController < ApplicationController
 
   before_action :set_project,
                 only: %i[index new create comparison_tool compare consolidate edit_type1_across_extractions]
-  before_action :set_extraction, only: %i[show edit update destroy work update_kqp_selections]
+  before_action :set_extraction, only: %i[show edit update destroy work update_kqp_selections reassign_extraction]
   before_action :set_extractions, only: %i[consolidate edit_type1_across_extractions]
   before_action :ensure_extraction_form_structure, only: %i[consolidate work]
   before_action :set_eefps_by_efps_dict, only: [:work]
@@ -21,17 +21,16 @@ class ExtractionsController < ApplicationController
                    .includes([
                                { citations_project: { citation: [:journal, :authors,
                                                                  { authors_citations: :ordering }] } },
-                               { extractions_extraction_forms_projects_sections: [:status] },
-                               { projects_users_role: [{ projects_user: { user: :profile } }, :role] }
+                               { extractions_extraction_forms_projects_sections: [:status] }
                              ])
     @extractions = ExtractionDecorator.decorate_collection(@extractions)
 
-    if @project.leaders.include? current_user
-      @projects_users_roles = ProjectsUsersRole
-                              .includes([{ projects_user: { user: :profile } }, :role])
-                              .where(projects_users: { project: @project })
-      @projects_users_roles = @projects_users_roles.sort_by { |pur| pur.role_id }.uniq { |pur| pur.user }
-    end
+    @users = @project.users if @project.leaders.include? current_user
+  end
+
+  def reassign_extraction
+    authorize(@extraction)
+    @nav_buttons.push('extractions', 'my_projects')
   end
 
   def reassign_extraction
@@ -45,26 +44,23 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/new
   def new
+    authorize(@project, policy_class: ExtractionPolicy)
     @extraction           = @project.extractions.new(citations_project: CitationsProject.new(project: @project))
     @citations_projects   = @project.citations_projects
     @citations            = @project.citations
-    @projects_users_roles = ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @project })
-    unless policy(@project).assign_extraction_to_any_user?
-      @projects_users_roles = @projects_users_roles.where(projects_users: { user: current_user })
-    end
-    @current_projects_users_role = ProjectsUsersRole.joins(:projects_user).where(projects_users: { user: current_user,
-                                                                                                   project: @project }).order(role_id: :asc).first
+    @users = if policy(@project).assign_extraction_to_any_user?
+               User.joins(:projects_users).where(projects_users: { project: @project })
+             else
+               [current_user]
+             end
     @existing_pmids = @project.extractions.map(&:citation).compact.map(&:pmid).join('//$$//')
-
-    authorize(@extraction.project, policy_class: ExtractionPolicy)
   end
 
   # GET /extractions/1/edit
   def edit
-    @citations_projects   = @extraction.project.citations_projects
-    @projects_users_roles = ProjectsUsersRole.joins(:projects_user).where(projects_users: { project: @extraction.project })
-
     authorize(@extraction.project, policy_class: ExtractionPolicy)
+    @citations_projects = @extraction.project.citations_projects
+    @users = User.joins(:projects_users).where(projects_users: { project: @extraction.project })
   end
 
   # POST /extractions
@@ -76,23 +72,26 @@ class ExtractionsController < ApplicationController
     skipped = []
     failed = []
     extractions = []
-    projects_users_role = ProjectsUsersRole.find(params['extraction']['projects_users_role_id'])
+    user = User.find(params['extraction']['user_id'])
     params['extraction']['citation'].delete_if { |i| i == '' }.map(&:to_i).each do |citation_id|
       citations_project = CitationsProject.find_by(citation_id:, project: @project)
-      extraction = Extraction.find_by(project: @project, citations_project:, projects_users_role:)
-      if params['extraction']['noDuplicates'] && extraction
-        skipped << extraction
-      else
-        extractions << @project.extractions.build(
-          citations_project:,
-          projects_users_role:
-        )
-      end
-    end
+      extraction = Extraction.find_by(project: @project, citations_project:)
 
-    extractions.each do |extraction|
-      if extraction.save
-        succeeded << extraction
+      # !!! We don't want to skip over creating an extraction just
+      #     because one exists regardless of user_id value.
+      # if params['extraction']['noDuplicates'] && extraction
+      #   skipped << extraction
+      #   next
+      # end
+
+      new_extraction = @project
+                       .extractions
+                       .find_or_initialize_by(
+                         citations_project:,
+                         user:
+                       )
+      if new_extraction.save
+        succeeded << new_extraction
       else
         failed << extraction
       end
@@ -115,15 +114,15 @@ class ExtractionsController < ApplicationController
       format.json do
         render json: {
           success: {
-            user_handle: projects_users_role.user.handle,
+            user_handle: user.handle,
             citation_names: succeeded.map { |extraction| extraction.citation.name }
           },
           error: {
-            user_handle: projects_users_role.user.handle,
+            user_handle: user.handle,
             citation_names: failed.map { |extraction| extraction.citation.name }
           },
           info: {
-            user_handle: projects_users_role.user.handle,
+            user_handle: user.handle,
             citation_names: skipped.map { |extraction| extraction.citation.name }
           }
         }
@@ -137,7 +136,7 @@ class ExtractionsController < ApplicationController
   # PATCH/PUT /extractions/1
   # PATCH/PUT /extractions/1.json
   def update
-    authorize(@extraction.project, policy_class: ExtractionPolicy)
+    authorize(@extraction)
     redirect_path = params[:redirect_to]
 
     respond_to do |format|
@@ -160,12 +159,20 @@ class ExtractionsController < ApplicationController
   end
 
   def update_kqp_selections
+    authorized = policy(@extraction).update_kqp_selections?
+    @info = if authorized
+              [true, 'Saved!', '#410093']
+            else
+              [true, 'You are not authorized to make changes', 'red']
+            end
     respond_to do |format|
       format.js do
-        @extraction.extractions_key_questions_projects_selections.destroy_all
-        params[:extraction][:extractions_key_questions_projects_selection_ids].each do |kqp_id|
-          if kqp_id.present?
-            @extraction.extractions_key_questions_projects_selections.create(key_questions_project_id: kqp_id)
+        if authorized
+          @extraction.extractions_key_questions_projects_selections.destroy_all
+          params[:extraction][:extractions_key_questions_projects_selection_ids].each do |kqp_id|
+            if kqp_id.present?
+              @extraction.extractions_key_questions_projects_selections.create(key_questions_project_id: kqp_id)
+            end
           end
         end
       end
@@ -189,7 +196,7 @@ class ExtractionsController < ApplicationController
   # GET /extractions/1/work
   def work
     @project = @extraction.project
-    authorize(@project, policy_class: ExtractionPolicy)
+    authorize(@extraction)
     @nav_buttons.push('extractions', 'my_projects')
 
     set_extraction_forms_projects
@@ -201,7 +208,14 @@ class ExtractionsController < ApplicationController
       format.js do
         @load_js = params['load-js']
         @ajax_section_loading_index = params['ajax-section-loading-index']
-        @efp = ExtractionFormsProject.find(params[:efp_id])
+        @efp = if params.key?(:efp_id)
+                 ExtractionFormsProject.find(params[:efp_id])
+               else
+                 @extraction
+                   .extraction_forms_projects_sections
+                   .first
+                   .extraction_forms_project
+               end
         unless @panel_tab_id == 'keyquestions'
           @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
 
@@ -339,8 +353,7 @@ class ExtractionsController < ApplicationController
                           extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options
                           question_row_columns_question_row_column_options
                         ]
-                      },
-                      projects_users_role: :projects_user
+                      }
                     )
                     .find(params[:id])
     end
@@ -350,7 +363,7 @@ class ExtractionsController < ApplicationController
     @extractions = policy_scope(Extraction)
                    .includes(
                      {
-                       projects_users_role: { projects_user: { user: :profile } }
+                       user: :profile
                      },
                      {
                        extractions_extraction_forms_projects_sections: [
@@ -362,18 +375,15 @@ class ExtractionsController < ApplicationController
   end
 
   def ensure_extraction_form_structure
-    if @extractions
-      @extractions.each { |extraction| extraction.ensure_extraction_form_structure }
-    else
-      @extraction.ensure_extraction_form_structure
-    end
+    @extractions&.each(&:ensure_extraction_form_structure)
+    @extraction&.ensure_extraction_form_structure
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def extraction_params
     params
       .require(:extraction)
-      .permit(:projects_users_role_id,
+      .permit(:user_id,
               :citations_project_id,
               citations_project_ids: [],
               extractions_key_questions_project_ids: [],

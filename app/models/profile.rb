@@ -19,12 +19,8 @@
 class Profile < ApplicationRecord
   include SharedProcessTokenMethods
 
-  after_create :create_default_abstrackr_setting
-
   belongs_to :organization, inverse_of: :profiles, optional: true
   belongs_to :user, inverse_of: :profile
-
-  has_one :abstrackr_setting, dependent: :destroy
 
   has_many :degrees_profiles, dependent: :destroy, inverse_of: :profile
   has_many :degrees, through: :degrees_profiles, dependent: :destroy
@@ -60,9 +56,5 @@ class Profile < ApplicationRecord
 
   def validate_username
     errors.add(:username, 'Username already taken!') if User.where(email: username).exists?
-  end
-
-  def create_default_abstrackr_setting
-    create_abstrackr_setting({ authors_visible: true, journal_visible: true })
   end
 end

@@ -2,16 +2,12 @@
 
 one:
   citations_project: one
-  projects_users_role: one
   deleted_at:
 
 two:
   citations_project: two
-  projects_users_role: two
   deleted_at:
 
 three:
   citations_project: one
-  projects_users_role: one
   deleted_at:
-
