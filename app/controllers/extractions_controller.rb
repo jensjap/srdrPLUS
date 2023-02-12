@@ -33,6 +33,11 @@ class ExtractionsController < ApplicationController
     @nav_buttons.push('extractions', 'my_projects')
   end
 
+  def reassign_extraction
+    @nav_buttons.push('extractions', 'my_projects')
+    @extraction = Extraction.find(params[:id])
+  end
+
   # GET /extractions/1
   # GET /extractions/1.json
   def show; end
@@ -372,7 +377,7 @@ class ExtractionsController < ApplicationController
       .require(:extraction)
       .permit(:user_id,
               :citations_project_id,
-              #citations_project_ids: [],
+              citations_project_ids: [],
               extractions_key_questions_project_ids: [],
               key_questions_project_ids: [])
   end
