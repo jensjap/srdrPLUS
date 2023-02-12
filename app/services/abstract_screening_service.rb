@@ -67,11 +67,22 @@ class AbstractScreeningService
   end
 
   def self.other_users_screened_citation_ids(abstract_screening, user)
-    abstract_screening.abstract_screening_results.where.not(user:).map(&:citation).map(&:id)
+    abstract_screening
+      .abstract_screening_results
+      .includes(citations_project: :citation)
+      .where
+      .not(user:)
+      .map(&:citation)
+      .map(&:id)
   end
 
   def self.user_screened_citation_ids(abstract_screening, user)
-    abstract_screening.abstract_screening_results.where(user:).map(&:citation).map(&:id)
+    abstract_screening
+      .abstract_screening_results
+      .includes(citations_project: :citation)
+      .where(user:)
+      .map(&:citation)
+      .map(&:id)
   end
 
   def self.project_screened_citation_ids(project)

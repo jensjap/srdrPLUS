@@ -1,0 +1,80 @@
+<div class="p-4 lg:p-8">
+  <h1 class="text-lg font-bold">Import Data Workflow</h1>
+  <div class="grid-x mb-6 mt-4">
+    <div class="cell small-12">
+      <h1 class="text-base">
+        Step 1 - Export Assignments and Mappings Template
+      </h1>
+      <!-- prettier-ignore -->
+      <%= link_to 'Get Export', export_assignments_and_mappings_project_path(@project), class: 'button' %>
+    </div>
+  </div>
+  <div class="grid-x mb-6">
+    <div class="cell small-12">
+      <h1 class="text-base">Step 2 - Import Assignments and Mappings</h1>
+      <div id="dropzone-div">
+        <!-- prettier-ignore -->
+        <%= simple_form_for(@import, url: import_assignments_and_mappings_project_path(@project), remote: true, authenticity_token: true) do |f| %>
+        <div class="form-inputs">
+          <!-- prettier-ignore -->
+          <%= f.input :projects_user_id, as: :hidden, input_html: { value: @projects_user.id } %>
+          <%= f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: ImportType::ASSIGNMENTS_MAPPINGS).id } %>
+          <%= f.simple_fields_for @import.imported_files.build do |i_f| %>
+          <div
+            id="#fileDropzone"
+            class="dropzone"
+            name="mainFileUploader"
+            dropzone-path="#{ imports_path }"
+          >
+            <div class="fallback">
+              <!-- prettier-ignore -->
+              <%= i_f.input :file_type_id, as: :hidden, required: true, input_html: { value: FileType.find_by(name: FileType::XLSX).id } %>
+              <%= i_f.input :content, as: :file, label: 'Assignments and Mappings File' %>
+              <div class="form-actions">
+                <!-- prettier-ignore -->
+                <%= f.button :submit, 'Upload file', class:"medium", id:"submit-all" %>
+              </div>
+            </div>
+          </div>
+          <!-- prettier-ignore -->
+          <% end %>
+        </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="grid-x mb-6">
+    <div class="cell small-12">
+      <h1 class="text-base">Step 3 - Export Project Data</h1>
+      <!-- prettier-ignore -->
+      <%= link_to "Get Export", export_project_path(@project, export_type_name: '.xlsx legacy'), method: :post, class: "button" %>
+    </div>
+  </div>
+  <div class="grid-x mb-6">
+    <div class="cell small-12">
+      <h1 class="text-base">Step 4 - Import Project Data</h1>
+      <div>
+        <!-- prettier-ignore -->
+        <%= simple_form_for(@import, url: simple_import_project_path(@project), remote: true, authenticity_token: true) do |f| %>
+        <div class="form-inputs">
+          <!-- prettier-ignore -->
+          <%= f.input :projects_user_id, as: :hidden, input_html: { value: @projects_user.id } %>
+            <%= f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: ImportType::PROJECT).id } %>
+            <%= f.simple_fields_for @import.imported_files.build do |i_f| %>
+          <div class="dropzone">
+            <div class="fallback">
+              <!-- prettier-ignore -->
+              <%= i_f.input :file_type_id, as: :hidden, required: true, input_html: { value: FileType.find_by(name: FileType::XLSX).id } %>
+                <%= i_f.input :content, as: :file, label: 'Project File', input_html: { id: 'import-project-file' } %>
+              <div class="form-actions">
+                <%= f.button :submit, 'Upload file', class:"medium" %>
+              </div>
+            </div>
+          </div>
+          <% end %>
+        </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

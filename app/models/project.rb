@@ -24,7 +24,7 @@ class Project < ApplicationRecord
 
   attr_accessor :create_empty
 
-  searchkick
+  searchkick callbacks: :async
 
   paginates_per 8
 

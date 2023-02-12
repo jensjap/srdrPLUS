@@ -13,7 +13,7 @@
 #
 
 class CitationsProject < ApplicationRecord
-  searchkick
+  searchkick callbacks: :async
 
   belongs_to :citation, inverse_of: :citations_projects
   belongs_to :project, inverse_of: :citations_projects # , touch: true
@@ -229,6 +229,6 @@ class CitationsProject < ApplicationRecord
       update(screening_status: AS_UNSCREENED)
     end
 
-    reindex
+    reindex(mode: :async)
   end
 end

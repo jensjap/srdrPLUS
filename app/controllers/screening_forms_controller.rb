@@ -1,8 +1,7 @@
 class ScreeningFormsController < ApplicationController
   def index
     @project = Project.find(params[:project_id])
-    @nav_buttons.push('abstract_form', 'my_projects') if params[:form_type] == 'abstract'
-    @nav_buttons.push('fulltext_form', 'my_projects') if params[:form_type] == 'fulltext'
+    @nav_buttons.push('screening_forms', 'my_projects')
 
     respond_to do |format|
       format.json do

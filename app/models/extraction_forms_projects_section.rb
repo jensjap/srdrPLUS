@@ -141,17 +141,20 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
     return if lsof_qdq_ids.blank?
 
-    # wrap in transaction
+    # Wrap in transaction
     ExtractionFormsProjectsSection.transaction do
       efps = ExtractionFormsProjectsSection.find(efps_id)
 
-      # Iterate through the array of quality dimension question ids and add the question to the section.
-      #
+      # Iterate through the array of quality dimension question
+      # ids and add the question to the section.
       depen_arr = []
       qrcqrco_id_dict = {}
       lsof_qdq_ids.each do |qdq_id|
         qdq = QualityDimensionQuestion.find(qdq_id)
-        question = efps.questions.create(name: qdq.name, description: qdq.description)
+        question = efps.questions.create(
+          name: qdq.name,
+          description: qdq.description
+        )
 
         # Associate all key questions.
         question.key_questions_projects = question.project.key_questions_projects
@@ -171,7 +174,10 @@ class ExtractionFormsProjectsSection < ApplicationRecord
           first = true
           qdq.quality_dimension_options.each do |qdo|
             if first
-              qrcqrco = qrc_1.question_row_columns_question_row_column_options.where(question_row_column_option_id: 1).first
+              qrcqrco = qrc_1
+                        .question_row_columns_question_row_column_options
+                        .where(question_row_column_option_id: 1)
+                        .first
               qrcqrco.update(name: qdo.name)
 
               first = false
@@ -182,22 +188,34 @@ class ExtractionFormsProjectsSection < ApplicationRecord
                 name: qdo.name
               )
             end
-            qdqqdo = QualityDimensionQuestionsQualityDimensionOption.find_by quality_dimension_question: qdq,
-                                                                             quality_dimension_option: qdo
+            qdqqdo = QualityDimensionQuestionsQualityDimensionOption
+                     .find_by(
+                       quality_dimension_question: qdq,
+                       quality_dimension_option: qdo
+                     )
             qrcqrco_id_dict[qdqqdo.id] = qrcqrco.id
-          end # qdq.quality_dimension_options.each do |qdo|
+          end
         end
+
         qdq.dependencies.each do |prereq|
           depen_arr << [question.id, prereq.prerequisitable_id]
         end
-      end # lsof_qdq_ids.each do |qdq_id|
-      depen_arr.each do |q_id, prereq_id|
-        Dependency.find_or_create_by! dependable_type: 'Question',
-                                      dependable_id: q_id,
-                                      prerequisitable_type: 'QuestionRowColumnsQuestionRowColumnOption',
-                                      prerequisitable_id: qrcqrco_id_dict[prereq_id]
       end
-    end  # ExtractionFormsProjectsSection.transaction do
+
+      depen_arr.each do |q_id, prereq_id|
+        # Only build Dependency if the Prerequesite exists.
+        next unless QuestionRowColumnsQuestionRowColumnOption
+                    .where(id: qrcqrco_id_dict[prereq_id])
+                    .present?
+
+        Dependency.find_or_create_by!(
+          dependable_type: 'Question',
+          dependable_id: q_id,
+          prerequisitable_type: 'QuestionRowColumnsQuestionRowColumnOption',
+          prerequisitable_id: qrcqrco_id_dict[prereq_id]
+        )
+      end
+    end
   end
 
   def ensure_sequential_questions

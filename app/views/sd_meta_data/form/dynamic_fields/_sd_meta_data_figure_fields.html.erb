@@ -62,10 +62,11 @@
     <%= f.input :intervention_name %>
     <%= f.input :comparator_name %>
     <%= f.input :effect_size_measure_name, as: :select, collection: [f.object.effect_size_measure_name], selected: f.object.effect_size_measure_name, input_html: { class: "esmn-#{f.object.id}" } %>
-    <%= f.input :overall_effect_size, input_html: { class: "oes-#{f.object.id}" } %>
-    <%= f.input :overall_95_ci_low, input_html: { class: "ci-low-#{f.object.id}" } %>
-    <%= f.input :overall_95_ci_high, input_html: { class: "ci-high-#{f.object.id}" } %>
-    <%= f.input :overall_i_squared, input_html: { class: "i-squared-#{f.object.id}", min: 0, max: 100 } %>
+    <%= f.input :overall_effect_size, input_html: { class: "oes-#{f.object.id} statisticNum" } %>
+    <%= f.input :overall_95_ci_low, input_html: { class: "ci-low-#{f.object.id} statisticNum" } %>
+    <%= f.input :overall_95_ci_high, input_html: { class: "ci-high-#{f.object.id} statisticNum" } %>
+    <%= f.input :overall_i_squared, label: "Overall I Squared (%)", input_html: { class: "i-squared-#{f.object.id} statisticNum" } %>
+    <%= f.input :other_heterogeneity_statistics, label: "Other heterogeneity statistics" %>
   <% end %>
   <!-- prettier-ignore -->
 </div>
@@ -89,6 +90,22 @@
   <% end %>
 
   if (!(parseFloat($('<%= ".i-squared-#{f.object.id}" %>').val()) >= 0) || !(parseFloat($('<%= ".i-squared-#{f.object.id}" %>').val()) <= 100)) {
+    $('<%= ".i-squared-#{f.object.id}" %>').addClass('!text-red-500')
+  }
+
+  if (isNaN($('<%= ".oes-#{f.object.id}" %>').val())) {
+    $('<%= ".oes-#{f.object.id}" %>').addClass('!text-red-500')
+  }
+
+  if (isNaN($('<%= ".ci-low-#{f.object.id}" %>').val())) {
+    $('<%= ".ci-low-#{f.object.id}" %>').addClass('!text-red-500')
+  }
+
+  if (isNaN($('<%= ".ci-high-#{f.object.id}" %>').val())) {
+    $('<%= ".ci-high-#{f.object.id}" %>').addClass('!text-red-500')
+  }
+
+  if (isNaN($('<%= ".i-squared-#{f.object.id}" %>').val())) {
     $('<%= ".i-squared-#{f.object.id}" %>').addClass('!text-red-500')
   }
 

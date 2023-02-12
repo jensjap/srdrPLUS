@@ -19,15 +19,14 @@
   lifecycle_management: <%= @nav_buttons.include?('lifecycle_management') %>,
   abstract_screening: <%= @nav_buttons.include?('abstract_screening') %>,
   fulltext_screening: <%= @nav_buttons.include?('fulltext_screening') %>,
-  abstract_form: <%= @nav_buttons.include?('abstract_form') %>,
+  screening_forms: <%= @nav_buttons.include?('screening_forms') %>,
   fulltext_form: <%= @nav_buttons.include?('fulltext_form') %>,
   tasks: <%= @nav_buttons.include?('tasks') %>,
   screen: <%= @nav_buttons.include?('screen') %>,
   extractions: <%= @nav_buttons.include?('extractions') %>,
   comparison_tool: <%= @nav_buttons.include?('comparison_tool') %>,
-  export_data: <%= @nav_buttons.include?('export_data') %>,
   sr_360: <%= @nav_buttons.include?('sr_360') %>,
-  import_tools: <%= @nav_buttons.include?('import_tools') %>,
+  import_export: <%= @nav_buttons.include?('import_export') %>,
   publication: <%= @nav_buttons.include?('publication') %>,
   signin: <%= @nav_buttons.include?('signin') %>,
   signup: <%= @nav_buttons.include?('signup') %>,
@@ -281,7 +280,7 @@
       class="bg-srdr-secondary mx-auto px-4 lg:px-8 text-white overflow-x-auto whitespace-nowrap"
     >
       <div class="flex h-8 items-center">
-        <div class="absolute">
+        <div class="">
           <!-- prettier-ignore -->
           <%= "Project ID##{project.id}: #{project.name}" %>
           <% if project.publishing.present? && project.publishing.approval.present? %>
@@ -323,24 +322,25 @@
             :class="members_and_roles && 'bg-srdr-primary !text-white'"
             >Member(s) & Role(s)</a
           >
-          <% if AbstractScreeningService.as_user?(current_user) %>
           <a
             href="<%= project_citations_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="citation_pool && 'bg-srdr-primary !text-white'"
             >Citations</a
           >
+          <% if AbstractScreeningService.as_user?(current_user) %>
           <a
             href="<%= project_citation_lifecycle_management_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="lifecycle_management && 'bg-srdr-primary !text-white'"
             >Citation Phase Management</a
           >
+          <% end %>
           <a
-            href="<%= project_screening_forms_path(project, form_type: 'abstract') %>"
+            href="<%= project_screening_forms_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="abstract_form && 'bg-srdr-primary !text-white'"
-            >A.S. Form Builder</a
+            :class="screening_forms && 'bg-srdr-primary !text-white'"
+            >Screening Form Builder</a
           >
           <a
             href="<%= project_abstract_screenings_path(project) %>"
@@ -348,12 +348,7 @@
             :class="abstract_screening && 'bg-srdr-primary !text-white'"
             >Abstract Screening</a
           >
-          <a
-            href="<%= project_screening_forms_path(project, form_type: 'fulltext') %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="fulltext_form && 'bg-srdr-primary !text-white'"
-            >F.S. Form Builder</a
-          >
+          <% if AbstractScreeningService.as_user?(current_user) %>
           <a
             href="<%= project_fulltext_screenings_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
@@ -374,12 +369,6 @@
             >Extractions</a
           >
           <a
-            href="<%= export_data_project_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="export_data && 'bg-srdr-primary !text-white'"
-            >Export Data</a
-          >
-          <a
             href="<%= comparison_tool_project_extractions_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
             :class="comparison_tool && 'bg-srdr-primary !text-white'"
@@ -394,8 +383,8 @@
           <a
             href="<%= project_imports_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="import_tools && 'bg-srdr-primary !text-white'"
-            >Import Tools</a
+            :class="import_export && 'bg-srdr-primary !text-white'"
+            >Data Import & Export</a
           >
           <a
             href="<%= new_publishing_path(type: Project.to_s, id: project.id) %>"

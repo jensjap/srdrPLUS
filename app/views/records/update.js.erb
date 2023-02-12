@@ -12,8 +12,8 @@
 
   // Animate @info message.
   infoDiv.css( 'z-index', '1000' );
-  infoDiv.show().animate( { opacity: 0.4 } );
-  infoDiv.show().delay( 500 ).animate( { opacity: 0 } );
+  infoDiv.show().animate( { opacity: 0.7 } );
+  infoDiv.show().delay( 200 ).animate( { opacity: 0 } );
   infoDiv.delay(10).queue(function (next) {
      $(this).css('z-index', '-1000');
      next();

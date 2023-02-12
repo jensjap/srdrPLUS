@@ -37,11 +37,6 @@ class ProjectsController < ApplicationController
     authorize(@project)
   end
 
-  def export_data
-    authorize(@project)
-    @nav_buttons.push('export_data', 'my_projects')
-  end
-
   # GET /projects/new
   def new
     @project = Project.new

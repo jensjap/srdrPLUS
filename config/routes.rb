@@ -110,8 +110,13 @@ Rails.application.routes.draw do
     end # END namespace :v2 do
 
     namespace :v3 do
-      resources :projects, shallow: true, only: [] do
+      resources :projects, shallow: true, only: [:show] do
         resources :citations, only: %i[index show]
+        resources :key_questions, only: [:index, :show]
+        resources :extractions, only: [:index, :show]
+      end
+      resources :extraction_forms_projects, shallow: true, only: [] do
+        resources :extraction_forms_projects_sections, only: [:index, :show]
       end
     end # END namespace :v3 do
   end # END namespace :api do
@@ -143,13 +148,23 @@ Rails.application.routes.draw do
 
   get 'sd_key_questions/:id/fuzzy_match', to: 'sd_key_questions#fuzzy_match'
 
+  resources :abstract_screenings, shallow: true, only: [] do
+    resources :abstract_screenings_tags_users
+    resources :abstract_screenings_reasons_users
+  end
+
+  resources :fulltext_screenings, shallow: true, only: [] do
+    resources :fulltext_screenings_tags_users
+    resources :fulltext_screenings_reasons_users
+  end
+
   resources :abstract_screening_results, only: %i[show update]
   resources :fulltext_screening_results, only: %i[show update]
   resources :data_audits, only: %i[index update]
   resources :projects, concerns: :paginatable, shallow: true do
     get 'citation_lifecycle_management', to: 'abstract_screenings#citation_lifecycle_management'
-    get 'export_screening_data', to: 'abstract_screenings#export_screening_data'
     get 'kpis', to: 'abstract_screenings#kpis'
+    post 'export_screening_data', to: 'abstract_screenings#export_screening_data'
 
     resources :abstract_screenings do
       get 'screen', to: 'abstract_screenings#screen'
@@ -165,7 +180,6 @@ Rails.application.routes.draw do
     resources :sd_meta_data
 
     member do
-      get 'export_data'
       get 'confirm_deletion'
       post 'import_csv'
       post 'import_ris'
@@ -188,6 +202,7 @@ Rails.application.routes.draw do
 
       member do
         get 'work'
+        get 'reassign_extraction'
         put 'update_kqp_selections'
         get 'change_outcome_in_results_section', constraints: { format: 'js' }
       end

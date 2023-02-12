@@ -10,7 +10,10 @@
   .form-inputs
     .row.column
       - if section_name.eql?('Outcomes')
-        = f.association :type1_type, label: 'Type of Outcome', required: true
+        = f.association :type1_type,
+          collection: Type1Type.outcome_types,
+          required: true,
+          label: 'Type of Outcome'
         #type1s
           = f.simple_fields_for(:type1) do |type1_form|
             = type1_form.input :name, label: 'Domain',

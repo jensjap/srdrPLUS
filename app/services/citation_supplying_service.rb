@@ -38,7 +38,14 @@ class CitationSupplyingService
   def create_fhir_obj(raw)
     citation = {
       'status' => 'active',
-      'id' => raw.id,
+      'id' => '1' + '-' + raw.id.to_s,
+      'identifier' => [{
+        'type' => {
+          'text' => 'SRDR+ Object Identifier'
+        },
+        'system' => 'https://srdrplus.ahrq.gov/',
+        'value' => 'Citation/' + raw.id.to_s
+      }],
       'citedArtifact' => {
         'identifier' => [],
         'title' => [],
@@ -86,14 +93,14 @@ class CitationSupplyingService
     end
 
     title = raw.name
-    if title
+    if !title.empty?
       citation['citedArtifact']['title'].append({
                                                   'text' => title
                                                 })
     end
 
     abstract = raw.abstract
-    if abstract
+    if !abstract.empty?
       citation['citedArtifact']['abstract'].append({
                                                      'text' => abstract
                                                    })

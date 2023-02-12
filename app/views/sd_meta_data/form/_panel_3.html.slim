@@ -11,11 +11,11 @@
 
     div data-row-span="1"
       .sd-item data-field-span="1"
-        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: :overall_purpose_of_review, class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.input :overall_purpose_of_review, label: 'Overall Purpose of Review', :input_html => { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' }
     div data-row-span="2"
       .sd-item data-field-span="1"
-        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
+        = simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: :review_type, class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f|
           = f.association :review_type, label: 'Type of Review', input_html: { class: 'review_type sd-select2' }
     div data-row-span="1"
       div data-field-span="1"

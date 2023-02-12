@@ -12,12 +12,12 @@ end
 json.citation do
   json.citation_id @abstract_screening_result.citation.id
   json.title @abstract_screening_result.citation.name
-  json.journal @abstract_screening.hide_journal ? '<hidden>' : @abstract_screening_result.citation.journal.name
+  json.journal @abstract_screening.hide_journal ? '<hidden>' : @abstract_screening_result.citation.journal&.name
   json.authors @abstract_screening.hide_author ? '<hidden>' : @abstract_screening_result.citation.author_map_string
   json.abstract @abstract_screening_result.citation.abstract
   json.keywords @abstract_screening_result.citation.keywords.map(&:name).join(',')
   json.id @abstract_screening_result.citation.accession_number_alts
-  json.journal_meta_info "#{@abstract_screening_result.citation.author_map_string}\n#{@abstract_screening_result.citation.journal.name}, #{@abstract_screening_result.citation.year}; #{@abstract_screening_result.citation.journal.volume} (#{@abstract_screening_result.citation.journal.issue}): #{@abstract_screening_result.citation.page_number_start}-#{@abstract_screening_result.citation.page_number_end}. DOI: #{@abstract_screening_result.citation.doi}. PMID: #{@abstract_screening_result.citation.pmid}"
+  json.journal_meta_info "#{@abstract_screening_result.citation.author_map_string}\n#{@abstract_screening_result.citation.journal&.name}, #{@abstract_screening_result.citation.year}; #{@abstract_screening_result.citation.journal&.volume} (#{@abstract_screening_result.citation.journal&.issue}): #{@abstract_screening_result.citation.page_number_start}-#{@abstract_screening_result.citation.page_number_end}. DOI: #{@abstract_screening_result.citation.doi}. PMID: #{@abstract_screening_result.citation.pmid}"
 end
 json.options do
   json.yes_tag_required @abstract_screening.yes_tag_required
@@ -36,7 +36,6 @@ cps = @screened_cps.reverse.map do |asr|
   {
     asr_id: asr.id,
     name: asr.citation.name,
-    authors: @abstract_screening.hide_author ? '<hidden>' : asr.citation.author_map_string,
     label: asr.label
   }
 end

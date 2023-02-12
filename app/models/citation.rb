@@ -22,7 +22,7 @@ class Citation < ApplicationRecord
   include SharedQueryableMethods
   include SharedProcessTokenMethods
 
-  searchkick
+  searchkick callbacks: :async
 
   after_commit :reindex_citations_projects
 
@@ -164,9 +164,11 @@ class Citation < ApplicationRecord
   end
 
   def author_map_string
-    authors_citations.map do |ac|
-      [ac.ordering.position, ac.author.name]
-    end.sort { |a, b| (a[0] || 0) <=> (b[0] || 0) }.map { |a| a[1] }.join('; ')
+    authors_citations
+      .includes(:author, :ordering)
+      .map do |ac|
+        [ac.ordering.position, ac.author.name]
+      end.sort { |a, b| (a[0] || 0) <=> (b[0] || 0) }.map { |a| a[1] }.join('; ')
   end
 
   def reindex_citations_projects

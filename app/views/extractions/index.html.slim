@@ -36,11 +36,13 @@ div class="p-4 lg:p-8"
         th.table-sortable.sorting data-sorting-col="5" width="200px" Assigned User
         th.table-sortable.sorting data-sorting-col="6" width="50px" Progress
         th width="50px"
+        th width="50px"
 
     tbody
       - if @extractions.blank?
         tr
           td No extractions found.
+          td
           td
           td
           td
@@ -73,6 +75,7 @@ div class="p-4 lg:p-8"
               .success.progress data-allow-html="true" data-tooltip="" title="#{ extraction.tooltip_text }"
                 .progress-meter style="width: #{ extraction.progress_meter_width }%;"
 
+            td = link_to 'Reassign', reassign_extraction_extraction_path(extraction)
             td = link_to t('destroy'), extraction, style: 'font-weight:bold;color:#cc4b37 !important;', data: { confirm: "Warning! You are about to delete extraction:\n\n#{extraction.first_author} - #{extraction.year} - #{extraction.pmid}\n#{extraction.name}\n\nThis action cannot be undone. Proceed anyway?" }, method: :delete
   div
   - if @project.key_questions.present?
