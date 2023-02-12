@@ -3,7 +3,7 @@ class ExtractionsController < ApplicationController
 
   before_action :set_project,
                 only: %i[index new create comparison_tool compare consolidate edit_type1_across_extractions]
-  before_action :set_extraction, only: %i[show edit update destroy work update_kqp_selections]
+  before_action :set_extraction, only: %i[show edit update destroy work update_kqp_selections reassign_extraction]
   before_action :set_extractions, only: %i[consolidate edit_type1_across_extractions]
   before_action :ensure_extraction_form_structure, only: %i[consolidate work]
   before_action :set_eefps_by_efps_dict, only: [:work]
@@ -29,8 +29,8 @@ class ExtractionsController < ApplicationController
   end
 
   def reassign_extraction
+    authorize(@extraction)
     @nav_buttons.push('extractions', 'my_projects')
-    @extraction = Extraction.find(params[:id])
   end
 
   # GET /extractions/1
@@ -39,6 +39,7 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/new
   def new
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
     @extraction           = @project.extractions.new(citations_project: CitationsProject.new(project: @project))
     @citations_projects   = @project.citations_projects
     @citations            = @project.citations
@@ -48,15 +49,13 @@ class ExtractionsController < ApplicationController
                [current_user]
              end
     @existing_pmids = @project.extractions.map(&:citation).compact.map(&:pmid).join('//$$//')
-
-    authorize(@extraction.project, policy_class: ExtractionPolicy)
   end
 
   # GET /extractions/1/edit
   def edit
+    authorize(@extraction.project, policy_class: ExtractionPolicy)
     @citations_projects = @extraction.project.citations_projects
     @users = User.joins(:projects_users).where(projects_users: { project: @extraction.project })
-    authorize(@extraction.project, policy_class: ExtractionPolicy)
   end
 
   # POST /extractions

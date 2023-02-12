@@ -4,7 +4,7 @@ class MigratingRolesService
       if pur = extraction.projects_users_role
         extraction.update_column(:user_id, pur.user.id)
       else
-        extraction.update_column(:projects_users_role_id, nil)
+        extraction.update_column(:user_id, nil)
       end
     end
   end

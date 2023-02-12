@@ -12,4 +12,6 @@
 class ProjectsUsersRole < ApplicationRecord
   belongs_to :projects_user
   belongs_to :role
+
+  delegate :user, to: :projects_user
 end
