@@ -13,8 +13,6 @@ class ConsolidationService
     # 1. link_to_type_1s may not mirror exactly between efps and eefps
     # 2. an efps may belong to efpst type 2 but have a link to another efps
     # 3. what if point 2 happens to an eefps i.e. a efps of type1 but with an eefps with a linked eefps
-    # questions #
-    # 1. how to determine order among eefps type1s and populate their records in a hash while keeping that order
 
     mh = {
       efps: {},
@@ -314,14 +312,15 @@ class ConsolidationService
       available_eefpsqrcf_hash[key] = true
     end
 
-    # ensures eefpsqrcf exist
+    # ensure eefpsqrcf exist
+    missing_eefpsqrcfs = []
     current_section_eefpss.each do |current_section_eefps|
       qrcfs.each do |qrcf|
         if current_section_eefpst1_objects.empty? && available_eefpsqrcf_hash["#{qrcf.id}-#{current_section_eefps.id}"].nil?
-          ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(
-            extractions_extraction_forms_projects_section: current_section_eefps,
-            question_row_column_field: qrcf
-          )
+          missing_eefpsqrcfs << {
+            extractions_extraction_forms_projects_section_id: current_section_eefps.id,
+            question_row_column_field_id: qrcf.id
+          }
         else
           current_section_eefpst1_objects.each do |current_section_eefpst1_object|
             key = [
@@ -334,14 +333,18 @@ class ConsolidationService
               next
             end
 
-            ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(
-              extractions_extraction_forms_projects_section: current_section_eefps,
-              question_row_column_field: qrcf,
+            missing_eefpsqrcfs << {
+              extractions_extraction_forms_projects_section_id: current_section_eefps.id,
+              question_row_column_field_id: qrcf.id,
               extractions_extraction_forms_projects_sections_type1_id: current_section_eefpst1_object[:extractions_extraction_forms_projects_sections_type1_id]
-            )
+            }
           end
         end
       end
+    end
+
+    if missing_eefpsqrcfs.present?
+      ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.insert_all(missing_eefpsqrcfs)
     end
 
     eefpsqrcfs = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.where(
@@ -361,15 +364,18 @@ class ConsolidationService
       followup_field: ffs
     )
 
-    missing_eefpsqrcfs =
+    # ensure records exist
+    eefpsqrcfs_with_missing_records =
       ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField
       .joins('LEFT JOIN records ON eefps_qrcfs.id = records.recordable_id')
       .where(id: eefpsqrcfs.map(&:id))
       .where(records: { id: nil })
 
-    # ensures records exist
-    missing_eefpsqrcfs.each do |eefpsqrcf|
-      Record.find_or_create_by(recordable: eefpsqrcf)
+    if eefpsqrcfs_with_missing_records.present?
+      Record.insert_all(eefpsqrcfs_with_missing_records.map do |missing_eefpsqrcf|
+                          { recordable_type: ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField,
+                            recordable_id: missing_eefpsqrcf.id }
+                        end)
     end
 
     eefpsffs.each do |eefpsff|
