@@ -137,16 +137,6 @@ class User < ApplicationRecord
     user_type.user_type == 'Admin'
   end
 
-  def role_in_project_includes?(project, name)
-    projects_users_roles
-      .joins(:projects_user)
-      .where(projects_users: { project_id: project.id })
-      .collect(&:role)
-      .include?(
-        Role.find_by(name:)
-      )
-  end
-
   private
 
   def ensure_profile_username_uniqueness
