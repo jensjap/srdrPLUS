@@ -62,9 +62,9 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
     when 'additional_char'
       self.name      ||= false
     when 'min_value'
-      self.name      ||= 0
+      self.name      ||= ''
     when 'max_value'
-      self.name      ||= 255
+      self.name      ||= ''
     when 'coefficient'
       self.name      ||= 5
     when 'exponent'

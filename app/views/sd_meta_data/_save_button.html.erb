@@ -17,6 +17,7 @@
       <div
         id="save-dirty-forms-button"
         class="cursor-pointer p-2 m-2 text-xs bg-srdrpurple-light border-[1px] border-white text-white rounded-md drop-shadow-md"
+        @click="validateStatisticalMeasures"
       >
         Save Changes
       </div>
@@ -30,6 +31,17 @@
       showSaveMenu: false,
 
       init() {},
+
+      validateStatisticalMeasures() {
+        $(".statisticNum").each(function (index) {
+          const element = $(this);
+          if (isNaN(element.val())) {
+            element.addClass("!text-red-500");
+          } else {
+            element.removeClass("!text-red-500");
+          }
+        });
+      },
 
       hideSaveButtonMenu() {
         this.showSaveMenu = false;

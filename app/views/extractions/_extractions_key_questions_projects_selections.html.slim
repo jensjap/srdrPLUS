@@ -13,3 +13,5 @@ div#extractions-key-questions-projects-selections.key-question-selector
                     collection: f.object.project.key_questions_projects.includes(:key_question).map { |kqp| [kqp.key_question.name, kqp.id, { class: 'kqp-selector', 'data-kqp-selection-id': kqp.id }] },
                     :checked => extraction.extractions_key_questions_projects_selections.map(&:key_questions_project_id),
                     'data-id' => -> (item) { item[1] }
+
+    div class='record-info' style='opacity: 0; position: relative; display: block;' = 'Saved!'

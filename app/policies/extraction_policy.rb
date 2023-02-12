@@ -7,6 +7,10 @@ class ExtractionPolicy < ApplicationPolicy
     end
   end
 
+  def index?
+    project_contributor?
+  end
+
   def show?
     project_consolidator?
   end
@@ -24,7 +28,13 @@ class ExtractionPolicy < ApplicationPolicy
   end
 
   def update?
-    project_contributor?
+    record.assigned_to?(user) ||
+      user.role_in_project_includes?(record.project, Role::LEADER)
+  end
+
+  def update_kqp_selections?
+    record.assigned_to?(user) ||
+      user.role_in_project_includes?(record.project, Role::LEADER)
   end
 
   def destroy?
@@ -32,7 +42,11 @@ class ExtractionPolicy < ApplicationPolicy
   end
 
   def work?
-    project_auditor? || @user.admin?
+    return true if user.admin?
+
+    record.assigned_to?(user) ||
+      user.role_in_project_includes?(record.project, Role::LEADER) ||
+      user.role_in_project_includes?(record.project, Role::AUDITOR)
   end
 
   def comparison_tool?

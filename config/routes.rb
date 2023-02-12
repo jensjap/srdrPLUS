@@ -137,8 +137,13 @@ Rails.application.routes.draw do
     end # END namespace :v2 do
 
     namespace :v3 do
-      resources :projects, shallow: true, only: [] do
+      resources :projects, shallow: true, only: [:show] do
         resources :citations, only: %i[index show]
+        resources :key_questions, only: [:index, :show]
+        resources :extractions, only: [:index, :show]
+      end
+      resources :extraction_forms_projects, shallow: true, only: [] do
+        resources :extraction_forms_projects_sections, only: [:index, :show]
       end
     end # END namespace :v3 do
   end # END namespace :api do

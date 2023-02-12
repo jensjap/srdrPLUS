@@ -208,6 +208,10 @@ class Extraction < ApplicationRecord
               .where(extraction_forms_projects_sections: { extraction_forms_projects_section_type_id: 2 })
   end
 
+  def assigned_to?(member)
+    user.eql?(member)
+  end
+
   private
 
   def create_default_arms

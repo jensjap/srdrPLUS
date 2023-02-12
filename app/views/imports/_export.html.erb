@@ -28,7 +28,7 @@
     />
     <label for="gsheets-radio-<%= @project.id.to_s %>"> Google Sheets </label>
     <!-- prettier-ignore -->
-    <%= link_to "Export Project Data", export_project_path(@project, export_type_name: '.xlsx'), method: :post, class: "button expanded start-export-button" %>
+    <%= link_to "Export Project Data", export_project_path(@project, export_type_name: '.xlsx legacy'), method: :post, class: "button expanded start-export-button" %>
 
     <br />
     <hr />

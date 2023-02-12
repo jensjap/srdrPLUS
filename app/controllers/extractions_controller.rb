@@ -137,7 +137,7 @@ class ExtractionsController < ApplicationController
   # PATCH/PUT /extractions/1
   # PATCH/PUT /extractions/1.json
   def update
-    authorize(@extraction.project, policy_class: ExtractionPolicy)
+    authorize(@extraction)
     redirect_path = params[:redirect_to]
 
     respond_to do |format|
@@ -160,6 +160,11 @@ class ExtractionsController < ApplicationController
   end
 
   def update_kqp_selections
+    @info = if policy(@extraction).update_kqp_selections?
+              [true, 'Saved!', '#410093']
+            else
+              [true, 'You are not authorized to make changes', 'red']
+            end
     respond_to do |format|
       format.js do
         @extraction.extractions_key_questions_projects_selections.destroy_all
@@ -189,7 +194,7 @@ class ExtractionsController < ApplicationController
   # GET /extractions/1/work
   def work
     @project = @extraction.project
-    authorize(@project, policy_class: ExtractionPolicy)
+    authorize(@extraction)
     @nav_buttons.push('extractions', 'my_projects')
 
     set_extraction_forms_projects
@@ -201,7 +206,14 @@ class ExtractionsController < ApplicationController
       format.js do
         @load_js = params['load-js']
         @ajax_section_loading_index = params['ajax-section-loading-index']
-        @efp = ExtractionFormsProject.find(params[:efp_id])
+        @efp = if params.key?(:efp_id)
+                 ExtractionFormsProject.find(params[:efp_id])
+               else
+                 @extraction
+                   .extraction_forms_projects_sections
+                   .first
+                   .extraction_forms_project
+               end
         unless @panel_tab_id == 'keyquestions'
           @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
 
@@ -362,11 +374,8 @@ class ExtractionsController < ApplicationController
   end
 
   def ensure_extraction_form_structure
-    if @extractions
-      @extractions.each { |extraction| extraction.ensure_extraction_form_structure }
-    else
-      @extraction.ensure_extraction_form_structure
-    end
+    @extractions&.each(&:ensure_extraction_form_structure)
+    @extraction&.ensure_extraction_form_structure
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
