@@ -154,17 +154,20 @@ class ExtractionsController < ApplicationController
   end
 
   def update_kqp_selections
-    @info = if policy(@extraction).update_kqp_selections?
+    authorized = policy(@extraction).update_kqp_selections?
+    @info = if authorized
               [true, 'Saved!', '#410093']
             else
               [true, 'You are not authorized to make changes', 'red']
             end
     respond_to do |format|
       format.js do
-        @extraction.extractions_key_questions_projects_selections.destroy_all
-        params[:extraction][:extractions_key_questions_projects_selection_ids].each do |kqp_id|
-          if kqp_id.present?
-            @extraction.extractions_key_questions_projects_selections.create(key_questions_project_id: kqp_id)
+        if authorized
+          @extraction.extractions_key_questions_projects_selections.destroy_all
+          params[:extraction][:extractions_key_questions_projects_selection_ids].each do |kqp_id|
+            if kqp_id.present?
+              @extraction.extractions_key_questions_projects_selections.create(key_questions_project_id: kqp_id)
+            end
           end
         end
       end
