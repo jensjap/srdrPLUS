@@ -76,15 +76,20 @@ class ExtractionsController < ApplicationController
     params['extraction']['citation'].delete_if { |i| i == '' }.map(&:to_i).each do |citation_id|
       citations_project = CitationsProject.find_by(citation_id:, project: @project)
       extraction = Extraction.find_by(project: @project, citations_project:)
-      if params['extraction']['noDuplicates'] && extraction
-        skipped << extraction
-        next
-      end
 
-      new_extraction = @project.extractions.build(
-        citations_project:,
-        user:
-      )
+      # !!! We don't want to skip over creating an extraction just
+      #     because one exists regardless of user_id value.
+      # if params['extraction']['noDuplicates'] && extraction
+      #   skipped << extraction
+      #   next
+      # end
+
+      new_extraction = @project
+                       .extractions
+                       .find_or_initialize_by(
+                         citations_project:,
+                         user:
+                       )
       if new_extraction.save
         succeeded << new_extraction
       else
