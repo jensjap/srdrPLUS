@@ -1491,144 +1491,6 @@
 }
 
 */
-/* line 1, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-#citation-row {
-  height: 70vh;
-}
-
-/* line 5, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-#citation-column {
-  height: 100%;
-}
-
-/* line 9, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-#citation-container {
-  overflow-y: scroll;
-  max-height: 60vh;
-}
-
-/* line 14, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-#breadcrumb-group {
-  overflow-x: scroll;
-  white-space: nowrap;
-}
-
-/* line 19, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-.display-inline {
-  display: inline;
-}
-
-/* line 23, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-#control-group {
-  margin: 20px;
-  display: inline-block;
-}
-
-/* line 28, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-#previous-button {
-  margin-right: 10px;
-}
-
-/* line 32, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-#next-button {
-  margin-left: 10px;
-}
-
-/* line 36, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-.full-height {
-  height: 100%;
-}
-
-/* line 40, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-#pagination-buttons {
-  display: inline-block;
-  margin: auto;
-}
-
-/* line 45, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-.citation-info {
-  margin-right: 250px;
-}
-
-/* line 49, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-.info-wrapper {
-  float: left;
-  margin-right: -250px;
-  width: 100%;
-}
-
-/* line 55, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-.citation-buttons {
-  float: right;
-}
-
-/* line 59, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-#feature-panel {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: row;
-      -ms-flex-direction: row;
-          flex-direction: row;
-}
-/* line 62, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-#feature-panel .button {
-  margin-right: 0.5rem;
-}
-
-/* line 67, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-#reasons-list {
-  height: 70vh;
-  overflow-y: scroll;
-}
-
-/* line 72, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-#new-term-group {
-  margin-right: 0.5rem;
-}
-
-/* line 78, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-.term-group-buttons-table tr td, #edit-term-groups-table tr td {
-  padding-top: 0.2rem;
-  padding-bottom: 0.2rem;
-}
-/* line 79, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-.term-group-buttons-table tr td input, #edit-term-groups-table tr td input {
-  font-size: 100%;
-  height: 80%;
-  margin-bottom: 0rem;
-}
-/* line 86, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-.term-group-buttons-table tr td .button, #edit-term-groups-table tr td .button {
-  margin-bottom: 0rem;
-}
-/* line 91, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-.term-group-buttons-table tr.selected, #edit-term-groups-table tr.selected {
-  background-color: #e8e7f0;
-}
-
-/* line 96, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-#new-term-group {
-  margin-right: 0.8rem;
-}
-
-/* line 100, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-.putgc-color-palette {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  margin: 0;
-}
-
-/* line 105, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/assignments.scss */
-.putgc-color-label {
-  height: 20px;
-  width: 20px;
-}
 /**
  * Foundation for Sites
  * Version 6.6.2
@@ -22388,7 +22250,8 @@ input:checked ~ .switch-hidden {
   padding: 20px;
 }
 /* line 16, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/projects_users.scss */
-#member-roles-table th, #member-roles-table td {
+#member-roles-table th,
+#member-roles-table td {
   border: 1px solid black;
 }
 /* line 7, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/public_data.scss */
