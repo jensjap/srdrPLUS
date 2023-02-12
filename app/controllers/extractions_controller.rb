@@ -44,7 +44,7 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/new
   def new
-    authorize(@extraction.project, policy_class: ExtractionPolicy)
+    authorize(@project, policy_class: ExtractionPolicy)
     @extraction           = @project.extractions.new(citations_project: CitationsProject.new(project: @project))
     @citations_projects   = @project.citations_projects
     @citations            = @project.citations
