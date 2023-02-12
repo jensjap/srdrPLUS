@@ -79,10 +79,6 @@ module ImportJobs::CsvCitationImporter
       cit_h['pmid'] = row_h['Accession Number'].strip if row_h['Accession Number'].present?
 
       h_arr << cit_h
-      if h_arr.length >= 500
-        imported_file.project.citations << Citation.create(h_arr)
-        h_arr = []
-      end
 
       if h_arr.length >= CITATION_BATCH_SIZE
         imported_file.project.citations << Citation.create(h_arr)
