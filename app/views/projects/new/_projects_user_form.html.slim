@@ -28,30 +28,3 @@
                 "data-association-insertion-method" => 'append'
   .hide
     = link_to_remove_association 'Remove User', f, class: 'remove-projects-user'
-  /.json-import-panel.hide
-    .project-file-container
-    = g.simple_fields_for :imported_files do |h|
-      = render 'projects/new/project_file_form', f:h
-    .links
-      = link_to_add_association 'Add Project File', g, :imported_files,
-              partial: 'projects/new/project_file_form',
-              id: 'add-project-file',
-              "data-association-insertion-node" => '.project-file-container',
-              "data-association-insertion-method" => 'append'
-
-
-  /div
-    = f.input :citation_file, as: :file, label: 'Citation References'
-    hr
-    = f.input :section_files, as: :file, input_html: { multiple: true }, label: 'Risk of Bias Assessment'
-    = f.input :citation_file, as: :file, label: 'Citation References'
-    hr
-    = f.input :design_file, as: :file, label: 'Design Details'
-    hr
-    = f.input :arms_file, as: :file, label:  'Arms and Arm Details'
-    hr
-    = f.input :outcomes_file, as: :file, label: 'Outcomes and Outcome Details'
-    hr
-    = f.input :bc_file, as: :file, label: 'Baseline Characteristics'
-    hr
-    = f.input :rob_file, as: :file, label: 'Risk of Bias Assessment'
