@@ -77,20 +77,16 @@ class ExtractionsController < ApplicationController
       citations_project = CitationsProject.find_by(citation_id:, project: @project)
       extraction = Extraction.find_by(project: @project, citations_project:)
 
-      # !!! We don't want to skip over creating an extraction just
-      #     because one exists regardless of user_id value.
-      # if params['extraction']['noDuplicates'] && extraction
-      #   skipped << extraction
-      #   next
-      # end
-
       new_extraction = @project
                        .extractions
                        .find_or_initialize_by(
                          citations_project:,
                          user:
                        )
-      if new_extraction.save
+
+      if new_extraction.persisted?
+        skipped << new_extraction
+      elsif new_extraction.save
         succeeded << new_extraction
       else
         failed << extraction
