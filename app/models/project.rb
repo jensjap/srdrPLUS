@@ -153,19 +153,19 @@ class Project < ApplicationRecord
   end
 
   def leaders
-    projects_users.select(&:project_leader?).map(&:user)
+    projects_users.includes(:user).select(&:project_leader?).map(&:user)
   end
 
   def consolidators
-    projects_users.select(&:project_consolidator?).map(&:user)
+    projects_users.includes(:user).select(&:project_consolidator?).map(&:user)
   end
 
   def contributors
-    projects_users.select(&:project_contributor?).map(&:user)
+    projects_users.includes(:user).select(&:project_contributor?).map(&:user)
   end
 
   def auditors
-    projects_users.select(&:project_auditor?).map(&:user)
+    projects_users.includes(:user).select(&:project_auditor?).map(&:user)
   end
 
   def members
@@ -401,6 +401,8 @@ class Project < ApplicationRecord
   end
 
   def create_default_member
+    return if create_empty
+
     attempted_current_user = User.try(:current)
     return unless attempted_current_user && projects_users.none? { |pu| pu.project_leader? }
 
