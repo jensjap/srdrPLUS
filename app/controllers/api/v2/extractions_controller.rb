@@ -13,7 +13,6 @@ class Api::V2::ExtractionsController < Api::V2::BaseController
     property :id, Integer, desc: 'Resource ID.'
     property :project_id, Integer
     property :citations_project_id, Integer
-    property :projects_users_role_id, Integer
     property :consolidated, :boolean
     property :created_at, DateTime
     property :updated_at, DateTime
@@ -27,7 +26,8 @@ class Api::V2::ExtractionsController < Api::V2::BaseController
   end
 
   private
-    def set_extraction
-      @extraction = Extraction.find(params[:id])
-    end
+
+  def set_extraction
+    @extraction = Extraction.find(params[:id])
+  end
 end

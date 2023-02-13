@@ -9,11 +9,6 @@ module SeedData
         UserType.find_or_create_by!(user_type:)
       end
 
-      # Roles.
-      %w[Leader Consolidator Contributor Auditor Importer].each do |name|
-        Role.find_or_create_by!(name:)
-      end
-
       # Frequency.
       %w[Daily Weekly Monthly Annually].each do |name|
         Frequency.find_or_create_by!(name:)
@@ -41,42 +36,6 @@ module SeedData
       # ActionTypes.
       %w[Create Destroy Update New Index Show Edit].each do |name|
         ActionType.find_or_create_by!(name:)
-      end
-
-      # Colors
-      Color.find_or_create_by!(hex_code: '#AE2724', name: 'Dark Red')
-      Color.find_or_create_by!(hex_code: '#EC3524', name: 'Red')
-      Color.find_or_create_by!(hex_code: '#F7C342', name: 'Orange')
-      Color.find_or_create_by!(hex_code: '#F6F05D', name: 'Yellow')
-      Color.find_or_create_by!(hex_code: '#9FCE63', name: 'Light Green')
-      Color.find_or_create_by!(hex_code: '#4DAE5A', name: 'Green')
-      Color.find_or_create_by!(hex_code: '#51ABE0', name: 'Light Blue')
-      Color.find_or_create_by!(hex_code: '#2A6EB5', name: 'Blue')
-      Color.find_or_create_by!(hex_code: '#1E2759', name: 'Dark Blue')
-      Color.find_or_create_by!(hex_code: '#673996', name: 'Purple')
-
-      # LabelTypes.
-      %w[Yes No Maybe].each do |name|
-        LabelType.find_or_create_by!(name:)
-      end
-
-      # ScreeningOptionTypes.
-      ScreeningOptionType.find_or_create_by!(name: 'TAG_REQUIRED')
-      ScreeningOptionType.find_or_create_by!(name: 'NOTE_REQUIRED')
-      ScreeningOptionType.find_or_create_by!(name: 'REASON_REQUIRED')
-      ScreeningOptionType.find_or_create_by!(name: 'ONLY_LEAD_TAGS')
-      ScreeningOptionType.find_or_create_by!(name: 'ONLY_LEAD_REASONS')
-      ScreeningOptionType.find_or_create_by!(name: 'HIDE_AUTHORS')
-      ScreeningOptionType.find_or_create_by!(name: 'HIDE_JOURNAL')
-
-      # TaskTypes.
-      %w[Perpetual Pilot Advanced Conflict].each do |name|
-        TaskType.find_or_create_by!(name:)
-      end
-
-      # ConsensusTypes.
-      %w[Yes No Maybe Conflict].each do |name|
-        ConsensusType.find_or_create_by!(name:)
       end
 
       # Type1Types.
@@ -1444,9 +1403,6 @@ module SeedDataExtended
       # - Project memberships
       # - Set of citations
       # - Set of screening tasks
-      @perpetual      = TaskType.find_by(name: 'Perpetual')
-      @pilot          = TaskType.find_by(name: 'Pilot')
-      @advanced       = TaskType.find_by(name: 'Advanced')
 
       Project.all.each do |p|
         # Randomly assign publishing requests and approvals.
@@ -1472,102 +1428,15 @@ module SeedDataExtended
         p.users << @screener_3
 
         # Seed ProjectsUsersRole.
-        ProjectsUser.find_by(project: p, user: @superadmin).roles  << Role.where(name: 'Contributor')
-        ProjectsUser.find_by(project: p, user: @contributor).roles << Role.where(name: 'Leader')
-        ProjectsUser.find_by(project: p, user: @contributor).roles << Role.where(name: 'Contributor')
-        ProjectsUser.find_by(project: p, user: @screener_1).roles << Role.where(name: 'Contributor')
-        ProjectsUser.find_by(project: p, user: @screener_2).roles << Role.where(name: 'Contributor')
-        ProjectsUser.find_by(project: p, user: @screener_3).roles << Role.where(name: 'Contributor')
+        ProjectsUser.find_by(project: p, user: @superadmin).make_contributor!
+        ProjectsUser.find_by(project: p, user: @contributor).make_leader!
+        ProjectsUser.find_by(project: p, user: @contributor).make_contributor!
+        ProjectsUser.find_by(project: p, user: @screener_1).make_contributor!
+        ProjectsUser.find_by(project: p, user: @screener_2).make_contributor!
+        ProjectsUser.find_by(project: p, user: @screener_3).make_contributor!
 
         # Assign a random sample of 50 citations to project.
         p.citations = Citation.all.sample(50)
-
-        case rand(3)
-        when 0
-          Task.create(
-            num_assigned: 100,
-            task_type_id: @perpetual.id,
-            project_id: p.id
-          )
-        when 1
-          pilot_size = rand(100)
-          Task.create(
-            num_assigned: pilot_size,
-            task_type_id: @pilot.id,
-            project_id: p.id
-          )
-          Task.create(
-            num_assigned: 100 - pilot_size,
-            task_type_id: @perpetual.id,
-            project_id: p.id
-          )
-
-        when 2
-          advanced_size = rand(100)
-          Task.create(
-            num_assigned: advanced_size,
-            task_type_id: @advanced.id,
-            project_id: p.id
-          )
-          Task.create(
-            num_assigned: 100 - advanced_size,
-            task_type_id: @advanced.id,
-            project_id: p.id
-          )
-        end
-
-        # Assignments.
-        p.tasks.each do |t|
-          case t.task_type.name
-          when 'Perpetual', 'Pilot'
-            Assignment.create([
-                                {
-                                  date_assigned: DateTime.now,
-                                  date_due: Date.today + 7,
-                                  projects_users_role: ProjectsUsersRole.find_by({
-                                                                                   projects_user: ProjectsUser.find_by({
-                                                                                                                         user: @screener_1, project: p
-                                                                                                                       }), role: Role.where(name: 'Contributor')
-                                                                                 }),
-                                  task_id: t.id
-                                },
-                                {
-                                  date_assigned: DateTime.now,
-                                  date_due: Date.today + 7,
-                                  projects_users_role: ProjectsUsersRole.find_by({
-                                                                                   projects_user: ProjectsUser.find_by({
-                                                                                                                         user: @screener_2, project: p
-                                                                                                                       }), role: Role.where(name: 'Contributor')
-                                                                                 }),
-                                  task_id: t.id
-                                },
-                                {
-                                  date_assigned: DateTime.now,
-                                  date_due: Date.today + 7,
-                                  projects_users_role: ProjectsUsersRole.find_by({
-                                                                                   projects_user: ProjectsUser.find_by({
-                                                                                                                         user: @screener_3, project: p
-                                                                                                                       }), role: Role.where(name: 'Contributor')
-                                                                                 }),
-                                  task_id: t.id
-                                }
-                              ])
-          when 'Advanced'
-            @screeners.sample(rand(3)).each do |s|
-              Assignment.create(
-                {
-                  date_assigned: DateTime.now,
-                  date_due: Date.today + 7,
-                  projects_users_role: ProjectsUsersRole.find_by({
-                                                                   projects_user: ProjectsUser.find_by({ user: s,
-                                                                                                         project: p }), role: Role.where(name: 'Contributor')
-                                                                 }),
-                  task_id: t.id
-                }
-              )
-            end
-          end
-        end
       end
 
       # Messages.
@@ -1577,36 +1446,6 @@ module SeedDataExtended
                               description: Faker::ChuckNorris.unique.fact,
                               start_at: 10.minute.ago)
         Faker::UniqueGenerator.clear
-      end
-
-      # Tags and Notes
-      CitationsProject.all.each do |cp|
-        5.times do
-          tag = Tag.create(name: Faker::Books::Lovecraft.word)
-          cp.taggings << Tagging.create(tag:, projects_users_role: ProjectsUsersRole.all.sample)
-          cp.notes << Note.create(value: Faker::Books::Lovecraft.sentence,
-                                  projects_users_role: ProjectsUsersRole.all.sample)
-        end
-      end
-
-      label_types = [LabelType.find_by(name: 'Yes'), LabelType.find_by(name: 'No'),
-                     LabelType.find_by(name: 'Maybe')]
-
-      200.times do
-        assignment = Assignment.all.sample
-        citations_project = assignment.task.project.citations_projects.sample
-        projects_users_role = assignment.projects_users_role
-        label_type = label_types.sample
-
-        label = Label.create({ label_type:, citations_project:,
-                               projects_users_role: })
-      end
-
-      # Reasons
-      Label.all.sample(150).each do |label|
-        reason = Reason.create(name: Faker::TvShows::RickAndMorty.quote)
-        label.labels_reasons << LabelsReason.create({ reason:,
-                                                      projects_users_role: label.project.projects_users_roles.all.sample })
       end
     end
   end

@@ -9,14 +9,6 @@ class FulltextScreeningPolicy < ApplicationPolicy
     project_leader?
   end
 
-  def update_word_weight?
-    part_of_project?
-  end
-
-  def citation_lifecycle_management?
-    part_of_project?
-  end
-
   def destroy?
     project_leader?
   end
@@ -29,20 +21,8 @@ class FulltextScreeningPolicy < ApplicationPolicy
     part_of_project?
   end
 
-  def kpis?
-    part_of_project?
-  end
-
-  def label?
-    record.nil? || record.user == user
-  end
-
   def new?
     project_leader?
-  end
-
-  def rescreen?
-    record.user == user
   end
 
   def screen?

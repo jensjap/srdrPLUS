@@ -65,25 +65,8 @@ Rails.application.routes.draw do
       resources :keywords, only: [:index]
       resources :users, only: [:index]
       resources :authors, only: [:index]
-      resources :colors, only: [:index]
       resources :keywords, only: [:index]
-      resources :terms, only: [:index]
       resources :timepoint_names, only: [:index]
-
-      resources :labels_reasons, only: %i[create destroy]
-      resources :projects_users_term_groups_colors, only: %i[create update destroy] do
-        resources :terms, only: [:index]
-      end
-      resources :projects_users_term_groups_colors_terms, only: %i[create destroy]
-      resources :taggings, only: %i[create destroy]
-
-      resources :notes, only: %i[create update destroy]
-
-      resources :assignments do
-        resources :reasons, only: [:index]
-        resources :tags, only: [:index]
-        resources :projects_users_term_groups_colors, only: %i[create index]
-      end
 
       resources :citations, only: [:index] do
         collection do
@@ -93,16 +76,7 @@ Rails.application.routes.draw do
       end
 
       resources :projects, shallow: true do
-        resources :projects_users_roles, only: [:index]
-        resources :assignments do
-          get 'screen', on: :member
-          get 'history', on: :member
-        end
         resources :citations, only: [:index] do
-          collection do
-            get 'labeled'
-            get 'unlabeled'
-          end
         end
         resources :extractions, only: [:index]
         resources :extraction_forms_projects do
@@ -127,7 +101,6 @@ Rails.application.routes.draw do
         member do
           post :import_citations_fhir_json
         end
-        resources :projects_users_roles, only: [:index]
       end # END resources :projects, shallow: true do
 
       resources :extractions, only: [:show]
@@ -148,24 +121,15 @@ Rails.application.routes.draw do
     end # END namespace :v3 do
   end # END namespace :api do
 
-  resources :assignments do
-    get 'screen', on: :member
-  end
   resources :authors
   resources :comparisons
   resources :journals
   resources :keywords
-  resources :labels
-  # resources :tasks
   resources :records, only: [:update]
   resources :statusings, only: [:update]
 
   concern :paginatable do
     get '(page/:page)', action: :index, on: :collection, as: ''
-  end
-
-  concern :invitable do
-    resources :invitations
   end
 
   resources :extractions_extraction_forms_projects_sections_type1s, only: [] do
@@ -203,25 +167,20 @@ Rails.application.routes.draw do
     post 'export_screening_data', to: 'abstract_screenings#export_screening_data'
 
     resources :abstract_screenings do
-      get 'rescreen', to: 'abstract_screenings#rescreen'
       get 'screen', to: 'abstract_screenings#screen'
-      post 'label', to: 'abstract_screenings#label'
       post 'update_word_weight', to: 'abstract_screenings#update_word_weight'
     end
     resources :fulltext_screenings do
-      get 'rescreen', to: 'fulltext_screenings#rescreen'
       get 'screen', to: 'fulltext_screenings#screen'
-      post 'label', to: 'fulltext_screenings#label'
     end
 
     resources :screening_forms
 
     resource :data_audit, only: [:create]
     resources :sd_meta_data
-    resources :teams, concerns: :invitable, only: %i[create update destroy]
+
     member do
       get 'confirm_deletion'
-      get 'next_assignment'
       post 'import_csv'
       post 'import_ris'
       post 'import_endnote'
@@ -232,14 +191,8 @@ Rails.application.routes.draw do
     end
 
     resources :citations do
-      collection do
-        get 'labeled'
-        get 'unlabeled'
-      end
     end
 
-    resources :screening_options
-    resources :tasks
     resources :extractions do
       collection do
         get 'comparison_tool'

@@ -114,7 +114,7 @@ namespace(:db) do
     def reset_project_variables
       @srdr_to_srdrplus_project_dict = {}
       @srdr_to_srdrplus_key_questions_dict = {}
-      @default_projects_users_role = nil
+      @default_projects_user = nil
       @data_points_queue = {}
       @efps_dict = {}
       @eefspt1_dict = {}
@@ -216,9 +216,9 @@ namespace(:db) do
 
     def add_default_user_to_srdrplus_project srdrplus_project
       srdrplus_project.users << migration_user
-      srdrplus_project.projects_users.first.roles << Role.first
+      srdrplus_project.projects_users.first.make_leader!
 
-      @default_projects_users_role = srdrplus_project.projects_users.first.projects_users_roles.first
+      @default_projects_user = srdrplus_project.projects_users.first
     end
 
     def create_srdrplus_project project_hash
@@ -784,7 +784,7 @@ namespace(:db) do
     end
 
     def migrate_study_as_extraction study_hash, citations_project_id
-      extraction = Extraction.create!(projects_users_role: @default_projects_users_role,
+      extraction = Extraction.create!(user: @default_projects_user.user,
                                      citations_project_id: citations_project_id,
                                      consolidated: false,
                                      project: get_srdrplus_project(@legacy_project_id))

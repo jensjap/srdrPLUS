@@ -42,7 +42,6 @@ class Api::V2::ProjectsController < Api::V2::BaseController
     property :first_name, String
     property :middle_name, String
     property :last_name, String
-    property :roles, Array, array_of: String
   end
 
   api :GET, '/v2/public_projects.json', 'List of all public projects. Requires API Key.'

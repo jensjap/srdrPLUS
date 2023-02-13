@@ -11,7 +11,7 @@
 .column.row
   dl
     dt.label.primary Users
-    dd.callout.secondary = @extraction.projects_users_role.handle
+    dd.callout.secondary = @extraction.user.handle
 
 /.column.row
   dl
@@ -21,4 +21,4 @@
         - @extraction.extractions_key_questions_projects.each do |ekqp|
           li = ekqp.key_questions_project.key_question.name
 
-= link_to 'Back', project_extractions_path(@extraction.projects_users_role.projects_user.project)
+= link_to 'Back', project_extractions_path(@extraction.project)

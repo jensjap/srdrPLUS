@@ -40,7 +40,7 @@ class ExtractionDecorator < Decorator
     end
   end
 
-  def pur_handle
-    projects_users_role.handle
+  def user_handle
+    user.handle
   end
 end

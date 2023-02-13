@@ -1,5 +1,5 @@
 profile = user.profile
-roles   = ProjectsUser.find_by(project: @project, user: user).roles.map(&:name)
+roles   = ProjectsUser.find_by(project: @project, user:).roles_string
 
 json.id user.id
 json.email user.email

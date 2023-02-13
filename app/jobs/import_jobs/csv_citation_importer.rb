@@ -80,6 +80,7 @@ module ImportJobs::CsvCitationImporter
       cit_h['pmid'] = row_h['Accession Number'].strip if row_h['Accession Number'].present?
 
       h_arr << cit_h
+
       if h_arr.length >= 500
         if preview
           preview_citations += h_arr.dup

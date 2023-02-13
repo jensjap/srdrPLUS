@@ -5,8 +5,18 @@ module ImportJobs::RisCitationImporter
     # creates a new parser of type RIS
     parser = RefParsers::RISParser.new
 
-    file_string = imported_file.content.download.encode('UTF-8', invalid: :replace, undef: :replace, replace: '',
-                                                                 universal_newline: true)
+    #!!! maybe just gsub double quotes with single quotes.
+    file_string = imported_file
+                  .content
+                  .download
+                  .gsub('"', "'")
+                  .encode(
+                    'UTF-8',
+                    invalid: :replace,
+                    undef: :replace,
+                    replace: '',
+                    universal_newline: true
+                  )
 
     return false unless file_string
 
