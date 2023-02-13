@@ -16,6 +16,7 @@
 #  doi               :string(255)
 #  other             :string(255)
 #  accession_number  :string(255)
+#  authors           :text(65535)
 #
 
 class Citation < ApplicationRecord

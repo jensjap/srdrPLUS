@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_20_000628) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_13_042728) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -304,6 +304,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_20_000628) do
     t.string "doi"
     t.string "other"
     t.string "accession_number"
+    t.text "authors"
+    t.index ["authors"], name: "index_citations_on_authors", length: 255
     t.index ["citation_type_id"], name: "index_citations_on_citation_type_id"
     t.index ["name"], name: "index_citations_on_name"
     t.index ["pmid"], name: "index_citations_on_pmid"
