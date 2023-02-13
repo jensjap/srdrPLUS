@@ -12,7 +12,7 @@ class ApplicationPolicy
     def initialize(user, scope)
       raise Pundit::NotAuthorizedError, 'must be logged in' unless user
 
-      @user = user
+      @user  = user
       @scope = scope
     end
 
@@ -24,10 +24,10 @@ class ApplicationPolicy
   def initialize(user, record)
     raise Pundit::NotAuthorizedError, 'must be logged in' unless user
 
-    @user = user
-    @record = record
+    @user          = user
+    @record        = record
     @projects_user = ProjectsUser.find_by(user:, project: record)
-    @permissions = @projects_user.try(:permissions) || 0
+    @permissions   = @projects_user&.permissions || 0
   end
 
   def index?
@@ -59,19 +59,19 @@ class ApplicationPolicy
   end
 
   def project_leader?
-    @projects_user.project_leader?
+    @projects_user&.project_leader?
   end
 
   def project_consolidator?
-    @projects_user.project_consolidator?
+    @projects_user&.project_consolidator?
   end
 
   def project_contributor?
-    @projects_user.project_contributor?
+    @projects_user&.project_contributor?
   end
 
   def project_auditor?
-    @projects_user.project_auditor?
+    @projects_user&.project_auditor?
   end
 
   def part_of_project?
@@ -79,6 +79,6 @@ class ApplicationPolicy
   end
 
   def not_part_of_project?
-    @projects_user.nil?
+    @projects_user&.nil?
   end
 end
