@@ -71,13 +71,13 @@
                   | Add Population
             = pop_form.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_row_columns, pop_form.object.extractions_extraction_forms_projects_sections_type1_row_columns.build({ timepoint_name_attributes: { name: 'Baseline' } })) do |tp_form|
               #timepoints style='margin: 1rem 0 1rem 0;'
-                h5 Timepoints
+                h5 Timepoints (e.g., 2 weeks)
                 table
                   thead
                     tr
                       th Delete
-                      th Name
-                      th Unit
+                      th Number
+                      th Time unit
                   tbody#timepoints-node
                     = render 'extractions_extraction_forms_projects_sections_type1s/timepoint_fields', f: tp_form
                 .links
