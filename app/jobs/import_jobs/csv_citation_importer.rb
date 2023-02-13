@@ -81,15 +81,6 @@ module ImportJobs::CsvCitationImporter
 
       h_arr << cit_h
 
-      if h_arr.length >= 500
-        if preview
-          preview_citations += h_arr.dup
-        else
-          imported_file.project.citations << Citation.create(h_arr)
-        end
-        h_arr = []
-      end
-
       if h_arr.length >= CITATION_BATCH_SIZE
         if preview
           preview_citations += h_arr.dup
