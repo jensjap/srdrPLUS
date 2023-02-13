@@ -1,5 +1,6 @@
 .nested-fields
   = f.input :user_id, as: :hidden, input_html: { value: current_user.id }
+  = f.input :permissions, as: :hidden, input_html: { value: 1 }
   = f.simple_fields_for :imports, collection: [f.object.imports.build] do |g|
     = g.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: 'Distiller').id }
     .distiller-import-panel
