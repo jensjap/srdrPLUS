@@ -108,9 +108,11 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
                                                   section: s
     efps.ordering.position = position
 
-    ExtractionFormsProjectsSectionOption.create! extraction_forms_projects_section: efps,
-                                                 by_type1: false,
-                                                 include_total: false
+    efpso = ExtractionFormsProjectsSectionOption.find_by!(extraction_forms_projects_section: efps)
+    efpso.by_type1 = false
+    efpso.include_total = false
+    efpso.save
+
     efps
   end
 
