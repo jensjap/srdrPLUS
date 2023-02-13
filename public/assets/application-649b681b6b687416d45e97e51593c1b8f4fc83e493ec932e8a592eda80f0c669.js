@@ -66034,9 +66034,12 @@ function __guardMethod__(obj, methodName, transform) {
             "targets": [4, 5]
           }
         ],
-        "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
-        "pagingType": "full_numbers",
+        "": "",
+        "paging": false,
         "stateSave": true,
+        "stateSaveParams": function(settings, data) {
+          return data.search.search = "";
+        },
         "stateDuration": 0,
         "stateSaveCallback": function(settings, data) {
           return localStorage.setItem('DataTables-' + tableKey, JSON.stringify(data));
@@ -66113,8 +66116,8 @@ function __guardMethod__(obj, methodName, transform) {
             return formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val());
           });
           this.on('success', function(file, response) {
-            toastr.success('Citation file successfully uploaded. You will be notified by email when citaion import finishes.');
-            return wrapperThis.removeFile(file);
+            wrapperThis.removeFile(file);
+            return window.location.href = '/imports/' + response.id;
           });
           return this.on('error', function(file, error_message) {
             toastr.error("ERROR: Cannot upload citation file. " + error_message);
@@ -66795,8 +66798,12 @@ function __guardMethod__(obj, methodName, transform) {
           }
         ],
         "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
+        "pageLength": -1,
         "pagingType": "full_numbers",
         "stateSave": true,
+        "stateSaveParams": function(settings, data) {
+          return data.search.search = "";
+        },
         "stateDuration": 0,
         "stateSaveCallback": function(settings, data) {
           return localStorage.setItem('DataTables-' + tableKey, JSON.stringify(data));
@@ -67383,7 +67390,7 @@ function __guardMethod__(obj, methodName, transform) {
             processData: false,
             contentType: false,
             success: function() {
-              toastr.success('Excel file successfully uploaded. You will be notified by email when citaion import finishes.');
+              toastr.success('Excel file successfully uploaded. You will be notified by email when citation import finishes.');
               filedata = void 0;
               return reset_state();
             },
