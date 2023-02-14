@@ -110,7 +110,44 @@
                                   div data-field-span="1"
                                     - sd_meta_data_figure.pictures.each do |picture|
                                       .sd-show-image
-                                        = image_tag(picture, class: 'openable sd-image')
+                                        = image_tag(picture, class: 'openable sd-image', title: sd_meta_data_figure.alt_text)
+                                - if sd_meta_data_figure.sd_figurable_type == SdPairwiseMetaAnalyticResult.to_s
+                                    div data-row-span="1"
+                                      div data-field-span="1"
+                                        label Outcome type
+                                        div = sd_meta_data_figure.outcome_type
+                                    div data-row-span="1"
+                                      div data-field-span="1"
+                                        label Intervention name
+                                        div = sd_meta_data_figure.intervention_name
+                                    div data-row-span="1"
+                                      div data-field-span="1"
+                                        label Comparator name
+                                        div = sd_meta_data_figure.comparator_name
+                                    div data-row-span="1"
+                                      div data-field-span="1"
+                                        label Effect size measure name
+                                        div = sd_meta_data_figure.effect_size_measure_name
+                                    div data-row-span="1"
+                                      div data-field-span="1"
+                                        label Overall effect size
+                                        div = sd_meta_data_figure.overall_effect_size
+                                    div data-row-span="1"
+                                      div data-field-span="1"
+                                        label Overall 95 ci low
+                                        div = sd_meta_data_figure.overall_95_ci_low
+                                    div data-row-span="1"
+                                      div data-field-span="1"
+                                        label Overall 95 ci high
+                                        div = sd_meta_data_figure.overall_95_ci_high
+                                    div data-row-span="1"
+                                      div data-field-span="1"
+                                        label Overall I Squared (%)
+                                        div = sd_meta_data_figure.overall_i_squared
+                                    div data-row-span="1"
+                                      div data-field-span="1"
+                                        label Other heterogeneity statistics
+                                        div = sd_meta_data_figure.other_heterogeneity_statistics
 
               div data-row-span="1"
                 div data-field-span="1"
