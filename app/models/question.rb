@@ -95,8 +95,9 @@ class Question < ApplicationRecord
 
   # By default we associate all key_questions_projects to the question.
   def associate_kqs
-    key_questions_projects << project.key_questions_projects
-    save
+    project.key_questions_projects.each do |kqp|
+      kqp.questions << self
+    end
   end
 
   def create_default_question_row

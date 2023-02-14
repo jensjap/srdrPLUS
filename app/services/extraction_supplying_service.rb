@@ -7,7 +7,8 @@ class ExtractionSupplyingService
       extraction_bundles.append(find_by_extraction_id(extraction.id))
     end
 
-    create_bundle(objs=extraction_bundles, type='collection')
+    url = 'api/v3/projects/' + id.to_s + '/extractions'
+    create_bundle(objs=extraction_bundles, type='collection', url=url)
   end
 
   def find_by_extraction_id(id)
@@ -28,16 +29,24 @@ class ExtractionSupplyingService
       fhir_extraction_sections.append(create_fhir_obj(extraction_section))
     end
 
-    create_bundle(objs=fhir_extraction_sections, type='collection')
+    url = 'api/v3/extractions/' + id.to_s
+    create_bundle(objs=fhir_extraction_sections, type='collection', url=url)
   end
 
   private
 
-  def create_bundle(fhir_objs, type)
+  def create_bundle(fhir_objs, type, url='')
     bundle = {
       'type' => type,
       'entry' => []
     }
+
+    if not url.empty?
+      bundle['link'] = [{
+        'relation' => 'tag',
+        'url' => url
+      }]
+    end
 
     for fhir_obj in fhir_objs do
       bundle['entry'].append({ 'resource' => fhir_obj }) if fhir_obj and fhir_obj.valid?

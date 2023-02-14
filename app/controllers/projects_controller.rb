@@ -399,6 +399,7 @@ class ProjectsController < ApplicationController
       return false unless project.save
 
       if project.imported_files.present?
+        project.imports.first.start_import_job
         flash[:success] =
           "Import request submitted for project '#{project.name}'. You will be notified by email of its completion."
       end
