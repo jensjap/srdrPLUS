@@ -9,8 +9,8 @@
       .pmid-checkbox
         a#is-pmid style='display: inline-block;'
           | Fetch from Pubmed
+    = f.input :authors, placeholder: 'Author name(s)', required: true, label: 'Authors', wrapper_html: { class: "citation-authors" }
     = f.input :name, placeholder: 'New Citation', label: 'Title', required: true, wrapper_html: { class: "citation-name" }
-    = f.input :authors, label: 'Authors', wrapper_html: { class: "citation-authors" }
     = f.input :abstract, as: :text, placeholder: 'Abstract goes here', required: false, wrapper_html: { class: "citation-abstract" }
     = f.association :citation_type, label: 'Citation Type', selected: 1
     br

@@ -8,12 +8,10 @@
       | &nbsp;
       i class="fi-info"
     = f.input :accession_number, label: false, autofocus: true
-    = f.input :name, label: 'Title'
-    = f.input :abstract, as: :text
+    = f.input :authors, label: 'Authors', placeholder: 'Author name(s)', required: true
+    = f.input :name, label: 'Title', required: true
+    = f.input :abstract, as: :text, input_html: { rows: 5 }
     = f.association :citation_type, label: 'Citation Type', selected: 1
-    br
-    h5 Authors
-    = f.input :authors, label: 'Authors'
     br
     h5 Journal
     = f.simple_fields_for :journal do |j_f|
