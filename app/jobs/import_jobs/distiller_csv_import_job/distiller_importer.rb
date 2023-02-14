@@ -41,6 +41,9 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
 
     e = Extraction.find_or_create_by project: @project, user: @user, citations_project: cp
 
+    # Associate all key questions in the project with extraction.
+    e.key_questions_projects = @project.key_questions_projects
+
     return e if e.id.nil?
 
     checkbox_ans_arr = []
@@ -121,8 +124,7 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
                         name: qname,
                         description: ''
 
-    KeyQuestionsProjectsQuestion.find_or_create_by! key_questions_project: kqp,
-                                                    question: q
+    q.key_questions_projects = q.key_questions_projects.uniq
 
     qr = QuestionRow.find_by!(question: q)
     qrc_type = QuestionRowColumnType.find_by! name: qrct
@@ -130,6 +132,7 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
     qrc.update! question_row_column_type: qrc_type,
                 name: ''
 
+    q.save
     q
   end
 
