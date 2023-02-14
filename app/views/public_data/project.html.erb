@@ -279,7 +279,7 @@
                   <td><%= link_to citation.name, "/public_data?id=#{extraction.id}&type=extraction", target: :_blank %>
                   </td>
                   <!-- prettier-ignore -->
-                  <td><%= citation.authors_citations.includes([:ordering, :author]).sort_by { |ac| [ac.ordering.position, ac.author.name] }.map(&:author).map(&:name).join('; ') %>
+                  <td><%= citation.authors %>
                   </td>
                   <!-- prettier-ignore -->
                   <td><%= citation.try(:journal).try(:publication_date) %>

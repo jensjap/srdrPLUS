@@ -64,7 +64,6 @@ Rails.application.routes.draw do
 
       resources :keywords, only: [:index]
       resources :users, only: [:index]
-      resources :authors, only: [:index]
       resources :keywords, only: [:index]
       resources :timepoint_names, only: [:index]
 
@@ -112,16 +111,15 @@ Rails.application.routes.draw do
     namespace :v3 do
       resources :projects, shallow: true, only: [:show] do
         resources :citations, only: %i[index show]
-        resources :key_questions, only: [:index, :show]
-        resources :extractions, only: [:index, :show]
+        resources :key_questions, only: %i[index show]
+        resources :extractions, only: %i[index show]
       end
       resources :extraction_forms_projects, shallow: true, only: [] do
-        resources :extraction_forms_projects_sections, only: [:index, :show]
+        resources :extraction_forms_projects_sections, only: %i[index show]
       end
     end # END namespace :v3 do
   end # END namespace :api do
 
-  resources :authors
   resources :comparisons
   resources :journals
   resources :keywords

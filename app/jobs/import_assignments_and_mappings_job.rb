@@ -207,9 +207,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   def _create_citation_from_citation_name__authors__year(citation_name, authors, year)
     citation = Citation.create(name: citation_name)
     citation.journal = Journal.find_or_create_by(publication_date: year)
-    authors.split(',').each do |author_name|
-      citation.authors << Author.find_or_create_by(name: author_name)
-    end if authors.present?  # authors.split(',').each do |author_name|
+    citation.authors = authors if authors.present?
     citation.save
 
     return citation

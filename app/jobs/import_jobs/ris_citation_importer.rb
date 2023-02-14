@@ -68,17 +68,6 @@ module ImportJobs::RisCitationImporter
       end
     end
 
-    row_h['authors_citations_attributes'] = {}
-
-    # #authors
-    # if cit_h[ 'AU' ].present?
-    #  au_arr = cit_h[ 'AU' ]
-    #  au_arr.each do |au|
-    #    row_h[ 'authors_attributes' ][Time.now.to_i + key_counter] = { name: au }
-    #    key_counter+=1
-    #  end
-    # end
-
     # there are other tags for authors
     %w[A1 A2 A3 A4 AU].freeze.each do |au_key|
       next unless cit_h[au_key].present?
@@ -88,11 +77,7 @@ module ImportJobs::RisCitationImporter
                else
                  cit_h[au_key].split('     ')
                end
-      au_arr.each_with_index do |au, position|
-        row_h['authors_citations_attributes'][Time.now.to_i + key_counter] =
-          { author_attributes: { name: au }, ordering_attributes: { position: (position + 1) } }
-        key_counter += 1
-      end
+      row_h['authors'] = au_arr.join(', ')
     end
 
     # journal

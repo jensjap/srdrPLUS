@@ -38,7 +38,7 @@ module SimpleExportJob::SectionTemplates::Type1SectionsCompact
               new_row << extraction.citations_project.citation.name
               new_row << extraction.citations_project.citation.refman.to_s
               new_row << extraction.citations_project.citation.pmid.to_s
-              new_row << extraction.citations_project.citation.authors.collect(&:name).join(', ')
+              new_row << extraction.citations_project.citation.authors
               new_row << extraction.citations_project.citation.try(:journal).try(:get_publication_year)
               new_row << KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
               new_row << eefpst1.type1.name

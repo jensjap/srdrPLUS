@@ -38,13 +38,10 @@
   .column.medium-6
     dl
       dt.label.primary Authors
-      dd.callout.secondary
-        - citation.authors.map { |author| author.name }.each do |name|
-          li #{ name }
+      dd.callout.secondary = citation.authors
   .column.medium-6
     dl
       dt.label.primary Keywords
       dd.callout.secondary
         - citation.keywords.map { |keyword| keyword.name }.each do |name|
           li #{ name }
-

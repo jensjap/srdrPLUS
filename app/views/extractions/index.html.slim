@@ -25,7 +25,7 @@ div class="p-4 lg:p-8"
     thead
       tr
         th data-sorting-col="0" width="50px"
-        th.table-sortable.sorting data-sorting-col="1" width="200px" First Author
+        th.table-sortable.sorting data-sorting-col="1" width="200px" Authors
         th.table-sortable.sorting data-sorting-col="2" width="80px" Pub Year
         th.table-sortable.sorting data-sorting-col="3" width="180px"
           | Accession Number (e.g. PubMed ID)
@@ -55,7 +55,7 @@ div class="p-4 lg:p-8"
         - @extractions.each do |extraction|
           tr
             td data-sort="#{extraction.updated_at.to_i}" = link_to t('work'), work_extraction_path(extraction), style: 'font-weight:bold;'
-            td = extraction.first_author
+            td = extraction.citation.authors
             td = extraction.year
             td = extraction.pmid
             td data-sort="#{extraction.name}"
@@ -76,7 +76,7 @@ div class="p-4 lg:p-8"
                 .progress-meter style="width: #{ extraction.progress_meter_width }%;"
 
             td = link_to 'Reassign', reassign_extraction_extraction_path(extraction)
-            td = link_to t('destroy'), extraction, style: 'font-weight:bold;color:#cc4b37 !important;', data: { confirm: "Warning! You are about to delete extraction:\n\n#{extraction.first_author} - #{extraction.year} - #{extraction.pmid}\n#{extraction.name}\n\nThis action cannot be undone. Proceed anyway?" }, method: :delete
+            td = link_to t('destroy'), extraction, style: 'font-weight:bold;color:#cc4b37 !important;', data: { confirm: "Warning! You are about to delete extraction:\n\n#{extraction.citation.authors} - #{extraction.year} - #{extraction.pmid}\n#{extraction.name}\n\nThis action cannot be undone. Proceed anyway?" }, method: :delete
   div
   - if @project.key_questions.present?
     = link_to new_project_extraction_path, class: 'button create-button create-extraction-button' do

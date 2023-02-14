@@ -19,8 +19,7 @@ class ExtractionsController < ApplicationController
                    .extractions
                    .unconsolidated
                    .includes([
-                               { citations_project: { citation: [:journal, :authors,
-                                                                 { authors_citations: :ordering }] } },
+                               { citations_project: { citation: :journal } },
                                { extractions_extraction_forms_projects_sections: [:status] }
                              ])
     @extractions = ExtractionDecorator.decorate_collection(@extractions)

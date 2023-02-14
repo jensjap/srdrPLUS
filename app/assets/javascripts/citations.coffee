@@ -146,14 +146,15 @@ document.addEventListener 'DOMContentLoaded', ->
             pmid: pmid,
             name: name,
             abstract: abstract,
-            authors: authors,
             keywords: keywords,
-            journal: journal
+            journal: journal,
+            authors: authors.join(', ')
           }
           populate_citation_fields citation_hash
 
     populate_citation_fields = ( citation ) ->
       $( '.citation-fields' ).find( '.citation-name input' ).val citation[ 'name' ]
+      $( '.citation-fields' ).find( '.citation-authors textarea' ).val citation[ 'authors' ]
       $( '.citation-fields' ).find( '.citation-abstract textarea' ).val citation[ 'abstract' ]
       $( '.citation-fields' ).find( '.journal-name input' ).val citation[ 'journal' ][ 'name' ]
       $( '.citation-fields' ).find( '.journal-volume input' ).val citation[ 'journal' ][ 'vol' ]
@@ -161,11 +162,6 @@ document.addEventListener 'DOMContentLoaded', ->
       $( '.citation-fields' ).find( '.journal-year input' ).val citation[ 'journal' ][ 'year' ]
       $( '.citation-fields' ).find( '.project_citations_pmid input' ).val citation[ 'pmid' ]
 
-
-      #$( '.citation-fields' ).find( '.AUTHORS input' ).val citation[ 'authors' ][ 0 ]
-      for author in citation[ 'authors' ]
-        $( '.add-author' ).click()
-        $( '#AUTHORS .authors-citation input.author-name' ).last().val( author )
       for keyword in citation[ 'keywords' ]
         keywordselect = $('.KEYWORDS select')
         $.ajax(
@@ -239,7 +235,6 @@ document.addEventListener 'DOMContentLoaded', ->
 
         $( insertedItem ).find( '#is-pmid' ).on 'click', () ->
           ## clean up the citation fields
-          $( insertedItem ).find('#AUTHORS .remove-authors-citation').click()
           $( insertedItem ).find('.KEYWORDS select').val(null).trigger('change')
           $( insertedItem ).find('.citation-name input').val(null)
           $( insertedItem ).find('.citation-abstract textarea').val(null)
@@ -250,12 +245,6 @@ document.addEventListener 'DOMContentLoaded', ->
 
           ## fetch citations using value in "Accession Number"
           fetch_from_pubmed $( '.project_citations_accession_number input' ).val()
-
-        $( insertedItem ).find( '#AUTHORS' ).on 'cocoon:after-insert cocoon:after-remove', ( e, insertedItem ) ->
-          new_position = 1
-          for author_elem in $( '#AUTHORS .authors-citation input.author-position' )
-            $( author_elem ).val( new_position )
-            new_position += 1
 
         $( insertedItem ).find( '.citation-select' ).select2
           minimumInputLength: 0
