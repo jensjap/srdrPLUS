@@ -5,7 +5,8 @@ class KeyQuestionSupplyingService
                     .find(project_id)
                     .key_questions_projects
                     .all
-    create_bundle(objs = key_questions, type = 'collection')
+    url = 'api/v3/projects/' + project_id.to_s + '/key_questions'
+    create_bundle(objs=key_questions, type='collection', url=url)
   end
 
   def find_by_key_question_id(key_question_id)
@@ -19,9 +20,13 @@ class KeyQuestionSupplyingService
 
   private
 
-  def create_bundle(objs, type)
+  def create_bundle(objs, type, url)
     bundle = {
       'type' => type,
+      'link' => [{
+        'relation' => 'tag',
+        'url' => url
+      }],
       'entry' => []
     }
 
