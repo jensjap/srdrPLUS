@@ -1,5 +1,5 @@
 module ImportJobs::EnlCitationImporter
-  def import_citations_from_enl(imported_file)
+  def import_citations_from_enl(imported_file, preview = false)
     key_counter = 0
     primary_id = CitationType.find_by(name: 'Primary').id
 
@@ -9,6 +9,7 @@ module ImportJobs::EnlCitationImporter
     file_string = imported_file.content.download.encode('UTF-8', invalid: :replace, undef: :replace, replace: '',
                                                                  universal_newline: true)
 
+    preview_citations = []
     h_arr = []
     parser.parse(file_string).each do |cit_h|
       row_h = {}
@@ -64,11 +65,16 @@ module ImportJobs::EnlCitationImporter
 
       h_arr << row_h
 
-      if h_arr.length >= CITATION_BATCH_SIZE
+      next unless h_arr.length >= CITATION_BATCH_SIZE
+
+      if preview
+        preview_citations += h_arr.dup
+      else
         imported_file.project.citations << Citation.create(h_arr)
-        h_arr = []
       end
+      h_arr = []
     end
     # imported_file.project.citations << Citation.create!( h_arr )
+    { count: preview_citations.length, citations: preview_citations[0..2] }
   end
 end

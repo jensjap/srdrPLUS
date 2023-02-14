@@ -91,7 +91,7 @@ document.addEventListener 'DOMContentLoaded', ->
           processData: false,
           contentType: false,
           success: () ->
-            toastr.success('Excel file successfully uploaded. You will be notified by email when citaion import finishes.')
+            toastr.success('Excel file successfully uploaded. You will be notified by email when citation import finishes.')
             filedata = undefined
             reset_state()
           ,

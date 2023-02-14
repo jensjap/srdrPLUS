@@ -1,13 +1,16 @@
 module ImportJobs::PubmedCitationImporter
-  def import_citations_from_pubmed_file(imported_file)
+  def import_citations_from_pubmed_file(imported_file, preview = false)
     pmid_arr = imported_file.content.download.split("\n").map { |pmid| pmid.strip }
-    import_citations_from_pubmed_array imported_file.project, pmid_arr
+    import_citations_from_pubmed_array(imported_file.project, pmid_arr, preview)
   end
 
-  def import_citations_from_pubmed_array(project, pubmed_id_array)
+  def import_citations_from_pubmed_array(project, pubmed_id_array, preview)
     key_counter = 0
     primary_id = CitationType.find_by(name: 'Primary').id
 
+    preview_citations = []
+    count = pubmed_id_array.length
+    pubmed_id_array = pubmed_id_array[0..2] if preview
     h_arr = []
     Bio::PubMed.efetch(pubmed_id_array).each do |cit_txt|
       row_h = {}
@@ -58,11 +61,16 @@ module ImportJobs::PubmedCitationImporter
 
       h_arr << row_h
 
-      if h_arr.length >= CITATION_BATCH_SIZE
+      next unless h_arr.length >= CITATION_BATCH_SIZE
+
+      if preview
+        preview_citations += h_arr.dup
+      else
         project.citations << Citation.create(h_arr)
-        h_arr = []
       end
+      h_arr = []
     end
     # project.citations << Citation.create!( h_arr )
+    { count:, citations: preview_citations }
   end
 end

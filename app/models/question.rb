@@ -46,8 +46,6 @@ class Question < ApplicationRecord
 
   amoeba do
     enable
-    prepend name: "Copy of '"
-    append name: "'"
     exclude_association :ordering
     exclude_association :dependencies
     exclude_association :key_questions_projects_questions

@@ -2,8 +2,8 @@ tr.nested-fields.timepoint-nested-fields removed="false"
   = f.simple_fields_for(:timepoint_name, f.object.timepoint_name || f.object.build_timepoint_name) do |tn_form|
     td.remove-tp-link[style='font-size: x-large;'] = link_to_remove_association '✖', f
     /td.field = f.check_box :_destroy
-    td.tp-name-input.field = tn_form.input :name, required: true
-    td.tp-unit-input.field = tn_form.input :unit, input_html: { class: 'ucum' }
+    td.tp-name-input.field = tn_form.input :name, label: 'Number', required: true
+    td.tp-unit-input.field = tn_form.input :unit, label: 'Timepoint unit (e.g., days)', input_html: { class: 'ucum' }
 
 /  - if f.object.persisted?
 /    = f.association :timepoint_name, label: false, required: false, label_method: :select_label

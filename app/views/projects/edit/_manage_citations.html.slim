@@ -94,6 +94,4 @@ div.row#btm-anchor style="margin: 10px 0 0 0;"
       = f.hidden_field :redirect_path, value: project_citations_path(@project)
 
       div
-        = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/added_citations_project_fields'
-        '&nbsp;|
         = link_to_add_association 'Create New Citation', f, :citations, partial: 'projects/edit/citation_fields'

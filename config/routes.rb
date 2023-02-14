@@ -280,8 +280,10 @@ Rails.application.routes.draw do
       post 'simple_import'
     end
 
-    resources :imports, only: %i[index new]
+    resources :imports, only: %i[index new show]
   end
+
+  post 'imports/:id/start', to: 'imports#start'
 
   root to: 'static_pages#home'
 
