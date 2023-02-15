@@ -123,14 +123,17 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     header_row = ws.sheet_data.rows[0]
     data_rows  = ws.sheet_data.rows[1..cnt_of_data_rows]
 
+    dict_header_index_lookup = _build_header_index_lookup_dict_wbcr(header_row)
+
     data_rows.each do |row|
       next if row[0].blank?
 
-      wb_cit_ref_id = row[0]&.value&.to_i
-      pmid          = row[1]&.value
-      citation_name = row[2]&.value
-      authors       = row[3]&.value
-      year          = row[4]&.value.to_i
+      wb_cit_ref_id = row[dict_header_index_lookup['Workbook Citation Reference ID']]&.value&.to_i
+      pmid          = row[dict_header_index_lookup['PMID']]&.value
+      citation_name = row[dict_header_index_lookup['Citation Name']]&.value
+      refman        = row[dict_header_index_lookup['RefMan']]&.value
+      authors       = row[dict_header_index_lookup['Authors']]&.value
+      year          = row[dict_header_index_lookup['Publication Year']]&.value
 
       if wb_cit_ref_id.blank? || wb_cit_ref_id.eql?(0)
         @dict_errors[:ws_errors] << "Row with invalid Workbook Reference ID found. #{row.cells.to_a}"
@@ -141,11 +144,13 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
       # Store data in @wb_data dictionary.
       #   Note the structure. Each Workbook Citation Reference ID has its own dictionary.
       @wb_data[:wcr][row[0]&.value.to_i] = {
-        "pmid"          => pmid,
-        "citation_name" => citation_name,
-        "authors"       => authors,
-        "year"          => year,
-        "citation_id"   => _find_citation_id_in_db(pmid, citation_name, authors, year) }
+        'pmid' => pmid,
+        'citation_name' => citation_name,
+        'refman' => refman,
+        'authors' => authors,
+        'year' => year,
+        'citation_id' => _find_citation_id_in_db(pmid, citation_name, refman, authors, year)
+      }
     end
   end
 
@@ -174,45 +179,57 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   #   3. #!!! TODO: search by authors and year combined.
   #
   # return [INTEGER]
-  def _find_citation_id_in_db(pmid, citation_name, authors, year)
+  def _find_citation_id_in_db(pmid, name, refman, authors, year)
     # PMID is a string. Do a little clean-up.
     pmid = pmid.to_i.to_s
 
-    # If no sensible PMID is present we try to find by citation_name, authors and year.
-    if pmid.eql?("0")
-      citations = Citation.where(name: citation_name)
-      return citations.first.id if citations.present?
+    citation = nil
 
-      puts 'Creating citation from citation_name, authors, year'
-      citation = _create_citation_from_citation_name__authors__year(citation_name, authors, year)
+    if !pmid.eql?('0')
+      # Try to find citation already in system.
+      citation = Citation.find_by(pmid:)
       return citation.id if citation
 
-    # Try to find citation already in project.
-    elsif pmid.present?
-      citations = Citation.where(pmid:)
-      return citations.first.id if citations.present?
-
-      puts 'Creating citation from PMID'
+      puts 'Unable to locate PMID in system'
+      puts 'Attempting to efetch'
       import_citations_from_pubmed_array(@project, [pmid], false)
-      return Citation.find_by(pmid:)
+      citation = Citation.find_by(pmid:)
+      return citation.id if citation
+
+      puts 'Unable to efetch'
+
+    else
+      puts 'Find citation by name'
+      citation = Citation.find_by(name:)
+      return citation.id if citation
+
+      puts 'Unable to find citation by name'
+
     end
 
-    puts "Unable to match Citation record to row: #{[pmid, citation_name, authors, year]}"
-    @dict_errors[:ws_errors] << "Unable to match Citation record to row: #{[pmid, citation_name, authors, year]}"
-    @dict_errors[:ws_errors_found] = true
-
-    return nil
+    puts 'Creating citation from citation_name, authors, year'
+    citation = _create_citation_from_citation_name__authors__year(name, refman, authors, year)
+    citation.id
   end
 
-  def _create_citation_from_citation_name__authors__year(citation_name, authors, year)
-    citation = Citation.create(name: citation_name)
-    citation.journal = Journal.find_or_create_by(publication_date: year)
-    authors.split(',').each do |author_name|
-      citation.authors << Author.find_or_create_by(name: author_name)
-    end if authors.present?  # authors.split(',').each do |author_name|
-    citation.save
+  def _create_citation_from_citation_name__authors__year(name, refman, authors, year)
+    citation = Citation.create!(name:)
+    citation.journal = Journal.find_or_create_by!(publication_date: year)
 
-    return citation
+    citation.refman = refman
+
+    if authors&.match(/\[(.*?)\]/)
+      authors.scan(/\[(.*?)\]/).each do |author|
+        citation.authors << Author.find_or_create_by!(name: author)
+      end
+    else
+      authors&.split(';').each do |author|
+        citation.authors << Author.find_or_create_by!(name: author)
+      end
+    end
+
+    citation.save!
+    citation
   end
 
   # Populate @wb_data under key :aam.
@@ -226,7 +243,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     header_row = ws.sheet_data.rows[0]
     data_rows  = ws.sheet_data.rows[1..-1]
 
-    _build_header_index_lookup_dict(header_row)
+    _build_header_index_lookup_dict_aam(header_row)
 
     data_rows.each do |row|
       next if row[1].blank?
@@ -252,7 +269,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     end
   end
 
-  def _build_header_index_lookup_dict(header_row)
+  def _build_header_index_lookup_dict_aam(header_row)
     # Trust the database first in regards to the sections present.
     @lsof_type1_section_names = @project
       .extraction_forms_projects
@@ -287,10 +304,37 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
         when /#{type1_section_name.singularize} Type/i
           @dict_header_index_lookup["#{type1_section_name.singularize} Type"] = cell.column
         when re_match_targets
-          @dict_header_index_lookup["#{ cell.value.strip }"] = cell.column
+          @dict_header_index_lookup[cell.value.to_s.strip] = cell.column
         end
       end
     end
+  end
+
+  def _build_header_index_lookup_dict_wbcr(header_row)
+    dict_header_index_lookup = {}
+    match_targets = [
+      /Workbook Citation Reference ID/i,
+      /PMID/i,
+      /Citation Name/i,
+      /RefMan/i,
+      /Authors/i,
+      /Publication Year/i
+    ]
+    re_match_targets = Regexp.union(match_targets)
+
+    match_targets.each do |target|
+      # In order to prevent the lookup from crashing when a key isn't present
+      # we ensure all keys exist and set to some high index beyond what maximum
+      # number of Excel columns is supported as the value.
+      dict_header_index_lookup[target.to_s.match(/\(\?i-mx:(.*?)\??\)/)[1]] = 1_000_000
+    end
+
+    # Next we set the correct cell.column for matched headers.
+    header_row.cells.each do |cell|
+      dict_header_index_lookup[cell.value.to_s.strip] = cell.column if re_match_targets
+    end
+
+    dict_header_index_lookup
   end
 
   # All data is sorted into the following structure:
