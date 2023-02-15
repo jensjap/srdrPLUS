@@ -88,6 +88,40 @@ class Question < ApplicationRecord
       duplicated_question = amoeba_dup
       duplicated_question.save
     end
+    question_rows.each_with_index do |question_row, question_row_index|
+      question_row.question_row_columns.each_with_index do |question_row_column, question_row_column_index|
+        duplicated_qrc = duplicated_question.question_rows[question_row_index].question_row_columns[question_row_column_index]
+
+        case question_row_column.question_row_column_type_id
+        when 2
+          numeric_qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_by(
+            question_row_column:,
+            question_row_column_option_id: 4
+          )
+          allow_equality = numeric_qrcqrco.name
+
+          duplicated_qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_by(
+            question_row_column: duplicated_qrc,
+            question_row_column_option_id: 4
+          )
+          duplicated_qrcqrco.update(name: allow_equality)
+        when 5, 7
+          QuestionRowColumnsQuestionRowColumnOption
+            .where(question_row_column:,
+                   question_row_column_option_id: 1).each_with_index do |multiplechoice_qrcqrco, qrcqrco_index|
+            duplicated_qrcqrco = QuestionRowColumnsQuestionRowColumnOption.where(
+              question_row_column: duplicated_qrc,
+              question_row_column_option_id: 1
+            )[qrcqrco_index]
+            if multiplechoice_qrcqrco.followup_field.present?
+              FollowupField.find_or_create_by(question_row_columns_question_row_column_option: duplicated_qrcqrco)
+            else
+              FollowupField.find_by(question_row_columns_question_row_column_option: duplicated_qrcqrco)&.destroy
+            end
+          end
+        end
+      end
+    end
     duplicated_question
   end
 
