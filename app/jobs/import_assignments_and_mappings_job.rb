@@ -193,12 +193,12 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
       return citations.first.id if citations.present?
 
       puts 'Creating citation from PMID'
-      import_citations_from_pubmed_array(@project, [pmid])
-      return citation = Citation.find_by(pmid:)
+      import_citations_from_pubmed_array(@project, [pmid], false)
+      return Citation.find_by(pmid:)
     end
 
-    puts "Unable to match Citation record to row: #{ [pmid, citation_name, authors, year] }"
-    @dict_errors[:ws_errors] << "Unable to match Citation record to row: #{ [pmid, citation_name, authors, year] }"
+    puts "Unable to match Citation record to row: #{[pmid, citation_name, authors, year]}"
+    @dict_errors[:ws_errors] << "Unable to match Citation record to row: #{[pmid, citation_name, authors, year]}"
     @dict_errors[:ws_errors_found] = true
 
     return nil
@@ -387,21 +387,19 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   end
 
   def _process_assignments_and_mappings_extraction_data(user_email, data)
-    user = User.find_by(email: user_email)
+    # Check that we managed to create a citation.
+    citation_id = @wb_data[:wcr][data[:wb_cit_ref_id]]['citation_id']
+    return if citation_id.blank?
 
-    begin
-      citation = Citation.find_by(id: @wb_data[:wcr][data[:wb_cit_ref_id]]["citation_id"])
-    rescue => e
-      puts e
-      return
-    end
+    user = User.find_by(email: user_email)
+    citation = Citation.find(citation_id)
 
     extraction = _retrieve_extraction_record(user, citation)
     _toggle_true_all_kqs_for_extraction(extraction) if extraction.present?
 
     @lsof_type1_section_names.each do |type1_section_name|
       case type1_section_name
-      when "Outcomes"
+      when 'Outcomes'
         _insert_outcome_type1_data(extraction, type1_section_name, data)
 
       else
@@ -451,13 +449,13 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
 
   def _retrieve_extraction_record(user, citation)
     # CitationsProject may or not exist. Call find_or_create_by.
-    citations_project = CitationsProject.find_or_create_by(
+    citations_project = CitationsProject.find_or_create_by!(
       citation:,
       project: @project
     )
 
     # Find ProjectsUser with Contributor permissions.
-    pu = ProjectsUser.find_or_create_by(
+    pu = ProjectsUser.find_or_create_by!(
       project: @project,
       user:
     )
@@ -465,10 +463,10 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     pu.make_contributor!
 
     # Find or create Extraction.
-    Extraction.find_or_create_by(
+    Extraction.find_or_create_by!(
       project: @project,
       citations_project:,
-      user: pu.user,
+      user:,
       consolidated: false
     )
   end
