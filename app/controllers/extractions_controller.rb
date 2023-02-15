@@ -199,6 +199,13 @@ class ExtractionsController < ApplicationController
 
     respond_to do |format|
       format.html do
+        if params['panel-tab'].nil? && @project.key_questions_projects.count == 1
+          ExtractionsKeyQuestionsProjectsSelection.find_or_create_by(
+            key_questions_project: @project.key_questions_projects.first, extraction: @extraction
+          )
+          efp = @extraction.extraction_forms_projects_sections.includes(:section).reject { |efps| efps.hidden }.first
+          return redirect_to(work_extraction_path(@extraction, 'panel-tab' => efp.id))
+        end
       end
 
       format.js do
