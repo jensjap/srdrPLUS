@@ -1,6 +1,6 @@
 class ImportPolicy < ApplicationPolicy
   def index?
-    project_auditor? || @record.public?
+    project_auditor?
   end
 
   def show?

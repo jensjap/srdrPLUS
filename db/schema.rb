@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_13_042728) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1868,7 +1868,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_13_042728) do
     t.boolean "required_inclusion_reason", default: false
     t.boolean "required_exclusion_reason", default: false
     t.boolean "required_maybe_reason", default: false
-    t.index ["project_id"], name: "index_tasks_on_project_id"
     t.index ["task_type_id"], name: "index_tasks_on_task_type_id"
   end
 
@@ -2170,7 +2169,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_13_042728) do
   add_foreign_key "suggestions", "users"
   add_foreign_key "taggings", "projects_users_roles"
   add_foreign_key "taggings", "tags"
-  add_foreign_key "tasks", "projects"
   add_foreign_key "tasks", "task_types"
   add_foreign_key "teams", "projects"
   add_foreign_key "teams", "team_types"

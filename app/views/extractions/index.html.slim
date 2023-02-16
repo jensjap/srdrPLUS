@@ -2,6 +2,7 @@
   #spinner
 
 - provide(:title, 'List of Extractions')
+- am_leader = @project.leaders.include? current_user
 
 div class="p-4 lg:p-8"
   - efp = @project.extraction_forms_projects.first
@@ -60,7 +61,7 @@ div class="p-4 lg:p-8"
             td = extraction.pmid
             td data-sort="#{extraction.name}"
               div style="overflow: hidden; height: 18px;" = link_to extraction.name, citation_path(extraction.citation, project_id: @project.id)
-            - if @project.leaders.include? current_user
+            - if am_leader
               td
                 .projects-users-role dropdown-active='false'
                   span.projects-users-role-label data-extraction-id="#{ extraction.id.to_s }"

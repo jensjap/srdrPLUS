@@ -1,5 +1,4 @@
 class CitationSupplyingService
-  # TODO: implement error msg in operation outcome
 
   def find_by_project_id(project_id)
     citations = Project
@@ -7,7 +6,8 @@ class CitationSupplyingService
                 .citations
                 .includes(:journal)
                 .all
-    create_bundle(objs = citations, type = 'collection')
+    url = 'api/v3/projects/' + project_id.to_s + '/citations'
+    create_bundle(objs=citations, type='collection', url=url)
   end
 
   def find_by_citation_id(citation_id)
@@ -21,9 +21,13 @@ class CitationSupplyingService
 
   private
 
-  def create_bundle(objs, type)
+  def create_bundle(objs, type, url)
     bundle = {
       'type' => type,
+      'link' => [{
+        'relation' => 'tag',
+        'url' => url
+      }],
       'entry' => []
     }
 

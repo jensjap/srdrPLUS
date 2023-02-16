@@ -15,15 +15,24 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions.json
   def index
     @nav_buttons.push('extractions', 'my_projects')
-    @extractions = @project
-                   .extractions
-                   .unconsolidated
-                   .includes([
-                               { citations_project: { citation: :journal } },
-                               { extractions_extraction_forms_projects_sections: [:status] }
-                             ])
+    @extractions =
+      @project
+      .extractions
+      .unconsolidated
+      .includes(
+        [
+          { user: :profile },
+          { citations_project: { citation: [:journal, :authors, { authors_citations: :ordering }] } },
+          { extractions_extraction_forms_projects_sections: [
+            :status,
+            { extraction_forms_projects_section: :section }
+          ] },
+          { project: [
+            { extraction_forms_projects: :extraction_forms_projects_sections }
+          ] }
+        ]
+      )
     @extractions = ExtractionDecorator.decorate_collection(@extractions)
-
     @users = @project.users if @project.leaders.include? current_user
   end
 
@@ -198,6 +207,13 @@ class ExtractionsController < ApplicationController
 
     respond_to do |format|
       format.html do
+        if params['panel-tab'].nil? && @project.key_questions_projects.count == 1
+          ExtractionsKeyQuestionsProjectsSelection.find_or_create_by(
+            key_questions_project: @project.key_questions_projects.first, extraction: @extraction
+          )
+          efp = @extraction.extraction_forms_projects_sections.includes(:section).reject { |efps| efps.hidden }.first
+          return redirect_to(work_extraction_path(@extraction, 'panel-tab' => efp.id))
+        end
       end
 
       format.js do

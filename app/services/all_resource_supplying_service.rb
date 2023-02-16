@@ -28,18 +28,26 @@ class AllResourceSupplyingService
     key_questions = KeyQuestionSupplyingService.new.find_by_project_id(id)
     extractions = ExtractionSupplyingService.new.find_by_project_id(id)
 
-    all_resource = create_bundle(objs=[forms, citations, key_questions, extractions], type='collection')
+    url = 'api/v3/projects/' + id.to_s
+    all_resource = create_bundle(objs=[forms, citations, key_questions, extractions], type='collection', url=url)
     project_info['bundle'] = all_resource
     return project_info.to_json
   end
 
   private
 
-  def create_bundle(fhir_objs, type)
+  def create_bundle(fhir_objs, type, url='')
     bundle = {
       'type' => type,
       'entry' => []
     }
+
+    if not url.empty?
+      bundle['link'] = [{
+        'relation' => 'tag',
+        'url' => url
+      }]
+    end
 
     for fhir_obj in fhir_objs do
       bundle['entry'].append({ 'resource' => fhir_obj }) if fhir_obj
