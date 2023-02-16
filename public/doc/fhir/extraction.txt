@@ -1,0 +1,16 @@
+# Routes #
+- /api/v3/extractions/{extraction_number}
+- /api/v3/projects/{project_number}/extractions
+
+# Including Elements #
+- arms
+- outcomes
+- risk of bias evaluation
+- answers for designed questions
+- comparisons between arms / outcomes
+
+# FHIR Version #
+4.3.0
+
+# Description #
+Extraction contains four possible elements. Arms and outcomes are stored as a FHIR EvidenceVarieble resource. Risk of bias evaluation and answers are stored as a FHIR QuestionnaireResponse resource. It can be obtained by either project number or extraction number. Both of them can be observed in srdrplus website. Route with extraction number will give you either a FHIR EvidenceVarieble resource or a FHIR QuestionnaireResponse resource, another will give you a FHIR Bundle resource containing all extractions in your project as entries.
