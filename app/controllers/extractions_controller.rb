@@ -15,14 +15,23 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions.json
   def index
     @nav_buttons.push('extractions', 'my_projects')
-    @extractions = @project
-                   .extractions
-                   .unconsolidated
-                   .includes([
-                               { citations_project: { citation: [:journal, :authors,
-                                                                 { authors_citations: :ordering }] } },
-                               { extractions_extraction_forms_projects_sections: [:status] }
-                             ])
+    @extractions =
+      @project
+      .extractions
+      .unconsolidated
+      .includes(
+        [
+          { user: :profile },
+          { citations_project: { citation: [:journal, :authors, { authors_citations: :ordering }] } },
+          { extractions_extraction_forms_projects_sections: [
+            :status,
+            { extraction_forms_projects_section: :section }
+          ] },
+          { project: [
+            { extraction_forms_projects: :extraction_forms_projects_sections }
+          ] }
+        ]
+      )
     @extractions = ExtractionDecorator.decorate_collection(@extractions)
 
     @users = @project.users if @project.leaders.include? current_user
