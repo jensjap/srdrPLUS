@@ -20,7 +20,7 @@ class ExtractionsControllerTest < ActionDispatch::IntegrationTest
 #
 #  test "should create extraction" do
 #    assert_difference('Extraction.count') do
-#      post extractions_url, params: { extraction: { deleted_at: @extraction.deleted_at, extraction_forms_project_id: @extraction.extraction_forms_project_id, projects_study_id: @extraction.projects_study_id, projects_users_role_id: @extraction.projects_users_role_id } }
+#      post extractions_url, params: { extraction: { deleted_at: @extraction.deleted_at, extraction_forms_project_id: @extraction.extraction_forms_project_id, projects_study_id: @extraction.projects_study_id, user_id: @extraction.user_id } }
 #    end
 #
 #    assert_redirected_to extraction_url(Extraction.last)
@@ -37,7 +37,7 @@ class ExtractionsControllerTest < ActionDispatch::IntegrationTest
 #  end
 #
 #  test "should update extraction" do
-#    patch extraction_url(@extraction), params: { extraction: { deleted_at: @extraction.deleted_at, extraction_forms_project_id: @extraction.extraction_forms_project_id, projects_study_id: @extraction.projects_study_id, projects_users_role_id: @extraction.projects_users_role_id } }
+#    patch extraction_url(@extraction), params: { extraction: { deleted_at: @extraction.deleted_at, extraction_forms_project_id: @extraction.extraction_forms_project_id, projects_study_id: @extraction.projects_study_id, user_id: @extraction.user_id } }
 #    assert_redirected_to extraction_url(@extraction)
 #  end
 #

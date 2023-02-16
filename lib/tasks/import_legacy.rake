@@ -114,7 +114,7 @@ namespace(:db) do
     def reset_project_variables
       @srdr_to_srdrplus_project_dict = {}
       @srdr_to_srdrplus_key_questions_dict = {}
-      @default_projects_users_role = nil
+      @default_projects_user = nil
       @data_points_queue = {}
       @efps_dict = {}
       @eefspt1_dict = {}
@@ -216,9 +216,9 @@ namespace(:db) do
 
     def add_default_user_to_srdrplus_project srdrplus_project
       srdrplus_project.users << migration_user
-      srdrplus_project.projects_users.first.roles << Role.first
+      srdrplus_project.projects_users.first.make_leader!
 
-      @default_projects_users_role = srdrplus_project.projects_users.first.projects_users_roles.first
+      @default_projects_user = srdrplus_project.projects_users.first
     end
 
     def create_srdrplus_project project_hash
@@ -520,6 +520,9 @@ namespace(:db) do
           end
         end
 
+        # Sometimes we get duplications...this ensures we only associate KeyQuestionsProject once.
+        question.key_questions_projects = question.key_questions_projects.uniq
+
         question.question_rows.first.update! name: "Value:"
         question.question_rows.create! name: "Notes:"
 
@@ -570,6 +573,9 @@ namespace(:db) do
                                             question: qrf_question
       end
 
+      # Sometimes we get duplications...this ensures we only associate KeyQuestionsProject once.
+      qrf_question.key_questions_projects = qrf_question.key_questions_projects.uniq
+
       qrf_arr.each do |qrf|
         qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_or_create_by! question_row_column: rating_qrc,
                                                                      question_row_column_option: @qrco_answer_choice,
@@ -603,6 +609,9 @@ namespace(:db) do
           KeyQuestionsProjectsQuestion.create! key_questions_project: get_srdrplus_key_question(kq["key_question_id"]),
                                               question: question
         end
+
+        # Sometimes we get duplications...this ensures we only associate KeyQuestionsProject once.
+        question.key_questions_projects = question.key_questions_projects.uniq
 
         q_fields = legacy_question_fields.select{|qf| qf["#{table_root}_id"] == legacy_question_id}
         q_fields = (q_fields.select{|qf| qf["row_number"] != -1} + q_fields.select{|qf| qf["row_number"] == -1})
@@ -784,10 +793,16 @@ namespace(:db) do
     end
 
     def migrate_study_as_extraction study_hash, citations_project_id
-      extraction = Extraction.create!(projects_users_role: @default_projects_users_role,
-                                     citations_project_id: citations_project_id,
-                                     consolidated: false,
-                                     project: get_srdrplus_project(@legacy_project_id))
+      extraction = Extraction.create!(
+        user: @default_projects_user.user,
+        citations_project_id: citations_project_id,
+        consolidated: false,
+        project: get_srdrplus_project(@legacy_project_id)
+      )
+
+      # Associate extraction with every KQ in the project.
+      extraction.key_questions_projects = get_srdrplus_project(@legacy_project_id)
+                                          .key_questions_projects
 
       #set_srdrplus_extraction study_hash["id"], extraction
       migrate_type1_data study_hash["id"], extraction

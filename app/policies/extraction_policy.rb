@@ -7,6 +7,10 @@ class ExtractionPolicy < ApplicationPolicy
     end
   end
 
+  def index?
+    project_contributor?
+  end
+
   def show?
     project_consolidator?
   end
@@ -24,7 +28,13 @@ class ExtractionPolicy < ApplicationPolicy
   end
 
   def update?
-    project_contributor?
+    record.assigned_to?(user) ||
+      ProjectsUser.find_by(project: record.project, user:).permissions.to_s(2)[-1] == '1'
+  end
+
+  def update_kqp_selections?
+    record.assigned_to?(user) ||
+      ProjectsUser.find_by(project: record.project, user:).permissions.to_s(2)[-1] == '1'
   end
 
   def destroy?
@@ -32,7 +42,11 @@ class ExtractionPolicy < ApplicationPolicy
   end
 
   def work?
-    project_auditor? || @user.admin?
+    return true if user.admin?
+
+    record.assigned_to?(user) ||
+      ProjectsUser.find_by(project: record.project, user:).permissions.to_s(2)[-1] == '1' ||
+      ProjectsUser.find_by(project: record.project, user:).permissions.to_s(2)[-4] == '1'
   end
 
   def comparison_tool?
@@ -45,5 +59,12 @@ class ExtractionPolicy < ApplicationPolicy
 
   def edit_type1_across_extractions?
     project_consolidator?
+  end
+
+  def reassign_extraction?
+    return true if user.admin?
+
+    record.assigned_to?(user) ||
+      ProjectsUser.find_by(project: record.project, user:).permissions.to_s(2)[-1] == '1'
   end
 end

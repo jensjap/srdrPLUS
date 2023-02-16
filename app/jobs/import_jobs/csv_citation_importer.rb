@@ -1,5 +1,5 @@
 module ImportJobs::CsvCitationImporter
-  def import_citations_from_csv(imported_file)
+  def import_citations_from_csv(imported_file, preview = false)
     primary_id = CitationType.find_by(name: 'Primary').id
     ### citation type, not sure if necessary
     # secondary_id = CitationType.find_by( name: 'Secondary' ).id
@@ -8,6 +8,7 @@ module ImportJobs::CsvCitationImporter
     #          'Secondary' => secondary_id, 'secondary' => secondary_id,
     #          '' => nil }
 
+    preview_citations = []
     h_arr = []
 
     file_string = imported_file.content.download.encode('UTF-8', invalid: :replace, undef: :replace, replace: '',
@@ -79,16 +80,17 @@ module ImportJobs::CsvCitationImporter
       cit_h['pmid'] = row_h['Accession Number'].strip if row_h['Accession Number'].present?
 
       h_arr << cit_h
-      if h_arr.length >= 500
-        imported_file.project.citations << Citation.create(h_arr)
-        h_arr = []
-      end
 
       if h_arr.length >= CITATION_BATCH_SIZE
-        imported_file.project.citations << Citation.create(h_arr)
+        if preview
+          preview_citations += h_arr.dup
+        else
+          imported_file.project.citations << Citation.create(h_arr)
+        end
         h_arr = []
       end
     end
     # imported_file.project.citations << Citation.create( h_arr )
+    { count: preview_citations.length, citations: preview_citations[0..2] }
   end
 end

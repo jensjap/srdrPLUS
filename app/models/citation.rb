@@ -16,6 +16,7 @@
 #  doi               :string(255)
 #  other             :string(255)
 #  accession_number  :string(255)
+#  authors           :text(65535)
 #
 
 class Citation < ApplicationRecord
@@ -34,13 +35,11 @@ class Citation < ApplicationRecord
   has_many :projects, through: :citations_projects
   has_many :authors_citations, dependent: :destroy
   has_many :authors, through: :authors_citations
-  has_many :labels, through: :citations_projects, dependent: :destroy
   has_and_belongs_to_many :keywords, dependent: :destroy
 
   accepts_nested_attributes_for :authors_citations, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :keywords, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :journal, reject_if: :all_blank, allow_destroy: true
-  accepts_nested_attributes_for :labels, reject_if: :all_blank, allow_destroy: true
 
   # Redundant?
   def abstract_utf8

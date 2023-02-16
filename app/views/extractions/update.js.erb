@@ -4,8 +4,8 @@
       toastr.error('<%= msg[1] %>', '<%= msg[0] %>');
     <% end %>
   <% else %>
-    $( '.projects-users-role-label[data-extraction-id="<%=@extraction.id.to_s%>"]' ).html( '<%= @extraction.projects_users_role.handle%>' )
-    $( '.projects-users-role-label[data-extraction-id="<%=@extraction.id.to_s%>"]' ).closest( 'td' ).attr( 'data-sort', '<%= @extraction.projects_users_role.handle%>' )
+    $( '.projects-users-role-label[data-extraction-id="<%=@extraction.id.to_s%>"]' ).html( '<%= @extraction.user.handle%>' )
+    $( '.projects-users-role-label[data-extraction-id="<%=@extraction.id.to_s%>"]' ).closest( 'td' ).attr( 'data-sort', '<%= @extraction.user.handle%>' )
 
     $( 'table.extractions-list' ).DataTable().rows( { page:'current' } ).invalidate()
     $( 'table.extractions-list' ).DataTable().draw()

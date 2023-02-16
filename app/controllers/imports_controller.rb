@@ -13,6 +13,38 @@ class ImportsController < ApplicationController
     @imported_file = ImportedFile.new import: @import
   end
 
+  def show
+    @import = Import.find(params[:id])
+    @project = @import.project
+    authorize(@project, policy_class: ImportPolicy)
+    unless current_user == @import.user
+      flash[:error] = 'This import file does not belong to your user.'
+      return redirect_to project_citations_path(@project)
+    end
+
+    @previews = @import.preview_import_job
+
+    if @previews.blank?
+      flash[:error] = 'This import cannot be previewed.'
+      redirect_to project_citations_path(@project)
+    end
+    @nav_buttons.push('citation_pool', 'my_projects')
+  end
+
+  def start
+    @import = Import.find(params[:id])
+    @project = @import.project
+    authorize(@project, policy_class: ImportPolicy)
+    if current_user == @import.user
+      @import.start_import_job
+      flash[:success] =
+        'Citation file(s) successfully uploaded. You will be notified by email when the citation imports finish.'
+    else
+      flash[:error] = 'This import file does not belong to your user.'
+    end
+    redirect_to project_citations_path(@project)
+  end
+
   def create
     import_type_id = params['import_type_id'] || params['import']['import_type_id']
     if import_type_id.eql?('3')
@@ -47,6 +79,7 @@ class ImportsController < ApplicationController
 
     respond_to do |format|
       if @import.save
+        @import.start_import_job unless @import.import_type.name == 'Citation'
         format.json { render json: @import, status: :ok }
         format.html { redirect_to new_project_import_path(@import.projects_user.project), notice: t('success') }
       else

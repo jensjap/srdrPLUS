@@ -25,7 +25,6 @@ h4 #{ efps.section.name.titleize } Question List
           th Dependency
           th Key Questions
           th Question Text
-          th Instructions
           th
 
       tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
@@ -67,7 +66,6 @@ h4 #{ efps.section.name.titleize } Question List
                   li = kqp.key_question.name
 
             td = q.name
-            td style='white-space: pre-wrap;' = q.description
             td
               .utilities
                 = link_to edit_question_path(q) do

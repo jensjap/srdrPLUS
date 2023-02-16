@@ -4,7 +4,7 @@ class ProjectsController < ApplicationController
   before_action :set_project, only: %i[
     export_data show edit update destroy export export_to_gdrive
     export_assignments_and_mappings import_assignments_and_mappings simple_import
-    import_csv import_pubmed import_endnote import_ris next_assignment
+    import_csv import_pubmed import_endnote import_ris
     confirm_deletion dedupe_citations create_citation_screening_extraction_form
     create_full_text_screening_extraction_form
   ]
@@ -14,7 +14,7 @@ class ProjectsController < ApplicationController
   ]
   before_action :skip_policy_scope, except: %i[
     index show edit update destroy filter export export_to_gdrive import_csv
-    import_pubmed import_endnote import_ris next_assignment
+    import_pubmed import_endnote import_ris
   ]
 
   # GET /projects
@@ -85,7 +85,7 @@ class ProjectsController < ApplicationController
       format.html do
         if no_leader?
           flash[:alert] = 'Must have at least one leader'
-          redirect_to(edit_project_path(@project, anchor: 'panel-projects-users'))
+          redirect_to(edit_project_path(@project, page: 'members_and_roles'))
         elsif @project.update(project_params)
           redirect_path = params.try(:[], :project).try(:[], :redirect_path)
           if redirect_path.present?
@@ -216,6 +216,7 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if @import.save
+        @import.start_import_job
         flash[:success] =
           "Import request of Assignments and Mappings submitted for project '#{@project.name}'. You will be notified by email of its completion."
         format.json { render json: @import, status: :ok }
@@ -279,6 +280,7 @@ class ProjectsController < ApplicationController
         end
         format.html { redirect_to project_imports_path(@project) }
       elsif @import.save
+        @import.start_import_job
         flash[:success] =
           "Import request of project '#{@project.name}'. You will be notified by email of its completion."
         format.json { render json: @import, status: :ok }
@@ -330,14 +332,6 @@ class ProjectsController < ApplicationController
       "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
 
     redirect_to project_citations_path(@project)
-  end
-
-  def next_assignment
-    authorize(@project)
-    projects_user = ProjectsUser.where(project: @project, user: current_user).first
-    next_assignment = projects_user.assignments.first
-
-    redirect_to controller: :assignments, action: :screen, id: next_assignment.id
   end
 
   def dedupe_citations
@@ -405,6 +399,7 @@ class ProjectsController < ApplicationController
       return false unless project.save
 
       if project.imported_files.present?
+        project.imports.first.start_import_job
         flash[:success] =
           "Import request submitted for project '#{project.name}'. You will be notified by email of its completion."
       end
@@ -501,21 +496,6 @@ class ProjectsController < ApplicationController
                              .group_by(&:project_id)
                              .count
 
-      @projects_lead_or_with_key_questions = ProjectsUsersRole
-                                             .where(projects_user: ProjectsUser
-          .where(
-            project_id: project_ids,
-            user_id: current_user
-          ),
-                                                    role: Role.where(name: 'Leader')).includes(projects_user: { project: [:key_questions_projects] })
-                                             .map do |pur|
-        [pur.project.id,
-         pur.project.key_questions_projects.present?]
-      end
-                                             .to_h
-
-      @projects_lead_or_with_key_questions.default = false
-
     elsif @project_status == 'draft'
       @projects = policy_scope(Project)
                   .draft
@@ -567,21 +547,6 @@ class ProjectsController < ApplicationController
                              .group_by(&:project_id)
                              .count
 
-      @projects_lead_or_with_key_questions = ProjectsUsersRole
-                                             .where(projects_user: ProjectsUser
-          .where(
-            project_id: project_ids,
-            user_id: current_user
-          ),
-                                                    role: Role.where(name: 'Leader')).includes(projects_user: { project: [:key_questions_projects] })
-                                             .map do |pur|
-        [pur.project.id,
-         pur.project.key_questions_projects.present?]
-      end
-                                             .to_h
-
-      @projects_lead_or_with_key_questions.default = false
-
     elsif @project_status == 'pending'
       @unapproved_publishings = Publishing
                                 .includes([:publishable])
@@ -622,10 +587,10 @@ class ProjectsController < ApplicationController
 
   def no_leader?
     project_params[:projects_users_attributes] &&
-      project_params[:projects_users_attributes].values.any? { |key| key[:role_ids] } &&
-      project_params[:projects_users_attributes].values.map do |pua|
-        pua[:role_ids]
-      end.flatten.none? { |role_id| role_id == '1' }
+      project_params[:projects_users_attributes].values.any? { |key| key[:permissions] } &&
+      project_params[:projects_users_attributes].values.none? do |pua|
+        pua[:permissions].to_i.to_s(2)[-1] == '1'
+      end
   end
 
   def _check_valid_file_extension(file)

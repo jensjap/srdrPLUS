@@ -1,5 +1,4 @@
 class CitationSupplyingService
-  # TODO: implement error msg in operation outcome
 
   def find_by_project_id(project_id)
     citations = Project
@@ -7,7 +6,8 @@ class CitationSupplyingService
                 .citations
                 .includes(:authors, :journal, authors_citations: :author)
                 .all
-    create_bundle(objs = citations, type = 'collection')
+    url = 'api/v3/projects/' + project_id.to_s + '/citations'
+    create_bundle(objs=citations, type='collection', url=url)
   end
 
   def find_by_citation_id(citation_id)
@@ -21,9 +21,13 @@ class CitationSupplyingService
 
   private
 
-  def create_bundle(objs, type)
+  def create_bundle(objs, type, url)
     bundle = {
       'type' => type,
+      'link' => [{
+        'relation' => 'tag',
+        'url' => url
+      }],
       'entry' => []
     }
 
@@ -38,7 +42,14 @@ class CitationSupplyingService
   def create_fhir_obj(raw)
     citation = {
       'status' => 'active',
-      'id' => raw.id,
+      'id' => '1' + '-' + raw.id.to_s,
+      'identifier' => [{
+        'type' => {
+          'text' => 'SRDR+ Object Identifier'
+        },
+        'system' => 'https://srdrplus.ahrq.gov/',
+        'value' => 'Citation/' + raw.id.to_s
+      }],
       'citedArtifact' => {
         'identifier' => [],
         'title' => [],
@@ -86,14 +97,14 @@ class CitationSupplyingService
     end
 
     title = raw.name
-    if title
+    if !title.empty?
       citation['citedArtifact']['title'].append({
                                                   'text' => title
                                                 })
     end
 
     abstract = raw.abstract
-    if abstract
+    if !abstract.empty?
       citation['citedArtifact']['abstract'].append({
                                                      'text' => abstract
                                                    })

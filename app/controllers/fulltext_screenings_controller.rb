@@ -1,7 +1,7 @@
 class FulltextScreeningsController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: %i[kpis]
+  skip_before_action :verify_authenticity_token
 
-  before_action :set_project, only: %i[index new create citation_lifecycle_management kpis]
+  before_action :set_project, only: %i[index new create]
   before_action :set_fulltext_screening, only: %i[screen]
   after_action :verify_authorized
 

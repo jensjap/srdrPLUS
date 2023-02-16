@@ -2,10 +2,7 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
   def initialize(project, user)
     @user = user
     @project = project
-    @projects_users_role = ProjectsUsersRole.find_or_create_by!(
-      projects_user: ProjectsUser.find_or_create_by!(project: @project, user: @user),
-      role: Role.find_by(name: 'Leader')
-    )
+    ProjectsUser.find_or_create_by!(project: @project, user: @user).make_leader!
 
     # We want to save distiller user reference as another question, and we want to create a separate kq for that
     user_info_kq = KeyQuestion.find_or_create_by!(name: 'Imported User Info')
@@ -19,45 +16,33 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
     csv_content = CSV.parse(imported_file.content.download.encode('UTF-8', invalid: :replace, undef: :replace,
                                                                            replace: '', universal_newline: true))
 
-    # efps_hash = create_efps_hash csv_content.first, kq_hash, imported_file.section.name
-    # @project_json["project"]["extraction_forms"][@ef_id]["sections"][imported_file.section.id] = efps_hash
-
     efps = import_efps(imported_file.section, @efps_position)
 
     header = csv_content[0]
 
-    # q_i = 1
-    # headers.each_with_index do |h,i|
-    #  if [0,1,2].include? i
-    #    next
-    #  end
-    #  # ordering is the same as the order in the header
-    #  kq = imported_file.key_question
-    #  kqp = KeyQuestionsProject.find_or_create_by key_question: kq, project: @project
-    #  qrcf_id_map[i] = import_question(efps, h, kqp, i-2)
-
-    #  q_i += 1
-    # end
     kq = imported_file.key_question
     kqp = KeyQuestionsProject.find_or_create_by key_question: kq, project: @project
 
     q_piece_arr = build_questions efps, header, kqp
 
     csv_content[1..csv_content.length].each do |row|
-      import_extraction(row, @projects_users_role, efps, q_piece_arr)
+      import_extraction(row, efps, q_piece_arr)
     end
 
     # next section to be added will be placed after this one
     @efps_position += 1
   end
 
-  def import_extraction(row, pur, efps, q_piece_arr)
+  def import_extraction(row, efps, q_piece_arr)
     c_arr = Citation.where(refman: row[0])
     cp = CitationsProject.where(project: @project, citation: c_arr).first
 
     return false if cp.nil?
 
-    e = Extraction.find_or_create_by project: @project, projects_users_role: pur, citations_project: cp
+    e = Extraction.find_or_create_by project: @project, user: @user, citations_project: cp
+
+    # Associate all key questions in the project with extraction.
+    e.key_questions_projects = @project.key_questions_projects
 
     return e if e.id.nil?
 
@@ -126,9 +111,11 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
                                                   section: s
     efps.ordering.position = position
 
-    ExtractionFormsProjectsSectionOption.create! extraction_forms_projects_section: efps,
-                                                 by_type1: false,
-                                                 include_total: false
+    efpso = ExtractionFormsProjectsSectionOption.find_by!(extraction_forms_projects_section: efps)
+    efpso.by_type1 = false
+    efpso.include_total = false
+    efpso.save
+
     efps
   end
 
@@ -137,8 +124,7 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
                         name: qname,
                         description: ''
 
-    KeyQuestionsProjectsQuestion.find_or_create_by! key_questions_project: kqp,
-                                                    question: q
+    q.key_questions_projects = q.key_questions_projects.uniq
 
     qr = QuestionRow.find_by!(question: q)
     qrc_type = QuestionRowColumnType.find_by! name: qrct
@@ -146,6 +132,7 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
     qrc.update! question_row_column_type: qrc_type,
                 name: ''
 
+    q.save
     q
   end
 

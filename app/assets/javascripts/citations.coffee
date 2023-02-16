@@ -4,9 +4,14 @@ document.addEventListener 'DOMContentLoaded', ->
 
     $('#citations-table').DataTable({
       "columnDefs": [{ "orderable": false, "targets": [4, 5] }],
-      "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
-      "pagingType": "full_numbers",
+      ""
+      # "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
+      # "pageLength": -1,
+      # "pagingType": "full_numbers",
+      "paging": false,
       "stateSave": true,
+      "stateSaveParams": (settings, data) ->
+        data.search.search = ""
       "stateDuration": 0,
       "stateSaveCallback": (settings, data) ->
         localStorage.setItem('DataTables-' + tableKey, JSON.stringify(data))
@@ -80,8 +85,8 @@ document.addEventListener 'DOMContentLoaded', ->
         )
 
         this.on('success', (file, response) ->
-          toastr.success('Citation file successfully uploaded. You will be notified by email when citaion import finishes.')
           wrapperThis.removeFile(file)
+          window.location.href = '/imports/' + response.id
         )
         this.on('error', (file, error_message) ->
           toastr.error("ERROR: Cannot upload citation file. #{ error_message }")

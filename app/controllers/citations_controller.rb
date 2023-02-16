@@ -1,9 +1,9 @@
 class CitationsController < ApplicationController
-  before_action :set_project, only: %i[index labeled unlabeled]
+  before_action :set_project, only: %i[index]
   before_action :set_citation, only: %i[show edit update destroy]
 
   before_action :skip_policy_scope
-  before_action :skip_authorization, except: %i[labeled unlabled]
+  before_action :skip_authorization
 
   def new
     @citation = Citation.new
@@ -70,22 +70,6 @@ class CitationsController < ApplicationController
     @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
   end
 
-  def labeled
-    authorize(@project, policy_class: CitationPolicy)
-    @citations = Citation.labeled(@project).includes(:citations_projects, :journal,
-                                                     authors_citations: %i[ordering author])
-    @citations_projects_dict = @project.citations_projects.map { |cp| [cp.citation_id, cp] }.to_h
-    render 'index'
-  end
-
-  def unlabeled
-    authorize(@project, policy_class: CitationPolicy)
-    @citations = citation.unlabeled(@project).includes(:citations_projects, :journal,
-                                                       authors_citations: %i[ordering author])
-    @citations_projects_dict = @project.citations_projects.map { |cp| [cp.citation_id, cp] }.to_h
-    render 'index'
-  end
-
   private
 
   # a helper method that sets the current citation from id to be used with callbacks
@@ -104,8 +88,7 @@ class CitationsController < ApplicationController
                   citations_attributes: %i[id name _destroy],
                   journal_attributes: %i[id name publication_date issue volume _destroy],
                   authors_citations_attributes: [:id, :name, :_destroy, { author_attributes: %i[name id _destroy] }, { ordering_attributes: :position }],
-                  keywords_attributes: %i[id name _destroy],
-                  labels_attributes: %i[id value _destroy])
+                  keywords_attributes: %i[id name _destroy])
   end
 
   def authorize_access

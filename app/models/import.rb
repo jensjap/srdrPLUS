@@ -10,7 +10,7 @@
 #
 
 class Import < ApplicationRecord
-  after_commit :start_import_job, on: :create
+  # after_commit :start_import_job, on: :create
 
   belongs_to :import_type
   belongs_to :projects_user
@@ -52,6 +52,28 @@ class Import < ApplicationRecord
       end
     end
     false
+  end
+
+  def preview_import_job
+    return nil if import_type.name == 'Distiller'
+
+    @previews = []
+    imported_files.each do |imported_file|
+      case import_type.name
+      when 'Citation'
+        case imported_file.file_type.name
+        when '.ris'
+          @previews << RisImportJob.new.import_citations_from_ris(imported_file, true)
+        when '.csv'
+          @previews << CsvImportJob.new.import_citations_from_csv(imported_file, true)
+        when '.enl'
+          @previews << EnlImportJob.new.import_citations_from_enl(imported_file, true)
+        when 'PubMed'
+          @previews << PubmedImportJob.new.import_citations_from_pubmed_file(imported_file, true)
+        end
+      end
+    end
+    @previews
   end
 
   def start_import_job

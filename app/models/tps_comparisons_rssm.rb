@@ -19,9 +19,9 @@ class TpsComparisonsRssm < ApplicationRecord
 
   has_many :records, as: :recordable
 
-  delegate :extraction, to: :extractions_extraction_forms_projects_sections_type1_row
-  delegate :extractions_extraction_forms_projects_section, to: :extractions_extraction_forms_projects_sections_type1_row
   delegate :result_statistic_section,                      to: :result_statistic_sections_measure
+  delegate :extraction,                                    to: :result_statistic_sections_measure
+  delegate :extractions_extraction_forms_projects_section, to: :result_statistic_sections_measure
 
   def self.find_record_by_extraction
     'Mock Value'

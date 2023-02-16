@@ -8,19 +8,9 @@ class ProjectPolicy < ApplicationPolicy
     :methodology_description,
     :prospero,
     :doi,
-    :notes,
     :funding_source,
     {
       mesh_descriptor_ids: []
-    },
-    {
-      tasks_attributes: [
-        :id,
-        :name,
-        :num_assigned,
-        :task_type_id,
-        { projects_users_role_ids: [] }
-      ]
     },
     {
       citations_attributes: [
@@ -78,27 +68,18 @@ class ProjectPolicy < ApplicationPolicy
         :id,
         :_destroy,
         :user_id,
-        { role_ids: [],
-          imports_attributes: [
-            :import_type_id, {
-              imported_files_attributes: [
-                :id,
-                :file_type_id,
-                :content,
-                { section: [:name],
-                  key_question: [:name] }
-              ]
-            }
-          ] }
-      ]
-    },
-    {
-      screening_options_attributes: %i[
-        id
-        _destroy
-        project_id
-        label_type_id
-        screening_option_type_id
+        :permissions,
+        { imports_attributes: [
+          :import_type_id, {
+            imported_files_attributes: [
+              :id,
+              :file_type_id,
+              :content,
+              { section: [:name],
+                key_question: [:name] }
+            ]
+          }
+        ] }
       ]
     }
   ]
@@ -169,10 +150,6 @@ class ProjectPolicy < ApplicationPolicy
 
   def import_endnote?
     project_leader?
-  end
-
-  def next_assignment?
-    project_contributor?
   end
 
   def dedupe_citations?
