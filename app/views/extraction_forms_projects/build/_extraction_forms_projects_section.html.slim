@@ -1,4 +1,4 @@
-.column.row
+div
   - if current_user.profile.advanced_mode && efps.extraction_forms_projects_section_type.name != 'Key Questions'
 
     h4 #{ efps.section.name }
@@ -19,7 +19,7 @@
         span.switch-inactive aria-hidden="true" No
   hr
 
-.column.row.efps-container[data-efps-id="#{efps.id.to_s}"]
+.efps-container[data-efps-id="#{efps.id.to_s}"]
 
   == render 'extraction_forms_projects/build/' + efps.extraction_forms_projects_section_type.name.parameterize.underscore,
     efps: efps
