@@ -1,4 +1,4 @@
-= simple_form_for([@extraction_forms_projects_section, @question], html: { data: { 'abide': '', 'live-validate': true }, "@submit.prevent": "updateQuestion(edit_question_id, $event.target)" }) do |f|
+= simple_form_for([@extraction_forms_projects_section, @question], html: { data: { 'abide': '', 'live-validate': true }, "@submit.prevent": "await updateQuestionTable(edit_question_id, $event.target); question_modal = false;" }) do |f|
   = f.error_notification
 
   .alert.callout data-abide-error='' style='display: none;'
@@ -41,8 +41,7 @@
         | Add Row
 
   div class="form-actions flex justify-between mt-2"
-    div @click='destroyResource("/questions/#{@question.id}", true)' class='delete-question button alert' Delete
-    = f.button :submit, 'Save and Exit', class: 'create-button'
+    div @click='destroyResource("/questions/#{@question.id}", "question")' class='delete-question button alert' Delete
     / = link_to @question, method: :delete, class: 'delete-question button alert', data: { confirm: t('confirm') } do
     /   i.fi-trash>
     /   = 'Delete'

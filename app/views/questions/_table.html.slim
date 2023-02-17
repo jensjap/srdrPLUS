@@ -9,7 +9,7 @@
           = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
             th style='min-width: 350px;'
               = qrc_f.input :name, label: 'Column Header', wrapper_html: { style: 'margin-bottom: 0;' }
-              div @click='destroyResource("/question_row_columns/#{qrc_f.object.id}/destroy_entire_column")' class='cursor-pointer float-right' style='font-weight: normal;' Remove
+              div @click='destroyResource("/question_row_columns/#{qrc_f.object.id}/destroy_entire_column", "question_row_column")' class='cursor-pointer float-right' style='font-weight: normal;' Remove
               / = link_to 'Remove', destroy_entire_column_question_row_column_path(qrc_f.object),
               /                     method: :delete, data: { confirm: t('confirm') },
               /                     class: 'float-right',
@@ -20,7 +20,7 @@
         tr
           td
             = qr_f.input :name, label: 'Row Header', wrapper_html: { style: 'margin-bottom: 0;' }
-            div @click='destroyResource("/question_rows/#{qr_f.object.id}")' class='cursor-pointer float-right' Remove
+            div @click='destroyResource("/question_rows/#{qr_f.object.id}", "question_row")' class='cursor-pointer float-right' Remove
             / = link_to 'Remove', qr_f.object, method: :delete, data: { confirm: t('confirm') }, class: 'float-right'
 
           = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
@@ -57,7 +57,7 @@
                           - if (option.question_row_column.question_row_columns_question_row_column_options\
                             .select{|qrcqrco| qrcqrco.question_row_column_option == QuestionRowColumnOption::ANSWER_CHOICE_QRCO}.length > 1)
                             .float-right
-                              div @click='destroyResource("/question_row_columns_question_row_column_options/#{option.id}")' class='cursor-pointer float-right' style='font-weight:bold; color:#cc4b37 !important;' Remove
+                              div @click='destroyResource("/question_row_columns_question_row_column_options/#{option.id}", "question_row_column_option")' class='cursor-pointer float-right' style='font-weight:bold; color:#cc4b37 !important;' Remove
                               / = link_to 'Remove', option, method: :delete, data: { confirm: t('confirm') },
                               /                           class: 'float-right',
                               /                           style: 'font-weight:bold; color:#cc4b37 !important;'

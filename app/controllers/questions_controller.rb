@@ -114,6 +114,7 @@ class QuestionsController < ApplicationController
     @other_extraction_forms_projects_section_questions = @extraction_forms_projects_section.questions.reject do |q|
       q == @question
     end
+    render layout: !(params[:partial] == 'true')
   end
 
   def toggle_dependency

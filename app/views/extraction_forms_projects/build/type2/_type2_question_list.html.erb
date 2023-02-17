@@ -1,5 +1,11 @@
 <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
 <div x-data="type_2_question_list" x-cloak x-show="questions.length > 0">
+  <div
+    @click="createQuestion()"
+    class="bg-srdrpurple text-white rounded-md p-2 cursor-pointer text-center mt-2"
+  >
+    Add Question
+  </div>
   <table class="my-4">
     <thead>
       <tr>
@@ -43,7 +49,7 @@
             >
               <div
                 class="flex items-center justify-center space-x-1 cursor-pointer hover:underline"
-                @click="edit_question_id = null; edit_question_id = q.id; question_modal = true; updateTable();"
+                @click="edit_question_id = null; edit_question_id = q.id; question_modal = true; fetchQuestionTable();"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -61,9 +67,9 @@
                 </svg>
                 <span>Edit</span>
               </div>
-              <a
+              <div
                 class="flex items-center justify-center space-x-1 cursor-pointer hover:underline"
-                :href="`/questions/${q.id}/dependencies`"
+                @click="edit_question_id = null; edit_question_id = q.id; dependencies_modal = true; updateDependenciesTable();"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -80,7 +86,7 @@
                   />
                 </svg>
                 <span>Dependencies</span>
-              </a>
+              </div>
               <div
                 class="flex items-center justify-center space-x-1 cursor-pointer hover:underline"
                 @click="createDuplicateQuestion(q.id)"
@@ -102,7 +108,7 @@
                 <span>Duplicate</span>
               </div>
               <div
-                @click="destroyResource(`/questions/${q.id}`, true)"
+                @click="destroyResource(`/questions/${q.id}`, 'question')"
                 class="flex items-center justify-center space-x-1 cursor-pointer hover:underline"
               >
                 <svg
@@ -137,6 +143,7 @@
   <!-- prettier-ignore -->
   <%= render 'extraction_forms_projects/build/type2/loading_modal' %>
   <%= render 'extraction_forms_projects/build/type2/question_modal' %>
+  <%= render 'extraction_forms_projects/build/type2/dependencies_modal' %>
 </div>
 
 <script>
@@ -145,14 +152,16 @@
       loading: false,
       questions: [],
       question_modal: false,
+      dependencies_modal: false,
       edit_question_id: null,
       question_table: "",
+      dependencies_table: "",
 
       init() {
         this.fetch_questions();
       },
 
-      async updateTable() {
+      async fetchQuestionTable() {
         this.loading = true;
         this.question_table = await (
           await fetch(`/questions/${this.edit_question_id}/edit?partial=true`)
@@ -163,9 +172,31 @@
         this.loading = false;
       },
 
-      async destroyResource(url, questionType = false) {
+      async updateDependenciesTable() {
+        this.loading = true;
+        this.dependencies_table = await (
+          await fetch(
+            `/questions/${this.edit_question_id}/dependencies?partial=true`
+          )
+        ).text();
+        this.loading = false;
+      },
+
+      async destroyResource(url, resourceType) {
         if (confirm("Are you sure?")) {
           this.loading = true;
+          if (
+            [
+              "question_row",
+              "question_row_column",
+              "question_row_column_option",
+            ].some((rt) => rt === resourceType)
+          ) {
+            await this.updateQuestionTable(
+              this.edit_question_id,
+              document.getElementById(`edit_question_${this.edit_question_id}`)
+            );
+          }
           const response = await fetch(url, {
             method: "DELETE",
             headers: {
@@ -175,11 +206,11 @@
             },
           });
 
-          if (questionType) {
+          if (resourceType === "question") {
             await this.fetch_questions();
             this.question_modal = false;
           } else {
-            await this.updateTable();
+            await this.fetchQuestionTable();
           }
           toastr.success("Successfully deleted", null, {
             timeOut: 1000,
@@ -190,6 +221,10 @@
 
       async addRowOrColumn(type) {
         this.loading = true;
+        await this.updateQuestionTable(
+          this.edit_question_id,
+          document.getElementById(`edit_question_${this.edit_question_id}`)
+        );
         const response = await fetch(
           `/questions/${this.edit_question_id}/${type}`,
           {
@@ -201,11 +236,11 @@
             },
           }
         );
-        await this.updateTable();
+        await this.fetchQuestionTable();
         this.loading = false;
       },
 
-      async updateQuestion(questionId, form) {
+      async updateQuestionTable(questionId, form) {
         const formData = new FormData(form);
 
         const response = await fetch(`/questions/${questionId}`, {
@@ -218,7 +253,6 @@
           body: formData,
         });
         const data = await response.json();
-        this.question_modal = false;
         this.fetch_questions();
       },
 
