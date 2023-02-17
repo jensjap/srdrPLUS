@@ -6,7 +6,7 @@ document.addEventListener 'extractionSectionLoaded', ->
   documentCode()
 
 documentCode = ->
-  return unless $( 'body.public_data.show, .questions, .extractions, .extraction_forms_projects.build' ).length > 0
+  # return unless $( 'body.public_data.show, .questions, .extractions, .extraction_forms_projects.build' ).length > 0
 
   ###########################
   # Hide unnecessary options.
@@ -90,3 +90,5 @@ documentCode = ->
         $( '#add_row_button' ).click()
         return
     return false
+
+window.questionsCoffeeScript = documentCode

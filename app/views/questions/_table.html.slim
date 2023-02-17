@@ -9,17 +9,19 @@
           = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
             th style='min-width: 350px;'
               = qrc_f.input :name, label: 'Column Header', wrapper_html: { style: 'margin-bottom: 0;' }
-              = link_to 'Remove', destroy_entire_column_question_row_column_path(qrc_f.object),
-                                  method: :delete, data: { confirm: t('confirm') },
-                                  class: 'float-right',
-                                  style: 'font-weight: normal;'
+              div @click='destroyResource("/question_row_columns/#{qrc_f.object.id}/destroy_entire_column")' class='cursor-pointer float-right' style='font-weight: normal;' Remove
+              / = link_to 'Remove', destroy_entire_column_question_row_column_path(qrc_f.object),
+              /                     method: :delete, data: { confirm: t('confirm') },
+              /                     class: 'float-right',
+              /                     style: 'font-weight: normal;'
 
     tbody
       = f.simple_fields_for(:question_rows) do |qr_f|
         tr
           td
             = qr_f.input :name, label: 'Row Header', wrapper_html: { style: 'margin-bottom: 0;' }
-            = link_to 'Remove', qr_f.object, method: :delete, data: { confirm: t('confirm') }, class: 'float-right'
+            div @click='destroyResource("/question_rows/#{qr_f.object.id}")' class='cursor-pointer float-right' Remove
+            / = link_to 'Remove', qr_f.object, method: :delete, data: { confirm: t('confirm') }, class: 'float-right'
 
           = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
 
@@ -46,9 +48,8 @@
                     = qrcqrco_f.input :name,
                                       label: option.question_row_column_option.label,
                                       as: option.question_row_column_option.field_type,
-                                      input_html: { title: option.question_row_column_option.description },
-                                      wrapper: 'horizontal_form',
-                                      input_html: { style: 'margin-bottom: 0;' }
+                                      input_html: { title: option.question_row_column_option.description, style: 'margin-bottom: 0;' },
+                                      wrapper: 'horizontal_form'
 
                     .row style='margin-bottom: 0.7rem;'
                       .columns.medium-offset-3.medium-9
@@ -56,9 +57,10 @@
                           - if (option.question_row_column.question_row_columns_question_row_column_options\
                             .select{|qrcqrco| qrcqrco.question_row_column_option == QuestionRowColumnOption::ANSWER_CHOICE_QRCO}.length > 1)
                             .float-right
-                              = link_to 'Remove', option, method: :delete, data: { confirm: t('confirm') },
-                                                        class: 'float-right',
-                                                        style: 'font-weight:bold; color:#cc4b37 !important;'
+                              div @click='destroyResource("/question_row_columns_question_row_column_options/#{option.id}")' class='cursor-pointer float-right' style='font-weight:bold; color:#cc4b37 !important;' Remove
+                              / = link_to 'Remove', option, method: :delete, data: { confirm: t('confirm') },
+                              /                           class: 'float-right',
+                              /                           style: 'font-weight:bold; color:#cc4b37 !important;'
                           .float-left.followup_container
                             = qrcqrco_f.input :includes_followup, as: :boolean, :input_html => { :checked => qrcqrco_f.object.includes_followup }, label: 'Include Followup Question', wrapper_html: { class: 'followup-checkbox' }
 

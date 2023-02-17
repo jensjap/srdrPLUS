@@ -74,6 +74,12 @@ class ExtractionFormsProjectsController < ApplicationController
     @extraction_forms_projects_sections = @extraction_forms_project
                                           .extraction_forms_projects_sections
                                           .includes(%i[ordering section])
+    respond_to do |format|
+      format.html do
+      end
+      format.json do
+      end
+    end
   end
 
   private
