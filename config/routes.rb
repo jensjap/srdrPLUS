@@ -112,11 +112,11 @@ Rails.application.routes.draw do
     namespace :v3 do
       resources :projects, shallow: true, only: [:show] do
         resources :citations, only: %i[index show]
-        resources :key_questions, only: [:index, :show]
-        resources :extractions, only: [:index, :show]
+        resources :key_questions, only: %i[index show]
+        resources :extractions, only: %i[index show]
       end
       resources :extraction_forms_projects, shallow: true, only: [] do
-        resources :extraction_forms_projects_sections, only: [:index, :show]
+        resources :extraction_forms_projects_sections, only: %i[index show]
       end
     end # END namespace :v3 do
   end # END namespace :api do
@@ -249,6 +249,9 @@ Rails.application.routes.draw do
           end
 
           resources :question_rows, only: [:destroy] do
+            member do
+              post 'duplicate'
+            end
             resources :question_row_columns, only: [] do
               resources :question_row_columns_question_row_column_options, only: [:destroy]
 

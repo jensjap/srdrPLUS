@@ -219,6 +219,30 @@
         }
       },
 
+      async duplicateRow(questionRowId) {
+        this.loading = true;
+        await this.updateQuestionTable(
+          this.edit_question_id,
+          document.getElementById(`edit_question_${this.edit_question_id}`)
+        );
+        const response = await fetch(
+          `/question_rows/${questionRowId}/duplicate`,
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+          }
+        );
+        await this.fetchQuestionTable();
+        toastr.success("Row was succesfully duplicated!", null, {
+          timeOut: 1000,
+        });
+        this.loading = false;
+      },
+
       async addRowOrColumn(type) {
         this.loading = true;
         await this.updateQuestionTable(

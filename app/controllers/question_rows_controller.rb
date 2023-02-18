@@ -1,5 +1,12 @@
 class QuestionRowsController < ApplicationController
-  before_action :set_question_row, :skip_policy_scope, only: [:destroy]
+  before_action :set_question_row, :skip_policy_scope, only: [:destroy, :duplicate]
+
+  def duplicate
+    @question_row.duplicate
+    respond_to do |format|
+      format.json { render json: {}, status: 200 }
+    end
+  end
 
   def destroy
     @question = @question_row.question
