@@ -61,6 +61,8 @@ class SimpleImportJob < ApplicationJob
 
   def logger
     @logger ||= Logger.new("#{Rails.root}/log/simple_import_job.log")
+    @logger.level = 1
+    @logger
   end
 
   def display_process(sheet_name)
