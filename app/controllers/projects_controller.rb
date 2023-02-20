@@ -84,7 +84,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       format.html do
         if no_leader?
-          flash[:alert] = 'Must have at least one leader'
+          flash[:alert] = 'You must have at least one leader in the project.'
           redirect_to(edit_project_path(@project, page: 'members_and_roles'))
         elsif @project.update(project_params)
           redirect_path = params.try(:[], :project).try(:[], :redirect_path)
