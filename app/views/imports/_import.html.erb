@@ -69,7 +69,7 @@
               <fieldset>
                 <legend>Import Strategy</legend>
                 <%= f.radio_button :simple_import_strategy, 'additive', checked: true %>
-                <%= f.label :simple_import_strategy_additive, 'Additive only (Existing data is preserved. Data present in the Excel import will be added, without changing existing project data.)' %>
+                <%= f.label :simple_import_strategy_additive, 'Additive only (Existing data is preserved. Data present in the Excel file will be added, without changing existing project data.)' %>
                 <br>
                 <%= f.radio_button :simple_import_strategy, 'destructive' %>
                 <%= f.label :simple_import_strategy_destructive, 'Destructive (Data in the project will be overwritten by Excel import!)' %>
