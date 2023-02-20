@@ -65,7 +65,15 @@
             <div class="fallback">
               <!-- prettier-ignore -->
               <%= i_f.input :file_type_id, as: :hidden, required: true, input_html: { value: FileType.find_by(name: FileType::XLSX).id } %>
-                <%= i_f.input :content, as: :file, label: 'Project File', input_html: { id: 'import-project-file' } %>
+                <%= i_f.input :content, as: :file, label: 'Project Excel File', input_html: { id: 'import-project-file' } %>
+              <fieldset>
+                <legend>Import Strategy</legend>
+                <%= f.radio_button :simple_import_strategy, 'additive', checked: true %>
+                <%= f.label :simple_import_strategy_additive, 'Additive only (Existing data is preserved. Data present in the Excel import will be added, without changing existing project data.)' %>
+                <br>
+                <%= f.radio_button :simple_import_strategy, 'destructive' %>
+                <%= f.label :simple_import_strategy_destructive, 'Destructive (Data in the project will be overwritten by Excel import!)' %>
+              </fieldset>
               <div class="form-actions">
                 <%= f.button :submit, 'Upload file', class:"medium" %>
               </div>
