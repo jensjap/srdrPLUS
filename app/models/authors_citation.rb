@@ -5,6 +5,7 @@
 #  citation_id :integer          not null
 #  author_id   :integer          not null
 #  id          :bigint           not null, primary key
+#  position    :integer          default(0)
 #
 
 class AuthorsCitation < ApplicationRecord

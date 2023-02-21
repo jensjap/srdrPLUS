@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_20_035757) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -280,8 +280,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
   create_table "authors_citations", charset: "utf8mb3", force: :cascade do |t|
     t.integer "citation_id", null: false
     t.integer "author_id", null: false
+    t.integer "position", default: 0
     t.index ["author_id"], name: "index_authors_citations_on_author_id"
     t.index ["citation_id", "author_id"], name: "index_authors_citations_on_citation_id_and_author_id"
+    t.index ["position"], name: "index_authors_citations_on_position"
   end
 
   create_table "citation_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -596,9 +598,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.datetime "updated_at", precision: nil, null: false
     t.boolean "hidden", default: false
     t.string "helper_message"
+    t.integer "position", default: 0
     t.index ["extraction_forms_project_id", "extraction_forms_projects_section_type_id", "section_id", "extraction_forms_projects_section_id"], name: "index_efps_on_efp_id_efpst_id_s_id_efps_id"
     t.index ["extraction_forms_projects_section_id"], name: "index_efps_on_efps_id"
     t.index ["extraction_forms_projects_section_type_id"], name: "index_efps_on_efpst_id"
+    t.index ["position"], name: "index_extraction_forms_projects_sections_on_position"
     t.index ["section_id"], name: "index_efps_on_s_id"
   end
 
@@ -617,7 +621,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.integer "type1_type_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "position", default: 0
     t.index ["extraction_forms_projects_section_id", "type1_id", "type1_type_id"], name: "index_efpst1_on_efps_id_t1_id_t1_type_id_uniq", unique: true
+    t.index ["position"], name: "index_extraction_forms_projects_sections_type1s_on_position"
     t.index ["type1_id"], name: "index_efpst1_on_t1_id"
     t.index ["type1_type_id"], name: "index_efpst1_on_t1_type_id"
   end
@@ -692,7 +698,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.string "units"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "position", default: 0
     t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpst1_on_eefps_id"
+    t.index ["position"], name: "eefpst1_id"
     t.index ["type1_id"], name: "index_eefpst1_on_t1_id"
     t.index ["type1_type_id", "extractions_extraction_forms_projects_section_id", "type1_id"], name: "index_eefpst1_on_t1t_id_eefps_id_t1_id", unique: true
   end
@@ -927,8 +935,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.integer "project_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "position", default: 0
     t.index ["extraction_forms_projects_section_id", "key_question_id", "project_id"], name: "index_kqp_on_efps_id_kq_id_p_id"
     t.index ["key_question_id", "project_id"], name: "index_kqp_on_kq_id_p_id"
+    t.index ["position"], name: "index_key_questions_projects_on_position"
     t.index ["project_id"], name: "index_kqp_on_p_id"
   end
 
@@ -1307,7 +1317,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.text "description"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "position", default: 0
     t.index ["extraction_forms_projects_section_id"], name: "index_questions_on_extraction_forms_projects_section_id"
+    t.index ["position"], name: "index_questions_on_position"
   end
 
   create_table "reasons", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -1363,7 +1375,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "result_statistic_sections_measure_id"
+    t.integer "position", default: 0
     t.index ["measure_id", "result_statistic_section_id", "result_statistic_sections_measure_id"], name: "index_rssm_on_m_id_rss_id_rssm_id"
+    t.index ["position"], name: "index_result_statistic_sections_measures_on_position"
     t.index ["result_statistic_section_id"], name: "fk_rails_9c731fa440"
     t.index ["result_statistic_sections_measure_id"], name: "fk_rails_13a8ed2ac3"
   end
@@ -1431,6 +1445,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.text "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "position", default: 0
+    t.index ["position"], name: "index_sd_analytic_frameworks_on_position"
     t.index ["sd_meta_datum_id"], name: "index_sd_analytic_frameworks_on_sd_meta_datum_id"
   end
 
@@ -1439,6 +1455,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "sd_result_item_id"
+    t.integer "position", default: 0
+    t.index ["position"], name: "index_sd_evidence_tables_on_position"
     t.index ["sd_result_item_id"], name: "index_sd_evidence_tables_on_sd_result_item_id"
   end
 
@@ -1447,6 +1465,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.text "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "position", default: 0
+    t.index ["position"], name: "index_sd_grey_literature_searches_on_position"
     t.index ["sd_meta_datum_id"], name: "index_sd_grey_literature_searches_on_sd_meta_datum_id"
   end
 
@@ -1455,6 +1475,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.text "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "position", default: 0
+    t.index ["position"], name: "index_sd_journal_article_urls_on_position"
     t.index ["sd_meta_datum_id"], name: "index_sd_journal_article_urls_on_sd_meta_datum_id"
   end
 
@@ -1465,7 +1487,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.boolean "includes_meta_analysis"
+    t.integer "position", default: 0
     t.index ["key_question_id"], name: "index_sd_key_questions_on_key_question_id"
+    t.index ["position"], name: "index_sd_key_questions_on_position"
     t.index ["sd_key_question_id"], name: "index_sd_key_questions_on_sd_key_question_id"
     t.index ["sd_meta_datum_id"], name: "index_sd_key_questions_on_sd_meta_datum_id"
   end
@@ -1493,6 +1517,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.integer "sd_picod_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "position", default: 0
+    t.index ["position"], name: "index_sd_key_questions_sd_picods_on_position"
     t.index ["sd_key_question_id"], name: "index_sd_key_questions_sd_picods_on_sd_key_question_id"
     t.index ["sd_picod_id"], name: "index_sd_key_questions_sd_picods_on_sd_picod_id"
   end
@@ -1573,6 +1599,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "sd_result_item_id"
+    t.integer "position", default: 0
+    t.index ["position"], name: "index_sd_meta_regression_analysis_results_on_position"
     t.index ["sd_result_item_id"], name: "index_sd_meta_regression_analysis_results_on_sd_result_item_id"
   end
 
@@ -1583,6 +1611,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.text "narrative_results_by_population"
     t.text "narrative_results_by_intervention"
     t.bigint "sd_result_item_id"
+    t.integer "position", default: 0
+    t.index ["position"], name: "index_sd_narrative_results_on_position"
     t.index ["sd_result_item_id"], name: "index_sd_narrative_results_on_sd_result_item_id"
   end
 
@@ -1591,6 +1621,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "sd_result_item_id"
+    t.integer "position", default: 0
+    t.index ["position"], name: "index_sd_network_meta_analysis_results_on_position"
     t.index ["sd_result_item_id"], name: "index_sd_network_meta_analysis_results_on_sd_result_item_id"
   end
 
@@ -1600,6 +1632,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.text "url"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "position", default: 0
+    t.index ["position"], name: "index_sd_other_items_on_position"
     t.index ["sd_meta_datum_id"], name: "index_sd_other_items_on_sd_meta_datum_id"
   end
 
@@ -1617,6 +1651,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "sd_result_item_id"
+    t.integer "position", default: 0
+    t.index ["position"], name: "index_sd_pairwise_meta_analytic_results_on_position"
     t.index ["sd_result_item_id"], name: "index_sd_pairwise_meta_analytic_results_on_sd_result_item_id"
   end
 
@@ -1634,7 +1670,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.bigint "data_analysis_level_id"
     t.text "timing"
     t.text "other_elements"
+    t.integer "position", default: 0
     t.index ["data_analysis_level_id"], name: "index_sd_picods_on_data_analysis_level_id"
+    t.index ["position"], name: "index_sd_picods_on_position"
     t.index ["sd_meta_datum_id"], name: "index_sd_picods_on_sd_meta_datum_id"
   end
 
@@ -1658,6 +1696,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.text "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "position", default: 0
+    t.index ["position"], name: "index_sd_prisma_flows_on_position"
     t.index ["sd_meta_datum_id"], name: "index_sd_prisma_flows_on_sd_meta_datum_id"
   end
 
@@ -1675,6 +1715,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "sd_meta_datum_id"
+    t.integer "position", default: 0
+    t.index ["position"], name: "index_sd_result_items_on_position"
     t.index ["sd_key_question_id"], name: "index_sd_result_items_on_sd_key_question_id"
     t.index ["sd_meta_datum_id"], name: "index_sd_result_items_on_sd_meta_datum_id"
   end
@@ -1693,6 +1735,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.text "search_terms"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "position", default: 0
+    t.index ["position"], name: "index_sd_search_strategies_on_position"
     t.index ["sd_meta_datum_id"], name: "index_sd_search_strategies_on_sd_meta_datum_id"
     t.index ["sd_search_database_id"], name: "index_sd_search_strategies_on_sd_search_database_id"
   end
@@ -1704,6 +1748,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_143100) do
     t.string "soe_type"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "position", default: 0
+    t.index ["position"], name: "index_sd_summary_of_evidences_on_position"
     t.index ["sd_key_question_id"], name: "index_sd_summary_of_evidences_on_sd_key_question_id"
     t.index ["sd_meta_datum_id"], name: "index_sd_summary_of_evidences_on_sd_meta_datum_id"
   end

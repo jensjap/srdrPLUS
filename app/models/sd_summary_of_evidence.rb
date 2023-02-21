@@ -9,6 +9,7 @@
 #  soe_type           :string(255)
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
+#  position           :integer          default(0)
 #
 
 class SdSummaryOfEvidence < ApplicationRecord

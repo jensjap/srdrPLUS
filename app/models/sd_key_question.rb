@@ -9,6 +9,7 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  includes_meta_analysis :boolean
+#  position               :integer          default(0)
 #
 
 class SdKeyQuestion < ApplicationRecord

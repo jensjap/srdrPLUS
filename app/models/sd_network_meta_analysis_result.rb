@@ -7,6 +7,7 @@
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  sd_result_item_id :bigint
+#  position          :integer          default(0)
 #
 
 class SdNetworkMetaAnalysisResult < ApplicationRecord
