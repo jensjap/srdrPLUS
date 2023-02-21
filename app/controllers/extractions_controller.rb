@@ -22,7 +22,7 @@ class ExtractionsController < ApplicationController
       .includes(
         [
           { user: :profile },
-          { citations_project: { citation: [:journal, :authors, { authors_citations: :ordering }] } },
+          { citations_project: { citation: %i[journal] } },
           { extractions_extraction_forms_projects_sections: [
             :status,
             { extraction_forms_projects_section: :section }
