@@ -65,7 +65,11 @@ class CitationsController < ApplicationController
 
   def index
     @nav_buttons.push('citation_pool', 'my_projects')
-    @citations = @project.citations.includes(authors_citations: %i[ordering author]).order(:id)
+    @citations = @project
+                 .citations
+                 .select(:id, :refman, :name, :pmid, :registry_number, :accession_number, :doi, :other)
+                 .includes(authors_citations: %i[ordering author])
+                 .order(:id)
     @citations_projects_dict = @project.citations_projects.map { |cp| [cp.citation_id, cp] }.to_h
     @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
   end
