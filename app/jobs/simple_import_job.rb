@@ -498,7 +498,7 @@ class SimpleImportJob < ApplicationJob
       return
     end
 
-    logger.info('Destructive: false but no data detected. Inserting missing data!') if @destructive.blank?
+    logger.info("Destructive: false but no data detected. Inserting missing data: #{clean_answer}") if @destructive.blank?
     unless record.name == clean_answer
       record.update!(name: clean_answer)
       @update_record[:tps_arms_rssm] += 1
@@ -527,7 +527,7 @@ class SimpleImportJob < ApplicationJob
       return
     end
 
-    logger.info('Destructive: false but no data detected. Inserting missing data!') if @destructive.blank?
+    logger.info("Destructive: false but no data detected. Inserting missing data: #{clean_answer}") if @destructive.blank?
     unless record.name == clean_answer
       record.update!(name: clean_answer)
       @update_record[:tps_comparisons_rssm] += 1
@@ -556,7 +556,7 @@ class SimpleImportJob < ApplicationJob
       return
     end
 
-    logger.info('Destructive: false but no data detected. Inserting missing data!') if @destructive.blank?
+    logger.info("Destructive: false but no data detected. Inserting missing data: #{clean_answer}") if @destructive.blank?
     unless record.name == clean_answer
       record.update!(name: clean_answer)
       @update_record[:comparisons_arms_rssm] += 1
@@ -585,7 +585,7 @@ class SimpleImportJob < ApplicationJob
       return
     end
 
-    logger.info('Destructive: false but no data detected. Inserting missing data!') if @destructive.blank?
+    logger.info("Destructive: false but no data detected. Inserting missing data: #{clean_answer}") if @destructive.blank?
     unless record.name == clean_answer
       record.update!(name: clean_answer)
       @update_record[:wacs_bacs_rssm] += 1
@@ -636,7 +636,7 @@ class SimpleImportJob < ApplicationJob
       return
     end
 
-    logger.info('Destructive: false but no data detected. Inserting missing data!') if @destructive.blank?
+    logger.info("Destructive: false but no data detected. Inserting missing data: #{answer}") if @destructive.blank?
     if record.name != answer
       record.name = answer
       constraint_errors = record.check_constraints
@@ -696,7 +696,7 @@ class SimpleImportJob < ApplicationJob
       return
     end
 
-    logger.info('Destructive: false but no data detected. Inserting missing data!') if @destructive.blank?
+    logger.info("Destructive: false but no data detected. Inserting missing data: #{answer}") if @destructive.blank?
     qrcqrco_ids_string = qrcqrco_ids.to_json
 
     if record.name != qrcqrco_ids_string
@@ -727,7 +727,7 @@ class SimpleImportJob < ApplicationJob
       return
     end
 
-    logger.info('Destructive: false but no data detected. Inserting missing data!') if @destructive.blank?
+    logger.info("Destructive: false but no data detected. Inserting missing data: #{answer}") if @destructive.blank?
     qrcqrco = eefpsqrcf
               .question_row_column_field
               .question_row_column
@@ -832,8 +832,12 @@ class SimpleImportJob < ApplicationJob
           logger.debug('Destructive: false. Existing data found...skipping ff_answer.')
           next
         end
+        if @destructive.blank? && only_ff_answer.blank?
+          logger.debug('Destructive: false. Answer is empty...skipping ff_answer.')
+          return
+        end
 
-        logger.info('Destructive: false but no data detected. Inserting missing data!') if @destructive.blank?
+        logger.info("Destructive: false but no data detected. Inserting missing data: #{only_ff_answer}") if @destructive.blank? && only_ff_answer.present?
         record.update!(name: only_ff_answer)
       end
     end
