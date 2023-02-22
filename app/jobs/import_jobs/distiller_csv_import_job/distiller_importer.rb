@@ -109,7 +109,7 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
     efps = ExtractionFormsProjectsSection.create! extraction_forms_project: @project.extraction_forms_projects.first,
                                                   extraction_forms_projects_section_type: efps_type,
                                                   section: s
-    efps.ordering.position = position
+    efps.position = position
 
     efpso = ExtractionFormsProjectsSectionOption.find_by!(extraction_forms_projects_section: efps)
     efpso.by_type1 = false
@@ -119,7 +119,7 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
     efps
   end
 
-  def import_question(efps, qname, kqp, qrct)
+  def import_question(efps, qname, _kqp, qrct)
     q = Question.create extraction_forms_projects_section: efps,
                         name: qname,
                         description: ''

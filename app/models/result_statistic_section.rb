@@ -22,9 +22,10 @@ class ResultStatisticSection < ApplicationRecord
   belongs_to :population, class_name: 'ExtractionsExtractionFormsProjectsSectionsType1Row',
                           inverse_of: :result_statistic_sections
 
-  has_many :result_statistic_sections_measures, lambda {
-                                                  joins(:measure).order('measures.id ASC')
-                                                }, dependent: :destroy, inverse_of: :result_statistic_section
+  has_many :result_statistic_sections_measures,
+           lambda {
+             joins(:measure)
+           }, dependent: :destroy, inverse_of: :result_statistic_section
   has_many :measures, through: :result_statistic_sections_measures, dependent: :destroy
 
   has_many :comparisons_result_statistic_sections, dependent: :destroy, inverse_of: :result_statistic_section

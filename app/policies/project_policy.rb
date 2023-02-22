@@ -28,8 +28,7 @@ class ProjectPolicy < ApplicationPolicy
         :page_number_start,
         :page_number_end,
         :_destroy,
-        { author_ids: [],
-          keyword_ids: [],
+        { keyword_ids: [],
           journal_attributes: %i[
             id
             name
@@ -50,12 +49,6 @@ class ProjectPolicy < ApplicationPolicy
           _destroy
           name
         ] }
-      ]
-    },
-    {
-      key_questions_projects_attributes: %i[
-        id
-        position
       ]
     },
     { key_questions_attributes: [:name] },

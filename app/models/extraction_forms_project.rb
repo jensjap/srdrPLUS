@@ -63,20 +63,20 @@ class ExtractionFormsProject < ApplicationRecord
              case extraction_forms_project.extraction_forms_project_type_id
              when 1
                where(section: [Section.where('sections.name NOT IN (?)',
-                                             DIAGNOSTIC_TEST_SECTIONS)]).ordered
+                                             DIAGNOSTIC_TEST_SECTIONS)]).order(:position)
              when 2
                where(section: [Section.where('sections.name NOT IN (?)',
-                                             STANDARD_SECTIONS)]).ordered
+                                             STANDARD_SECTIONS)]).order(:position)
              else
-               ordered
+               order(:position)
              end
            },
            inverse_of: :extraction_forms_project
   has_many :key_questions_projects,
-           -> { joins(extraction_forms_projects_section: :ordering) },
+           -> { joins(:extraction_forms_projects_section) },
            through: :extraction_forms_projects_sections, dependent: :destroy
   has_many :sections,
-           -> { joins(extraction_forms_projects_sections: :ordering) },
+           -> { joins(:extraction_forms_projects_sections) },
            through: :extraction_forms_projects_sections, dependent: :destroy
 
   accepts_nested_attributes_for :extraction_form, reject_if: :extraction_form_name_exists?

@@ -7,17 +7,14 @@
 #  name             :text(65535)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
-#  position         :integer          default(0)
+#  position         :integer          default(999999)
 #
 
 class SdAnalyticFramework < ApplicationRecord
-  include SharedOrderableMethods
-
-  before_validation -> { set_ordering_scoped_by(:sd_meta_datum_id) }, on: :create
+  default_scope { order(:position) }
 
   belongs_to :sd_meta_datum, inverse_of: :sd_analytic_frameworks
   has_many :sd_meta_data_figures, as: :sd_figurable
-  has_one :ordering, as: :orderable, dependent: :destroy
 
   accepts_nested_attributes_for :sd_meta_data_figures, allow_destroy: true
 end

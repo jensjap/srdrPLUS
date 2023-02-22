@@ -7,21 +7,18 @@
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  sd_result_item_id :bigint
-#  position          :integer          default(0)
+#  position          :integer          default(999999)
 #
 
 class SdNetworkMetaAnalysisResult < ApplicationRecord
-  include SharedOrderableMethods
-  include SharedSdOutcomeableMethods
+  default_scope { order(:position) }
 
-  before_validation -> { set_ordering_scoped_by(:sd_result_item_id) }, on: :create
+  include SharedSdOutcomeableMethods
 
   belongs_to :sd_result_item, inverse_of: :sd_network_meta_analysis_results
 
   has_many :sd_meta_data_figures, as: :sd_figurable
   has_many :sd_outcomes, as: :sd_outcomeable
-
-  has_one :ordering, as: :orderable, dependent: :destroy
 
   accepts_nested_attributes_for :sd_meta_data_figures, allow_destroy: true
 end

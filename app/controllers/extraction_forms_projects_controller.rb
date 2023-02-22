@@ -73,7 +73,7 @@ class ExtractionFormsProjectsController < ApplicationController
     @key_questions_projects_array_for_select = @extraction_forms_project.project.key_questions_projects_array_for_select
     @extraction_forms_projects_sections = @extraction_forms_project
                                           .extraction_forms_projects_sections
-                                          .includes(%i[ordering section])
+                                          .includes(:section)
   end
 
   private

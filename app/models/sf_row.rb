@@ -10,6 +10,8 @@
 #  updated_at     :datetime         not null
 #
 class SfRow < ApplicationRecord
+  default_scope { order(:position) }
+
   belongs_to :sf_question
   has_many :sf_cells, dependent: :destroy, inverse_of: :sf_row
 end

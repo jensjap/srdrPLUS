@@ -39,7 +39,7 @@ tr
 tr
   th.vertical
   th.freeze
-  - @arms.sort_by { |eefpst1| eefpst1.ordering.position }.each do |arm|
+  - @arms.sort_by { |eefpst1| eefpst1.position }.each do |arm|
     th = arm.type1.name
 
   - if bac_rss.comparisons.present?

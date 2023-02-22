@@ -10,6 +10,8 @@
 #  position              :integer
 #
 class FulltextScreeningsTag < ApplicationRecord
+  default_scope { order(:position) }
+
   belongs_to :fulltext_screening
   belongs_to :tag
 end

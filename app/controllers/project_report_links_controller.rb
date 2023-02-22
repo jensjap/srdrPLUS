@@ -83,7 +83,7 @@ class ProjectReportLinksController < ApplicationController
   def order_groups_hash(hash)
     ordered_2d = []
     hash.each do |key, values|
-      index = values.first.extraction_forms_projects_section.ordering.position
+      index = values.first.extraction_forms_projects_section.position
       ordered_2d[index] = [key, values]
     end
     ordered_2d.compact

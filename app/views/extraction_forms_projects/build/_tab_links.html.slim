@@ -1,7 +1,7 @@
 ul#vertical-tabs.tabs.vertical class=('orderable-list' if current_user.profile.advanced_mode) orderable-url=("#{ update_positions_api_v1_orderings_url }" if current_user.profile.advanced_mode)
 
   - @extraction_forms_projects_sections.each do |efps|
-    li.tabs-title.orderable-item position="#{ efps.ordering.position }" ordering-id="#{ efps.ordering.id }" style="background: #{efps.id.to_s == @panel_tab ? 'lightgrey' : 'initial'}"
+    li.tabs-title.orderable-item position="#{ efps.position }" ordering-id="#{ efps.id }" style="background: #{efps.id.to_s == @panel_tab ? 'lightgrey' : 'initial'}"
       - section = efps.section.name
       = link_to build_extraction_forms_project_path(@extraction_forms_project, 'panel-tab': efps.id.to_s), title: section do
         - if current_user.profile.advanced_mode

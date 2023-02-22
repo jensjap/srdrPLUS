@@ -3,7 +3,7 @@
 
   .orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
     = f.simple_fields_for :sd_grey_literature_searches do |sd_grey_literature_search|
-      .sd-item.sd-inner.orderable-item ordering-id="#{ sd_grey_literature_search.object.ordering.id.to_s }"
+      .sd-item.sd-inner.orderable-item ordering-id="#{ sd_grey_literature_search.object.id }"
         = render 'sd_meta_data/form/dynamic_fields/sd_grey_literature_search_fields', f: sd_grey_literature_search
   div class="#{ f.object.sd_grey_literature_searches.present? ? '' : 'zero-nested-associations'}"
     = link_to_add_association 'Add Grey Literature Search', f, :sd_grey_literature_searches, partial: 'sd_meta_data/form/dynamic_fields/sd_grey_literature_search_fields', class: 'add-item-link'

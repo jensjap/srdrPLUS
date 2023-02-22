@@ -9,14 +9,14 @@
 #  units                                            :string(255)
 #  created_at                                       :datetime         not null
 #  updated_at                                       :datetime         not null
-#  position                                         :integer          default(0)
+#  position                                         :integer          default(999999)
 #
 
 class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
+  default_scope { order(:position) }
+
   # Need this to accept an attribute on the fly when making bulk changes to the eefpst1 within consolidation tool.
   attr_writer :should
-
-  include SharedOrderableMethods
 
   has_one :statusing, as: :statusable, dependent: :destroy
   has_one :status, through: :statusing
@@ -24,8 +24,6 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   after_commit :set_extraction_stale, on: %i[create update destroy]
 
   paginates_per 1
-
-  before_validation -> { set_ordering_scoped_by(:extractions_extraction_forms_projects_section_id) }, on: :create
 
   # !!! Implement this for type1 selection also.
   scope :extraction_collection, lambda { |section_name, efp_id|
@@ -67,8 +65,6 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
              inverse_of: :extractions_extraction_forms_projects_sections_type1s
   belongs_to :type1,
              inverse_of: :extractions_extraction_forms_projects_sections_type1s
-
-  has_one :ordering, as: :orderable, dependent: :destroy
 
   has_many :extractions_extraction_forms_projects_sections_type1_rows,                 dependent: :destroy,
                                                                                        inverse_of: :extractions_extraction_forms_projects_sections_type1

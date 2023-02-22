@@ -11,6 +11,8 @@
 #  position              :integer
 #
 class AbstractScreeningsTagsUser < ApplicationRecord
+  default_scope { order(:position) }
+
   before_create :put_last
 
   belongs_to :abstract_screening

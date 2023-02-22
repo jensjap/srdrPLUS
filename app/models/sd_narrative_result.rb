@@ -9,17 +9,15 @@
 #  narrative_results_by_population   :text(65535)
 #  narrative_results_by_intervention :text(65535)
 #  sd_result_item_id                 :bigint
-#  position                          :integer          default(0)
+#  position                          :integer          default(999999)
 #
 
 class SdNarrativeResult < ApplicationRecord
-  include SharedOrderableMethods
-  include SharedSdOutcomeableMethods
+  default_scope { order(:position) }
 
-  before_validation -> { set_ordering_scoped_by(:sd_result_item_id) }, on: :create
+  include SharedSdOutcomeableMethods
 
   belongs_to :sd_result_item, inverse_of: :sd_narrative_results
 
   has_many :sd_outcomes, as: :sd_outcomeable
-  has_one :ordering, as: :orderable, dependent: :destroy
 end

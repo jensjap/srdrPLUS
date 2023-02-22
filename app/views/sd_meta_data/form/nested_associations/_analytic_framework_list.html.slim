@@ -2,7 +2,7 @@
   = f.input :item_id, as: :hidden, input_html: { value: 35 }
   .orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
     = f.simple_fields_for :sd_analytic_frameworks do |sd_analytic_framework|
-      .sd-item.sd-inner.orderable-item ordering-id="#{ sd_analytic_framework.object.ordering.id.to_s }"
+      .sd-item.sd-inner.orderable-item ordering-id="#{ sd_analytic_framework.object.id }"
         = render 'sd_meta_data/form/dynamic_fields/sd_analytic_framework_fields', f: sd_analytic_framework
 
   div class="#{ f.object.sd_analytic_frameworks.present? ? '' : 'zero-nested-associations'}"

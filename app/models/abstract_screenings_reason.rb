@@ -10,6 +10,8 @@
 #  position              :integer
 #
 class AbstractScreeningsReason < ApplicationRecord
+  default_scope { order(:position) }
+
   belongs_to :abstract_screening
   belongs_to :reason
 

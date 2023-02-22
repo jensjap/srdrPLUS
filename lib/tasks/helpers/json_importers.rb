@@ -79,7 +79,7 @@ module JsonImporters
           q_tuples.sort! { |t1, t2| t1[0] <=> t2[0] }
           q_tuples.each.with_index do |tuple, index|
             q = tuple[1]
-            q.ordering.update!(position: index + 1)
+            q.update!(position: index + 1)
           end
         end
 
@@ -99,7 +99,7 @@ module JsonImporters
         @section_position_tuples.sort! { |t1, t2| t1[0] <=> t2[0] }
         @section_position_tuples.each.with_index do |tuple, index|
           efps = tuple[1]
-          efps.ordering.update!(position: index + 1)
+          efps.update!(position: index + 1)
         end
 
         ## EXTRACTIONS

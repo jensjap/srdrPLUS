@@ -11,6 +11,8 @@
 #  position              :integer
 #
 class FulltextScreeningsTagsUser < ApplicationRecord
+  default_scope { order(:position) }
+
   before_create :put_last
 
   belongs_to :fulltext_screening

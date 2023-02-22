@@ -13,8 +13,6 @@ class Type1 < ApplicationRecord
   include SharedQueryableMethods
   include SharedSuggestableMethods
 
-  default_scope { order(:id) }
-
   scope :uniq_by_section_name_and_not_included_in_efps, lambda { |efps_id|
     efps = ExtractionFormsProjectsSection.find(efps_id)
     joins(extraction_forms_projects_sections_type1s: { extraction_forms_projects_section: :section })
