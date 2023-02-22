@@ -1,5 +1,10 @@
-<script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
 <div x-data="type_2_question_list" x-cloak x-show="questions.length > 0">
+  <div
+    class="bg-blue-800 text-white rounded-md p-2 cursor-pointer text-center mt-2 w-48"
+    @click="preview_modal = true; fetchPreviewContent();"
+  >
+    Preview Section
+  </div>
   <div
     @click="createQuestion()"
     class="bg-srdrpurple text-white rounded-md p-2 cursor-pointer text-center mt-2"
@@ -144,6 +149,7 @@
   <%= render 'extraction_forms_projects/build/type2/loading_modal' %>
   <%= render 'extraction_forms_projects/build/type2/question_modal' %>
   <%= render 'extraction_forms_projects/build/type2/dependencies_modal' %>
+  <%= render 'extraction_forms_projects/build/type2/preview_modal' %>
 </div>
 
 <script>
@@ -153,9 +159,11 @@
       questions: [],
       question_modal: false,
       dependencies_modal: false,
+      preview_modal: false,
       edit_question_id: null,
       question_table: "",
       dependencies_table: "",
+      preview_content: "",
 
       init() {
         this.fetch_questions();
@@ -179,6 +187,22 @@
             `/questions/${this.edit_question_id}/dependencies?partial=true`
           )
         ).text();
+        this.loading = false;
+      },
+
+      async fetchPreviewContent() {
+        this.loading = true;
+        this.preview_content = "";
+        this.preview_content = await (
+          await fetch(
+            "/extraction_forms_projects/<%= @extraction_forms_project.id %>/preview?panel-tab=<%= params['panel-tab'] %>&partial=true"
+          )
+        ).text();
+        this.$nextTick(() => {
+          document.dispatchEvent(
+            new CustomEvent("extractionSectionLoaded", {})
+          );
+        });
         this.loading = false;
       },
 
@@ -364,7 +388,7 @@
 
       async fetch_questions() {
         const response = await fetch(
-          "/extraction_forms_projects/<%= @extraction_forms_project.id %>/build?panel-tab=<%= params['panel-tab'] %>>",
+          "/extraction_forms_projects/<%= @extraction_forms_project.id %>/build?panel-tab=<%= params['panel-tab'] %>",
           {
             method: "GET",
             headers: {

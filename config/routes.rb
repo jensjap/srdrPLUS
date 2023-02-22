@@ -232,6 +232,7 @@ Rails.application.routes.draw do
     end
     resources :extraction_forms_projects, only: %i[create edit update destroy] do
       get 'build', on: :member
+      get 'preview', on: :member
       resources :extraction_forms_projects_sections, only: %i[new create edit update destroy] do
         resources :extraction_forms_projects_sections_type1s, only: %i[edit update]
 
