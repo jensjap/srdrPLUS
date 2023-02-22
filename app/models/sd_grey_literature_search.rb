@@ -11,7 +11,7 @@
 #
 
 class SdGreyLiteratureSearch < ApplicationRecord
-  default_scope { order(:position) }
+  default_scope { order(:pos, :id) }
 
   belongs_to :sd_meta_datum, inverse_of: :sd_grey_literature_searches
 end

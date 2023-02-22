@@ -12,7 +12,7 @@
 #
 
 class ResultStatisticSectionsMeasure < ApplicationRecord
-  default_scope { order(:position) }
+  default_scope { order(:pos, :id) }
 
   after_commit :set_extraction_stale, on: %i[create update destroy]
 

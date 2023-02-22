@@ -11,7 +11,7 @@
 #
 
 class SdResultItem < ApplicationRecord
-  default_scope { order(:position) }
+  default_scope { order(:pos, :id) }
 
   belongs_to :sd_meta_datum, inverse_of: :sd_result_items, optional: true
   belongs_to :sd_key_question, inverse_of: :sd_result_items, optional: true

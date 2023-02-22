@@ -10,7 +10,7 @@
 #  position              :integer
 #
 class AbstractScreeningsTag < ApplicationRecord
-  default_scope { order(:position) }
+  default_scope { order(:pos, :id) }
 
   belongs_to :abstract_screening
   belongs_to :tag

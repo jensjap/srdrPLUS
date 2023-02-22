@@ -15,7 +15,7 @@
 #
 
 class ExtractionFormsProjectsSection < ApplicationRecord
-  default_scope { order(:position) }
+  default_scope { order(:pos, :id) }
 
   include SharedProcessTokenMethods
 

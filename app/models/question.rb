@@ -12,7 +12,7 @@
 #
 
 class Question < ApplicationRecord
-  default_scope { order(:position) }
+  default_scope { order(:pos, :id) }
 
   include SharedSuggestableMethods
 

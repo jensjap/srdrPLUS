@@ -12,7 +12,7 @@
 #
 
 class KeyQuestionsProject < ApplicationRecord
-  default_scope { order(:position) }
+  default_scope { order(:pos, :id) }
 
   belongs_to :extraction_forms_projects_section, inverse_of: :key_questions_projects, optional: true
   belongs_to :key_question,                      inverse_of: :key_questions_projects

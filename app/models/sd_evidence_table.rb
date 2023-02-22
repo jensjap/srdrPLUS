@@ -11,7 +11,7 @@
 #
 
 class SdEvidenceTable < ApplicationRecord
-  default_scope { order(:position) }
+  default_scope { order(:pos, :id) }
 
   include SharedSdOutcomeableMethods
 

@@ -11,7 +11,7 @@
 #  updated_at    :datetime         not null
 #
 class SfOption < ApplicationRecord
-  default_scope { order(:position) }
+  default_scope { order(:pos, :id) }
 
   belongs_to :sf_cell
   before_create :put_last

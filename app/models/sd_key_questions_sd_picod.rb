@@ -11,7 +11,7 @@
 #
 
 class SdKeyQuestionsSdPicod < ApplicationRecord
-  default_scope { order(:position) }
+  default_scope { order(:pos, :id) }
 
   belongs_to :sd_key_question, inverse_of: :sd_key_questions_sd_picods
   belongs_to :sd_picod, inverse_of: :sd_key_questions_sd_picods

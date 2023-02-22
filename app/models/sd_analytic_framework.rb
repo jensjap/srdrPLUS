@@ -11,7 +11,7 @@
 #
 
 class SdAnalyticFramework < ApplicationRecord
-  default_scope { order(:position) }
+  default_scope { order(:pos, :id) }
 
   belongs_to :sd_meta_datum, inverse_of: :sd_analytic_frameworks
   has_many :sd_meta_data_figures, as: :sd_figurable

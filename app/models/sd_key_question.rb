@@ -13,7 +13,7 @@
 #
 
 class SdKeyQuestion < ApplicationRecord
-  default_scope { order(:position) }
+  default_scope { order(:pos, :id) }
 
   include SharedProcessTokenMethods
   belongs_to :sd_meta_datum, inverse_of: :sd_key_questions

@@ -13,7 +13,7 @@
 #
 
 class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
-  default_scope { order(:position) }
+  default_scope { order(:pos, :id) }
 
   # Need this to accept an attribute on the fly when making bulk changes to the eefpst1 within consolidation tool.
   attr_writer :should

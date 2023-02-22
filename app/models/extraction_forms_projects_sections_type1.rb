@@ -12,7 +12,7 @@
 #
 
 class ExtractionFormsProjectsSectionsType1 < ApplicationRecord
-  default_scope { order(:position) }
+  default_scope { order(:pos, :id) }
 
   belongs_to :extraction_forms_projects_section, inverse_of: :extraction_forms_projects_sections_type1s
   belongs_to :type1,                             inverse_of: :extraction_forms_projects_sections_type1s
