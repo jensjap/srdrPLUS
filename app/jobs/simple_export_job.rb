@@ -17,7 +17,7 @@ class SimpleExportJob < ApplicationJob
       @project = Project
                  .includes({
                              extractions: {
-                               citations_project: { citation: %i[authors journal] }
+                               citations_project: { citation: :journal }
                              },
                              extraction_forms_projects: {
                                extraction_forms_projects_sections: [

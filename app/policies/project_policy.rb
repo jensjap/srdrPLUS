@@ -16,6 +16,7 @@ class ProjectPolicy < ApplicationPolicy
       citations_attributes: [
         :id,
         :name,
+        :authors,
         :abstract,
         :accession_number,
         :registry_number,
@@ -27,12 +28,7 @@ class ProjectPolicy < ApplicationPolicy
         :page_number_start,
         :page_number_end,
         :_destroy,
-        { authors_citations_attributes: [
-          { author_attributes: :name },
-          { ordering_attributes: :position },
-          :_destroy
-        ],
-          author_ids: [],
+        { author_ids: [],
           keyword_ids: [],
           journal_attributes: %i[
             id
@@ -175,8 +171,8 @@ class ProjectPolicy < ApplicationPolicy
       [
         { projects_users_attributes: %i[id user_id permissions] },
         { citations_projects_attributes: %i[id citation_id] },
-        { citations_attributes: [:id, :name, :abstract, :accession_number, :pmid, :refman, :registry_number, :doi,
-                                 :other, :citation_type_id, :page_number_start, :page_number_end, { authors_citations_attributes: [{ author_attributes: :name }, { ordering_attributes: :position }], keyword_ids: [], journal_attributes: %i[id name volume issue publication_date] }] }
+        { citations_attributes: [:id, :name, :authors, :abstract, :accession_number, :pmid, :refman, :registry_number, :doi,
+                                 :other, :citation_type_id, :page_number_start, :page_number_end, { keyword_ids: [], journal_attributes: %i[id name volume issue publication_date] }] }
       ]
     end
   end

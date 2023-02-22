@@ -7,7 +7,6 @@ class CitationsController < ApplicationController
 
   def new
     @citation = Citation.new
-    @citation.authors.new
     @citation.build_journal
     @citation.keywords.new
   end
@@ -68,7 +67,6 @@ class CitationsController < ApplicationController
     @citations = @project
                  .citations
                  .select(:id, :refman, :name, :pmid, :registry_number, :accession_number, :doi, :other, :authors)
-                 .includes(authors_citations: %i[ordering author])
                  .order(:id)
     @citations_projects_dict = @project.citations_projects.map { |cp| [cp.citation_id, cp] }.to_h
     @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
@@ -88,10 +86,9 @@ class CitationsController < ApplicationController
 
   def citation_params
     params.require(:citation)
-          .permit(:accession_number, :name, :citation_type_id, :pmid, :registry_number, :refman, :doi, :other, :abstract, :page_number_start, :page_number_end, :_destroy,
+          .permit(:accession_number, :authors, :name, :citation_type_id, :pmid, :registry_number, :refman, :doi, :other, :abstract, :page_number_start, :page_number_end, :_destroy,
                   citations_attributes: %i[id name _destroy],
                   journal_attributes: %i[id name publication_date issue volume _destroy],
-                  authors_citations_attributes: [:id, :name, :_destroy, { author_attributes: %i[name id _destroy] }, { ordering_attributes: :position }],
                   keywords_attributes: %i[id name _destroy])
   end
 

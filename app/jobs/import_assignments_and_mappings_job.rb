@@ -215,18 +215,18 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   def _create_citation_from_citation_name__authors__year(name, refman, authors, year)
     citation = Citation.create!(name:)
     citation.journal = Journal.find_or_create_by!(publication_date: year)
-
+    citation.authors = authors if authors.present?
     citation.refman = refman
 
-    if authors&.match(/\[(.*?)\]/)
-      authors.scan(/\[(.*?)\]/).each do |author|
-        citation.authors << Author.find_or_create_by!(name: author)
-      end
-    else
-      authors&.split(';').each do |author|
-        citation.authors << Author.find_or_create_by!(name: author)
-      end
-    end
+#    if authors&.match(/\[(.*?)\]/)
+#      authors.scan(/\[(.*?)\]/).each do |author|
+#        citation.authors << Author.find_or_create_by!(name: author)
+#      end
+#    else
+#      authors&.split(';').each do |author|
+#        citation.authors << Author.find_or_create_by!(name: author)
+#      end
+#    end
 
     citation.save!
     citation

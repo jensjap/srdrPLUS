@@ -4,7 +4,7 @@ class CitationSupplyingService
     citations = Project
                 .find(project_id)
                 .citations
-                .includes(:authors, :journal, authors_citations: :author)
+                .includes(:journal)
                 .all
     url = 'api/v3/projects/' + project_id.to_s + '/citations'
     create_bundle(objs=citations, type='collection', url=url)
@@ -61,7 +61,7 @@ class CitationSupplyingService
       }
     }
 
-    authors = raw.authors
+    authors = raw.authors.split(', ')
     for i in authors.size.times do
       author = {
         'resourceType' => 'Practitioner',
@@ -97,14 +97,14 @@ class CitationSupplyingService
     end
 
     title = raw.name
-    if !title.empty?
+    unless title.empty?
       citation['citedArtifact']['title'].append({
                                                   'text' => title
                                                 })
     end
 
     abstract = raw.abstract
-    if !abstract.empty?
+    unless abstract.empty?
       citation['citedArtifact']['abstract'].append({
                                                      'text' => abstract
                                                    })

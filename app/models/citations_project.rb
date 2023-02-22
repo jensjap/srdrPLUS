@@ -131,7 +131,7 @@ class CitationsProject < ApplicationRecord
       'citations_project_id' => id,
       'citation_id' => citation.id,
       'accession_number_alts' => citation.accession_number_alts,
-      'author_map_string' => citation.author_map_string,
+      'author_map_string' => citation.authors,
       'name' => citation.name,
       'year' => citation.year,
       'users' => abstract_screening_results.map(&:user).uniq.map(&:handle).join(', '),

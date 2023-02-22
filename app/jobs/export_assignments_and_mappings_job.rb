@@ -121,7 +121,7 @@ class ExportAssignmentsAndMappingsJob < ApplicationJob
         citation.pmid,
         citation.name,
         citation.refman,
-        citation.author_list_for_citation_references_in_brackets ]
+        citation.authors ]
     end  # @project.citations.each_with_index do |citation, index|
   end  # END def _fill_workbook_citation_references_section(p)
 

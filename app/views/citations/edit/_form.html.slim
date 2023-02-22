@@ -8,8 +8,9 @@
       | &nbsp;
       i class="fi-info"
     = f.input :accession_number, label: false, autofocus: true
-    = f.input :name, label: 'Title'
-    = f.input :abstract, as: :text
+    = f.input :authors, label: 'Authors', placeholder: 'Author name(s)', required: true
+    = f.input :name, label: 'Title', required: true
+    = f.input :abstract, as: :text, input_html: { rows: 5 }
     = f.association :citation_type, label: 'Citation Type', selected: 1
     br
     h5 Journal
@@ -31,12 +32,7 @@
     = f.input :registry_number, label: 'Registry Number'
     = f.input :doi, label: 'DOI'
     = f.input :other, label: 'Other'
-    br
-    h5 Authors
-    = f.simple_fields_for :authors_citations do |a_c|
-      = render 'projects/edit/citations/ac_fields', f: a_c
-    #author-list
-    = link_to_add_association 'Add Author', f, :authors_citations, partial:'projects/edit/citations/ac_fields', 'data-association-insertion-node' => '#author-list', 'data-association-insertion-method' => 'append', :wrap_object => Proc.new { |authors_citation| authors_citation.build_author; authors_citation }
+
 
     .row.m-10
       .form-actions

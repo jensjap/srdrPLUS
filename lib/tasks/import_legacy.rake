@@ -1365,20 +1365,6 @@ namespace(:db) do
       #TODO
     end
 
-    def migrate_author_string_as_separate_authors authors_string
-      authors = []
-      author_names = split_authors_string authors_string
-      author_names.each do |author_name|
-        authors << Author.find_or_create_by!(name: author_name)
-      end
-      authors
-    end
-
-    def split_authors_string authors_string
-      #TODO
-      []
-    end
-
     def get_efp_type efs
       has_diagnostic = false
       has_standard = false

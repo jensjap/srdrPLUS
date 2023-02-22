@@ -64,13 +64,7 @@ json.project do
             end
           end
         end
-        json.authors do
-          cp.citation.authors.each do |a|
-            json.set! a.id do
-              json.name a.name
-            end
-          end
-        end
+        json.authors cp.citation.authors
       end
     end
   end

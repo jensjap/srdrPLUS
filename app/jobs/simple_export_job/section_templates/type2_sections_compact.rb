@@ -57,7 +57,7 @@ module SimpleExportJob::SectionTemplates::Type2SectionsCompact
                 new_row << extraction.citation.name
                 new_row << extraction.citation.refman
                 new_row << extraction.citation.pmid
-                new_row << extraction.citation.authors.collect(&:name).join(', ')
+                new_row << extraction.citation.authors
                 new_row << extraction.citation.try(:journal).try(:get_publication_year)
                 new_row << KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
                 new_row << eefpst1.type1.name
@@ -89,7 +89,7 @@ module SimpleExportJob::SectionTemplates::Type2SectionsCompact
               new_row << extraction.citation.name
               new_row << extraction.citation.refman
               new_row << extraction.citation.pmid
-              new_row << extraction.citation.authors.collect(&:name).join(', ')
+              new_row << extraction.citation.authors
               new_row << extraction.citation.try(:journal).try(:publication_date).to_s
               new_row << KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
               new_row << question.name

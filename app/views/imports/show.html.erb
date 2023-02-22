@@ -43,12 +43,7 @@
           <td><%= citation['name'] %></td>
           <td>
             <ul>
-              <!-- prettier-ignore -->
-              <% citation['authors_citations_attributes']&.each do |_, authors_citations_attributes| %>
-              <!-- prettier-ignore -->
-              <li><%= authors_citations_attributes[:author_attributes] && authors_citations_attributes[:author_attributes][:name] %></li>
-              <!-- prettier-ignore -->
-              <% end %>
+              <li><%= citation['authors'] %></li>
             </ul>
           </td>
           <td><%= citation['journal_attributes']&.values&.join(', ') %></td>

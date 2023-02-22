@@ -1,8 +1,4 @@
 class ExtractionDecorator < Decorator
-  def first_author
-    citation.authors_citations.sort_by { |ac| ac.ordering.position }&.first&.citation&.authors&.first&.name || ''
-  end
-
   def pmid
     citation.pmid.to_s
   end
@@ -16,7 +12,7 @@ class ExtractionDecorator < Decorator
   end
 
   def citation_handle
-    first_author + ', ' + year + ', ' + pmid + '<br />' + name
+    citation.authors + ', ' + year + ', ' + pmid + '<br />' + name
   end
 
   def relevant_eefps
