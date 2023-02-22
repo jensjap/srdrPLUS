@@ -6,7 +6,7 @@
 #  sf_cell_id    :bigint
 #  name          :string(255)      not null
 #  with_followup :boolean          default(FALSE), not null
-#  position      :integer
+#  pos           :integer          default(999999)
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #

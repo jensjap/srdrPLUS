@@ -16,7 +16,7 @@
 #  data_analysis_level_id :bigint
 #  timing                 :text(65535)
 #  other_elements         :text(65535)
-#  position               :integer          default(999999)
+#  pos                    :integer          default(999999)
 #
 
 class SdPicod < ApplicationRecord

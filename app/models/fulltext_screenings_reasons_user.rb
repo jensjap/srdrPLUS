@@ -8,7 +8,7 @@
 #  user_id               :bigint
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
-#  position              :integer
+#  pos                   :integer          default(999999)
 #
 class FulltextScreeningsReasonsUser < ApplicationRecord
   default_scope { order(:pos, :id) }

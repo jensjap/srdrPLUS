@@ -7,7 +7,7 @@
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  sd_result_item_id :bigint
-#  position          :integer          default(999999)
+#  pos               :integer          default(999999)
 #
 
 class SdEvidenceTable < ApplicationRecord

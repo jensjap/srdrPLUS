@@ -9,7 +9,7 @@
 #  units                                            :string(255)
 #  created_at                                       :datetime         not null
 #  updated_at                                       :datetime         not null
-#  position                                         :integer          default(999999)
+#  pos                                              :integer          default(999999)
 #
 
 class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord

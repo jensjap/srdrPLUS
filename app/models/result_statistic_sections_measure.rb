@@ -8,7 +8,7 @@
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
 #  result_statistic_sections_measure_id :integer
-#  position                             :integer          default(999999)
+#  pos                                  :integer          default(999999)
 #
 
 class ResultStatisticSectionsMeasure < ApplicationRecord

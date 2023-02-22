@@ -7,7 +7,7 @@
 #  reason_id             :bigint           not null
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
-#  position              :integer
+#  pos                   :integer          default(999999)
 #
 class FulltextScreeningsReason < ApplicationRecord
   default_scope { order(:pos, :id) }
