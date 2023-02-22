@@ -1,4 +1,4 @@
-<div x-data="type_2_question_list" x-cloak x-show="questions.length > 0">
+<div x-data="type_2_question_list">
   <div
     class="bg-blue-800 text-white rounded-md p-2 cursor-pointer text-center mt-2 w-48"
     @click="preview_modal = true; fetchPreviewContent();"
@@ -387,6 +387,7 @@
       },
 
       async fetch_questions() {
+        this.loading = true;
         const response = await fetch(
           "/extraction_forms_projects/<%= @extraction_forms_project.id %>/build?panel-tab=<%= params['panel-tab'] %>",
           {
@@ -399,6 +400,7 @@
         );
         const data = await response.json();
         this.questions = data;
+        this.loading = false;
       },
     }));
   });
