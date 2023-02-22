@@ -13,8 +13,6 @@
 class FulltextScreeningsReasonsUser < ApplicationRecord
   default_scope { order(:pos, :id) }
 
-  before_create :put_last
-
   belongs_to :fulltext_screening
   belongs_to :reason
   belongs_to :user
@@ -30,12 +28,5 @@ class FulltextScreeningsReasonsUser < ApplicationRecord
         selected: false
       }
     end
-  end
-
-  private
-
-  def put_last
-    max_position = FulltextScreeningsReasonsUser.where(fulltext_screening:, user:).maximum(:position)
-    self.position = max_position ? max_position + 1 : 1
   end
 end
