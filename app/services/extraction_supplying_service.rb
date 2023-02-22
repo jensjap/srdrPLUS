@@ -7,8 +7,17 @@ class ExtractionSupplyingService
       extraction_bundles.append(find_by_extraction_id(extraction.id))
     end
 
-    url = 'api/v3/projects/' + id.to_s + '/extractions'
-    create_bundle(objs=extraction_bundles, type='collection', url=url)
+    link_info = [
+      {
+        'relation' => 'tag',
+        'url' => 'api/v3/projects/' + id.to_s + '/extractions'
+      },
+      {
+        'relation' => 'service-doc',
+        'url' => 'doc/fhir/extraction.txt'
+      }
+    ]
+    create_bundle(objs=extraction_bundles, type='collection', link_info=link_info)
   end
 
   def find_by_extraction_id(id)
@@ -29,24 +38,27 @@ class ExtractionSupplyingService
       fhir_extraction_sections.append(create_fhir_obj(extraction_section))
     end
 
-    url = 'api/v3/extractions/' + id.to_s
-    create_bundle(objs=fhir_extraction_sections, type='collection', url=url)
+    link_info = [
+      {
+        'relation' => 'tag',
+        'url' => 'api/v3/extractions/' + id.to_s
+      },
+      {
+        'relation' => 'service-doc',
+        'url' => 'doc/fhir/extraction.txt'
+      }
+    ]
+    create_bundle(objs=fhir_extraction_sections, type='collection', link_info=link_info)
   end
 
   private
 
-  def create_bundle(fhir_objs, type, url='')
+  def create_bundle(fhir_objs, type, link_info=nil)
     bundle = {
       'type' => type,
+      'link' => link_info,
       'entry' => []
     }
-
-    if not url.empty?
-      bundle['link'] = [{
-        'relation' => 'tag',
-        'url' => url
-      }]
-    end
 
     for fhir_obj in fhir_objs do
       bundle['entry'].append({ 'resource' => fhir_obj }) if fhir_obj and fhir_obj.valid?
@@ -422,7 +434,11 @@ class ExtractionSupplyingService
         if evidences.empty?
           return
         else
-          return create_bundle(fhir_objs=evidences, type='collection')
+          link_info_evidence = [{
+            'relation' => 'service-doc',
+            'url' => 'doc/fhir/extraction.txt'
+          }]
+          return create_bundle(fhir_objs=evidences, type='collection', link_info=link_info_evidence)
         end
 
       else
@@ -487,7 +503,11 @@ class ExtractionSupplyingService
         if evidences.empty?
           return
         else
-          return create_bundle(fhir_objs=evidences, type='collection')
+          link_info_evidence = [{
+            'relation' => 'service-doc',
+            'url' => 'doc/fhir/extraction.txt'
+          }]
+          return create_bundle(fhir_objs=evidences, type='collection', link_info=link_info_evidence)
         end
       end
     end

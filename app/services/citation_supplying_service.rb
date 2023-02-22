@@ -6,8 +6,17 @@ class CitationSupplyingService
                 .citations
                 .includes(:journal)
                 .all
-    url = 'api/v3/projects/' + project_id.to_s + '/citations'
-    create_bundle(objs=citations, type='collection', url=url)
+    link_info = [
+      {
+        'relation' => 'tag',
+        'url' => 'api/v3/projects/' + project_id.to_s + '/citations'
+      },
+      {
+        'relation' => 'service-doc',
+        'url' => 'doc/fhir/citation.txt'
+      }
+    ]
+    create_bundle(objs=citations, type='collection', link_info=link_info)
   end
 
   def find_by_citation_id(citation_id)
@@ -21,13 +30,10 @@ class CitationSupplyingService
 
   private
 
-  def create_bundle(objs, type, url)
+  def create_bundle(objs, type, link_info=nil)
     bundle = {
       'type' => type,
-      'link' => [{
-        'relation' => 'tag',
-        'url' => url
-      }],
+      'link' => link_info,
       'entry' => []
     }
 

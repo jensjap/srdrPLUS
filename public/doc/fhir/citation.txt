@@ -1,0 +1,16 @@
+# Routes #
+- /api/v3/citations/{citation_number}
+- /api/v3/projects/{project_number}/citations
+
+# Including Elements #
+- author
+- journal
+- title
+- abstract
+- pmid
+
+# FHIR Version #
+4.3.0
+
+# Description #
+Each citation will conform to FHIR Citation resource structure, which has author information as a contained resource. It can be obtained by either citation number or project number. Both of them can be observed in srdrplus website. Route with citation number will give you a FHIR Citation resource, another will give you a FHIR Bundle resource containing all citations in your project as entries.
