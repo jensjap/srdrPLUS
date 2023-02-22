@@ -5,8 +5,17 @@ class KeyQuestionSupplyingService
                     .find(project_id)
                     .key_questions_projects
                     .all
-    url = 'api/v3/projects/' + project_id.to_s + '/key_questions'
-    create_bundle(objs=key_questions, type='collection', url=url)
+    link_info = [
+      {
+        'relation' => 'tag',
+        'url' => 'api/v3/projects/' + project_id.to_s + '/key_questions'
+      },
+      {
+        'relation' => 'service-doc',
+        'url' => 'doc/fhir/key_question.txt'
+      }
+    ]
+    create_bundle(objs=key_questions, type='collection', link_info=link_info)
   end
 
   def find_by_key_question_id(key_question_id)
@@ -20,13 +29,10 @@ class KeyQuestionSupplyingService
 
   private
 
-  def create_bundle(objs, type, url)
+  def create_bundle(objs, type, link_info=nil)
     bundle = {
       'type' => type,
-      'link' => [{
-        'relation' => 'tag',
-        'url' => url
-      }],
+      'link' => link_info,
       'entry' => []
     }
 

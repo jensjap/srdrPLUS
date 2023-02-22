@@ -32,7 +32,15 @@ class SimpleImportJob < ApplicationJob
 
   attr_reader :xlsx, :sheet_names
 
-  def perform(imported_file_id, project_id)
+  # Bool destructive, default: true.
+  # By default we want to override any data that is being imported.
+  # This allows removal of data, i.e. if there's data in the database
+  # and the spreadsheet has an empty cell. In some special cases we do
+  # not want this behavior. For example, if we want the import to be
+  # additive only, i.e. no removal or change in existing data, only add
+  # data when it is missing.
+  def perform(imported_file_id, project_id, destructive: false)
+    @destructive = destructive
     project = Project.find(project_id)
     @whitelisted_extraction_ids = project.extractions.map(&:id)
     imported_file = ImportedFile.find(imported_file_id)
@@ -53,6 +61,8 @@ class SimpleImportJob < ApplicationJob
 
   def logger
     @logger ||= Logger.new("#{Rails.root}/log/simple_import_job.log")
+    @logger.level = 1
+    @logger
   end
 
   def display_process(sheet_name)
@@ -474,10 +484,21 @@ class SimpleImportJob < ApplicationJob
   end
 
   def update_results_q1_section_record(clean_answer, msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc, extraction_id)
-    tps_arms_rssm = find_tps_arms_rssm(msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name,
-                                       oc_desc, extraction_id)
-    record = Record.find_or_create_by!(recordable: tps_arms_rssm)
+    # Prevent empty cell from wiping existing data when @destructive: false.
+    if @destructive.blank? && clean_answer.blank?
+      logger.debug('Destructive: false. Answer is empty...skipping cell.')
+      return
+    end
 
+    tps_arms_rssm = find_tps_arms_rssm(msr_name, tp_name, tp_unit, pop_name, pop_desc, arm_name, arm_desc, oc_name, oc_desc, extraction_id)
+    record = Record.find_or_create_by!(recordable: tps_arms_rssm)
+    # Prevent existing data from being changed when @destructive: false.
+    if @destructive.blank? && record.name.present?
+      logger.debug('Destructive: false. Existing data found...skipping cell.')
+      return
+    end
+
+    logger.info("Destructive: false but no data detected. Inserting missing data: #{clean_answer}") if @destructive.blank?
     unless record.name == clean_answer
       record.update!(name: clean_answer)
       @update_record[:tps_arms_rssm] += 1
@@ -492,10 +513,21 @@ class SimpleImportJob < ApplicationJob
   end
 
   def update_results_q2_section_record(clean_answer, msr_name, tp_name, tp_unit, pop_name, pop_desc, comparison_id, oc_name, oc_desc)
-    tps_comparisons_rssm = find_tps_comparisons_rssm(comparison_id, msr_name, tp_name, tp_unit, pop_name, pop_desc,
-                                                     oc_name, oc_desc)
-    record = Record.find_or_create_by!(recordable: tps_comparisons_rssm)
+    # Prevent empty cell from wiping existing data when @destructive: false.
+    if @destructive.blank? && clean_answer.blank?
+      logger.debug('Destructive: false. Answer is empty...skipping cell.')
+      return
+    end
 
+    tps_comparisons_rssm = find_tps_comparisons_rssm(comparison_id, msr_name, tp_name, tp_unit, pop_name, pop_desc, oc_name, oc_desc)
+    record = Record.find_or_create_by!(recordable: tps_comparisons_rssm)
+    # Prevent existing data from being changed when @destructive: false.
+    if @destructive.blank? && record.name.present?
+      logger.debug('Destructive: false. Existing data found...skipping cell.')
+      return
+    end
+
+    logger.info("Destructive: false but no data detected. Inserting missing data: #{clean_answer}") if @destructive.blank?
     unless record.name == clean_answer
       record.update!(name: clean_answer)
       @update_record[:tps_comparisons_rssm] += 1
@@ -510,9 +542,21 @@ class SimpleImportJob < ApplicationJob
   end
 
   def update_results_q3_section_record(clean_answer, msr_name, comparison_id, arm_name, arm_desc, extraction_id, pop_name, pop_desc, oc_name, oc_desc)
-    comparisons_arms_rssm = find_comparisons_arms_rssm(comparison_id, msr_name, arm_name, arm_desc, pop_name,
-                                                       pop_desc, oc_name, oc_desc, extraction_id)
+    # Prevent empty cell from wiping existing data when @destructive: false.
+    if @destructive.blank? && clean_answer.blank?
+      logger.debug('Destructive: false. Answer is empty...skipping cell.')
+      return
+    end
+
+    comparisons_arms_rssm = find_comparisons_arms_rssm(comparison_id, msr_name, arm_name, arm_desc, pop_name, pop_desc, oc_name, oc_desc, extraction_id)
     record = Record.find_or_create_by!(recordable: comparisons_arms_rssm)
+    # Prevent existing data from being changed when @destructive: false.
+    if @destructive.blank? && record.name.present?
+      logger.debug('Destructive: false. Existing data found...skipping cell.')
+      return
+    end
+
+    logger.info("Destructive: false but no data detected. Inserting missing data: #{clean_answer}") if @destructive.blank?
     unless record.name == clean_answer
       record.update!(name: clean_answer)
       @update_record[:comparisons_arms_rssm] += 1
@@ -527,9 +571,21 @@ class SimpleImportJob < ApplicationJob
   end
 
   def update_results_q4_section_record(clean_answer, msr_name, wac_id, bac_id, pop_name, pop_desc, oc_name, oc_desc)
+    # Prevent empty cell from wiping existing data when @destructive: false.
+    if @destructive.blank? && clean_answer.blank?
+      logger.debug('Destructive: false. Answer is empty...skipping cell.')
+      return
+    end
+
     wacs_bacs_rssm = find_wacs_bacs_rssm(wac_id, bac_id, msr_name, pop_name, pop_desc, oc_name, oc_desc)
     record = Record.find_or_create_by!(recordable: wacs_bacs_rssm)
+    # Prevent existing data from being changed when @destructive: false.
+    if @destructive.blank? && record.name.present?
+      logger.debug('Destructive: false. Existing data found...skipping cell.')
+      return
+    end
 
+    logger.info("Destructive: false but no data detected. Inserting missing data: #{clean_answer}") if @destructive.blank?
     unless record.name == clean_answer
       record.update!(name: clean_answer)
       @update_record[:wacs_bacs_rssm] += 1
@@ -567,7 +623,20 @@ class SimpleImportJob < ApplicationJob
   end
 
   def update_record_type_1_2(eefpsqrcf, answer)
+    # Prevent empty cell from wiping existing data when @destructive: false.
+    if @destructive.blank? && answer.blank?
+      logger.debug('Destructive: false. Answer is empty...skipping cell.')
+      return
+    end
+
     record = find_or_create_record_by_eefpsqrfc(eefpsqrcf)
+    # Prevent existing data from being changed when @destructive: false.
+    if @destructive.blank? && record.name.present?
+      logger.debug('Destructive: false. Existing data found...skipping cell.')
+      return
+    end
+
+    logger.info("Destructive: false but no data detected. Inserting missing data: #{answer}") if @destructive.blank?
     if record.name != answer
       record.name = answer
       constraint_errors = record.check_constraints
@@ -586,6 +655,12 @@ class SimpleImportJob < ApplicationJob
   end
 
   def update_record_type_5(eefpsqrcf, answer)
+    # Prevent empty cell from wiping existing data when @destructive: false.
+    if @destructive.blank? && answer.blank?
+      logger.debug('Destructive: false. Answer is empty...skipping cell.')
+      return
+    end
+
     answers = answer.split("\n")
     qrcqrco_ids = []
     answers.each do |answer|
@@ -613,8 +688,15 @@ class SimpleImportJob < ApplicationJob
         }
       end
     end
-    record = find_or_create_record_by_eefpsqrfc(eefpsqrcf)
 
+    record = find_or_create_record_by_eefpsqrfc(eefpsqrcf)
+    # Prevent existing data from being changed when @destructive: false.
+    if @destructive.blank? && record.name.present?
+      logger.debug('Destructive: false. Existing data found...skipping cell.')
+      return
+    end
+
+    logger.info("Destructive: false but no data detected. Inserting missing data: #{answer}") if @destructive.blank?
     qrcqrco_ids_string = qrcqrco_ids.to_json
 
     if record.name != qrcqrco_ids_string
@@ -624,6 +706,12 @@ class SimpleImportJob < ApplicationJob
   end
 
   def update_record_type_6_7_8(eefpsqrcf, answer)
+    # Prevent empty cell from wiping existing data when @destructive: false.
+    if @destructive.blank? && answer.blank?
+      logger.debug('Destructive: false. Answer is empty...skipping cell.')
+      return
+    end
+
     return if answer == '' || answer.nil?
 
     only_answer = answer
@@ -633,6 +721,13 @@ class SimpleImportJob < ApplicationJob
                   .try(:dup) || answer
 
     record = find_or_create_record_by_eefpsqrfc(eefpsqrcf)
+    # Prevent existing data from being changed when @destructive: false.
+    if @destructive.blank? && record.name.present?
+      logger.debug('Destructive: false. Existing data found...skipping cell.')
+      return
+    end
+
+    logger.info("Destructive: false but no data detected. Inserting missing data: #{answer}") if @destructive.blank?
     qrcqrco = eefpsqrcf
               .question_row_column_field
               .question_row_column
@@ -668,6 +763,12 @@ class SimpleImportJob < ApplicationJob
   end
 
   def update_record_type_9(eefpsqrcf, answer)
+    # Prevent empty cell from wiping existing data when @destructive: false.
+    if @destructive.blank? && answer.blank?
+      logger.debug('Destructive: false. Answer is empty...skipping cell.')
+      return
+    end
+
     only_answers = answer.try { |asw| asw.split("\n").map { |a| a.try(:dup) } } || []
     only_answers.each do |only_answer|
       qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_by(
@@ -692,6 +793,10 @@ class SimpleImportJob < ApplicationJob
       @update_record[:type9] += 1
     end
 
+    # If @destructive: false, return.
+    return unless @destructive
+
+    logger.debug('Destructive: false. No need to remove select2-multi selections.') if @destructive.blank?
     ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption
       .joins(:question_row_columns_question_row_column_option)
       .where(extractions_extraction_forms_projects_sections_question_row_column_field: eefpsqrcf)
@@ -709,6 +814,12 @@ class SimpleImportJob < ApplicationJob
   end
 
   def create_followup_fields(only_ff_answers, eefpsqrcf, qrcqrco)
+    # Prevent empty cell from wiping existing data when @destructive: false.
+    if @destructive.blank? && only_ff_answers.blank?
+      logger.debug('Destructive: false. Answer is empty...skipping ff_answers.')
+      return
+    end
+
     if qrcqrco.present? && qrcqrco.followup_field.present?
       only_ff_answers.each do |only_ff_answer|
         eefpsff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by!(
@@ -716,6 +827,17 @@ class SimpleImportJob < ApplicationJob
           extractions_extraction_forms_projects_section: eefpsqrcf.extractions_extraction_forms_projects_section
         )
         record = Record.find_or_create_by!(recordable: eefpsff)
+        # Prevent existing data from being changed when @destructive: false.
+        if @destructive.blank? && record.name.present?
+          logger.debug('Destructive: false. Existing data found...skipping ff_answer.')
+          next
+        end
+        if @destructive.blank? && only_ff_answer.blank?
+          logger.debug('Destructive: false. Answer is empty...skipping ff_answer.')
+          return
+        end
+
+        logger.info("Destructive: false but no data detected. Inserting missing data: #{only_ff_answer}") if @destructive.blank? && only_ff_answer.present?
         record.update!(name: only_ff_answer)
       end
     end

@@ -37,8 +37,7 @@ class AbstractScreeningResultsController < ApplicationController
     respond_to do |format|
       format.json do
         @abstract_screening_result = AbstractScreeningResult
-                                     .includes(citations_project: { citation: { authors_citations: %i[author
-                                                                                                      ordering] } })
+                                     .includes(citations_project: :citation)
                                      .find(params[:id])
         @screened_cps = AbstractScreeningResult
                         .includes(citations_project: :citation)

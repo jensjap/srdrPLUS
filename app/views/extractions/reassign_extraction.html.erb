@@ -17,8 +17,7 @@
         <div
           class="flex justify-center items-center border-2 border-srdr-primary rounded-md p-4"
         >
-          <%= "#{@extraction.citation.first_author}:
-          #{@extraction.citation.name}" %>
+          <%= "#{@extraction.citation.authors}: #{@extraction.citation.name}" %>
         </div>
         <div class="flex justify-center items-center">
           <svg
@@ -48,7 +47,7 @@
             <% @extraction.project.citations_projects.reject { |cp| cp == @extraction.citations_project }.each do |citations_project| %>
             <option value="<%= citations_project.id %>">
               <!-- prettier-ignore -->
-              <%= "#{citations_project.citation.first_author}: #{citations_project.citation.name}" %>
+              <%= "#{citations_project.citation.authors}: #{citations_project.citation.name}" %>
             </option>
             <% end %>
           </select>

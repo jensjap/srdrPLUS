@@ -5,9 +5,7 @@ end
 
 json.results do
   json.array!(@citations) do |citation|
-    if @citation_project_dict.key?( citation.id )
-      json.citations_project_id @citation_project_dict[ citation.id ]
-    end
+    json.citations_project_id @citation_project_dict[citation.id] if @citation_project_dict.key?(citation.id)
     json.name citation.name
     json.abstract citation.abstract_utf8
     json.pmid citation.pmid
@@ -20,9 +18,7 @@ json.results do
         json.issue citation.journal.issue
       end
     end
-    json.authors do
-      json.array! citation.authors_citations.map(&:author), :id, :name
-    end
+    json.authors citation.authors
     json.keywords do
       json.array! citation.keywords, :id, :name
     end
