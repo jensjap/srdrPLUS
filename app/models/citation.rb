@@ -58,6 +58,10 @@ class Citation < ApplicationRecord
       (other.present? && other)
   end
 
+  def authors_short
+    authors.truncate(30)
+  end
+
   def keyword_ids=(tokens)
     tokens.map do |token|
       resource = Keyword.new
@@ -86,13 +90,13 @@ class Citation < ApplicationRecord
 
   def handle
     string_handle = ''
-    string_handle += authors
+    string_handle += authors.to_s
     string_handle += "\n"
-    string_handle += year
+    string_handle += year.to_s
     string_handle += "\n"
-    string_handle += pmid || ''
+    string_handle += pmid.to_s
     string_handle += "\n"
-    string_handle += name || ''
+    string_handle += name.to_s
 
     string_handle
   end

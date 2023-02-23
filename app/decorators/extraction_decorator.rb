@@ -4,15 +4,19 @@ class ExtractionDecorator < Decorator
   end
 
   def year
-    citation.year
+    citation.year.to_s
   end
 
   def name
     citation.name.to_s.truncate(70)
   end
 
+  def authors
+    citation.authors.to_s
+  end
+
   def citation_handle
-    citation.authors + ', ' + year + ', ' + pmid + '<br />' + name
+    authors + ', ' + year + ', ' + pmid + '<br />' + name
   end
 
   def relevant_eefps

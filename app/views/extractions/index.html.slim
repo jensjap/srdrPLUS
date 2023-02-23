@@ -56,7 +56,7 @@ div class="p-4 lg:p-8"
         - @extractions.each do |extraction|
           tr
             td data-sort="#{extraction.updated_at.to_i}" = link_to t('work'), work_extraction_path(extraction), style: 'font-weight:bold;'
-            td = extraction.citation.authors
+            td title="#{extraction.citation.authors}" = extraction.citation.authors_short
             td = extraction.year
             td = extraction.pmid
             td data-sort="#{extraction.name}"
