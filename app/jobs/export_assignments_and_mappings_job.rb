@@ -118,10 +118,11 @@ class ExportAssignmentsAndMappingsJob < ApplicationJob
     @project.citations.each_with_index do |citation, index|
       @ws_workbook_citation_references.add_row [
         index + 1,
-        citation.pmid,
-        citation.name,
-        citation.refman,
-        citation.authors ]
+        citation.pmid.to_s,
+        citation.name.to_s,
+        citation.refman.to_s,
+        citation.authors.to_s
+      ]
     end  # @project.citations.each_with_index do |citation, index|
   end  # END def _fill_workbook_citation_references_section(p)
 
