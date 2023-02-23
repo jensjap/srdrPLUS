@@ -23,7 +23,7 @@ module SimpleExportJob::SectionTemplates::Type2SectionsWide
             username: extraction.username,
             citation_id: extraction.citation.id,
             citation_name: extraction.citation.name,
-            authors: extraction.citation.authors.collect(&:name).join(', '),
+            authors: extraction.citation.authors,
             publication_date: extraction.citation.try(:journal).try(:get_publication_year),
             refman: extraction.citation.refman,
             pmid: extraction.citation.pmid

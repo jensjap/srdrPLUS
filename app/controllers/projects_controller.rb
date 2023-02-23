@@ -84,7 +84,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       format.html do
         if no_leader?
-          flash[:alert] = 'Must have at least one leader'
+          flash[:alert] = 'You must have at least one leader in the project.'
           redirect_to(edit_project_path(@project, page: 'members_and_roles'))
         elsif @project.update(project_params)
           redirect_path = params.try(:[], :project).try(:[], :redirect_path)
@@ -254,10 +254,12 @@ class ProjectsController < ApplicationController
 
     projects_user_id = import_assignments_and_mappings_params[:projects_user_id].to_i
     file_type_id = import_assignments_and_mappings_params[:imported_file][:file_type_id].to_i
+    simple_import_strategy = import_assignments_and_mappings_params[:simple_import_strategy]
 
     import_hash = {
       import_type_id:,
       projects_user_id:,
+      simple_import_strategy:,
       imported_files_attributes: [
         {
           content: file,
@@ -432,7 +434,7 @@ class ProjectsController < ApplicationController
   end
 
   def import_assignments_and_mappings_params
-    params.require(:import).permit(:projects_user_id, :import_type_id, imported_file: %i[file_type_id content])
+    params.require(:import).permit(:projects_user_id, :import_type_id, :simple_import_strategy, imported_file: %i[file_type_id content])
   end
 
   # def import_project_from_distiller(project)

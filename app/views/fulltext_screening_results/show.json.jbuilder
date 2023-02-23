@@ -12,11 +12,11 @@ json.citation do
   json.citation_id @fulltext_screening_result.citation.id
   json.title @fulltext_screening_result.citation.name
   json.journal @fulltext_screening.hide_journal ? '<hidden>' : @fulltext_screening_result.citation.journal.name
-  json.authors @fulltext_screening.hide_author ? '<hidden>' : @fulltext_screening_result.citation.author_map_string
+  json.authors @fulltext_screening.hide_author ? '<hidden>' : @fulltext_screening_result.citation.authors
   json.abstract @fulltext_screening_result.citation.abstract
   json.keywords @fulltext_screening_result.citation.keywords.map(&:name).join(',')
   json.id @fulltext_screening_result.citation.accession_number_alts
-  json.journal_meta_info "#{@fulltext_screening_result.citation.author_map_string}\n#{@fulltext_screening_result.citation.journal.name}, #{@fulltext_screening_result.citation.year}; #{@fulltext_screening_result.citation.journal.volume} (#{@fulltext_screening_result.citation.journal.issue}): #{@fulltext_screening_result.citation.page_number_start}-#{@fulltext_screening_result.citation.page_number_end}. DOI: #{@fulltext_screening_result.citation.doi}. PMID: #{@fulltext_screening_result.citation.pmid}"
+  json.journal_meta_info "#{@fulltext_screening_result.citation.authors}\n#{@fulltext_screening_result.citation.journal.name}, #{@fulltext_screening_result.citation.year}; #{@fulltext_screening_result.citation.journal.volume} (#{@fulltext_screening_result.citation.journal.issue}): #{@fulltext_screening_result.citation.page_number_start}-#{@fulltext_screening_result.citation.page_number_end}. DOI: #{@fulltext_screening_result.citation.doi}. PMID: #{@fulltext_screening_result.citation.pmid}"
 end
 json.options do
   json.yes_tag_required @fulltext_screening.yes_tag_required
@@ -35,7 +35,7 @@ cps = @screened_cps.reverse.map do |fsr|
   {
     fsr_id: fsr.id,
     name: fsr.citation.name,
-    authors: @fulltext_screening.hide_author ? '<hidden>' : fsr.citation.author_map_string,
+    authors: @fulltext_screening.hide_author ? '<hidden>' : fsr.citation.authors,
     label: fsr.label
   }
 end

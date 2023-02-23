@@ -64,7 +64,6 @@ Rails.application.routes.draw do
 
       resources :keywords, only: [:index]
       resources :users, only: [:index]
-      resources :authors, only: [:index]
       resources :keywords, only: [:index]
       resources :timepoint_names, only: [:index]
 
@@ -121,7 +120,6 @@ Rails.application.routes.draw do
     end # END namespace :v3 do
   end # END namespace :api do
 
-  resources :authors
   resources :comparisons
   resources :journals
   resources :keywords

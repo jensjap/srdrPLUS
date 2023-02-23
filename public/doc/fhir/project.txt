@@ -1,0 +1,21 @@
+# Routes #
+- /api/v3/projects/{project_number}
+
+# Including Elements #
+- name
+- description
+- attribution
+- authors of report
+- methodology
+- prospero registration id
+- doi
+- note
+- funding source
+- mesh heading
+- bundle(FHIR resource in project)
+
+# FHIR Version #
+not a FHIR object
+
+# Description #
+There's four major fhir objects packed in the bundle element. Each of them is stored as FHIR Bundle resource. The number of fhir objects can be less than four if project is still in progress. It can be obtained by project number which can be observed in srdrplus website.

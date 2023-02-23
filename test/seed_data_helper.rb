@@ -1391,9 +1391,7 @@ module SeedDataExtended
         end
 
         # Authors
-        5.times do |_n|
-          c.authors << Author.find_or_create_by!(name: Faker::Movies::HitchhikersGuideToTheGalaxy.character)
-        end
+        c.authors = (0..4).map { Faker::Movies::HitchhikersGuideToTheGalaxy.character }.join(', ')
       end
 
       # Combine a bunch of activities we do for each project:

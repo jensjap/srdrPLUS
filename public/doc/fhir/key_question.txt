@@ -1,0 +1,12 @@
+# Routes #
+- /api/v3/key_questions/{key_question_number}
+- /api/v3/projects/{project_number}/key_questions
+
+# Including Elements #
+- key question text
+
+# FHIR Version #
+4.3.0
+
+# Description #
+Each key question will conform to FHIR EvidenceVareible resource structure. It can be obtained by either key question number or project number. Both of them can be observed in srdrplus website. Route with key question number will give you a FHIR EvidenceVareible resource, another will give you a FHIR Bundle resource containing all key questions in your project as entries.

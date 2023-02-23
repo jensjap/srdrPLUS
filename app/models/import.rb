@@ -10,6 +10,7 @@
 #
 
 class Import < ApplicationRecord
+  attr_accessor :simple_import_strategy
   # after_commit :start_import_job, on: :create
 
   belongs_to :import_type
@@ -104,7 +105,7 @@ class Import < ApplicationRecord
         when '.json'
           JsonImportJob.set(wait: 1.minute).perform_later(imported_file.id)
         when '.xlsx'
-          SimpleImportJob.set(wait: 1.minute).perform_later(imported_file.id, project.id)
+          SimpleImportJob.set(wait: 1.minute).perform_later(imported_file.id, project.id, destructive: simple_import_strategy.eql?('additive') ? false : true)
         else
           ## NOT SUPPORTED, WHAT TO DO?
         end
