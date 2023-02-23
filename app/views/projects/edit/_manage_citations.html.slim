@@ -23,7 +23,7 @@ div.row style="margin: 0;"
                 td style="text-align: center;" = citation.accession_number_alts
                 td style="text-align: center;" = citation.refman
                 td
-                  div style="overflow: hidden; height: 18px;" = citation.authors
+                  div style="overflow: hidden; height: 18px;" title="#{citation.authors}" = citation.authors_short
                 td
                   div style="overflow: hidden; height: 18px;" = citation.name
                 td style="text-align: center;" = link_to 'Edit', edit_citation_path(citation, project_id: @project.id)
