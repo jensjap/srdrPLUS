@@ -33,6 +33,10 @@ class KeyQuestionsProject < ApplicationRecord
 
   validate :extraction_forms_projects_section_is_key_question_type, if: :extraction_forms_projects_section_present?
 
+  def abs_pos
+    project.key_questions_projects.index(self) + 1
+  end
+
   def extraction_forms_projects_section_present?
     extraction_forms_projects_section.present?
   end

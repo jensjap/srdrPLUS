@@ -556,7 +556,7 @@ namespace(:db) do
         end
       end
 
-      qrf_name = "Adjust Quality Rating (for Key Questions: #{(ef_key_questions.map{|ef_kq| get_srdrplus_key_question(ef_kq["key_question_id"]).try(:pos).to_s}-[""]).join(", ")})"
+      qrf_name = "Adjust Quality Rating (for Key Questions: #{(ef_key_questions.map{|ef_kq| get_srdrplus_key_question(ef_kq["key_question_id"]).try(:abs_pos).to_s}-[""]).join(", ")})"
       qrf_question = Question.create! name: qrf_name,
                                  description: "",
                                  extraction_forms_projects_section: efps
