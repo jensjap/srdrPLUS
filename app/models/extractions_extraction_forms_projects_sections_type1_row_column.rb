@@ -28,6 +28,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
   accepts_nested_attributes_for :timepoint_name, reject_if: :all_blank
 
   delegate :extraction, to: :extractions_extraction_forms_projects_sections_type1_row
+  delegate :project, to: :extractions_extraction_forms_projects_sections_type1_row
 
   def label_with_optional_unit
     text  = "#{timepoint_name.name}"

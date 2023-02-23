@@ -40,6 +40,7 @@ class QuestionRowColumn < ApplicationRecord
 
   delegate :question,      to: :question_row
   delegate :question_type, to: :question_row
+  delegate :project, to: :question
 
   def field_validation_value_for(name)
     QuestionRowColumnsQuestionRowColumnOption

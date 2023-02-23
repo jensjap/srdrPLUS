@@ -35,6 +35,7 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
   delegate :question,                 to: :question_row_column
   delegate :question_row,             to: :question_row_column
   delegate :question_row_column_type, to: :question_row_column
+  delegate :project, to: :question
 
   def includes_followup
     followup_field.present?
