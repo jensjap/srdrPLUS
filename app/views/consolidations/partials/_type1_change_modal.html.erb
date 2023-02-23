@@ -1,0 +1,181 @@
+<div
+  class="fixed top-1/2 left-1/2 h-[40rem] -mt-[20rem] w-96 -ml-48 md:w-[80%] md:-ml-[40%] z-10 transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:p-6 border border-slate-200"
+  x-show="type1_change_modal"
+  x-cloak
+  x-transition:enter="ease-out duration-300"
+  x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+  x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+  x-transition:leave="ease-in duration-200"
+  x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+  x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+  @click.outside="type1_change_modal = !type1_change_modal"
+  @keyup.window.esc="type1_change_modal = false"
+>
+  <div class="mb-2">
+    <h2
+      class="text-lg font-bold"
+      x-text="`'${oldType1.name}' => '${newType1.name}'`"
+    ></h2>
+  </div>
+  <div class="h-[32rem] overflow-y-scroll border-2 p-2 rounded-md">
+    <div>
+      <div class="absolute top-0 right-0 pt-4 pr-4 block">
+        <button
+          type="button"
+          class="cursor-pointer rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          @click="type1_change_modal = false"
+        >
+          <span class="sr-only">Close</span>
+          <!-- Heroicon name: outline/x-mark -->
+          <svg
+            class="h-6 w-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="mb-2">
+      <div>
+        <label class="text-xs"
+          >Pre-fill from existing
+          <select
+            class="mb-2 cursor-pointer"
+            @change="
+            newType1.name = type1_previews.all_type1s[$el.value]?.name;
+            newType1.description = type1_previews.all_type1s[$el.value]?.description;
+            newType1Index = null;
+          "
+            x-model="newType1Index"
+          >
+            <option value="null" disabled>Choose an existing outcome</option>
+            <template
+              x-for="(all_type1, all_type1_index) in type1_previews?.all_type1s"
+            >
+              <option
+                :value="all_type1_index"
+                x-text="`${all_type1.name} (${all_type1.description})`"
+              ></option>
+            </template></select
+        ></label>
+        <label class="text-xs"
+          >Outcome Type
+          <input
+            x-model="newType1.name"
+            type="text"
+            @change="newType1Index = null"
+            @keyup="newType1Index = null"
+        /></label>
+        <label class="text-xs"
+          >Measurement
+          <textarea
+            x-model="newType1.description"
+            rows="2"
+            class="!resize-none"
+            @change="newType1Index = null"
+            @keyup="newType1Index = null"
+          ></textarea>
+        </label>
+      </div>
+      <fieldset class="mt-4">
+        <legend class="sr-only">Scope</legend>
+        <div>
+          <div class="flex items-center">
+            <input
+              x-model="scopeOfChange"
+              id="email"
+              name="scope-of-change"
+              type="radio"
+              :value="'false'"
+              class="h-4 w-4 !m-0 cursor-pointer border-gray-300 text-indigo-600 focus:ring-indigo-500"
+            />
+            <label
+              for="email"
+              class="ml-3 block text-sm font-medium text-gray-700"
+              >include this extraction only
+              <span x-text="`(${type1_previews.false.length})`"></span
+            ></label>
+          </div>
+
+          <div class="flex items-center">
+            <input
+              x-model="scopeOfChange"
+              id="sms"
+              name="scope-of-change"
+              type="radio"
+              :value="'citations'"
+              class="h-4 w-4 !m-0 cursor-pointer border-gray-300 text-indigo-600 focus:ring-indigo-500"
+            />
+            <label
+              for="sms"
+              class="ml-3 block text-sm font-medium text-gray-700"
+              >include all extractions of this citation
+              <span x-text="`(${type1_previews.citations.length})`"></span
+            ></label>
+          </div>
+
+          <div class="flex items-center">
+            <input
+              x-model="scopeOfChange"
+              id="push"
+              name="scope-of-change"
+              type="radio"
+              :value="'project'"
+              class="h-4 w-4 !m-0 cursor-pointer border-gray-300 text-indigo-600 focus:ring-indigo-500"
+            />
+            <label
+              for="push"
+              class="ml-3 block text-sm font-medium text-gray-700"
+              >include all extractions of this project
+              <span x-text="`(${type1_previews.project.length})`"></span
+            ></label>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+    <div class="border p-2">
+      <table>
+        <thead>
+          <tr>
+            <td>Citation Name</td>
+            <td>Assigned User</td>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-if="type1_previews.loading">
+            <div>Loading...</div>
+          </template>
+          <template x-if="!type1_previews.loading">
+            <template
+              x-for="(type1_preview, type1_previewIndex) in type1_previews[scopeOfChange]"
+            >
+              <tr>
+                <td x-text="type1_preview.name"></td>
+                <td x-text="type1_preview.username"></td>
+              </tr> </template
+          ></template>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div
+    class="mt-2 w-full bg-srdrpurple rounded-md p-2 text-white text-center cursor-pointer"
+    :class="type1_previews.loading ? 'bg-gray-500 text-gray-400 cursor-not-allowed' : ''"
+    @click="if (type1_previews.loading) return;
+      type1_previews.loading = true;
+      updateArmsData(oldType1.id, newType1.name, newType1.description);
+    "
+  >
+    Update
+  </div>
+</div>

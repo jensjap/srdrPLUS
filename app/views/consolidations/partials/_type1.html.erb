@@ -1,0 +1,592 @@
+<div class="px-4 lg:px-8">
+  <div class="mt-6">
+    <h3 class="text-base font-bold">
+      <span x-text="mh?.current_citations_project?.section_name"></span> of
+      Consolidated Extraction
+    </h3>
+    <table>
+      <thead>
+        <tr>
+          <th class="w-20"></th>
+          <template x-if="isOutcome()">
+            <th class="text-left">Type</th>
+          </template>
+          <th class="text-left" x-text="isOutcome() ? 'Domain' : 'Name' "></th>
+          <th
+            class="text-left"
+            x-text="isOutcome() ? 'Measurement' : 'Description' "
+          ></th>
+          <template x-if="isOutcome()">
+            <th class="text-left">Populations</th>
+          </template>
+          <template x-if="isOutcome()">
+            <th class="text-left">Timepoints</th>
+          </template>
+        </tr>
+      </thead>
+      <tbody
+        class="orderable-list"
+        orderable-url="http://localhost:3000/api/v1/orderings/update_positions"
+        x-effect="$nextTick(() => initializeOrderings())"
+      >
+        <template
+          x-for="extraction_eefpst1 in mh?.current_citations_project?.consolidated_extraction_eefpst1s"
+        >
+          <tr
+            class="orderable-item"
+            :ordering-id="extraction_eefpst1.ordering_id"
+            :position="extraction_eefpst1.position"
+          >
+            <td class="flex justify-center items-center">
+              <i
+                class="sort-handle cursor-move fa fa-arrows"
+                aria-hidden="true"
+              ></i>
+            </td>
+            <template x-if="isOutcome()">
+              <td
+                class="text-sm"
+                x-text="extraction_eefpst1.type1_type_name"
+              ></td>
+            </template>
+            <td class="text-sm" x-text="extraction_eefpst1.name"></td>
+            <td class="text-sm" x-text="extraction_eefpst1.description"></td>
+            <template x-if="isOutcome()">
+              <td>
+                <ul>
+                  <template
+                    x-for="population in extraction_eefpst1.populations"
+                  >
+                    <li>
+                      <div class="flex space-x-2">
+                        <span
+                          class="text-sm"
+                          x-text="`${population.name} (${population.description})`"
+                        ></span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="cursor-pointer text-orange-600 w-4 h-4"
+                          @click="changeTPModal = true;
+                            type1_previews.loading = false;
+                            change_type = 'Population';
+                            change_ids = { eefpst1r_id: population.eefpst1r_id };
+                            old_eefpst1 = extraction_eefpst1;
+                            old_tp_name = population.name;
+                            old_tp_description_unit = population.description;
+                            new_tp_name = population.name;
+                            new_tp_description_unit = population.description;
+                          "
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                          />
+                        </svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="cursor-pointer text-red-900 w-4 h-4"
+                          @click="if (confirm(`Are you sure you want to delete '${population.name}'`)) deletePopulation(extraction_eefpst1.id, population.eefpst1r_id)"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                          />
+                        </svg>
+                      </div>
+                    </li>
+                  </template>
+                </ul>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="cursor-pointer w-4 h-4 ml-4"
+                  @click="changeTPModal = true;
+                    type1_previews.loading = false;
+                    change_type = 'Population';
+                    change_ids = { new: true };
+                    old_eefpst1 = extraction_eefpst1;
+                    old_tp_name = '';
+                    old_tp_description_unit = '';
+                    new_tp_name = '';
+                    new_tp_description_unit = '';
+                  "
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </td>
+            </template>
+            <template x-if="isOutcome()">
+              <td>
+                <ul>
+                  <template x-for="timepoint in extraction_eefpst1.timepoints">
+                    <li>
+                      <div class="flex space-x-2">
+                        <span
+                          class="text-sm"
+                          x-text="`${timepoint.name} (${timepoint.unit})`"
+                        ></span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="cursor-pointer text-orange-600 w-4 h-4"
+                          @click="changeTPModal = true;
+                            type1_previews.loading = false;
+                            change_type = 'Timepoint';
+                            change_ids = { eefpst1r_id: timepoint.eefpst1r_id, eefpst1rc_id: timepoint.eefpst1rc_id };
+                            old_eefpst1 = extraction_eefpst1;
+                            old_tp_name = timepoint.name;
+                            old_tp_description_unit = timepoint.unit;
+                            new_tp_name = timepoint.name;
+                            new_tp_description_unit = timepoint.unit;
+                          "
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                          />
+                        </svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="cursor-pointer text-red-900 w-4 h-4"
+                          @click="if (confirm(`Are you sure you want to delete '${timepoint.name}'`)) deleteTimepoint(extraction_eefpst1.id, timepoint.eefpst1r_id, timepoint.eefpst1rc_id)"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                          />
+                        </svg>
+                      </div>
+                    </li>
+                  </template>
+                </ul>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="cursor-pointer w-4 h-4 ml-4"
+                  @click="changeTPModal = true;
+                    type1_previews.loading = false;
+                    change_type = 'Timepoint';
+                    change_ids = { new: true, eefpst1r_id: extraction_eefpst1.populations[0].eefpst1r_id };
+                    old_eefpst1 = extraction_eefpst1;
+                    old_tp_name = '';
+                    old_tp_description_unit = '';
+                    new_tp_name = '';
+                    new_tp_description_unit = '';
+                  "
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </td>
+            </template>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-6">
+    <h3 class="text-base font-bold">
+      Add
+      <span x-text="mh?.current_citations_project?.section_name"></span>
+      to Consolidated Extraction
+    </h3>
+    <div class="border-2 rounded-md p-2">
+      <div class="flex space-x-4">
+        <div class="flex-1">
+          <template x-if="isOutcome()">
+            <label class="text-xs"
+              >Outcome Type
+              <select
+                class="!px-1 !text-xs cursor-pointer"
+                name="pets"
+                id="pet-select"
+                x-ref="new_eefpst1_type"
+              >
+                <option value="1">Categorical</option>
+                <option value="2">Continuous</option>
+              </select>
+            </label>
+          </template>
+          <label class="text-xs"
+            ><span x-text="isOutcome() ? 'Domain' : 'Name'"></span>
+            <input
+              class="!px-1 !text-xs"
+              x-ref="new_eefpst1_name"
+              type="text"
+              :placeholder="isOutcome() ? 'Domain' : 'Name'"
+          /></label>
+          <label class="text-xs"
+            ><span
+              x-text="isOutcome() ? 'Specific measurement (i.e., tool/definition/specific outcome)' : 'Description'"
+            ></span>
+            <input
+              class="!px-1 !text-xs"
+              x-ref="new_eefpst1_description"
+              type="text"
+              :placeholder="isOutcome() ? 'Specific measurement (i.e., tool/definition/specific outcome)' : 'Description'"
+          /></label>
+          <template x-if="isOutcome()">
+            <label class="text-xs"
+              >Units
+              <input
+                x-ref="new_eefpst1_units"
+                class="!px-1 !text-xs"
+                type="text"
+                placeholder="Units"
+            /></label>
+          </template>
+        </div>
+        <template x-if="isOutcome()">
+          <div class="flex-1">
+            <div class="flex space-x-2">
+              <div class="flex-1">
+                <label class="text-xs">Populations</label>
+                <ul>
+                  <template
+                    x-for="(population, populationIndex) in populations"
+                  >
+                    <li class="text-xs">
+                      <div class="flex">
+                        <span
+                          x-text="`${population.name} (${population.description})`"
+                        ></span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="text-red-900 ml-1 cursor-pointer w-4 h-4"
+                          @click="if (populations.length > 1) {
+                            populations.splice(populationIndex, 1)
+                          } else {
+                            toastr.error('At least one population is required.  Add another before removing this one.', null, { timeOut: 1000 });
+                          }"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                          />
+                        </svg>
+                      </div>
+                    </li>
+                  </template>
+                </ul>
+                <input
+                  x-ref="populationName"
+                  placeholder="Name"
+                  class="!mt-2 !px-1 !text-xs"
+                  type="text"
+                  @keyup.enter="addToNewPopulation()"
+                />
+                <input
+                  x-ref="populationDescription"
+                  placeholder="Description"
+                  class="!mt-1 !px-1 !text-xs"
+                  type="text"
+                  @keyup.enter="addToNewPopulation()"
+                />
+                <div
+                  class="bg-srdr-secondary text-xs text-white p-2 rounded-md text-center mt-2 cursor-pointer"
+                  @click="addToNewPopulation()"
+                >
+                  Add Population
+                </div>
+              </div>
+              <div class="flex-1">
+                <label class="text-xs">Timepoints</label>
+                <ul>
+                  <template x-for="(timepoint, timepointIndex) in timepoints">
+                    <li class="text-xs">
+                      <div class="flex">
+                        <span
+                          x-text="`${timepoint.name} (${timepoint.unit})`"
+                        ></span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="text-red-900 ml-1 cursor-pointer w-4 h-4"
+                          @click="if (timepoints.length > 1) {
+                            timepoints.splice(timepointIndex, 1)
+                          } else {
+                            toastr.error('At least one timepoint is required. Add another before removing this one.', null, { timeOut: 1000 });
+                          }"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                          />
+                        </svg>
+                      </div>
+                    </li>
+                  </template>
+                </ul>
+                <input
+                  x-ref="timepointName"
+                  placeholder="Name"
+                  class="!mt-2 !px-1 !text-xs"
+                  type="text"
+                  @keyup.enter="addToNewTimepoint()"
+                />
+                <input
+                  x-ref="timepointUnit"
+                  placeholder="Unit"
+                  class="!mt-1 !px-1 !text-xs"
+                  type="text"
+                  @keyup.enter="addToNewTimepoint()"
+                />
+                <div
+                  class="bg-srdr-secondary text-xs text-white p-2 rounded-md text-center mt-2 cursor-pointer"
+                  @click="addToNewTimepoint()"
+                >
+                  Add Timepoint
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+      <div
+        class="rounded-md bg-srdrpurple text-white text-center p-2 mt-4 cursor-pointer"
+        @click="createArm(mh?.current_citations_project?.consolidated_extraction_eefps_id, $refs.new_eefpst1_name.value, $refs.new_eefpst1_description.value)"
+      >
+        Add to
+        <span x-text="mh?.current_citations_project?.section_name"></span>
+      </div>
+    </div>
+  </div>
+  <div class="mt-6 overflow-auto">
+    <h3 class="text-base font-bold">
+      All <span x-text="mh?.current_citations_project?.section_name"></span>
+    </h3>
+    <table class="table-auto">
+      <thead>
+        <tr>
+          <template x-if="isOutcome()">
+            <th class="text-left">Type</th>
+          </template>
+          <th
+            class="text-left"
+            x-text="isOutcome() ? 'Domain (Measurement)' : 'Name (Description)'"
+          ></th>
+          <template
+            x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
+            :key="eefps.id"
+          >
+            <th
+              class="text-center"
+              x-text="`ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+            ></th>
+          </template>
+        </tr>
+      </thead>
+      <tbody>
+        <template
+          x-for="(section_eefpst1, section_eefpst1_index) in mh?.current_citations_project?.current_section_eefpst1s"
+          :key="section_eefpst1.type1_id"
+        >
+          <tr>
+            <template x-if="isOutcome()">
+              <td
+                class="text-left"
+                x-text="section_eefpst1.type1_type_name"
+              ></td>
+            </template>
+            <td
+              class="text-left"
+              x-text="`${section_eefpst1.name} (${section_eefpst1.description})`"
+            ></td>
+            <template
+              x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
+              :key="eefps.id"
+            >
+              <td class="text-center">
+                <template x-if="isOutcome()">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th colspan="2">
+                          <span
+                            class="!text-xs"
+                            :class="section_eefpst1?.eefpst1_lookups[eefps.id] === undefined ? 'text-red-500' : 'text-green-500'"
+                            x-text="section_eefpst1?.eefpst1_lookups[eefps.id] === undefined ? 'Does NOT Exist' : 'Exists'"
+                          ></span>
+                          <template
+                            x-if="eefps?.consolidated && section_eefpst1?.eefpst1_lookups[eefps.id] === undefined"
+                          >
+                            <span
+                              class="ml-2 bg-srdr-primary text-xs text-white p-1 rounded-md cursor-pointer"
+                              @click="createArm(eefps.id, section_eefpst1.name, section_eefpst1.description)"
+                            >
+                              Create
+                            </span>
+                          </template>
+                          <template
+                            x-if="eefps?.consolidated && section_eefpst1?.eefpst1_lookups[eefps.id] !== undefined"
+                          >
+                            <span
+                              class="ml-2 bg-red-700 text-xs text-white p-1 rounded-md cursor-pointer"
+                              @click="if (confirm(`Are you sure you want to delete '${section_eefpst1.name}'`)) {
+                                deleteArm(section_eefpst1.eefpst1_lookups[eefps.id]);
+                              }"
+                            >
+                              Delete
+                            </span>
+                          </template>
+                          <template
+                            x-if="section_eefpst1?.eefpst1_lookups[eefps.id] !== undefined"
+                          >
+                            <span
+                              class="ml-2 bg-orange-500 text-xs text-white p-1 rounded-md cursor-pointer"
+                              @click="type1_previews = {
+                                loading: true,
+                                false: [],
+                                citations: [],
+                                project: []
+                              };
+                              scopeOfChange = 'false';
+                              type1_change_modal = true;
+                              getArmData(section_eefpst1.type1_id, eefps.extraction_forms_projects_section_id, eefps.id);
+                              oldType1.id = section_eefpst1?.eefpst1_lookups[eefps.id];
+                              oldType1.name = section_eefpst1?.name;
+                              oldType1.description = section_eefpst1?.description;
+                              newType1.name = oldType1.name;
+                              newType1.description = oldType1.description;"
+                            >
+                              Change
+                            </span>
+                          </template>
+                        </th>
+                      </tr>
+                      <tr>
+                        <th class="!text-xs">Populations</th>
+                        <th class="!text-xs">Timepoints</th>
+                      </tr>
+                    </thead>
+                    <tr class="text-left">
+                      <td>
+                        <ul>
+                          <template
+                            x-for="population in section_eefpst1.population_lookups[eefps.id]"
+                          >
+                            <li
+                              class="!text-xs"
+                              x-text="`${population.name} (${population.description})`"
+                            ></li>
+                          </template>
+                        </ul>
+                      </td>
+                      <td>
+                        <ul>
+                          <template
+                            x-for="timepoint in section_eefpst1.timepoint_lookups[eefps.id]"
+                          >
+                            <li
+                              class="!text-xs"
+                              x-text="`${timepoint.name} (${timepoint.unit})`"
+                            ></li>
+                          </template>
+                        </ul>
+                      </td>
+                    </tr>
+                  </table>
+                </template>
+                <template x-if="!isOutcome()">
+                  <div>
+                    <span
+                      class="!text-xs"
+                      :class="section_eefpst1?.eefpst1_lookups[eefps.id] === undefined ? 'text-red-500' : 'text-green-500'"
+                      x-text="section_eefpst1?.eefpst1_lookups[eefps.id] === undefined ? 'Does NOT Exist' : 'Exists'"
+                    ></span>
+                    <template
+                      x-if="eefps?.consolidated && section_eefpst1?.eefpst1_lookups[eefps.id] === undefined"
+                    >
+                      <span
+                        class="ml-2 bg-srdr-primary text-xs text-white p-1 rounded-md cursor-pointer"
+                        @click="createArm(eefps.id, section_eefpst1.name, section_eefpst1.description)"
+                      >
+                        Create
+                      </span>
+                    </template>
+                    <template
+                      x-if="eefps?.consolidated && section_eefpst1?.eefpst1_lookups[eefps.id] !== undefined"
+                    >
+                      <span
+                        class="ml-2 bg-red-700 text-xs text-white p-1 rounded-md cursor-pointer"
+                        @click="if (confirm(`Are you sure you want to delete '${section_eefpst1.name}'`)) {
+                          deleteArm(section_eefpst1.eefpst1_lookups[eefps.id]);
+                        }"
+                      >
+                        Delete
+                      </span>
+                    </template>
+                    <template
+                      x-if="section_eefpst1?.eefpst1_lookups[eefps.id] !== undefined"
+                    >
+                      <span
+                        class="ml-2 bg-orange-500 text-xs text-white p-1 rounded-md cursor-pointer"
+                        @click="type1_previews = {
+                          loading: true,
+                          false: [],
+                          citations: [],
+                          project: []
+                        };
+                        scopeOfChange = 'false';
+                        type1_change_modal = true;
+                        getArmData(section_eefpst1.type1_id, eefps.extraction_forms_projects_section_id, eefps.id);
+                        oldType1.id = section_eefpst1?.eefpst1_lookups[eefps.id];
+                        oldType1.name = section_eefpst1?.name;
+                        oldType1.description = section_eefpst1?.description;
+                        newType1.name = oldType1.name;
+                        newType1.description = oldType1.description;"
+                      >
+                        Change
+                      </span>
+                    </template>
+                  </div>
+                </template>
+              </td>
+            </template>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+</div>

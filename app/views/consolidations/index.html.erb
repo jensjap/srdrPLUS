@@ -1,0 +1,191 @@
+<div class="p-4 lg:p-8" x-data="consolidations">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-xl font-bold">
+        Comparison Tool
+        <a
+          class="text-base"
+          href="/projects/<%= @project.id %>/consolidations?consolidation_beta_opt_out=true"
+          >To go back to the old comparison tool click here</a
+        >
+      </h1>
+      <p class="mt-2 text-sm text-gray-700">
+        Create consolidated extractions by quickly identifying differences among
+        extractions of the same citation
+      </p>
+    </div>
+  </div>
+  <div class="mt-8 flex flex-col">
+    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+        <template x-if="citationsHash == null"><div>Loading...</div></template>
+        <template x-if="citationsHash != null">
+          <div
+            class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
+          >
+            <table
+              class="min-w-full divide-y divide-gray-300 overflow-y-scroll h-[30vw] block"
+            >
+              <thead class="bg-gray-50 !sticky top-0 z-[5]">
+                <tr>
+                  <th
+                    scope="col"
+                    class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                  >
+                    Citation
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900"
+                  >
+                    No. of Extractions
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900"
+                  >
+                    Differences Found
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900"
+                  >
+                    Consolidated Extraction Exists?
+                  </th>
+                  <th scope="col" class="text-center py-3.5 pl-3 pr-4 sm:pr-6">
+                    Consolidated Extraction
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <template
+                  x-for="citations_project_id in Object.keys(citationsHash)"
+                  :key="citations_project_id"
+                >
+                  <tr>
+                    <td
+                      class="overflow-hidden py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                    >
+                      <div
+                        x-text="citationsHash[citations_project_id].citation_title"
+                      ></div>
+                    </td>
+                    <td
+                      class="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                    >
+                      <div
+                        x-text="citationsHash[citations_project_id].extractions && citationsHash[citations_project_id].extractions.length"
+                      ></div>
+                    </td>
+                    <td
+                      class="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                    >
+                      <div
+                        class="p-1"
+                        x-text="citationsHash[citations_project_id].differences ? 'Yes' : 'No'"
+                        :class="citationsHash[citations_project_id].differences ? 'text-red-800' : 'text-green-800'"
+                      ></div>
+                    </td>
+                    <td
+                      class="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                    >
+                      <div
+                        class="p-1"
+                        x-text="
+                          if (citationsHash[citations_project_id].consolidated_extraction_status == null) {
+                            return 'No'
+                          } else {
+                            return citationsHash[citations_project_id].consolidated_extraction_status
+                          }
+                        "
+                        :class="
+                          {
+                            'text-red-800': citationsHash[citations_project_id].consolidated_extraction_status == null,
+                            'text-yellow-800': citationsHash[citations_project_id].consolidated_extraction_status == 'Draft',
+                            'text-green-800': citationsHash[citations_project_id].consolidated_extraction_status == 'Complete'
+                          }
+                        "
+                      ></div>
+                    </td>
+                    <td
+                      class="text-center whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-6"
+                    >
+                      <template
+                        x-if="citationsHash[citations_project_id].consolidated_extraction_status == null"
+                      >
+                        <div
+                          class="p-1 drop-shadow rounded bg-green-800 text-white cursor-pointer"
+                          @click="createConsolidatedExtraction(citations_project_id)"
+                        >
+                          Create
+                        </div>
+                      </template>
+                      <template
+                        x-if="citationsHash[citations_project_id].consolidated_extraction_status != null"
+                      >
+                        <a
+                          :href="`/consolidations/null?citations_project_id=${citations_project_id}`"
+                        >
+                          <div
+                            class="p-1 drop-shadow rounded bg-srdrpurple text-white cursor-pointer"
+                          >
+                            Continue
+                          </div>
+                        </a>
+                      </template>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("consolidations", () => ({
+      citationsHash: null,
+
+      init() {
+        this.fetch_results();
+      },
+
+      async fetch_results() {
+        const response = await fetch(location.href, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.citationsHash = data;
+      },
+
+      async createConsolidatedExtraction(citations_project_id) {
+        const response = await fetch(location.href, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          body: JSON.stringify({
+            citations_project_id,
+          }),
+        });
+        const data = await response.json();
+        this.citationsHash[
+          data.citations_project_id
+        ].consolidated_extraction_status = "Draft";
+        this.citationsHash[data.citations_project_id].consolidated_extraction =
+          data;
+      },
+    }));
+  });
+</script>

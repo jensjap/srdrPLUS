@@ -2,7 +2,7 @@
   = f.input :item_id, as: :hidden, input_html: { value: 36 }
   .orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
     = f.simple_fields_for :sd_key_questions do |sd_key_question|
-      .sd-item.sd-inner.orderable-item ordering-id="#{ sd_key_question.object.ordering.id.to_s }"
+      .sd-item.sd-inner.orderable-item.sort-handle ordering-id="#{ sd_key_question.object.ordering.id.to_s }"
         = render 'sd_meta_data/form/dynamic_fields/sd_key_question_fields', f: sd_key_question
   div class="#{ f.object.sd_key_questions.present? ? '' : 'zero-nested-associations'}"
     = link_to_add_association 'Add Key Question', f, :sd_key_questions, partial: 'sd_meta_data/form/dynamic_fields/sd_key_question_fields', class: 'add-item-link'
