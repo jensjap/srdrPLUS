@@ -1,0 +1,60 @@
+<template x-if="qrc.type_name == 'dropdown'">
+  <div class="flex">
+    <template
+      x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
+    >
+      <div>
+        <template
+          x-if="typeof section_eefpst1 === 'undefined' || section_eefpst1?.eefpst1_lookups[eefps.id]"
+        >
+          <select
+            :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+            class="w-32 mr-2 cursor-pointer"
+            :disabled="!eefps.consolidated"
+            @input="
+              ''; let a
+              if (typeof section_eefpst1 === 'undefined') {
+                a = `record_id-${qrc.qrcf.id}-${eefps.id}-`
+              } else {
+                a = `record_id-${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
+              }
+              updateRecord(mh?.current_citations_project?.cell_lookups[a], $el.value)
+            "
+          >
+            <option value=""></option>
+            <template
+              x-for="selection_option in qrc.selection_options"
+              :key="selection_option.id"
+            >
+              <option
+                x-text="selection_option.name"
+                type="radio"
+                class="!m-0 hover:!bg-slate-200 checked:bg-slate-200"
+                :selected="
+                  ''; let a
+                  if (typeof section_eefpst1 === 'undefined') {
+                    a = `${qrc.qrcf.id}-${eefps.id}--${selection_option.id}`
+                  } else {
+                    a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}-${selection_option.id}`
+                  }
+                  const b = mh?.current_citations_project?.cell_lookups[a]?.value
+                  return b ? true : false
+                "
+              ></option>
+            </template>
+          </select>
+        </template>
+        <template
+          x-if="typeof section_eefpst1 !== 'undefined' && section_eefpst1?.eefpst1_lookups[eefps.id] === undefined"
+        >
+          <div
+            :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+            class="mx-1 text-xs text-gray-400"
+          >
+            - No Arm -
+          </div>
+        </template>
+      </div>
+    </template>
+  </div>
+</template>

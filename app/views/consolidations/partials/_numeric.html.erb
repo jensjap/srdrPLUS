@@ -1,0 +1,90 @@
+<template x-if="qrc.type_name == 'numeric'">
+  <div class="flex">
+    <template
+      x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
+      :key="eefps.id"
+    >
+      <div>
+        <template
+          x-if="typeof section_eefpst1 === 'undefined' || section_eefpst1?.eefpst1_lookups[eefps.id]"
+        >
+          <div class="flex mr-2">
+            <template x-if="qrc.selection_options[0].name == '1'">
+              <template x-if="qrc.selection_options[0].name == '1'">
+                <select
+                  @input.debounce.1000ms="
+                    ''; let a
+                    if (typeof section_eefpst1 === 'undefined') {
+                      a = `record_id-${qrc.equality_qrcf.id}-${eefps.id}-`
+                    } else {
+                      a = `record_id-${qrc.equality_qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
+                    }
+                    updateRecord(mh?.current_citations_project?.cell_lookups[a], $el.value)
+                  "
+                  :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+                  class="!w-12 text-center cursor-pointer"
+                  type="text"
+                  :disabled="!eefps.consolidated"
+                  :value="
+                    ''; let a
+                    if (typeof section_eefpst1 === 'undefined') {
+                      a = `${qrc.equality_qrcf.id}-${eefps.id}-`
+                    } else {
+                      a = `${qrc.equality_qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
+                    }
+                    const b = mh?.current_citations_project?.cell_lookups[a]?.value
+                    return b
+                  "
+                >
+                  <option value=""></option>
+                  <option value="~">~</option>
+                  <option value="<">&lt;</option>
+                  <option value=">">&gt;</option>
+                  <option value="≤">≤</option>
+                  <option value="≥">≥</option>
+                </select>
+              </template>
+            </template>
+            <input
+              :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+              @input.debounce.1000ms="
+                ''; let a
+                if (typeof section_eefpst1 === 'undefined') {
+                  a = `record_id-${qrc.qrcf.id}-${eefps.id}-`
+                } else {
+                  a = `record_id-${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
+                }
+                updateRecord(mh?.current_citations_project?.cell_lookups[a], $el.value)
+              "
+              class="!w-20"
+              type="number"
+              :min="qrc.selection_options[1].name"
+              :max="qrc.selection_options[2].name"
+              :disabled="!eefps.consolidated"
+              :value="
+                ''; let a
+                if (typeof section_eefpst1 === 'undefined') {
+                  a = `${qrc.qrcf.id}-${eefps.id}-`
+                } else {
+                  a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
+                }
+                const b = mh?.current_citations_project?.cell_lookups[a]?.value
+                return b
+              "
+            />
+          </div>
+        </template>
+        <template
+          x-if="typeof section_eefpst1 !== 'undefined' && section_eefpst1?.eefpst1_lookups[eefps.id] === undefined"
+        >
+          <div
+            :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+            class="mx-1 text-xs text-gray-400"
+          >
+            - No Arm -
+          </div>
+        </template>
+      </div>
+    </template>
+  </div>
+</template>

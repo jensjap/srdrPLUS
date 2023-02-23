@@ -1,5 +1,7 @@
 div class="p-4 lg:p-8"
-  h1 class="text-xl font-bold" Comparison Tool
+  h1 class="text-xl font-bold"
+    = 'Comparison Tool '
+    a class="text-base" href="/projects/#{@project.id}/consolidations?consolidation_beta_opt_in=true" To try the New Consolidator in alpha click here
   - if @citation_groups[:consolidations].present?
     table.hover#dttb-consolidations
       thead
