@@ -1,3 +1,11 @@
+<% if @info.present? %>
+  <% if @info[0] === true %>
+    toastr.success('<%= @info[1] %>');
+  <% else %>
+    toastr.error('<%= @info[1] %>');
+  <% end %>
+<% end %>
+
 <% if @statusing.errors.present? %>
   <% @statusing.errors.full_messages.each do |msg| %>
     toastr.error('<%= msg[1] %>', '<%= msg[0] %>');
