@@ -478,15 +478,13 @@ class ConsolidationService
       .includes(
         :extraction_checksum,
         statusing: :status,
-        citations_project: { citation: { authors_citations: %i[
-          author ordering
-        ] } }
+        citations_project: :citation
       )
     citations_projects.each do |citations_project|
       citations_grouping_hash[citations_project.id] = {
         extractions: [],
         consolidated_extraction: nil,
-        citation_title: "#{citations_project.citation.author_map_string}: #{citations_project.citation.name}",
+        citation_title: "#{citations_project.citation.authors}: #{citations_project.citation.name}",
         reference_checksum: nil,
         differences: false,
         consolidated_extraction_status: nil
