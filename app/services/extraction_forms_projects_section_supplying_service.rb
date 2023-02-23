@@ -2,8 +2,17 @@ class ExtractionFormsProjectsSectionSupplyingService
 
   def find_by_extraction_forms_project_id(id)
     extraction_forms_projects_sections = ExtractionFormsProject.find(id).extraction_forms_projects_sections
-    url = 'api/v3/extraction_forms_projects/' + id.to_s + '/extraction_forms_projects_sections'
-    create_bundle(objs=extraction_forms_projects_sections, type='collection', url=url)
+    link_info = [
+      {
+        'relation' => 'tag',
+        'url' => 'api/v3/extraction_forms_projects/' + id.to_s + '/extraction_forms_projects_sections'
+      },
+      {
+        'relation' => 'service-doc',
+        'url' => 'doc/fhir/extraction_form.txt'
+      }
+    ]
+    create_bundle(objs=extraction_forms_projects_sections, type='collection', link_info=link_info)
   end
 
   def find_by_extraction_forms_projects_section_id(id)
@@ -16,13 +25,10 @@ class ExtractionFormsProjectsSectionSupplyingService
 
   private
 
-  def create_bundle(objs, type, url)
+  def create_bundle(objs, type, link_info)
     bundle = {
       'type' => type,
-      'link' => [{
-        'relation' => 'tag',
-        'url' => url
-      }],
+      'link' => link_info,
       'entry' => []
     }
 

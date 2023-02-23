@@ -236,7 +236,7 @@ namespace :abstrackr do
 
     project_dict = {}
     old_projects.each do |old_p|
-      old_p_name = old_p['name'] == '' ? 'UNTITLED' : old_p['name'] 
+      old_p_name = old_p['name'] == '' ? 'UNTITLED' : old_p['name']
       begin
         project = Project.create!({ name: old_p_name, description: old_p['description'] })
         project_dict[ old_p['id'] ] = project.id
@@ -253,7 +253,7 @@ namespace :abstrackr do
           projects_users_role = ProjectsUsersRole.create!({ projects_user_id: projects_user_id, role_id: 2 })
         end
       else
-        if user_dict[old_u_p['user_id']].nil? 
+        if user_dict[old_u_p['user_id']].nil?
           my_log(log_file, "PID: " + pid.to_s + " user does not exist. old user id: " + (old_u_p['user_id'] || "nil").to_s)
         else
           my_log(log_file, "PID: " + pid.to_s + " project does not exist. old project id: " + (old_u_p['project_id'] || "nil").to_s)
@@ -313,17 +313,7 @@ namespace :abstrackr do
       end
 
       authors_arr.delete("")
-
-      authors_arr.each do |author_name|
-        if citation.authors.nil?
-          citation.authors.build
-        end
-        begin
-          citation.authors << Author.create!( name: author_name.strip )
-        rescue
-          byebug
-        end
-      end
+      citation.authors = authors_arr.join(', ')
 
       #create each keyword
       #keyword parsing is currently an issue.
@@ -417,7 +407,7 @@ namespace :abstrackr do
         if not (user_dict[old_a['user_id']].nil? or project_dict[old_a['project_id']].nil?)
           projects_user = ProjectsUser.find_by!({ project_id: project_dict[old_a['project_id']], user_id: user_dict[old_a['user_id']] })
         else
-          if user_dict[old_a['user_id']].nil? 
+          if user_dict[old_a['user_id']].nil?
             my_log(log_file, "PID: " + pid.to_s + " user does not exist. old user id: " + (old_a['user_id'] || "nil").to_s)
           else
             my_log(log_file, "PID: " + pid.to_s + " project does not exist. old project id: " + old_a['project_id'].to_s)
@@ -459,7 +449,7 @@ namespace :abstrackr do
           if user_dict[old_n['creator_id']].nil?
             my_log(log_file, "PID: " + pid.to_s + " user does not exist. old user id: " + (old_a['user_id'] || "nil").to_s)
           else
-            my_log(log_file, "PID: " + pid.to_s + " citations_project does not exist. old citation id: " + (old_a['citation_id'] || "nil").to_s) 
+            my_log(log_file, "PID: " + pid.to_s + " citations_project does not exist. old citation id: " + (old_a['citation_id'] || "nil").to_s)
           end
         end
       end

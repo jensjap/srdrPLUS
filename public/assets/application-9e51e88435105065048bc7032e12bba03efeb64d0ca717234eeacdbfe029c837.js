@@ -66192,32 +66192,27 @@ function __guardMethod__(obj, methodName, transform) {
               pmid: pmid,
               name: name,
               abstract: abstract,
-              authors: authors,
               keywords: keywords,
-              journal: journal
+              journal: journal,
+              authors: authors.join(', ')
             };
             return populate_citation_fields(citation_hash);
           }
         });
       };
       populate_citation_fields = function(citation) {
-        var author, i, j, keyword, keywordselect, len, len1, ref, ref1;
+        var i, keyword, keywordselect, len, ref;
         $('.citation-fields').find('.citation-name input').val(citation['name']);
+        $('.citation-fields').find('.citation-authors textarea').val(citation['authors']);
         $('.citation-fields').find('.citation-abstract textarea').val(citation['abstract']);
         $('.citation-fields').find('.journal-name input').val(citation['journal']['name']);
         $('.citation-fields').find('.journal-volume input').val(citation['journal']['vol']);
         $('.citation-fields').find('.journal-issue input').val(citation['journal']['issue']);
         $('.citation-fields').find('.journal-year input').val(citation['journal']['year']);
         $('.citation-fields').find('.project_citations_pmid input').val(citation['pmid']);
-        ref = citation['authors'];
+        ref = citation['keywords'];
         for (i = 0, len = ref.length; i < len; i++) {
-          author = ref[i];
-          $('.add-author').click();
-          $('#AUTHORS .authors-citation input.author-name').last().val(author);
-        }
-        ref1 = citation['keywords'];
-        for (j = 0, len1 = ref1.length; j < len1; j++) {
-          keyword = ref1[j];
+          keyword = ref[i];
           keywordselect = $('.KEYWORDS select');
           $.ajax({
             type: 'GET',
@@ -66286,7 +66281,6 @@ function __guardMethod__(obj, methodName, transform) {
             }
           });
           $(insertedItem).find('#is-pmid').on('click', function() {
-            $(insertedItem).find('#AUTHORS .remove-authors-citation').click();
             $(insertedItem).find('.KEYWORDS select').val(null).trigger('change');
             $(insertedItem).find('.citation-name input').val(null);
             $(insertedItem).find('.citation-abstract textarea').val(null);
@@ -66295,18 +66289,6 @@ function __guardMethod__(obj, methodName, transform) {
             $(insertedItem).find('.journal-issue input').val(null);
             $(insertedItem).find('.journal-year input').val(null);
             return fetch_from_pubmed($('.project_citations_accession_number input').val());
-          });
-          $(insertedItem).find('#AUTHORS').on('cocoon:after-insert cocoon:after-remove', function(e, insertedItem) {
-            var author_elem, i, len, new_position, ref, results;
-            new_position = 1;
-            ref = $('#AUTHORS .authors-citation input.author-position');
-            results = [];
-            for (i = 0, len = ref.length; i < len; i++) {
-              author_elem = ref[i];
-              $(author_elem).val(new_position);
-              results.push(new_position += 1);
-            }
-            return results;
           });
           $(insertedItem).find('.citation-select').select2({
             minimumInputLength: 0,

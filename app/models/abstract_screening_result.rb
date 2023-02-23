@@ -76,7 +76,7 @@ class AbstractScreeningResult < ApplicationRecord
       id:,
       abstract_screening_id:,
       accession_number_alts: citation.accession_number_alts,
-      author_map_string: citation.author_map_string,
+      author_map_string: citation.authors,
       name: citation.name,
       year: citation.year,
       user: user.handle,

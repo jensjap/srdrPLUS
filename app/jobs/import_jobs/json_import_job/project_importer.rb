@@ -263,16 +263,12 @@ class ImportJobs::JsonImportJob::ProjectImporter
                            abstract: chash['abstract'],
                            refman: chash['refman'],
                            pmid: chash['pmid'],
+                           authors: chash['authors']&.values&.join(', '),
                            journal: j })
 
     chash['keywords']&.values&.each do |kwhash|
       kw = Keyword.find_or_create_by!(name: kwhash['name'])
       c.keywords << kw
-    end
-
-    chash['authors']&.values&.each do |ahash|
-      a = Author.find_or_create_by!(name: ahash['name'])
-      c.authors << a
     end
 
     cp = CitationsProject.find_or_create_by! project: @p, citation: c
