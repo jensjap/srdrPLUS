@@ -8,7 +8,7 @@ class StatusingsController < ApplicationController
         @info = if !policy(@statusing).update?
                   [false, 'You are not authorized to make this change', 'red']
                 elsif @statusing.update(statusing_params)
-                  [true, 'Saved!', '#410093']
+                  [true, 'Statusing saved!', '#410093']
                 else
                   [false, 'An error occured.  Changes have not been saved.', 'red']
                 end

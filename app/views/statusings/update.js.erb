@@ -1,6 +1,6 @@
 <% if @info.present? %>
   <% if @info[0] === true %>
-    toastr.success('<%= @info[1] %>');
+    console.log('<%= @info[1] %>');
   <% else %>
     toastr.error('<%= @info[1] %>');
   <% end %>
