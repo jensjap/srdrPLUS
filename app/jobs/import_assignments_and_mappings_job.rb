@@ -609,7 +609,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     # Without Ordering on ExtractionsExtractionFormsProjectsSectionsType1 it will not display.
     eefpst1
       .build_ordering(
-        position: (
+        pos: (
           eefps.extractions_extraction_forms_projects_sections_type1s.length + 1
         )
       ).save

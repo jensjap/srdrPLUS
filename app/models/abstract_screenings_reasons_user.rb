@@ -18,13 +18,13 @@ class AbstractScreeningsReasonsUser < ApplicationRecord
   belongs_to :user
 
   def self.custom_reasons_object(abstract_screening, user)
-    asrus = AbstractScreeningsReasonsUser.where(abstract_screening:, user:).order(:position).includes(:reason)
+    asrus = AbstractScreeningsReasonsUser.where(abstract_screening:, user:).includes(:reason)
     asrus.map do |asru|
       {
         id: asru.id,
         reason_id: asru.reason_id,
         name: asru.reason.name,
-        position: asru.position,
+        pos: asru.pos,
         selected: false
       }
     end

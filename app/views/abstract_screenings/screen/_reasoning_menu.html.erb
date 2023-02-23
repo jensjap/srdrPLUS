@@ -185,8 +185,8 @@
                     }"
                     x-on:drop.prevent="(e) => {
                       if (dragType == dropType && dragIndex != dropIndex) {
-                        updateCustomValue(dragType, { id: asr[dragType][dragIndex].id, position: dropIndex })
-                        updateCustomValue(dropType, { id: asr[dropType][dropIndex].id, position: dragIndex })
+                        updateCustomValue(dragType, { id: asr[dragType][dragIndex].id, pos: dropIndex })
+                        updateCustomValue(dropType, { id: asr[dropType][dropIndex].id, pos: dragIndex })
                       }
                     }"
                     x-on:dragend.prevent="(e) => {
@@ -330,8 +330,8 @@
                       }"
                       x-on:drop.prevent="(e) => {
                         if (dragType == dropType && dragIndex != dropIndex) {
-                          updateCustomValue(dragType, { id: asr[dragType][dragIndex].id, position: asr[dropType][dropIndex].position })
-                          updateCustomValue(dropType, { id: asr[dropType][dropIndex].id, position: asr[dragType][dragIndex].position })
+                          updateCustomValue(dragType, { id: asr[dragType][dragIndex].id, pos: dropIndex })
+                          updateCustomValue(dropType, { id: asr[dropType][dropIndex].id, pos: dragIndex })
                         }
                       }"
                       x-on:dragend.prevent="(e) => {

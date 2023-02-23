@@ -327,7 +327,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   private
 
   def sort_by_their_orderings(eefpst1s)
-    max_position = eefpst1s.map { |eefpst1| eefpst1.position }.max
+    max_pos = eefpst1s.map { |eefpst1| eefpst1.pos }.max
 
     eefpst1s.sort_by do |eefpst1|
       if eefpst1.type1 == Type1.find_by(
@@ -338,9 +338,9 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
                               extraction_forms_projects_section.section.name
                             end} combined"
       )
-        max_position + 1
+        max_pos + 1
       else
-        eefpst1.position
+        eefpst1.pos
       end
     end
   end

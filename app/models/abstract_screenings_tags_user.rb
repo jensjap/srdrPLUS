@@ -18,13 +18,13 @@ class AbstractScreeningsTagsUser < ApplicationRecord
   belongs_to :user
 
   def self.custom_tags_object(abstract_screening, user)
-    astus = AbstractScreeningsTagsUser.where(abstract_screening:, user:).order(:position).includes(:tag)
+    astus = AbstractScreeningsTagsUser.where(abstract_screening:, user:).includes(:tag)
     astus.map do |astu|
       {
         id: astu.id,
         tag_id: astu.tag_id,
         name: astu.tag.name,
-        position: astu.position,
+        pos: astu.pos,
         selected: false
       }
     end

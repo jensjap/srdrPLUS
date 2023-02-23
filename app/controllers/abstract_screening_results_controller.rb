@@ -117,10 +117,10 @@ class AbstractScreeningResultsController < ApplicationController
 
   def reasons_and_tags_params
     params.require(:asr).permit(
-      predefined_reasons: %i[id reason_id name position selected],
-      predefined_tags: %i[id tag_id name position selected],
-      custom_reasons: %i[id reason_id name position selected],
-      custom_tags: %i[id tag_id name position selected]
+      predefined_reasons: %i[id reason_id name pos selected],
+      predefined_tags: %i[id tag_id name pos selected],
+      custom_reasons: %i[id reason_id name pos selected],
+      custom_tags: %i[id tag_id name pos selected]
     )
   end
 end

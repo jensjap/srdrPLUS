@@ -80,7 +80,7 @@ class ExtractionFormsProjectsSectionSupplyingService
         'item' => []
       }
       for question in raw.questions do
-        question_linkid = question.position.to_s + '-' + question.id.to_s
+        question_linkid = question.pos.to_s + '-' + question.id.to_s
         question_item = {
           'linkId' => question_linkid,
           'text' => question.name,

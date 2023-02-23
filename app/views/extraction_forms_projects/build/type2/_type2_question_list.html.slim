@@ -32,14 +32,14 @@ h4 #{ efps.section.name.titleize } Question List
         - efps.questions.each do |q|
           / data-dependent attribute is an array of ordering ids that this orderable-item depends on.
           / It is illegal to move an orderable-item infront of any of its dependencies.
-          tr.orderable-item [ position="#{ q.position }" ordering-id="#{ q.id }" data-dependent="[#{ q.dependencies.collect { |d| d.prerequisitable.question.id }.join(',') }]" ]
+          tr.orderable-item [ position="#{ q.pos }" ordering-id="#{ q.id }" data-dependent="[#{ q.dependencies.collect { |d| d.prerequisitable.question.id }.join(',') }]" ]
             td.sort-handle style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"
               i class="fa fa-arrows"
-            td = q.position
+            td = q.pos
             td
               ul#dependencies
                 - for d in q.dependencies
-                  li = 'Question Position: ' + d.prerequisitable.question.position.to_s
+                  li = 'Question Position: ' + d.prerequisitable.question.pos.to_s
 
                   - if d.prerequisitable.question.question_type == 'Matrix'
                     / Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi.

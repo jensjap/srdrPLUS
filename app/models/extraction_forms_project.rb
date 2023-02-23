@@ -63,12 +63,10 @@ class ExtractionFormsProject < ApplicationRecord
              case extraction_forms_project.extraction_forms_project_type_id
              when 1
                where(section: [Section.where('sections.name NOT IN (?)',
-                                             DIAGNOSTIC_TEST_SECTIONS)]).order(:position)
+                                             DIAGNOSTIC_TEST_SECTIONS)])
              when 2
                where(section: [Section.where('sections.name NOT IN (?)',
-                                             STANDARD_SECTIONS)]).order(:position)
-             else
-               order(:position)
+                                             STANDARD_SECTIONS)])
              end
            },
            inverse_of: :extraction_forms_project

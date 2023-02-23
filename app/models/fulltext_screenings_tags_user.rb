@@ -18,13 +18,13 @@ class FulltextScreeningsTagsUser < ApplicationRecord
   belongs_to :user
 
   def self.custom_tags_object(fulltext_screening, user)
-    fstus = FulltextScreeningsTagsUser.where(fulltext_screening:, user:).order(:position).includes(:tag)
+    fstus = FulltextScreeningsTagsUser.where(fulltext_screening:, user:).includes(:tag)
     fstus.map do |fstu|
       {
         id: fstu.id,
         tag_id: fstu.tag_id,
         name: fstu.tag.name,
-        position: fstu.position,
+        pos: fstu.pos,
         selected: false
       }
     end

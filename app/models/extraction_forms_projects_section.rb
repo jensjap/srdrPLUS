@@ -215,7 +215,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
   def ensure_sequential_questions
     questions.each_with_index do |question, idx|
-      question.position = idx + 1
+      question.pos = idx + 1
     end
   end
 end

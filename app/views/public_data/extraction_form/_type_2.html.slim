@@ -11,7 +11,7 @@
           - if q.dependencies.present?
             div.border-gray-300.rounded
               h5 Dependency
-              - q.dependencies.group_by { |d| d.prerequisitable.question.position }.each do |group, ds|
+              - q.dependencies.group_by { |d| d.prerequisitable.question.pos }.each do |group, ds|
                 li.pl-2 = 'Question Position: ' + group.to_s
 
                 ul.pl-8

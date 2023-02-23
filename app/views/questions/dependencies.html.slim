@@ -1,10 +1,10 @@
 div class="mx-8"
   h1 class="text-2xl" Set Dependencies
-  h2 class="text-xl" #{ @question.position }. #{ @question.name }
+  h2 class="text-xl" #{ @question.pos }. #{ @question.name }
 
   - @other_extraction_forms_projects_section_questions.each_with_index do |q, idx|
 
-    /- if @question.position > q.position
+    /- if @question.pos > q.pos
 
     .card
 

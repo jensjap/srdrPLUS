@@ -18,7 +18,7 @@ class AbstractScreeningsTagsUsersController < ApplicationController
         abstract_screenings_tags_user = AbstractScreeningsTagsUser.find_or_create_by!(
           id: params[:id], user: current_user
         )
-        abstract_screenings_tags_user.update!(position: params[:position]) if params[:position]
+        abstract_screenings_tags_user.update!(pos: params[:pos]) if params[:pos]
         if name
           tag = Tag.find_or_create_by!(name:)
           asrts =

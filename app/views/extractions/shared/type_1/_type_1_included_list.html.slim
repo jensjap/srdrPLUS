@@ -41,7 +41,7 @@
             - bgcolor = '#eeeeff'
           - elsif eefpst1.type1_type && eefpst1.type1_type.name == 'Continuous'
             - bgcolor = '#ccf5de'
-          tr.orderable-item position="#{eefpst1.position}" ordering-id="#{eefpst1.id}" style="background-color: #{bgcolor}"
+          tr.orderable-item position="#{eefpst1.pos}" ordering-id="#{eefpst1.id}" style="background-color: #{bgcolor}"
             td.sort-handle style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"
               i class="fa fa-arrows"
             - if section_name == 'Outcomes'

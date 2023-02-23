@@ -405,7 +405,7 @@
 
       async updateCustomValue(type, values) {
         const id = values.id;
-        const position = values.position;
+        const pos = values.pos;
         const newCustomValue = values.newCustomValue || false;
         let url;
         if (type == "custom_reasons") {
@@ -423,7 +423,7 @@
               .content,
           },
           body: JSON.stringify({
-            position,
+            pos,
             newCustomValue,
           }),
         });
