@@ -5,7 +5,7 @@ class StatusingsController < ApplicationController
   def update
     respond_to do |format|
       format.js do
-        @info = if !policy(@statusing.project).update?
+        @info = if !policy(@statusing.statusable.extraction).update?
                   [true, 'You are not authorized to make changes', 'red']
                 elsif @statusing.update(statusing_params)
                   [true, 'Saved!', '#410093']
