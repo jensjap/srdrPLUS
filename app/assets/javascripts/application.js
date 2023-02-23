@@ -176,7 +176,7 @@ let documentCode = function() {
       const elements = Array.from( $( orderable ).find( '.orderable-item' ) );
 
       for ( let i=0; i < elements.length; i++ ) {
-        params.orderings.push( { id: $( elements[i] ).attr( 'ordering-id' ), position: ( i ) } )
+        params.orderings.push( { id: $( elements[i] ).attr( 'ordering-id' ), table: $( elements[i] ).attr( 'table' ), position: ( i ) } )
       }
 
       $.ajax({
@@ -216,7 +216,7 @@ let documentCode = function() {
           for (let i=idx+1; i < lsofOrderableItemsInReverse.length; i++ ) {
             if ( $( lsofOrderableItemsInReverse[i] ).data( 'dependent' ).map( x => x.toString() ).includes( $( el ).attr( 'ordering-id' ) ) ) {
               validOrder = false;
-              lsofOrderingsToRemoveDependencies.push( $( lsofOrderableItemsInReverse[i] ).attr( 'ordering-id' ) );
+              lsofOrderingsToRemoveDependencies.push({ id: $( lsofOrderableItemsInReverse[i] ).attr( 'ordering-id' ), table: $( lsofOrderableItemsInReverse[i] ).attr( 'table' ) });
             }
           }
         }
