@@ -24,10 +24,10 @@ class ApplicationPolicy
   def initialize(user, record)
     raise Pundit::NotAuthorizedError, 'must be logged in' unless user
 
-    @user          = user
-    @record        = record
-    @projects_user = ProjectsUser.find_by(user:, project: record)
-    @permissions   = @projects_user&.permissions || 0
+    @user = user
+    @record = record
+    @project = @record.project
+    @projects_user = ProjectsUser.find_by(user:, project: @project)
   end
 
   def index?

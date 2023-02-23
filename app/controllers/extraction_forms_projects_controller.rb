@@ -10,6 +10,7 @@ class ExtractionFormsProjectsController < ApplicationController
   # POST /projects/1/extraction_forms_projects.json
   def create
     @extraction_forms_project = @project.extraction_forms_projects.build(extraction_forms_project_params)
+    authorize(@extraction_forms_project)
 
     respond_to do |format|
       if @extraction_forms_project.save
@@ -81,14 +82,13 @@ class ExtractionFormsProjectsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_project
     @project = Project.find(params[:project_id])
-    authorize(@project, policy_class: ExtractionFormsProjectPolicy)
   end
 
   def set_extraction_forms_project
     @extraction_forms_project = ExtractionFormsProject
                                 .includes(:project)
                                 .find(params[:id])
-    authorize(@extraction_forms_project.project, policy_class: ExtractionFormsProjectPolicy)
+    authorize(@extraction_forms_project)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

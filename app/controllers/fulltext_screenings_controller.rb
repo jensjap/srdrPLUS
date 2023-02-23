@@ -6,14 +6,14 @@ class FulltextScreeningsController < ApplicationController
   after_action :verify_authorized
 
   def new
-    authorize(@project, policy_class: FulltextScreeningPolicy)
     @fulltext_screening = @project.fulltext_screenings.new
+    authorize(@fulltext_screening)
   end
 
   def create
-    authorize(@project, policy_class: FulltextScreeningPolicy)
     @fulltext_screening =
       @project.fulltext_screenings.new(fulltext_screening_params)
+    authorize(@fulltext_screening)
     if @fulltext_screening.save
       flash[:notice] = 'Screening was successfully created'
       redirect_to project_fulltext_screenings_path(@project)
@@ -25,7 +25,7 @@ class FulltextScreeningsController < ApplicationController
 
   def destroy
     @fulltext_screening = FulltextScreening.find(params[:id])
-    authorize(@fulltext_screening.project, policy_class: FulltextScreeningPolicy)
+    authorize(@fulltext_screening)
     if @fulltext_screening.destroy
       flash[:success] = 'The fulltext screening was deleted.'
     else
@@ -37,7 +37,7 @@ class FulltextScreeningsController < ApplicationController
   def edit
     @fulltext_screening = FulltextScreening.find(params[:id])
     @project = @fulltext_screening.project
-    authorize(@fulltext_screening.project, policy_class: FulltextScreeningPolicy)
+    authorize(@fulltext_screening)
   end
 
   def index
@@ -51,8 +51,8 @@ class FulltextScreeningsController < ApplicationController
   end
 
   def screen
-    authorize(fs = FulltextScreening.find(params[:fulltext_screening_id]),
-              policy_class: FulltextScreeningPolicy)
+    fs = FulltextScreening.find(params[:fulltext_screening_id])
+    authorize(fs)
     respond_to do |format|
       format.json do
         fsr =
@@ -73,7 +73,7 @@ class FulltextScreeningsController < ApplicationController
   def show
     @fulltext_screening = FulltextScreening.find(params[:id])
     @project = @fulltext_screening.project
-    authorize(@fulltext_screening.project, policy_class: FulltextScreeningPolicy)
+    authorize(@fulltext_screening)
     @nav_buttons.push('fulltext_screening', 'my_projects')
 
     respond_to do |format|
@@ -102,7 +102,7 @@ class FulltextScreeningsController < ApplicationController
   def update
     @fulltext_screening = FulltextScreening.find(params[:id])
     @project = @fulltext_screening.project
-    authorize(@fulltext_screening.project, policy_class: FulltextScreeningPolicy)
+    authorize(@fulltext_screening)
     if @fulltext_screening.update(fulltext_screening_params)
       flash[:notice] = 'Screening was successfully updated'
       redirect_to project_fulltext_screenings_path(@project)

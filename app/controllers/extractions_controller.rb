@@ -52,8 +52,8 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/new
   def new
-    authorize(@project, policy_class: ExtractionPolicy)
-    @extraction           = @project.extractions.new(citations_project: CitationsProject.new(project: @project))
+    @extraction = @project.extractions.new(citations_project: CitationsProject.new(project: @project))
+    authorize(@extraction)
     @citations_projects   = @project.citations_projects
     @citations            = @project.citations
     @users = if policy(@project).assign_extraction_to_any_user?
@@ -66,7 +66,7 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/1/edit
   def edit
-    authorize(@extraction.project, policy_class: ExtractionPolicy)
+    authorize(@extraction)
     @citations_projects = @extraction.project.citations_projects
     @users = User.joins(:projects_users).where(projects_users: { project: @extraction.project })
   end
@@ -186,7 +186,7 @@ class ExtractionsController < ApplicationController
   # DELETE /extractions/1
   # DELETE /extractions/1.json
   def destroy
-    authorize(@extraction.project, policy_class: ExtractionPolicy)
+    authorize(@extraction)
 
     @extraction.destroy
     respond_to do |format|

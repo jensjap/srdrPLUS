@@ -101,6 +101,10 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :imports, allow_destroy: true
   accepts_nested_attributes_for :imported_files, allow_destroy: true
 
+  def project
+    self
+  end
+
   def type1s_used_by_projects_extractions(extraction_forms_projects_section_id)
     Type1
       .joins([{ extractions_extraction_forms_projects_sections_type1s: [{ extractions_extraction_forms_projects_section: [{ extraction: :project }] }] }])

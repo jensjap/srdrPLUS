@@ -4,7 +4,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumnsController < Appl
   # POST /extractions_extraction_forms_projects_sections_type1_rows/:extractions_extraction_forms_projects_sections_type1_row_id/extractions_extraction_forms_projects_sections_type1_row_columns
   # POST /extractions_extraction_forms_projects_sections_type1_rows/:extractions_extraction_forms_projects_sections_type1_row_id/extractions_extraction_forms_projects_sections_type1_row_columns.json
   def create
-    authorize(@extractions_extraction_forms_projects_sections_type1_row.project, policy_class: ExtractionsExtractionFormsProjectsSectionsType1RowColumnPolicy)
+    authorize(@extractions_extraction_forms_projects_sections_type1_row.project,
+              policy_class: ExtractionsExtractionFormsProjectsSectionsType1RowColumnPolicy)
 
     respond_to do |format|
       @extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
@@ -16,20 +17,22 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumnsController < Appl
         end
       end
 
-      format.html { redirect_to edit_populations_extractions_extraction_forms_projects_sections_type1_path(@extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1),
-                    notice: t('success') }
+      format.html do
+        redirect_to edit_populations_extractions_extraction_forms_projects_sections_type1_path(@extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1),
+                    notice: t('success')
+      end
       format.json { head :no_content }
     end
   end
 
   private
 
-    def set_extractions_extraction_forms_projects_sections_type1_row
-      @extractions_extraction_forms_projects_sections_type1_row = ExtractionsExtractionFormsProjectsSectionsType1Row.find(params[:extractions_extraction_forms_projects_sections_type1_row_id])
-    end
+  def set_extractions_extraction_forms_projects_sections_type1_row
+    @extractions_extraction_forms_projects_sections_type1_row = ExtractionsExtractionFormsProjectsSectionsType1Row.find(params[:extractions_extraction_forms_projects_sections_type1_row_id])
+  end
 
-    def extractions_extraction_forms_projects_sections_type1_row_column_params
-      params.require(:extractions_extraction_forms_projects_sections_type1_row_column)
-        .permit(:name, :description)
-    end
+  def extractions_extraction_forms_projects_sections_type1_row_column_params
+    params.require(:extractions_extraction_forms_projects_sections_type1_row_column)
+          .permit(:name, :description)
+  end
 end

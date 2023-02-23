@@ -4,7 +4,7 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
   # PATCH/PUT /extractions_extraction_forms_projects_sections/1
   # PATCH/PUT /extractions_extraction_forms_projects_sections/1.json
   def update
-    authorize(@extractions_extraction_forms_projects_section.project, policy_class: ExtractionsExtractionFormsProjectsSectionPolicy)
+    authorize(@extractions_extraction_forms_projects_section)
     respond_to do |format|
       if @extractions_extraction_forms_projects_section.update(extractions_extraction_forms_projects_section_params)
         format.html do

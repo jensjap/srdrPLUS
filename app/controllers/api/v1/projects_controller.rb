@@ -1,14 +1,13 @@
 module Api
   module V1
     class ProjectsController < BaseController
-      before_action :set_project, only: [:show, :update, :destroy]
+      before_action :set_project, only: %i[show update destroy]
 
-      before_action :skip_authorization, only: [:index, :show, :create]
+      before_action :skip_authorization, only: %i[index show create]
       before_action :skip_policy_scope
 
       SORT = {  'updated-at': { updated_at: :desc },
-                'created-at': { created_at: :desc }
-      }.stringify_keys
+                'created-at': { created_at: :desc } }.stringify_keys
 
       def_param_group :project do
         param :project, Hash, required: true, action_aware: true do
@@ -28,10 +27,10 @@ module Api
       formats [:json]
       def index
         @projects = current_user.projects
-          .includes(:extraction_forms)
-          .includes(:key_questions)
-          .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
-          .by_query(@query).order(SORT[@order]).page(params[:page])
+                                .includes(:extraction_forms)
+                                .includes(:key_questions)
+                                .includes(publishing: [{ user: :profile }, approval: [{ user: :profile }]])
+                                .by_query(@query).order(SORT[@order]).page(params[:page])
       end
 
       api :GET, '/v1/projects/:id', 'Show project by id'
@@ -53,7 +52,7 @@ module Api
       param_group :project
       formats ['json']
       def update
-        authorize(@project, policy_class: ProjectPolicy)
+        authorize(@project)
 
         @project.update(project_params)
         flash[:notice] = 'Project was successfully updated.' if @project.save
@@ -62,17 +61,17 @@ module Api
 
       private
 
-        def set_project
-          @project = Project.find(params[:id])
-        end
+      def set_project
+        @project = Project.find(params[:id])
+      end
 
-        def project_params
-          if action_name != 'create'
-            params.require(:project).permit(policy(@project).permitted_attributes)
-          else
-            params.require(:project).permit(*ProjectPolicy::FULL_PARAMS)
-          end
+      def project_params
+        if action_name != 'create'
+          params.require(:project).permit(policy(@project).permitted_attributes)
+        else
+          params.require(:project).permit(*ProjectPolicy::FULL_PARAMS)
         end
+      end
     end
   end
 end
