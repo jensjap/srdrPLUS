@@ -58,6 +58,10 @@ class Citation < ApplicationRecord
       (other.present? && other)
   end
 
+  def authors_short
+    authors.truncate(30)
+  end
+
   def keyword_ids=(tokens)
     tokens.map do |token|
       resource = Keyword.new
