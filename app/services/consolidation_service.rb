@@ -61,7 +61,6 @@ class ConsolidationService
     consolidated_extraction_eefpst1s = consolidated_extraction_eefps
                                        .extractions_extraction_forms_projects_sections_type1s
                                        .includes(
-                                         :ordering,
                                          :type1,
                                          :type1_type,
                                          {
@@ -91,8 +90,8 @@ class ConsolidationService
         type1_type_name: consolidated_extraction_eefpst1&.type1_type&.name,
         name: consolidated_extraction_eefpst1.type1.name,
         description: consolidated_extraction_eefpst1.type1.description,
-        ordering_id: consolidated_extraction_eefpst1.ordering.id,
-        position: consolidated_extraction_eefpst1.ordering.position,
+        ordering_id: consolidated_extraction_eefpst1.id,
+        pos: consolidated_extraction_eefpst1.pos,
         populations:,
         timepoints:
       }
@@ -121,7 +120,6 @@ class ConsolidationService
       parent_eefps_eefpst1s =
         if efps.extraction_forms_projects_section_type_id == 1
           parent_eefps.extractions_extraction_forms_projects_sections_type1s.includes(
-            :ordering,
             :type1,
             :type1_type,
             {
