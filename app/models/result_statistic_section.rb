@@ -24,7 +24,7 @@ class ResultStatisticSection < ApplicationRecord
 
   has_many :result_statistic_sections_measures,
            lambda {
-             joins(:measure)
+             joins(:measure).order('measures.id ASC')
            }, dependent: :destroy, inverse_of: :result_statistic_section
   has_many :measures, through: :result_statistic_sections_measures, dependent: :destroy
 

@@ -16,7 +16,7 @@ class QuestionRow < ApplicationRecord
 
   belongs_to :question, inverse_of: :question_rows
 
-  has_many :question_row_columns, dependent: :destroy, inverse_of: :question_row
+  has_many :question_row_columns, -> { order(id: :asc) }, dependent: :destroy, inverse_of: :question_row
 
   accepts_nested_attributes_for :question_row_columns
 

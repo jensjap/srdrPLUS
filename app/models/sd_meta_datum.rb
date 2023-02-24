@@ -44,6 +44,8 @@
 #
 
 class SdMetaDatum < ApplicationRecord
+  default_scope { order(id: :desc) }
+
   include SharedPublishableMethods
   include SharedProcessTokenMethods
 

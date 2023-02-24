@@ -10,6 +10,8 @@
 #
 
 class Type1 < ApplicationRecord
+  default_scope { order(:id) }
+
   include SharedQueryableMethods
   include SharedSuggestableMethods
 
