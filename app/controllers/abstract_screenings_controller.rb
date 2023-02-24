@@ -98,7 +98,7 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def kpis
-    authorize(@project)
+    authorize(@project, policy_class: AbstractScreeningPolicy)
   end
 
   def screen
