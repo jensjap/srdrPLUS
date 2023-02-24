@@ -26,7 +26,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
                                                                .extractions_extraction_forms_projects_section
                                                                .extraction_forms_projects_section.id),
                                                        notice: t('success') }
-        format.json { head :no_content }
+        format.json { render json: {} }
         format.js {}
       else
         format.html do

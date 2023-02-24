@@ -1,0 +1,68 @@
+<div
+  class="relative z-10"
+  aria-labelledby="slide-over-title"
+  role="dialog"
+  aria-modal="true"
+  x-cloak
+  x-show="efps_sidebar"
+>
+  <!-- Background backdrop, show/hide based on slide-over state. -->
+  <div
+    class="fixed inset-0 backdrop-blur-sm bg-white/30 transition-opacity"
+    x-transition:enter="ease-in-out duration-500"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="ease-in-out duration-500"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    x-show="efps_sidebar"
+  ></div>
+
+  <div class="fixed inset-0 overflow-hidden">
+    <div class="absolute inset-0 overflow-hidden">
+      <div
+        class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16"
+      >
+        <div
+          class="pointer-events-auto w-screen max-w-md"
+          x-show="efps_sidebar"
+          @click.outside="efps_sidebar = false"
+          x-cloak
+          x-transition:enter="transform transition ease-in-out duration-500"
+          x-transition:enter-start="translate-x-full"
+          x-transition:enter-end="translate-x-0"
+          x-transition:leave="transform transition ease-in-out duration-500"
+          x-transition:leave-start="translate-x-0"
+          x-transition:leave-end="translate-x-full"
+        >
+          <div class="flex h-full flex-col overflow-hidden bg-white shadow-xl">
+            <div class="p-6">
+              <div class="flex items-start justify-between">
+                <h2 class="text-base font-medium text-gray-900">
+                  Form Sections
+                </h2>
+              </div>
+            </div>
+            <ul
+              role="list"
+              class="flex-1 divide-y divide-gray-200 overflow-y-auto"
+            >
+              <template
+                x-for="efps_section in efps_sections"
+                :key="efps_section.efps_id"
+              >
+                <li class="cursor-pointer">
+                  <a
+                    class="group relative flex items-center p-2 m-1 bg-srdrpurple text-white rounded text-sm font-bold text-center hover:!text-white"
+                    :href="`null?citations_project_id=${mh?.current_citations_project?.citations_project_id}&efps_id=${efps_section?.efps_id}`"
+                    x-text="efps_section.name"
+                  ></a>
+                </li>
+              </template>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
