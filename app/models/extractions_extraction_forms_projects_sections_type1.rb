@@ -178,10 +178,18 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   def preview_type1_change_propagation
     return_data = {}
     return_data[false] = [self]
-    return_data[:citations] = ExtractionsExtractionFormsProjectsSectionsType1
-                              .by_citations_project_and_type1(citations_project.id, type1.id)
-    return_data[:project] = ExtractionsExtractionFormsProjectsSectionsType1
-                            .by_project_and_type1(project.id, type1.id)
+    return_data[:citations] =
+      ExtractionsExtractionFormsProjectsSectionsType1
+      .by_citations_project_and_type1(citations_project.id, type1.id)
+      .includes(:type1, {
+                  extractions_extraction_forms_projects_section: { extraction: { citations_project: :citation, projects_users_role: { projects_user: { user: :profile } } } }
+                })
+    return_data[:project] =
+      ExtractionsExtractionFormsProjectsSectionsType1
+      .by_project_and_type1(project.id, type1.id)
+      .includes(:type1, {
+                  extractions_extraction_forms_projects_section: { extraction: { citations_project: :citation, projects_users_role: { projects_user: { user: :profile } } } }
+                })
 
     return_data
   end

@@ -1,0 +1,57 @@
+<template x-if="qrc.type_name == 'text'">
+  <div>
+    <div class="flex">
+      <template
+        x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
+        :key="eefps.id"
+      >
+        <div>
+          <template
+            x-if="typeof section_eefpst1 === 'undefined' || section_eefpst1?.eefpst1_lookups[eefps.id]"
+          >
+            <textarea
+              @input.debounce.1000ms="
+                ''; let a
+                if (typeof section_eefpst1 === 'undefined') {
+                  a = `record_id-${qrc.qrcf.id}-${eefps.id}-`
+                } else {
+                  a = `record_id-${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
+                }
+                updateRecord(mh?.current_citations_project?.cell_lookups[a], $el.value)
+              "
+              class="!resize-none"
+              name=""
+              id=""
+              cols="20"
+              rows="5"
+              :disabled="!eefps.consolidated"
+              :minlength="qrc.selection_options[0].name"
+              :maxlength="qrc.selection_options[1].name"
+              x-text="
+                ''; let a
+                if (typeof section_eefpst1 === 'undefined') {
+                  a = `${qrc.qrcf.id}-${eefps.id}-`
+                } else {
+                  a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
+                }
+                const b = mh?.current_citations_project?.cell_lookups[a]?.value
+                return b
+              "
+              :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+            ></textarea>
+          </template>
+          <template
+            x-if="typeof section_eefpst1 !== 'undefined' && section_eefpst1?.eefpst1_lookups[eefps.id] === undefined"
+          >
+            <div
+              :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+              class="mx-1 text-xs text-gray-400"
+            >
+              - No Arm -
+            </div>
+          </template>
+        </div>
+      </template>
+    </div>
+  </div>
+</template>

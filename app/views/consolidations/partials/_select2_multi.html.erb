@@ -1,0 +1,51 @@
+<template x-if="qrc.type_name == 'select2_multi'">
+  <div class="flex">
+    <template
+      x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
+      :key="eefps.id"
+    >
+      <div class="w-64">
+        <template
+          x-if="typeof section_eefpst1 === 'undefined' || section_eefpst1?.eefpst1_lookups[eefps.id]"
+        >
+          <select
+            :disabled="!eefps.consolidated"
+            x-effect="$nextTick(() => {
+              ''; let a
+              a = `eefps-${eefps.id}-qrcf-${qrc.qrcf.id}`
+              bootSelect2($el, mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[a], true, true)
+            })"
+            multiple
+          >
+            <template x-for="option in qrc.selection_options" :key="option.id">
+              <option
+                :value="option.id"
+                :selected="
+                  ''; let a
+                  if (typeof section_eefpst1 === 'undefined') {
+                    a = `${qrc.qrcf.id}-${eefps.id}-`
+                  } else {
+                    a = `${qrc.qrcf.id}-${eefps.id}-${section_eefpst1?.eefpst1_lookups[eefps.id]}`
+                  }
+                  if (mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[a] === undefined) return false
+                  return mh?.current_citations_project?.eefpsqrcfqrcqrco_lookups[a].some(o => o.id == option.id)
+                "
+                x-text="option.name"
+              ></option>
+            </template>
+          </select>
+        </template>
+        <template
+          x-if="typeof section_eefpst1 !== 'undefined' && section_eefpst1?.eefpst1_lookups[eefps.id] === undefined"
+        >
+          <div
+            :title="`Extraction ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+            class="mx-1 text-xs text-gray-400"
+          >
+            - No Arm -
+          </div>
+        </template>
+      </div>
+    </template>
+  </div>
+</template>

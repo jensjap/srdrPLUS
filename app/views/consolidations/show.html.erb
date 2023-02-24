@@ -1,0 +1,593 @@
+<div x-data="consolidate">
+  <!-- prettier-ignore -->
+  <%= render 'consolidations/partials/efps_sidebar' %>
+  <%= render 'consolidations/partials/type1_change_modal' %>
+  <%= render 'consolidations/partials/change_tp_modal' %>
+  <% efps = ExtractionFormsProject.find_by(project: @project).extraction_forms_projects_sections.fifth %>
+  <div
+    class="px-4 lg:px-8 py-1 sm:flex sm:items-center z-[5] !sticky top-32 bg-gray-100"
+  >
+    <div class="sm:flex-auto">
+      <div>
+        <h1 class="text-base font-bold">
+          Consolidate Section:
+          <span
+            class="bg-red-700 cursor-pointer text-white p-1 rounded"
+            :class="mh?.current_citations_project?.section_name ? '!bg-srdrpurple' : '' "
+            @click="efps_sidebar = true"
+            x-text="mh?.current_citations_project?.section_name ? mh?.current_citations_project?.section_name : 'Loading...'"
+            >Loading...</span
+          >
+        </h1>
+      </div>
+      <div>
+        <div class="text-sm text-gray-700">
+          <%= @citations_project.citation.name %>
+        </div>
+        <div class="text-sm text-gray-700">
+          <%= @citations_project.citation.authors %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <template x-if="mh?.current_citations_project?.efpst_id == 1">
+    <%= render 'consolidations/partials/type1' %>
+  </template>
+  <template x-if="mh?.current_citations_project?.efpst_id == 2">
+    <%= render 'consolidations/partials/type2' %>
+  </template>
+  <!-- <div class="px-4 lg:px-8 space-y-2 h-64 overflow-auto" id="json"></div> -->
+</div>
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("consolidate", () => ({
+      efps_sidebar: false,
+      efps_sections: [],
+      mh: null,
+      newType1: {
+        name: "",
+        description: "",
+      },
+      newType1Index: null,
+      oldType1: {
+        name: "",
+        description: "",
+      },
+      type1_change_modal: false,
+      scopeOfChange: "false",
+      type1_previews: {
+        loading: true,
+        false: [],
+        citations: [],
+        project: [],
+      },
+      extraction_eefpst1s: [
+        { name: "name", description: "description", id: 1, position: 1 },
+      ],
+      populations: [
+        {
+          name: "All Participants",
+          description: "All patients enrolled in this study.",
+        },
+      ],
+      timepoints: [
+        {
+          name: "Baseline",
+          description: "",
+        },
+      ],
+      changeTPModal: false,
+      addTimepointModal: false,
+      change_type: "",
+      change_ids: {},
+      old_eefpst1: {},
+      old_tp_name: "",
+      old_tp_description_unit: "",
+      new_tp_name: "",
+      new_tp_description_unit: "",
+
+      init() {
+        this.fetch_efps(this.efps_id());
+      },
+
+      async updateTP() {
+        let params;
+        if (this.change_type == "Population") {
+          params = {
+            extractions_extraction_forms_projects_sections_type1: {
+              extractions_extraction_forms_projects_sections_type1_rows_attributes:
+                {
+                  0: {
+                    id: this.change_ids.eefpst1r_id,
+                    population_name_attributes: {
+                      name: this.new_tp_name,
+                      description: this.new_tp_description_unit,
+                    },
+                  },
+                },
+            },
+          };
+        } else {
+          params = {
+            extractions_extraction_forms_projects_sections_type1: {
+              extractions_extraction_forms_projects_sections_type1_rows_attributes:
+                {
+                  0: {
+                    id: this.change_ids.eefpst1r_id,
+                    extractions_extraction_forms_projects_sections_type1_row_columns_attributes:
+                      {
+                        0: {
+                          id: this.change_ids.eefpst1rc_id,
+                          timepoint_name_attributes: {
+                            name: this.new_tp_name,
+                            unit: this.new_tp_description_unit,
+                          },
+                        },
+                      },
+                  },
+                },
+            },
+          };
+        }
+
+        const response = await fetch(
+          `/extractions_extraction_forms_projects_sections_type1s/${this.old_eefpst1.id}`,
+          {
+            method: "PATCH",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+
+        if (response.status >= 200 && response.status < 300) {
+          this.type1_previews.loading = false;
+          this.changeTPModal = false;
+          toastr.success("Updated successfully", null, { timeOut: 1000 });
+          this.fetch_efps(this.mh?.current_citations_project?.efps_id);
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+
+      async deletePopulation(eefpst1_id, eefpst1r_id) {
+        const params = {
+          extractions_extraction_forms_projects_sections_type1: {
+            extractions_extraction_forms_projects_sections_type1_rows_attributes:
+              {
+                0: {
+                  _destroy: 1,
+                  id: eefpst1r_id,
+                },
+              },
+          },
+        };
+
+        const response = await fetch(
+          `/extractions_extraction_forms_projects_sections_type1s/${eefpst1_id}`,
+          {
+            method: "PATCH",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Deleted successfully", null, { timeOut: 1000 });
+          this.fetch_efps(this.mh?.current_citations_project?.efps_id);
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+
+      async deleteTimepoint(eefpst1_id, eefpst1r_id, eefpst1rc_id) {
+        const params = {
+          extractions_extraction_forms_projects_sections_type1: {
+            extractions_extraction_forms_projects_sections_type1_rows_attributes:
+              {
+                0: {
+                  id: eefpst1r_id,
+                  extractions_extraction_forms_projects_sections_type1_row_columns_attributes:
+                    {
+                      0: {
+                        _destroy: 1,
+                        id: eefpst1rc_id,
+                      },
+                    },
+                },
+              },
+          },
+        };
+
+        const response = await fetch(
+          `/extractions_extraction_forms_projects_sections_type1s/${eefpst1_id}`,
+          {
+            method: "PATCH",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Deleted successfully", null, { timeOut: 1000 });
+          this.fetch_efps(this.mh?.current_citations_project?.efps_id);
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+
+      addToNewPopulation() {
+        const populationName = this.$refs.populationName.value;
+        const populationDescription = this.$refs.populationDescription.value;
+        if (populationName.trim() === "") {
+          toastr.error("Population name must not be blank", null, {
+            timeOut: 1000,
+          });
+          return;
+        }
+        if (
+          this.populations.some(
+            (population) =>
+              population.name === populationName &&
+              population.description === populationDescription
+          )
+        ) {
+          toastr.error("Duplicate", null, { timeOut: 1000 });
+        } else {
+          this.populations.push({
+            name: populationName,
+            description: populationDescription,
+          });
+          this.$refs.populationName.value = "";
+          this.$refs.populationDescription.value = "";
+        }
+      },
+
+      addToNewTimepoint() {
+        const timepointName = this.$refs.timepointName.value;
+        const timepointUnit = this.$refs.timepointUnit.value;
+        if (timepointName.trim() === "") {
+          toastr.error("Timepoint name must not be blank", null, {
+            timeOut: 1000,
+          });
+          return;
+        }
+        if (
+          this.timepoints.some(
+            (timepoint) =>
+              timepoint.name === timepointName &&
+              timepoint.unit === timepointUnit
+          )
+        ) {
+          toastr.error("Duplicate", null, { timeOut: 1000 });
+        } else {
+          this.timepoints.push({
+            name: timepointName,
+            unit: timepointUnit,
+          });
+          this.$refs.timepointName.value = "";
+          this.$refs.timepointUnit.value = "";
+        }
+      },
+
+      efps_id() {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        return urlParams.get("efps_id");
+      },
+
+      isOutcome() {
+        return this.mh?.current_citations_project?.section_name === "Outcomes";
+      },
+
+      initializeOrderings() {
+        $(".orderable-list").each((_index, orderableElement) => {
+          attachOrderable(orderableElement);
+        });
+      },
+
+      async getArmData(type1_id, efps_id, eefps_id) {
+        const response = await fetch(
+          `/projects/${this.mh?.current_citations_project?.project_id}/extractions/edit_type1_across_extractions?` +
+            new URLSearchParams({
+              type1_id,
+              efps_id,
+              eefps_id,
+            }),
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+          }
+        );
+        const data = await response.json();
+        if (response.status >= 200 && response.status < 300) {
+          this.type1_previews = data;
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+
+      async updateArmsData(eefpst1_id, name, description) {
+        const params = {
+          extractions_extraction_forms_projects_sections_type1: {
+            should: { propagate: this.scopeOfChange },
+            type1_attributes: {
+              name,
+              description,
+            },
+          },
+        };
+
+        const response = await fetch(
+          `/extractions_extraction_forms_projects_sections_type1s/${eefpst1_id}`,
+          {
+            method: "PATCH",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+        const data = await response.json();
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Saved successfully", null, { timeOut: 1000 });
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+        this.fetch_efps(this.mh?.current_citations_project?.efps_id);
+        this.type1_change_modal = false;
+      },
+
+      async createArm(eefps_id, name, description) {
+        if (name.trim() === "") {
+          toastr.error("Outcome domain cannot be blank", null, {
+            timeOut: 1000,
+          });
+          return;
+        }
+        const params = {
+          extractions_extraction_forms_projects_section: {
+            extractions_extraction_forms_projects_sections_type1s_attributes: {
+              0: {
+                type1_attributes: {
+                  name,
+                  description,
+                },
+              },
+            },
+          },
+        };
+
+        if (this.isOutcome()) {
+          const eefpst1_attributes =
+            params.extractions_extraction_forms_projects_section
+              .extractions_extraction_forms_projects_sections_type1s_attributes[0];
+          eefpst1_attributes.units = this.$refs.new_eefpst1_units.value;
+          eefpst1_attributes.type1_type_id = this.$refs.new_eefpst1_type.value;
+          for (
+            let populationIndex = 0;
+            populationIndex < this.populations.length;
+            populationIndex++
+          ) {
+            const population = this.populations[populationIndex];
+            for (
+              let timepointIndex = 0;
+              timepointIndex < this.timepoints.length;
+              timepointIndex++
+            ) {
+              const timepoint = this.timepoints[timepointIndex];
+              eefpst1_attributes.extractions_extraction_forms_projects_sections_type1_rows_attributes ||=
+                {};
+              eefpst1_attributes.extractions_extraction_forms_projects_sections_type1_rows_attributes[
+                populationIndex
+              ] ||= {};
+              eefpst1_attributes.extractions_extraction_forms_projects_sections_type1_rows_attributes[
+                populationIndex
+              ].population_name_attributes = {
+                name: population.name,
+                description: population.description,
+              };
+              if (populationIndex === 0) {
+                eefpst1_attributes.extractions_extraction_forms_projects_sections_type1_rows_attributes[
+                  populationIndex
+                ].extractions_extraction_forms_projects_sections_type1_row_columns_attributes ||=
+                  {};
+                eefpst1_attributes.extractions_extraction_forms_projects_sections_type1_rows_attributes[
+                  populationIndex
+                ].extractions_extraction_forms_projects_sections_type1_row_columns_attributes[
+                  timepointIndex
+                ] = {
+                  timepoint_name_attributes: {
+                    name: timepoint.name,
+                    unit: timepoint.unit,
+                  },
+                };
+              }
+            }
+          }
+        }
+
+        const response = await fetch(
+          `/extractions_extraction_forms_projects_sections/${eefps_id}`,
+          {
+            method: "PATCH",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+        const data = await response.json();
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Saved successfully", null, { timeOut: 1000 });
+          this.fetch_efps(this.mh?.current_citations_project?.efps_id);
+          this.$refs.new_eefpst1_name.value = "";
+          this.$refs.new_eefpst1_description.value = "";
+          this.$refs.new_eefpst1_units.value = "";
+          this.$refs.new_eefpst1_type.value = 1;
+          this.populations = [
+            {
+              name: "All Participants",
+              description: "All patients enrolled in this study.",
+            },
+          ];
+          this.timepoints = [
+            {
+              name: "Baseline",
+              description: "",
+            },
+          ];
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+
+      async deleteArm(eefpst1_id) {
+        const response = await fetch(
+          `/extractions_extraction_forms_projects_sections_type1s/${eefpst1_id}`,
+          {
+            method: "DELETE",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+          }
+        );
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Deleted successfully", null, { timeOut: 1000 });
+          this.fetch_efps(this.mh?.current_citations_project?.efps_id);
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+
+      bootSelect2(selectionField, record_id, multiple, tags) {
+        const that = this;
+        $(selectionField).select2({
+          multiple,
+          tags,
+          allowClear: true,
+          placeholder: "Select...",
+          createTag: (params) => {
+            var term = $.trim(params.term);
+
+            if (term === "") {
+              return null;
+            }
+            return {
+              id: `<<<${term}>>>`,
+              text: `Other: ${term}`,
+            };
+          },
+        });
+        $(selectionField).on("select2:select select2:unselect", function (e) {
+          const value = $(this).val();
+          that.updateRecord(record_id, value, multiple);
+        });
+      },
+
+      async updateRecord(record_id, value, select2_multi) {
+        let url;
+        let params;
+        if (select2_multi) {
+          url =
+            "extractions_extraction_forms_projects_sections_question_row_column_fields";
+          params = {
+            extractions_extraction_forms_projects_sections_question_row_column_field:
+              {
+                question_row_columns_question_row_column_option_ids: [
+                  "",
+                ].concat(value === null ? [] : value),
+              },
+          };
+        } else {
+          url = "records";
+          params = {
+            record: { name: value },
+          };
+        }
+
+        const response = await fetch(`/${url}/${record_id}`, {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+          body: JSON.stringify(params),
+        });
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Saved successfully", null, { timeOut: 1000 });
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+
+      async fetch_efps(efps_id) {
+        this.mh = null;
+        let query_param = "";
+        if (efps_id) {
+          query_param = `&efps_id=${efps_id}`;
+        }
+        const response = await fetch(location.href + query_param, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+
+        this.efps_sections = data.efps_sections;
+        this.mh = data.mh;
+
+        $("#json").empty();
+        $("#json").append("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
+      },
+    }));
+  });
+</script>
