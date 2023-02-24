@@ -31,7 +31,7 @@ class MigratingPositionsService
           orderable_objects = []
           table_group.each do |table_item|
             duplicate = table_item.as_json
-            duplicate['position'] = table_item&.ordering&.position || 0
+            duplicate['position'] = table_item&.ordering&.position || 999_999
             orderable_objects << duplicate
           end
           table.upsert_all(orderable_objects, update_only: [:position])
