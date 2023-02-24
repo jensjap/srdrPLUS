@@ -39,7 +39,7 @@ json.project do
     @project.key_questions_projects.each do |kqp|
       json.set! kqp.key_question.id do
         json.name kqp.key_question.name
-        json.pos kqp.pos
+        # json.pos kqp.pos ####### need to make sure kqp has ordering and position -Birol
       end
     end
   end
