@@ -198,7 +198,9 @@ class CitationsProject < ApplicationRecord
   end
 
   def evaluate_screening_status
-    extractions = Extraction.where(citations_project: self)
+    extractions = Extraction
+                  .includes(extractions_extraction_forms_projects_sections: :status)
+                  .where(citations_project: self)
     if extractions.present? && extractions.unconsolidated.all? do |extraction|
          extraction.extractions_extraction_forms_projects_sections.present? && extraction.extractions_extraction_forms_projects_sections.all? do |eefps|
            eefps.status.name == 'Completed'
