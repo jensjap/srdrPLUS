@@ -8,7 +8,7 @@
 #  description                          :text(65535)
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
-#  position                             :integer          default(0)
+#  position                             :integer          default(999999)
 #
 
 class Question < ApplicationRecord

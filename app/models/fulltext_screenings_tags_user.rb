@@ -8,7 +8,7 @@
 #  user_id               :bigint
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
-#  position              :integer
+#  position              :integer          default(999999)
 #
 class FulltextScreeningsTagsUser < ApplicationRecord
   before_create :put_last

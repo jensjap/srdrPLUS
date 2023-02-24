@@ -7,7 +7,7 @@
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  sd_meta_datum_id   :bigint
-#  position           :integer          default(0)
+#  position           :integer          default(999999)
 #
 
 class SdResultItem < ApplicationRecord

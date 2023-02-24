@@ -6,7 +6,7 @@
 #  screening_form_id :bigint
 #  name              :string(255)
 #  description       :text(65535)
-#  position          :integer
+#  position          :integer          default(999999)
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #

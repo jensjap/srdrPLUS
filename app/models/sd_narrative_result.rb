@@ -9,7 +9,7 @@
 #  narrative_results_by_population   :text(65535)
 #  narrative_results_by_intervention :text(65535)
 #  sd_result_item_id                 :bigint
-#  position                          :integer          default(0)
+#  position                          :integer          default(999999)
 #
 
 class SdNarrativeResult < ApplicationRecord

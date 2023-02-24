@@ -8,7 +8,7 @@
 #  type1_type_id                        :integer
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
-#  position                             :integer          default(0)
+#  position                             :integer          default(999999)
 #
 
 class ExtractionFormsProjectsSectionsType1 < ApplicationRecord
