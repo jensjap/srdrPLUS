@@ -159,7 +159,7 @@
               <div class="grid grid-rows sm:grid-cols-6 gap-4 mt-4 mb-8">
                 <template x-for="(reason, index) in asr.predefined_reasons">
                   <span
-                    :class=" reason.selected ? 'bg-srdrpurple' : 'bg-white text-black'"
+                    :class="reason.selected ? 'bg-srdrpurple' : 'bg-white !text-black'"
                     @click="const value = reason.selected; turnOffAllReasons(); reason.selected = !value; updateAsr('reasons_and_tags')"
                     class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
                     x-text="reason.name"
@@ -200,8 +200,8 @@
                       :class="{
                         'w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black': true,
                         'bg-srdrpurple': reason.selected,
-                        'bg-white text-black': !reason.selected,
-                        'bg-purple-400 !text-white': (dropIndex == index && dropType == dragType && dragIndex != dropIndex && dragType == 'custom_reasons')
+                        '!bg-white !text-black': !reason.selected,
+                        '!bg-purple-400 !text-white': (dropIndex == index && dropType == dragType && dragIndex != dropIndex && dragType == 'custom_reasons')
                       }"
                       @click="const value = reason.selected; turnOffAllReasons(); reason.selected = !value; updateAsr('reasons_and_tags')"
                       x-text="reason.name"
@@ -305,7 +305,7 @@
                 <div class="grid grid-rows sm:grid-cols-6 gap-4 mt-4 mb-8">
                   <template x-for="(tag, index) in asr.predefined_tags">
                     <span
-                      :class="tag.selected ? 'bg-srdrpurple' : 'bg-white text-black'"
+                      :class="tag.selected ? 'bg-srdrpurple' : 'bg-white !text-black'"
                       @click="tag.selected = !tag.selected; updateAsr('reasons_and_tags')"
                       class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
                       x-text="tag.name"
@@ -345,8 +345,8 @@
                         :class="{
                           'w-full text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black': true,
                           'bg-srdrpurple': tag.selected,
-                          'bg-white text-black': !tag.selected,
-                          'bg-purple-400 !text-white': (dropIndex == index && dropType == dragType && dragIndex != dropIndex && dragType == 'custom_tags')
+                          '!bg-white !text-black': !tag.selected,
+                          '!bg-purple-400 !text-white': (dropIndex == index && dropType == dragType && dragIndex != dropIndex && dragType == 'custom_tags')
                         }"
                         @click="tag.selected = !tag.selected; updateAsr('reasons_and_tags')"
                         x-text="tag.name"
