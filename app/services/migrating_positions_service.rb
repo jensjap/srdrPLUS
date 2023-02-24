@@ -1,6 +1,5 @@
 class MigratingPositionsService
   ORDERABLE_TABLES = [
-    AuthorsCitation,
     ExtractionFormsProjectsSection,
     ExtractionFormsProjectsSectionsType1,
     ExtractionsExtractionFormsProjectsSectionsType1,
