@@ -81,7 +81,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_20_035757) do
     t.bigint "reason_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "position", default: 999999
+    t.integer "position"
     t.index ["abstract_screening_id", "reason_id"], name: "asr_as_on_r", unique: true
     t.index ["abstract_screening_id"], name: "asr_on_as"
     t.index ["reason_id"], name: "asr_on_r"
@@ -93,7 +93,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_20_035757) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "position", default: 999999
+    t.integer "position"
     t.index ["abstract_screening_id", "reason_id", "user_id"], name: "as_r_u", unique: true
     t.index ["abstract_screening_id"], name: "asru_on_as"
     t.index ["reason_id"], name: "asru_on_r"
@@ -105,7 +105,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_20_035757) do
     t.bigint "tag_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "position", default: 999999
+    t.integer "position"
     t.index ["abstract_screening_id", "tag_id"], name: "ast_as_on_t", unique: true
     t.index ["abstract_screening_id"], name: "ast_on_as"
     t.index ["tag_id"], name: "ast_on_t"
@@ -117,7 +117,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_20_035757) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "position", default: 999999
+    t.integer "position"
     t.index ["abstract_screening_id", "tag_id", "user_id"], name: "as_t_u", unique: true
     t.index ["abstract_screening_id"], name: "astu_on_as"
     t.index ["tag_id"], name: "astu_on_t"
@@ -795,7 +795,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_20_035757) do
     t.bigint "reason_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "position", default: 999999
+    t.integer "position"
     t.index ["fulltext_screening_id", "reason_id"], name: "fsr_fs_on_r", unique: true
     t.index ["fulltext_screening_id"], name: "fsr_on_fs"
     t.index ["reason_id"], name: "fsr_on_r"
@@ -807,7 +807,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_20_035757) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "position", default: 999999
+    t.integer "position"
     t.index ["fulltext_screening_id", "reason_id", "user_id"], name: "fs_r_u", unique: true
     t.index ["fulltext_screening_id"], name: "fsru_on_fs"
     t.index ["reason_id"], name: "fsru_on_r"
@@ -819,7 +819,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_20_035757) do
     t.bigint "tag_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "position", default: 999999
+    t.integer "position"
     t.index ["fulltext_screening_id", "tag_id"], name: "fst_fs_on_t", unique: true
     t.index ["fulltext_screening_id"], name: "fst_on_fs"
     t.index ["tag_id"], name: "fst_on_t"
@@ -831,7 +831,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_20_035757) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "position", default: 999999
+    t.integer "position"
     t.index ["fulltext_screening_id", "tag_id", "user_id"], name: "fs_t_u", unique: true
     t.index ["fulltext_screening_id"], name: "fstu_on_fs"
     t.index ["tag_id"], name: "fstu_on_t"
@@ -1809,7 +1809,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_20_035757) do
   create_table "sf_columns", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.bigint "sf_question_id"
-    t.integer "position", default: 999999
+    t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["sf_question_id"], name: "index_sf_columns_on_sf_question_id"
@@ -1831,7 +1831,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_20_035757) do
     t.bigint "sf_cell_id"
     t.string "name", null: false
     t.boolean "with_followup", default: false, null: false
-    t.integer "position", default: 999999
+    t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name", "sf_cell_id"], name: "index_sf_options_on_name_and_sf_cell_id", unique: true
@@ -1842,7 +1842,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_20_035757) do
     t.bigint "screening_form_id"
     t.string "name"
     t.text "description"
-    t.integer "position", default: 999999
+    t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["screening_form_id"], name: "index_sf_questions_on_screening_form_id"
@@ -1851,7 +1851,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_20_035757) do
   create_table "sf_rows", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.bigint "sf_question_id"
-    t.integer "position", default: 999999
+    t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["sf_question_id"], name: "index_sf_rows_on_sf_question_id"
