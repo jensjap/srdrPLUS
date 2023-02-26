@@ -59,7 +59,7 @@ class Citation < ApplicationRecord
   end
 
   def authors_short
-    authors.truncate(30)
+    authors&.truncate(30)
   end
 
   def keyword_ids=(tokens)
