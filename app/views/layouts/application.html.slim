@@ -58,7 +58,7 @@ html class='no-js' lang='en'
           .off-canvas.position-right#offCanvasRightReportHtml data-off-canvas=''
             button.close-button aria-label='Close menu' type='button' data-close=''
               span aria-hidden='true' &times;
-            iframe class="iframe" onload="resizeIframe(this)" id='htmlReportIframe' src='/TOC.html' text='Systematic Review Report' title='Systematic Review Report' width='100%'
+            iframe class="iframe" style="height: 100vh" id='htmlReportIframe' src='/TOC.html' text='Systematic Review Report' title='Systematic Review Report' width='100%'
 
         .off-canvas-content data-off-canvas-content=''
           = render "shared/topbar_nav"
