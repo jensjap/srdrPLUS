@@ -1,0 +1,167 @@
+<div class="border p-2 w-9/12 xl:w-11/12 space-y-2">
+  <h2 class="text-base font-bold border-b-2">PICODTS</h2>
+  <div class="bg-green-50 p-2">
+    <h3 class="text-sm font-bold border-b-2 flex items-center">
+      PICODTS
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="green"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="white"
+        class="w-5 h-5 cursor-pointer"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    </h3>
+    <template x-for="i in 3">
+      <div class="bg-green-200 m-2 p-2 rounded-md space-y-2">
+        <div class="flex justify-between items-center">
+          <select class="w-12" name="" id="">
+            <template x-for="ii in 3">
+              <option :value="ii" x-text="ii" :selected="i == ii"></option>
+            </template>
+          </select>
+          <div
+            class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+          >
+            Remove PICODTS
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Key Question(s) (Required)</label
+          >
+          <div>
+            <input
+              type="text"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+            />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Level of Data Analysis (Required)</label
+          >
+          <div>
+            <input
+              type="text"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+            />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Population (P) (Required)</label
+          >
+          <div>
+            <textarea
+              rows="4"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+            ></textarea>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Interventions (I) (Required)</label
+          >
+          <div>
+            <textarea
+              rows="4"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+            ></textarea>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Comparators (C) (Required)</label
+          >
+          <div>
+            <textarea
+              rows="4"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+            ></textarea>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Outcomes (O) (Required)</label
+          >
+          <div>
+            <textarea
+              rows="4"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+            ></textarea>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Study Designs (D)</label
+          >
+          <div>
+            <textarea
+              rows="4"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+            ></textarea>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Timing (T)</label
+          >
+          <div>
+            <textarea
+              rows="4"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+            ></textarea>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Settings (S)</label
+          >
+          <div>
+            <textarea
+              rows="4"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+            ></textarea>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Other Elements</label
+          >
+          <div>
+            <textarea
+              rows="4"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+    </template>
+    <div
+      class="border-4 border-green-200 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+    >
+      PICODTS
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="green"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="white"
+        class="w-5 h-5 cursor-pointer"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    </div>
+  </div>
+</div>

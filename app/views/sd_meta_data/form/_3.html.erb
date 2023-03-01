@@ -1,0 +1,252 @@
+<div class="border p-2 w-9/12 xl:w-11/12 space-y-2">
+  <h2 class="text-base font-bold border-b-2">
+    Purpose, Analytic Framework, and Key Questions
+  </h2>
+  <div>
+    <label class="block text-xs font-bold text-gray-700"
+      >Overall Purpose of Review
+    </label>
+    <div>
+      <textarea
+        rows="4"
+        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+        autofocus
+      ></textarea>
+    </div>
+  </div>
+  <div>
+    <label class="block text-xs font-bold text-gray-700">Type of Review</label>
+    <div>
+      <input
+        type="text"
+        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+      />
+    </div>
+  </div>
+  <div class="bg-purple-50 p-2">
+    <h3 class="text-sm font-bold border-b-2 flex items-center">
+      Analytic / Conceptual Frameworks
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="green"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="white"
+        class="w-5 h-5 cursor-pointer"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    </h3>
+    <template x-for="i in 2">
+      <div class="bg-purple-200 m-2 p-2 rounded-md space-y-2">
+        <div class="flex justify-between items-center">
+          <select class="w-12" name="" id="">
+            <template x-for="ii in i">
+              <option :value="ii" x-text="ii" :selected="i == ii"></option>
+            </template>
+          </select>
+          <div
+            class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+          >
+            Remove Framework
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Description</label
+          >
+          <div>
+            <input
+              type="text"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+            />
+          </div>
+        </div>
+        <div class="flex items-center">
+          <label class="block text-xs font-bold text-gray-700">Figure(s)</label>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="green"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="white"
+            class="w-4 h-4 cursor-pointer"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
+        <div class="bg-purple-300 m-2 p-2 rounded-md space-y-2">
+          <div class="flex justify-end">
+            <div
+              class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+            >
+              Remove Figure
+            </div>
+          </div>
+          <div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700"
+                >Alt text</label
+              >
+              <input
+                type="text"
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+              />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700"
+              >Pictures</label
+            >
+            <div>
+              <div
+                class="text-xs bg-srdr-secondary text-white p-2 cursor-pointer rounded-md text-center w-24"
+              >
+                Add File(s)
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-wrap">
+            <!-- prettier-ignore -->
+            <template x-for="iii in 10">
+            <%= image_tag("global_map.jpg", class: "w-64 p-1 cursor-pointer") %>
+            </template>
+          </div>
+        </div>
+        <div
+          class="border-4 border-purple-300 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+        >
+          Figures
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="green"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="white"
+            class="w-5 h-5 cursor-pointer"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
+      </div>
+    </template>
+    <div
+      class="border-4 border-purple-200 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+    >
+      Analytic / Conceptual Frameworks
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="green"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="white"
+        class="w-5 h-5 cursor-pointer"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    </div>
+  </div>
+  <div class="bg-blue-50 p-2">
+    <h3 class="text-sm font-bold border-b-2 flex items-center">
+      Report Key Questions (must include at least one Key Question)
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="green"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="white"
+        class="w-5 h-5 cursor-pointer"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    </h3>
+    <template x-for="i in 3">
+      <div class="bg-blue-200 m-2 p-2 rounded-md space-y-2">
+        <div class="flex justify-between items-center">
+          <select class="w-12" name="" id="">
+            <template x-for="ii in i">
+              <option :value="ii" x-text="ii" :selected="i == ii"></option>
+            </template>
+          </select>
+          <div
+            class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+          >
+            Remove Key Question
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Key Question (Required)</label
+          >
+          <div>
+            <input
+              type="text"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+            />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Type(s) (Required)</label
+          >
+          <div>
+            <input
+              type="text"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+            />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Did this Key Question include a meta-analysis? (Required)</label
+          >
+          <div>
+            <input
+              type="text"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+            />
+          </div>
+        </div>
+      </div>
+    </template>
+    <div
+      class="border-4 border-blue-200 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+    >
+      Report Key Questions
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="green"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="white"
+        class="w-5 h-5 cursor-pointer"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    </div>
+  </div>
+</div>

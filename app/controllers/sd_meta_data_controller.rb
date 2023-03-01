@@ -94,7 +94,33 @@ class SdMetaDataController < ApplicationController
   def edit
     @systematic_review_report = true
     @panel_number = params[:panel_number].try(:to_i) || 0
-    @sd_meta_datum = SdMetaDatum.find(params[:id])
+    @sd_meta_datum = SdMetaDatum.includes(
+      # :key_questions,
+      # :sd_key_questions_projects,
+      # :project_key_questions,
+      # :sd_key_questions_sd_picods,
+      # :sd_journal_article_urls,
+      # :sd_other_items,
+      # :sd_search_strategies,
+      # :sd_search_databases,
+      # :sd_summary_of_evidences,
+      # :sd_grey_literature_searches,
+      # :sd_prisma_flows,
+      # :sd_picods,
+      # :sd_analytic_frameworks,
+      # :funding_sources_sd_meta_data,
+      # :funding_sources,
+      # :sd_meta_data_queries,
+      # :publishing,
+      {
+        sd_result_items: { sd_key_question: :key_question },
+        sd_narrative_results: :sd_outcomes,
+        sd_evidence_tables: :sd_outcomes,
+        sd_pairwise_meta_analytic_results: %i[sd_outcomes sd_meta_data_figures],
+        sd_network_meta_analysis_results: :sd_outcomes,
+        sd_meta_regression_analysis_results: :sd_outcomes
+      }
+    ).find(params[:id])
     # @sd_meta_datum.sd_journal_article_urls.build
     # @sd_meta_datum.sd_other_items.build
     # @sd_meta_datum.sd_grey_literature_searches.build
@@ -120,6 +146,7 @@ class SdMetaDataController < ApplicationController
       # end
       @report_html_path = rails_blob_path(@sd_meta_datum.report_file)
     end
+    return render :new_template if params[:new_template]
   end
 
   def update
