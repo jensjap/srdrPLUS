@@ -7,6 +7,7 @@
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         autofocus
+        x-model="sdMetaDatum.prospero_link"
       />
     </div>
   </div>
@@ -16,6 +17,7 @@
       <input
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.protocol_link"
       />
     </div>
   </div>
@@ -27,6 +29,7 @@
       <input
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.full_report_link"
       />
     </div>
   </div>
@@ -38,6 +41,7 @@
       <input
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.structured_abstract_link"
       />
     </div>
   </div>
@@ -49,6 +53,7 @@
       <input
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.key_messages_link"
       />
     </div>
   </div>
@@ -60,6 +65,7 @@
       <input
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.abstract_summary_link"
       />
     </div>
   </div>
@@ -71,6 +77,7 @@
       <input
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.evidence_summary_link"
       />
     </div>
   </div>
@@ -82,6 +89,7 @@
       <input
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.disposition_of_comments_link"
       />
     </div>
   </div>
@@ -93,6 +101,7 @@
       <input
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.srdr_data_link"
       />
     </div>
   </div>
@@ -104,6 +113,7 @@
       <input
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.most_previous_version_srdr_link"
       />
     </div>
   </div>
@@ -115,6 +125,7 @@
       <input
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.most_previous_version_full_report_link"
       />
     </div>
   </div>
@@ -129,6 +140,7 @@
         stroke-width="1.5"
         stroke="white"
         class="w-4 h-4 cursor-pointer"
+        @click="sdMetaDatum.sd_journal_article_urls.push({ id: null, text: '' })"
       >
         <path
           stroke-linecap="round"
@@ -137,26 +149,32 @@
         />
       </svg>
     </div>
-    <div class="flex items-center">
-      <input
-        type="text"
-        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-      />
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="red"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="white"
-        class="w-4 h-4 cursor-pointer"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+    <template
+      x-for="(sd_journal_article_url, sd_journal_article_url_index) in sdMetaDatum.sd_journal_article_urls"
+    >
+      <div class="flex items-center">
+        <input
+          type="text"
+          class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+          x-model="sd_journal_article_url.text"
         />
-      </svg>
-    </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="red"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="white"
+          class="w-4 h-4 cursor-pointer"
+          @click="sdMetaDatum.sd_journal_article_urls.splice(sd_journal_article_url_index, 1)"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </div>
+    </template>
   </div>
   <div>
     <div class="flex items-center">
@@ -168,6 +186,7 @@
         stroke-width="1.5"
         stroke="white"
         class="w-4 h-4 cursor-pointer"
+        @click="sdMetaDatum.sd_other_items.push({ id: null, text: '' })"
       >
         <path
           stroke-linecap="round"
@@ -176,25 +195,31 @@
         />
       </svg>
     </div>
-    <div class="flex items-center">
-      <input
-        type="text"
-        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-      />
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="red"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="white"
-        class="w-4 h-4 cursor-pointer"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+    <template
+      x-for="(sd_other_item, sd_other_item_index) in sdMetaDatum.sd_other_items"
+    >
+      <div class="flex items-center">
+        <input
+          type="text"
+          class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+          x-model="sd_other_item.text"
         />
-      </svg>
-    </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="red"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="white"
+          class="w-4 h-4 cursor-pointer"
+          @click="sdMetaDatum.sd_other_items.splice(sd_other_item_index, 1)"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </div>
+    </template>
   </div>
 </div>

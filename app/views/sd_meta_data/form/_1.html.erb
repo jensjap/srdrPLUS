@@ -9,6 +9,7 @@
         rows="4"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         autofocus
+        x-model="sdMetaDatum.organization"
       ></textarea>
     </div>
   </div>
@@ -20,6 +21,7 @@
       <textarea
         rows="4"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.authors"
       ></textarea>
     </div>
   </div>
@@ -31,6 +33,7 @@
       <textarea
         rows="4"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.authors_conflict_of_interest_of_full_report"
       ></textarea>
     </div>
   </div>
@@ -42,6 +45,7 @@
       <textarea
         rows="4"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.stakeholders_key_informants"
       ></textarea>
     </div>
   </div>
@@ -53,6 +57,7 @@
       <textarea
         rows="4"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.stakeholders_technical_experts"
       ></textarea>
     </div>
   </div>
@@ -64,6 +69,7 @@
       <textarea
         rows="4"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.stakeholders_peer_reviewers"
       ></textarea>
     </div>
   </div>
@@ -75,6 +81,7 @@
       <textarea
         rows="4"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.stakeholders_others"
       ></textarea>
     </div>
   </div>
@@ -82,11 +89,13 @@
     <label class="block text-xs font-bold text-gray-700"
       >SRDR+ Project Leads
     </label>
-    <div>
-      <textarea
-        rows="4"
-        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
-      ></textarea>
+    <div class="border border-gray-300 rounded-md p-1">
+      <template x-for="user in sdMetaDatum.leaders">
+        <div class="text-sm">
+          <b x-text="user.name"></b>
+          <span x-text="`(${user.email})`"></span>
+        </div>
+      </template>
     </div>
   </div>
 </div>

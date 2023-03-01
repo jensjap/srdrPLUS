@@ -1,7 +1,4 @@
-<div
-  x-data="{ enabled: true, panel_number: <%= params[:panel_number] %> }"
-  class="p-4 lg:p-8 space-y-2"
->
+<div x-data="sdMetaDatum" class="p-4 lg:p-8 space-y-2">
   <div class="font-bold text-sm">
     <div class="flex justify-between">
       <div>
@@ -136,3 +133,65 @@
     <%= render "sd_meta_data/form/#{params[:panel_number]}" %>
   </div>
 </div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("sdMetaDatum", () => ({
+      sdMetaDatum: {},
+      enabled: true,
+      panel_number: null,
+
+      async init() {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const panel_number = urlParams.get("panel_number");
+        this.panel_number = panel_number;
+
+        const id = /\d+/.exec(window.location.pathname);
+        await this.getSdMetaDatum(id);
+        this.initSelect2();
+      },
+
+      async initSelect2() {
+        $("#funding_sources").select2({
+          ajax: {
+            url: "/funding_sources",
+            dataType: "json",
+            selectOnClose: true,
+            allowClear: true,
+            data: (params) => {
+              var query = {
+                q: params.term,
+                page: params.page,
+              };
+              return query;
+            },
+            processResults: (data, params) => {
+              params.page = params.page || 1;
+              return {
+                results: $.map(data.items, (i) => {
+                  return {
+                    id: i.id,
+                    text: i.name,
+                  };
+                }),
+              };
+            },
+          },
+        });
+      },
+
+      async getSdMetaDatum(id) {
+        const response = await fetch(`/sd_meta_data/${id}/edit`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const sdMetaDatum = await response.json();
+        this.sdMetaDatum = sdMetaDatum;
+      },
+    }));
+  });
+</script>
