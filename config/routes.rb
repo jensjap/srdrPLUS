@@ -27,7 +27,7 @@ Rails.application.routes.draw do
 
   resources :searches, only: [:index]
   resources :funding_sources, only: [:index]
-  resources :funding_sources_sd_meta_data, only: [:create, :destroy]
+  resources :funding_sources_sd_meta_data, only: %i[create destroy]
   resources :sd_picods_types, only: [:index]
   resources :key_question_types, only: [:index]
   resources :sd_search_databases, only: [:index]
@@ -139,10 +139,12 @@ Rails.application.routes.draw do
     delete :delete_image_attachment, on: :member
   end
 
-  resources :sd_meta_data, only: [] do
+  resources :sd_meta_data, shallow: true, only: [] do
     get 'preview'
     post 'section_update'
     post 'mapping_update'
+    resources :sd_journal_article_urls, only: %i[create destroy update]
+    resources :sd_other_items, only: %i[create destroy update]
   end
 
   get 'sd_key_questions/:id/fuzzy_match', to: 'sd_key_questions#fuzzy_match'

@@ -214,6 +214,23 @@
         });
       },
 
+      async updateSubResource(resource, id, method, key, value) {
+        this.apiCall(`/${resource}/${id}`, method, {
+          [key]: value,
+        });
+      },
+
+      async createSubResource(resource) {
+        const response = await this.apiCall(
+          `/sd_meta_data/${this.sdMetaDatumId}/${resource}`,
+          "POST"
+        );
+        this.sdMetaDatum[resource].push({
+          id: response.id,
+          text: response.name,
+        });
+      },
+
       async apiCall(url, method, params = {}) {
         const options = {
           method: method,

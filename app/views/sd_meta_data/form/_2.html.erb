@@ -8,6 +8,7 @@
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         autofocus
         x-model="sdMetaDatum.prospero_link"
+        @input.debounce="updateSdMetaDatum('prospero_link', sdMetaDatum.prospero_link)"
       />
     </div>
   </div>
@@ -18,6 +19,7 @@
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.protocol_link"
+        @input.debounce="updateSdMetaDatum('protocol_link', sdMetaDatum.protocol_link)"
       />
     </div>
   </div>
@@ -30,6 +32,7 @@
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.full_report_link"
+        @input.debounce="updateSdMetaDatum('full_report_link', sdMetaDatum.full_report_link)"
       />
     </div>
   </div>
@@ -42,6 +45,7 @@
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.structured_abstract_link"
+        @input.debounce="updateSdMetaDatum('structured_abstract_link', sdMetaDatum.structured_abstract_link)"
       />
     </div>
   </div>
@@ -54,6 +58,7 @@
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.key_messages_link"
+        @input.debounce="updateSdMetaDatum('key_messages_link', sdMetaDatum.key_messages_link)"
       />
     </div>
   </div>
@@ -66,6 +71,7 @@
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.abstract_summary_link"
+        @input.debounce="updateSdMetaDatum('abstract_summary_link', sdMetaDatum.abstract_summary_link)"
       />
     </div>
   </div>
@@ -78,6 +84,7 @@
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.evidence_summary_link"
+        @input.debounce="updateSdMetaDatum('evidence_summary_link', sdMetaDatum.evidence_summary_link)"
       />
     </div>
   </div>
@@ -90,6 +97,7 @@
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.disposition_of_comments_link"
+        @input.debounce="updateSdMetaDatum('disposition_of_comments_link', sdMetaDatum.disposition_of_comments_link)"
       />
     </div>
   </div>
@@ -102,6 +110,7 @@
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.srdr_data_link"
+        @input.debounce="updateSdMetaDatum('srdr_data_link', sdMetaDatum.srdr_data_link)"
       />
     </div>
   </div>
@@ -114,6 +123,7 @@
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.most_previous_version_srdr_link"
+        @input.debounce="updateSdMetaDatum('most_previous_version_srdr_link', sdMetaDatum.most_previous_version_srdr_link)"
       />
     </div>
   </div>
@@ -126,6 +136,7 @@
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.most_previous_version_full_report_link"
+        @input.debounce="updateSdMetaDatum('most_previous_version_full_report_link', sdMetaDatum.most_previous_version_full_report_link)"
       />
     </div>
   </div>
@@ -140,7 +151,7 @@
         stroke-width="1.5"
         stroke="white"
         class="w-4 h-4 cursor-pointer"
-        @click="sdMetaDatum.sd_journal_article_urls.push({ id: null, text: '' })"
+        @click="createSubResource('sd_journal_article_urls')"
       >
         <path
           stroke-linecap="round"
@@ -157,6 +168,7 @@
           type="text"
           class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
           x-model="sd_journal_article_url.text"
+          @input.debounce="updateSubResource('sd_journal_article_urls', sd_journal_article_url.id, 'PATCH', 'name', sd_journal_article_url.text)"
         />
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -165,7 +177,8 @@
           stroke-width="1.5"
           stroke="white"
           class="w-4 h-4 cursor-pointer"
-          @click="sdMetaDatum.sd_journal_article_urls.splice(sd_journal_article_url_index, 1)"
+          @click="await updateSubResource('sd_journal_article_urls', sd_journal_article_url.id, 'DELETE')
+          sdMetaDatum.sd_journal_article_urls.splice(sd_journal_article_url_index, 1)"
         >
           <path
             stroke-linecap="round"
@@ -186,7 +199,7 @@
         stroke-width="1.5"
         stroke="white"
         class="w-4 h-4 cursor-pointer"
-        @click="sdMetaDatum.sd_other_items.push({ id: null, text: '' })"
+        @click="createSubResource('sd_other_items')"
       >
         <path
           stroke-linecap="round"
@@ -203,6 +216,7 @@
           type="text"
           class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
           x-model="sd_other_item.text"
+          @input.debounce="updateSubResource('sd_other_items', sd_other_item.id, 'PATCH', 'name', sd_other_item.text)"
         />
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -211,7 +225,8 @@
           stroke-width="1.5"
           stroke="white"
           class="w-4 h-4 cursor-pointer"
-          @click="sdMetaDatum.sd_other_items.splice(sd_other_item_index, 1)"
+          @click="await updateSubResource('sd_other_items', sd_other_item.id, 'DELETE')
+          sdMetaDatum.sd_other_items.splice(sd_other_item_index, 1)"
         >
           <path
             stroke-linecap="round"
