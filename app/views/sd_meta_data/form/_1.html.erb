@@ -10,6 +10,7 @@
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         autofocus
         x-model="sdMetaDatum.organization"
+        @input.debounce="updateSdMetaDatum('organization', sdMetaDatum.organization)"
       ></textarea>
     </div>
   </div>
@@ -22,6 +23,7 @@
         rows="4"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.authors"
+        @input.debounce="updateSdMetaDatum('authors', sdMetaDatum.authors)"
       ></textarea>
     </div>
   </div>
@@ -34,6 +36,7 @@
         rows="4"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.authors_conflict_of_interest_of_full_report"
+        @input.debounce="updateSdMetaDatum('authors_conflict_of_interest_of_full_report', sdMetaDatum.authors_conflict_of_interest_of_full_report)"
       ></textarea>
     </div>
   </div>
@@ -46,6 +49,7 @@
         rows="4"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.stakeholders_key_informants"
+        @input.debounce="updateSdMetaDatum('stakeholders_key_informants', sdMetaDatum.stakeholders_key_informants)"
       ></textarea>
     </div>
   </div>
@@ -58,6 +62,7 @@
         rows="4"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.stakeholders_technical_experts"
+        @input.debounce="updateSdMetaDatum('stakeholders_technical_experts', sdMetaDatum.stakeholders_technical_experts)"
       ></textarea>
     </div>
   </div>
@@ -70,6 +75,7 @@
         rows="4"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.stakeholders_peer_reviewers"
+        @input.debounce="updateSdMetaDatum('stakeholders_peer_reviewers', sdMetaDatum.stakeholders_peer_reviewers)"
       ></textarea>
     </div>
   </div>
@@ -82,6 +88,7 @@
         rows="4"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.stakeholders_others"
+        @input.debounce="updateSdMetaDatum('stakeholders_others', sdMetaDatum.stakeholders_others)"
       ></textarea>
     </div>
   </div>
