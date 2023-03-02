@@ -12,7 +12,7 @@
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         autofocus
         x-model="sdMetaDatum.report_title"
-        @input.debounce.1500ms="updateSdMetaDatum('report_title', sdMetaDatum.report_title)"
+        @input.debounce="updateSdMetaDatum('report_title', sdMetaDatum.report_title)"
       />
     </div>
   </div>
