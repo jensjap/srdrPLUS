@@ -150,14 +150,19 @@
         this.panel_number = panel_number;
 
         await this.getSdMetaDatum(this.sdMetaDatumId);
-        await this.initSelect2();
+        await this.initSelect2(
+          "funding_sources",
+          "funding_sources_sd_meta_data",
+          true
+        );
+        await this.initSelect2("review_types", "review_types");
       },
 
-      async initSelect2() {
-        $("#funding_sources").select2({
+      async initSelect2(resource, url, multi = false) {
+        $(`#${resource}`).select2({
           tags: true,
           ajax: {
-            url: "/funding_sources",
+            url: `/${resource}`,
             dataType: "json",
             processResults: (data, params) => {
               params.page = params.page || 1;
@@ -175,36 +180,53 @@
             return {
               id: params.term,
               text: params.term,
-              new: true,
+              newTag: true,
             };
           },
         });
         const that = this;
-        $("#funding_sources").on("select2:select", function (e) {
-          console.log(that.sdMetaDatumId);
-          that.apiCall("/funding_sources_sd_meta_data", "POST", {
-            funding_source_name: e.params.data.text,
-            sd_meta_datum_id: that.sdMetaDatumId,
-          });
+        const resourceElement = $(`#${resource}`);
+        resourceElement.on("select2:select", async function (e) {
+          if (multi) {
+            that.apiCall(`/${url}`, "POST", {
+              name: e.params.data.text,
+              sd_meta_datum_id: that.sdMetaDatumId,
+            });
+          } else {
+            if (e.params.data.newTag) {
+              const response = await that.apiCall("/review_types", "POST", {
+                name: e.params.data.text,
+              });
+              that.updateSdMetaDatum(
+                `${resource.substring(0, resource.length - 1)}_id`,
+                response.id
+              );
+            } else {
+              that.updateSdMetaDatum(
+                `${resource.substring(0, resource.length - 1)}_id`,
+                e.params.data.id
+              );
+            }
+          }
         });
 
-        $("#funding_sources").on("select2:unselect", function (e) {
-          console.log(e.params.data);
-          that.apiCall("/funding_sources_sd_meta_data/null", "DELETE", {
-            funding_source_name: e.params.data.text,
-            sd_meta_datum_id: that.sdMetaDatumId,
-          });
+        resourceElement.on("select2:unselect", function (e) {
+          if (multi) {
+            that.apiCall(`/${url}/null`, "DELETE", {
+              name: e.params.data.text,
+              sd_meta_datum_id: that.sdMetaDatumId,
+            });
+          } else {
+            that.updateSdMetaDatum(
+              `${resource.substring(0, resource.length - 1)}_id`,
+              null
+            );
+          }
         });
 
-        var fundingSources = $("#funding_sources");
-        this.sdMetaDatum.funding_sources.forEach((funding_source) => {
-          var option = new Option(
-            funding_source.text,
-            funding_source.id,
-            true,
-            true
-          );
-          fundingSources.append(option).trigger("change");
+        this.sdMetaDatum[resource].forEach((r) => {
+          var option = new Option(r.text, r.id, true, true);
+          resourceElement.append(option).trigger("change");
         });
       },
 

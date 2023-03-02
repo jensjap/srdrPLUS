@@ -36,7 +36,7 @@ Rails.application.routes.draw do
     get 'destroy_with_picodts', on: :member
   end
   resources :sd_meta_data_queries, only: %i[create update destroy]
-  resources :review_types, only: [:index]
+  resources :review_types, only: %i[index create]
   resources :data_analysis_levels, only: [:index]
 
   devise_for :admins

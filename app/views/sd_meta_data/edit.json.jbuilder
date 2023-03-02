@@ -40,4 +40,7 @@ json.sd_other_items @sd_meta_datum.sd_other_items do |sd_other_item|
   json.text sd_other_item.name
 end
 json.overall_purpose_of_review @sd_meta_datum.overall_purpose_of_review
-json.review_type @sd_meta_datum.review_type
+json.review_types [@sd_meta_datum.review_type] do |review_type|
+  json.id review_type.id
+  json.text review_type.name
+end
