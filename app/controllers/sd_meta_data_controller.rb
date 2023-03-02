@@ -173,6 +173,9 @@ class SdMetaDataController < ApplicationController
       format.html do
         redirect_to edit_sd_meta_datum_path(@sd_meta_datum.id)
       end
+      format.json do
+        render json: {}
+      end
     end
   end
 

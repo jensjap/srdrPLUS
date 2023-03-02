@@ -140,32 +140,25 @@
       sdMetaDatum: {},
       enabled: true,
       panel_number: null,
+      sdMetaDatumId: null,
 
       async init() {
+        this.sdMetaDatumId = /\d+/.exec(window.location.pathname)[0];
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const panel_number = urlParams.get("panel_number");
         this.panel_number = panel_number;
 
-        const id = /\d+/.exec(window.location.pathname);
-        await this.getSdMetaDatum(id);
-        this.initSelect2();
+        await this.getSdMetaDatum(this.sdMetaDatumId);
+        await this.initSelect2();
       },
 
       async initSelect2() {
         $("#funding_sources").select2({
+          tags: true,
           ajax: {
             url: "/funding_sources",
             dataType: "json",
-            selectOnClose: true,
-            allowClear: true,
-            data: (params) => {
-              var query = {
-                q: params.term,
-                page: params.page,
-              };
-              return query;
-            },
             processResults: (data, params) => {
               params.page = params.page || 1;
               return {
@@ -178,18 +171,71 @@
               };
             },
           },
+          createTag: function (params) {
+            return {
+              id: params.term,
+              text: params.term,
+              new: true,
+            };
+          },
+        });
+        const that = this;
+        $("#funding_sources").on("select2:select", function (e) {
+          console.log(that.sdMetaDatumId);
+          that.apiCall("/funding_sources_sd_meta_data", "POST", {
+            funding_source_name: e.params.data.text,
+            sd_meta_datum_id: that.sdMetaDatumId,
+          });
+        });
+
+        $("#funding_sources").on("select2:unselect", function (e) {
+          console.log(e.params.data);
+          that.apiCall("/funding_sources_sd_meta_data/null", "DELETE", {
+            funding_source_name: e.params.data.text,
+            sd_meta_datum_id: that.sdMetaDatumId,
+          });
+        });
+
+        var fundingSources = $("#funding_sources");
+        this.sdMetaDatum.funding_sources.forEach((funding_source) => {
+          var option = new Option(
+            funding_source.text,
+            funding_source.id,
+            true,
+            true
+          );
+          fundingSources.append(option).trigger("change");
         });
       },
 
-      async getSdMetaDatum(id) {
-        const response = await fetch(`/sd_meta_data/${id}/edit`, {
-          method: "GET",
+      async updateSdMetaDatum(attribute, value) {
+        this.apiCall(`/sd_meta_data/${this.sdMetaDatumId}`, "PATCH", {
+          [attribute]: value,
+        });
+      },
+
+      async apiCall(url, method, params = {}) {
+        const options = {
+          method: method,
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
           },
-        });
-        const sdMetaDatum = await response.json();
+        };
+        if (method !== "GET") {
+          options.body = JSON.stringify(params);
+        }
+        const response = await fetch(url, options);
+        return await response.json();
+      },
+
+      async getSdMetaDatum(id) {
+        const sdMetaDatum = await this.apiCall(
+          `/sd_meta_data/${id}/edit`,
+          "GET"
+        );
         this.sdMetaDatum = sdMetaDatum;
       },
     }));

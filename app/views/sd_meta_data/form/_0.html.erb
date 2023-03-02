@@ -12,7 +12,7 @@
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         autofocus
         x-model="sdMetaDatum.report_title"
-        @input.debounce="console.log(sdMetaDatum.report_title)"
+        @input.debounce.1500ms="updateSdMetaDatum('report_title', sdMetaDatum.report_title)"
       />
     </div>
   </div>
@@ -33,19 +33,11 @@
     <label class="block text-xs font-bold text-gray-700">Funding Source </label>
     <div>
       <select
-        multiple="true"
+        multiple="multiple"
         id="funding_sources"
         x-model="sdMetaDatum.funding_sources"
         @change="console.log(sdMetaDatum.funding_sources)"
-      >
-        <template x-for="funding_source in sdMetaDatum?.funding_sources">
-          <option
-            value="funding_source.id"
-            x-text="funding_source.text"
-            selected="selected"
-          ></option>
-        </template>
-      </select>
+      ></select>
     </div>
   </div>
   <div>
@@ -58,7 +50,7 @@
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.date_of_last_search"
         onfocus="this.showPicker()"
-        @change="console.log(sdMetaDatum.date_of_last_search)"
+        @change.debounce="updateSdMetaDatum('date_of_last_search', sdMetaDatum.date_of_last_search)"
       />
     </div>
   </div>
@@ -72,7 +64,7 @@
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.date_of_publication_to_srdr"
         onfocus="this.showPicker()"
-        @change="console.log(sdMetaDatum.date_of_publication_to_srdr)"
+        @change.debounce="updateSdMetaDatum('date_of_publication_to_srdr', sdMetaDatum.date_of_publication_to_srdr)"
       />
     </div>
   </div>
@@ -86,7 +78,7 @@
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.date_of_publication_full_report"
         onfocus="this.showPicker()"
-        @change="console.log(sdMetaDatum.date_of_publication_full_report)"
+        @change.debounce="updateSdMetaDatum('date_of_publication_full_report', sdMetaDatum.date_of_publication_full_report)"
       />
     </div>
   </div>
