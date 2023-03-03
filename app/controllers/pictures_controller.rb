@@ -5,5 +5,6 @@ class PicturesController < ApplicationController
     @picture = ActiveStorage::Attachment.find(params[:id])
     authorize(@picture.record.project)
     @picture.purge
+    render json: {}, status: 200
   end
 end
