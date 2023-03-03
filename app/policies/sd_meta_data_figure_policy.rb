@@ -1,4 +1,4 @@
-class SdJournalArticleUrlPolicy < ApplicationPolicy
+class SdMetaDataFigurePolicy < ApplicationPolicy
   def update?
     project_contributor?
   end

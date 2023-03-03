@@ -270,15 +270,17 @@
         });
       },
 
-      async createSubResource(resource) {
+      async createSubResource(
+        resource,
+        parentResource,
+        parentResourceId,
+        parentObject
+      ) {
         const response = await this.apiCall(
-          `/sd_meta_data/${this.sdMetaDatumId}/${resource}`,
+          `/${parentResource}/${parentResourceId}/${resource}`,
           "POST"
         );
-        this.sdMetaDatum[resource].push({
-          id: response.id,
-          text: response.name,
-        });
+        parentObject[resource].push(response);
       },
 
       async apiCall(url, method, params = {}) {

@@ -146,7 +146,10 @@ Rails.application.routes.draw do
     post 'mapping_update'
     resources :sd_journal_article_urls, only: %i[create destroy update]
     resources :sd_other_items, only: %i[create destroy update]
+    resources :sd_analytic_frameworks, only: %i[create destroy update]
   end
+
+  resources :sd_meta_data_figures, only: %i[create destroy update]
 
   get 'sd_key_questions/:id/fuzzy_match', to: 'sd_key_questions#fuzzy_match'
 

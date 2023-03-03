@@ -39,7 +39,10 @@
     </div>
   </div>
   <div class="bg-purple-50 p-2">
-    <h3 class="text-sm font-bold border-b-2 flex items-center">
+    <h3
+      class="text-sm font-bold border-b-2 flex items-center cursor-pointer"
+      @click="createSubResource('sd_analytic_frameworks', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
+    >
       Analytic / Conceptual Frameworks
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -47,7 +50,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="white"
-        class="w-5 h-5 cursor-pointer"
+        class="w-5 h-5"
       >
         <path
           stroke-linecap="round"
@@ -72,6 +75,8 @@
           </select>
           <div
             class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+            @click="await updateSubResource('sd_analytic_frameworks', sd_analytic_framework.id, 'DELETE')
+            sdMetaDatum.sd_analytic_frameworks.splice(sd_analytic_framework_index, 1)"
           >
             Remove Framework
           </div>
@@ -85,10 +90,14 @@
               type="text"
               class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
               x-model="sd_analytic_framework.name"
+              @input.debounce="updateSubResource('sd_analytic_frameworks', sd_analytic_framework.id, 'PATCH', 'name', sd_analytic_framework.name)"
             />
           </div>
         </div>
-        <div class="flex items-center">
+        <div
+          class="flex items-center cursor-pointer"
+          @click="sd_analytic_framework.sd_meta_data_figures.push(await apiCall('/sd_meta_data_figures', 'POST', { sd_figurable_type: 'SdAnalyticFramework', sd_figurable_id: sd_analytic_framework.id }))"
+        >
           <label class="block text-xs font-bold text-gray-700">Figure(s)</label>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -96,7 +105,7 @@
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="white"
-            class="w-4 h-4 cursor-pointer"
+            class="w-4 h-4"
           >
             <path
               stroke-linecap="round"
@@ -112,6 +121,8 @@
             <div class="flex justify-end">
               <div
                 class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+                @click="await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
+                sd_analytic_framework.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)"
               >
                 Remove Figure
               </div>
@@ -125,6 +136,7 @@
                   type="text"
                   class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
                   x-model="sd_meta_data_figure.alt_text"
+                  @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'alt_text', sd_meta_data_figure.alt_text)"
                 />
               </div>
             </div>
@@ -155,6 +167,7 @@
         </template>
         <div
           class="border-4 border-purple-300 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+          @click="sd_analytic_framework.sd_meta_data_figures.push(await apiCall('/sd_meta_data_figures', 'POST', { sd_figurable_type: 'SdAnalyticFramework', sd_figurable_id: sd_analytic_framework.id }))"
         >
           Figures
           <svg
@@ -163,7 +176,7 @@
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="white"
-            class="w-5 h-5 cursor-pointer"
+            class="w-5 h-5"
           >
             <path
               stroke-linecap="round"
@@ -176,6 +189,7 @@
     </template>
     <div
       class="border-4 border-purple-200 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+      @click="createSubResource('sd_analytic_frameworks', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
     >
       Analytic / Conceptual Frameworks
       <svg
@@ -184,7 +198,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="white"
-        class="w-5 h-5 cursor-pointer"
+        class="w-5 h-5"
       >
         <path
           stroke-linecap="round"
