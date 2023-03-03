@@ -5,15 +5,19 @@ class SdMetaDataFiguresController < ApplicationController
 
     sd_figurable = sd_figurable_type.constantize.find(params[:sd_figurable_id])
     authorize(sd_figurable)
-    sd_meta_data_figure = SdMetaDataFigure.create(alt_text: params[:alt_text], sd_figurable:)
+    sd_meta_data_figure = sd_figurable.sd_meta_data_figures.create(sd_meta_data_figure_params)
     render json: { id: sd_meta_data_figure.id, alt_text: sd_meta_data_figure.alt_text }, status: 200
   end
 
   def update
     sd_meta_data_figure = SdMetaDataFigure.find_by(id: params[:id])
     authorize(sd_meta_data_figure)
-    sd_meta_data_figure.update(alt_text: params[:alt_text])
-    render json: { id: sd_meta_data_figure.id, alt_text: sd_meta_data_figure.alt_text }, status: 200
+    sd_meta_data_figure.update(sd_meta_data_figure_params)
+    render json: {
+      id: sd_meta_data_figure.id,
+      alt_text: sd_meta_data_figure.alt_text,
+      pictures: sd_meta_data_figure.pictures.map { |picture| { id: picture.id, url: rails_blob_url(picture) } }
+    }, status: 200
   end
 
   def destroy
@@ -21,5 +25,11 @@ class SdMetaDataFiguresController < ApplicationController
     authorize(sd_meta_data_figure)
     sd_meta_data_figure.destroy
     render json: { id: sd_meta_data_figure.id }, status: 200
+  end
+
+  private
+
+  def sd_meta_data_figure_params
+    params.permit(:alt_text, pictures: [])
   end
 end

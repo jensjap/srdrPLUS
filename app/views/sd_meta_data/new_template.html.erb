@@ -258,6 +258,23 @@
         });
       },
 
+      async uploadFiles(element, url, resource, parentObject) {
+        let formData = new FormData();
+        for (let i = 0; i < element.files.length; i++) {
+          formData.append("pictures[]", element.files[i]);
+        }
+        const response = await fetch(url, {
+          method: "PATCH",
+          headers: {
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          body: formData,
+        });
+        const newResource = await response.json();
+        parentObject[resource] = newResource.pictures;
+      },
+
       async updateSdMetaDatum(attribute, value) {
         this.apiCall(`/sd_meta_data/${this.sdMetaDatumId}`, "PATCH", {
           [attribute]: value,
