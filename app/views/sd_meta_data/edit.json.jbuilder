@@ -74,6 +74,10 @@ json.sd_picods @sd_meta_datum.sd_picods do |sd_picod|
     json.id sd_picod.data_analysis_level&.id
     json.name sd_picod.data_analysis_level&.name
   end
+  json.sd_key_questions sd_picod.sd_key_questions do |sd_key_question|
+    json.id sd_key_question.id
+    json.name sd_key_question.name
+  end
   json.name sd_picod.name
   json.population sd_picod.population
   json.interventions sd_picod.interventions

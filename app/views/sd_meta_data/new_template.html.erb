@@ -158,13 +158,14 @@
         resource,
         url,
         selected,
-        multiParams = false
+        multiParams = false,
+        custom_resource_url
       ) {
         jResourceElement = $(resourceElement);
         jResourceElement.select2({
           tags: true,
           ajax: {
-            url: `/${resource}`,
+            url: `/${custom_resource_url || resource}`,
             dataType: "json",
             processResults: (data, params) => {
               params.page = params.page || 1;

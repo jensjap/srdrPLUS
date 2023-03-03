@@ -57,10 +57,22 @@
             >Key Question(s) (Required)</label
           >
           <div>
-            <input
-              type="text"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-            />
+            <template x-if="Object.keys(sdMetaDatum).length !== 0">
+              <select
+                multiple="multiple"
+                x-model="sd_picod.sd_key_questions"
+                x-init="$nextTick(() => {
+                initSelect2(
+                  $el,
+                  'sd_key_questions',
+                  'sd_key_questions_sd_picods',
+                  sd_picod.sd_key_questions,
+                  { sd_picod_id: sd_picod.id, sd_meta_datum_id: sdMetaDatumId },
+                  `sd_key_questions?sd_meta_datum_id=${sdMetaDatumId}`
+                )
+              });"
+              ></select>
+            </template>
           </div>
         </div>
         <div>
