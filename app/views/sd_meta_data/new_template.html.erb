@@ -253,7 +253,7 @@
         });
 
         selected.forEach((r) => {
-          var option = new Option(r.text, r.id, true, true);
+          var option = new Option(r.name, r.id, true, true);
           resourceElement.append(option).trigger("change");
         });
       },

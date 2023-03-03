@@ -167,8 +167,8 @@
         <input
           type="text"
           class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-          x-model="sd_journal_article_url.text"
-          @input.debounce="updateSubResource('sd_journal_article_urls', sd_journal_article_url.id, 'PATCH', 'name', sd_journal_article_url.text)"
+          x-model="sd_journal_article_url.name"
+          @input.debounce="updateSubResource('sd_journal_article_urls', sd_journal_article_url.id, 'PATCH', 'name', sd_journal_article_url.name)"
         />
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -215,8 +215,8 @@
         <input
           type="text"
           class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-          x-model="sd_other_item.text"
-          @input.debounce="updateSubResource('sd_other_items', sd_other_item.id, 'PATCH', 'name', sd_other_item.text)"
+          x-model="sd_other_item.name"
+          @input.debounce="updateSubResource('sd_other_items', sd_other_item.id, 'PATCH', 'name', sd_other_item.name)"
         />
         <svg
           xmlns="http://www.w3.org/2000/svg"

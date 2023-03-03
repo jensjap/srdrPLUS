@@ -5,7 +5,7 @@ json.date_of_publication_to_srdr @sd_meta_datum.date_of_publication_to_srdr.strf
 json.date_of_publication_full_report @sd_meta_datum.date_of_publication_full_report.strftime('%Y-%m-%d')
 json.funding_sources @sd_meta_datum.funding_sources do |funding_source|
   json.id funding_source.id
-  json.text funding_source.name
+  json.name funding_source.name
 end
 json.organization @sd_meta_datum.organization
 json.authors @sd_meta_datum.authors
@@ -33,16 +33,16 @@ json.most_previous_version_srdr_link @sd_meta_datum.most_previous_version_srdr_l
 json.most_previous_version_full_report_link @sd_meta_datum.most_previous_version_full_report_link
 json.sd_journal_article_urls @sd_meta_datum.sd_journal_article_urls do |sd_journal_article_url|
   json.id sd_journal_article_url.id
-  json.text sd_journal_article_url.name
+  json.name sd_journal_article_url.name
 end
 json.sd_other_items @sd_meta_datum.sd_other_items do |sd_other_item|
   json.id sd_other_item.id
-  json.text sd_other_item.name
+  json.name sd_other_item.name
 end
 json.overall_purpose_of_review @sd_meta_datum.overall_purpose_of_review
 json.review_types [@sd_meta_datum.review_type] do |review_type|
   json.id review_type.id
-  json.text review_type.name
+  json.name review_type.name
 end
 json.sd_analytic_frameworks @sd_meta_datum.sd_analytic_frameworks do |sd_analytic_framework|
   json.id sd_analytic_framework.id
@@ -64,7 +64,7 @@ json.sd_key_questions @sd_meta_datum.sd_key_questions do |sd_key_question|
   end
   json.key_question_types sd_key_question.key_question_types do |key_question_type|
     json.id key_question_type.id
-    json.text key_question_type.name
+    json.name key_question_type.name
   end
   json.includes_meta_analysis sd_key_question.includes_meta_analysis
 end
