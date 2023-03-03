@@ -61,7 +61,7 @@
     >
       <div class="bg-purple-200 m-2 p-2 rounded-md space-y-2">
         <div class="flex justify-between items-center">
-          <select class="w-12" name="" id="">
+          <select class="w-12">
             <template x-for="i in sdMetaDatum?.sd_analytic_frameworks.length">
               <option
                 :value="i"
@@ -217,7 +217,7 @@
     >
       <div class="bg-blue-200 m-2 p-2 rounded-md space-y-2">
         <div class="flex justify-between items-center">
-          <select class="w-12" name="" id="">
+          <select class="w-12">
             <template x-for="i in sdMetaDatum?.sd_key_questions.length">
               <option
                 :value="i"
@@ -251,7 +251,7 @@
           <div>
             <select
               multiple="multiple"
-              :id="`key_question_types_${sd_key_question_index}`"
+              :id="`key_question_types_${sd_key_question.id}`"
               x-model="sdMetaDatum.key_question_types"
             ></select>
           </div>
@@ -261,10 +261,15 @@
             >Did this Key Question include a meta-analysis? (Required)</label
           >
           <div>
-            <input
-              type="text"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-            />
+            <select
+              :id="`includes_meta_analysis_${sd_key_question.id}`"
+              x-model="sd_key_question.includes_meta_analysis"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm p-1"
+            >
+              <option value="null">Please select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
           </div>
         </div>
       </div>
