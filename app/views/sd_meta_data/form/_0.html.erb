@@ -32,9 +32,10 @@
   <div>
     <label class="block text-xs font-bold text-gray-700">Funding Source </label>
     <div>
-      <select
-        multiple="multiple"
-        x-init="$nextTick(() => {
+      <template x-if="Object.keys(sdMetaDatum).length !== 0">
+        <select
+          multiple="multiple"
+          x-init="$nextTick(() => {
           initSelect2(
             $el,
             'funding_sources',
@@ -43,7 +44,8 @@
             { sd_meta_datum_id: sdMetaDatumId }
           );
         })"
-      ></select>
+        ></select>
+      </template>
     </div>
   </div>
   <div>

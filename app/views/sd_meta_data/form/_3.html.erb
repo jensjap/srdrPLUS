@@ -31,11 +31,12 @@
   <div>
     <label class="block text-xs font-bold text-gray-700">Type of Review</label>
     <div>
-      <select
-        id="review_types"
-        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-        x-model="sdMetaDatum.review_types"
-        x-init="$nextTick(() => {
+      <template x-if="Object.keys(sdMetaDatum).length !== 0">
+        <select
+          id="review_types"
+          class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+          x-model="sdMetaDatum.review_types"
+          x-init="$nextTick(() => {
           initSelect2(
             $el,
             'review_types',
@@ -43,7 +44,8 @@
             sdMetaDatum.review_types
           );
         });"
-      ></select>
+        ></select>
+      </template>
     </div>
   </div>
   <div class="bg-purple-50 p-2">
@@ -320,10 +322,11 @@
             >Type(s) (Required)</label
           >
           <div>
-            <select
-              multiple="multiple"
-              x-model="sd_key_question.key_question_types"
-              x-init="$nextTick(() => {
+            <template x-if="Object.keys(sdMetaDatum).length !== 0">
+              <select
+                multiple="multiple"
+                x-model="sd_key_question.key_question_types"
+                x-init="$nextTick(() => {
                 initSelect2(
                   $el,
                   'key_question_types',
@@ -332,7 +335,8 @@
                   { sd_key_question_id: sd_key_question.id }
                 )
               });"
-            ></select>
+              ></select>
+            </template>
           </div>
         </div>
         <div>
