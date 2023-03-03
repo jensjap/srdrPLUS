@@ -56,12 +56,18 @@
         />
       </svg>
     </h3>
-    <template x-for="i in 2">
+    <template
+      x-for="(sd_analytic_framework, sd_analytic_framework_index) in sdMetaDatum?.sd_analytic_frameworks"
+    >
       <div class="bg-purple-200 m-2 p-2 rounded-md space-y-2">
         <div class="flex justify-between items-center">
           <select class="w-12" name="" id="">
-            <template x-for="ii in i">
-              <option :value="ii" x-text="ii" :selected="i == ii"></option>
+            <template x-for="i in sdMetaDatum?.sd_analytic_frameworks.length">
+              <option
+                :value="i"
+                x-text="i"
+                :selected="i === sd_analytic_framework_index + 1"
+              ></option>
             </template>
           </select>
           <div
@@ -78,6 +84,7 @@
             <input
               type="text"
               class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+              x-model="sd_analytic_framework.name"
             />
           </div>
         </div>
@@ -98,44 +105,54 @@
             />
           </svg>
         </div>
-        <div class="bg-purple-300 m-2 p-2 rounded-md space-y-2">
-          <div class="flex justify-end">
-            <div
-              class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-            >
-              Remove Figure
-            </div>
-          </div>
-          <div>
-            <div>
-              <label class="block text-xs font-bold text-gray-700"
-                >Alt text</label
-              >
-              <input
-                type="text"
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-              />
-            </div>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-gray-700"
-              >Pictures</label
-            >
-            <div>
+        <template
+          x-for="(sd_meta_data_figure, sd_meta_data_figure_index) in sd_analytic_framework.sd_meta_data_figures"
+        >
+          <div class="bg-purple-300 m-2 p-2 rounded-md space-y-2">
+            <div class="flex justify-end">
               <div
-                class="text-xs bg-srdr-secondary text-white p-2 cursor-pointer rounded-md text-center w-24"
+                class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
               >
-                Add File(s)
+                Remove Figure
               </div>
             </div>
+            <div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700"
+                  >Alt text</label
+                >
+                <input
+                  type="text"
+                  class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                  x-model="sd_meta_data_figure.alt_text"
+                />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700"
+                >Pictures</label
+              >
+              <div>
+                <div
+                  class="text-xs bg-srdr-secondary text-white p-2 cursor-pointer rounded-md text-center w-24"
+                >
+                  Add File(s)
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap">
+              <template
+                x-for="(picture, picture_index) in sd_meta_data_figure.pictures"
+              >
+                <img
+                  :src="picture.url"
+                  class="w-64 p-1 cursor-pointer"
+                  :alt="sd_meta_data_figure.alt"
+                />
+              </template>
+            </div>
           </div>
-          <div class="flex flex-wrap">
-            <!-- prettier-ignore -->
-            <template x-for="iii in 10">
-            <%= image_tag("global_map.jpg", class: "w-64 p-1 cursor-pointer") %>
-            </template>
-          </div>
-        </div>
+        </template>
         <div
           class="border-4 border-purple-300 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
         >
@@ -195,12 +212,18 @@
         />
       </svg>
     </h3>
-    <template x-for="i in 3">
+    <template
+      x-for="(sd_key_question, sd_key_question_index) in sdMetaDatum?.sd_key_questions"
+    >
       <div class="bg-blue-200 m-2 p-2 rounded-md space-y-2">
         <div class="flex justify-between items-center">
           <select class="w-12" name="" id="">
-            <template x-for="ii in i">
-              <option :value="ii" x-text="ii" :selected="i == ii"></option>
+            <template x-for="i in sdMetaDatum?.sd_key_questions.length">
+              <option
+                :value="i"
+                x-text="i"
+                :selected="i === sd_key_question_index + 1"
+              ></option>
             </template>
           </select>
           <div
@@ -217,6 +240,7 @@
             <input
               type="text"
               class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+              x-model="sd_key_question.key_question.name"
             />
           </div>
         </div>
@@ -225,10 +249,11 @@
             >Type(s) (Required)</label
           >
           <div>
-            <input
-              type="text"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-            />
+            <select
+              multiple="multiple"
+              :id="`key_question_types_${sd_key_question_index}`"
+              x-model="sdMetaDatum.key_question_types"
+            ></select>
           </div>
         </div>
         <div>

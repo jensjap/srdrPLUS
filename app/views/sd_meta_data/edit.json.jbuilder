@@ -44,3 +44,27 @@ json.review_types [@sd_meta_datum.review_type] do |review_type|
   json.id review_type.id
   json.text review_type.name
 end
+json.sd_analytic_frameworks @sd_meta_datum.sd_analytic_frameworks do |sd_analytic_framework|
+  json.id sd_analytic_framework.id
+  json.name sd_analytic_framework.name
+  json.sd_meta_data_figures sd_analytic_framework.sd_meta_data_figures do |sd_meta_data_figure|
+    json.id sd_meta_data_figure.id
+    json.alt_text sd_meta_data_figure.alt_text
+    json.pictures sd_meta_data_figure.pictures do |picture|
+      json.id picture.id
+      json.url rails_blob_url(picture)
+    end
+  end
+end
+json.sd_key_questions @sd_meta_datum.sd_key_questions do |sd_key_question|
+  json.id sd_key_question.id
+  json.key_question do
+    json.id sd_key_question.key_question.id
+    json.name sd_key_question.key_question.name
+  end
+  json.key_question_types sd_key_question.key_question_types do |key_question_type|
+    json.id key_question_type.id
+    json.text key_question_type.name
+  end
+  json.includes_meta_analysis sd_key_question.includes_meta_analysis
+end

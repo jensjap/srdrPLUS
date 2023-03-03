@@ -150,16 +150,44 @@
         this.panel_number = panel_number;
 
         await this.getSdMetaDatum(this.sdMetaDatumId);
-        await this.initSelect2(
+        this.initSelect2(
+          "funding_sources",
           "funding_sources",
           "funding_sources_sd_meta_data",
-          true
+          this.sdMetaDatum.funding_sources,
+          { sd_meta_datum_id: this.sdMetaDatumId }
         );
-        await this.initSelect2("review_types", "review_types");
+        this.initSelect2(
+          "review_types",
+          "review_types",
+          "review_types",
+          this.sdMetaDatum.review_types
+        );
+        this.sdMetaDatum["sd_key_questions"].forEach(
+          (sdKeyQuestion, sdKeyQuestionIndex) => {
+            this.initSelect2(
+              `key_question_types_${sdKeyQuestionIndex}`,
+              "key_question_types",
+              "sd_key_questions_key_question_types",
+              this.sdMetaDatum["sd_key_questions"][sdKeyQuestionIndex]
+                .key_question_types,
+              { sd_key_question_id: sdKeyQuestion.id }
+            );
+          }
+        );
       },
 
-      async initSelect2(resource, url, multi = false) {
-        $(`#${resource}`).select2({
+      async initSelect2(
+        elementId,
+        resource,
+        url,
+        selected,
+        multiParams = false
+      ) {
+        const resourceElement = $(`#${elementId}`);
+        if (resourceElement.length === 0) return;
+
+        resourceElement.select2({
           tags: true,
           ajax: {
             url: `/${resource}`,
@@ -184,17 +212,17 @@
             };
           },
         });
+
         const that = this;
-        const resourceElement = $(`#${resource}`);
         resourceElement.on("select2:select", async function (e) {
-          if (multi) {
+          if (multiParams) {
             that.apiCall(`/${url}`, "POST", {
               name: e.params.data.text,
-              sd_meta_datum_id: that.sdMetaDatumId,
+              ...multiParams,
             });
           } else {
             if (e.params.data.newTag) {
-              const response = await that.apiCall("/review_types", "POST", {
+              const response = await that.apiCall(`/${resource}`, "POST", {
                 name: e.params.data.text,
               });
               that.updateSdMetaDatum(
@@ -211,10 +239,10 @@
         });
 
         resourceElement.on("select2:unselect", function (e) {
-          if (multi) {
+          if (multiParams) {
             that.apiCall(`/${url}/null`, "DELETE", {
               name: e.params.data.text,
-              sd_meta_datum_id: that.sdMetaDatumId,
+              ...multiParams,
             });
           } else {
             that.updateSdMetaDatum(
@@ -224,7 +252,7 @@
           }
         });
 
-        this.sdMetaDatum[resource].forEach((r) => {
+        selected.forEach((r) => {
           var option = new Option(r.text, r.id, true, true);
           resourceElement.append(option).trigger("change");
         });

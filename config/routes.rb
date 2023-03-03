@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   resources :funding_sources_sd_meta_data, only: %i[create destroy]
   resources :sd_picods_types, only: [:index]
   resources :key_question_types, only: [:index]
+  resources :sd_key_questions_key_question_types, only: %i[create destroy]
   resources :sd_search_databases, only: [:index]
   resources :key_questions, only: [:index]
   resources :sd_key_questions, only: [:index] do
