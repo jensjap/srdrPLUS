@@ -59,8 +59,8 @@ end
 json.sd_key_questions @sd_meta_datum.sd_key_questions do |sd_key_question|
   json.id sd_key_question.id
   json.key_question do
-    json.id sd_key_question.key_question.id
-    json.name sd_key_question.key_question.name
+    json.id sd_key_question.key_question&.id
+    json.name sd_key_question.key_question&.name
   end
   json.key_question_types sd_key_question.key_question_types do |key_question_type|
     json.id key_question_type.id

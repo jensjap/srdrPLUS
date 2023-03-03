@@ -147,6 +147,7 @@ Rails.application.routes.draw do
     resources :sd_journal_article_urls, only: %i[create destroy update]
     resources :sd_other_items, only: %i[create destroy update]
     resources :sd_analytic_frameworks, only: %i[create destroy update]
+    resources :sd_key_questions, only: %i[create destroy update]
   end
 
   resources :sd_meta_data_figures, only: %i[create destroy update]

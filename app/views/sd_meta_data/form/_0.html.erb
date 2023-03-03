@@ -34,8 +34,15 @@
     <div>
       <select
         multiple="multiple"
-        id="funding_sources"
-        x-model="sdMetaDatum.funding_sources"
+        x-init="$nextTick(() => {
+          initSelect2(
+            $el,
+            'funding_sources',
+            'funding_sources_sd_meta_data',
+            sdMetaDatum.funding_sources,
+            { sd_meta_datum_id: sdMetaDatumId }
+          );
+        })"
       ></select>
     </div>
   </div>

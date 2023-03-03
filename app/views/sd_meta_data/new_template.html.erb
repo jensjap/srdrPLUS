@@ -1,143 +1,148 @@
 <div x-data="sdMetaDatum" class="p-4 lg:p-8 space-y-2">
-  <div class="font-bold text-sm">
-    <div class="flex justify-between">
-      <div>
-        SRDR+ Project: <%= link_to(@project.try(:name) || 'None',
-        project_path(@project), target: '_blank') %>
-      </div>
+  <template x-if="sdMetaDatum !== null">
+    <div>
+      <div class="font-bold text-sm">
+        <div class="flex justify-between">
+          <div>
+            SRDR+ Project: <%= link_to(@project.try(:name) || 'None',
+            project_path(@project), target: '_blank') %>
+          </div>
 
-      <div class="flex justify-center items-center text-xs">
-        Complete
-        <button
-          type="button"
-          class="ml-2 group relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          role="switch"
-          aria-checked="false"
-          @click="enabled = !enabled"
-        >
-          <span class="sr-only">Use setting</span>
-          <span
-            aria-hidden="true"
-            class="pointer-events-none absolute h-full w-full rounded-md bg-white"
-          ></span>
-          <span
-            aria-hidden="true"
-            class="pointer-events-none absolute mx-auto h-4 w-9 rounded-full transition-colors duration-200 ease-in-out"
-            :class="enabled ? 'bg-indigo-600' : 'bg-gray-200'"
-          ></span>
-          <span
-            aria-hidden="true"
-            class="pointer-events-none absolute left-0 inline-block h-5 w-5 transform rounded-full border border-gray-200 bg-white shadow ring-0 transition-transform duration-200 ease-in-out"
-            :class="enabled ? 'translate-x-5' : 'translate-x-0'"
-          ></span>
-        </button>
+          <div class="flex justify-center items-center text-xs">
+            Complete
+            <button
+              type="button"
+              class="ml-2 group relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              role="switch"
+              aria-checked="false"
+              @click="enabled = !enabled"
+            >
+              <span class="sr-only">Use setting</span>
+              <span
+                aria-hidden="true"
+                class="pointer-events-none absolute h-full w-full rounded-md bg-white"
+              ></span>
+              <span
+                aria-hidden="true"
+                class="pointer-events-none absolute mx-auto h-4 w-9 rounded-full transition-colors duration-200 ease-in-out"
+                :class="enabled ? 'bg-indigo-600' : 'bg-gray-200'"
+              ></span>
+              <span
+                aria-hidden="true"
+                class="pointer-events-none absolute left-0 inline-block h-5 w-5 transform rounded-full border border-gray-200 bg-white shadow ring-0 transition-transform duration-200 ease-in-out"
+                :class="enabled ? 'translate-x-5' : 'translate-x-0'"
+              ></span>
+            </button>
+          </div>
+        </div>
+        <div class="flex justify-between">
+          <div>
+            <% if @systematic_review_report %> Source Systematic Review Report:
+            <a data-toggle="offCanvasRightReportHtml" id="report-title">
+              <!-- prettier-ignore -->
+              <%= @sd_meta_datum.try(:report_title) || @report.try(:title) || @sd_meta_datum.report_file.filename || 'None' %>
+            </a>
+            <% end %>
+          </div>
+          <div
+            class="bg-srdrpurple text-white text-xs p-1 rounded-md cursor-pointer"
+          >
+            See Section Preview
+          </div>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full p-1 my-1">
+          <div
+            class="bg-green-600 p-1 text-white rounded-full text-center"
+            style="width: 50%"
+          ></div>
+        </div>
+      </div>
+      <div class="flex w-full">
+        <div class="border text-sm font-bold w-3/12 xl:w-1/12">
+          <a href="/sd_meta_data/307/edit?panel_number=0&new_template=true">
+            <div
+              class="p-1 py-4 cursor-pointer border-b-2"
+              :class="panel_number == 0 ? 'bg-purple-100' : ''"
+            >
+              Title, Funding Sources, and Dates
+            </div>
+          </a>
+          <a href="/sd_meta_data/307/edit?panel_number=1&new_template=true">
+            <div
+              class="p-1 py-4 cursor-pointer border-b-2"
+              :class="panel_number == 1 ? 'bg-purple-100' : ''"
+            >
+              Authors and Stakeholders
+            </div>
+          </a>
+          <a href="/sd_meta_data/307/edit?panel_number=2&new_template=true">
+            <div
+              class="p-1 py-4 cursor-pointer border-b-2"
+              :class="panel_number == 2 ? 'bg-purple-100' : ''"
+            >
+              URL Links
+            </div>
+          </a>
+          <a href="/sd_meta_data/307/edit?panel_number=3&new_template=true">
+            <div
+              class="p-1 py-4 cursor-pointer border-b-2"
+              :class="panel_number == 3 ? 'bg-purple-100' : ''"
+            >
+              Purpose, Analytic Framework, and Key Questions
+            </div>
+          </a>
+          <a href="/sd_meta_data/307/edit?panel_number=4&new_template=true">
+            <div
+              class="p-1 py-4 cursor-pointer border-b-2"
+              :class="panel_number == 4 ? 'bg-purple-100' : ''"
+            >
+              PICODTS
+            </div>
+          </a>
+          <a href="/sd_meta_data/307/edit?panel_number=5&new_template=true">
+            <div
+              class="p-1 py-4 cursor-pointer border-b-2"
+              :class="panel_number == 5 ? 'bg-purple-100' : ''"
+            >
+              Key Question Mapping
+            </div>
+          </a>
+          <a href="/sd_meta_data/307/edit?panel_number=6&new_template=true">
+            <div
+              class="p-1 py-4 cursor-pointer border-b-2"
+              :class="panel_number == 6 ? 'bg-purple-100' : ''"
+            >
+              Search Strategy and Results of Screening
+            </div>
+          </a>
+          <a href="/sd_meta_data/307/edit?panel_number=7&new_template=true">
+            <div
+              class="p-1 py-4 cursor-pointer border-b-2"
+              :class="panel_number == 7 ? 'bg-purple-100' : ''"
+            >
+              Risk of Bias and Overall Summary of Evidence
+            </div>
+          </a>
+          <a href="/sd_meta_data/307/edit?panel_number=8&new_template=true">
+            <div
+              class="p-1 py-4 cursor-pointer border-b-2"
+              :class="panel_number == 8 ? 'bg-purple-100' : ''"
+            >
+              Results for Individual Outcomes
+            </div>
+          </a>
+        </div>
+
+        <%= render "sd_meta_data/form/#{params[:panel_number]}" %>
       </div>
     </div>
-    <div class="flex justify-between">
-      <div>
-        <% if @systematic_review_report %> Source Systematic Review Report:
-        <a data-toggle="offCanvasRightReportHtml" id="report-title">
-          <!-- prettier-ignore -->
-          <%= @sd_meta_datum.try(:report_title) || @report.try(:title) || @sd_meta_datum.report_file.filename || 'None' %>
-        </a>
-        <% end %>
-      </div>
-      <div
-        class="bg-srdrpurple text-white text-xs p-1 rounded-md cursor-pointer"
-      >
-        See Section Preview
-      </div>
-    </div>
-    <div class="w-full bg-gray-200 rounded-full p-1 my-1">
-      <div
-        class="bg-green-600 p-1 text-white rounded-full text-center"
-        style="width: 50%"
-      ></div>
-    </div>
-  </div>
-  <div class="flex w-full">
-    <div class="border text-sm font-bold w-3/12 xl:w-1/12">
-      <a href="/sd_meta_data/307/edit?panel_number=0&new_template=true">
-        <div
-          class="p-1 py-4 cursor-pointer border-b-2"
-          :class="panel_number == 0 ? 'bg-purple-100' : ''"
-        >
-          Title, Funding Sources, and Dates
-        </div>
-      </a>
-      <a href="/sd_meta_data/307/edit?panel_number=1&new_template=true">
-        <div
-          class="p-1 py-4 cursor-pointer border-b-2"
-          :class="panel_number == 1 ? 'bg-purple-100' : ''"
-        >
-          Authors and Stakeholders
-        </div>
-      </a>
-      <a href="/sd_meta_data/307/edit?panel_number=2&new_template=true">
-        <div
-          class="p-1 py-4 cursor-pointer border-b-2"
-          :class="panel_number == 2 ? 'bg-purple-100' : ''"
-        >
-          URL Links
-        </div>
-      </a>
-      <a href="/sd_meta_data/307/edit?panel_number=3&new_template=true">
-        <div
-          class="p-1 py-4 cursor-pointer border-b-2"
-          :class="panel_number == 3 ? 'bg-purple-100' : ''"
-        >
-          Purpose, Analytic Framework, and Key Questions
-        </div>
-      </a>
-      <a href="/sd_meta_data/307/edit?panel_number=4&new_template=true">
-        <div
-          class="p-1 py-4 cursor-pointer border-b-2"
-          :class="panel_number == 4 ? 'bg-purple-100' : ''"
-        >
-          PICODTS
-        </div>
-      </a>
-      <a href="/sd_meta_data/307/edit?panel_number=5&new_template=true">
-        <div
-          class="p-1 py-4 cursor-pointer border-b-2"
-          :class="panel_number == 5 ? 'bg-purple-100' : ''"
-        >
-          Key Question Mapping
-        </div>
-      </a>
-      <a href="/sd_meta_data/307/edit?panel_number=6&new_template=true">
-        <div
-          class="p-1 py-4 cursor-pointer border-b-2"
-          :class="panel_number == 6 ? 'bg-purple-100' : ''"
-        >
-          Search Strategy and Results of Screening
-        </div>
-      </a>
-      <a href="/sd_meta_data/307/edit?panel_number=7&new_template=true">
-        <div
-          class="p-1 py-4 cursor-pointer border-b-2"
-          :class="panel_number == 7 ? 'bg-purple-100' : ''"
-        >
-          Risk of Bias and Overall Summary of Evidence
-        </div>
-      </a>
-      <a href="/sd_meta_data/307/edit?panel_number=8&new_template=true">
-        <div
-          class="p-1 py-4 cursor-pointer border-b-2"
-          :class="panel_number == 8 ? 'bg-purple-100' : ''"
-        >
-          Results for Individual Outcomes
-        </div>
-      </a>
-    </div>
-    <%= render "sd_meta_data/form/#{params[:panel_number]}" %>
-  </div>
+  </template>
 </div>
 
 <script>
   document.addEventListener("alpine:init", () => {
     Alpine.data("sdMetaDatum", () => ({
-      sdMetaDatum: {},
+      sdMetaDatum: null,
       enabled: true,
       panel_number: null,
       sdMetaDatumId: null,
@@ -150,44 +155,17 @@
         this.panel_number = panel_number;
 
         await this.getSdMetaDatum(this.sdMetaDatumId);
-        this.initSelect2(
-          "funding_sources",
-          "funding_sources",
-          "funding_sources_sd_meta_data",
-          this.sdMetaDatum.funding_sources,
-          { sd_meta_datum_id: this.sdMetaDatumId }
-        );
-        this.initSelect2(
-          "review_types",
-          "review_types",
-          "review_types",
-          this.sdMetaDatum.review_types
-        );
-        this.sdMetaDatum["sd_key_questions"].forEach(
-          (sdKeyQuestion, sdKeyQuestionIndex) => {
-            this.initSelect2(
-              `key_question_types_${sdKeyQuestion.id}`,
-              "key_question_types",
-              "sd_key_questions_key_question_types",
-              this.sdMetaDatum["sd_key_questions"][sdKeyQuestionIndex]
-                .key_question_types,
-              { sd_key_question_id: sdKeyQuestion.id }
-            );
-          }
-        );
       },
 
       async initSelect2(
-        elementId,
+        resourceElement,
         resource,
         url,
         selected,
         multiParams = false
       ) {
-        const resourceElement = $(`#${elementId}`);
-        if (resourceElement.length === 0) return;
-
-        resourceElement.select2({
+        jResourceElement = $(resourceElement);
+        jResourceElement.select2({
           tags: true,
           ajax: {
             url: `/${resource}`,
@@ -214,7 +192,7 @@
         });
 
         const that = this;
-        resourceElement.on("select2:select", async function (e) {
+        jResourceElement.on("select2:select", async function (e) {
           if (multiParams) {
             that.apiCall(`/${url}`, "POST", {
               name: e.params.data.text,
@@ -238,7 +216,7 @@
           }
         });
 
-        resourceElement.on("select2:unselect", function (e) {
+        jResourceElement.on("select2:unselect", function (e) {
           if (multiParams) {
             that.apiCall(`/${url}/null`, "DELETE", {
               name: e.params.data.text,
@@ -251,10 +229,9 @@
             );
           }
         });
-
         selected.forEach((r) => {
           var option = new Option(r.name, r.id, true, true);
-          resourceElement.append(option).trigger("change");
+          jResourceElement.append(option).trigger("change");
         });
       },
 

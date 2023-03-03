@@ -35,6 +35,14 @@
         id="review_types"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.review_types"
+        x-init="$nextTick(() => {
+          initSelect2(
+            $el,
+            'review_types',
+            'review_types',
+            sdMetaDatum.review_types
+          );
+        });"
       ></select>
     </div>
   </div>
@@ -255,7 +263,10 @@
     </div>
   </div>
   <div class="bg-blue-50 p-2">
-    <h3 class="text-sm font-bold border-b-2 flex items-center">
+    <h3
+      class="text-sm font-bold border-b-2 flex items-center cursor-pointer"
+      @click="createSubResource('sd_key_questions', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
+    >
       Report Key Questions (must include at least one Key Question)
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -263,7 +274,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="white"
-        class="w-5 h-5 cursor-pointer"
+        class="w-5 h-5"
       >
         <path
           stroke-linecap="round"
@@ -311,8 +322,16 @@
           <div>
             <select
               multiple="multiple"
-              :id="`key_question_types_${sd_key_question.id}`"
-              x-model="sdMetaDatum.key_question_types"
+              x-model="sd_key_question.key_question_types"
+              x-init="$nextTick(() => {
+                initSelect2(
+                  $el,
+                  'key_question_types',
+                  'sd_key_questions_key_question_types',
+                  sd_key_question.key_question_types,
+                  { sd_key_question_id: sd_key_question.id }
+                )
+              });"
             ></select>
           </div>
         </div>
@@ -325,8 +344,9 @@
               :id="`includes_meta_analysis_${sd_key_question.id}`"
               x-model="sd_key_question.includes_meta_analysis"
               class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm p-1"
+              @change="updateSubResource('sd_key_questions', sd_key_question.id, 'PATCH', 'includes_meta_analysis', sd_key_question.includes_meta_analysis)"
             >
-              <option value="null">Please select</option>
+              <option value="">Please select</option>
               <option value="true">Yes</option>
               <option value="false">No</option>
             </select>
@@ -336,6 +356,7 @@
     </template>
     <div
       class="border-4 border-blue-200 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+      @click="createSubResource('sd_key_questions', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
     >
       Report Key Questions
       <svg

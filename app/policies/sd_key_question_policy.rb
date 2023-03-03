@@ -6,4 +6,8 @@ class SdKeyQuestionPolicy < ApplicationPolicy
   def destroy?
     project_contributor?
   end
+
+  def update?
+    project_contributor?
+  end
 end
