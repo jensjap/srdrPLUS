@@ -68,3 +68,19 @@ json.sd_key_questions @sd_meta_datum.sd_key_questions do |sd_key_question|
   end
   json.includes_meta_analysis sd_key_question.includes_meta_analysis
 end
+json.sd_picods @sd_meta_datum.sd_picods do |sd_picod|
+  json.id sd_picod.id
+  json.data_analysis_level do
+    json.id sd_picod.data_analysis_level&.id
+    json.name sd_picod.data_analysis_level&.name
+  end
+  json.name sd_picod.name
+  json.population sd_picod.population
+  json.interventions sd_picod.interventions
+  json.comparators sd_picod.comparators
+  json.outcomes sd_picod.outcomes
+  json.study_designs sd_picod.study_designs
+  json.timing sd_picod.timing
+  json.settings sd_picod.settings
+  json.other_elements sd_picod.other_elements
+end

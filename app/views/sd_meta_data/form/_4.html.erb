@@ -1,7 +1,21 @@
+<div class="border text-sm w-3/12 xl:w-1/12 p-1">
+  <div class="text-xs font-semibold">PICODTS</div>
+  <ul class="text-xs">
+    <template x-for="(sd_picod, sd_picod_index) in sdMetaDatum.sd_picods">
+      <li
+        class="text-xs cursor-pointer"
+        x-text="`SD PICODTS: ${sd_picod_index + 1}`"
+      ></li>
+    </template>
+  </ul>
+</div>
 <div class="border p-2 w-9/12 xl:w-11/12 space-y-2">
   <h2 class="text-base font-bold border-b-2">PICODTS</h2>
   <div class="bg-green-50 p-2">
-    <h3 class="text-sm font-bold border-b-2 flex items-center">
+    <h3
+      class="text-sm font-bold border-b-2 flex items-center cursor-pointer"
+      @click="createSubResource('sd_picods', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
+    >
       PICODTS
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -9,7 +23,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="white"
-        class="w-5 h-5 cursor-pointer"
+        class="w-5 h-5"
       >
         <path
           stroke-linecap="round"
@@ -18,16 +32,22 @@
         />
       </svg>
     </h3>
-    <template x-for="i in 3">
+    <template x-for="(sd_picod, sd_picod_index) in sdMetaDatum.sd_picods">
       <div class="bg-green-200 m-2 p-2 rounded-md space-y-2">
         <div class="flex justify-between items-center">
           <select class="w-12" name="" id="">
-            <template x-for="ii in 3">
-              <option :value="ii" x-text="ii" :selected="i == ii"></option>
+            <template x-for="i in sdMetaDatum.sd_picods.length">
+              <option
+                :value="i"
+                x-text="i"
+                :selected="i == sd_picod_index + 1"
+              ></option>
             </template>
           </select>
           <div
             class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+            @click="await updateSubResource('sd_picods', sd_picod.id, 'DELETE')
+            sdMetaDatum.sd_picods.splice(sd_picod_index, 1)"
           >
             Remove PICODTS
           </div>
@@ -62,6 +82,8 @@
             <textarea
               rows="4"
               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+              x-model="sd_picod.population"
+              @input.debounce="updateSubResource('sd_picods', sd_picod.id, 'PATCH', 'population', sd_picod.population)"
             ></textarea>
           </div>
         </div>
@@ -73,6 +95,8 @@
             <textarea
               rows="4"
               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+              x-model="sd_picod.interventions"
+              @input.debounce="updateSubResource('sd_picods', sd_picod.id, 'PATCH', 'interventions', sd_picod.interventions)"
             ></textarea>
           </div>
         </div>
@@ -84,6 +108,8 @@
             <textarea
               rows="4"
               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+              x-model="sd_picod.comparators"
+              @input.debounce="updateSubResource('sd_picods', sd_picod.id, 'PATCH', 'comparators', sd_picod.comparators)"
             ></textarea>
           </div>
         </div>
@@ -95,6 +121,8 @@
             <textarea
               rows="4"
               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+              x-model="sd_picod.outcomes"
+              @input.debounce="updateSubResource('sd_picods', sd_picod.id, 'PATCH', 'outcomes', sd_picod.outcomes)"
             ></textarea>
           </div>
         </div>
@@ -106,6 +134,8 @@
             <textarea
               rows="4"
               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+              x-model="sd_picod.study_designs"
+              @input.debounce="updateSubResource('sd_picods', sd_picod.id, 'PATCH', 'study_designs', sd_picod.study_designs)"
             ></textarea>
           </div>
         </div>
@@ -117,6 +147,8 @@
             <textarea
               rows="4"
               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+              x-model="sd_picod.timing"
+              @input.debounce="updateSubResource('sd_picods', sd_picod.id, 'PATCH', 'timing', sd_picod.timing)"
             ></textarea>
           </div>
         </div>
@@ -128,6 +160,8 @@
             <textarea
               rows="4"
               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+              x-model="sd_picod.settings"
+              @input.debounce="updateSubResource('sd_picods', sd_picod.id, 'PATCH', 'settings', sd_picod.settings)"
             ></textarea>
           </div>
         </div>
@@ -139,6 +173,8 @@
             <textarea
               rows="4"
               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+              x-model="sd_picod.other_elements"
+              @input.debounce="updateSubResource('sd_picods', sd_picod.id, 'PATCH', 'other_elements', sd_picod.other_elements)"
             ></textarea>
           </div>
         </div>
@@ -146,6 +182,7 @@
     </template>
     <div
       class="border-4 border-green-200 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+      @click="createSubResource('sd_picods', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
     >
       PICODTS
       <svg
@@ -154,7 +191,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="white"
-        class="w-5 h-5 cursor-pointer"
+        class="w-5 h-5"
       >
         <path
           stroke-linecap="round"
