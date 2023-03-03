@@ -140,12 +140,12 @@
                 <label class="block text-xs font-bold text-gray-700"
                   >Alt text</label
                 >
-                <input
-                  type="text"
-                  class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                <textarea
+                  rows="4"
+                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
                   x-model="sd_meta_data_figure.alt_text"
                   @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'alt_text', sd_meta_data_figure.alt_text)"
-                />
+                ></textarea>
               </div>
             </div>
             <div>
