@@ -141,23 +141,20 @@
       sdMetaDatum: {},
       enabled: true,
       panel_number: null,
-      sdMetaDatumId: null,
+      sdMetaDatumId: /\d+/.exec(window.location.pathname)[0],
+      panel_number: new URLSearchParams(window.location.search).get(
+        "panel_number"
+      ),
 
       async init() {
-        this.sdMetaDatumId = /\d+/.exec(window.location.pathname)[0];
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const panel_number = urlParams.get("panel_number");
-        this.panel_number = panel_number;
-
         await this.getSdMetaDatum(this.sdMetaDatumId);
       },
 
       async initSelect2(
         resourceElement,
         resource,
-        url,
         selected,
+        url,
         multiParams = false,
         custom_resource_url
       ) {
@@ -191,7 +188,7 @@
         const that = this;
         jResourceElement.on("select2:select", async function (e) {
           if (multiParams) {
-            that.apiCall(`/${url}`, "POST", {
+            that.apiCall(`/${url || resource}`, "POST", {
               name: e.params.data.text,
               ...multiParams,
             });
@@ -200,12 +197,14 @@
               const response = await that.apiCall(`/${resource}`, "POST", {
                 name: e.params.data.text,
               });
-              that.updateSdMetaDatum(
+              that.updateResource(
+                url ? `/${url}` : `/sd_meta_data/${that.sdMetaDatumId}`,
                 `${resource.substring(0, resource.length - 1)}_id`,
                 response.id
               );
             } else {
-              that.updateSdMetaDatum(
+              that.updateResource(
+                url ? `/${url}` : `/sd_meta_data/${that.sdMetaDatumId}`,
                 `${resource.substring(0, resource.length - 1)}_id`,
                 e.params.data.id
               );
@@ -215,12 +214,13 @@
 
         jResourceElement.on("select2:unselect", function (e) {
           if (multiParams) {
-            that.apiCall(`/${url}/null`, "DELETE", {
+            that.apiCall(`/${url || resource}/null`, "DELETE", {
               name: e.params.data.text,
               ...multiParams,
             });
           } else {
-            that.updateSdMetaDatum(
+            that.updateResource(
+              url ? `/${url}` : `/sd_meta_data/${that.sdMetaDatumId}`,
               `${resource.substring(0, resource.length - 1)}_id`,
               null
             );
@@ -247,6 +247,12 @@
         });
         const newResource = await response.json();
         parentObject[resource] = newResource.pictures;
+      },
+
+      async updateResource(url, attribute, value) {
+        this.apiCall(url, "PATCH", {
+          [attribute]: value,
+        });
       },
 
       async updateSdMetaDatum(attribute, value) {

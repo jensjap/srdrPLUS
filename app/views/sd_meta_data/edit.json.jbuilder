@@ -70,9 +70,9 @@ json.sd_key_questions @sd_meta_datum.sd_key_questions do |sd_key_question|
 end
 json.sd_picods @sd_meta_datum.sd_picods do |sd_picod|
   json.id sd_picod.id
-  json.data_analysis_level do
-    json.id sd_picod.data_analysis_level&.id
-    json.name sd_picod.data_analysis_level&.name
+  json.data_analysis_levels [sd_picod.data_analysis_level] do |data_analysis_level|
+    json.id data_analysis_level&.id
+    json.name data_analysis_level&.name
   end
   json.sd_key_questions sd_picod.sd_key_questions do |sd_key_question|
     json.id sd_key_question.id
