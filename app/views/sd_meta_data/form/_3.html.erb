@@ -301,6 +301,8 @@
           </select>
           <div
             class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+            @click="await updateSubResource('sd_key_questions', sd_key_question.id, 'DELETE')
+            sdMetaDatum.sd_key_questions.splice(sd_key_question_index, 1)"
           >
             Remove Key Question
           </div>
