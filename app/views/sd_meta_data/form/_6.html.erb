@@ -38,7 +38,10 @@
     Search Strategy and Results of Screening
   </h2>
   <div class="bg-pink-50 p-2">
-    <h3 class="text-sm font-bold border-b-2 flex items-center">
+    <h3
+      class="text-sm font-bold border-b-2 flex items-center"
+      @click="createSubResource('sd_search_strategies', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
+    >
       Search Strategies
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -46,7 +49,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="white"
-        class="w-5 h-5 cursor-pointer"
+        class="w-5 h-5"
       >
         <path
           stroke-linecap="round"
@@ -71,6 +74,8 @@
           </select>
           <div
             class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+            @click="await updateSubResource('sd_search_strategies', sd_search_strategy.id, 'DELETE')
+            sdMetaDatum.sd_search_strategies.splice(sd_search_strategy_index, 1)"
           >
             Remove Search Strategy
           </div>
@@ -80,10 +85,20 @@
             >Database (Required)</label
           >
           <div>
-            <input
-              type="text"
-              class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-            />
+            <template x-if="Object.keys(sdMetaDatum).length !== 0">
+              <select
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                x-model="sd_search_strategy.sd_search_databases"
+                x-init="$nextTick(() => {
+                  initSelect2(
+                    $el,
+                    'sd_search_databases',
+                    sd_search_strategy.sd_search_databases,
+                    `sd_search_strategies/${sd_search_strategy.id}`
+                  );
+                });"
+              ></select>
+            </template>
           </div>
         </div>
         <div>
@@ -92,9 +107,11 @@
           >
           <div>
             <input
-              type="text"
+              type="date"
               class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
               x-model="sd_search_strategy.date_of_search"
+              onfocus="this.showPicker()"
+              @input.debounce="updateResource(`/sd_search_strategies/${sd_search_strategy.id}`, 'date_of_search', sd_search_strategy.date_of_search)"
             />
           </div>
         </div>
@@ -107,6 +124,7 @@
               rows="4"
               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
               x-model="sd_search_strategy.search_limits"
+              @input.debounce="updateResource(`/sd_search_strategies/${sd_search_strategy.id}`, 'search_limits', sd_search_strategy.search_limits)"
             ></textarea>
           </div>
         </div>
@@ -119,6 +137,7 @@
               rows="4"
               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
               x-model="sd_search_strategy.search_terms"
+              @input.debounce="updateResource(`/sd_search_strategies/${sd_search_strategy.id}`, 'search_terms', sd_search_strategy.search_terms)"
             ></textarea>
           </div>
         </div>
@@ -126,6 +145,7 @@
     </template>
     <div
       class="border-4 border-pink-200 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+      @click="createSubResource('sd_search_strategies', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
     >
       Search Strategies
       <svg
@@ -134,7 +154,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="white"
-        class="w-5 h-5 cursor-pointer"
+        class="w-5 h-5"
       >
         <path
           stroke-linecap="round"
@@ -145,7 +165,10 @@
     </div>
   </div>
   <div class="bg-gray-50 p-2">
-    <h3 class="text-sm font-bold border-b-2 flex items-center">
+    <h3
+      class="text-sm font-bold border-b-2 flex items-center cursor-pointer"
+      @click="createSubResource('sd_grey_literature_searches', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
+    >
       Grey Literature Searches
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -153,7 +176,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="white"
-        class="w-5 h-5 cursor-pointer"
+        class="w-5 h-5"
       >
         <path
           stroke-linecap="round"
@@ -180,6 +203,8 @@
           </select>
           <div
             class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+            @click="await updateSubResource('sd_grey_literature_searches', sd_grey_literature_search.id, 'DELETE')
+            sdMetaDatum.sd_grey_literature_searches.splice(sd_grey_literature_search_index, 1)"
           >
             Remove Grey Literature Search
           </div>
@@ -200,6 +225,7 @@
     </template>
     <div
       class="border-4 border-gray-200 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+      @click="createSubResource('sd_grey_literature_searches', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
     >
       Grey Literature Searches
       <svg
@@ -208,7 +234,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="white"
-        class="w-5 h-5 cursor-pointer"
+        class="w-5 h-5"
       >
         <path
           stroke-linecap="round"
@@ -219,7 +245,10 @@
     </div>
   </div>
   <div class="bg-orange-50 p-2">
-    <h3 class="text-sm font-bold border-b-2 flex items-center">
+    <h3
+      class="text-sm font-bold border-b-2 flex items-center cursor-pointer"
+      @click="createSubResource('sd_prisma_flows', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
+    >
       PRISMA / Literature Flow Diagrams
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -227,7 +256,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="white"
-        class="w-5 h-5 cursor-pointer"
+        class="w-5 h-5"
       >
         <path
           stroke-linecap="round"
@@ -252,6 +281,8 @@
           </select>
           <div
             class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+            @click="await updateSubResource('sd_prisma_flows', sd_prisma_flow.id, 'DELETE')
+            sdMetaDatum.sd_prisma_flows.splice(sd_prisma_flow_index, 1)"
           >
             Remove Prisma
           </div>
@@ -402,6 +433,7 @@
     </template>
     <div
       class="border-4 border-orange-200 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+      @click="createSubResource('sd_prisma_flows', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
     >
       PRISMA / Literature Flow Diagrams
       <svg
@@ -410,7 +442,7 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="white"
-        class="w-5 h-5 cursor-pointer"
+        class="w-5 h-5"
       >
         <path
           stroke-linecap="round"

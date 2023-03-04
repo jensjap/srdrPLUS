@@ -44,7 +44,7 @@ json.sd_other_items @sd_meta_datum.sd_other_items do |sd_other_item|
 end
 # panel 3
 json.overall_purpose_of_review @sd_meta_datum.overall_purpose_of_review
-json.review_types [@sd_meta_datum.review_type] do |review_type|
+json.review_types(@sd_meta_datum.review_type ? [@sd_meta_datum.review_type] : []) do |review_type|
   json.id review_type.id
   json.name review_type.name
 end
@@ -75,7 +75,7 @@ end
 # panel 4
 json.sd_picods @sd_meta_datum.sd_picods do |sd_picod|
   json.id sd_picod.id
-  json.data_analysis_levels [sd_picod.data_analysis_level] do |data_analysis_level|
+  json.data_analysis_levels(sd_picod.data_analysis_level ? [sd_picod.data_analysis_level] : []) do |data_analysis_level|
     json.id data_analysis_level&.id
     json.name data_analysis_level&.name
   end
@@ -96,9 +96,9 @@ end
 # panel 6
 json.sd_search_strategies @sd_meta_datum.sd_search_strategies do |sd_search_strategy|
   json.id sd_search_strategy.id
-  json.search_database do
-    json.id sd_search_strategy.sd_search_database.id
-    json.name sd_search_strategy.sd_search_database.name
+  json.sd_search_databases(sd_search_strategy.sd_search_database ? [sd_search_strategy.sd_search_database] : []) do |sd_search_database|
+    json.id sd_search_database.id
+    json.name sd_search_database.name
   end
   json.date_of_search sd_search_strategy.date_of_search
   json.search_limits sd_search_strategy.search_limits

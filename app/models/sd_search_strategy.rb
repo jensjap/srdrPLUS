@@ -25,8 +25,5 @@ class SdSearchStrategy < ApplicationRecord
   belongs_to :sd_meta_datum, inverse_of: :sd_search_strategies, optional: true
   belongs_to :sd_search_database, inverse_of: :sd_search_strategies, optional: true
 
-  def sd_search_database_id=(token)
-    save_resource_name_with_token(SdSearchDatabase.new, token)
-    super
-  end
+  delegate :project, to: :sd_meta_datum
 end

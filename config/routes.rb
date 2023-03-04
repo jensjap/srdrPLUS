@@ -32,7 +32,7 @@ Rails.application.routes.draw do
   resources :key_question_types, only: [:index]
   resources :sd_key_questions_key_question_types, only: %i[create destroy]
   resources :sd_key_questions_sd_picods, only: %i[create destroy]
-  resources :sd_search_databases, only: [:index]
+  resources :sd_search_databases, only: %i[index create]
   resources :key_questions, only: [:index]
   resources :sd_key_questions, only: [:index] do
     get 'destroy_with_picodts', on: :member
@@ -150,6 +150,9 @@ Rails.application.routes.draw do
     resources :sd_analytic_frameworks, only: %i[create destroy update]
     resources :sd_key_questions, only: %i[create destroy update]
     resources :sd_picods, only: %i[create destroy update]
+    resources :sd_search_strategies, only: %i[create destroy update]
+    resources :sd_grey_literature_searches, only: %i[create destroy update]
+    resources :sd_prisma_flows, only: %i[create destroy update]
   end
 
   resources :sd_meta_data_figures, only: %i[create destroy update]

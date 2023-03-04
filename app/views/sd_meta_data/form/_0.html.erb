@@ -58,7 +58,7 @@
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.date_of_last_search"
         onfocus="this.showPicker()"
-        @change.debounce="updateSdMetaDatum('date_of_last_search', sdMetaDatum.date_of_last_search)"
+        @input.debounce="updateSdMetaDatum('date_of_last_search', sdMetaDatum.date_of_last_search)"
       />
     </div>
   </div>
@@ -72,7 +72,7 @@
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.date_of_publication_to_srdr"
         onfocus="this.showPicker()"
-        @change.debounce="updateSdMetaDatum('date_of_publication_to_srdr', sdMetaDatum.date_of_publication_to_srdr)"
+        @input.debounce="updateSdMetaDatum('date_of_publication_to_srdr', sdMetaDatum.date_of_publication_to_srdr)"
       />
     </div>
   </div>
@@ -86,7 +86,7 @@
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.date_of_publication_full_report"
         onfocus="this.showPicker()"
-        @change.debounce="updateSdMetaDatum('date_of_publication_full_report', sdMetaDatum.date_of_publication_full_report)"
+        @input.debounce="updateSdMetaDatum('date_of_publication_full_report', sdMetaDatum.date_of_publication_full_report)"
       />
     </div>
   </div>
