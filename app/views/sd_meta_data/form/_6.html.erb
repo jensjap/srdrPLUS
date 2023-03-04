@@ -299,7 +299,10 @@
             />
           </div>
         </div>
-        <div class="flex items-center">
+        <div
+          class="flex items-center cursor-pointer"
+          @click="sd_prisma_flow.sd_meta_data_figures.push(await apiCall('/sd_meta_data_figures', 'POST', { sd_figurable_type: 'SdPrismaFlow', sd_figurable_id: sd_prisma_flow.id }))"
+        >
           <label class="block text-xs font-bold text-gray-700">Figure(s)</label>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -307,7 +310,7 @@
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="white"
-            class="w-4 h-4 cursor-pointer"
+            class="w-4 h-4"
           >
             <path
               stroke-linecap="round"
@@ -323,6 +326,8 @@
             <div class="flex justify-end">
               <div
                 class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+                @click="await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
+                sd_prisma_flow.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)"
               >
                 Remove Figure
               </div>
@@ -412,6 +417,7 @@
         </template>
         <div
           class="border-4 border-orange-300 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+          @click="sd_prisma_flow.sd_meta_data_figures.push(await apiCall('/sd_meta_data_figures', 'POST', { sd_figurable_type: 'SdPrismaFlow', sd_figurable_id: sd_prisma_flow.id }))"
         >
           Figures
           <svg
@@ -420,7 +426,7 @@
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="white"
-            class="w-5 h-5 cursor-pointer"
+            class="w-5 h-5"
           >
             <path
               stroke-linecap="round"
