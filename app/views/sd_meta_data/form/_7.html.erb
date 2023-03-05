@@ -65,17 +65,39 @@
           <div>
             <template x-if="Object.keys(sdMetaDatum).length !== 0">
               <select
-                x-model="sd_summary_of_evidence.sd_key_questions"
                 x-init="$nextTick(() => {
-                initSelect2(
-                  $el,
-                  'sd_key_questions',
-                  sd_summary_of_evidence.sd_key_questions,
-                  'sd_key_questions_sd_summary_of_evidences',
-                  { sd_summary_of_evidence_id: sd_summary_of_evidence.id, sd_meta_datum_id: sdMetaDatumId },
-                  `sd_key_questions?sd_meta_datum_id=${sdMetaDatumId}`
-                )
-              });"
+                  const jResourceElement = $($el);
+                  jResourceElement.select2({
+                    allowClear: true,
+                    placeholder: 'Make a selection',
+                    ajax: {
+                      url: `/sd_key_questions?sd_meta_datum_id=${sdMetaDatumId}`,
+                      dataType: 'json',
+                      processResults: (data, params) => {
+                        params.page = params.page || 1;
+                        return {
+                          results: $.map(data.items, (i) => {
+                            return {
+                              id: i.id,
+                              text: i.name,
+                            };
+                          }),
+                        };
+                      },
+                    },
+                  })
+                  jResourceElement.on('select2:select', function (e) {
+                    updateSubResource('sd_summary_of_evidences', sd_summary_of_evidence.id, 'PATCH', 'sd_key_question_id', e.params.data.id)
+                  });
+                  jResourceElement.on('select2:unselect', function (e) {
+                    updateSubResource('sd_summary_of_evidences', sd_summary_of_evidence.id, 'PATCH', 'sd_key_question_id', null)
+                  });
+                  sd_summary_of_evidence.sd_key_questions.forEach((selectedOption) => {
+                    const option = new Option(selectedOption.name, selectedOption.id, true, true);
+                    jResourceElement.append(option).trigger('change');
+                  });
+                })
+                "
               ></select>
             </template>
           </div>

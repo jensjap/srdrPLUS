@@ -24,6 +24,6 @@ class SdSummaryOfEvidencesController < ApplicationController
   private
 
   def sd_summary_of_evidence_params
-    params.permit(:name, :soe_type)
+    params.permit(:name, :soe_type, :sd_key_question_id)
   end
 end

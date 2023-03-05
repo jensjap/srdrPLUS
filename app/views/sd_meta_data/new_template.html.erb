@@ -226,8 +226,13 @@
             );
           }
         });
-        selected.forEach((r) => {
-          var option = new Option(r.name, r.id, true, true);
+        selected.forEach((selectedOption) => {
+          const option = new Option(
+            selectedOption.name,
+            selectedOption.id,
+            true,
+            true
+          );
           jResourceElement.append(option).trigger("change");
         });
       },
