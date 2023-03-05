@@ -121,4 +121,21 @@ json.sd_prisma_flows @sd_meta_datum.sd_prisma_flows do |sd_prisma_flow|
   end
 end
 # panel 7
+json.sd_summary_of_evidences @sd_meta_datum.sd_summary_of_evidences do |sd_summary_of_evidence|
+  json.id sd_summary_of_evidence.id
+  json.soe_type sd_summary_of_evidence.soe_type
+  json.name sd_summary_of_evidence.name
+  json.sd_key_questions(sd_summary_of_evidence.sd_key_question ? [sd_summary_of_evidence.sd_key_question] : []) do |sd_key_question|
+    json.id sd_key_question.id
+    json.name sd_key_question.name
+  end
+  json.sd_meta_data_figures sd_summary_of_evidence.sd_meta_data_figures do |sd_meta_data_figure|
+    json.id sd_meta_data_figure.id
+    json.alt_text sd_meta_data_figure.alt_text
+    json.pictures sd_meta_data_figure.pictures do |picture|
+      json.id picture.id
+      json.url rails_blob_url(picture)
+    end
+  end
+end
 # panel 8

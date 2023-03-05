@@ -153,6 +153,7 @@ Rails.application.routes.draw do
     resources :sd_search_strategies, only: %i[create destroy update]
     resources :sd_grey_literature_searches, only: %i[create destroy update]
     resources :sd_prisma_flows, only: %i[create destroy update]
+    resources :sd_summary_of_evidences, only: %i[create destroy update]
   end
 
   resources :sd_meta_data_figures, only: %i[create destroy update]
