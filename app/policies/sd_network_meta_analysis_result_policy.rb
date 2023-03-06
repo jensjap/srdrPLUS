@@ -1,4 +1,8 @@
 class SdNetworkMetaAnalysisResultPolicy < ApplicationPolicy
+  def create?
+    project_contributor?
+  end
+
   def update?
     project_contributor?
   end

@@ -199,9 +199,29 @@ json.sd_result_items @sd_meta_datum.sd_result_items do |sd_result_item|
     end
   end
   json.sd_network_meta_analysis_results sd_result_item.sd_network_meta_analysis_results do |sd_network_meta_analysis_result|
-    json.id sd_network_meta_analysis_result
+    json.id sd_network_meta_analysis_result.id
+    json.name sd_network_meta_analysis_result.name
+
+    json.sd_meta_data_figures sd_network_meta_analysis_result.sd_meta_data_figures do |sd_meta_data_figure|
+      json.id sd_meta_data_figure.id
+      json.alt_text sd_meta_data_figure.alt_text
+      json.pictures sd_meta_data_figure.pictures do |picture|
+        json.id picture.id
+        json.url rails_blob_url(picture)
+      end
+    end
   end
   json.sd_meta_regression_analysis_results sd_result_item.sd_meta_regression_analysis_results do |sd_meta_regression_analysis_result|
-    json.id sd_meta_regression_analysis_result
+    json.id sd_meta_regression_analysis_result.id
+    json.name sd_meta_regression_analysis_result.name
+
+    json.sd_meta_data_figures sd_meta_regression_analysis_result.sd_meta_data_figures do |sd_meta_data_figure|
+      json.id sd_meta_data_figure.id
+      json.alt_text sd_meta_data_figure.alt_text
+      json.pictures sd_meta_data_figure.pictures do |picture|
+        json.id picture.id
+        json.url rails_blob_url(picture)
+      end
+    end
   end
 end
