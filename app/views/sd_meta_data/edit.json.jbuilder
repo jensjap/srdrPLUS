@@ -139,3 +139,69 @@ json.sd_summary_of_evidences @sd_meta_datum.sd_summary_of_evidences do |sd_summa
   end
 end
 # panel 8
+json.sd_result_items @sd_meta_datum.sd_result_items do |sd_result_item|
+  json.id sd_result_item.id
+
+  json.sd_key_questions(sd_result_item.sd_key_question ? [sd_result_item.sd_key_question] : []) do |sd_key_question|
+    json.id sd_key_question.id
+    json.name sd_key_question.name
+  end
+
+  json.sd_narrative_results sd_result_item.sd_narrative_results do |sd_narrative_result|
+    json.id sd_narrative_result.id
+    json.narrative_results sd_narrative_result.narrative_results
+    json.narrative_results_by_population sd_narrative_result.narrative_results_by_population
+    json.narrative_results_by_intervention sd_narrative_result.narrative_results_by_intervention
+    json.sd_outcomes sd_narrative_result.sd_outcomes do |sd_outcome|
+      json.id sd_outcome.id
+      json.name sd_outcome.name
+    end
+  end
+  json.sd_evidence_tables sd_result_item.sd_evidence_tables do |sd_evidence_table|
+    json.id sd_evidence_table.id
+    json.name sd_evidence_table.name
+
+    json.sd_outcomes sd_evidence_table.sd_outcomes do |sd_outcome|
+      json.id sd_outcome.id
+      json.name sd_outcome.name
+    end
+
+    json.sd_meta_data_figures sd_evidence_table.sd_meta_data_figures do |sd_meta_data_figure|
+      json.id sd_meta_data_figure.id
+      json.alt_text sd_meta_data_figure.alt_text
+      json.pictures sd_meta_data_figure.pictures do |picture|
+        json.id picture.id
+        json.url rails_blob_url(picture)
+      end
+    end
+  end
+  json.sd_pairwise_meta_analytic_results sd_result_item.sd_pairwise_meta_analytic_results do |sd_pairwise_meta_analytic_result|
+    json.id sd_pairwise_meta_analytic_result.id
+    json.name sd_pairwise_meta_analytic_result.name
+
+    json.sd_meta_data_figures sd_pairwise_meta_analytic_result.sd_meta_data_figures do |sd_meta_data_figure|
+      json.id sd_meta_data_figure.id
+      json.alt_text sd_meta_data_figure.alt_text
+      json.outcome_type sd_meta_data_figure.outcome_type
+      json.intervention_name sd_meta_data_figure.intervention_name
+      json.comparator_name sd_meta_data_figure.comparator_name
+      json.effect_size_measure_name sd_meta_data_figure.effect_size_measure_name
+      json.overall_effect_size sd_meta_data_figure.overall_effect_size
+      json.overall_95_ci_low sd_meta_data_figure.overall_95_ci_low
+      json.overall_95_ci_high sd_meta_data_figure.overall_95_ci_high
+      json.overall_i_squared sd_meta_data_figure.overall_i_squared
+      json.other_heterogeneity_statistics sd_meta_data_figure.other_heterogeneity_statistics
+
+      json.pictures sd_meta_data_figure.pictures do |picture|
+        json.id picture.id
+        json.url rails_blob_url(picture)
+      end
+    end
+  end
+  json.sd_network_meta_analysis_results sd_result_item.sd_network_meta_analysis_results do |sd_network_meta_analysis_result|
+    json.id sd_network_meta_analysis_result
+  end
+  json.sd_meta_regression_analysis_results sd_result_item.sd_meta_regression_analysis_results do |sd_meta_regression_analysis_result|
+    json.id sd_meta_regression_analysis_result
+  end
+end

@@ -1,3 +1,81 @@
+<div class="border text-sm w-3/12 xl:w-1/12 p-1">
+  <div class="text-xs font-semibold">Results for Individual Outcomes</div>
+  <ul>
+    <template
+      x-for="(sd_result_item, sd_result_item_index) in sdMetaDatum.sd_result_items"
+    >
+      <li class="text-xs cursor-pointer">
+        <span
+          class="text-[11px] font-semibold"
+          x-text="`Results by KQ (${sd_result_item_index + 1})`"
+        ></span>
+        <div class="text-[10px] font-semibold">
+          Narrative Results by Outcome(s)
+        </div>
+        <ul>
+          <template
+            x-for="(sd_narrative_result, sd_narrative_result_index) in sd_result_item.sd_narrative_results"
+          >
+            <li
+              class="text-[9px]"
+              x-text="`Narrative ${sd_narrative_result_index + 1}`"
+            ></li>
+          </template>
+        </ul>
+        <div class="text-[10px] font-semibold">Results by Outcome(s)</div>
+        <ul>
+          <template
+            x-for="(sd_evidence_table, sd_evidence_table_index) in sd_result_item.sd_evidence_tables"
+          >
+            <li
+              class="text-[9px]"
+              x-text="`Result Outcome ${sd_evidence_table_index + 1}`"
+            ></li>
+          </template>
+        </ul>
+        <div class="text-[10px] font-semibold">
+          Pairwise Meta-analyses by Outcome(s)
+        </div>
+        <ul>
+          <template
+            x-for="(sd_pairwise_meta_analytic_result, sd_pairwise_meta_analytic_result_index) in sd_result_item.sd_pairwise_meta_analytic_results"
+          >
+            <li
+              class="text-[9px]"
+              x-text="`Pairwise ${sd_pairwise_meta_analytic_result_index + 1}`"
+            ></li>
+          </template>
+        </ul>
+        <div class="text-[10px] font-semibold">
+          Network Meta-analyses by Outcome(s)
+        </div>
+        <ul>
+          <template
+            x-for="(sd_network_meta_analysis_result, sd_network_meta_analysis_result_index) in sd_result_item.sd_network_meta_analysis_results"
+          >
+            <li
+              class="text-[9px]"
+              x-text="`Network ${sd_network_meta_analysis_result_index + 1}`"
+            ></li>
+          </template>
+        </ul>
+        <div class="text-[10px] font-semibold">
+          Meta-regression Results by Outcome(s)
+        </div>
+        <ul>
+          <template
+            x-for="(sd_meta_regression_analysis_result, sd_meta_regression_analysis_result_index) in sd_result_item.sd_meta_regression_analysis_results"
+          >
+            <li
+              class="text-[9px]"
+              x-text="`Regression ${sd_meta_regression_analysis_result_index + 1}`"
+            ></li>
+          </template>
+        </ul>
+      </li>
+    </template>
+  </ul>
+</div>
 <div class="border p-2 w-9/12 xl:w-11/12 space-y-2">
   <h2 class="text-base font-bold border-b-2">
     Results for Individual Outcomes
@@ -439,8 +517,21 @@
                 <div>
                   <div>
                     <label class="block text-xs font-bold text-gray-700"
+                      >Type</label
+                    >
+                    <input
+                      type="text"
+                      class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700"
                       >Alt text</label
                     >
+                    <textarea
+                      rows="4"
+                      class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                    ></textarea>
                   </div>
                 </div>
                 <div>
@@ -737,8 +828,21 @@
                 <div>
                   <div>
                     <label class="block text-xs font-bold text-gray-700"
+                      >Type</label
+                    >
+                    <input
+                      type="text"
+                      class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700"
                       >Alt text</label
                     >
+                    <textarea
+                      rows="4"
+                      class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                    ></textarea>
                   </div>
                 </div>
                 <div>
@@ -938,6 +1042,10 @@
                     <label class="block text-xs font-bold text-gray-700"
                       >Alt text</label
                     >
+                    <textarea
+                      rows="4"
+                      class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                    ></textarea>
                   </div>
                 </div>
                 <div>
