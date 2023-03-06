@@ -17,7 +17,7 @@ class SdPairwiseMetaAnalyticResultsController < ApplicationController
   end
 
   def destroy
-    sd_pairwise_meta_analytic_result = SdEvidenceTable.find_by(id: params[:id])
+    sd_pairwise_meta_analytic_result = SdPairwiseMetaAnalyticResult.find_by(id: params[:id])
     authorize(sd_pairwise_meta_analytic_result)
     sd_pairwise_meta_analytic_result.destroy
     render json: sd_pairwise_meta_analytic_result.as_json, status: 200
