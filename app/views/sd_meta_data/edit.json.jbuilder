@@ -1,9 +1,9 @@
 # panel 0
 json.project_name @project.name
 json.report_title @sd_meta_datum.report_title
-json.date_of_last_search @sd_meta_datum.date_of_last_search.strftime('%Y-%m-%d')
-json.date_of_publication_to_srdr @sd_meta_datum.date_of_publication_to_srdr.strftime('%Y-%m-%d')
-json.date_of_publication_full_report @sd_meta_datum.date_of_publication_full_report.strftime('%Y-%m-%d')
+json.date_of_last_search @sd_meta_datum.date_of_last_search&.strftime('%Y-%m-%d')
+json.date_of_publication_to_srdr @sd_meta_datum.date_of_publication_to_srdr&.strftime('%Y-%m-%d')
+json.date_of_publication_full_report @sd_meta_datum.date_of_publication_full_report&.strftime('%Y-%m-%d')
 json.funding_sources @sd_meta_datum.funding_sources do |funding_source|
   json.id funding_source.id
   json.name funding_source.name
