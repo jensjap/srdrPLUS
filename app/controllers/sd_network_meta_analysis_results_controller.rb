@@ -10,7 +10,10 @@ class SdNetworkMetaAnalysisResultsController < ApplicationController
     sd_result_item = SdResultItem.find(params[:sd_result_item_id])
     authorize(sd_result_item)
     sd_network_meta_analysis_result = sd_result_item.sd_network_meta_analysis_results.create(sd_network_meta_analysis_result_params)
-    render json: sd_network_meta_analysis_result.as_json, status: 200
+    render json: {
+      id: sd_network_meta_analysis_result.id,
+      sd_meta_data_figures: []
+    }, status: 200
   end
 
   def destroy
