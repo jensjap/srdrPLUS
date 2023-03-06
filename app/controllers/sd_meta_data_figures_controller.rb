@@ -30,6 +30,18 @@ class SdMetaDataFiguresController < ApplicationController
   private
 
   def sd_meta_data_figure_params
-    params.permit(:alt_text, pictures: [])
+    params.permit(
+      :alt_text,
+      :outcome_type,
+      :intervention_name,
+      :comparator_name,
+      :effect_size_measure_name,
+      :overall_effect_size,
+      :overall_95_ci_low,
+      :overall_95_ci_high,
+      :overall_i_squared,
+      :other_heterogeneity_statistics,
+      pictures: []
+    )
   end
 end
