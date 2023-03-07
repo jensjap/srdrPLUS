@@ -60,10 +60,14 @@
     </h3>
     <template
       x-for="(sd_search_strategy, sd_search_strategy_index) in sdMetaDatum.sd_search_strategies"
+      :key="sd_search_strategy.id"
     >
       <div class="bg-pink-200 m-2 p-2 rounded-md space-y-2">
         <div class="flex justify-between items-center">
-          <select class="w-12">
+          <select
+            class="w-12"
+            @change="moveElementInArray(sdMetaDatum, 'sd_search_strategies', sd_search_strategy_index, $el.value - 1)"
+          >
             <template x-for="i in sdMetaDatum.sd_search_strategies.length">
               <option
                 :value="i"
@@ -187,10 +191,14 @@
     </h3>
     <template
       x-for="(sd_grey_literature_search, sd_grey_literature_search_index) in sdMetaDatum.sd_grey_literature_searches"
+      :key="sd_grey_literature_search.id"
     >
       <div class="bg-gray-200 m-2 p-2 rounded-md space-y-2">
         <div class="flex justify-between items-center">
-          <select class="w-12">
+          <select
+            class="w-12"
+            @change="moveElementInArray(sdMetaDatum, 'sd_grey_literature_searches', sd_grey_literature_search_index, $el.value - 1)"
+          >
             <template
               x-for="i in sdMetaDatum.sd_grey_literature_searches.length"
             >
@@ -268,10 +276,14 @@
     </h3>
     <template
       x-for="(sd_prisma_flow, sd_prisma_flow_index) in sdMetaDatum.sd_prisma_flows"
+      :key="sd_prisma_flow.id"
     >
       <div class="bg-orange-100 m-2 p-2 rounded-md space-y-2">
         <div class="flex justify-between items-center">
-          <select class="w-12">
+          <select
+            class="w-12"
+            @change="moveElementInArray(sdMetaDatum, 'sd_prisma_flows', sd_prisma_flow_index, $el.value - 1)"
+          >
             <template x-for="i in sdMetaDatum.sd_prisma_flows.length">
               <option
                 :value="i"

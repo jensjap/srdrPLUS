@@ -95,6 +95,7 @@
     </h3>
     <template
       x-for="(sd_result_item, sd_result_item_index) in sdMetaDatum.sd_result_items"
+      :key="sd_result_item.id"
     >
       <div
         class="bg-purple-200 m-2 p-2 rounded-md space-y-2"
@@ -102,7 +103,10 @@
       >
         <div class="flex justify-between items-center">
           <div class="flex justify-center items-center space-x-2">
-            <select class="w-12">
+            <select
+              class="w-12"
+              @change="moveElementInArray(sdMetaDatum, 'sd_result_items', sd_result_item_index, $el.value - 1)"
+            >
               <template x-for="i in sdMetaDatum.sd_result_items.length">
                 <option
                   :value="i"
@@ -201,10 +205,14 @@
           </h4>
           <template
             x-for="(sd_narrative_result, sd_narrative_result_index) in sd_result_item.sd_narrative_results"
+            :key="sd_narrative_result.id"
           >
             <div class="bg-blue-200 m-2 p-2 rounded-md space-y-2">
               <div class="flex justify-between items-center">
-                <select class="w-12">
+                <select
+                  class="w-12"
+                  @change="moveElementInArray(sd_result_item, 'sd_narrative_results', sd_narrative_result_index, $el.value - 1)"
+                >
                   <template
                     x-for="i in sd_result_item.sd_narrative_results.length"
                   >
@@ -339,10 +347,14 @@
           </h4>
           <template
             x-for="(sd_evidence_table, sd_evidence_table_index) in sd_result_item.sd_evidence_tables"
+            :key="sd_evidence_table.id"
           >
             <div class="bg-green-200 m-2 p-2 rounded-md space-y-2">
               <div class="flex justify-between items-center">
-                <select class="w-12">
+                <select
+                  class="w-12"
+                  @change="moveElementInArray(sd_result_item, 'sd_evidence_tables', sd_evidence_table_index, $el.value - 1)"
+                >
                   <template
                     x-for="i in sd_result_item.sd_evidence_tables.length"
                   >
@@ -593,10 +605,14 @@
           </h4>
           <template
             x-for="(sd_pairwise_meta_analytic_result, sd_pairwise_meta_analytic_result_index) in sd_result_item.sd_pairwise_meta_analytic_results"
+            :key="sd_pairwise_meta_analytic_result.id"
           >
             <div class="bg-orange-200 m-2 p-2 rounded-md space-y-2">
               <div class="flex justify-between items-center">
-                <select class="w-12">
+                <select
+                  class="w-12"
+                  @change="moveElementInArray(sd_result_item, 'sd_pairwise_meta_analytic_results', sd_pairwise_meta_analytic_result_index, $el.value - 1)"
+                >
                   <template
                     x-for="i in sd_result_item.sd_pairwise_meta_analytic_results.length"
                   >
@@ -986,10 +1002,14 @@
           </h4>
           <template
             x-for="(sd_network_meta_analysis_result, sd_network_meta_analysis_result_index) in sd_result_item.sd_network_meta_analysis_results"
+            :key="sd_network_meta_analysis_result.id"
           >
             <div class="bg-stone-200 m-2 p-2 rounded-md space-y-2">
               <div class="flex justify-between items-center">
-                <select class="w-12">
+                <select
+                  class="w-12"
+                  @change="moveElementInArray(sd_result_item, 'sd_network_meta_analysis_results', sd_network_meta_analysis_result_index, $el.value - 1)"
+                >
                   <template
                     x-for="i in sd_result_item.sd_network_meta_analysis_results.length"
                   >
@@ -1263,10 +1283,14 @@
           </h4>
           <template
             x-for="(sd_meta_regression_analysis_result, sd_meta_regression_analysis_result_index) in sd_result_item.sd_meta_regression_analysis_results"
+            :key="sd_meta_regression_analysis_result.id"
           >
             <div class="bg-rose-200 m-2 p-2 rounded-md space-y-2">
               <div class="flex justify-between items-center">
-                <select class="w-12">
+                <select
+                  class="w-12"
+                  @change="moveElementInArray(sd_result_item, 'sd_meta_regression_analysis_results', sd_meta_regression_analysis_result_index, $el.value - 1)"
+                >
                   <template
                     x-for="i in sd_result_item.sd_meta_regression_analysis_results.length"
                   >

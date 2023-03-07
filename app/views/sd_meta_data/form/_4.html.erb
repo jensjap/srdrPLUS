@@ -32,10 +32,16 @@
         />
       </svg>
     </h3>
-    <template x-for="(sd_picod, sd_picod_index) in sdMetaDatum.sd_picods">
+    <template
+      x-for="(sd_picod, sd_picod_index) in sdMetaDatum.sd_picods"
+      :key="sd_picod.id"
+    >
       <div class="bg-green-200 m-2 p-2 rounded-md space-y-2">
         <div class="flex justify-between items-center">
-          <select class="w-12">
+          <select
+            class="w-12"
+            @change="moveElementInArray(sdMetaDatum, 'sd_picods', sd_picod_index, $el.value - 1)"
+          >
             <template x-for="i in sdMetaDatum.sd_picods.length">
               <option
                 :value="i"

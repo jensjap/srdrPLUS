@@ -38,10 +38,14 @@
     </h3>
     <template
       x-for="(sd_summary_of_evidence, sd_summary_of_evidence_index) in sdMetaDatum.sd_summary_of_evidences"
+      :key="sd_summary_of_evidence.id"
     >
       <div class="bg-purple-200 m-2 p-2 rounded-md space-y-2">
         <div class="flex justify-between items-center">
-          <select class="w-12">
+          <select
+            class="w-12"
+            @change="moveElementInArray(sdMetaDatum, 'sd_summary_of_evidences', sd_summary_of_evidence_index, $el.value - 1)"
+          >
             <template x-for="i in sdMetaDatum.sd_summary_of_evidences.length">
               <option
                 :value="i"

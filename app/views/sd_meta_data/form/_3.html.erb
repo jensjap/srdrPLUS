@@ -81,10 +81,14 @@
     </h3>
     <template
       x-for="(sd_analytic_framework, sd_analytic_framework_index) in sdMetaDatum?.sd_analytic_frameworks"
+      :key="sd_analytic_framework.id"
     >
       <div class="bg-purple-200 m-2 p-2 rounded-md space-y-2">
         <div class="flex justify-between items-center">
-          <select class="w-12">
+          <select
+            class="w-12"
+            @change="moveElementInArray(sdMetaDatum, 'sd_analytic_frameworks', sd_analytic_framework_index, $el.value - 1)"
+          >
             <template x-for="i in sdMetaDatum?.sd_analytic_frameworks.length">
               <option
                 :value="i"
@@ -300,10 +304,14 @@
     </h3>
     <template
       x-for="(sd_key_question, sd_key_question_index) in sdMetaDatum?.sd_key_questions"
+      :key="sd_key_question.id"
     >
       <div class="bg-blue-200 m-2 p-2 rounded-md space-y-2">
         <div class="flex justify-between items-center">
-          <select class="w-12">
+          <select
+            class="w-12"
+            @change="moveElementInArray(sdMetaDatum, 'sd_key_questions', sd_key_question_index, $el.value - 1)"
+          >
             <template x-for="i in sdMetaDatum?.sd_key_questions.length">
               <option
                 :value="i"
