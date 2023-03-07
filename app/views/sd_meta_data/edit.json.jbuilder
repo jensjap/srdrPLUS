@@ -179,6 +179,11 @@ json.sd_result_items @sd_meta_datum.sd_result_items do |sd_result_item|
     json.id sd_pairwise_meta_analytic_result.id
     json.name sd_pairwise_meta_analytic_result.name
 
+    json.sd_outcomes sd_pairwise_meta_analytic_result.sd_outcomes do |sd_outcome|
+      json.id sd_outcome.id
+      json.name sd_outcome.name
+    end
+
     json.sd_meta_data_figures sd_pairwise_meta_analytic_result.sd_meta_data_figures do |sd_meta_data_figure|
       json.id sd_meta_data_figure.id
       json.alt_text sd_meta_data_figure.alt_text
@@ -202,6 +207,11 @@ json.sd_result_items @sd_meta_datum.sd_result_items do |sd_result_item|
     json.id sd_network_meta_analysis_result.id
     json.name sd_network_meta_analysis_result.name
 
+    json.sd_outcomes sd_network_meta_analysis_result.sd_outcomes do |sd_outcome|
+      json.id sd_outcome.id
+      json.name sd_outcome.name
+    end
+
     json.sd_meta_data_figures sd_network_meta_analysis_result.sd_meta_data_figures do |sd_meta_data_figure|
       json.id sd_meta_data_figure.id
       json.alt_text sd_meta_data_figure.alt_text
@@ -214,6 +224,11 @@ json.sd_result_items @sd_meta_datum.sd_result_items do |sd_result_item|
   json.sd_meta_regression_analysis_results sd_result_item.sd_meta_regression_analysis_results do |sd_meta_regression_analysis_result|
     json.id sd_meta_regression_analysis_result.id
     json.name sd_meta_regression_analysis_result.name
+
+    json.sd_outcomes sd_meta_regression_analysis_result.sd_outcomes do |sd_outcome|
+      json.id sd_outcome.id
+      json.name sd_outcome.name
+    end
 
     json.sd_meta_data_figures sd_meta_regression_analysis_result.sd_meta_data_figures do |sd_meta_data_figure|
       json.id sd_meta_data_figure.id

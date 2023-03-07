@@ -210,10 +210,21 @@
                   >Outcome(s) (Required)</label
                 >
                 <div>
-                  <input
-                    type="text"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-                  />
+                  <template x-if="Object.keys(sdMetaDatum).length !== 0">
+                    <select
+                      multiple="multiple"
+                      x-init="$nextTick(() => {
+                        initSelect2(
+                          $el,
+                          'sd_outcomes',
+                          sd_narrative_result.sd_outcomes,
+                          `sd_narrative_results/${sd_narrative_result.id}/sd_outcomes`,
+                          { sd_outcomeable_id: sd_narrative_result.id, sd_outcomeable_type: 'SdNarrativeResult' },
+                          `sd_narrative_results/${sd_narrative_result.id}/sd_outcomes`
+                        );
+                      })"
+                    ></select>
+                  </template>
                 </div>
               </div>
               <div>
@@ -328,10 +339,21 @@
                   >Outcome(s)</label
                 >
                 <div>
-                  <input
-                    type="text"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-                  />
+                  <template x-if="Object.keys(sdMetaDatum).length !== 0">
+                    <select
+                      multiple="multiple"
+                      x-init="$nextTick(() => {
+                        initSelect2(
+                          $el,
+                          'sd_outcomes',
+                          sd_evidence_table.sd_outcomes,
+                          `sd_evidence_tables/${sd_evidence_table.id}/sd_outcomes`,
+                          { sd_outcomeable_id: sd_evidence_table.id, sd_outcomeable_type: 'SdEvidenceTable' },
+                          `sd_evidence_tables/${sd_evidence_table.id}/sd_outcomes`
+                        );
+                      })"
+                    ></select>
+                  </template>
                 </div>
               </div>
               <div>
@@ -559,10 +581,21 @@
                   >Outcome(s)</label
                 >
                 <div>
-                  <input
-                    type="text"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-                  />
+                  <template x-if="Object.keys(sdMetaDatum).length !== 0">
+                    <select
+                      multiple="multiple"
+                      x-init="$nextTick(() => {
+                        initSelect2(
+                          $el,
+                          'sd_outcomes',
+                          sd_pairwise_meta_analytic_result.sd_outcomes,
+                          `sd_pairwise_meta_analytic_results/${sd_pairwise_meta_analytic_result.id}/sd_outcomes`,
+                          { sd_outcomeable_id: sd_pairwise_meta_analytic_result.id, sd_outcomeable_type: 'SdPairwiseMetaAnalyticResult' },
+                          `sd_pairwise_meta_analytic_results/${sd_pairwise_meta_analytic_result.id}/sd_outcomes`
+                        );
+                      })"
+                    ></select>
+                  </template>
                 </div>
               </div>
               <div>
@@ -914,10 +947,21 @@
                   >Outcome(s)</label
                 >
                 <div>
-                  <input
-                    type="text"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-                  />
+                  <template x-if="Object.keys(sdMetaDatum).length !== 0">
+                    <select
+                      multiple="multiple"
+                      x-init="$nextTick(() => {
+                        initSelect2(
+                          $el,
+                          'sd_outcomes',
+                          sd_network_meta_analysis_result.sd_outcomes,
+                          `sd_network_meta_analysis_results/${sd_network_meta_analysis_result.id}/sd_outcomes`,
+                          { sd_outcomeable_id: sd_network_meta_analysis_result.id, sd_outcomeable_type: 'SdNetworkMetaAnalysisResult' },
+                          `sd_network_meta_analysis_results/${sd_network_meta_analysis_result.id}/sd_outcomes`
+                        );
+                      })"
+                    ></select>
+                  </template>
                 </div>
               </div>
               <div>
@@ -1154,10 +1198,21 @@
                   >Outcome(s)</label
                 >
                 <div>
-                  <input
-                    type="text"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-                  />
+                  <template x-if="Object.keys(sdMetaDatum).length !== 0">
+                    <select
+                      multiple="multiple"
+                      x-init="$nextTick(() => {
+                        initSelect2(
+                          $el,
+                          'sd_outcomes',
+                          sd_meta_regression_analysis_result.sd_outcomes,
+                          `sd_meta_regression_analysis_results/${sd_meta_regression_analysis_result.id}/sd_outcomes`,
+                          { sd_outcomeable_id: sd_meta_regression_analysis_result.id, sd_outcomeable_type: 'SdMetaRegressionAnalysisResult' },
+                          `sd_meta_regression_analysis_results/${sd_meta_regression_analysis_result.id}/sd_outcomes`
+                        );
+                      })"
+                    ></select>
+                  </template>
                 </div>
               </div>
               <div>

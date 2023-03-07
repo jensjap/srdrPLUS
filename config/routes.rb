@@ -154,8 +154,7 @@ Rails.application.routes.draw do
     resources :sd_grey_literature_searches, only: %i[create destroy update]
     resources :sd_prisma_flows, only: %i[create destroy update]
     resources :sd_summary_of_evidences, only: %i[create destroy update]
-    resources :sd_result_items, shallow: true, only: %i[create destroy update] do
-    end
+    resources :sd_result_items, only: %i[create destroy update]
   end
 
   resources :sd_meta_data_figures, only: %i[create destroy update]
@@ -166,6 +165,22 @@ Rails.application.routes.draw do
     resources :sd_pairwise_meta_analytic_results, only: %i[create destroy update]
     resources :sd_network_meta_analysis_results, only: %i[create destroy update]
     resources :sd_meta_regression_analysis_results, only: %i[create destroy update]
+  end
+
+  resources :sd_narrative_results, shallow: true, only: [] do
+    resources :sd_outcomes, only: %i[create destroy index]
+  end
+  resources :sd_evidence_tables, shallow: true, only: [] do
+    resources :sd_outcomes, only: %i[create destroy index]
+  end
+  resources :sd_pairwise_meta_analytic_results, shallow: true, only: [] do
+    resources :sd_outcomes, only: %i[create destroy index]
+  end
+  resources :sd_network_meta_analysis_results, shallow: true, only: [] do
+    resources :sd_outcomes, only: %i[create destroy index]
+  end
+  resources :sd_meta_regression_analysis_results, shallow: true, only: [] do
+    resources :sd_outcomes, only: %i[create destroy index]
   end
 
   get 'sd_key_questions/:id/fuzzy_match', to: 'sd_key_questions#fuzzy_match'

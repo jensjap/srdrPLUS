@@ -213,7 +213,12 @@
         });
 
         jResourceElement.on("select2:unselect", function (e) {
-          if (multiParams) {
+          if (resource === "sd_outcomes") {
+            that.apiCall(`/${resource}/null`, "DELETE", {
+              name: e.params.data.text,
+              ...multiParams,
+            });
+          } else if (multiParams) {
             that.apiCall(`/${url || resource}/null`, "DELETE", {
               name: e.params.data.text,
               ...multiParams,
