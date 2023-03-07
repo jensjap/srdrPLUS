@@ -96,17 +96,27 @@
     <template
       x-for="(sd_result_item, sd_result_item_index) in sdMetaDatum.sd_result_items"
     >
-      <div class="bg-purple-200 m-2 p-2 rounded-md space-y-2">
+      <div
+        class="bg-purple-200 m-2 p-2 rounded-md space-y-2"
+        x-init="sd_result_item.show = false"
+      >
         <div class="flex justify-between items-center">
-          <select class="w-12">
-            <template x-for="i in sdMetaDatum.sd_result_items.length">
-              <option
-                :value="i"
-                x-text="i"
-                :selected="i === sd_result_item_index + 1"
-              ></option>
-            </template>
-          </select>
+          <div class="flex justify-center items-center space-x-2">
+            <select class="w-12">
+              <template x-for="i in sdMetaDatum.sd_result_items.length">
+                <option
+                  :value="i"
+                  x-text="i"
+                  :selected="i === sd_result_item_index + 1"
+                ></option>
+              </template>
+            </select>
+            <span
+              class="text-xs p-1 bg-gray-100 rounded-md cursor-pointer m-auto shadow-sm"
+              @click="sd_result_item.show = !sd_result_item.show"
+              >Show/Hide Results</span
+            >
+          </div>
           <div
             class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
             @click="await updateSubResource('sd_result_items', sd_result_item.id, 'DELETE')
@@ -159,7 +169,16 @@
             </template>
           </div>
         </div>
-        <div class="bg-blue-50 p-2">
+        <div
+          x-show="sd_result_item.show"
+          x-transition:enter="ease-out duration-300"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave="ease-in duration-200"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          class="bg-blue-50 p-2"
+        >
           <h4
             class="text-xs font-bold border-b-2 flex items-center cursor-pointer"
             @click="createSubResource('sd_narrative_results', 'sd_result_items', sd_result_item.id, sd_result_item)"
@@ -288,7 +307,16 @@
             </svg>
           </div>
         </div>
-        <div class="bg-green-50 p-2">
+        <div
+          x-show="sd_result_item.show"
+          x-transition:enter="ease-out duration-300"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave="ease-in duration-200"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          class="bg-green-50 p-2"
+        >
           <h4
             class="text-xs font-bold border-b-2 flex items-center cursor-pointer"
             @click="createSubResource('sd_evidence_tables', 'sd_result_items', sd_result_item.id, sd_result_item)"
@@ -533,7 +561,16 @@
             </svg>
           </div>
         </div>
-        <div class="bg-orange-50 p-2">
+        <div
+          x-show="sd_result_item.show"
+          x-transition:enter="ease-out duration-300"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave="ease-in duration-200"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          class="bg-orange-50 p-2"
+        >
           <h4
             class="text-xs font-bold border-b-2 flex items-center"
             @click="createSubResource('sd_pairwise_meta_analytic_results', 'sd_result_items', sd_result_item.id, sd_result_item)"
@@ -917,7 +954,16 @@
             </svg>
           </div>
         </div>
-        <div class="bg-stone-50 p-2">
+        <div
+          x-show="sd_result_item.show"
+          x-transition:enter="ease-out duration-300"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave="ease-in duration-200"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          class="bg-stone-50 p-2"
+        >
           <h4
             class="text-xs font-bold border-b-2 flex items-center cursor-pointer"
             @click="createSubResource('sd_network_meta_analysis_results', 'sd_result_items', sd_result_item.id, sd_result_item)"
@@ -1185,7 +1231,16 @@
             </svg>
           </div>
         </div>
-        <div class="bg-rose-50 p-2">
+        <div
+          x-show="sd_result_item.show"
+          x-transition:enter="ease-out duration-300"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave="ease-in duration-200"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          class="bg-rose-50 p-2"
+        >
           <h4
             class="text-xs font-bold border-b-2 flex items-center cursor-pointer"
             @click="createSubResource('sd_meta_regression_analysis_results', 'sd_result_items', sd_result_item.id, sd_result_item)"
