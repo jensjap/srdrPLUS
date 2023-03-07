@@ -308,6 +308,15 @@ class SdMetaDataController < ApplicationController
     params
       .require(:sd_meta_datum)
       .permit(
+        :section_flag_0,
+        :section_flag_1,
+        :section_flag_2,
+        :section_flag_3,
+        :section_flag_4,
+        :section_flag_5,
+        :section_flag_6,
+        :section_flag_7,
+        :section_flag_8,
         :project_id,
         :report_title,
         { funding_source_ids: [] },

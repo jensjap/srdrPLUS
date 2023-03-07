@@ -13,7 +13,7 @@
           class="ml-2 group relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           role="switch"
           aria-checked="false"
-          @click="enabled = !enabled"
+          @click="toggleSectionCompletionStatus()"
         >
           <span class="sr-only">Use setting</span>
           <span
@@ -23,12 +23,12 @@
           <span
             aria-hidden="true"
             class="pointer-events-none absolute mx-auto h-4 w-9 rounded-full transition-colors duration-200 ease-in-out"
-            :class="enabled ? 'bg-indigo-600' : 'bg-gray-200'"
+            :class="(sdMetaDatum.section_statuses ? sdMetaDatum.section_statuses[`section_flag_${panel_number}`] : false) ? 'bg-indigo-600' : 'bg-gray-200'"
           ></span>
           <span
             aria-hidden="true"
             class="pointer-events-none absolute left-0 inline-block h-5 w-5 transform rounded-full border border-gray-200 bg-white shadow ring-0 transition-transform duration-200 ease-in-out"
-            :class="enabled ? 'translate-x-5' : 'translate-x-0'"
+            :class="(sdMetaDatum.section_statuses ? sdMetaDatum.section_statuses[`section_flag_${panel_number}`] : false) ? 'translate-x-5' : 'translate-x-0'"
           ></span>
         </button>
       </div>
@@ -51,7 +51,8 @@
     <div class="w-full bg-gray-200 rounded-full p-1 my-1">
       <div
         class="bg-green-600 p-1 text-white rounded-full text-center"
-        style="width: 50%"
+        style="width: 0%"
+        :style="`transition: width 1s ease-in-out; width: ${completion_percentage}%`"
       ></div>
     </div>
   </div>
@@ -139,15 +140,43 @@
   document.addEventListener("alpine:init", () => {
     Alpine.data("sdMetaDatum", () => ({
       sdMetaDatum: {},
-      enabled: true,
       panel_number: null,
       sdMetaDatumId: /\d+/.exec(window.location.pathname)[0],
       panel_number: new URLSearchParams(window.location.search).get(
         "panel_number"
       ),
+      completion_percentage: "0",
 
       async init() {
         await this.getSdMetaDatum(this.sdMetaDatumId);
+        this.calcCompletionPercentage();
+      },
+
+      calcCompletionPercentage() {
+        let count = 0;
+        let total = 0;
+        for (const [key, value] of Object.entries(
+          this.sdMetaDatum.section_statuses
+        )) {
+          count += 1;
+          if (value) total += 1;
+        }
+
+        this.completion_percentage = (total / count) * 100;
+      },
+
+      async toggleSectionCompletionStatus() {
+        const newCompletionStatus =
+          !this.sdMetaDatum.section_statuses[
+            `section_flag_${this.panel_number}`
+          ];
+        this.sdMetaDatum.section_statuses[`section_flag_${this.panel_number}`] =
+          newCompletionStatus;
+        await this.updateSdMetaDatum(
+          `section_flag_${this.panel_number}`,
+          newCompletionStatus
+        );
+        this.calcCompletionPercentage();
       },
 
       async initSelect2(

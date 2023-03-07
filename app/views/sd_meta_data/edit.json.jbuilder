@@ -1,3 +1,15 @@
+json.section_statuses do
+  json.section_flag_0 @sd_meta_datum.section_flag_0
+  json.section_flag_1 @sd_meta_datum.section_flag_1
+  json.section_flag_2 @sd_meta_datum.section_flag_2
+  json.section_flag_3 @sd_meta_datum.section_flag_3
+  json.section_flag_4 @sd_meta_datum.section_flag_4
+  json.section_flag_5 @sd_meta_datum.section_flag_5
+  json.section_flag_6 @sd_meta_datum.section_flag_6
+  json.section_flag_7 @sd_meta_datum.section_flag_7
+  json.section_flag_8 @sd_meta_datum.section_flag_8
+end
+
 # panel 0
 json.project_name @project.name
 json.report_title @sd_meta_datum.report_title
