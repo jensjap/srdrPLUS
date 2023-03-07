@@ -63,6 +63,7 @@ end
 json.sd_analytic_frameworks @sd_meta_datum.sd_analytic_frameworks do |sd_analytic_framework|
   json.id sd_analytic_framework.id
   json.name sd_analytic_framework.name
+  json.pos sd_analytic_framework.pos
   json.sd_meta_data_figures sd_analytic_framework.sd_meta_data_figures do |sd_meta_data_figure|
     json.id sd_meta_data_figure.id
     json.alt_text sd_meta_data_figure.alt_text
@@ -74,6 +75,7 @@ json.sd_analytic_frameworks @sd_meta_datum.sd_analytic_frameworks do |sd_analyti
 end
 json.sd_key_questions @sd_meta_datum.sd_key_questions do |sd_key_question|
   json.id sd_key_question.id
+  json.pos sd_key_question.pos
   json.key_question do
     json.id sd_key_question.key_question&.id
     json.name sd_key_question.key_question&.name
@@ -87,6 +89,7 @@ end
 # panel 4
 json.sd_picods @sd_meta_datum.sd_picods do |sd_picod|
   json.id sd_picod.id
+  json.pos sd_picod.pos
   json.data_analysis_levels(sd_picod.data_analysis_level ? [sd_picod.data_analysis_level] : []) do |data_analysis_level|
     json.id data_analysis_level&.id
     json.name data_analysis_level&.name
@@ -94,6 +97,7 @@ json.sd_picods @sd_meta_datum.sd_picods do |sd_picod|
   json.sd_key_questions sd_picod.sd_key_questions do |sd_key_question|
     json.id sd_key_question.id
     json.name sd_key_question.name
+    json.pos sd_key_question.pos
   end
   json.name sd_picod.name
   json.population sd_picod.population
@@ -108,6 +112,7 @@ end
 # panel 6
 json.sd_search_strategies @sd_meta_datum.sd_search_strategies do |sd_search_strategy|
   json.id sd_search_strategy.id
+  json.pos sd_search_strategy.pos
   json.sd_search_databases(sd_search_strategy.sd_search_database ? [sd_search_strategy.sd_search_database] : []) do |sd_search_database|
     json.id sd_search_database.id
     json.name sd_search_database.name
@@ -119,10 +124,12 @@ end
 json.sd_grey_literature_searches @sd_meta_datum.sd_grey_literature_searches do |sd_grey_literature_search|
   json.id sd_grey_literature_search.id
   json.name sd_grey_literature_search.name
+  json.pos sd_grey_literature_search.pos
 end
 json.sd_prisma_flows @sd_meta_datum.sd_prisma_flows do |sd_prisma_flow|
   json.id sd_prisma_flow.id
   json.name sd_prisma_flow.name
+  json.pos sd_prisma_flow.pos
   json.sd_meta_data_figures sd_prisma_flow.sd_meta_data_figures do |sd_meta_data_figure|
     json.id sd_meta_data_figure.id
     json.alt_text sd_meta_data_figure.alt_text
@@ -137,9 +144,11 @@ json.sd_summary_of_evidences @sd_meta_datum.sd_summary_of_evidences do |sd_summa
   json.id sd_summary_of_evidence.id
   json.soe_type sd_summary_of_evidence.soe_type
   json.name sd_summary_of_evidence.name
+  json.pos sd_summary_of_evidence.pos
   json.sd_key_questions(sd_summary_of_evidence.sd_key_question ? [sd_summary_of_evidence.sd_key_question] : []) do |sd_key_question|
     json.id sd_key_question.id
     json.name sd_key_question.name
+    json.pos sd_key_question.pos
   end
   json.sd_meta_data_figures sd_summary_of_evidence.sd_meta_data_figures do |sd_meta_data_figure|
     json.id sd_meta_data_figure.id
@@ -153,10 +162,12 @@ end
 # panel 8
 json.sd_result_items @sd_meta_datum.sd_result_items do |sd_result_item|
   json.id sd_result_item.id
+  json.pos sd_result_item.pos
 
   json.sd_key_questions(sd_result_item.sd_key_question ? [sd_result_item.sd_key_question] : []) do |sd_key_question|
     json.id sd_key_question.id
     json.name sd_key_question.name
+    json.pos sd_key_question.pos
   end
 
   json.sd_narrative_results sd_result_item.sd_narrative_results do |sd_narrative_result|
@@ -164,6 +175,7 @@ json.sd_result_items @sd_meta_datum.sd_result_items do |sd_result_item|
     json.narrative_results sd_narrative_result.narrative_results
     json.narrative_results_by_population sd_narrative_result.narrative_results_by_population
     json.narrative_results_by_intervention sd_narrative_result.narrative_results_by_intervention
+    json.pos sd_narrative_result.pos
     json.sd_outcomes sd_narrative_result.sd_outcomes do |sd_outcome|
       json.id sd_outcome.id
       json.name sd_outcome.name
@@ -172,6 +184,7 @@ json.sd_result_items @sd_meta_datum.sd_result_items do |sd_result_item|
   json.sd_evidence_tables sd_result_item.sd_evidence_tables do |sd_evidence_table|
     json.id sd_evidence_table.id
     json.name sd_evidence_table.name
+    json.pos sd_evidence_table.pos
 
     json.sd_outcomes sd_evidence_table.sd_outcomes do |sd_outcome|
       json.id sd_outcome.id
@@ -190,6 +203,7 @@ json.sd_result_items @sd_meta_datum.sd_result_items do |sd_result_item|
   json.sd_pairwise_meta_analytic_results sd_result_item.sd_pairwise_meta_analytic_results do |sd_pairwise_meta_analytic_result|
     json.id sd_pairwise_meta_analytic_result.id
     json.name sd_pairwise_meta_analytic_result.name
+    json.pos sd_pairwise_meta_analytic_result.pos
 
     json.sd_outcomes sd_pairwise_meta_analytic_result.sd_outcomes do |sd_outcome|
       json.id sd_outcome.id
@@ -219,6 +233,7 @@ json.sd_result_items @sd_meta_datum.sd_result_items do |sd_result_item|
   json.sd_network_meta_analysis_results sd_result_item.sd_network_meta_analysis_results do |sd_network_meta_analysis_result|
     json.id sd_network_meta_analysis_result.id
     json.name sd_network_meta_analysis_result.name
+    json.pos sd_network_meta_analysis_result.pos
 
     json.sd_outcomes sd_network_meta_analysis_result.sd_outcomes do |sd_outcome|
       json.id sd_outcome.id
@@ -238,6 +253,7 @@ json.sd_result_items @sd_meta_datum.sd_result_items do |sd_result_item|
   json.sd_meta_regression_analysis_results sd_result_item.sd_meta_regression_analysis_results do |sd_meta_regression_analysis_result|
     json.id sd_meta_regression_analysis_result.id
     json.name sd_meta_regression_analysis_result.name
+    json.pos sd_meta_regression_analysis_result.pos
 
     json.sd_outcomes sd_meta_regression_analysis_result.sd_outcomes do |sd_outcome|
       json.id sd_outcome.id
