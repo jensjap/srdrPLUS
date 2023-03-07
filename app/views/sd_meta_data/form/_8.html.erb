@@ -154,8 +154,7 @@
                     const option = new Option(selectedOption.name, selectedOption.id, true, true);
                     jResourceElement.append(option).trigger('change');
                   });
-                })
-                "
+                })"
               ></select>
             </template>
           </div>
@@ -651,10 +650,21 @@
                       <label class="block text-xs font-bold text-gray-700"
                         >Type</label
                       >
-                      <input
-                        type="text"
-                        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-                      />
+                      <select
+                        x-model="sd_meta_data_figure.p_type"
+                        @change="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'p_type', sd_meta_data_figure.p_type)"
+                      >
+                        <option value="">--Make a selection--</option>
+                        <option
+                          value="Forest plot with summary estimate, type of model, and estimates of heterogeneity"
+                        >
+                          Forest plot with summary estimate, type of model, and
+                          estimates of heterogeneity
+                        </option>
+                        <option value="Meta-analysis results table">
+                          Meta-analysis results table
+                        </option>
+                      </select>
                     </div>
                     <div>
                       <label class="block text-xs font-bold text-gray-700"
@@ -742,10 +752,14 @@
                       >Outcome Type</label
                     >
                     <div>
-                      <input
-                        type="text"
-                        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-                      />
+                      <select
+                        x-model="sd_meta_data_figure.outcome_type"
+                        @change="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'outcome_type', sd_meta_data_figure.outcome_type)"
+                      >
+                        <option value="">--Make a selection--</option>
+                        <option value="Categorical">Categorical</option>
+                        <option value="Continuous">Continuous</option>
+                      </select>
                     </div>
                   </div>
                   <div>
@@ -1017,10 +1031,24 @@
                       <label class="block text-xs font-bold text-gray-700"
                         >Type</label
                       >
-                      <input
-                        type="text"
-                        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-                      />
+                      <select
+                        x-model="sd_meta_data_figure.p_type"
+                        @change="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'p_type', sd_meta_data_figure.p_type)"
+                      >
+                        <option value="">--Make a selection--</option>
+                        <option value="Network graph">Network graph</option>
+                        <option
+                          value="Network meta-analysis results table with estimates of consistency"
+                        >
+                          Network meta-analysis results table with estimates of
+                          consistency
+                        </option>
+                        <option
+                          value="Network meta-analysis rank ordering table"
+                        >
+                          Network meta-analysis rank ordering table
+                        </option>
+                      </select>
                     </div>
                     <div>
                       <label class="block text-xs font-bold text-gray-700"

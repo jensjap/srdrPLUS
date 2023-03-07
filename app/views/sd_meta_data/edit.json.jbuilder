@@ -186,6 +186,7 @@ json.sd_result_items @sd_meta_datum.sd_result_items do |sd_result_item|
 
     json.sd_meta_data_figures sd_pairwise_meta_analytic_result.sd_meta_data_figures do |sd_meta_data_figure|
       json.id sd_meta_data_figure.id
+      json.p_type sd_meta_data_figure.p_type
       json.alt_text sd_meta_data_figure.alt_text
       json.outcome_type sd_meta_data_figure.outcome_type
       json.intervention_name sd_meta_data_figure.intervention_name
@@ -214,6 +215,7 @@ json.sd_result_items @sd_meta_datum.sd_result_items do |sd_result_item|
 
     json.sd_meta_data_figures sd_network_meta_analysis_result.sd_meta_data_figures do |sd_meta_data_figure|
       json.id sd_meta_data_figure.id
+      json.p_type sd_meta_data_figure.p_type
       json.alt_text sd_meta_data_figure.alt_text
       json.pictures sd_meta_data_figure.pictures do |picture|
         json.id picture.id

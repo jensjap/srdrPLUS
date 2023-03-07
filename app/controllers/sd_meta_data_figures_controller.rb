@@ -31,6 +31,7 @@ class SdMetaDataFiguresController < ApplicationController
 
   def sd_meta_data_figure_params
     params.permit(
+      :p_type,
       :alt_text,
       :outcome_type,
       :intervention_name,
