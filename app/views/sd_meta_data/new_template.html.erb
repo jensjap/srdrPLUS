@@ -1,4 +1,5 @@
 <div x-data="sdMetaDatum" class="p-4 lg:p-8 space-y-2">
+  <%= render 'image_modal' %>
   <div class="font-bold text-sm">
     <div class="flex justify-between">
       <div>
@@ -362,6 +363,7 @@
         "panel_number"
       ),
       completion_percentage: "0",
+      imageModalObject: false,
 
       async init() {
         await this.getSdMetaDatum(this.sdMetaDatumId);
