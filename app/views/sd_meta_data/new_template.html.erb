@@ -381,8 +381,19 @@
           }
         }
         arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-
         parentObject[key] = arr;
+
+        const orderings = {};
+        arr.forEach((el, index) => {
+          orderings[index] = {
+            id: el.id,
+            table: key,
+            position: index + 1,
+          };
+        });
+        this.apiCall("/api/v1/orderings/update_positions", "PATCH", {
+          orderings,
+        });
       },
 
       calcCompletionPercentage() {
