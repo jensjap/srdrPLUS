@@ -1,13 +1,25 @@
 <div class="border text-sm w-3/12 xl:w-1/12 p-1">
   <div class="text-xs font-semibold">Analytic / Conceptual Frameworks</div>
   <ul class="text-xs">
-    <li class="text-xs cursor-pointer">narrative 1</li>
-    <li class="text-xs cursor-pointer">narrative 2</li>
+    <template
+      x-for="(sd_analytic_framework, sd_analytic_framework_index) in sdMetaDatum.sd_analytic_frameworks"
+    >
+      <li
+        class="text-xs cursor-pointer"
+        x-text="`Framework ${sd_analytic_framework_index + 1}`"
+      ></li>
+    </template>
   </ul>
   <div class="text-xs font-semibold">Report Key Questions</div>
   <ul class="text-xs">
-    <li class="text-xs cursor-pointer">network 1</li>
-    <li class="text-xs cursor-pointer">network 2</li>
+    <template
+      x-for="(sd_key_question, sd_key_question_index) in sdMetaDatum.sd_key_questions"
+    >
+      <li
+        class="text-xs cursor-pointer"
+        x-text="`KQ ${sd_key_question_index + 1}`"
+      ></li>
+    </template>
   </ul>
 </div>
 <div class="border p-2 w-9/12 xl:w-11/12 space-y-2">
