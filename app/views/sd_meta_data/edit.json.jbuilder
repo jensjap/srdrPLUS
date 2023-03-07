@@ -109,6 +109,21 @@ json.sd_picods @sd_meta_datum.sd_picods do |sd_picod|
   json.settings sd_picod.settings
   json.other_elements sd_picod.other_elements
 end
+# panel 5
+json.key_questions_projects @sd_meta_datum.project.key_questions_projects do |key_question_project|
+  json.id key_question_project.id
+  json.name key_question_project.key_question.name
+end
+json.sd_key_questions @sd_meta_datum.sd_key_questions do |sd_key_question|
+  json.id sd_key_question.id
+  json.name sd_key_question.key_question.name
+  json.sd_key_questions_projects sd_key_question.sd_key_questions_projects do |sd_key_questions_project|
+    json.id sd_key_questions_project.id
+    json.sd_key_question_id sd_key_questions_project.sd_key_question_id
+    json.key_questions_project_id sd_key_questions_project.key_questions_project_id
+    json.name sd_key_questions_project.key_question.name
+  end
+end
 # panel 6
 json.sd_search_strategies @sd_meta_datum.sd_search_strategies do |sd_search_strategy|
   json.id sd_search_strategy.id

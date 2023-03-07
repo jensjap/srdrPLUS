@@ -158,6 +158,7 @@ Rails.application.routes.draw do
   end
 
   resources :sd_meta_data_figures, only: %i[create destroy update]
+  resources :sd_key_questions_projects, only: %i[create destroy]
 
   resources :sd_result_items, shallow: true, only: [] do
     resources :sd_narrative_results, only: %i[create destroy update]

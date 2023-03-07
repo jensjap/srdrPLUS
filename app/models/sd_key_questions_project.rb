@@ -15,4 +15,6 @@ class SdKeyQuestionsProject < ApplicationRecord
 
   belongs_to :key_questions_project, inverse_of: :sd_key_questions_projects
   has_one :key_question, through: :key_questions_project
+
+  delegate :project, to: :key_questions_project
 end

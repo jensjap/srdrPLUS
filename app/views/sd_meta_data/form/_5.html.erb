@@ -1,1 +1,55 @@
-hello world
+<div class="border p-2 w-9/12 xl:w-11/12">
+  <h2 class="text-base font-bold border-b-2">Key Question Mapping</h2>
+  <div class="grid grid-cols-2">
+    <h3 class="text-base font-bold">SRDR+ Key Questions</h3>
+    <h3 class="text-base font-bold">Report Key Questions</h3>
+    <div class="overflow-auto">
+      <template
+        x-for="(key_questions_project, key_questions_project_index) in sdMetaDatum?.key_questions_projects"
+      >
+        <div
+          class="text-xs bg-srdr-secondary text-white p-2 m-2 rounded-md cursor-pointer"
+          :class="{ 'bg-srdrpurple-light': srdrPlusKQSelection === key_questions_project_index }"
+          x-text="key_questions_project.name"
+          @click="if (srdrPlusKQSelection === key_questions_project_index) {
+            srdrPlusKQSelection = null;
+          } else {
+            srdrPlusKQSelection = key_questions_project_index;
+          };"
+        ></div>
+      </template>
+    </div>
+    <div class="overflow-auto">
+      <template
+        x-for="(sd_key_question, sd_key_question_index) in sdMetaDatum?.sd_key_questions"
+      >
+        <div class="bg-teal-100 p-2 m-2 rounded-md">
+          <div
+            class="text-xs bg-teal-800 text-white p-2 m-2 rounded-md cursor-pointer"
+            x-text="sd_key_question.name"
+          ></div>
+          <template
+            x-for="(sd_key_questions_project, sd_key_questions_project_index) in sd_key_question?.sd_key_questions_projects"
+          >
+            <div
+              class="text-xs bg-srdrpurple-light text-white p-2 m-2 ml-8 rounded-md cursor-pointer"
+              x-text="sd_key_questions_project.name"
+              @click="const response = await apiCall(`/sd_key_questions_projects/${sd_key_questions_project.id}`, 'DELETE');
+              sd_key_question.sd_key_questions_projects.splice(sd_key_questions_project_index, 1)"
+            ></div>
+          </template>
+          <div
+            class="text-center font-black text-xs border-4 border-srdr-secondary border-dotted text-black p-2 m-2 ml-8 rounded-md cursor-pointer"
+            x-text="srdrPlusKQSelection ? 'Click here to map the selected SRDR+ Key Question to this Report Key Question' : 'Click on a SRDR+ Key Question to get started'"
+            @click="if (srdrPlusKQSelection === null) return;
+            const key_questions_project = sdMetaDatum.key_questions_projects[srdrPlusKQSelection];
+            if (sd_key_question.sd_key_questions_projects.some(el => el.key_questions_project_id === key_questions_project.id)) return;
+            const response = await apiCall('/sd_key_questions_projects', 'POST', { sd_key_question_id: sd_key_question.id, key_questions_project_id: key_questions_project.id })
+            sd_key_question.sd_key_questions_projects.push(response)
+            srdrPlusKQSelection = null;"
+          ></div>
+        </div>
+      </template>
+    </div>
+  </div>
+</div>
