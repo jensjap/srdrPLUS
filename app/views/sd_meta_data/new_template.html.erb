@@ -1,4 +1,27 @@
-<div x-data="sdMetaDatum" class="p-4 lg:p-8 space-y-2">
+<div x-data="sdMetaDatum" class="p-4 lg:p-8 space-y-2 relative">
+  <div class="flex items-center justify-end absolute top-0 right-0">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="rgb(76, 13, 125)"
+      class="w-4 h-4 srdr"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+      />
+    </svg>
+    <% if cookies[:sr360_beta] %>
+    <a
+      class="text-base"
+      href="/sd_meta_data/<%= @sd_meta_datum.id %>/edit?sr360_beta_opt_out=true"
+      >To back to the old SR-360 click here</a
+    >
+    <% end %>
+  </div>
   <%= render 'image_modal' %>
   <div class="font-bold text-sm">
     <div class="flex justify-between">
@@ -349,7 +372,7 @@
       </a>
     </div>
 
-    <%= render "sd_meta_data/form/#{params[:panel_number]}" %>
+    <%= render "sd_meta_data/form/#{@panel_number}" %>
   </div>
 </div>
 
