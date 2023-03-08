@@ -344,7 +344,11 @@ class ConsolidationService
     end
 
     if missing_eefpsqrcfs.present?
-      ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.insert_all(missing_eefpsqrcfs)
+      # TODO: performance optimization
+      # ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.insert_all(missing_eefpsqrcfs)
+      missing_eefpsqrcfs.each do |obj|
+        ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(obj)
+      end
     end
 
     eefpsqrcfs = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.where(
@@ -359,10 +363,27 @@ class ConsolidationService
       eefpsqrcfs = eefpsqrcfs.where(extractions_extraction_forms_projects_sections_type1_id: eefpst1_ids)
     end
 
-    eefpsffs = ExtractionsExtractionFormsProjectsSectionsFollowupField.where(
-      extractions_extraction_forms_projects_section: current_section_eefpss,
-      followup_field: ffs
-    )
+    # TODO: performance optimization
+    eefpsffs = []
+    current_section_eefpss.each do |eefps|
+      ffs.each do |ff|
+        if current_section_eefpst1_objects.empty?
+          eefpsffs << ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by(
+            extractions_extraction_forms_projects_section: eefps,
+            followup_field: ff,
+            extractions_extraction_forms_projects_sections_type1_id: nil
+          )
+        else
+          current_section_eefpst1_objects.each do |eefpst1_obj|
+            eefpsffs << ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by(
+              extractions_extraction_forms_projects_section: eefps,
+              followup_field: ff,
+              extractions_extraction_forms_projects_sections_type1_id: eefpst1_obj[:extractions_extraction_forms_projects_sections_type1_id]
+            )
+          end
+        end
+      end
+    end
 
     # ensure records exist
     eefpsqrcfs_with_missing_records =
@@ -372,10 +393,15 @@ class ConsolidationService
       .where(records: { id: nil })
 
     if eefpsqrcfs_with_missing_records.present?
-      Record.insert_all(eefpsqrcfs_with_missing_records.map do |missing_eefpsqrcf|
-                          { recordable_type: ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField,
-                            recordable_id: missing_eefpsqrcf.id }
-                        end)
+      # TODO: performance optimization
+      # Record.insert_all(eefpsqrcfs_with_missing_records.map do |missing_eefpsqrcf|
+      #                     { recordable_type: ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField,
+      #                       recordable_id: missing_eefpsqrcf.id }
+      #                   end)
+      eefpsqrcfs_with_missing_records.each do |missing_eefpsqrcf|
+        Record.find_or_create_by(recordable_type: ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField,
+                                 recordable_id: missing_eefpsqrcf.id)
+      end
     end
 
     eefpsffs.each do |eefpsff|
