@@ -474,6 +474,10 @@ class ConsolidationService
       as_json[:consolidated] = eefps.extraction.consolidated
       as_json
     end
+    mh[:current_section_statusing_id] =
+      ExtractionsExtractionFormsProjectsSection.find(current_section_eefpss.last['id']).statusing.id
+    mh[:current_section_status_id] =
+      ExtractionsExtractionFormsProjectsSection.find(current_section_eefpss.last['id']).statusing.status_id
     mh[:current_citations_project] = {
       project_id: project.id,
       citation_id: citation.id,

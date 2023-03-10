@@ -13,6 +13,9 @@ class StatusingsController < ApplicationController
                   [false, 'An error occured.  Changes have not been saved.', 'red']
                 end
       end
+      format.json do
+        render json: {}, status: 200 if policy(@statusing).update? && @statusing.update(statusing_params)
+      end
     end
   end
 
