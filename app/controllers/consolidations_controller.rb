@@ -33,9 +33,12 @@ class ConsolidationsController < ApplicationController
         efps =
           ExtractionFormsProjectsSection.find_by(id: params[:efps_id]) ||
           ExtractionFormsProject.find_by(project: @project).extraction_forms_projects_sections.first
+        mh = ConsolidationService.efps(efps, @citations_project)
+        suggestions = ConsolidationService.suggestions(mh[:current_citations_project][:current_section_eefpss].last['id'])
         return render json: {
           efps_sections: ConsolidationService.efps_sections(@project),
-          mh: ConsolidationService.efps(efps, @citations_project)
+          mh:,
+          suggestions:
         }
       end
     end

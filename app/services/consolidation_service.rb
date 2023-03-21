@@ -1,4 +1,23 @@
 class ConsolidationService
+  def self.suggestions(eefps_id)
+    ExtractionsExtractionFormsProjectsSection.find(eefps_id).type1s_suggested_by_project_leads.map do |efpst1|
+      t1 = {}
+      t1[:name] = efpst1.type1.name
+      t1[:description] = efpst1.type1.description
+      t1[:type] = {}
+      t1[:type][:id] = efpst1.type1_type.try(:id) || ''
+      t1[:type][:name] = efpst1.type1_type.try(:name) || ''
+      t1[:timepoints] = []
+      efpst1.timepoint_names.each do |tn|
+        t1[:timepoints] << { export_header: tn.pretty_print_export_header,
+                             name: tn.name,
+                             unit: tn.unit }
+      end
+      t1[:suggested_by] = efpst1.type1.suggestion.user.handle
+      t1
+    end
+  end
+
   def self.efps_sections(project)
     ExtractionFormsProject.find_by(project:).extraction_forms_projects_sections.includes(:section).map do |efps|
       {
