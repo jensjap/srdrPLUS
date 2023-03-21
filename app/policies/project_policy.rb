@@ -1,5 +1,6 @@
 class ProjectPolicy < ApplicationPolicy
   FULL_PARAMS = [
+    :notes,
     :citation_file,
     :name,
     :description,
