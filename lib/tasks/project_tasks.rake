@@ -30,6 +30,7 @@ namespace :project_tasks do
       _copy_extraction_forms_projects_sections(src_efp, dst_efp)
       _copy_type1_suggestions(src_efp, dst_efp) if arg_n >= 2
       _copy_questions_in_type2_sections(src_efp, dst_efp)
+      _copy_citations(src_project, dst_project)
     end  # ActiveRecord::Base.transaction do
   end
 
@@ -64,14 +65,16 @@ namespace :project_tasks do
     Rails.logger.info("Add project leaders.")
     src_project.leaders.each do |user|
       dst_project.users << user
-      ProjectsUser.find_by(project: dst_project, user: user).roles << Role.first
+      dst_project_user = ProjectsUser.find_by(project: dst_project, user: user)
+      dst_project_user.make_leader!
     end  # src_project.leaders.each do |user|
 
     # Add contributor for now to check.
     contributor = User.find(2)
     unless dst_project.users.include?(contributor)
       dst_project.users << contributor
-      ProjectsUser.find_by(project: dst_project, user: contributor).roles << Role.first
+      dst_project_user = ProjectsUser.find_by(project: dst_project, user: contributor)
+      dst_project_user.make_leader!
     end
 
     unless dst_project.leaders.present?
@@ -167,4 +170,8 @@ namespace :project_tasks do
       qr_copy.save
     end  # src_question.question_rows.each do |qr|
   end  # def _copy_question_rows(src_question, dst_question)
+
+  def _copy_citations(src_project, dst_project)
+    dst_project.citations = src_project.citations
+  end  # def _copy_citations(src_project, dst_project)
 end  # task :copy_project, [:arg_m, :arg_n] => [:environment] do |t, args|
