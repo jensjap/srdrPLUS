@@ -3,6 +3,7 @@
   <%= render 'consolidations/partials/efps_sidebar' %>
   <%= render 'consolidations/partials/type1_change_modal' %>
   <%= render 'consolidations/partials/change_tp_modal' %>
+  <%= render 'consolidations/partials/suggestions_modal' %>
   <% efps = ExtractionFormsProject.find_by(project: @project).extraction_forms_projects_sections.fifth %>
   <div
     class="px-4 lg:px-8 py-1 sm:flex sm:items-center z-[5] !sticky top-32 bg-gray-100"
@@ -20,12 +21,40 @@
           >
         </h1>
       </div>
-      <div>
-        <div class="text-sm text-gray-700">
-          <%= @citations_project.citation.name %>
+      <div class="flex justify-between">
+        <div>
+          <div class="text-sm text-gray-700">
+            <%= @citations_project.citation.name %>
+          </div>
+          <div class="text-sm text-gray-700">
+            <%= @citations_project.citation.authors %>
+          </div>
         </div>
-        <div class="text-sm text-gray-700">
-          <%= @citations_project.citation.authors %>
+        <div class="flex justify-center items-center text-xs font-bold">
+          Section Complete
+          <button
+            type="button"
+            class="ml-2 group relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            :class="mh?.current_section_statusing_id ? '' : '!cursor-not-allowed'"
+            role="switch"
+            aria-checked="false"
+            @click="toggleSectionCompletionStatus()"
+          >
+            <span
+              aria-hidden="true"
+              class="pointer-events-none absolute h-full w-full rounded-md bg-white"
+            ></span>
+            <span
+              aria-hidden="true"
+              class="pointer-events-none absolute mx-auto h-4 w-9 rounded-full transition-colors duration-200 ease-in-out"
+              :class="(mh?.current_section_status_id == 2) ? 'bg-indigo-600' : 'bg-white'"
+            ></span>
+            <span
+              aria-hidden="true"
+              class="pointer-events-none absolute left-0 inline-block h-5 w-5 transform rounded-full border border-gray-200 bg-white shadow ring-0 transition-transform duration-200 ease-in-out"
+              :class="(mh?.current_section_status_id == 2) ? 'translate-x-5' : 'translate-x-0'"
+            ></span>
+          </button>
         </div>
       </div>
     </div>
@@ -78,6 +107,8 @@
       ],
       changeTPModal: false,
       addTimepointModal: false,
+      suggestions_modal: false,
+      suggestions: [],
       change_type: "",
       change_ids: {},
       old_eefpst1: {},
@@ -88,6 +119,40 @@
 
       init() {
         this.fetch_efps(this.efps_id());
+      },
+
+      async toggleSectionCompletionStatus() {
+        let statusingId = this.mh?.current_section_statusing_id;
+        let newStatusId = this.mh?.current_section_status_id;
+
+        if (newStatusId === 1) {
+          newStatusId = 2;
+        } else {
+          newStatusId = 1;
+        }
+
+        if (statusingId == null || newStatusId == null) return;
+
+        const response = await fetch(`/statusings/${statusingId}`, {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+          body: JSON.stringify({
+            status_id: newStatusId,
+          }),
+        });
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Saved successfully", null, { timeOut: 1000 });
+          this.mh.current_section_status_id = newStatusId;
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
       },
 
       async updateTP() {
@@ -372,7 +437,7 @@
 
       async createArm(eefps_id, name, description) {
         if (name.trim() === "") {
-          toastr.error("Outcome domain cannot be blank", null, {
+          toastr.error("Name/ domain cannot be blank", null, {
             timeOut: 1000,
           });
           return;
@@ -584,6 +649,7 @@
 
         this.efps_sections = data.efps_sections;
         this.mh = data.mh;
+        this.suggestions = data.suggestions;
 
         $("#json").empty();
         $("#json").append("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
