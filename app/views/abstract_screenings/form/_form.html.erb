@@ -11,6 +11,34 @@
       </p>
     </div>
   </div>
+
+  <%= form_with model: @project do |f| %>
+    <table class="min-w-full divide-y divide-gray-200 table-auto">
+      <thead>
+        <tr>
+          <th class='px-6 py-3 text-left uppercase tracking-wider'>Project Member</th>
+          <th class='px-6 py-3 uppercase tracking-wider'>Expert</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @project.users.each do |user| %>
+          <% pu = user.projects_users.find_or_initialize_by(project_id: @project.id) %>
+          <%= f.fields_for :projects_users, pu do |pu_f| %>
+            <tr>
+              <td><%= user.handle %></td>
+              <td class="text-center"><%= pu_f.check_box :is_expert, checked: pu_f.object.is_expert %></td>
+              <td><%= pu_f.hidden_field :user_id %><%= pu_f.hidden_field :id %></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+    <button type="submit" class="button bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded">
+      Update Expert Information
+    </button>
+  <% end %>
+     
   <div class="flex flex-col w-full">
     <!-- prettier-ignore -->
     <%= simple_form_for([action_name == 'edit' ? nil : @project, @abstract_screening]) do |f| %>
@@ -22,7 +50,7 @@
       <%= render 'components/single_select' %>
     </div>
     <template
-      x-if="['pilot', 'n-size-single', 'n-size-double'].includes(abstract_screening.abstract_screening_type.selection.key)"
+      x-if="['pilot', 'n-size-single', 'n-size-double', 'n-size-expert-needed', 'n-size-only-expert-novice-mixed'].includes(abstract_screening.abstract_screening_type.selection.key)"
     >
       <div class="mb-4">
         <label for="no_of_citations"

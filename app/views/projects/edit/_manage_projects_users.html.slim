@@ -7,7 +7,7 @@ div class="mx-auto p-4 lg:p-8"
         thead
           tr
             th width="150px;"
-            th width="400px;" colspan="4"
+            th width="500px;" colspan="5"
               div class="button tiny" data-open="member-roles-modal" See Role Definitions
             th width="100px;"
             th
@@ -15,6 +15,7 @@ div class="mx-auto p-4 lg:p-8"
             th User
             - ProjectsUser::ROLES.each do |role|
               th = role
+            th = "expert"
             th
             th
         tbody#projects-users-table

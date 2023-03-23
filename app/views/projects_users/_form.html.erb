@@ -3,11 +3,12 @@
     <%= f.association :user, collection: @project.users, label_method: :handle,
     label: false %>
   </td>
-  <td colspan="4" id="user-role-checkboxes">
+  <td colspan="5" id="user-role-checkboxes">
     <div
       class="input check_boxes optional"
       x-data="{
-        permissions: <%= f.object.permissions %>
+        permissions: <%= f.object.permissions %>,
+        is_expert: <%= f.object.is_expert %>
       }"
     >
       <input
@@ -15,7 +16,13 @@
         name="project[projects_users_attributes][<%= f.index %>][permissions]"
         x-model="permissions"
         autocomplete="off"
-      />
+      >
+      <input
+        type="hidden"
+        name="project[projects_users_attributes][<%= f.index %>][is_expert]"
+        x-model="is_expert"
+        autocomplete="off"
+      >
       <div class="checkbox">
         <label>
           <input
@@ -27,7 +34,8 @@
             } else {
               permissions += 1
             };"
-        /></label>
+          >
+        </label>
       </div>
       <div class="checkbox">
         <label>
@@ -40,11 +48,12 @@
             } else {
               permissions += 2
             };"
-        /></label>
+          >
+        </label>
       </div>
       <div class="checkbox">
-        <label
-          ><input
+        <label>
+          <input
             class="check_boxes optional myclass"
             type="checkbox"
             :checked="(permissions).toString(2).split('').reverse()[2] == '1'"
@@ -53,11 +62,12 @@
             } else {
               permissions += 4
             };"
-        /></label>
+          >
+        </label>
       </div>
       <div class="checkbox">
-        <label
-          ><input
+        <label>
+          <input
             class="check_boxes optional myclass"
             type="checkbox"
             :checked="(permissions).toString(2).split('').reverse()[3] == '1'"
@@ -66,7 +76,18 @@
             } else {
               permissions += 8
             };"
-        /></label>
+          >
+        </label>
+      </div>
+      <div class="checkbox">
+        <label>
+          <input
+            class="check_boxes optional myclass"
+            type="checkbox"
+            :checked="is_expert == true"
+            @click="is_expert = !is_expert"
+          >
+        </label>
       </div>
     </div>
   </td>
