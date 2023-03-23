@@ -52,8 +52,10 @@
           </select>
           <div
             class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-            @click="await updateSubResource('sd_picods', sd_picod.id, 'DELETE')
-            sdMetaDatum.sd_picods.splice(sd_picod_index, 1)"
+            @click="if (confirm('Are you sure?')) {
+              await updateSubResource('sd_picods', sd_picod.id, 'DELETE')
+              sdMetaDatum.sd_picods.splice(sd_picod_index, 1)
+            }"
           >
             Remove PICODTS
           </div>

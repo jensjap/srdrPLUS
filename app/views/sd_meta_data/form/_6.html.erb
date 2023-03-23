@@ -78,8 +78,10 @@
           </select>
           <div
             class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-            @click="await updateSubResource('sd_search_strategies', sd_search_strategy.id, 'DELETE')
-            sdMetaDatum.sd_search_strategies.splice(sd_search_strategy_index, 1)"
+            @click="if (confirm('Are you sure?')) {
+              await updateSubResource('sd_search_strategies', sd_search_strategy.id, 'DELETE')
+              sdMetaDatum.sd_search_strategies.splice(sd_search_strategy_index, 1)
+            }"
           >
             Remove Search Strategy
           </div>
@@ -211,8 +213,10 @@
           </select>
           <div
             class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-            @click="await updateSubResource('sd_grey_literature_searches', sd_grey_literature_search.id, 'DELETE')
-            sdMetaDatum.sd_grey_literature_searches.splice(sd_grey_literature_search_index, 1)"
+            @click="if (confirm('Are you sure?')) {
+              await updateSubResource('sd_grey_literature_searches', sd_grey_literature_search.id, 'DELETE')
+              sdMetaDatum.sd_grey_literature_searches.splice(sd_grey_literature_search_index, 1)
+            }"
           >
             Remove Grey Literature Search
           </div>
@@ -294,8 +298,10 @@
           </select>
           <div
             class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-            @click="await updateSubResource('sd_prisma_flows', sd_prisma_flow.id, 'DELETE')
-            sdMetaDatum.sd_prisma_flows.splice(sd_prisma_flow_index, 1)"
+            @click="if (confirm('Are you sure?')) {
+              await updateSubResource('sd_prisma_flows', sd_prisma_flow.id, 'DELETE')
+              sdMetaDatum.sd_prisma_flows.splice(sd_prisma_flow_index, 1)
+            }"
           >
             Remove Prisma
           </div>
@@ -340,8 +346,10 @@
             <div class="flex justify-end">
               <div
                 class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-                @click="await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
-                sd_prisma_flow.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)"
+                @click="if (confirm('Are you sure?')) {
+                  await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
+                  sd_prisma_flow.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)
+                }"
               >
                 Remove Figure
               </div>
@@ -388,8 +396,10 @@
                     stroke-width="1.5"
                     stroke="currentColor"
                     class="w-6 h-6 absolute top-0 right-0 bg-red-800 text-white p-2 rounded hover:bg-red-500 m-2 cursor-pointer"
-                    @click="await apiCall(`/pictures/${picture.id}/delete_image_attachment`, 'DELETE')
-                    sd_meta_data_figure.pictures.splice(picture_index, 1)"
+                    @click="if (confirm('Are you sure?')) {
+                      await apiCall(`/pictures/${picture.id}/delete_image_attachment`, 'DELETE')
+                      sd_meta_data_figure.pictures.splice(picture_index, 1)
+                    }"
                   >
                     <path
                       stroke-linecap="round"

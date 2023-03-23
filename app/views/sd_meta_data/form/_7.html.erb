@@ -56,8 +56,10 @@
           </select>
           <div
             class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-            @click="await updateSubResource('sd_summary_of_evidences', sd_summary_of_evidence.id, 'DELETE')
-            sdMetaDatum.sd_summary_of_evidences.splice(sd_summary_of_evidence_index, 1)"
+            @click="if (confirm('Are you sure?')) {
+              await updateSubResource('sd_summary_of_evidences', sd_summary_of_evidence.id, 'DELETE')
+              sdMetaDatum.sd_summary_of_evidences.splice(sd_summary_of_evidence_index, 1)
+            }"
           >
             Remove Summary
           </div>
@@ -172,8 +174,10 @@
             <div class="flex justify-end">
               <div
                 class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-                @click="await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
-                sd_summary_of_evidence.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)"
+                @click="if (confirm('Are you sure?')) {
+                  await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
+                  sd_summary_of_evidence.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)
+                }"
               >
                 Remove Figure
               </div>
@@ -220,8 +224,10 @@
                     stroke-width="1.5"
                     stroke="currentColor"
                     class="w-6 h-6 absolute top-0 right-0 bg-red-800 text-white p-2 rounded hover:bg-red-500 m-2 cursor-pointer"
-                    @click="await apiCall(`/pictures/${picture.id}/delete_image_attachment`, 'DELETE')
-                    sd_meta_data_figure.pictures.splice(picture_index, 1)"
+                    @click="if (confirm('Are you sure?')) {
+                      await apiCall(`/pictures/${picture.id}/delete_image_attachment`, 'DELETE')
+                      sd_meta_data_figure.pictures.splice(picture_index, 1)
+                    }"
                   >
                     <path
                       stroke-linecap="round"

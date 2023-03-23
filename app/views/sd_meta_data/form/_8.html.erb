@@ -123,8 +123,10 @@
           </div>
           <div
             class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-            @click="await updateSubResource('sd_result_items', sd_result_item.id, 'DELETE')
-            sdMetaDatum.sd_result_items.splice(sd_result_item_index, 1)"
+            @click="if (confirm('Are you sure?')) {
+              await updateSubResource('sd_result_items', sd_result_item.id, 'DELETE')
+              sdMetaDatum.sd_result_items.splice(sd_result_item_index, 1)
+            }"
           >
             Remove Results for this Key Question
           </div>
@@ -225,8 +227,10 @@
                 </select>
                 <div
                   class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-                  @click="await updateSubResource('sd_narrative_results', sd_narrative_result.id, 'DELETE')
-                  sd_result_item.sd_narrative_results.splice(sd_narrative_result_index, 1)"
+                  @click="if (confirm('Are you sure?')) {
+                    await updateSubResource('sd_narrative_results', sd_narrative_result.id, 'DELETE')
+                    sd_result_item.sd_narrative_results.splice(sd_narrative_result_index, 1)
+                  }"
                 >
                   Remove Narrative Result
                 </div>
@@ -367,8 +371,10 @@
                 </select>
                 <div
                   class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-                  @click="await updateSubResource('sd_evidence_tables', sd_evidence_table.id, 'DELETE')
-                  sd_result_item.sd_evidence_tables.splice(sd_evidence_table_index, 1)"
+                  @click="if (confirm('Are you sure?')) {
+                    await updateSubResource('sd_evidence_tables', sd_evidence_table.id, 'DELETE')
+                    sd_result_item.sd_evidence_tables.splice(sd_evidence_table_index, 1)
+                  }"
                 >
                   Remove Result
                 </div>
@@ -437,8 +443,10 @@
                   <div class="flex justify-end">
                     <div
                       class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-                      @click="await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
-                      sd_evidence_table.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)"
+                      @click="if (confirm('Are you sure?')) {
+                        await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
+                        sd_evidence_table.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)
+                      }"
                     >
                       Remove Figure
                     </div>
@@ -485,8 +493,10 @@
                           stroke-width="1.5"
                           stroke="currentColor"
                           class="w-6 h-6 absolute top-0 right-0 bg-red-800 text-white p-2 rounded hover:bg-red-500 m-2 cursor-pointer"
-                          @click="await apiCall(`/pictures/${picture.id}/delete_image_attachment`, 'DELETE')
-                          sd_meta_data_figure.pictures.splice(picture_index, 1)"
+                          @click="if (confirm('Are you sure?')) {
+                            await apiCall(`/pictures/${picture.id}/delete_image_attachment`, 'DELETE')
+                            sd_meta_data_figure.pictures.splice(picture_index, 1)
+                          }"
                         >
                           <path
                             stroke-linecap="round"
@@ -625,8 +635,10 @@
                 </select>
                 <div
                   class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-                  @click="await updateSubResource('sd_pairwise_meta_analytic_results', sd_pairwise_meta_analytic_result.id, 'DELETE')
-                  sd_result_item.sd_pairwise_meta_analytic_results.splice(sd_pairwise_meta_analytic_result_index, 1)"
+                  @click="if (confirm('Are you sure?')) {
+                    await updateSubResource('sd_pairwise_meta_analytic_results', sd_pairwise_meta_analytic_result.id, 'DELETE')
+                    sd_result_item.sd_pairwise_meta_analytic_results.splice(sd_pairwise_meta_analytic_result_index, 1)
+                  }"
                 >
                   Remove Pairwise Meta-Analysis
                 </div>
@@ -695,8 +707,10 @@
                   <div class="flex justify-end">
                     <div
                       class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-                      @click="await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
-                      sd_pairwise_meta_analytic_result.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)"
+                      @click="if (confirm('Are you sure?')) {
+                        await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
+                        sd_pairwise_meta_analytic_result.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)
+                      }"
                     >
                       Remove Figure
                     </div>
@@ -763,8 +777,10 @@
                           stroke-width="1.5"
                           stroke="currentColor"
                           class="w-6 h-6 absolute top-0 right-0 bg-red-800 text-white p-2 rounded hover:bg-red-500 m-2 cursor-pointer"
-                          @click="await apiCall(`/pictures/${picture.id}/delete_image_attachment`, 'DELETE')
-                          sd_meta_data_figure.pictures.splice(picture_index, 1)"
+                          @click="if (confirm('Are you sure?')) {
+                            await apiCall(`/pictures/${picture.id}/delete_image_attachment`, 'DELETE')
+                            sd_meta_data_figure.pictures.splice(picture_index, 1)
+                          }"
                         >
                           <path
                             stroke-linecap="round"
@@ -1022,8 +1038,10 @@
                 </select>
                 <div
                   class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-                  @click="await updateSubResource('sd_network_meta_analysis_results', sd_network_meta_analysis_result.id, 'DELETE')
-                  sd_result_item.sd_network_meta_analysis_results.splice(sd_network_meta_analysis_result_index, 1)"
+                  @click="if (confirm('Are you sure?')) {
+                    await updateSubResource('sd_network_meta_analysis_results', sd_network_meta_analysis_result.id, 'DELETE')
+                    sd_result_item.sd_network_meta_analysis_results.splice(sd_network_meta_analysis_result_index, 1)
+                  }"
                 >
                   Remove Network Meta-analysis
                 </div>
@@ -1092,8 +1110,10 @@
                   <div class="flex justify-end">
                     <div
                       class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-                      @click="await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
-                      sd_network_meta_analysis_result.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)"
+                      @click="if (confirm('Are you sure?')) {
+                        await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
+                        sd_network_meta_analysis_result.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)
+                      }"
                     >
                       Remove Figure
                     </div>
@@ -1163,8 +1183,10 @@
                           stroke-width="1.5"
                           stroke="currentColor"
                           class="w-6 h-6 absolute top-0 right-0 bg-red-800 text-white p-2 rounded hover:bg-red-500 m-2 cursor-pointer"
-                          @click="await apiCall(`/pictures/${picture.id}/delete_image_attachment`, 'DELETE')
-                          sd_meta_data_figure.pictures.splice(picture_index, 1)"
+                          @click="if (confirm('Are you sure?')) {
+                            await apiCall(`/pictures/${picture.id}/delete_image_attachment`, 'DELETE')
+                            sd_meta_data_figure.pictures.splice(picture_index, 1)
+                          }"
                         >
                           <path
                             stroke-linecap="round"
@@ -1303,8 +1325,10 @@
                 </select>
                 <div
                   class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-                  @click="await updateSubResource('sd_meta_regression_analysis_results', sd_meta_regression_analysis_result.id, 'DELETE')
-                  sd_result_item.sd_meta_regression_analysis_results.splice(sd_meta_regression_analysis_result_index, 1)"
+                  @click="if (confirm('Are you sure?')) {
+                    await updateSubResource('sd_meta_regression_analysis_results', sd_meta_regression_analysis_result.id, 'DELETE')
+                    sd_result_item.sd_meta_regression_analysis_results.splice(sd_meta_regression_analysis_result_index, 1)
+                  }"
                 >
                   Remove Meta-regression Result
                 </div>
@@ -1373,8 +1397,10 @@
                   <div class="flex justify-end">
                     <div
                       class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
-                      @click="await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
-                      sd_meta_regression_analysis_result.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)"
+                      @click="if (confirm('Are you sure?')) {
+                        await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
+                        sd_meta_regression_analysis_result.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)
+                      }"
                     >
                       Remove Figure
                     </div>
@@ -1421,8 +1447,10 @@
                           stroke-width="1.5"
                           stroke="currentColor"
                           class="w-6 h-6 absolute top-0 right-0 bg-red-800 text-white p-2 rounded hover:bg-red-500 m-2 cursor-pointer"
-                          @click="await apiCall(`/pictures/${picture.id}/delete_image_attachment`, 'DELETE')
-                          sd_meta_data_figure.pictures.splice(picture_index, 1)"
+                          @click="if (confirm('Are you sure?')) {
+                            await apiCall(`/pictures/${picture.id}/delete_image_attachment`, 'DELETE')
+                            sd_meta_data_figure.pictures.splice(picture_index, 1)
+                          }"
                         >
                           <path
                             stroke-linecap="round"

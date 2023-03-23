@@ -177,8 +177,10 @@
           stroke-width="1.5"
           stroke="white"
           class="w-4 h-4 cursor-pointer"
-          @click="await updateSubResource('sd_journal_article_urls', sd_journal_article_url.id, 'DELETE')
-          sdMetaDatum.sd_journal_article_urls.splice(sd_journal_article_url_index, 1)"
+          @click="if (confirm (`Are you sure you want to delete '${sd_journal_article_url.name}'?`)) {
+            await updateSubResource('sd_journal_article_urls', sd_journal_article_url.id, 'DELETE')
+            sdMetaDatum.sd_journal_article_urls.splice(sd_journal_article_url_index, 1)
+          }"
         >
           <path
             stroke-linecap="round"
@@ -225,8 +227,10 @@
           stroke-width="1.5"
           stroke="white"
           class="w-4 h-4 cursor-pointer"
-          @click="await updateSubResource('sd_other_items', sd_other_item.id, 'DELETE')
-          sdMetaDatum.sd_other_items.splice(sd_other_item_index, 1)"
+          @click="if (confirm (`Are you sure you want to delete '${sd_other_item.name}'?`)) {
+            await updateSubResource('sd_other_items', sd_other_item.id, 'DELETE')
+            sdMetaDatum.sd_other_items.splice(sd_other_item_index, 1)
+          }"
         >
           <path
             stroke-linecap="round"

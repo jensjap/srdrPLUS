@@ -39,8 +39,10 @@
                 stroke-width="1.5"
                 stroke="currentColor"
                 class="w-6 h-6 absolute -top-2 right-0 bg-red-800 text-white p-2 rounded hover:bg-red-500 m-2 cursor-pointer"
-                @click="const response = await apiCall(`/sd_key_questions_projects/${sd_key_questions_project.id}`, 'DELETE');
-                sd_key_question.sd_key_questions_projects.splice(sd_key_questions_project_index, 1)"
+                @click="if (confirm('Are you sure?')) {
+                  const response = await apiCall(`/sd_key_questions_projects/${sd_key_questions_project.id}`, 'DELETE');
+                  sd_key_question.sd_key_questions_projects.splice(sd_key_questions_project_index, 1)
+                }"
               >
                 <path
                   stroke-linecap="round"
