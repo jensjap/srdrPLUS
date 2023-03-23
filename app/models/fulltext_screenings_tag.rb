@@ -7,7 +7,7 @@
 #  tag_id                :bigint           not null
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
-#  position              :integer
+#  position              :integer          default(999999)
 #
 class FulltextScreeningsTag < ApplicationRecord
   belongs_to :fulltext_screening

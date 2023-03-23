@@ -5,7 +5,9 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
 
   # GET /extraction_forms_projects/1/extraction_forms_projects_sections/new
   def new
-    @extraction_forms_projects_section = @extraction_forms_project.extraction_forms_projects_sections.new
+    @extraction_forms_projects_section = @extraction_forms_project
+                                         .extraction_forms_projects_sections
+                                         .new
   end
 
   # GET /extraction_forms_projects_sections/1/edit
