@@ -70,9 +70,8 @@ module Api
             end
           end
 
-          respond_to do |format|
-            format.json { head :ok }
-          end
+        respond_to do |format|
+          format.json { render json: {}, status: 200 }
         end
       end
 

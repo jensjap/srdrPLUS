@@ -1,4 +1,4 @@
-= simple_form_for([@extraction_forms_projects_section, @question], html: { data: { 'abide': '', 'live-validate': true } }) do |f|
+= simple_form_for([@extraction_forms_projects_section, @question], html: { data: { 'abide': '', 'live-validate': true }, "@submit.prevent": "await updateQuestionTable(edit_question_id, $event.target); question_modal = false;" }) do |f|
   = f.error_notification
 
   .alert.callout data-abide-error='' style='display: none;'
@@ -20,27 +20,29 @@
 
     label.field-label for="structure-container" = 'Question Structure'
     #structure
-      = link_to '#', id: 'add_column_link', class: 'float-right button secondary tiny' do
+      - if !params[:partial]
+        div id='add_column_link' class='float-right button secondary tiny'
+          i.fi-arrow-right>
+          | Add Column
+
+      div id='add_column_button' class='float-right button secondary tiny' @click="addRowOrColumn('add_column');"
         i.fi-arrow-right>
         | Add Column
 
-      = link_to add_column_question_path(@question), id: 'add_column_button', method: :post, class: 'hide float-right button secondary tiny' do
-        i.fi-arrow-right>
-        | Add Column old
-
       == render 'questions/table', f: f
 
-      = link_to '#', id: 'add_row_link', class: 'button secondary tiny' do
+      - if !params[:partial]
+        div id='add_row_link' class='button secondary tiny'
+          i.fi-arrow-down>
+          | Add Row
+
+      div id='add_row_button' class='button secondary tiny' @click="addRowOrColumn('add_row');"
         i.fi-arrow-down>
         | Add Row
 
-      = link_to add_row_question_path(@question), id: 'add_row_button', method: :post, class: 'hide button secondary tiny' do
-        i.fi-arrow-down>
-        | Add Row old
-
-  .form-actions
-
-    = f.button :submit, 'Save Changes', class: 'create-button'
-    = link_to @question, method: :delete, class: 'delete-question button alert', data: { confirm: t('confirm') } do
-      i.fi-trash>
-      = 'Delete'
+  div class="form-actions flex justify-end space-x-8 mt-2"
+    div @click='destroyResource("/questions/#{@question.id}", "question")' class='delete-question button alert !p-2' Delete
+    div @click="await updateQuestionTable(edit_question_id, document.getElementById(`edit_question_${edit_question_id}`)); question_modal = false;" class="cursor-pointer p-2 rounded-md bg-green-800 text-white text-sm hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" Save and Exit
+    / = link_to @question, method: :delete, class: 'delete-question button alert', data: { confirm: t('confirm') } do
+    /   i.fi-trash>
+    /   = 'Delete'

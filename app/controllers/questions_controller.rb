@@ -17,7 +17,9 @@ class QuestionsController < ApplicationController
   end
 
   # GET /extraction_forms_projects_sections/1/questions/edit
-  def edit; end
+  def edit
+    render layout: !(params[:partial] == 'true')
+  end
 
   # POST /extraction_forms_projects_section/1/questions
   # POST /extraction_forms_projects_section/1/questions.json
@@ -26,14 +28,13 @@ class QuestionsController < ApplicationController
     authorize(@question)
 
     # !!! Check for params 'q_type' and build values based on the type.
-
     respond_to do |format|
       if @question.save
         format.html do
           redirect_to edit_question_path(@question),
                       notice: t('success')
         end
-        format.json { render :show, status: :created, location: @question }
+        format.json { render json: {}, status: 200 }
       else
         format.html { render :new }
         format.json { render json: @question.errors, status: :unprocessable_entity }
@@ -51,7 +52,7 @@ class QuestionsController < ApplicationController
                                                           'panel-tab': @question.extraction_forms_projects_section.id), notice: t('success')
         end
         format.js   { head :no_content }
-        format.json { render :show, status: :ok, location: @question }
+        format.json { render json: { ok: 123 }, status: 200 }
       else
         format.html { render :edit }
         format.js   { head :no_content }
@@ -84,8 +85,14 @@ class QuestionsController < ApplicationController
         question_row_column_type: QuestionRowColumnType.find_by(name: 'text')
       )
     end
-
-    redirect_to edit_question_path(@question), notice: t('success')
+    respond_to do |format|
+      format.html do
+        redirect_to edit_question_path(@question), notice: t('success')
+      end
+      format.json do
+        render json: {}, status: 200
+      end
+    end
   end
 
   # POST /questions/1/add_row
@@ -94,7 +101,14 @@ class QuestionsController < ApplicationController
     @question.question_rows.create
     @question.save
 
-    redirect_to edit_question_path(@question), notice: t('success')
+    respond_to do |format|
+      format.html do
+        redirect_to edit_question_path(@question), notice: t('success')
+      end
+      format.json do
+        render json: {}, status: 200
+      end
+    end
   end
 
   def dependencies
@@ -102,6 +116,7 @@ class QuestionsController < ApplicationController
     @other_extraction_forms_projects_section_questions = @extraction_forms_projects_section.questions.reject do |q|
       q == @question
     end
+    render layout: !(params[:partial] == 'true')
   end
 
   def toggle_dependency

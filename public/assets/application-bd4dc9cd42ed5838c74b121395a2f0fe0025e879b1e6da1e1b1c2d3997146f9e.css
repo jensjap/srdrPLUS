@@ -23836,46 +23836,49 @@ body {
 }
 
 /* line 10, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
-p, ol, ul, td {
-  font-size: 16px;
-  line-height: 18px;
+p,
+ol,
+ul,
+td {
+  font-size: 14px;
+  line-height: 16px;
 }
 
-/* line 16, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
+/* line 19, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
 pre {
   background-color: #eee;
   padding: 10px;
   font-size: 11px;
 }
 
-/* line 35, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
+/* line 38, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
 th {
   padding-bottom: 5px;
 }
 
-/* line 39, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
+/* line 42, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
 td {
   padding: 0 5px 7px;
 }
 
-/* line 44, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
+/* line 47, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
 div.field, div.actions {
   margin-bottom: 10px;
 }
 
-/* line 49, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
+/* line 53, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
 #notice {
   color: green;
 }
 
-/* line 53, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
+/* line 57, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
 .field_with_errors {
   padding: 2px;
   background-color: red;
   display: table;
 }
 
-/* line 59, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
+/* line 63, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
 #error_explanation {
   width: 450px;
   border: 2px solid red;
@@ -23883,7 +23886,7 @@ div.field, div.actions {
   margin-bottom: 20px;
   background-color: #f0f0f0;
 }
-/* line 66, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
+/* line 70, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
 #error_explanation h2 {
   text-align: left;
   font-weight: bold;
@@ -23893,13 +23896,13 @@ div.field, div.actions {
   background-color: #c00;
   color: #fff;
 }
-/* line 76, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
+/* line 80, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
 #error_explanation ul li {
   font-size: 12px;
   list-style: square;
 }
 
-/* line 82, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
+/* line 86, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/scaffolds.scss */
 label {
   display: block;
 }

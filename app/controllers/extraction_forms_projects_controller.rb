@@ -1,7 +1,17 @@
 class ExtractionFormsProjectsController < ApplicationController
   before_action :set_project, only: [:create]
-  before_action :set_extraction_forms_project, only: %i[build edit update destroy]
+  before_action :set_extraction_forms_project, only: %i[build edit update destroy preview]
   before_action :skip_policy_scope
+
+  def preview
+    @nav_buttons.push('extractions_form_builder', 'my_projects')
+    @key_questions_projects = @extraction_forms_project.project.key_questions_projects.includes(:key_question)
+    @key_questions_projects_array_for_select = @extraction_forms_project.project.key_questions_projects_array_for_select
+    @extraction_forms_projects_sections = @extraction_forms_project
+                                          .extraction_forms_projects_sections
+                                          .includes(%i[ordering section])
+    render '/extraction_forms_projects_sections/_preview', layout: !(params[:partial] == 'true')
+  end
 
   # GET /extraction_forms_projects/1/edit
   def edit; end
@@ -75,6 +85,12 @@ class ExtractionFormsProjectsController < ApplicationController
     @extraction_forms_projects_sections = @extraction_forms_project
                                           .extraction_forms_projects_sections
                                           .includes(:section)
+    respond_to do |format|
+      format.html do
+      end
+      format.json do
+      end
+    end
   end
 
   private

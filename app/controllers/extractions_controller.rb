@@ -4,7 +4,7 @@ class ExtractionsController < ApplicationController
   before_action :set_project,
                 only: %i[index new create comparison_tool compare consolidate edit_type1_across_extractions]
   before_action :set_extraction, only: %i[show edit update destroy work update_kqp_selections reassign_extraction]
-  before_action :set_extractions, only: %i[consolidate edit_type1_across_extractions]
+  before_action :set_extractions, only: %i[consolidate]
   before_action :ensure_extraction_form_structure, only: %i[consolidate work]
   before_action :set_eefps_by_efps_dict, only: [:work]
 
@@ -259,6 +259,7 @@ class ExtractionsController < ApplicationController
   def change_outcome_in_results_section
     respond_to do |format|
       format.js do
+        @is_consolidating          = ActiveModel::Type::Boolean.new.cast(params['is_consolidating'])
         @eefpst1                   = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id])
         @extraction                = @eefpst1.extraction
         @consolidated_extraction   = @extraction
@@ -300,6 +301,7 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions/consolidate
   def consolidate
     authorize(@project, policy_class: ExtractionPolicy)
+    @is_consolidating = true
     @panel_tab_id = params['panel-tab'] || 'keyquestions'
 
     set_extraction_forms_projects
