@@ -67973,9 +67973,6 @@ function __guardMethod__(obj, methodName, transform) {
 
   documentCode = function() {
     var allowsFollowup, hideHeaders, multiSelect;
-    if (!($('body.public_data.show, .questions, .extractions, .extraction_forms_projects.build').length > 0)) {
-      return;
-    }
     multiSelect = ['Checkbox (select multiple)', 'Dropdown (select one)', 'Radio (select one)', 'Select one (with write-in option)', 'Select multiple (with write-in option)'];
     allowsFollowup = ['Checkbox (select multiple)', 'Radio (select one)'];
     $('.fieldset').on('change', function() {
@@ -68053,6 +68050,8 @@ function __guardMethod__(obj, methodName, transform) {
       return false;
     });
   };
+
+  window.questionsCoffeeScript = documentCode;
 
 }).call(this);
 (function() {

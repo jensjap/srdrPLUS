@@ -259,6 +259,7 @@ class ExtractionsController < ApplicationController
   def change_outcome_in_results_section
     respond_to do |format|
       format.js do
+        @is_consolidating          = ActiveModel::Type::Boolean.new.cast(params['is_consolidating'])
         @eefpst1                   = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:eefpst1_id])
         @extraction                = @eefpst1.extraction
         @consolidated_extraction   = @extraction
@@ -300,6 +301,7 @@ class ExtractionsController < ApplicationController
   # GET /projects/1/extractions/consolidate
   def consolidate
     authorize(@project, policy_class: ExtractionPolicy)
+    @is_consolidating = true
     @panel_tab_id = params['panel-tab'] || 'keyquestions'
 
     set_extraction_forms_projects
