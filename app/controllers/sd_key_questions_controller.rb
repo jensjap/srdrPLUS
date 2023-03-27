@@ -4,7 +4,9 @@ class SdKeyQuestionsController < ApplicationController
   def create
     sd_meta_datum = SdMetaDatum.find(params[:sd_meta_datum_id])
     authorize(sd_meta_datum)
-    sd_key_question = SdKeyQuestion.create!(sd_meta_datum:)
+    sd_key_question = SdKeyQuestion.new(sd_meta_datum:)
+    sd_key_question.key_question = KeyQuestion.find_or_create_by!(name: params[:key_question_name] || 'New Key Question')
+    sd_key_question.save!
     render json: { id: sd_key_question.id, name: sd_key_question.name, key_question: { id: nil, name: nil }, key_question_types: [] },
            status: 200
   end
@@ -13,6 +15,11 @@ class SdKeyQuestionsController < ApplicationController
     sd_key_question = SdKeyQuestion.find_by(id: params[:id])
     authorize(sd_key_question)
     sd_key_question.update!(sd_key_question_params)
+    if params[:key_question_name]
+      kq = KeyQuestion.find_or_create_by!(name: params[:key_question_name])
+      sd_key_question.key_question = kq
+      sd_key_question.save!
+    end
     render json: sd_key_question.as_json, status: 200
   end
 
@@ -54,6 +61,6 @@ class SdKeyQuestionsController < ApplicationController
   end
 
   def sd_key_question_params
-    params.permit(:name, :includes_meta_analysis)
+    params.permit(:includes_meta_analysis)
   end
 end

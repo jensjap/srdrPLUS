@@ -48,12 +48,12 @@
           class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
           x-model="sdMetaDatum.review_types"
           x-init="$nextTick(() => {
-          initSelect2(
-            $el,
-            'review_types',
-            sdMetaDatum.review_types
-          );
-        });"
+            initSelect2(
+              $el,
+              'review_types',
+              sdMetaDatum.review_types
+            );
+          });"
         ></select>
       </template>
     </div>
@@ -344,7 +344,8 @@
             <input
               type="text"
               class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
-              x-model="sd_key_question.key_question.name"
+              x-model="sd_key_question.name"
+              @input.debounce="updateSubResource('sd_key_questions', sd_key_question.id, 'PATCH', 'key_question_name', sd_key_question.name)"
             />
           </div>
         </div>
@@ -358,14 +359,14 @@
                 multiple="multiple"
                 x-model="sd_key_question.key_question_types"
                 x-init="$nextTick(() => {
-                initSelect2(
-                  $el,
-                  'key_question_types',
-                  sd_key_question.key_question_types,
-                  'sd_key_questions_key_question_types',
-                  { sd_key_question_id: sd_key_question.id }
-                )
-              });"
+                  initSelect2(
+                    $el,
+                    'key_question_types',
+                    sd_key_question.key_question_types,
+                    'sd_key_questions_key_question_types',
+                    { sd_key_question_id: sd_key_question.id }
+                  )
+                });"
               ></select>
             </template>
           </div>
