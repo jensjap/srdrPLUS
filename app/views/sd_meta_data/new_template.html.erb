@@ -390,7 +390,7 @@
       srdrPlusKQSelection: null,
 
       async init() {
-        await this.getSdMetaDatum(this.sdMetaDatumId);
+        await this.getSdMetaDatum();
         this.calcCompletionPercentage();
       },
 
@@ -604,11 +604,8 @@
         return await response.json();
       },
 
-      async getSdMetaDatum(id) {
-        const sdMetaDatum = await this.apiCall(
-          `/sd_meta_data/${id}/edit`,
-          "GET"
-        );
+      async getSdMetaDatum() {
+        const sdMetaDatum = await this.apiCall(window.location.href, "GET");
         this.sdMetaDatum = sdMetaDatum;
       },
     }));

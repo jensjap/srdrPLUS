@@ -96,13 +96,13 @@ class SdMetaDataController < ApplicationController
     cookies.delete(:sr360_beta) if params[:sr360_beta_opt_out]
 
     respond_to do |format|
+      @panel_number = params[:panel_number].try(:to_i) || 0
       format.json do
         @sd_meta_datum = SdMetaDatum.find(params[:id])
         @project = @sd_meta_datum.project
       end
       format.html do
         @systematic_review_report = true
-        @panel_number = params[:panel_number].try(:to_i) || 0
         @sd_meta_datum = SdMetaDatum.find(params[:id])
         @project = @sd_meta_datum.project
         authorize(@sd_meta_datum)
