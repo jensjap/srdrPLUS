@@ -8,6 +8,7 @@
       <textarea
         rows="4"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+        :class="sdMetaDatum.organization?.length === 0 ? '!bg-red-300' : ''"
         autofocus
         x-model="sdMetaDatum.organization"
         @input.debounce="updateSdMetaDatum('organization', sdMetaDatum.organization)"
@@ -22,6 +23,7 @@
       <textarea
         rows="4"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+        :class="sdMetaDatum.authors?.length === 0 ? '!bg-red-300' : ''"
         x-model="sdMetaDatum.authors"
         @input.debounce="updateSdMetaDatum('authors', sdMetaDatum.authors)"
       ></textarea>

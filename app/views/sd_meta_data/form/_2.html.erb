@@ -31,6 +31,7 @@
       <input
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+        :class="sdMetaDatum.full_report_link?.length === 0 ? '!bg-red-300' : ''"
         x-model="sdMetaDatum.full_report_link"
         @input.debounce="updateSdMetaDatum('full_report_link', sdMetaDatum.full_report_link)"
       />

@@ -10,6 +10,7 @@
       <input
         type="text"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+        :class="sdMetaDatum.report_title?.length === 0 ? '!bg-red-300' : ''"
         autofocus
         x-model="sdMetaDatum.report_title"
         @input.debounce="updateSdMetaDatum('report_title', sdMetaDatum.report_title)"
@@ -86,6 +87,7 @@
         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
         x-model="sdMetaDatum.date_of_publication_full_report"
         onfocus="this.showPicker()"
+        :class="(sdMetaDatum.date_of_publication_full_report === null || sdMetaDatum.date_of_publication_full_report === '') ? '!bg-red-300' : ''"
         @input.debounce="updateSdMetaDatum('date_of_publication_full_report', sdMetaDatum.date_of_publication_full_report)"
       />
     </div>
