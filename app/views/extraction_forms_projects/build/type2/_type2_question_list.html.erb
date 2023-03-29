@@ -384,6 +384,10 @@
         toastr.success("Question was added!", null, {
           timeOut: 1000,
         });
+        const resp = await response.json()
+        this.edit_question_id = resp.id
+        this.fetchQuestionTable();
+        this.question_modal = true;
         this.loading = false;
       },
 

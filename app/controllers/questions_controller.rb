@@ -34,7 +34,7 @@ class QuestionsController < ApplicationController
           redirect_to edit_question_path(@question),
                       notice: t('success')
         end
-        format.json { render json: {}, status: 200 }
+        format.json { render json: { id: @question.id }, status: 200 }
       else
         format.html { render :new }
         format.json { render json: @question.errors, status: :unprocessable_entity }
