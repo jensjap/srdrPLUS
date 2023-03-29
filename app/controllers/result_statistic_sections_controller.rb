@@ -63,7 +63,7 @@ class ResultStatisticSectionsController < ApplicationController
 
   def remove_comparison
     respond_to do |format|
-      if Comparison.find(params[:comparison_id]).destroy
+      if @result_statistic_section.comparisons_result_statistic_sections.where(comparison_id: params[:comparison_id]).destroy_all
         format.js do
           flash.now[:notice] = ' Comparison removed'
           render :add_comparison

@@ -1,4 +1,118 @@
 class ConsolidationService
+  def self.check
+    results(ExtractionFormsProjectsSection.find(5602), CitationsProject.find(267_373))
+  end
+
+  def self.results(efps, citations_project)
+    mh = {
+      rss: {
+        'Descriptive Statistics': {
+          outcomes: [], # consolidate by type_1 (eefpst1s)
+          eefpst1rs: [], # consolidate by population_name
+          eefpst1rcs: [], # consolidate by timepoint_name
+          arms: [], # consolidate by type_1 (eefpst1s)
+          rssms: [] # consolidate by measure
+        },
+        'Between Arm Comparisons': {
+          outcomes: [], # consolidate by type_1 (eefpst1s)
+          eefpst1rs: [], # consolidate by population_name
+          eefpst1rcs: [], # consolidate by timepoint_name
+          comparisons: [], # consolidate by arms
+          rssms: []
+        },
+        'Within Arm Comparisons': {
+          outcomes: [], # consolidate by type_1 (eefpst1s)
+          eefpst1rs: [], # consolidate by population_name
+          comparisons: [], # consolidate by timpoint_names
+          arms: [], # consolidate by type_1 (eefpst1s)
+          rssms: []
+        },
+        'NET Change': {
+          outcomes: [], # consolidate by type_1 (eefpst1s)
+          eefpst1rs: [], # consolidate by population_name
+          wacs: [], # consolidate by timpoint_names
+          bacs: [], # consolidate by arms
+          rssms: []
+        }
+      },
+      extractions: {
+
+      }
+    }
+
+    extractions = Extraction.includes(projects_users_role: { projects_user: :user }).where(citations_project:)
+
+    return unless efps.extraction_forms_projects_section_type.name == 'Results'
+
+    project = citations_project.project
+    # efpss = ExtractionFormsProjectsSection
+    #         .joins(:section)
+    #         .where(sections: { name: %w[Arms Outcomes Results] })
+    #         .where(project:)
+    #         .extractions_extraction_forms_projects_sections
+
+    eefpss =
+      ExtractionsExtractionFormsProjectsSection
+      .joins(:extraction, extraction_forms_projects_section: :section)
+      .where(extractions:, extraction_forms_projects_sections: { sections: { name: %w[Arms Outcomes Results] } })
+      .includes(
+        :extraction,
+        {
+          extraction_forms_projects_section: :section,
+          extractions_extraction_forms_projects_sections_type1s: [
+            :type1,
+            { extractions_extraction_forms_projects_sections_type1_rows: [
+              :population_name,
+              { extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name }
+            ] }
+          ]
+        }
+      )
+
+    eefpss.each do |eefps|
+      p '================================================================'
+      p "Extraction ID #{eefps.extraction.id}, Consolidated: #{eefps.extraction.consolidated}"
+      p eefps.extraction_forms_projects_section.section.name
+      eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+        p eefpst1.type1.name
+        p '===Populations===' unless eefpst1.extractions_extraction_forms_projects_sections_type1_rows.blank?
+        eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+          p eefpst1r.population_name.name
+          p '===Timepoints==='
+          eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+            p eefpst1rc.timepoint_name.name
+          end
+        end
+      end
+    end
+    nil
+
+    # for each extraction
+    # populate master list of outcomes and their population and timepoints per extraction,
+    # keep in mind we are deduplicating type1.name / type1.description, population_name.name / population_name.description, timepoint_name.name / timepoint_name.unit
+    # extraction -> eefps -> efps -> efpst ('Outcomes')
+    # eefps -> eefpst1s
+    # eefpst1s -> eefpst1rs
+    # eefpst1rs -> eefpst1rcs
+
+    # populate master list of arms per extraction, consolidate by type1.name / type1.description
+    # extractions -> eefps -> efps -> efpst ('Arms')
+    # eefps -> eefpst1s
+
+    # populate master list of measures, deduplicate by measure.name
+    # eefpst1rs -> rss -> rssms
+
+    # ask user for outcome
+    # ask user for rss (quadrant)
+    # loop over population (each table)
+    # loop over arms
+    # loop over timepoints
+    # loop over measures
+    # if anything but measure is missing, just leave it blank and no options/buttons
+    # if only measure is missing, put button to add that measure (reload table)
+    # if all is there, then ensure tpsarmsrssm exists and allow inputting record
+  end
+
   def self.suggestions(eefps_id)
     ExtractionsExtractionFormsProjectsSection.find(eefps_id).type1s_suggested_by_project_leads.map do |efpst1|
       t1 = {}
