@@ -13,6 +13,7 @@ class QuestionsController < ApplicationController
   # GET /extraction_forms_projects_sections/1/questions/new
   def new
     @question = @extraction_forms_projects_section.questions.new
+    authorize(@question)
   end
 
   # GET /extraction_forms_projects_sections/1/questions/edit
@@ -24,6 +25,7 @@ class QuestionsController < ApplicationController
   # POST /extraction_forms_projects_section/1/questions.json
   def create
     @question = @extraction_forms_projects_section.questions.new(question_params)
+    authorize(@question)
 
     # !!! Check for params 'q_type' and build values based on the type.
     respond_to do |format|
@@ -137,7 +139,6 @@ class QuestionsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_extraction_forms_projects_section
     @extraction_forms_projects_section = ExtractionFormsProjectsSection.find(params[:extraction_forms_projects_section_id])
-    authorize(@extraction_forms_projects_section.project, policy_class: QuestionPolicy)
   end
 
   def set_question
@@ -146,7 +147,7 @@ class QuestionsController < ApplicationController
                                                              :question_row_column_options, :question_row_column_fields] }
                                   ])
                         .find(params[:id])
-    authorize(@question.project, policy_class: QuestionPolicy)
+    authorize(@question)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

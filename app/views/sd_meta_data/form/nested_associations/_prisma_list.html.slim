@@ -3,7 +3,7 @@
 
   .orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
     = f.simple_fields_for :sd_prisma_flows do |sd_prisma_flow|
-      .sd-item.sd-inner.orderable-item.sort-handle ordering-id="#{ sd_prisma_flow.object.ordering.id.to_s }"
+      .sd-item.sd-inner.orderable-item.sort-handle table="sd_prisma_flows" ordering-id="#{ sd_prisma_flow.object.id }"
         = render 'sd_meta_data/form/dynamic_fields/sd_prisma_flow_fields', f: sd_prisma_flow
   div class="#{ f.object.sd_prisma_flows.present? ? '' : 'zero-nested-associations'}"
     = link_to_add_association 'Add PRISMA', f, :sd_prisma_flows, partial: 'sd_meta_data/form/dynamic_fields/sd_prisma_flow_fields', class: 'add-item-link'

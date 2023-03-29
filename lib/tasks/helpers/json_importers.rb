@@ -31,10 +31,10 @@ module JsonImporters
       @eefps_t1_link_dict = {}
       @question_dependency_dict = {}
 
-      @section_position_tuples = []
+      @section_pos_tuples = []
 
-      @question_position_counter_dict = {}
-      @question_position_tuples_dict = {}
+      @question_pos_counter_dict = {}
+      @question_pos_tuples_dict = {}
     end
 
     def import_project(phash)
@@ -64,22 +64,22 @@ module JsonImporters
         phash['tasks']&.values&.each(&method(:import_task))
 
         ## EFPSs
-        position_counter = 0
+        pos_counter = 0
         phash['extraction_forms']&.values&.each do |efhash|
           efhash['sections']&.each do |sid, shash|
             linked_shash = nil
             linked_shash = efhash['sections']['link_to_type1'] if shash['link_to_type1'].present?
-            import_efps(sid, shash, linked_shash, position_counter)
+            import_efps(sid, shash, linked_shash, pos_counter)
           end
-          position_counter += (0 || efhash['sections'].length)
+          pos_counter += (0 || efhash['sections'].length)
         end
 
         # does this work? TEST!
-        @question_position_tuples_dict.values&.each do |q_tuples|
+        @question_pos_tuples_dict.values&.each do |q_tuples|
           q_tuples.sort! { |t1, t2| t1[0] <=> t2[0] }
           q_tuples.each.with_index do |tuple, index|
             q = tuple[1]
-            q.ordering.update!(position: index + 1)
+            q.update!(pos: index + 1)
           end
         end
 
@@ -96,10 +96,10 @@ module JsonImporters
         end
 
         # does this work? TEST!
-        @section_position_tuples.sort! { |t1, t2| t1[0] <=> t2[0] }
-        @section_position_tuples.each.with_index do |tuple, index|
+        @section_pos_tuples.sort! { |t1, t2| t1[0] <=> t2[0] }
+        @section_pos_tuples.each.with_index do |tuple, index|
           efps = tuple[1]
-          efps.ordering.update!(position: index + 1)
+          efps.update!(pos: index + 1)
         end
 
         ## EXTRACTIONS
@@ -354,7 +354,7 @@ module JsonImporters
       end
     end
 
-    def import_efps(sid, shash, linked_shash, position_counter)
+    def import_efps(sid, shash, linked_shash, pos_counter)
       efps = @id_map['efps'][sid]
       return efps if efps.present?
 
@@ -379,7 +379,7 @@ module JsonImporters
         efps = ExtractionFormsProjectsSection.find_or_create_by! extraction_forms_project: @p.extraction_forms_projects.first,
                                                                  extraction_forms_projects_section_type: efps_type,
                                                                  section: s
-        @section_position_tuples << [shash['position'].to_i + position_counter, efps]
+        @section_pos_tuples << [shash['pos'].to_i + pos_counter, efps]
 
         link_to_type1 = shash['link_to_type1']
         @t1_link_dict[efps.id] = link_to_type1 if link_to_type1.present?
@@ -403,8 +403,8 @@ module JsonImporters
         end
       end
 
-      @question_position_counter_dict[efps.id] ||= 0
-      @question_position_tuples_dict[efps.id] ||= []
+      @question_pos_counter_dict[efps.id] ||= 0
+      @question_pos_tuples_dict[efps.id] ||= []
       @dedup_map['question'][efps.id] ||= {}
 
       q_with_dep = []
@@ -428,7 +428,7 @@ module JsonImporters
         q_with_dep.unshift [qid, qhash] unless import_question(efps, qid, qhash)
       end
 
-      @question_position_counter_dict[efps.id] += (shash['questions'] || []).length
+      @question_pos_counter_dict[efps.id] += (shash['questions'] || []).length
 
       @id_map['efps'][sid] = efps
       @dedup_map['efps'] = efps
@@ -547,7 +547,7 @@ module JsonImporters
         end
       end
       @dedup_map['question'][efps.id][q_dedup_key] = q
-      @question_position_tuples_dict[efps.id] << [qhash['position'].to_i + @question_position_counter_dict[efps.id], q]
+      @question_pos_tuples_dict[efps.id] << [qhash['pos'].to_i + @question_pos_counter_dict[efps.id], q]
       @id_map['question'][qid] = q
     end
 

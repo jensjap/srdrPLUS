@@ -6,14 +6,13 @@ class AbstractScreeningsController < ApplicationController
   after_action :verify_authorized
 
   def new
-    authorize(@project, policy_class: AbstractScreeningPolicy)
     @abstract_screening = @project.abstract_screenings.new
+    authorize(@abstract_screening)
   end
 
   def create
-    authorize(@project, policy_class: AbstractScreeningPolicy)
-    @abstract_screening =
-      @project.abstract_screenings.new(abstract_screening_params)
+    @abstract_screening = @project.abstract_screenings.new(abstract_screening_params)
+    authorize(@abstract_screening)
     if @abstract_screening.save
       flash[:notice] = 'Screening was successfully created'
       redirect_to project_abstract_screenings_path(@project)
@@ -24,7 +23,7 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def update_word_weight
-    authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
+    authorize(@abstract_screening)
     weight = params[:weight]
     word = params[:word].downcase
     id = params[:id]
@@ -73,7 +72,7 @@ class AbstractScreeningsController < ApplicationController
 
   def destroy
     @abstract_screening = AbstractScreening.find(params[:id])
-    authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
+    authorize(@abstract_screening)
     if @abstract_screening.destroy
       flash[:success] = 'The abstract screening was deleted.'
     else
@@ -85,7 +84,7 @@ class AbstractScreeningsController < ApplicationController
   def edit
     @abstract_screening = AbstractScreening.find(params[:id])
     @project = @abstract_screening.project
-    authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
+    authorize(@abstract_screening)
   end
 
   def index
@@ -103,8 +102,8 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def screen
-    authorize(as = AbstractScreening.find(params[:abstract_screening_id]),
-              policy_class: AbstractScreeningPolicy)
+    as = AbstractScreening.find(params[:abstract_screening_id])
+    authorize(as)
     respond_to do |format|
       format.json do
         asr =
@@ -125,7 +124,7 @@ class AbstractScreeningsController < ApplicationController
   def show
     @abstract_screening = AbstractScreening.find(params[:id])
     @project = @abstract_screening.project
-    authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
+    authorize(@abstract_screening)
     @nav_buttons.push('abstract_screening', 'my_projects')
 
     respond_to do |format|
@@ -154,7 +153,7 @@ class AbstractScreeningsController < ApplicationController
   def update
     @abstract_screening = AbstractScreening.find(params[:id])
     @project = @abstract_screening.project
-    authorize(@abstract_screening.project, policy_class: AbstractScreeningPolicy)
+    authorize(@abstract_screening)
     if @abstract_screening.update(abstract_screening_params)
       flash[:notice] = 'Screening was successfully updated'
       redirect_to project_abstract_screenings_path(@project)

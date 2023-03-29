@@ -9,15 +9,13 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  includes_meta_analysis :boolean
-#  position               :integer          default(999999)
+#  pos                    :integer          default(999999)
 #
 
 class SdKeyQuestion < ApplicationRecord
+  default_scope { order(:pos, :id) }
+
   include SharedProcessTokenMethods
-  include SharedOrderableMethods
-
-  before_validation -> { set_ordering_scoped_by(:sd_meta_datum_id) }, on: :create
-
   belongs_to :sd_meta_datum, inverse_of: :sd_key_questions
   belongs_to :key_question, inverse_of: :sd_key_questions, optional: true
 
@@ -36,8 +34,6 @@ class SdKeyQuestion < ApplicationRecord
   has_many :sd_picods, through: :sd_key_questions_sd_picods
 
   has_many :sd_summary_of_evidences, inverse_of: :sd_key_question, dependent: :nullify
-
-  has_one :ordering, as: :orderable, dependent: :destroy
 
   accepts_nested_attributes_for :sd_key_questions_key_question_types, allow_destroy: true
 

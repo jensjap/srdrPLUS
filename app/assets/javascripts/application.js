@@ -100,6 +100,7 @@ const attachOrderable = (orderable) => {
     for (let i = 0; i < elements.length; i++) {
       params.orderings.push({
         id: $(elements[i]).attr("ordering-id"),
+        table: $(elements[i]).attr("table"),
         position: i,
       });
     }
@@ -152,9 +153,10 @@ const attachOrderable = (orderable) => {
               .includes($(el).attr("ordering-id"))
           ) {
             validOrder = false;
-            lsofOrderingsToRemoveDependencies.push(
-              $(lsofOrderableItemsInReverse[i]).attr("ordering-id")
-            );
+            lsofOrderingsToRemoveDependencies.push({
+              id: $(lsofOrderableItemsInReverse[i]).attr("ordering-id"),
+              table: $(lsofOrderableItemsInReverse[i]).attr("table"),
+            });
           }
         }
       }

@@ -8,19 +8,15 @@
 #  type1_type_id                        :integer
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
-#  position                             :integer          default(999999)
+#  pos                                  :integer          default(999999)
 #
 
 class ExtractionFormsProjectsSectionsType1 < ApplicationRecord
-  include SharedOrderableMethods
-
-  before_validation -> { set_ordering_scoped_by(:extraction_forms_projects_section_id) }, on: :create
+  default_scope { order(:pos, :id) }
 
   belongs_to :extraction_forms_projects_section, inverse_of: :extraction_forms_projects_sections_type1s
   belongs_to :type1,                             inverse_of: :extraction_forms_projects_sections_type1s
   belongs_to :type1_type,                        inverse_of: :extraction_forms_projects_sections_type1s, optional: true
-
-  has_one :ordering, as: :orderable, dependent: :destroy
 
   has_many :extraction_forms_projects_sections_type1_rows
   has_many :extraction_forms_projects_sections_type1s_timepoint_names, dependent: :destroy,

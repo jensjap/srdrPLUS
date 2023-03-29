@@ -8,11 +8,12 @@
 #  description                          :text(65535)
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
-#  position                             :integer          default(999999)
+#  pos                                  :integer          default(999999)
 #
 
 class Question < ApplicationRecord
-  include SharedOrderableMethods
+  default_scope { order(:pos, :id) }
+
   include SharedSuggestableMethods
 
   attr_accessor :skip_callbacks
@@ -21,11 +22,7 @@ class Question < ApplicationRecord
   after_create :associate_kqs
   after_save :ensure_matrix_column_headers, unless: :skip_callbacks
 
-  before_validation -> { set_ordering_scoped_by(:extraction_forms_projects_section_id) }, on: :create
-
   belongs_to :extraction_forms_projects_section, inverse_of: :questions
-
-  has_one :ordering, as: :orderable, dependent: :destroy
 
   has_many :dependencies, as: :dependable, dependent: :destroy
 
@@ -39,15 +36,11 @@ class Question < ApplicationRecord
   accepts_nested_attributes_for :question_rows
 
   delegate :extraction_forms_project, to: :extraction_forms_projects_section
-  delegate :position,                 to: :ordering
   delegate :project,                  to: :extraction_forms_project
   delegate :section,                  to: :extraction_forms_projects_section
 
-  validates :ordering, presence: true
-
   amoeba do
     enable
-    exclude_association :ordering
     exclude_association :dependencies
     exclude_association :key_questions_projects_questions
 

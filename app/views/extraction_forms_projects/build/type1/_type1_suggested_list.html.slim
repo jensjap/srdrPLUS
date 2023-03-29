@@ -26,7 +26,7 @@ h4 List of Suggested #{ section_name }s
 
     tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
       - efps.extraction_forms_projects_sections_type1s_without_total_arm.each do |efpst1|
-        tr.orderable-item [ position="#{ efpst1.ordering.position }" ordering-id="#{ efpst1.ordering.id }" ]
+        tr.orderable-item [ table="extraction_forms_projects_sections_type1s" position="#{ efpst1.pos }" ordering-id="#{ efpst1.id }" ]
           td.sort-handle style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"
             i class="fa fa-arrows"
           - if section_name.eql? 'Outcome'

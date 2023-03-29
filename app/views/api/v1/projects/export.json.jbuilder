@@ -39,7 +39,7 @@ json.project do
     @project.key_questions_projects.each do |kqp|
       json.set! kqp.key_question.id do
         json.name kqp.key_question.name
-        # json.position kqp.ordering.position  ####### need to make sure kqp has ordering and position -Birol
+        # json.pos kqp.pos ####### need to make sure kqp has ordering and position -Birol
       end
     end
   end
@@ -79,7 +79,7 @@ json.project do
                 json.id efps.section.id
                 json.name efps.section.name
               end
-              json.position efps.ordering.position
+              json.pos efps.pos
 
               json.extraction_forms_projects_section_type do
                 json.id efps.extraction_forms_projects_section_type.id
@@ -121,7 +121,7 @@ json.project do
                   json.set! q.id do
                     json.name q.name
                     json.description q.description
-                    json.position q.ordering.position
+                    json.pos q.pos
                     json.key_questions do
                       q.key_questions_projects.each do |kqp|
                         json.set! kqp.key_question.id do

@@ -2,7 +2,7 @@ json.screening_form do
   json.id @screening_form.id
   json.form_type @screening_form.form_type
 end
-json.sf_questions @screening_form.sf_questions.order(:position) do |sf_question|
+json.sf_questions @screening_form.sf_questions do |sf_question|
   cell_hash = {}
   sf_question.sf_rows.each do |sf_row|
     sf_row.sf_cells.each do |sf_cell|
@@ -38,7 +38,7 @@ json.sf_questions @screening_form.sf_questions.order(:position) do |sf_question|
         json.min cell.min
         json.max cell.max
         json.with_equality cell.with_equality
-        json.options cell.sf_options.order(:position) do |sf_option|
+        json.options cell.sf_options do |sf_option|
           json.id sf_option.id
           json.name sf_option.name
           json.with_followup sf_option.with_followup

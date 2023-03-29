@@ -28,8 +28,7 @@ class Api::V3::ExtractionsController < Api::V3::BaseController
 
   private
 
-    def set_project
-      @project = Project.find(params[:project_id])
-    end
-
+  def set_project
+    @project = Project.find(params[:project_id])
+  end
 end

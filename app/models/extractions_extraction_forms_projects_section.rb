@@ -35,10 +35,9 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
            dependent: :nullify
 
   has_many :extractions_extraction_forms_projects_sections_type1s,
-           -> { ordered },
            dependent: :destroy, inverse_of: :extractions_extraction_forms_projects_section
   has_many :type1s,
-           -> { joins(extractions_extraction_forms_projects_sections_type1s: :ordering) },
+           -> { joins(:extractions_extraction_forms_projects_sections_type1s) },
            through: :extractions_extraction_forms_projects_sections_type1s, dependent: :destroy
 
   has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy,
@@ -200,7 +199,6 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
     sort_by_their_orderings(
       [
         extractions_extraction_forms_projects_sections_type1s
-          .includes(:ordering)
           .joins(:type1)
           .find_by(
             type1s: {
@@ -219,7 +217,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   def eefpst1s_without_total
     sort_by_their_orderings(
       extractions_extraction_forms_projects_sections_type1s
-        .includes(:type1_type, :type1, :ordering)
+        .includes(:type1_type, :type1)
         .to_a
         .delete_if do |eefpst1|
         eefpst1.type1 == Type1.find_by(name: 'Total',
@@ -245,9 +243,9 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       eefpst1.type1 == Type1.find_by(name: 'Total',
                                      description: "All #{extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name} combined")
     end
-               .push(extractions_extraction_forms_projects_sections_type1s.includes(:ordering).joins(:type1).find_by(type1s: {
-                                                                                                                       name: 'Total', description: "All #{extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name} combined"
-                                                                                                                     }))
+               .push(extractions_extraction_forms_projects_sections_type1s.joins(:type1).find_by(type1s: {
+                                                                                                   name: 'Total', description: "All #{extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name} combined"
+                                                                                                 }))
     raise if eefpst1s.any?(&:nil?)
 
     sort_by_their_orderings(eefpst1s)
@@ -329,7 +327,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   private
 
   def sort_by_their_orderings(eefpst1s)
-    max_position = eefpst1s.map { |eefpst1| eefpst1.ordering.position }.max
+    max_pos = eefpst1s.map { |eefpst1| eefpst1.pos }.max
 
     eefpst1s.sort_by do |eefpst1|
       if eefpst1.type1 == Type1.find_by(
@@ -340,9 +338,9 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
                               extraction_forms_projects_section.section.name
                             end} combined"
       )
-        max_position + 1
+        max_pos + 1
       else
-        eefpst1.ordering.position
+        eefpst1.pos
       end
     end
   end

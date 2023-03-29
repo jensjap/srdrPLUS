@@ -8,18 +8,19 @@ class SdMetaDataController < ApplicationController
     @panel_number = params[:panel_number].try(:to_i) || 0
     @sd_meta_datum = SdMetaDatum.find(params[:id])
     @project = @sd_meta_datum.try(:project)
-    authorize(@project, policy_class: SdMetaDatumPolicy)
+    authorize(@sd_meta_datum)
     @nav_buttons.push('sr_360', 'my_projects')
     @report = @sd_meta_datum.report
   end
 
   def mapping_update
-    project_id = SdMetaDatum.find(params[:sd_meta_datum_id])&.project&.id
+    sd_meta_datum = SdMetaDatum.find(params[:sd_meta_datum_id])
+    project_id = sd_meta_datum.project&.id
     if project_id.nil?
       head :bad_request
       return
     end
-    authorize(Project.find(project_id), policy_class: SdMetaDatumPolicy)
+    authorize(sd_meta_datum)
     key_questions = mapping_params[:key_questions].to_h || {}
     key_questions = key_questions.map { |key, value| { key => value.uniq } }
     SdKeyQuestionsProject
@@ -46,14 +47,14 @@ class SdMetaDataController < ApplicationController
         @panel_number = params[:panel_number].try(:to_i) || 0
         @sd_meta_datum = SdMetaDatum.find(params[:sd_meta_datum_id])
         @project = @sd_meta_datum.try(:project)
-        authorize(@project, policy_class: SdMetaDatumPolicy)
+        authorize(@sd_meta_datum)
       end
     end
   end
 
   def section_update
     sd_meta_datum = SdMetaDatum.find(params[:sd_meta_datum_id])
-    authorize(sd_meta_datum.project, policy_class: SdMetaDatumPolicy)
+    authorize(sd_meta_datum)
     sd_meta_datum.update(section_params)
     render json: { status: section_params.values.first }, status: 200
   end
@@ -61,7 +62,7 @@ class SdMetaDataController < ApplicationController
   def destroy
     sd_meta_datum = SdMetaDatum.find(params[:id])
     project = sd_meta_datum.project
-    authorize(project, policy_class: SdMetaDatumPolicy)
+    authorize(sd_meta_datum)
     sd_key_questions_ids = sd_meta_datum.sd_key_questions.map(&:id)
 
     SdKeyQuestionsProject.where(sd_key_question_id: sd_key_questions_ids).destroy_all
@@ -78,8 +79,9 @@ class SdMetaDataController < ApplicationController
   end
 
   def create
-    authorize(Project.find(new_sd_meta_datum_params[:project_id]), policy_class: SdMetaDatumPolicy)
-    @sd_meta_datum = SdMetaDatum.create(new_sd_meta_datum_params)
+    @sd_meta_datum = SdMetaDatum.new(new_sd_meta_datum_params)
+    authorize(@sd_meta_datum)
+    @sd_meta_datum.save!
     #    # For Demo Only START
     #    Parser.parse(@sd_meta_datum) if @sd_meta_datum.report.try(:accession_id) == "NBK534625"
     #    # For Demo Only END
@@ -99,8 +101,8 @@ class SdMetaDataController < ApplicationController
     # @sd_meta_datum.sd_prisma_flows.build
     # @sd_meta_datum.sd_meta_regression_analysis_results.build
     # @sd_meta_datum.sd_evidence_tables.build
-    @project = @sd_meta_datum.try(:project)
-    authorize(@project, policy_class: SdMetaDatumPolicy)
+    @project = @sd_meta_datum.project
+    authorize(@sd_meta_datum)
     @nav_buttons.push('sr_360', 'my_projects')
     @report = @sd_meta_datum.report
     @url = sd_meta_datum_path(@sd_meta_datum)
@@ -123,7 +125,7 @@ class SdMetaDataController < ApplicationController
   def update
     @sd_meta_datum = SdMetaDatum.find(params[:id])
     @project = Project.find(@sd_meta_datum.project_id)
-    authorize(@project, policy_class: SdMetaDatumPolicy)
+    authorize(@sd_meta_datum)
     @url = sd_meta_datum_path(@sd_meta_datum)
     update = @sd_meta_datum.update(sd_meta_datum_params)
     respond_to do |format|

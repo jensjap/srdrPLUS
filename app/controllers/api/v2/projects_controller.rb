@@ -132,7 +132,7 @@ class Api::V2::ProjectsController < Api::V2::BaseController
     end
   end
   def show
-    authorize(@project, policy_class: ProjectPolicy)
+    authorize(@project)
   end
 
   api :POST, '/v2/projects', 'Create new project. Requires API Key.'
@@ -148,7 +148,7 @@ class Api::V2::ProjectsController < Api::V2::BaseController
   param_group :project
   formats []
   def update
-    authorize(@project, policy_class: ProjectPolicy)
+    authorize(@project)
 
     @project.update(project_params)
     flash[:notice] = 'Project was successfully updated.' if @project.save

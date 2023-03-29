@@ -1,7 +1,11 @@
 div class="mx-8"
-  h2 class="text-base font-bold" Set Dependencies
-  h3 class="!text-sm" #{ @question.ordering.position }. #{ @question.name }
+  h1 class="text-base font-bold" Set Dependencies
+  h2 class="!text-sm" #{ @question.pos }. #{ @question.name }
+
   - @other_extraction_forms_projects_section_questions.each_with_index do |q, idx|
+
+    /- if @question.pos > q.pos
+
     .card
       .card-divider
         h4 class="!text-sm" #{ (idx + 1).to_s }. #{ q.name }

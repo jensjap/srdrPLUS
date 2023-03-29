@@ -28,8 +28,8 @@ class QuestionRowsController < ApplicationController
 
   private
 
-    def set_question_row
-      @question_row = QuestionRow.find(params[:id])
-      authorize(@question_row.question.project, policy_class: QuestionRowPolicy)
-    end
+  def set_question_row
+    @question_row = QuestionRow.find(params[:id])
+    authorize(@question_row)
+  end
 end

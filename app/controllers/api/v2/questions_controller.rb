@@ -45,11 +45,12 @@ class Api::V2::QuestionsController < Api::V2::BaseController
   api :GET, '/v2/questions/:id.json', 'Display complete question definition. Requires API Key.'
   param_group :resource_id, Api::V2::BaseController
   def show
-    authorize(@question.project, policy_class: QuestionPolicy)
+    authorize(@question)
   end
 
   private
-    def set_question
-      @question = Question.find(params[:id])
-    end
+
+  def set_question
+    @question = Question.find(params[:id])
+  end
 end

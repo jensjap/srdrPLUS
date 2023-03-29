@@ -18,7 +18,7 @@ class AbstractScreeningsReasonsUsersController < ApplicationController
         abstract_screenings_reasons_user = AbstractScreeningsReasonsUser.find_or_create_by!(
           id: params[:id], user: current_user
         )
-        abstract_screenings_reasons_user.update!(position: params[:position]) if params[:position]
+        abstract_screenings_reasons_user.update!(pos: params[:pos]) if params[:pos]
         if name
           reason = Reason.find_or_create_by!(name:)
           asrrs =
