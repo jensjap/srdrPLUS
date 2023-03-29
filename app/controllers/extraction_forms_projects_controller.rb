@@ -9,7 +9,7 @@ class ExtractionFormsProjectsController < ApplicationController
     @key_questions_projects_array_for_select = @extraction_forms_project.project.key_questions_projects_array_for_select
     @extraction_forms_projects_sections = @extraction_forms_project
                                           .extraction_forms_projects_sections
-                                          .includes(%i[ordering section])
+                                          .includes(%i[section])
     render '/extraction_forms_projects_sections/_preview', layout: !(params[:partial] == 'true')
   end
 

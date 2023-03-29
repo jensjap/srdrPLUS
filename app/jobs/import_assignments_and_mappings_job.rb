@@ -607,12 +607,10 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
         type1: t1
       )
     # Without Ordering on ExtractionsExtractionFormsProjectsSectionsType1 it will not display.
-    eefpst1
-      .build_ordering(
-        pos: (
-          eefps.extractions_extraction_forms_projects_sections_type1s.length + 1
-        )
-      ).save
+    eefpst1.pos = eefps
+                  .extractions_extraction_forms_projects_sections_type1s
+                  .length + 1
+    eefpst1.save
 
     # Reminder:
     # There is no Ordering on Populations. Populations are saved as ExtractionsExtractionFormsProjectsSectionsType1Row.
