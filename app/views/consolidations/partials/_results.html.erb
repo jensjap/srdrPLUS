@@ -1,5 +1,142 @@
 <div class="px-4 lg:px-8 space-y-2">
   <template x-if="mh !== null">
-    <div>hello</div>
+    <template x-for="type1_type_id in Object.keys(master_template)">
+      <div>
+        <div>
+          <h1
+            class="text-base font-bold"
+            x-text="type1_type_id == 1 ? 'Categorical Outcomes' : 'Continuous Outcomes'"
+          ></h1>
+        </div>
+        <div>
+          <template
+            x-for="type1_id in Object.keys(master_template[type1_type_id])"
+          >
+            <div class="ml-4">
+              <h2
+                class="text-base font-medium border-b-2"
+                x-text="master_template[type1_type_id][type1_id].name"
+              ></h2>
+              <template
+                x-for="population_name_id in Object.keys(master_template[type1_type_id][type1_id].populations)"
+              >
+                <div class="overflow-x-auto overflow-y-hidden ml-4">
+                  <h3
+                    class="text-sm font-medium"
+                    x-text="master_template[type1_type_id][type1_id].populations[population_name_id].name"
+                  ></h3>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th class="text-left whitespace-nowrap">Timepoint</th>
+                        <th class="text-left whitespace-nowrap">Measure</th>
+                        <template
+                          x-for="arm_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].arms)"
+                        >
+                          <th
+                            class="text-center whitespace-nowrap"
+                            x-text="master_template[type1_type_id][type1_id].populations[population_name_id].arms[arm_id].name"
+                          ></th>
+                        </template>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <template
+                        x-for="timepoint_name_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].timepoints)"
+                      >
+                        <tr>
+                          <td
+                            class="whitespace-nowrap"
+                            x-text="master_template[type1_type_id][type1_id].populations[population_name_id].timepoints[timepoint_name_id].name"
+                          ></td>
+                          <td class="">
+                            <table>
+                              <template
+                                x-for="measure_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].measures)"
+                              >
+                                <tr>
+                                  <td
+                                    class="whitespace-nowrap"
+                                    x-text="master_template[type1_type_id][type1_id].populations[population_name_id].measures[measure_id].name"
+                                  ></td>
+                                </tr>
+                              </template>
+                            </table>
+                          </td>
+                          <template
+                            x-for="arm_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].arms)"
+                          >
+                            <td>
+                              <table>
+                                <template
+                                  x-for="measure_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].measures)"
+                                >
+                                  <tr>
+                                    <template
+                                      x-for="(extraction_id, extraction_id_index) in extraction_ids"
+                                    >
+                                      <td
+                                        class="text-center whitespace-nowrap"
+                                        :title="`Extraction: ${extraction_id}`"
+                                        @click="console.log(results_lookup[`${extraction_id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`])"
+                                      >
+                                        <input
+                                          :disabled="!results_lookup[`${extraction_id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`] || extraction_id_index !== extraction_ids.length - 1"
+                                          @input.debounce.1000ms="updateRecord(results_lookup[`${extraction_id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`]?.record_id, $el.value)"
+                                          class="!h-4"
+                                          type="text"
+                                          :value="results_lookup[`${extraction_id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`]?.record_value"
+                                          :placeholder="results_lookup[`${extraction_id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`] ? '' : '-not available-'"
+                                        />
+                                      </td>
+                                    </template>
+                                  </tr>
+                                </template>
+                              </table>
+                            </td>
+                          </template>
+                        </tr>
+                      </template>
+                    </tbody>
+                  </table>
+                  <div class="hidden">
+                    <template
+                      x-for="arm_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].arms)"
+                    >
+                      <div>
+                        <div
+                          x-text="master_template[type1_type_id][type1_id].populations[population_name_id].arms[arm_id].name"
+                        ></div>
+                        <template
+                          x-for="timepoint_name_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].timepoints)"
+                        >
+                          <div>
+                            <div
+                              x-text="master_template[type1_type_id][type1_id].populations[population_name_id].timepoints[timepoint_name_id].name"
+                            ></div>
+                            <div>
+                              <template
+                                x-for="measure_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].measures)"
+                              >
+                                <div>
+                                  <div
+                                    x-text="master_template[type1_type_id][type1_id].populations[population_name_id].measures[measure_id].name"
+                                  ></div>
+                                  <div></div>
+                                </div>
+                              </template>
+                            </div>
+                          </div>
+                        </template>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+      </div>
+    </template>
   </template>
 </div>

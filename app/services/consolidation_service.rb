@@ -1,116 +1,211 @@
 class ConsolidationService
   def self.check
-    results(ExtractionFormsProjectsSection.find(5602), CitationsProject.find(267_373))
+    results(ExtractionFormsProjectsSection.find(5602), CitationsProject.find(267_373), 1)
   end
 
-  def self.results(efps, citations_project)
-    mh = {
-      rss: {
-        'Descriptive Statistics': {
-          outcomes: [], # consolidate by type_1 (eefpst1s)
-          eefpst1rs: [], # consolidate by population_name
-          eefpst1rcs: [], # consolidate by timepoint_name
-          arms: [], # consolidate by type_1 (eefpst1s)
-          rssms: [] # consolidate by measure
-        },
-        'Between Arm Comparisons': {
-          outcomes: [], # consolidate by type_1 (eefpst1s)
-          eefpst1rs: [], # consolidate by population_name
-          eefpst1rcs: [], # consolidate by timepoint_name
-          comparisons: [], # consolidate by arms
-          rssms: []
-        },
-        'Within Arm Comparisons': {
-          outcomes: [], # consolidate by type_1 (eefpst1s)
-          eefpst1rs: [], # consolidate by population_name
-          comparisons: [], # consolidate by timpoint_names
-          arms: [], # consolidate by type_1 (eefpst1s)
-          rssms: []
-        },
-        'NET Change': {
-          outcomes: [], # consolidate by type_1 (eefpst1s)
-          eefpst1rs: [], # consolidate by population_name
-          wacs: [], # consolidate by timpoint_names
-          bacs: [], # consolidate by arms
-          rssms: []
-        }
-      },
-      extractions: {
+  # for each extraction
+  # populate master list of outcomes and their population and timepoints per extraction,
+  # keep in mind we are deduplicating type1.name / type1.description, population_name.name / population_name.description, timepoint_name.name / timepoint_name.unit
+  # extraction -> eefps -> efps -> efpst ('Outcomes')
+  # eefps -> eefpst1s
+  # eefpst1s -> eefpst1rs
+  # eefpst1rs -> eefpst1rcs
 
-      }
-    }
+  # populate master list of arms per extraction, consolidate by type1.name / type1.description
+  # extractions -> eefps -> efps -> efpst ('Arms')
+  # eefps -> eefpst1s
 
+  # populate master list of measures, deduplicate by measure.name
+  # eefpst1rs -> rss -> rssms
+
+  # ask user for outcome
+  # ask user for rss (quadrant)
+  # loop over population (each table)
+  # loop over arms
+  # loop over timepoints
+  # loop over measures
+  # if anything but measure is missing, just leave it blank and no options/buttons
+  # if only measure is missing, put button to add that measure (reload table)
+  # if all is there, then ensure tpsarmsrssm exists and allow inputting record
+  # mh = {
+  #   rss: {
+  #     'Descriptive Statistics': {
+  #       outcomes: [], # consolidate by type_1 (eefpst1s)
+  #       eefpst1rs: [], # consolidate by population_name
+  #       arms: [], # consolidate by type_1 (eefpst1s)
+  #       eefpst1rcs: [], # consolidate by timepoint_name
+  #       rssms: [] # consolidate by measure
+  #     },
+  #     'Between Arm Comparisons': {
+  #       outcomes: [], # consolidate by type_1 (eefpst1s)
+  #       eefpst1rs: [], # consolidate by population_name
+  #       eefpst1rcs: [], # consolidate by timepoint_name
+  #       comparisons: [], # consolidate by arms
+  #       rssms: []
+  #     },
+  #     'Within Arm Comparisons': {
+  #       outcomes: [], # consolidate by type_1 (eefpst1s)
+  #       eefpst1rs: [], # consolidate by population_name
+  #       comparisons: [], # consolidate by timpoint_names
+  #       arms: [], # consolidate by type_1 (eefpst1s)
+  #       rssms: []
+  #     },
+  #     'NET Change': {
+  #       outcomes: [], # consolidate by type_1 (eefpst1s)
+  #       eefpst1rs: [], # consolidate by population_name
+  #       wacs: [], # consolidate by timpoint_names
+  #       bacs: [], # consolidate by arms
+  #       rssms: []
+  #     }
+  #   },
+  #   extractions: {
+
+  #   }
+  # }
+  def self.results(_efps, citations_project, result_statistic_section_type_id = 1)
     extractions = Extraction.includes(projects_users_role: { projects_user: :user }).where(citations_project:)
 
-    return unless efps.extraction_forms_projects_section_type.name == 'Results'
+    # return unless efps.extraction_forms_projects_section_type.name == 'Results'
 
-    project = citations_project.project
-    # efpss = ExtractionFormsProjectsSection
-    #         .joins(:section)
-    #         .where(sections: { name: %w[Arms Outcomes Results] })
-    #         .where(project:)
-    #         .extractions_extraction_forms_projects_sections
+    master_template = {
+      1 => {},
+      2 => {}
+    }
+    outcome_arm_check = {}
+    results_lookup = {}
 
     eefpss =
       ExtractionsExtractionFormsProjectsSection
-      .joins(:extraction, extraction_forms_projects_section: :section)
-      .where(extractions:, extraction_forms_projects_sections: { sections: { name: %w[Arms Outcomes Results] } })
       .includes(
         :extraction,
         {
           extraction_forms_projects_section: :section,
           extractions_extraction_forms_projects_sections_type1s: [
             :type1,
+            :type1_type,
             { extractions_extraction_forms_projects_sections_type1_rows: [
               :population_name,
-              { extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name }
+              {
+                extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name,
+                result_statistic_sections: { result_statistic_sections_measures: [
+                  :measure,
+                  { tps_arms_rssms: [
+                    :records,
+                    { timepoint: :timepoint_name,
+                      extractions_extraction_forms_projects_sections_type1: [
+                        :type1,
+                        { extractions_extraction_forms_projects_section: :extraction }
+                      ] }
+                  ] }
+                ] }
+              }
             ] }
           ]
         }
       )
+      .where(extractions:, extraction_forms_projects_sections: { sections: { name: %w[Arms Outcomes] } })
 
     eefpss.each do |eefps|
-      p '================================================================'
-      p "Extraction ID #{eefps.extraction.id}, Consolidated: #{eefps.extraction.consolidated}"
-      p eefps.extraction_forms_projects_section.section.name
       eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-        p eefpst1.type1.name
-        p '===Populations===' unless eefpst1.extractions_extraction_forms_projects_sections_type1_rows.blank?
+        next unless eefps.extraction_forms_projects_section.section.name == 'Outcomes'
+
+        outcome_arm_check["#{eefps.extraction_id}/#{eefpst1.type1_type.id}/#{eefpst1.type1.id}"] = true
+
+        master_template[eefpst1.type1_type.id][eefpst1.type1.id] ||= {
+          name: eefpst1.type1.name,
+          description: eefpst1.type1.description,
+          populations: {}
+        }
         eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
-          p eefpst1r.population_name.name
-          p '===Timepoints==='
+          master_template[eefpst1.type1_type.id][eefpst1.type1.id][:populations][eefpst1r.population_name.id] ||= {
+            name: eefpst1r.population_name.name,
+            description: eefpst1r.population_name.description,
+            timepoints: {},
+            arms: {},
+            measures: {}
+          }
           eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
-            p eefpst1rc.timepoint_name.name
+            master_template[eefpst1.type1_type.id][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:timepoints][eefpst1rc.timepoint_name.id] ||= {
+              name: eefpst1rc.timepoint_name.name,
+              unit: eefpst1rc.timepoint_name.unit
+            }
+          end
+          eefpst1r.result_statistic_sections.each do |rss|
+            next unless rss.result_statistic_section_type_id == result_statistic_section_type_id
+
+            rss.result_statistic_sections_measures.each do |rssm|
+              master_template[eefpst1.type1_type.id][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:measures][rssm.measure.id] ||= {
+                name: rssm.measure.name
+              }
+              population = rss.population
+              timepoints = population.extractions_extraction_forms_projects_sections_type1_row_columns
+
+              eefpss.each do |second_eefps|
+                second_eefps.extractions_extraction_forms_projects_sections_type1s.each do |second_eefpst1|
+                  next unless second_eefps.extraction_forms_projects_section.section.name == 'Arms' &&
+                              second_eefps.extraction_id == eefps.extraction_id
+
+                  timepoints.each do |eefpst1rc|
+                    tps_arms_rssm = TpsArmsRssm.find_or_create_by(
+                      result_statistic_sections_measure: rssm,
+                      timepoint_id: eefpst1rc.id,
+                      extractions_extraction_forms_projects_sections_type1_id: second_eefpst1.id
+                    )
+                    tps_arms_rssm.records.create! if tps_arms_rssm.records.blank?
+                  end
+                end
+              end
+
+              rssm.tps_arms_rssms.each do |tps_arms_rssm|
+                extraction = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.extraction
+                type1_type = eefpst1.type1_type
+                arm = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1
+                outcome = eefpst1r.extractions_extraction_forms_projects_sections_type1.type1
+                population_name = eefpst1r.population_name
+                timepoint_name = tps_arms_rssm.timepoint.timepoint_name
+                measure = rssm.measure
+                record = tps_arms_rssm.records.first
+                results_lookup["#{extraction.id}-#{type1_type.id}-#{outcome.id}-#{population_name.id}-#{arm.id}-#{timepoint_name.id}-#{measure.id}"] = {
+                  extraction_id: extraction.id,
+                  type1_type_id: type1_type.id,
+                  eefpst1_id: eefpst1.id,
+                  tps_arms_rssm_id: tps_arms_rssm.id,
+                  record_id: record.id,
+                  record_value: record.name
+                }
+              end
+            end
           end
         end
       end
     end
-    nil
 
-    # for each extraction
-    # populate master list of outcomes and their population and timepoints per extraction,
-    # keep in mind we are deduplicating type1.name / type1.description, population_name.name / population_name.description, timepoint_name.name / timepoint_name.unit
-    # extraction -> eefps -> efps -> efpst ('Outcomes')
-    # eefps -> eefpst1s
-    # eefpst1s -> eefpst1rs
-    # eefpst1rs -> eefpst1rcs
+    eefpss.each do |eefps|
+      eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+        next unless eefps.extraction_forms_projects_section.section.name == 'Arms'
 
-    # populate master list of arms per extraction, consolidate by type1.name / type1.description
-    # extractions -> eefps -> efps -> efpst ('Arms')
-    # eefps -> eefpst1s
+        master_template.each do |type1_type_id, outcomes|
+          outcomes.each do |type1_id, outcome|
+            next unless outcome_arm_check["#{eefps.extraction_id}/#{type1_type_id}/#{type1_id}"]
 
-    # populate master list of measures, deduplicate by measure.name
-    # eefpst1rs -> rss -> rssms
+            outcome[:populations].each do |population_name_id, _population|
+              master_template[type1_type_id][type1_id][:populations][population_name_id][:arms][eefpst1.type1.id] ||= {
+                name: eefpst1.type1.name,
+                description: eefpst1.type1.description
+              }
+            end
+          end
+        end
+      end
+    end
 
-    # ask user for outcome
-    # ask user for rss (quadrant)
-    # loop over population (each table)
-    # loop over arms
-    # loop over timepoints
-    # loop over measures
-    # if anything but measure is missing, just leave it blank and no options/buttons
-    # if only measure is missing, put button to add that measure (reload table)
-    # if all is there, then ensure tpsarmsrssm exists and allow inputting record
+    {
+      master_template:,
+      results_lookup:,
+      extraction_ids: extractions.sort_by do |extraction|
+                        extraction.consolidated ? 999_999_999 : extraction.id
+                      end.map(&:id)
+    }
   end
 
   def self.suggestions(eefps_id)

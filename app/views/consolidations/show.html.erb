@@ -68,7 +68,7 @@
   <template x-if="mh?.current_citations_project?.efpst_id == 3">
     <%= render 'consolidations/partials/results' %>
   </template>
-  <!-- <div class="px-4 lg:px-8 space-y-2 h-64 overflow-auto" id="json"></div> -->
+  <div class="px-4 lg:px-8 space-y-2 h-64 overflow-auto" id="json"></div>
 </div>
 <script>
   document.addEventListener("alpine:init", () => {
@@ -654,10 +654,15 @@
 
         this.efps_sections = data.efps_sections;
         this.mh = data.mh;
+        this.master_template = data.master_template;
+        this.results_lookup = data.results_lookup;
+        this.extraction_ids = data.extraction_ids;
         this.suggestions = data.suggestions;
 
         $("#json").empty();
-        $("#json").append("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
+        $("#json").append(
+          "<pre>" + JSON.stringify(data.results_lookup, null, 2) + "</pre>"
+        );
       },
     }));
   });
