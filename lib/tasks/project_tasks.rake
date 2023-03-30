@@ -1,3 +1,6 @@
+module HelperMethods
+end
+
 namespace :project_tasks do
   desc "Template for creating tasks with arguments.
 
@@ -32,6 +35,43 @@ namespace :project_tasks do
       _copy_questions_in_type2_sections(src_efp, dst_efp)
       _copy_citations(src_project, dst_project)
     end  # ActiveRecord::Base.transaction do
+  end
+
+  desc "Reset CitationsProject with status 'asr' back to status 'asps' if only 1 label exists.
+
+    Usage: rails project_tasks:reset_asr_with_one_label_to_asps[project_id]"
+  task :reset_asr_with_one_label_to_asps, [:arg_m] => [:environment] do |t, args|
+    include HelperMethods
+
+    unless args.arg_m.present?
+      puts "Fatal: Please provide project id."
+      puts "Usage:"
+      puts ""
+      puts "  rails project_tasks:reset_asr_with_one_label_to_asps[project_id]"
+      puts ""
+    end
+
+    project = Project.find(args.arg_m)
+    puts "Working on:"
+    puts "  project id #{ project.id }"
+    puts "  project name #{ project.name }"
+
+    cps = CitationsProject\
+          .joins(:abstract_screening_results)\
+          .group(:citations_project_id)\
+          .where(project_id: project.id)\
+          .where(screening_status: 'asr')\
+          .having('count(*)=1')
+
+    puts "Found #{cps.count.count} Citations with 1 label and status 'asr'"
+    puts "Are you sure you want to proceed? #{cps.count.count} Citations will have their screening status set to 'asps'."
+    puts 'This action is not reversible: '
+    confirm = STDIN.gets.chomp
+    if confirm =~ /yes|y/i
+      puts "Setting screening status to 'asps'..."
+      cps.map { |cp| cp.update_attribute(:screening_status, 'asps') }
+      puts 'Done!'
+    end
   end
 
   private
