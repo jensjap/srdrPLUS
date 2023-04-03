@@ -7,15 +7,11 @@
 #  name             :text(65535)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
-#  position         :integer          default(999999)
+#  pos              :integer          default(999999)
 #
 
 class SdGreyLiteratureSearch < ApplicationRecord
-  include SharedOrderableMethods
-
-  before_validation -> { set_ordering_scoped_by(:sd_meta_datum_id) }, on: :create
+  default_scope { order(:pos, :id) }
 
   belongs_to :sd_meta_datum, inverse_of: :sd_grey_literature_searches
-
-  has_one :ordering, as: :orderable, dependent: :destroy
 end

@@ -20,7 +20,7 @@ div class="mx-auto p-4 lg:p-8"
       //orderable-table class is used for drag and drop
       tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
         - @project.key_questions_projects.each do |kqp|
-          tr.orderable-item [ position="#{ kqp.ordering.position }" ordering-id="#{ kqp.ordering.id }" ]
+          tr.orderable-item [ table="key_questions_projects" position="#{ kqp.pos }" ordering-id="#{ kqp.id }" ]
             td.sort-handle style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"
               i class="fa fa-arrows"
             td = kqp.key_question.name

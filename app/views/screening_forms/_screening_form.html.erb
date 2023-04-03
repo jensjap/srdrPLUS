@@ -1133,10 +1133,10 @@
         }
         if (this.dragging != null && this.dropping != null) {
           this.updateQuestion(this.questions[this.dragging], {
-            position_index: this.questions.map((question, index) => {
+            pos_index: this.questions.map((question, index) => {
               return {
                 sf_question_id: question.id,
-                position: index,
+                pos: index,
               };
             }),
           });

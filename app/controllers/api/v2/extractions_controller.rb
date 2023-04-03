@@ -22,7 +22,7 @@ class Api::V2::ExtractionsController < Api::V2::BaseController
   param_group :resource_id, Api::V2::BaseController
   def show
     @project = @extraction.project
-    authorize(@project, policy_class: ExtractionPolicy)
+    authorize(@extraction)
   end
 
   private

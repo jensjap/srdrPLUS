@@ -4,30 +4,33 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowsController < Applicatio
   # POST /extractions_extraction_forms_projects_sections_type1s/:extractions_extraction_forms_projects_sections_type1_id/extractions_extraction_forms_projects_sections_type1_rows
   # POST /extractions_extraction_forms_projects_sections_type1s/:extractions_extraction_forms_projects_sections_type1_id/extractions_extraction_forms_projects_sections_type1_rows.json
   def create
-    authorize(@extractions_extraction_forms_projects_sections_type1.project, policy_class: ExtractionsExtractionFormsProjectsSectionsType1RowPolicy)
-
     @extractions_extraction_forms_projects_sections_type1_row = @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.build(extractions_extraction_forms_projects_sections_type1_row_params)
+    authorize(@extractions_extraction_forms_projects_sections_type1_row)
 
     respond_to do |format|
       if @extractions_extraction_forms_projects_sections_type1_row.save
-        format.html { redirect_to edit_timepoints_extractions_extraction_forms_projects_sections_type1_path(@extractions_extraction_forms_projects_sections_type1),
-                      notice: t('success') }
+        format.html do
+          redirect_to edit_timepoints_extractions_extraction_forms_projects_sections_type1_path(@extractions_extraction_forms_projects_sections_type1),
+                      notice: t('success')
+        end
         format.json { head :no_content }
       else
         format.html { render '/extractions_extraction_forms_projects_sections_type1s/edit_timepoints' }
-        format.json { render :json => @extractions_extraction_forms_projects_sections_type1_row.errors, :status => :unprocessable_entity }
+        format.json do
+          render json: @extractions_extraction_forms_projects_sections_type1_row.errors, status: :unprocessable_entity
+        end
       end
     end
   end
 
   private
 
-    def set_extractions_extraction_forms_projects_sections_type1
-      @extractions_extraction_forms_projects_sections_type1 = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:extractions_extraction_forms_projects_sections_type1_id])
-    end
+  def set_extractions_extraction_forms_projects_sections_type1
+    @extractions_extraction_forms_projects_sections_type1 = ExtractionsExtractionFormsProjectsSectionsType1.find(params[:extractions_extraction_forms_projects_sections_type1_id])
+  end
 
-    def extractions_extraction_forms_projects_sections_type1_row_params
-      params.require(:extractions_extraction_forms_projects_sections_type1_row)
-        .permit(:timepoint_name_id)
-    end
+  def extractions_extraction_forms_projects_sections_type1_row_params
+    params.require(:extractions_extraction_forms_projects_sections_type1_row)
+          .permit(:timepoint_name_id)
+  end
 end

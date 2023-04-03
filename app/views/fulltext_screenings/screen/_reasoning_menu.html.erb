@@ -185,8 +185,8 @@
                     }"
                     x-on:drop.prevent="(e) => {
                       if (dragType == dropType && dragIndex != dropIndex) {
-                        updateCustomValue(dragType, { id: fsr[dragType][dragIndex].id, position: dropIndex })
-                        updateCustomValue(dropType, { id: fsr[dropType][dropIndex].id, position: dragIndex })
+                        updateCustomValue(dragType, { id: fsr[dragType][dragIndex].id, pos: dropIndex })
+                        updateCustomValue(dropType, { id: fsr[dropType][dropIndex].id, pos: dragIndex })
                       }
                     }"
                     x-on:dragend.prevent="(e) => {
@@ -330,8 +330,8 @@
                       }"
                       x-on:drop.prevent="(e) => {
                         if (dragType == dropType && dragIndex != dropIndex) {
-                          updateCustomValue(dragType, { id: fsr[dragType][dragIndex].id, position: fsr[dropType][dropIndex].position })
-                          updateCustomValue(dropType, { id: fsr[dropType][dropIndex].id, position: fsr[dragType][dragIndex].position })
+                          updateCustomValue(dragType, { id: fsr[dragType][dragIndex].id, pos: dropIndex })
+                          updateCustomValue(dropType, { id: fsr[dropType][dropIndex].id, pos: dragIndex })
                         }
                       }"
                       x-on:dragend.prevent="(e) => {

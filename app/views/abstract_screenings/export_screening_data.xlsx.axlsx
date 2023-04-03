@@ -94,11 +94,11 @@ end
       'notes'
     ]
     asf = ScreeningForm.find_or_create_by(project: @project, form_type: 'abstract')
-    asf.sf_questions.order(:position).each_with_index do |sf_question, q_index|
-      sf_question.sf_rows.order(:position).each_with_index do |sf_row, r_index|
+    asf.sf_questions.each_with_index do |sf_question, q_index|
+      sf_question.sf_rows.each_with_index do |sf_row, r_index|
         question_name = sf_row.name.blank? ? "Question #{q_index}" : sf_question.name
         row_name = sf_row.name.blank? ? "Row #{r_index}" : sf_row.name
-        sf_question.sf_columns.order(:position).each_with_index do |sf_column, c_index|
+        sf_question.sf_columns.each_with_index do |sf_column, c_index|
           column_name = sf_column.name.blank? ? "Column #{c_index}" : sf_column.name
           headers << "#{question_name}: #{row_name} / #{column_name}"
         end
@@ -118,16 +118,16 @@ end
         asr.notes
       ]
 
-      asf.sf_questions.order(:position).each_with_index do |sf_question, _q_index|
-        sf_question.sf_rows.order(:position).each_with_index do |sf_row, _r_index|
-          sf_question.sf_columns.order(:position).each_with_index do |sf_column, _c_index|
+      asf.sf_questions.each_with_index do |sf_question, _q_index|
+        sf_question.sf_rows.each_with_index do |sf_row, _r_index|
+          sf_question.sf_columns.each_with_index do |sf_column, _c_index|
             sf_cell = SfCell.find_by(sf_row:, sf_column:)
             if sf_cell.nil?
               row << nil
             else
               cell = "Answer Type: #{sf_cell.cell_type}"
               sfars = SfAbstractRecord.where(sf_cell:, abstract_screening_result: asr)
-              sfos = sf_cell.sf_options.order(:position)
+              sfos = sf_cell.sf_options
               case sf_cell.cell_type
               when SfCell::TEXT
                 cell += "\n"
@@ -180,11 +180,11 @@ end
       'notes'
     ]
     fsf = ScreeningForm.find_or_create_by(project: @project, form_type: 'fulltext')
-    fsf.sf_questions.order(:position).each_with_index do |sf_question, q_index|
-      sf_question.sf_rows.order(:position).each_with_index do |sf_row, r_index|
+    fsf.sf_questions.each_with_index do |sf_question, q_index|
+      sf_question.sf_rows.each_with_index do |sf_row, r_index|
         question_name = sf_row.name.blank? ? "Question #{q_index}" : sf_question.name
         row_name = sf_row.name.blank? ? "Row #{r_index}" : sf_row.name
-        sf_question.sf_columns.order(:position).each_with_index do |sf_column, c_index|
+        sf_question.sf_columns.each_with_index do |sf_column, c_index|
           column_name = sf_column.name.blank? ? "Column #{c_index}" : sf_column.name
           headers << "#{question_name}: #{row_name} / #{column_name}"
         end
@@ -204,16 +204,16 @@ end
         fsr.notes
       ]
 
-      fsf.sf_questions.order(:position).each_with_index do |sf_question, _q_index|
-        sf_question.sf_rows.order(:position).each_with_index do |sf_row, _r_index|
-          sf_question.sf_columns.order(:position).each_with_index do |sf_column, _c_index|
+      fsf.sf_questions.each_with_index do |sf_question, _q_index|
+        sf_question.sf_rows.each_with_index do |sf_row, _r_index|
+          sf_question.sf_columns.each_with_index do |sf_column, _c_index|
             sf_cell = SfCell.find_by(sf_row:, sf_column:)
             if sf_cell.nil?
               row << nil
             else
               cell = "Answer Type: #{sf_cell.cell_type}"
               sffrs = SfFulltextRecord.where(sf_cell:, fulltext_screening_result: fsr)
-              sfos = sf_cell.sf_options.order(:position)
+              sfos = sf_cell.sf_options
               case sf_cell.cell_type
               when SfCell::TEXT
                 cell += "\n"

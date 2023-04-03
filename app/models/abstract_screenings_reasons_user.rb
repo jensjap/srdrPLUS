@@ -8,32 +8,25 @@
 #  user_id               :bigint
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
-#  position              :integer          default(999999)
+#  pos                   :integer          default(999999)
 #
 class AbstractScreeningsReasonsUser < ApplicationRecord
-  before_create :put_last
+  default_scope { order(:pos, :id) }
 
   belongs_to :abstract_screening
   belongs_to :reason
   belongs_to :user
 
   def self.custom_reasons_object(abstract_screening, user)
-    asrus = AbstractScreeningsReasonsUser.where(abstract_screening:, user:).order(:position).includes(:reason)
+    asrus = AbstractScreeningsReasonsUser.where(abstract_screening:, user:).includes(:reason)
     asrus.map do |asru|
       {
         id: asru.id,
         reason_id: asru.reason_id,
         name: asru.reason.name,
-        position: asru.position,
+        pos: asru.pos,
         selected: false
       }
     end
-  end
-
-  private
-
-  def put_last
-    max_position = AbstractScreeningsReasonsUser.where(abstract_screening:, user:).maximum(:position)
-    self.position = max_position ? max_position + 1 : 1
   end
 end

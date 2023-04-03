@@ -9,8 +9,11 @@ class ExtractionFormsProjectsController < ApplicationController
     @key_questions_projects_array_for_select = @extraction_forms_project.project.key_questions_projects_array_for_select
     @extraction_forms_projects_sections = @extraction_forms_project
                                           .extraction_forms_projects_sections
-                                          .includes(%i[ordering section])
-    render '/extraction_forms_projects_sections/_preview', layout: !(params[:partial] == 'true')
+                                          .includes(%i[section])
+    extraction_forms_projects_section = ExtractionFormsProjectsSection.find(params["panel-tab"])
+    render '/extraction_forms_projects_sections/_preview',
+           layout: !(params[:partial] == 'true'),
+           locals: { extraction_forms_projects_section: }
   end
 
   # GET /extraction_forms_projects/1/edit
@@ -20,6 +23,7 @@ class ExtractionFormsProjectsController < ApplicationController
   # POST /projects/1/extraction_forms_projects.json
   def create
     @extraction_forms_project = @project.extraction_forms_projects.build(extraction_forms_project_params)
+    authorize(@extraction_forms_project)
 
     respond_to do |format|
       if @extraction_forms_project.save
@@ -83,7 +87,7 @@ class ExtractionFormsProjectsController < ApplicationController
     @key_questions_projects_array_for_select = @extraction_forms_project.project.key_questions_projects_array_for_select
     @extraction_forms_projects_sections = @extraction_forms_project
                                           .extraction_forms_projects_sections
-                                          .includes(%i[ordering section])
+                                          .includes(:section)
     respond_to do |format|
       format.html do
       end
@@ -97,14 +101,13 @@ class ExtractionFormsProjectsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_project
     @project = Project.find(params[:project_id])
-    authorize(@project, policy_class: ExtractionFormsProjectPolicy)
   end
 
   def set_extraction_forms_project
     @extraction_forms_project = ExtractionFormsProject
                                 .includes(:project)
                                 .find(params[:id])
-    authorize(@extraction_forms_project.project, policy_class: ExtractionFormsProjectPolicy)
+    authorize(@extraction_forms_project)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

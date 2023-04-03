@@ -16,7 +16,7 @@ class ImportsController < ApplicationController
   def show
     @import = Import.find(params[:id])
     @project = @import.project
-    authorize(@project, policy_class: ImportPolicy)
+    authorize(@import)
     unless current_user == @import.user
       flash[:error] = 'This import file does not belong to your user.'
       return redirect_to project_citations_path(@project)
@@ -34,7 +34,7 @@ class ImportsController < ApplicationController
   def start
     @import = Import.find(params[:id])
     @project = @import.project
-    authorize(@project, policy_class: ImportPolicy)
+    authorize(@import)
     if current_user == @import.user
       @import.start_import_job
       flash[:success] =
@@ -75,7 +75,7 @@ class ImportsController < ApplicationController
     }
 
     @import = Import.new(import_hash)
-    authorize(@import.project, policy_class: ImportPolicy)
+    authorize(@import)
 
     respond_to do |format|
       if @import.save

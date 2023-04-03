@@ -2,7 +2,7 @@ class Api::V3::ProjectsController < Api::V3::BaseController
   before_action :set_project, only: [:show]
 
   def show
-    authorize(@project, policy_class: ProjectPolicy)
+    authorize(@project)
     @project_bundle = AllResourceSupplyingService.new.find_by_project_id(@project.id)
     respond_to do |format|
       format.fhir_xml { render xml: @project_bundle }

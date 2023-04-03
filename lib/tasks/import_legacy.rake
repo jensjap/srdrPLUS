@@ -556,7 +556,7 @@ namespace(:db) do
         end
       end
 
-      qrf_name = "Adjust Quality Rating (for Key Questions: #{(ef_key_questions.map{|ef_kq| get_srdrplus_key_question(ef_kq["key_question_id"]).try(:ordering).try(:position).to_s}-[""]).join(", ")})"
+      qrf_name = "Adjust Quality Rating (for Key Questions: #{(ef_key_questions.map{|ef_kq| get_srdrplus_key_question(ef_kq["key_question_id"]).try(:abs_pos).to_s}-[""]).join(", ")})"
       qrf_question = Question.create! name: qrf_name,
                                  description: "",
                                  extraction_forms_projects_section: efps
@@ -786,7 +786,7 @@ namespace(:db) do
       kqs.each_with_index do |kq,ix|
         srdrplus_kq = KeyQuestion.find_or_create_by! name: kq["question"]
         srdrplus_kqp = KeyQuestionsProject.create! key_question: srdrplus_kq, project: srdrplus_project
-        srdrplus_kqp.ordering.update! position: ix+1
+        srdrplus_kqp.update! pos: ix+1
 
         set_srdrplus_key_question kq["id"], srdrplus_kqp
       end
@@ -826,7 +826,9 @@ namespace(:db) do
         eefps_t1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by! \
           extractions_extraction_forms_projects_section: eefps,
           type1: t1
-        if eefps_t1.ordering.nil? then Ordering.find_or_create_by!(orderable: eefps_t1, position: ix+1) else eefps_t1.ordering.update(position: ix+1) end
+        if eefps_t1 == 999_999
+          eefps_t1.update(pos: ix+1)
+        end
         set_eefpst1 "arm", arm["id"], eefps_t1
       end
 
@@ -848,7 +850,9 @@ namespace(:db) do
           type1: t1,
           type1_type: @type1_types[outcome["outcome_type"]]
         set_eefpst1 "outcome", outcome["id"], eefps_t1
-        if eefps_t1.ordering.nil? then Ordering.find_or_create_by!(orderable: eefps_t1, position: ix+1) else eefps_t1.ordering.update(position: ix+1) end
+        if eefps_t1 == 999_999
+          eefps_t1.update(pos: ix+1)
+        end
 
         # Compare eefpst1r id with the newly_added_populations hash and only destroy ones
         # that are not in the hash.
@@ -917,7 +921,6 @@ namespace(:db) do
       #     type1: t1, \
       #     type1_type: @type1_types[diagnostic_test["test_type"]]
       #   set_eefpst1 "diagnostic_test", diagnostic_test["id"], eefps_t1
-      #   if eefps_t1.ordering.nil? then Ordering.find_or_create_by!(orderable: eefps_t1, position: ix+1) else eefps_t1.ordering.update(position: ix+1) end
 
       #   eefps_t1.extractions_extraction_forms_projects_sections_type1_rows.destroy_all
 

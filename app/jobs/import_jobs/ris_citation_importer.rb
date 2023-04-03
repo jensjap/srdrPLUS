@@ -5,7 +5,7 @@ module ImportJobs::RisCitationImporter
     # creates a new parser of type RIS
     parser = RefParsers::RISParser.new
 
-    #!!! maybe just gsub double quotes with single quotes.
+    # !!! maybe just gsub double quotes with single quotes.
     file_string = imported_file
                   .content
                   .download

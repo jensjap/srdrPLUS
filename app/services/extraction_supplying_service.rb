@@ -154,7 +154,7 @@ class ExtractionSupplyingService
         else
           if type != 9
             item = {
-              'linkId' => question.position.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
+              'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
             }
             if not type1.nil?
               item['text'] = type1.name
@@ -185,7 +185,7 @@ class ExtractionSupplyingService
             eefps['item'].append(item)
             unless restriction_symbol.empty?
               symbol_item = {
-                'linkId' => question.position.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s,
+                'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s,
                 'answer' => {
                   'valueString' => restriction_symbol
                 }
@@ -243,7 +243,7 @@ class ExtractionSupplyingService
           eefps['item'].append(item)
         elsif type == 9
           item = {
-            'linkId' => question.position.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
+            'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
           }
           if not type1.nil?
             item['text'] = type1.name

@@ -2,7 +2,8 @@ class ExtractionPolicy < ApplicationPolicy
   class Scope < ApplicationPolicy::Scope
     def resolve
       return scope.all if Rails.env.test?
-      project_ids = ProjectsUser.select(:project_id).where(user: user)
+
+      project_ids = ProjectsUser.select(:project_id).where(user:)
       scope.where(project_id: project_ids)
     end
   end
@@ -28,13 +29,11 @@ class ExtractionPolicy < ApplicationPolicy
   end
 
   def update?
-    record.assigned_to?(user) ||
-      ProjectsUser.find_by(project: record.project, user:).permissions.to_s(2)[-1] == '1'
+    record.assigned_to?(user) || project_leader?
   end
 
   def update_kqp_selections?
-    record.assigned_to?(user) ||
-      ProjectsUser.find_by(project: record.project, user:).permissions.to_s(2)[-1] == '1'
+    record.assigned_to?(user) || project_leader?
   end
 
   def destroy?
@@ -44,9 +43,7 @@ class ExtractionPolicy < ApplicationPolicy
   def work?
     return true if user.admin?
 
-    record.assigned_to?(user) ||
-      ProjectsUser.find_by(project: record.project, user:).permissions.to_s(2)[-1] == '1' ||
-      ProjectsUser.find_by(project: record.project, user:).permissions.to_s(2)[-4] == '1'
+    record.assigned_to?(user) || project_leader? || project_auditor?
   end
 
   def comparison_tool?
@@ -64,7 +61,6 @@ class ExtractionPolicy < ApplicationPolicy
   def reassign_extraction?
     return true if user.admin?
 
-    record.assigned_to?(user) ||
-      ProjectsUser.find_by(project: record.project, user:).permissions.to_s(2)[-1] == '1'
+    record.assigned_to?(user) || project_leader?
   end
 end

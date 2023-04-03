@@ -7,7 +7,7 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
     # We want to save distiller user reference as another question, and we want to create a separate kq for that
     user_info_kq = KeyQuestion.find_or_create_by!(name: 'Imported User Info')
     @user_info_kqp = KeyQuestionsProject.find_or_create_by!(key_question: user_info_kq, project: @project)
-    @efps_position = 1
+    @efps_pos = 1
   end
 
   def add_t2_section(imported_file)
@@ -16,7 +16,7 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
     csv_content = CSV.parse(imported_file.content.download.encode('UTF-8', invalid: :replace, undef: :replace,
                                                                            replace: '', universal_newline: true))
 
-    efps = import_efps(imported_file.section, @efps_position)
+    efps = import_efps(imported_file.section, @efps_pos)
 
     header = csv_content[0]
 
@@ -30,7 +30,7 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
     end
 
     # next section to be added will be placed after this one
-    @efps_position += 1
+    @efps_pos += 1
   end
 
   def import_extraction(row, efps, q_piece_arr)
@@ -101,7 +101,7 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
     e
   end
 
-  def import_efps(s, position)
+  def import_efps(s, pos)
     # do we want to create sections that does not exist? -Birol
     efps_type = ExtractionFormsProjectsSectionType.find_by! name: 'Type 2'
 
@@ -109,7 +109,7 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
     efps = ExtractionFormsProjectsSection.create! extraction_forms_project: @project.extraction_forms_projects.first,
                                                   extraction_forms_projects_section_type: efps_type,
                                                   section: s
-    efps.ordering.position = position
+    efps.pos = pos
 
     efpso = ExtractionFormsProjectsSectionOption.find_by!(extraction_forms_projects_section: efps)
     efpso.by_type1 = false
@@ -119,7 +119,7 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
     efps
   end
 
-  def import_question(efps, qname, kqp, qrct)
+  def import_question(efps, qname, _kqp, qrct)
     q = Question.create extraction_forms_projects_section: efps,
                         name: qname,
                         description: ''

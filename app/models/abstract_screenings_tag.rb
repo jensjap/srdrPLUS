@@ -7,9 +7,11 @@
 #  tag_id                :bigint           not null
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
-#  position              :integer          default(999999)
+#  pos                   :integer          default(999999)
 #
 class AbstractScreeningsTag < ApplicationRecord
+  default_scope { order(:pos, :id) }
+
   belongs_to :abstract_screening
   belongs_to :tag
 end

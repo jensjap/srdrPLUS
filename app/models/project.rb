@@ -68,20 +68,14 @@ class Project < ApplicationRecord
   has_many :extraction_forms, through: :extraction_forms_projects, dependent: :destroy
 
   has_many :key_questions_projects,
-           -> { ordered },
            dependent: :destroy, inverse_of: :project
   has_many :key_questions,
-           -> { joins(key_questions_projects: :ordering) },
+           -> { joins(:key_questions_projects) },
            through: :key_questions_projects, dependent: :destroy
-  ## this does not feel right - Birol
-  # jens 2019-06-17: I believe we ought to define the ordering via a scope block in has_many.
-  # has_many :orderings, through: :key_questions_projects, dependent: :destroy
 
   has_many :extraction_forms_projects_sections,
-           -> { ordered },
            through: :extraction_forms_projects
   has_many :questions,
-           -> { ordered },
            through: :extraction_forms_projects_sections
 
   has_many :projects_users, dependent: :destroy, inverse_of: :project
@@ -99,16 +93,17 @@ class Project < ApplicationRecord
 
   validates :name, presence: true
 
-  # accepts_nested_attributes_for :extraction_forms_projects, reject_if: :all_blank, allow_destroy: true
-  # accepts_nested_attributes_for :key_questions_projects, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :key_questions
   accepts_nested_attributes_for :citations
   accepts_nested_attributes_for :citations_projects, allow_destroy: true
   accepts_nested_attributes_for :key_questions_projects, allow_destroy: true
-  # accepts_nested_attributes_for :orderings
   accepts_nested_attributes_for :projects_users, allow_destroy: true
   accepts_nested_attributes_for :imports, allow_destroy: true
   accepts_nested_attributes_for :imported_files, allow_destroy: true
+
+  def project
+    self
+  end
 
   def type1s_used_by_projects_extractions(extraction_forms_projects_section_id)
     Type1

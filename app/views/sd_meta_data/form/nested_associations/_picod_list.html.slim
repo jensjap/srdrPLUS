@@ -2,7 +2,7 @@
   = f.input :item_id, as: :hidden, input_html: { value: 38 }
   .orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
     = f.simple_fields_for :sd_picods do |sd_picod|
-      .sd-item.sd-inner.orderable-item.sort-handle ordering-id="#{ sd_picod.object.ordering.id.to_s }"
+      .sd-item.sd-inner.orderable-item.sort-handle table="sd_picods" ordering-id="#{ sd_picod.object.id }"
         = render 'sd_meta_data/form/dynamic_fields/sd_picod_fields', f: sd_picod
     div class="#{ f.object.sd_picods.present? ? '' : 'zero-nested-associations'}"
       = link_to_add_association 'Add PICODTS', f, :sd_picods, partial: 'sd_meta_data/form/dynamic_fields/sd_picod_fields', class: 'add-item-link'

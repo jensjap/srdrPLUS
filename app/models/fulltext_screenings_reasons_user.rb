@@ -8,32 +8,25 @@
 #  user_id               :bigint
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
-#  position              :integer          default(999999)
+#  pos                   :integer          default(999999)
 #
 class FulltextScreeningsReasonsUser < ApplicationRecord
-  before_create :put_last
+  default_scope { order(:pos, :id) }
 
   belongs_to :fulltext_screening
   belongs_to :reason
   belongs_to :user
 
   def self.custom_reasons_object(fulltext_screening, user)
-    fsrus = FulltextScreeningsReasonsUser.where(fulltext_screening:, user:).order(:position).includes(:reason)
+    fsrus = FulltextScreeningsReasonsUser.where(fulltext_screening:, user:).includes(:reason)
     fsrus.map do |fsru|
       {
         id: fsru.id,
         reason_id: fsru.reason_id,
         name: fsru.reason.name,
-        position: fsru.position,
+        pos: fsru.pos,
         selected: false
       }
     end
-  end
-
-  private
-
-  def put_last
-    max_position = FulltextScreeningsReasonsUser.where(fulltext_screening:, user:).maximum(:position)
-    self.position = max_position ? max_position + 1 : 1
   end
 end

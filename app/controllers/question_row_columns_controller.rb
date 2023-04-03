@@ -32,7 +32,7 @@ class QuestionRowColumnsController < ApplicationController
 
   def set_question_row_column
     @question_row_column = QuestionRowColumn.find(params[:id])
-    authorize(@question_row_column.question.project, policy_class: QuestionRowColumnPolicy)
+    authorize(@question_row_column)
   end
 
   # This method will remove question_row_columns down all the rows

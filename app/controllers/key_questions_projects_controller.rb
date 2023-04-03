@@ -10,7 +10,7 @@ class KeyQuestionsProjectsController < ApplicationController
   # POST /projects/1/key_questions_projects.json
   def create
     @key_questions_project = @project.key_questions_projects.build(key_questions_project_params)
-    authorize(@project, policy_class: KeyQuestionsProjectPolicy)
+    authorize(@key_questions_project)
 
     respond_to do |format|
       if @key_questions_project.save
@@ -65,12 +65,11 @@ class KeyQuestionsProjectsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_project
     @project = Project.find(params[:project_id])
-    authorize(@project, policy_class: KeyQuestionsProjectPolicy)
   end
 
   def set_key_questions_project
     @key_questions_project = KeyQuestionsProject.find(params[:id])
-    authorize(@key_questions_project.project, policy_class: KeyQuestionsProjectPolicy)
+    authorize(@key_questions_project)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

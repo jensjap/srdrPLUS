@@ -18,7 +18,7 @@ class FulltextScreeningsReasonsUsersController < ApplicationController
         fulltext_screenings_reasons_user = FulltextScreeningsReasonsUser.find_or_create_by!(
           id: params[:id], user: current_user
         )
-        fulltext_screenings_reasons_user.update!(position: params[:position]) if params[:position]
+        fulltext_screenings_reasons_user.update!(pos: params[:pos]) if params[:pos]
         if name
           reason = Reason.find_or_create_by!(name:)
           fsrrs =

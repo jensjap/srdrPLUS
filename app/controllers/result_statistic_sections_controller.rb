@@ -148,7 +148,7 @@ class ResultStatisticSectionsController < ApplicationController
                                           }] })
                                 .includes(:result_statistic_section_type)
                                 .find(params[:id])
-    authorize(@result_statistic_section.project, policy_class: ResultStatisticSectionPolicy)
+    authorize(@result_statistic_section)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

@@ -10,10 +10,10 @@
 #
 
 class Type1 < ApplicationRecord
+  default_scope { order(:id) }
+
   include SharedQueryableMethods
   include SharedSuggestableMethods
-
-  default_scope { order(:id) }
 
   scope :uniq_by_section_name_and_not_included_in_efps, lambda { |efps_id|
     efps = ExtractionFormsProjectsSection.find(efps_id)

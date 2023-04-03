@@ -15,9 +15,9 @@ class SfQuestionsController < ApplicationController
     @sf_question = SfQuestion.find(params[:id])
     respond_to do |format|
       format.json do
-        if (positions = params[:position_index])
-          positions.each do |position|
-            SfQuestion.find(position[:sf_question_id]).update(position: position[:position])
+        if (poss = params[:pos_index])
+          poss.each do |pos|
+            SfQuestion.find(pos[:sf_question_id]).update(pos: pos[:pos])
           end
         else
           @sf_question.update(params.permit(:name, :description))

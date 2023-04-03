@@ -97,7 +97,6 @@ class HealthMonitorService
     Message,
     MessageType,
     # Note,
-    Ordering,
     Organization,
     # PendingInvitation,
     PopulationName,

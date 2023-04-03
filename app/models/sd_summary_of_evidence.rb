@@ -9,17 +9,14 @@
 #  soe_type           :string(255)
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
-#  position           :integer          default(999999)
+#  pos                :integer          default(999999)
 #
 
 class SdSummaryOfEvidence < ApplicationRecord
-  include SharedOrderableMethods
-
-  before_validation -> { set_ordering_scoped_by(:sd_meta_datum_id) }, on: :create
+  default_scope { order(:pos, :id) }
 
   belongs_to :sd_meta_datum, inverse_of: :sd_summary_of_evidences, optional: true
   belongs_to :sd_key_question, inverse_of: :sd_summary_of_evidences, optional: true
-  has_one :ordering, as: :orderable, dependent: :destroy
   has_one :key_question, through: :sd_key_question
   has_many :sd_meta_data_figures, as: :sd_figurable
 

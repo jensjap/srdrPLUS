@@ -38,6 +38,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
 
   delegate :extraction, to: :extractions_extraction_forms_projects_sections_type1
   delegate :extractions_extraction_forms_projects_section, to: :extractions_extraction_forms_projects_sections_type1
+  delegate :project, to: :extractions_extraction_forms_projects_sections_type1
 
   def descriptive_statistics_section
     result_statistic_sections.find_by(result_statistic_section_type_id: 1)

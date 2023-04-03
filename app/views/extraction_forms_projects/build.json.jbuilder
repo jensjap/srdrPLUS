@@ -1,14 +1,13 @@
 json.array! @extraction_forms_projects_sections.find_by(id: @panel_tab).questions.sort_by { |q|
-  q.ordering.position
+  q.pos
 } do |question|
-  json.position question.ordering.position
-  json.position_id question.ordering.id
+  json.position question.pos
   json.id question.id
   json.name question.name
   json.description question.description
   ds = []
   question.dependencies.each do |d|
-    ds << "Question Position: #{d.prerequisitable.question.ordering.position}"
+    ds << "Question Position: #{d.prerequisitable.question.pos}"
     if d.prerequisitable.question.question_type == 'Matrix'
       if [5, 6, 7, 8, 9].include?(d.prerequisitable.question_row_column_type.id)
         ds << '- Cell: (' + d.prerequisitable.question_row.name.to_s + ' x ' + d.prerequisitable.question_row_column.name.to_s + ')'

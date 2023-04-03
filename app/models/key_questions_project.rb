@@ -8,19 +8,15 @@
 #  project_id                           :integer
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
-#  position                             :integer          default(999999)
+#  pos                                  :integer          default(999999)
 #
 
 class KeyQuestionsProject < ApplicationRecord
-  include SharedOrderableMethods
-
-  before_validation -> { set_ordering_scoped_by(:extraction_forms_projects_section_id) }, on: :create
+  default_scope { order(:pos, :id) }
 
   belongs_to :extraction_forms_projects_section, inverse_of: :key_questions_projects, optional: true
   belongs_to :key_question,                      inverse_of: :key_questions_projects
   belongs_to :project,                           inverse_of: :key_questions_projects # , touch: true
-
-  has_one :ordering, as: :orderable, dependent: :destroy
 
   has_many :key_questions_projects_questions, dependent: :destroy, inverse_of: :key_questions_project
   has_many :questions, through: :key_questions_projects_questions
@@ -36,6 +32,10 @@ class KeyQuestionsProject < ApplicationRecord
   accepts_nested_attributes_for :key_question, reject_if: :key_question_name_exists?
 
   validate :extraction_forms_projects_section_is_key_question_type, if: :extraction_forms_projects_section_present?
+
+  def abs_pos
+    project.key_questions_projects.index(self) + 1
+  end
 
   def extraction_forms_projects_section_present?
     extraction_forms_projects_section.present?
