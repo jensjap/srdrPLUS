@@ -121,7 +121,7 @@ class ExtractionFormsProjectsSectionSupplyingService
                   'valueDecimal' => row_column.question_row_columns_question_row_column_options[5]['name']
                 }
               ]
-              item['type'] = 'question'
+              item['type'] = 'decimal'
             elsif row_column.question_row_column_type.id == 5
               item['type'] = 'text'
               item['repeats'] = true
@@ -136,7 +136,6 @@ class ExtractionFormsProjectsSectionSupplyingService
                         'valueString' => candidate['name']
                       })
                       if not candidate.followup_field.nil?
-                        item['type'] = 'question'
                         item['item'] = {
                           'linkId' => question_row_column_linkid + '-' + candidate.followup_field.id.to_s,
                           'type' => 'text',
@@ -183,7 +182,6 @@ class ExtractionFormsProjectsSectionSupplyingService
                         'valueString' => candidate['name']
                       })
                       if not candidate.followup_field.nil?
-                        item['type'] = 'question'
                         item['item'] = {
                           'linkId' => question_row_column_linkid + '-' + candidate.followup_field.id.to_s,
                           'type' => 'text',
