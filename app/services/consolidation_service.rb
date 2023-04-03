@@ -183,8 +183,10 @@ class ConsolidationService
             rss = eefpst1r.between_arm_comparisons_section
             rss.comparisons.each do |comparison|
               master_template[eefpst1.type1_type_id][eefpst1.type1_id][:populations][eefpst1r.population_name_id][:arms][comparison.id] ||= {
-                name: eefpst1.type1.name,
-                description: eefpst1.type1.description
+                name: comparison.comparates.map do |comparate|
+                        comparate.comparable_element.comparable.type1.name
+                      end.join(' vs '),
+                description: ''
               }
             end
           end
