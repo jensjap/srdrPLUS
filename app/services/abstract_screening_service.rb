@@ -74,9 +74,13 @@ class AbstractScreeningService
     if abstract_screening.project.projects_users.find { |as| as.user_id==user.id }.is_expert
       get_next_doubles_citation_id(abstract_screening, user)
     else
-      unscreened_citation_ids =
-        expert_screened_citation_ids(abstract_screening) - user_screened_citation_ids(abstract_screening, user)
-      citation_id = unscreened_citation_ids.tally.select { |_, v| v == 1 }.keys.sample
+      unscreened_citation_ids_by_experts = expert_screened_citation_ids(abstract_screening)# - novice_screened_citation_ids(abstract_screening, user)
+      citation_id = unscreened_citation_ids_by_experts.sample
+      # citation_id = unscreened_citation_ids_by_experts
+      #               .tally
+      #               .select { |_, v| v == 1 }
+      #               .keys
+      #               .sample
       if citation_id.nil?
         get_next_singles_citation_id(abstract_screening)
       else
@@ -88,7 +92,7 @@ class AbstractScreeningService
   def self.get_next_only_expert_novice_mixed_citation_id(abstract_screening, user)
     if abstract_screening.project.projects_users.find { |as| as.user_id==user.id }.is_expert
       unscreened_citation_ids =
-        novice_screened_citation_ids(abstract_screening) - user_screened_citation_ids(abstract_screening, user)
+        novice_screened_citation_ids(abstract_screening)#- expert_screened_citations_ids(abstract_screening, user)
         citation_id = unscreened_citation_ids.tally.select { |_, v| v == 1 }.keys.sample
       if citation_id.nil?
         get_next_singles_citation_id(abstract_screening)
@@ -97,7 +101,7 @@ class AbstractScreeningService
       end
     else
       unscreened_citation_ids =
-        expert_screened_citation_ids(abstract_screening) - user_screened_citation_ids(abstract_screening, user)
+        expert_screened_citation_ids(abstract_screening)#- novice_screened_citation_ids(abstract_screening, user)
       citation_id = unscreened_citation_ids.tally.select { |_, v| v == 1 }.keys.sample
       if citation_id.nil?
         get_next_singles_citation_id(abstract_screening)
@@ -127,12 +131,22 @@ class AbstractScreeningService
   end
 
   def self.expert_screened_citation_ids(abstract_screening)
-    abstract_screening
+    temp = abstract_screening
       .abstract_screening_results
-      .includes(citations_project: :citation, user: { projects_users: :project })
-      .select { |result| result.user.projects_users.any? { |pu| pu.is_expert && pu.project == result.abstract_screening.project } }
+      .joins(:citations_project)
+      .group(:citations_project_id)
+      .having("count(*)=1")
+      .includes(citations_project: :citation,
+                user: { projects_users: :project })
+      .select { |asr| asr.user.projects_users.any? { |pu| pu.is_expert && pu.project == asr.abstract_screening.project } }
       .map(&:citation)
       .map(&:id)
+    # abstract_screening
+    #   .abstract_screening_results
+    #   .includes(citations_project: :citation, user: { projects_users: :project })
+    #   .select { |asr| asr.user.projects_users.any? { |pu| pu.is_expert && pu.project == asr.abstract_screening.project } }
+    #   .map(&:citation)
+    #   .map(&:id)
   end
 
   def self.novice_screened_citation_ids(abstract_screening)
