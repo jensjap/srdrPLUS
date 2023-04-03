@@ -112,6 +112,7 @@
       addTimepointModal: false,
       suggestions_modal: false,
       suggestions: [],
+      result_statistic_section_type_id: null,
       change_type: "",
       change_ids: {},
       old_eefpst1: {},
@@ -658,6 +659,8 @@
         this.results_lookup = data.results_lookup;
         this.extraction_ids = data.extraction_ids;
         this.suggestions = data.suggestions;
+        this.result_statistic_section_type_id =
+          data.result_statistic_section_type_id;
 
         $("#json").empty();
         $("#json").append(

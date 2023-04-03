@@ -3,7 +3,9 @@ class ConsolidationService
     results(ExtractionFormsProjectsSection.find(5602), CitationsProject.find(267_373), 1)
   end
 
-  def self.results(_efps, citations_project, result_statistic_section_type_id = 1)
+  def self.results(efps, citations_project, result_statistic_section_type_id)
+    return {} unless efps.extraction_forms_projects_section_type.name == 'Results'
+
     extractions = Extraction.includes(projects_users_role: { projects_user: :user }).where(citations_project:)
 
     master_template = {
@@ -143,7 +145,8 @@ class ConsolidationService
       results_lookup:,
       extraction_ids: extractions.sort_by do |extraction|
                         extraction.consolidated ? 999_999_999 : extraction.id
-                      end.map(&:id)
+                      end.map(&:id),
+      result_statistic_section_type_id:
     }
   end
 
