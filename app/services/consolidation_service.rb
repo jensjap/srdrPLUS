@@ -3,69 +3,8 @@ class ConsolidationService
     results(ExtractionFormsProjectsSection.find(5602), CitationsProject.find(267_373), 1)
   end
 
-  # for each extraction
-  # populate master list of outcomes and their population and timepoints per extraction,
-  # keep in mind we are deduplicating type1.name / type1.description, population_name.name / population_name.description, timepoint_name.name / timepoint_name.unit
-  # extraction -> eefps -> efps -> efpst ('Outcomes')
-  # eefps -> eefpst1s
-  # eefpst1s -> eefpst1rs
-  # eefpst1rs -> eefpst1rcs
-
-  # populate master list of arms per extraction, consolidate by type1.name / type1.description
-  # extractions -> eefps -> efps -> efpst ('Arms')
-  # eefps -> eefpst1s
-
-  # populate master list of measures, deduplicate by measure.name
-  # eefpst1rs -> rss -> rssms
-
-  # ask user for outcome
-  # ask user for rss (quadrant)
-  # loop over population (each table)
-  # loop over arms
-  # loop over timepoints
-  # loop over measures
-  # if anything but measure is missing, just leave it blank and no options/buttons
-  # if only measure is missing, put button to add that measure (reload table)
-  # if all is there, then ensure tpsarmsrssm exists and allow inputting record
-  # mh = {
-  #   rss: {
-  #     'Descriptive Statistics': {
-  #       outcomes: [], # consolidate by type_1 (eefpst1s)
-  #       eefpst1rs: [], # consolidate by population_name
-  #       arms: [], # consolidate by type_1 (eefpst1s)
-  #       eefpst1rcs: [], # consolidate by timepoint_name
-  #       rssms: [] # consolidate by measure
-  #     },
-  #     'Between Arm Comparisons': {
-  #       outcomes: [], # consolidate by type_1 (eefpst1s)
-  #       eefpst1rs: [], # consolidate by population_name
-  #       eefpst1rcs: [], # consolidate by timepoint_name
-  #       comparisons: [], # consolidate by arms
-  #       rssms: []
-  #     },
-  #     'Within Arm Comparisons': {
-  #       outcomes: [], # consolidate by type_1 (eefpst1s)
-  #       eefpst1rs: [], # consolidate by population_name
-  #       comparisons: [], # consolidate by timpoint_names
-  #       arms: [], # consolidate by type_1 (eefpst1s)
-  #       rssms: []
-  #     },
-  #     'NET Change': {
-  #       outcomes: [], # consolidate by type_1 (eefpst1s)
-  #       eefpst1rs: [], # consolidate by population_name
-  #       wacs: [], # consolidate by timpoint_names
-  #       bacs: [], # consolidate by arms
-  #       rssms: []
-  #     }
-  #   },
-  #   extractions: {
-
-  #   }
-  # }
   def self.results(_efps, citations_project, result_statistic_section_type_id = 1)
     extractions = Extraction.includes(projects_users_role: { projects_user: :user }).where(citations_project:)
-
-    # return unless efps.extraction_forms_projects_section_type.name == 'Results'
 
     master_template = {
       1 => {},
