@@ -11,46 +11,18 @@
       </p>
     </div>
   </div>
-
   <div class="flex flex-col w-full">
     <!-- prettier-ignore -->
     <%= simple_form_for([action_name == 'edit' ? nil : @project, @abstract_screening]) do |f| %>
     <div
-      class="mt-8 relative"
-      x-data="{ pns: 'abstract_screening', cns: 'abstract_screening_type', customInput: false, open: false , defOpen: false}"
+      class="mt-8"
+      x-data="{ pns: 'abstract_screening', cns: 'abstract_screening_type', customInput: false, open: false }"
     >
-      <div class="flex items-center">
-        <div @click="defOpen = !defOpen" class="cursor-pointer">Abstract Screening Type(Click For Definition)</div>
-        <a href="/projects/<%= @project.id %>/edit?page=members_and_roles" target="_blank" class="ml-4 text-blue-600">Expertise</a>
-      </div>
-      <div x-show="defOpen" x-init="defOpen=false" class="fixed inset-0 flex items-center justify-center z-50" @click="defOpen = false">
-        <div class="absolute inset-0 bg-black opacity-50"></div>
-        <div @click.stop class="bg-white border p-4 mt-2 shadow-lg rounded" style="z-index: 100;">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">Type</th>
-                <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">Description</th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">Type 1</td>
-                <td class="px-6 py-4 whitespace-nowrap">Description 1</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">Type 2</td>
-                <td class="px-6 py-4 whitespace-nowrap">Description 2</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <div>Abstract Screening Type</div>
       <%= render 'components/single_select' %>
     </div>
-
     <template
-      x-if="['pilot', 'n-size-single', 'n-size-double', 'n-size-expert-needed', 'n-size-only-expert-novice-mixed'].includes(abstract_screening.abstract_screening_type.selection.key)"
+      x-if="['pilot', 'n-size-single', 'n-size-double'].includes(abstract_screening.abstract_screening_type.selection.key)"
     >
       <div class="mb-4">
         <label for="no_of_citations"

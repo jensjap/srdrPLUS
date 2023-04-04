@@ -59,7 +59,6 @@ class ProjectPolicy < ApplicationPolicy
         :_destroy,
         :user_id,
         :permissions,
-        :is_expert,
         { imports_attributes: [
           :import_type_id, {
             imported_files_attributes: [
