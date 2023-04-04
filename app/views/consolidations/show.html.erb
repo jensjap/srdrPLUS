@@ -68,7 +68,7 @@
   <template x-if="mh?.current_citations_project?.efpst_id == 3">
     <%= render 'consolidations/partials/results' %>
   </template>
-  <div class="px-4 lg:px-8 space-y-2 h-64 overflow-auto" id="json"></div>
+  <!-- <div class="px-4 lg:px-8 space-y-2 h-64 overflow-auto" id="json"></div> -->
 </div>
 <script>
   document.addEventListener("alpine:init", () => {
@@ -659,10 +659,10 @@
         this.result_statistic_section_type_id =
           data.result_statistic_section_type_id;
 
-        $("#json").empty();
-        $("#json").append(
-          "<pre>" + JSON.stringify(data.results_lookup, null, 2) + "</pre>"
-        );
+        // $("#json").empty();
+        // $("#json").append(
+        //   "<pre>" + JSON.stringify(data.results_lookup, null, 2) + "</pre>"
+        // );
       },
     }));
   });
