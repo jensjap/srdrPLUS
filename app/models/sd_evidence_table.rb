@@ -20,4 +20,6 @@ class SdEvidenceTable < ApplicationRecord
   has_many :sd_meta_data_figures, as: :sd_figurable
 
   accepts_nested_attributes_for :sd_meta_data_figures, allow_destroy: true
+
+  delegate :project, to: :sd_result_item
 end

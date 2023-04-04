@@ -20,4 +20,6 @@ class SdNarrativeResult < ApplicationRecord
   belongs_to :sd_result_item, inverse_of: :sd_narrative_results
 
   has_many :sd_outcomes, as: :sd_outcomeable
+
+  delegate :project, to: :sd_result_item
 end

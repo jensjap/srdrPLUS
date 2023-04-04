@@ -1,0 +1,95 @@
+<div class="border p-2 w-9/12 xl:w-11/12 space-y-2">
+  <h2 class="text-base font-bold border-b-2">
+    Title, Funding Sources, and Dates
+  </h2>
+  <div>
+    <label class="block text-xs font-bold text-gray-700"
+      >Report Title (Required)
+    </label>
+    <div>
+      <input
+        type="text"
+        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+        :class="sdMetaDatum.report_title?.length === 0 ? '!bg-red-300' : ''"
+        autofocus
+        x-model="sdMetaDatum.report_title"
+        @input.debounce="updateSdMetaDatum('report_title', sdMetaDatum.report_title)"
+      />
+    </div>
+  </div>
+  <div>
+    <label class="block text-xs font-bold text-gray-700"
+      >Project Title in SRDR+
+    </label>
+    <div>
+      <input
+        type="text"
+        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.project_name"
+        disabled
+      />
+    </div>
+  </div>
+  <div>
+    <label class="block text-xs font-bold text-gray-700">Funding Source </label>
+    <div>
+      <template x-if="Object.keys(sdMetaDatum).length !== 0">
+        <select
+          multiple="multiple"
+          x-init="$nextTick(() => {
+          initSelect2(
+            $el,
+            'funding_sources',
+            sdMetaDatum.funding_sources,
+            'funding_sources_sd_meta_data',
+            { sd_meta_datum_id: sdMetaDatumId }
+          );
+        })"
+        ></select>
+      </template>
+    </div>
+  </div>
+  <div>
+    <label class="block text-xs font-bold text-gray-700"
+      >Date of Last Search
+    </label>
+    <div>
+      <input
+        type="date"
+        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.date_of_last_search"
+        onfocus="this.showPicker()"
+        @input.debounce="updateSdMetaDatum('date_of_last_search', sdMetaDatum.date_of_last_search)"
+      />
+    </div>
+  </div>
+  <div>
+    <label class="block text-xs font-bold text-gray-700"
+      >Date of Publication to SRDR+
+    </label>
+    <div>
+      <input
+        type="date"
+        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.date_of_publication_to_srdr"
+        onfocus="this.showPicker()"
+        @input.debounce="updateSdMetaDatum('date_of_publication_to_srdr', sdMetaDatum.date_of_publication_to_srdr)"
+      />
+    </div>
+  </div>
+  <div>
+    <label class="block text-xs font-bold text-gray-700"
+      >Date of Publication of Full Report (Required)
+    </label>
+    <div>
+      <input
+        type="date"
+        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+        x-model="sdMetaDatum.date_of_publication_full_report"
+        onfocus="this.showPicker()"
+        :class="(sdMetaDatum.date_of_publication_full_report === null || sdMetaDatum.date_of_publication_full_report === '') ? '!bg-red-300' : ''"
+        @input.debounce="updateSdMetaDatum('date_of_publication_full_report', sdMetaDatum.date_of_publication_full_report)"
+      />
+    </div>
+  </div>
+</div>

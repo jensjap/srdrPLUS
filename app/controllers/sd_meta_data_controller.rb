@@ -92,6 +92,8 @@ class SdMetaDataController < ApplicationController
   end
 
   def edit
+    cookies[:sr360_beta] = true if params[:sr360_beta_opt_in]
+    cookies.delete(:sr360_beta) if params[:sr360_beta_opt_out]
     @systematic_review_report = true
     @panel_number = params[:panel_number].try(:to_i) || 0
     @sd_meta_datum = SdMetaDatum.find(params[:id])
@@ -107,18 +109,37 @@ class SdMetaDataController < ApplicationController
     @report = @sd_meta_datum.report
     @url = sd_meta_datum_path(@sd_meta_datum)
 
-    if @report.present?
-      # PDF preview.
-      accession_id = @report.accession_id
-      @report_html_path = "https://srdrplus-report-htmls.s3.amazonaws.com/reports/#{accession_id}/TOC.html"
-    elsif @sd_meta_datum.report_file.present?
-      # PDF preview for reports selected from dropdown.
-      # accession_id = "sd_meta_datum_" + @sd_meta_datum.id.to_s
-      # @report_html_path = "/reports/#{ accession_id }/TOC.html"
-      # unless File.exists?("#{ Rails.root }/public/" + @report_html_path)
-      #   ConvertPdf2HtmlJob.set(wait: 1.minute).perform_later(accession_id, @sd_meta_datum.id)
-      # end
-      @report_html_path = rails_blob_path(@sd_meta_datum.report_file)
+    respond_to do |format|
+      @panel_number = params[:panel_number].try(:to_i) || 0
+      format.json do
+        @sd_meta_datum = SdMetaDatum.find(params[:id])
+        @project = @sd_meta_datum.project
+      end
+      format.html do
+        @systematic_review_report = true
+        @sd_meta_datum = SdMetaDatum.find(params[:id])
+        @project = @sd_meta_datum.project
+        authorize(@sd_meta_datum)
+        @nav_buttons.push('sr_360', 'my_projects')
+        @report = @sd_meta_datum.report
+        @url = sd_meta_datum_path(@sd_meta_datum)
+
+        if @report.present?
+          # PDF preview.
+          accession_id = @report.accession_id
+          @report_html_path = "https://srdrplus-report-htmls.s3.amazonaws.com/reports/#{accession_id}/TOC.html"
+        elsif @sd_meta_datum.report_file.present?
+          # PDF preview for reports selected from dropdown.
+          # accession_id = "sd_meta_datum_" + @sd_meta_datum.id.to_s
+          # @report_html_path = "/reports/#{ accession_id }/TOC.html"
+          # unless File.exists?("#{ Rails.root }/public/" + @report_html_path)
+          #   ConvertPdf2HtmlJob.set(wait: 1.minute).perform_later(accession_id, @sd_meta_datum.id)
+          # end
+          @report_html_path = rails_blob_path(@sd_meta_datum.report_file)
+        end
+
+        return render :new_template if cookies[:sr360_beta]
+      end
     end
   end
 
@@ -136,6 +157,9 @@ class SdMetaDataController < ApplicationController
       end
       format.html do
         redirect_to edit_sd_meta_datum_path(@sd_meta_datum.id)
+      end
+      format.json do
+        render json: {}
       end
     end
   end
@@ -269,6 +293,15 @@ class SdMetaDataController < ApplicationController
     params
       .require(:sd_meta_datum)
       .permit(
+        :section_flag_0,
+        :section_flag_1,
+        :section_flag_2,
+        :section_flag_3,
+        :section_flag_4,
+        :section_flag_5,
+        :section_flag_6,
+        :section_flag_7,
+        :section_flag_8,
         :project_id,
         :report_title,
         { funding_source_ids: [] },

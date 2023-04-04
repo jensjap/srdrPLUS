@@ -1,0 +1,234 @@
+<div class="border text-sm w-3/12 xl:w-1/12 p-1">
+  <div class="text-xs font-semibold">PICODTS</div>
+  <ul class="text-xs">
+    <template x-for="(sd_picod, sd_picod_index) in sdMetaDatum.sd_picods">
+      <li
+        class="text-xs cursor-pointer"
+        x-text="`SD PICODTS: ${sd_picod_index + 1}`"
+      ></li>
+    </template>
+  </ul>
+</div>
+<div class="border p-2 w-9/12 xl:w-11/12 space-y-2">
+  <h2 class="text-base font-bold border-b-2">PICODTS</h2>
+  <div class="bg-green-50 p-2">
+    <h3
+      class="text-sm font-bold border-b-2 flex items-center cursor-pointer"
+      @click="createSubResource('sd_picods', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
+    >
+      PICODTS
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="green"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="white"
+        class="w-5 h-5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    </h3>
+    <template
+      x-for="(sd_picod, sd_picod_index) in sdMetaDatum.sd_picods"
+      :key="sd_picod.id"
+    >
+      <div class="bg-green-200 m-2 p-2 rounded-md space-y-2">
+        <div class="flex justify-between items-center">
+          <select
+            class="w-12"
+            @change="moveElementInArray(sdMetaDatum, 'sd_picods', sd_picod_index, $el.value - 1)"
+          >
+            <template x-for="i in sdMetaDatum.sd_picods.length">
+              <option
+                :value="i"
+                x-text="i"
+                :selected="i == sd_picod_index + 1"
+              ></option>
+            </template>
+          </select>
+          <div
+            class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+            @click="if (confirm('Are you sure?')) {
+              await updateSubResource('sd_picods', sd_picod.id, 'DELETE')
+              sdMetaDatum.sd_picods.splice(sd_picod_index, 1)
+            }"
+          >
+            Remove PICODTS
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Key Question(s) (Required)</label
+          >
+          <div>
+            <template x-if="Object.keys(sdMetaDatum).length !== 0">
+              <select
+                multiple="multiple"
+                x-model="sd_picod.sd_key_questions"
+                x-init="$nextTick(() => {
+                initSelect2(
+                  $el,
+                  'sd_key_questions',
+                  sd_picod.sd_key_questions,
+                  'sd_key_questions_sd_picods',
+                  { sd_picod_id: sd_picod.id, sd_meta_datum_id: sdMetaDatumId },
+                  `sd_key_questions?sd_meta_datum_id=${sdMetaDatumId}`
+                )
+              });"
+              ></select>
+            </template>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Level of Data Analysis (Required)</label
+          >
+          <div>
+            <template x-if="Object.keys(sdMetaDatum).length !== 0">
+              <select
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                x-model="sd_picod.data_analysis_levels"
+                x-init="$nextTick(() => {
+                initSelect2(
+                  $el,
+                  'data_analysis_levels',
+                  sd_picod.data_analysis_levels,
+                  `sd_picods/${sd_picod.id}`
+                );
+              });"
+              ></select>
+            </template>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Population (P) (Required)</label
+          >
+          <div>
+            <textarea
+              rows="4"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+              x-model="sd_picod.population"
+              @input.debounce="updateSubResource('sd_picods', sd_picod.id, 'PATCH', 'population', sd_picod.population)"
+            ></textarea>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Interventions (I) (Required)</label
+          >
+          <div>
+            <textarea
+              rows="4"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+              x-model="sd_picod.interventions"
+              @input.debounce="updateSubResource('sd_picods', sd_picod.id, 'PATCH', 'interventions', sd_picod.interventions)"
+            ></textarea>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Comparators (C) (Required)</label
+          >
+          <div>
+            <textarea
+              rows="4"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+              x-model="sd_picod.comparators"
+              @input.debounce="updateSubResource('sd_picods', sd_picod.id, 'PATCH', 'comparators', sd_picod.comparators)"
+            ></textarea>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Outcomes (O) (Required)</label
+          >
+          <div>
+            <textarea
+              rows="4"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+              x-model="sd_picod.outcomes"
+              @input.debounce="updateSubResource('sd_picods', sd_picod.id, 'PATCH', 'outcomes', sd_picod.outcomes)"
+            ></textarea>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Study Designs (D)</label
+          >
+          <div>
+            <textarea
+              rows="4"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+              x-model="sd_picod.study_designs"
+              @input.debounce="updateSubResource('sd_picods', sd_picod.id, 'PATCH', 'study_designs', sd_picod.study_designs)"
+            ></textarea>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Timing (T)</label
+          >
+          <div>
+            <textarea
+              rows="4"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+              x-model="sd_picod.timing"
+              @input.debounce="updateSubResource('sd_picods', sd_picod.id, 'PATCH', 'timing', sd_picod.timing)"
+            ></textarea>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Settings (S)</label
+          >
+          <div>
+            <textarea
+              rows="4"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+              x-model="sd_picod.settings"
+              @input.debounce="updateSubResource('sd_picods', sd_picod.id, 'PATCH', 'settings', sd_picod.settings)"
+            ></textarea>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Other Elements</label
+          >
+          <div>
+            <textarea
+              rows="4"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+              x-model="sd_picod.other_elements"
+              @input.debounce="updateSubResource('sd_picods', sd_picod.id, 'PATCH', 'other_elements', sd_picod.other_elements)"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+    </template>
+    <div
+      class="border-4 border-green-200 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+      @click="createSubResource('sd_picods', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
+    >
+      PICODTS
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="green"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="white"
+        class="w-5 h-5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    </div>
+  </div>
+</div>

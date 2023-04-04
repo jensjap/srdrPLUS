@@ -1,0 +1,414 @@
+<div class="border text-sm w-3/12 xl:w-1/12 p-1">
+  <div class="text-xs font-semibold">Analytic / Conceptual Frameworks</div>
+  <ul class="text-xs">
+    <template
+      x-for="(sd_analytic_framework, sd_analytic_framework_index) in sdMetaDatum.sd_analytic_frameworks"
+    >
+      <li
+        class="text-xs cursor-pointer"
+        x-text="`Framework ${sd_analytic_framework_index + 1}`"
+      ></li>
+    </template>
+  </ul>
+  <div class="text-xs font-semibold">Report Key Questions</div>
+  <ul class="text-xs">
+    <template
+      x-for="(sd_key_question, sd_key_question_index) in sdMetaDatum.sd_key_questions"
+    >
+      <li
+        class="text-xs cursor-pointer"
+        x-text="`KQ ${sd_key_question_index + 1}`"
+      ></li>
+    </template>
+  </ul>
+</div>
+<div class="border p-2 w-9/12 xl:w-11/12 space-y-2">
+  <h2 class="text-base font-bold border-b-2">
+    Purpose, Analytic Framework, and Key Questions
+  </h2>
+  <div>
+    <label class="block text-xs font-bold text-gray-700"
+      >Overall Purpose of Review
+    </label>
+    <div>
+      <textarea
+        rows="4"
+        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+        autofocus
+        x-model="sdMetaDatum.overall_purpose_of_review"
+        @input.debounce="updateSdMetaDatum('overall_purpose_of_review', sdMetaDatum.overall_purpose_of_review)"
+      ></textarea>
+    </div>
+  </div>
+  <div>
+    <label class="block text-xs font-bold text-gray-700">Type of Review</label>
+    <div>
+      <template x-if="Object.keys(sdMetaDatum).length !== 0">
+        <select
+          class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+          x-model="sdMetaDatum.review_types"
+          x-init="$nextTick(() => {
+            initSelect2(
+              $el,
+              'review_types',
+              sdMetaDatum.review_types
+            );
+          });"
+        ></select>
+      </template>
+    </div>
+  </div>
+  <div class="bg-purple-50 p-2">
+    <h3
+      class="text-sm font-bold border-b-2 flex items-center cursor-pointer"
+      @click="createSubResource('sd_analytic_frameworks', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
+    >
+      Analytic / Conceptual Frameworks
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="green"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="white"
+        class="w-5 h-5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    </h3>
+    <template
+      x-for="(sd_analytic_framework, sd_analytic_framework_index) in sdMetaDatum?.sd_analytic_frameworks"
+      :key="sd_analytic_framework.id"
+    >
+      <div class="bg-purple-200 m-2 p-2 rounded-md space-y-2">
+        <div class="flex justify-between items-center">
+          <select
+            class="w-12"
+            @change="moveElementInArray(sdMetaDatum, 'sd_analytic_frameworks', sd_analytic_framework_index, $el.value - 1)"
+          >
+            <template x-for="i in sdMetaDatum?.sd_analytic_frameworks.length">
+              <option
+                :value="i"
+                x-text="i"
+                :selected="i === sd_analytic_framework_index + 1"
+              ></option>
+            </template>
+          </select>
+          <div
+            class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+            @click="if (confirm('Are you sure?')) {
+              await updateSubResource('sd_analytic_frameworks', sd_analytic_framework.id, 'DELETE')
+              sdMetaDatum.sd_analytic_frameworks.splice(sd_analytic_framework_index, 1)
+            }"
+          >
+            Remove Framework
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Description</label
+          >
+          <div>
+            <input
+              type="text"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+              x-model="sd_analytic_framework.name"
+              @input.debounce="updateSubResource('sd_analytic_frameworks', sd_analytic_framework.id, 'PATCH', 'name', sd_analytic_framework.name)"
+            />
+          </div>
+        </div>
+        <div
+          class="flex items-center cursor-pointer"
+          @click="sd_analytic_framework.sd_meta_data_figures.push(await apiCall('/sd_meta_data_figures', 'POST', { sd_figurable_type: 'SdAnalyticFramework', sd_figurable_id: sd_analytic_framework.id }))"
+        >
+          <label class="block text-xs font-bold text-gray-700">Figure(s)</label>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="green"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="white"
+            class="w-4 h-4"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
+        <template
+          x-for="(sd_meta_data_figure, sd_meta_data_figure_index) in sd_analytic_framework.sd_meta_data_figures"
+        >
+          <div class="bg-purple-300 m-2 p-2 rounded-md space-y-2">
+            <div class="flex justify-end">
+              <div
+                class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+                @click="if (confirm('Are you sure?')) {
+                  await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
+                  sd_analytic_framework.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)
+                }"
+              >
+                Remove Figure
+              </div>
+            </div>
+            <div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700"
+                  >Alt text</label
+                >
+                <textarea
+                  rows="4"
+                  class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                  x-model="sd_meta_data_figure.alt_text"
+                  @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'alt_text', sd_meta_data_figure.alt_text)"
+                ></textarea>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-700"
+                >Pictures</label
+              >
+              <div>
+                <input
+                  multiple
+                  type="file"
+                  @change="uploadFiles($el, `/sd_meta_data_figures/${sd_meta_data_figure.id}`, 'pictures', sd_meta_data_figure)"
+                />
+              </div>
+            </div>
+            <div class="flex flex-wrap">
+              <template
+                x-for="(picture, picture_index) in sd_meta_data_figure.pictures"
+              >
+                <div class="relative w-64 p-1">
+                  <img
+                    :src="picture.url"
+                    class="w-full"
+                    :title="sd_meta_data_figure.alt_text"
+                  />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6 absolute top-0 right-0 bg-red-800 text-white p-2 rounded hover:bg-red-500 m-2 cursor-pointer"
+                    @click="if (confirm('Are you sure?')) {
+                      await apiCall(`/pictures/${picture.id}/delete_image_attachment`, 'DELETE')
+                      sd_meta_data_figure.pictures.splice(picture_index, 1)
+                    }"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                    />
+                  </svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6 absolute top-0 left-0 bg-purple-800 text-white p-2 rounded hover:bg-purple-500 m-2 cursor-pointer"
+                    @click="imageModalObject = picture"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6"
+                    />
+                  </svg>
+                  <a :href="picture.url" target="_blank">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-6 h-6 absolute bottom-0 right-0 bg-purple-800 text-white p-2 rounded hover:bg-purple-500 m-2 cursor-pointer"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+                      />
+                    </svg>
+                  </a>
+                </div>
+              </template>
+            </div>
+          </div>
+        </template>
+        <div
+          class="border-4 border-purple-300 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+          @click="sd_analytic_framework.sd_meta_data_figures.push(await apiCall('/sd_meta_data_figures', 'POST', { sd_figurable_type: 'SdAnalyticFramework', sd_figurable_id: sd_analytic_framework.id }))"
+        >
+          Figures
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="green"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="white"
+            class="w-5 h-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
+      </div>
+    </template>
+    <div
+      class="border-4 border-purple-200 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+      @click="createSubResource('sd_analytic_frameworks', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
+    >
+      Analytic / Conceptual Frameworks
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="green"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="white"
+        class="w-5 h-5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    </div>
+  </div>
+  <div class="bg-blue-50 p-2">
+    <h3
+      class="text-sm font-bold border-b-2 flex items-center cursor-pointer"
+      @click="createSubResource('sd_key_questions', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
+    >
+      Report Key Questions (must include at least one Key Question)
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="green"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="white"
+        class="w-5 h-5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    </h3>
+    <template
+      x-for="(sd_key_question, sd_key_question_index) in sdMetaDatum?.sd_key_questions"
+      :key="sd_key_question.id"
+    >
+      <div class="bg-blue-200 m-2 p-2 rounded-md space-y-2">
+        <div class="flex justify-between items-center">
+          <select
+            class="w-12"
+            @change="moveElementInArray(sdMetaDatum, 'sd_key_questions', sd_key_question_index, $el.value - 1)"
+          >
+            <template x-for="i in sdMetaDatum?.sd_key_questions.length">
+              <option
+                :value="i"
+                x-text="i"
+                :selected="i === sd_key_question_index + 1"
+              ></option>
+            </template>
+          </select>
+          <div
+            class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+            @click="if (confirm('Are you sure?')) {
+              await updateSubResource('sd_key_questions', sd_key_question.id, 'DELETE')
+              sdMetaDatum.sd_key_questions.splice(sd_key_question_index, 1)
+            }"
+          >
+            Remove Key Question
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Key Question (Required)</label
+          >
+          <div>
+            <input
+              type="text"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+              x-model="sd_key_question.name"
+              @input.debounce="updateSubResource('sd_key_questions', sd_key_question.id, 'PATCH', 'key_question_name', sd_key_question.name)"
+            />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Type(s) (Required)</label
+          >
+          <div>
+            <template x-if="Object.keys(sdMetaDatum).length !== 0">
+              <select
+                multiple="multiple"
+                x-model="sd_key_question.key_question_types"
+                x-init="$nextTick(() => {
+                  initSelect2(
+                    $el,
+                    'key_question_types',
+                    sd_key_question.key_question_types,
+                    'sd_key_questions_key_question_types',
+                    { sd_key_question_id: sd_key_question.id }
+                  )
+                });"
+              ></select>
+            </template>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Did this Key Question include a meta-analysis? (Required)</label
+          >
+          <div>
+            <select
+              :id="`includes_meta_analysis_${sd_key_question.id}`"
+              x-model="sd_key_question.includes_meta_analysis"
+              class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm p-1"
+              @change="updateSubResource('sd_key_questions', sd_key_question.id, 'PATCH', 'includes_meta_analysis', sd_key_question.includes_meta_analysis)"
+            >
+              <option value="">Please select</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </template>
+    <div
+      class="border-4 border-blue-200 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+      @click="createSubResource('sd_key_questions', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
+    >
+      Report Key Questions
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="green"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="white"
+        class="w-5 h-5 cursor-pointer"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    </div>
+  </div>
+</div>

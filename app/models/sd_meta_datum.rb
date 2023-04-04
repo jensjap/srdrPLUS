@@ -177,11 +177,11 @@ class SdMetaDatum < ApplicationRecord
     super
   end
 
-  def review_type_id=(token)
-    resource = ReviewType.new
-    save_resource_name_with_token(resource, token)
-    super
-  end
+  # def review_type_id=(token)
+  #   resource = ReviewType.new
+  #   save_resource_name_with_token(resource, token)
+  #   super
+  # end
 
   def data_analysis_level_id=(token)
     resource = DataAnalysisLevel.new

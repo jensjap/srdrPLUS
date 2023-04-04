@@ -86,6 +86,10 @@ class ProjectPolicy < ApplicationPolicy
     end
   end
 
+  def delete_image_attachment?
+    project_contributor?
+  end
+
   def show?
     project_auditor? || @user.admin?
   end

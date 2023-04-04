@@ -15,4 +15,6 @@ class SdOtherItem < ApplicationRecord
   default_scope { order(:pos, :id) }
 
   belongs_to :sd_meta_datum, inverse_of: :sd_other_items
+
+  delegate :project, to: :sd_meta_datum
 end

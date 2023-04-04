@@ -1,18 +1,16 @@
 class ReviewTypesController < ApplicationController
-  DEFAULT_REVIEW_TYPES = [
-    "Full",
-    "Rapid",
-    "Scoping"
+  DEFAULT_REVIEW_TYPES = %w[
+    Full
+    Rapid
+    Scoping
   ].freeze
 
   def index
-    if params[:q]
-      @review_types = ReviewType.by_query(params[:q])
-    else
-      @review_types = []
-      @review_types << ReviewType.find_or_create_by(name: DEFAULT_REVIEW_TYPES[0])
-      @review_types << ReviewType.find_or_create_by(name: DEFAULT_REVIEW_TYPES[1])
-      @review_types << ReviewType.find_or_create_by(name: DEFAULT_REVIEW_TYPES[2])
-    end
+    @review_types = ReviewType.by_query_and_page(params[:q], params[:page])
+  end
+
+  def create
+    review_type = ReviewType.find_or_create_by(name: params[:name])
+    render json: { id: review_type.id }, status: 200
   end
 end
