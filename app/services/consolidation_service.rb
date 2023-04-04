@@ -76,7 +76,10 @@ class ConsolidationService
           when 3, 4
             rss = eefpst1r.within_arm_comparisons_section
             rss.comparisons.each do |comparison|
-              master_template[eefpst1.type1_type.id][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:timepoints][comparison.id] ||= {
+              consolidated_id = comparison.comparates.map do |comparate|
+                comparate.comparable_element.comparable.timepoint_name.id
+              end.join('/')
+              master_template[eefpst1.type1_type.id][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:timepoints][consolidated_id] ||= {
                 name: comparison.comparates.map do |comparate|
                         comparate.comparable_element.comparable.timepoint_name.name
                       end.join(' vs '),
@@ -145,11 +148,13 @@ class ConsolidationService
                   type1_type = eefpst1.type1_type
                   outcome = eefpst1r.extractions_extraction_forms_projects_sections_type1.type1
                   population_name = eefpst1r.population_name
-                  comparison = tps_comparisons_rssm.comparison
+                  consolidated_bac_id = tps_comparisons_rssm.comparison.comparates.map do |comparate|
+                    comparate.comparable_element.comparable.type1.id
+                  end.join('/')
                   timepoint_name = tps_comparisons_rssm.timepoint.timepoint_name
                   measure = rssm.measure
                   record = tps_comparisons_rssm.records.first
-                  results_lookup["#{extraction.id}-#{type1_type.id}-#{outcome.id}-#{population_name.id}-#{comparison.id}-#{timepoint_name.id}-#{measure.id}"] = {
+                  results_lookup["#{extraction.id}-#{type1_type.id}-#{outcome.id}-#{population_name.id}-#{consolidated_bac_id}-#{timepoint_name.id}-#{measure.id}"] = {
                     extraction_id: extraction.id,
                     type1_type_id: type1_type.id,
                     eefpst1_id: eefpst1.id,
@@ -180,10 +185,12 @@ class ConsolidationService
                   outcome = eefpst1r.extractions_extraction_forms_projects_sections_type1.type1
                   population_name = eefpst1r.population_name
                   arm = comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1
-                  comparison = comparisons_arms_rssm.comparison
+                  consolidated_wac_id = comparisons_arms_rssm.comparison.comparates.map do |comparate|
+                    comparate.comparable_element.comparable.timepoint_name.id
+                  end.join('/')
                   measure = rssm.measure
                   record = comparisons_arms_rssm.records.first
-                  results_lookup["#{extraction.id}-#{type1_type.id}-#{outcome.id}-#{population_name.id}-#{arm.id}-#{comparison.id}-#{measure.id}"] = {
+                  results_lookup["#{extraction.id}-#{type1_type.id}-#{outcome.id}-#{population_name.id}-#{arm.id}-#{consolidated_wac_id}-#{measure.id}"] = {
                     extraction_id: extraction.id,
                     type1_type_id: type1_type.id,
                     eefpst1_id: eefpst1.id,
@@ -210,11 +217,15 @@ class ConsolidationService
                   type1_type = eefpst1.type1_type
                   outcome = eefpst1r.extractions_extraction_forms_projects_sections_type1.type1
                   population_name = eefpst1r.population_name
-                  bac = wacs_bacs_rssm.bac
-                  wac = wacs_bacs_rssm.wac
+                  consolidated_bac_id = wacs_bacs_rssm.bac.comparates.map do |comparate|
+                    comparate.comparable_element.comparable.type1.id
+                  end.join('/')
+                  consolidated_wac_id = wacs_bacs_rssm.wac.comparates.map do |comparate|
+                    comparate.comparable_element.comparable.timepoint_name.id
+                  end.join('/')
                   measure = rssm.measure
                   record = wacs_bacs_rssm.records.first
-                  results_lookup["#{extraction.id}-#{type1_type.id}-#{outcome.id}-#{population_name.id}-#{bac.id}-#{wac.id}-#{measure.id}"] = {
+                  results_lookup["#{extraction.id}-#{type1_type.id}-#{outcome.id}-#{population_name.id}-#{consolidated_bac_id}-#{consolidated_wac_id}-#{measure.id}"] = {
                     extraction_id: extraction.id,
                     type1_type_id: type1_type.id,
                     eefpst1_id: eefpst1.id,
@@ -258,7 +269,10 @@ class ConsolidationService
           eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
             rss = eefpst1r.between_arm_comparisons_section
             rss.comparisons.each do |comparison|
-              master_template[eefpst1.type1_type_id][eefpst1.type1_id][:populations][eefpst1r.population_name_id][:arms][comparison.id] ||= {
+              consolidated_id = comparison.comparates.map do |comparate|
+                comparate.comparable_element.comparable.type1.id
+              end.join('/')
+              master_template[eefpst1.type1_type_id][eefpst1.type1_id][:populations][eefpst1r.population_name_id][:arms][consolidated_id] ||= {
                 name: comparison.comparates.map do |comparate|
                         comparate.comparable_element.comparable.type1.name
                       end.join(' vs '),
