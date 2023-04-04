@@ -73,7 +73,7 @@ class ConsolidationService
                 unit: eefpst1rc.timepoint_name.unit
               }
             end
-          when 3
+          when 3, 4
             rss = eefpst1r.within_arm_comparisons_section
             rss.comparisons.each do |comparison|
               master_template[eefpst1.type1_type.id][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:timepoints][comparison.id] ||= {
@@ -192,7 +192,37 @@ class ConsolidationService
                     record_value: record.name
                   }
                 end
-
+              when 4
+                bac_rss = eefpst1r.between_arm_comparisons_section
+                wac_rss = eefpst1r.within_arm_comparisons_section
+                bac_rss.comparisons.each do |bac_comparison|
+                  wac_rss.comparisons.each do |wac_comparison|
+                    wacs_bacs_rssm = WacsBacsRssm.find_or_create_by(
+                      result_statistic_sections_measure: rssm,
+                      wac: wac_comparison,
+                      bac: bac_comparison
+                    )
+                    wacs_bacs_rssm.records.create! if wacs_bacs_rssm.records.blank?
+                  end
+                end
+                rssm.wacs_bacs_rssms.each do |wacs_bacs_rssm|
+                  extraction = eefps.extraction
+                  type1_type = eefpst1.type1_type
+                  outcome = eefpst1r.extractions_extraction_forms_projects_sections_type1.type1
+                  population_name = eefpst1r.population_name
+                  bac = wacs_bacs_rssm.bac
+                  wac = wacs_bacs_rssm.wac
+                  measure = rssm.measure
+                  record = wacs_bacs_rssm.records.first
+                  results_lookup["#{extraction.id}-#{type1_type.id}-#{outcome.id}-#{population_name.id}-#{bac.id}-#{wac.id}-#{measure.id}"] = {
+                    extraction_id: extraction.id,
+                    type1_type_id: type1_type.id,
+                    eefpst1_id: eefpst1.id,
+                    wacs_bacs_rssm_id: wacs_bacs_rssm.id,
+                    record_id: record.id,
+                    record_value: record.name
+                  }
+                end
               end
             end
           end
@@ -220,7 +250,7 @@ class ConsolidationService
           end
         end
       end
-    when 2
+    when 2, 4
       eefpss.each do |eefps|
         eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
           next unless eefps.extraction_forms_projects_section.section.name == 'Outcomes'
