@@ -1,0 +1,412 @@
+<div x-data="type_2_question_list">
+  <div
+    class="bg-blue-800 text-white rounded-md p-2 cursor-pointer text-center mt-2 w-48"
+    @click="preview_modal = true; fetchPreviewContent();"
+  >
+    Preview Section
+  </div>
+  <div
+    @click="createQuestion()"
+    class="bg-srdrpurple text-white rounded-md p-2 cursor-pointer text-center mt-2"
+  >
+    Add Question
+  </div>
+  <table class="my-4">
+    <thead>
+      <tr>
+        <th>Position</th>
+        <th>Dependency</th>
+        <th>Key Questions</th>
+        <th>Question Text</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <template x-for="(q, q_index) in questions" :key="q.id">
+        <tr>
+          <td>
+            <select @change="updatePositions(q_index, $el.value - 1)">
+              <template x-for="qq_index in questions.length">
+                <option
+                  :selected="q_index == (qq_index - 1)"
+                  :value="qq_index"
+                  x-text="qq_index"
+                ></option>
+              </template>
+            </select>
+          </td>
+          <td>
+            <template x-for="dependency in q.dependencies">
+              <div x-text="dependency"></div>
+            </template>
+          </td>
+          <td>
+            <ul>
+              <template x-for="key_question in q?.key_questions">
+                <li x-text="key_question.name"></li>
+              </template>
+            </ul>
+          </td>
+          <td x-text="q.name"></td>
+          <td>
+            <div
+              class="flex flex-col items-start justify-center space-y-2 text-purple-900"
+            >
+              <div
+                class="flex items-center justify-center space-x-1 cursor-pointer hover:underline"
+                @click="edit_question_id = null; edit_question_id = q.id; question_modal = true; fetchQuestionTable();"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-5 h-5 cursor-pointer"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                  />
+                </svg>
+                <span>Edit</span>
+              </div>
+              <div
+                class="flex items-center justify-center space-x-1 cursor-pointer hover:underline"
+                @click="edit_question_id = null; edit_question_id = q.id; dependencies_modal = true; updateDependenciesTable();"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-5 h-5 cursor-pointer"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"
+                  />
+                </svg>
+                <span>Dependencies</span>
+              </div>
+              <div
+                class="flex items-center justify-center space-x-1 cursor-pointer hover:underline"
+                @click="createDuplicateQuestion(q.id)"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-5 h-5 cursor-pointer"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
+                  />
+                </svg>
+                <span>Duplicate</span>
+              </div>
+              <div
+                @click="destroyResource(`/questions/${q.id}`, 'question')"
+                class="flex items-center justify-center space-x-1 cursor-pointer hover:underline"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-5 h-5 cursor-pointer"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                  />
+                </svg>
+                <span>Remove</span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </template>
+    </tbody>
+  </table>
+  <div
+    @click="createQuestion()"
+    class="bg-srdrpurple text-white rounded-md p-2 cursor-pointer text-center"
+  >
+    Add Question
+  </div>
+
+  <!-- prettier-ignore -->
+  <%= render 'extraction_forms_projects/build/type2/loading_modal' %>
+  <%= render 'extraction_forms_projects/build/type2/question_modal' %>
+  <%= render 'extraction_forms_projects/build/type2/dependencies_modal' %>
+  <%= render 'extraction_forms_projects/build/type2/preview_modal' %>
+</div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("type_2_question_list", () => ({
+      loading: false,
+      questions: [],
+      question_modal: false,
+      dependencies_modal: false,
+      preview_modal: false,
+      edit_question_id: null,
+      question_table: "",
+      dependencies_table: "",
+      preview_content: "",
+
+      init() {
+        this.fetch_questions();
+      },
+
+      async fetchQuestionTable() {
+        this.loading = true;
+        this.question_table = await (
+          await fetch(`/questions/${this.edit_question_id}/edit?partial=true`)
+        ).text();
+        this.$nextTick(() => {
+          questionsCoffeeScript();
+        });
+        this.loading = false;
+      },
+
+      async updateDependenciesTable() {
+        this.loading = true;
+        this.dependencies_table = await (
+          await fetch(
+            `/questions/${this.edit_question_id}/dependencies?partial=true`
+          )
+        ).text();
+        this.loading = false;
+      },
+
+      async fetchPreviewContent() {
+        this.loading = true;
+        this.preview_content = "";
+        this.preview_content = await (
+          await fetch(
+            "/extraction_forms_projects/<%= @extraction_forms_project.id %>/preview?panel-tab=<%= params['panel-tab'] %>&partial=true"
+          )
+        ).text();
+        this.$nextTick(() => {
+          document.dispatchEvent(
+            new CustomEvent("extractionSectionLoaded", {})
+          );
+        });
+        this.loading = false;
+      },
+
+      async destroyResource(url, resourceType) {
+        if (confirm("Are you sure?")) {
+          this.loading = true;
+          if (
+            [
+              "question_row",
+              "question_row_column",
+              "question_row_column_option",
+            ].some((rt) => rt === resourceType)
+          ) {
+            await this.updateQuestionTable(
+              this.edit_question_id,
+              document.getElementById(`edit_question_${this.edit_question_id}`)
+            );
+          }
+          const response = await fetch(url, {
+            method: "DELETE",
+            headers: {
+              Accept: "application/json",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+          });
+
+          if (resourceType === "question") {
+            await this.fetch_questions();
+            this.question_modal = false;
+          } else {
+            await this.fetchQuestionTable();
+          }
+          toastr.success("Successfully deleted", null, {
+            timeOut: 1000,
+          });
+          this.loading = false;
+        }
+      },
+
+      async duplicateRow(questionRowId) {
+        this.loading = true;
+        await this.updateQuestionTable(
+          this.edit_question_id,
+          document.getElementById(`edit_question_${this.edit_question_id}`)
+        );
+        const response = await fetch(
+          `/question_rows/${questionRowId}/duplicate`,
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+          }
+        );
+        await this.fetchQuestionTable();
+        toastr.success("Row was succesfully duplicated!", null, {
+          timeOut: 1000,
+        });
+        this.loading = false;
+      },
+
+      async addRowOrColumn(type) {
+        this.loading = true;
+        await this.updateQuestionTable(
+          this.edit_question_id,
+          document.getElementById(`edit_question_${this.edit_question_id}`)
+        );
+        const response = await fetch(
+          `/questions/${this.edit_question_id}/${type}`,
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+          }
+        );
+        await this.fetchQuestionTable();
+        this.loading = false;
+      },
+
+      async updateQuestionTable(questionId, form) {
+        const formData = new FormData(form);
+
+        const response = await fetch(`/questions/${questionId}`, {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          body: formData,
+        });
+        const data = await response.json();
+        this.fetch_questions();
+      },
+
+      array_move(arr, old_index, new_index) {
+        if (new_index >= arr.length) {
+          var k = new_index - arr.length + 1;
+          while (k--) {
+            arr.push(undefined);
+          }
+        }
+        arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+      },
+
+      async updatePositions(old_index, new_index) {
+        this.loading = true;
+        this.array_move(this.questions, old_index, new_index);
+
+        const orderings = {};
+        this.questions.forEach((question, questionIndex) => {
+          orderings[questionIndex] = {
+            id: question.id,
+            position: questionIndex,
+            table: 'questions'
+          };
+        });
+
+        const response = await fetch("/api/v1/orderings/update_positions", {
+          method: "PATCH",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          body: JSON.stringify({ orderings }),
+        });
+        this.questions = []
+        await this.fetch_questions();
+        this.loading = false;
+        toastr.success("Positions updated!", null, {
+          timeOut: 1000,
+        });
+      },
+
+      async createDuplicateQuestion(questionId) {
+        this.loading = true;
+        const response = await fetch(`/questions/${questionId}/duplicate`, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+        });
+        await this.fetch_questions();
+        toastr.success("Question was succesfully duplicated!", null, {
+          timeOut: 1000,
+        });
+        this.loading = false;
+      },
+
+      async createQuestion() {
+        this.loading = true;
+        const response = await fetch(
+          `/extraction_forms_projects_sections/<%= efps.id %>/questions`,
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            body: JSON.stringify({
+              question: { name: "New Question", description: "Description" },
+            }),
+          }
+        );
+        await this.fetch_questions();
+        toastr.success("Question was added!", null, {
+          timeOut: 1000,
+        });
+        const resp = await response.json()
+        this.edit_question_id = resp.id
+        this.fetchQuestionTable();
+        this.question_modal = true;
+        this.loading = false;
+      },
+
+      async fetch_questions() {
+        this.loading = true;
+        const response = await fetch(
+          "/extraction_forms_projects/<%= @extraction_forms_project.id %>/build?panel-tab=<%= params['panel-tab'] %>",
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const questions = await response.json();
+        this.questions = questions;
+        this.loading = false;
+      },
+    }));
+  });
+</script>

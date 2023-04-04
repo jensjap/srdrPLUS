@@ -71,7 +71,7 @@ module Api
           end
 
           respond_to do |format|
-            format.json { head :ok }
+            format.json { render json: {}, status: 200 }
           end
         end
       end
@@ -79,11 +79,11 @@ module Api
       private
 
       def orderings_params
-        params.permit(
-          :drop_conflicting_dependencies,
-          lsof_orderings_to_remove_dependencies: %i[id table],
-          orderings: %i[id position table]
-        )
+        params
+          .permit(:drop_conflicting_dependencies,
+                  lsof_orderings_to_remove_dependencies: %i[id table],
+                  orderings: %i[id position table]
+          )
       end
     end
   end

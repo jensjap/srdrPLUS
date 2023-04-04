@@ -67973,9 +67973,6 @@ function __guardMethod__(obj, methodName, transform) {
 
   documentCode = function() {
     var allowsFollowup, hideHeaders, multiSelect;
-    if (!($('body.public_data.show, .questions, .extractions, .extraction_forms_projects.build').length > 0)) {
-      return;
-    }
     multiSelect = ['Checkbox (select multiple)', 'Dropdown (select one)', 'Radio (select one)', 'Select one (with write-in option)', 'Select multiple (with write-in option)'];
     allowsFollowup = ['Checkbox (select multiple)', 'Radio (select one)'];
     $('.fieldset').on('change', function() {
@@ -68053,6 +68050,8 @@ function __guardMethod__(obj, methodName, transform) {
       return false;
     });
   };
+
+  window.questionsCoffeeScript = documentCode;
 
 }).call(this);
 (function() {
@@ -69049,6 +69048,7 @@ const attachOrderable = (orderable) => {
     for (let i = 0; i < elements.length; i++) {
       params.orderings.push({
         id: $(elements[i]).attr("ordering-id"),
+        table: $(elements[i]).attr("table"),
         position: i,
       });
     }
@@ -69101,9 +69101,10 @@ const attachOrderable = (orderable) => {
               .includes($(el).attr("ordering-id"))
           ) {
             validOrder = false;
-            lsofOrderingsToRemoveDependencies.push(
-              $(lsofOrderableItemsInReverse[i]).attr("ordering-id")
-            );
+            lsofOrderingsToRemoveDependencies.push({
+              id: $(lsofOrderableItemsInReverse[i]).attr("ordering-id"),
+              table: $(lsofOrderableItemsInReverse[i]).attr("table"),
+            });
           }
         }
       }

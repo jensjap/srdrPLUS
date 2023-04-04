@@ -14,7 +14,10 @@
 
       .column.row
 
-        = f.association :extraction_forms_projects_section_type, label: 'Section Type', include_blank: false
+        = f.association :extraction_forms_projects_section_type,
+                        collection: ExtractionFormsProjectsSectionType.where.not(id: 3),
+                        label: 'Section Type',
+                        include_blank: false
         = f.association :section, label: 'Section Name', include_blank: true
         = f.input :helper_message, label: 'Helper Message', include_blank: true
 

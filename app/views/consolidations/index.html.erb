@@ -32,6 +32,12 @@
                     scope="col"
                     class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
                   >
+                    Year
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900"
+                  >
                     Citation
                   </th>
                   <th
@@ -63,6 +69,13 @@
                   :key="citations_project_id"
                 >
                   <tr>
+                    <td
+                      class="overflow-hidden py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                    >
+                      <div
+                        x-text="citationsHash[citations_project_id].citation_year"
+                      ></div>
+                    </td>
                     <td
                       class="overflow-hidden py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
                     >

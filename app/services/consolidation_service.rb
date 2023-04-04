@@ -1,4 +1,23 @@
 class ConsolidationService
+  def self.suggestions(eefps_id)
+    ExtractionsExtractionFormsProjectsSection.find(eefps_id).type1s_suggested_by_project_leads.map do |efpst1|
+      t1 = {}
+      t1[:name] = efpst1.type1.name
+      t1[:description] = efpst1.type1.description
+      t1[:type] = {}
+      t1[:type][:id] = efpst1.type1_type.try(:id) || ''
+      t1[:type][:name] = efpst1.type1_type.try(:name) || ''
+      t1[:timepoints] = []
+      efpst1.timepoint_names.each do |tn|
+        t1[:timepoints] << { export_header: tn.pretty_print_export_header,
+                             name: tn.name,
+                             unit: tn.unit }
+      end
+      t1[:suggested_by] = efpst1.type1.suggestion.user.handle
+      t1
+    end
+  end
+
   def self.efps_sections(project)
     ExtractionFormsProject.find_by(project:).extraction_forms_projects_sections.includes(:section).map do |efps|
       {
@@ -342,7 +361,11 @@ class ConsolidationService
     end
 
     if missing_eefpsqrcfs.present?
-      ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.insert_all(missing_eefpsqrcfs)
+      # TODO: performance optimization
+      # ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.insert_all(missing_eefpsqrcfs)
+      missing_eefpsqrcfs.each do |obj|
+        ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(obj)
+      end
     end
 
     eefpsqrcfs = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.where(
@@ -357,10 +380,27 @@ class ConsolidationService
       eefpsqrcfs = eefpsqrcfs.where(extractions_extraction_forms_projects_sections_type1_id: eefpst1_ids)
     end
 
-    eefpsffs = ExtractionsExtractionFormsProjectsSectionsFollowupField.where(
-      extractions_extraction_forms_projects_section: current_section_eefpss,
-      followup_field: ffs
-    )
+    # TODO: performance optimization
+    eefpsffs = []
+    current_section_eefpss.each do |eefps|
+      ffs.each do |ff|
+        if current_section_eefpst1_objects.empty?
+          eefpsffs << ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by(
+            extractions_extraction_forms_projects_section: eefps,
+            followup_field: ff,
+            extractions_extraction_forms_projects_sections_type1_id: nil
+          )
+        else
+          current_section_eefpst1_objects.each do |eefpst1_obj|
+            eefpsffs << ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by(
+              extractions_extraction_forms_projects_section: eefps,
+              followup_field: ff,
+              extractions_extraction_forms_projects_sections_type1_id: eefpst1_obj[:extractions_extraction_forms_projects_sections_type1_id]
+            )
+          end
+        end
+      end
+    end
 
     # ensure records exist
     eefpsqrcfs_with_missing_records =
@@ -370,10 +410,15 @@ class ConsolidationService
       .where(records: { id: nil })
 
     if eefpsqrcfs_with_missing_records.present?
-      Record.insert_all(eefpsqrcfs_with_missing_records.map do |missing_eefpsqrcf|
-                          { recordable_type: ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField,
-                            recordable_id: missing_eefpsqrcf.id }
-                        end)
+      # TODO: performance optimization
+      # Record.insert_all(eefpsqrcfs_with_missing_records.map do |missing_eefpsqrcf|
+      #                     { recordable_type: ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField,
+      #                       recordable_id: missing_eefpsqrcf.id }
+      #                   end)
+      eefpsqrcfs_with_missing_records.each do |missing_eefpsqrcf|
+        Record.find_or_create_by(recordable_type: ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField,
+                                 recordable_id: missing_eefpsqrcf.id)
+      end
     end
 
     eefpsffs.each do |eefpsff|
@@ -446,6 +491,10 @@ class ConsolidationService
       as_json[:consolidated] = eefps.extraction.consolidated
       as_json
     end
+    mh[:current_section_statusing_id] =
+      ExtractionsExtractionFormsProjectsSection.find(current_section_eefpss.last['id']).statusing.id
+    mh[:current_section_status_id] =
+      ExtractionsExtractionFormsProjectsSection.find(current_section_eefpss.last['id']).statusing.status_id
     mh[:current_citations_project] = {
       project_id: project.id,
       citation_id: citation.id,
@@ -476,13 +525,14 @@ class ConsolidationService
       .includes(
         :extraction_checksum,
         statusing: :status,
-        citations_project: :citation
+        citations_project: { citation: :journal }
       )
     citations_projects.each do |citations_project|
       citations_grouping_hash[citations_project.id] = {
         extractions: [],
         consolidated_extraction: nil,
         citation_title: "#{citations_project.citation.authors}: #{citations_project.citation.name}",
+        citation_year: citations_project.citation.journal&.get_publication_year,
         reference_checksum: nil,
         differences: false,
         consolidated_extraction_status: nil

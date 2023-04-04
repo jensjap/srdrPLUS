@@ -18,4 +18,8 @@ class ExtractionFormsProjectPolicy < ApplicationPolicy
   def build?
     project_leader? || @user.admin?
   end
+
+  def preview?
+    project_leader? || @user.admin?
+  end
 end

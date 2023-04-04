@@ -6,20 +6,22 @@ div class="p-4 lg:p-8"
     table.hover#dttb-consolidations
       thead
         tr
-          th colspan=2 Consolidations
+          th colspan=3 Consolidations
 
         tr
+          th
           th.citation-handle-header data-sort-mode="name" data-sort-direction="asc" Citation (Sorted by Title)
           th Status
 
       tbody
         - @citation_groups[:consolidations].each do |citations_project_id, consolidation|
+          - citations_project_info = @citation_groups[:citations_projects][consolidation.citations_project_id]
+          - citation_handle = citations_project_info[:citation_info] + '<br />' + citations_project_info[:citation_name_long].truncate(70)
+          - consolidation.status = Status.DRAFT if consolidation.status.blank?
           tr
-            - citations_project_info = @citation_groups[:citations_projects][consolidation.citations_project_id]
-            - citation_handle = citations_project_info[:citation_info] + '<br />' + citations_project_info[:citation_name_long].truncate(70)
+            td style='min-width: 80px !important;' = link_to t('work'), work_extraction_path(consolidation), style: 'font-weight:bold;'
             td title=citations_project_info[:citation_name_long] = link_to citation_handle.html_safe, citation_path(citations_project_info[:citation_id])
             td
-              - consolidation.status = Status.DRAFT if consolidation.status.blank?
               = render 'shared/statusing_form', statusing: consolidation.statusing, status_name: consolidation.statusing.status.name
 
     hr

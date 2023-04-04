@@ -94,6 +94,20 @@ class SdMetaDataController < ApplicationController
   def edit
     cookies[:sr360_beta] = true if params[:sr360_beta_opt_in]
     cookies.delete(:sr360_beta) if params[:sr360_beta_opt_out]
+    @systematic_review_report = true
+    @panel_number = params[:panel_number].try(:to_i) || 0
+    @sd_meta_datum = SdMetaDatum.find(params[:id])
+    # @sd_meta_datum.sd_journal_article_urls.build
+    # @sd_meta_datum.sd_other_items.build
+    # @sd_meta_datum.sd_grey_literature_searches.build
+    # @sd_meta_datum.sd_prisma_flows.build
+    # @sd_meta_datum.sd_meta_regression_analysis_results.build
+    # @sd_meta_datum.sd_evidence_tables.build
+    @project = @sd_meta_datum.project
+    authorize(@sd_meta_datum)
+    @nav_buttons.push('sr_360', 'my_projects')
+    @report = @sd_meta_datum.report
+    @url = sd_meta_datum_path(@sd_meta_datum)
 
     respond_to do |format|
       @panel_number = params[:panel_number].try(:to_i) || 0
