@@ -1174,6 +1174,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_14_140000) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "permissions", default: 0, null: false
+    t.boolean "is_expert", default: false
     t.index ["project_id", "user_id"], name: "index_pu_on_p_id_u_id_uniq", unique: true
     t.index ["user_id"], name: "index_projects_users_on_user_id"
   end
