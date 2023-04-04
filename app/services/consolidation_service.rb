@@ -65,11 +65,24 @@ class ConsolidationService
             arms: {},
             measures: {}
           }
-          eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
-            master_template[eefpst1.type1_type.id][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:timepoints][eefpst1rc.timepoint_name.id] ||= {
-              name: eefpst1rc.timepoint_name.name,
-              unit: eefpst1rc.timepoint_name.unit
-            }
+          case result_statistic_section_type_id
+          when 1, 2
+            eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+              master_template[eefpst1.type1_type.id][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:timepoints][eefpst1rc.timepoint_name.id] ||= {
+                name: eefpst1rc.timepoint_name.name,
+                unit: eefpst1rc.timepoint_name.unit
+              }
+            end
+          when 3
+            rss = eefpst1r.within_arm_comparisons_section
+            rss.comparisons.each do |comparison|
+              master_template[eefpst1.type1_type.id][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:timepoints][comparison.id] ||= {
+                name: comparison.comparates.map do |comparate|
+                        comparate.comparable_element.comparable.timepoint_name.name
+                      end.join(' vs '),
+                unit: ''
+              }
+            end
           end
           eefpst1r.result_statistic_sections.each do |rss|
             next unless rss.result_statistic_section_type_id == result_statistic_section_type_id
@@ -98,13 +111,12 @@ class ConsolidationService
                     end
                   end
                 end
-
                 rssm.tps_arms_rssms.each do |tps_arms_rssm|
                   extraction = eefps.extraction
                   type1_type = eefpst1.type1_type
-                  arm = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1
                   outcome = eefpst1r.extractions_extraction_forms_projects_sections_type1.type1
                   population_name = eefpst1r.population_name
+                  arm = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1
                   timepoint_name = tps_arms_rssm.timepoint.timepoint_name
                   measure = rssm.measure
                   record = tps_arms_rssm.records.first
@@ -128,13 +140,12 @@ class ConsolidationService
                     tps_comparisons_rssm.records.create! if tps_comparisons_rssm.records.blank?
                   end
                 end
-
                 rssm.tps_comparisons_rssms.each do |tps_comparisons_rssm|
                   extraction = eefps.extraction
                   type1_type = eefpst1.type1_type
-                  comparison = tps_comparisons_rssm.comparison
                   outcome = eefpst1r.extractions_extraction_forms_projects_sections_type1.type1
                   population_name = eefpst1r.population_name
+                  comparison = tps_comparisons_rssm.comparison
                   timepoint_name = tps_comparisons_rssm.timepoint.timepoint_name
                   measure = rssm.measure
                   record = tps_comparisons_rssm.records.first
@@ -147,6 +158,41 @@ class ConsolidationService
                     record_value: record.name
                   }
                 end
+              when 3
+                eefpss.each do |second_eefps|
+                  second_eefps.extractions_extraction_forms_projects_sections_type1s.each do |second_eefpst1|
+                    next unless second_eefps.extraction_forms_projects_section.section.name == 'Arms' &&
+                                second_eefps.extraction_id == eefps.extraction_id
+
+                    rss.comparisons.each do |comparison|
+                      comparisons_arms_rssm = ComparisonsArmsRssm.find_or_create_by(
+                        result_statistic_sections_measure: rssm,
+                        extractions_extraction_forms_projects_sections_type1: second_eefpst1,
+                        comparison_id: comparison.id
+                      )
+                      comparisons_arms_rssm.records.create! if comparisons_arms_rssm.records.blank?
+                    end
+                  end
+                end
+                rssm.comparisons_arms_rssms.each do |comparisons_arms_rssm|
+                  extraction = eefps.extraction
+                  type1_type = eefpst1.type1_type
+                  outcome = eefpst1r.extractions_extraction_forms_projects_sections_type1.type1
+                  population_name = eefpst1r.population_name
+                  arm = comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1
+                  comparison = comparisons_arms_rssm.comparison
+                  measure = rssm.measure
+                  record = comparisons_arms_rssm.records.first
+                  results_lookup["#{extraction.id}-#{type1_type.id}-#{outcome.id}-#{population_name.id}-#{arm.id}-#{comparison.id}-#{measure.id}"] = {
+                    extraction_id: extraction.id,
+                    type1_type_id: type1_type.id,
+                    eefpst1_id: eefpst1.id,
+                    comparisons_arms_rssm_id: comparisons_arms_rssm.id,
+                    record_id: record.id,
+                    record_value: record.name
+                  }
+                end
+
               end
             end
           end
@@ -155,7 +201,7 @@ class ConsolidationService
     end
 
     case result_statistic_section_type_id
-    when 1
+    when 1, 3
       eefpss.each do |eefps|
         eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
           next unless eefps.extraction_forms_projects_section.section.name == 'Arms'
