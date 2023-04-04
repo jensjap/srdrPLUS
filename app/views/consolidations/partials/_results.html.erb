@@ -90,7 +90,6 @@
                                       <td
                                         class="text-center whitespace-nowrap"
                                         :title="`Extraction: ${extraction_id}`"
-                                        @click="console.log(results_lookup[`${extraction_id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`])"
                                       >
                                         <input
                                           :disabled="!results_lookup[`${extraction_id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`] || extraction_id_index !== extraction_ids.length - 1"
