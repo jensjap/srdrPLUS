@@ -108,38 +108,6 @@
                       </template>
                     </tbody>
                   </table>
-                  <div class="hidden">
-                    <template
-                      x-for="arm_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].arms)"
-                    >
-                      <div>
-                        <div
-                          x-text="master_template[type1_type_id][type1_id].populations[population_name_id].arms[arm_id].name"
-                        ></div>
-                        <template
-                          x-for="timepoint_name_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].timepoints)"
-                        >
-                          <div>
-                            <div
-                              x-text="master_template[type1_type_id][type1_id].populations[population_name_id].timepoints[timepoint_name_id].name"
-                            ></div>
-                            <div>
-                              <template
-                                x-for="measure_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].measures)"
-                              >
-                                <div>
-                                  <div
-                                    x-text="master_template[type1_type_id][type1_id].populations[population_name_id].measures[measure_id].name"
-                                  ></div>
-                                  <div></div>
-                                </div>
-                              </template>
-                            </div>
-                          </div>
-                        </template>
-                      </div>
-                    </template>
-                  </div>
                 </div>
               </template>
             </div>
