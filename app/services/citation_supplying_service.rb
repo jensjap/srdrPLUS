@@ -67,26 +67,28 @@ class CitationSupplyingService
       }
     }
 
-    authors = raw.authors.split(', ')
-    for i in authors.size.times do
-      author = {
-        'resourceType' => 'Practitioner',
-        'id' => 'author' + i.to_s,
-        'name' => {
-          'text' => authors[i]['name']
+    if not raw.authors.nil?
+      authors = raw.authors.split(', ')
+      for i in authors.size.times do
+        author = {
+          'resourceType' => 'Practitioner',
+          'id' => 'author' + i.to_s,
+          'name' => {
+            'text' => authors[i]['name']
+          }
         }
-      }
-      entry = {
-        'contributor' => {
-          'reference' => '#author' + i.to_s
+        entry = {
+          'contributor' => {
+            'reference' => '#author' + i.to_s
+          }
         }
-      }
-      if citation['contained']
-        citation['contained'].append(author)
-      else
-        citation['contained'] = [author]
+        if citation['contained']
+          citation['contained'].append(author)
+        else
+          citation['contained'] = [author]
+        end
+        citation['citedArtifact']['contributorship']['entry'].append(entry)
       end
-      citation['citedArtifact']['contributorship']['entry'].append(entry)
     end
 
     journal = raw.journal

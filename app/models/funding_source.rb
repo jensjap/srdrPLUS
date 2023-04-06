@@ -9,8 +9,18 @@
 #
 
 class FundingSource < ApplicationRecord
-  include SharedQueryableMethods
+  # include SharedQueryableMethods
 
   has_many :funding_sources_sd_meta_data, inverse_of: :funding_source
   has_many :sd_meta_data, through: :funding_sources_sd_meta_data
+
+  def self.by_query_and_page(query, page)
+    result = if query.blank?
+               all
+             else
+               where("#{name.pluralize.underscore}.name like ?", "%#{query}%")
+             end
+
+    result.page(page)
+  end
 end

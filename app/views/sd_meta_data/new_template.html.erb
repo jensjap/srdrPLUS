@@ -1,0 +1,613 @@
+<div x-data="sdMetaDatum" class="p-4 lg:p-8 space-y-2 relative">
+  <div class="flex items-center justify-end absolute top-0 right-0">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="rgb(76, 13, 125)"
+      class="w-4 h-4 srdr"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+      />
+    </svg>
+    <% if cookies[:sr360_beta] %>
+    <a
+      class="text-base"
+      href="/sd_meta_data/<%= @sd_meta_datum.id %>/edit?sr360_beta_opt_out=true"
+      >To back to the old SR-360 click here</a
+    >
+    <% end %>
+  </div>
+  <%= render 'image_modal' %>
+  <div class="font-bold text-sm">
+    <div class="flex justify-between">
+      <div>
+        SRDR+ Project: <%= link_to(@project.try(:name) || 'None',
+        project_path(@project), target: '_blank') %>
+      </div>
+
+      <div class="flex justify-center items-center text-xs">
+        Complete
+        <button
+          type="button"
+          class="ml-2 group relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          role="switch"
+          aria-checked="false"
+          @click="toggleSectionCompletionStatus()"
+        >
+          <span class="sr-only">Use setting</span>
+          <span
+            aria-hidden="true"
+            class="pointer-events-none absolute h-full w-full rounded-md bg-white"
+          ></span>
+          <span
+            aria-hidden="true"
+            class="pointer-events-none absolute mx-auto h-4 w-9 rounded-full transition-colors duration-200 ease-in-out"
+            :class="(sdMetaDatum.section_statuses ? sdMetaDatum.section_statuses[`section_flag_${panel_number}`] : false) ? 'bg-indigo-600' : 'bg-gray-200'"
+          ></span>
+          <span
+            aria-hidden="true"
+            class="pointer-events-none absolute left-0 inline-block h-5 w-5 transform rounded-full border border-gray-200 bg-white shadow ring-0 transition-transform duration-200 ease-in-out"
+            :class="(sdMetaDatum.section_statuses ? sdMetaDatum.section_statuses[`section_flag_${panel_number}`] : false) ? 'translate-x-5' : 'translate-x-0'"
+          ></span>
+        </button>
+      </div>
+    </div>
+    <div class="flex justify-between">
+      <div>
+        <% if @systematic_review_report %> Source Systematic Review Report:
+        <a data-toggle="offCanvasRightReportHtml" id="report-title">
+          <!-- prettier-ignore -->
+          <%= @sd_meta_datum.try(:report_title) || @report.try(:title) || @sd_meta_datum.report_file.filename || 'None' %>
+        </a>
+        <% end %>
+      </div>
+      <div
+        class="bg-srdrpurple text-white text-xs p-1 rounded-md cursor-pointer"
+      >
+        See Section Preview
+      </div>
+    </div>
+    <div class="w-full bg-gray-200 rounded-full p-1 my-1">
+      <div
+        class="bg-green-600 p-1 text-white rounded-full text-center"
+        style="width: 0%"
+        :style="`transition: width 1s ease-in-out; width: ${completion_percentage}%`"
+      ></div>
+    </div>
+  </div>
+  <div class="flex w-full">
+    <div class="border text-sm font-bold w-3/12 xl:w-1/12">
+      <a
+        href="/sd_meta_data/<%= @sd_meta_datum.id %>/edit?panel_number=0&new_template=true"
+      >
+        <div
+          class="p-1 py-4 cursor-pointer border-b-2 relative"
+          :class="panel_number == 0 ? 'bg-purple-100' : ''"
+        >
+          Title, Funding Sources, and Dates
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="green"
+            class="w-5 h-5 absolute top-0 right-0"
+            x-cloak
+            x-show="sdMetaDatum.section_statuses?.section_flag_0"
+            x-transition:enter="ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+            />
+          </svg>
+        </div>
+      </a>
+      <a
+        href="/sd_meta_data/<%= @sd_meta_datum.id %>/edit?panel_number=1&new_template=true"
+      >
+        <div
+          class="p-1 py-4 cursor-pointer border-b-2 relative"
+          :class="panel_number == 1 ? 'bg-purple-100' : ''"
+        >
+          Authors and Stakeholders
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="green"
+            class="w-5 h-5 absolute top-0 right-0"
+            x-cloak
+            x-show="sdMetaDatum.section_statuses?.section_flag_1"
+            x-transition:enter="ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+            />
+          </svg>
+        </div>
+      </a>
+      <a
+        href="/sd_meta_data/<%= @sd_meta_datum.id %>/edit?panel_number=2&new_template=true"
+      >
+        <div
+          class="p-1 py-4 cursor-pointer border-b-2 relative"
+          :class="panel_number == 2 ? 'bg-purple-100' : ''"
+        >
+          URL Links
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="green"
+            class="w-5 h-5 absolute top-0 right-0"
+            x-cloak
+            x-show="sdMetaDatum.section_statuses?.section_flag_2"
+            x-transition:enter="ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+            />
+          </svg>
+        </div>
+      </a>
+      <a
+        href="/sd_meta_data/<%= @sd_meta_datum.id %>/edit?panel_number=3&new_template=true"
+      >
+        <div
+          class="p-1 py-4 cursor-pointer border-b-2 relative"
+          :class="panel_number == 3 ? 'bg-purple-100' : ''"
+        >
+          Purpose, Analytic Framework, and Key Questions
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="green"
+            class="w-5 h-5 absolute top-0 right-0"
+            x-cloak
+            x-show="sdMetaDatum.section_statuses?.section_flag_3"
+            x-transition:enter="ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+            />
+          </svg>
+        </div>
+      </a>
+      <a
+        href="/sd_meta_data/<%= @sd_meta_datum.id %>/edit?panel_number=4&new_template=true"
+      >
+        <div
+          class="p-1 py-4 cursor-pointer border-b-2 relative"
+          :class="panel_number == 4 ? 'bg-purple-100' : ''"
+        >
+          PICODTS
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="green"
+            class="w-5 h-5 absolute top-0 right-0"
+            x-cloak
+            x-show="sdMetaDatum.section_statuses?.section_flag_4"
+            x-transition:enter="ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+            />
+          </svg>
+        </div>
+      </a>
+      <a
+        href="/sd_meta_data/<%= @sd_meta_datum.id %>/edit?panel_number=5&new_template=true"
+      >
+        <div
+          class="p-1 py-4 cursor-pointer border-b-2 relative"
+          :class="panel_number == 5 ? 'bg-purple-100' : ''"
+        >
+          Key Question Mapping
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="green"
+            class="w-5 h-5 absolute top-0 right-0"
+            x-cloak
+            x-show="sdMetaDatum.section_statuses?.section_flag_5"
+            x-transition:enter="ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+            />
+          </svg>
+        </div>
+      </a>
+      <a
+        href="/sd_meta_data/<%= @sd_meta_datum.id %>/edit?panel_number=6&new_template=true"
+      >
+        <div
+          class="p-1 py-4 cursor-pointer border-b-2 relative"
+          :class="panel_number == 6 ? 'bg-purple-100' : ''"
+        >
+          Search Strategy and Results of Screening
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="green"
+            class="w-5 h-5 absolute top-0 right-0"
+            x-cloak
+            x-show="sdMetaDatum.section_statuses?.section_flag_6"
+            x-transition:enter="ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+            />
+          </svg>
+        </div>
+      </a>
+      <a
+        href="/sd_meta_data/<%= @sd_meta_datum.id %>/edit?panel_number=7&new_template=true"
+      >
+        <div
+          class="p-1 py-4 cursor-pointer border-b-2 relative"
+          :class="panel_number == 7 ? 'bg-purple-100' : ''"
+        >
+          Risk of Bias and Overall Summary of Evidence
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="green"
+            class="w-5 h-5 absolute top-0 right-0"
+            x-cloak
+            x-show="sdMetaDatum.section_statuses?.section_flag_7"
+            x-transition:enter="ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+            />
+          </svg>
+        </div>
+      </a>
+      <a
+        href="/sd_meta_data/<%= @sd_meta_datum.id %>/edit?panel_number=8&new_template=true"
+      >
+        <div
+          class="p-1 py-4 cursor-pointer border-b-2 relative"
+          :class="panel_number == 8 ? 'bg-purple-100' : ''"
+        >
+          Results for Individual Outcomes
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="green"
+            class="w-5 h-5 absolute top-0 right-0"
+            x-cloak
+            x-show="sdMetaDatum.section_statuses?.section_flag_8"
+            x-transition:enter="ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"
+            />
+          </svg>
+        </div>
+      </a>
+    </div>
+
+    <%= render "sd_meta_data/form/#{@panel_number}" %>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("sdMetaDatum", () => ({
+      sdMetaDatum: {},
+      panel_number: null,
+      sdMetaDatumId: /\d+/.exec(window.location.pathname)[0],
+      panel_number: new URLSearchParams(window.location.search).get(
+        "panel_number"
+      ),
+      completion_percentage: "0",
+      imageModalObject: false,
+      srdrPlusKQSelection: null,
+
+      async init() {
+        await this.getSdMetaDatum();
+        this.calcCompletionPercentage();
+      },
+
+      moveElementInArray(parentObject, key, old_index, new_index) {
+        const arr = parentObject[key];
+        parentObject[key] = [];
+
+        if (new_index >= arr.length) {
+          var k = new_index - arr.length + 1;
+          while (k--) {
+            arr.push(undefined);
+          }
+        }
+        arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+        parentObject[key] = arr;
+
+        const orderings = {};
+        arr.forEach((el, index) => {
+          orderings[index] = {
+            id: el.id,
+            table: key,
+            position: index + 1,
+          };
+        });
+        this.apiCall("/api/v1/orderings/update_positions", "PATCH", {
+          orderings,
+        });
+      },
+
+      calcCompletionPercentage() {
+        let count = 0;
+        let total = 0;
+        for (const [key, value] of Object.entries(
+          this.sdMetaDatum.section_statuses
+        )) {
+          count += 1;
+          if (value) total += 1;
+        }
+
+        this.completion_percentage = (total / count) * 100;
+      },
+
+      async toggleSectionCompletionStatus() {
+        const newCompletionStatus =
+          !this.sdMetaDatum.section_statuses[
+            `section_flag_${this.panel_number}`
+          ];
+        this.sdMetaDatum.section_statuses[`section_flag_${this.panel_number}`] =
+          newCompletionStatus;
+        await this.updateSdMetaDatum(
+          `section_flag_${this.panel_number}`,
+          newCompletionStatus
+        );
+        this.calcCompletionPercentage();
+      },
+
+      async initSelect2(
+        resourceElement,
+        resource,
+        selected = [],
+        url,
+        multiParams = false,
+        custom_resource_url
+      ) {
+        jResourceElement = $(resourceElement);
+        jResourceElement.select2({
+          tags: true,
+          ajax: {
+            url: `/${custom_resource_url || resource}`,
+            dataType: "json",
+            processResults: (data, params) => {
+              params.page = params.page || 1;
+              return {
+                results: $.map(data.items, (i) => {
+                  return {
+                    id: i.id,
+                    text: i.name,
+                  };
+                }),
+              };
+            },
+          },
+          createTag: function (params) {
+            return {
+              id: params.term,
+              text: params.term,
+              newTag: true,
+            };
+          },
+        });
+
+        const that = this;
+        jResourceElement.on("select2:select", async function (e) {
+          if (multiParams) {
+            that.apiCall(`/${url || resource}`, "POST", {
+              name: e.params.data.text,
+              ...multiParams,
+            });
+          } else {
+            if (e.params.data.newTag) {
+              const response = await that.apiCall(`/${resource}`, "POST", {
+                name: e.params.data.text,
+              });
+              that.updateResource(
+                url ? `/${url}` : `/sd_meta_data/${that.sdMetaDatumId}`,
+                `${resource.substring(0, resource.length - 1)}_id`,
+                response.id
+              );
+            } else {
+              that.updateResource(
+                url ? `/${url}` : `/sd_meta_data/${that.sdMetaDatumId}`,
+                `${resource.substring(0, resource.length - 1)}_id`,
+                e.params.data.id
+              );
+            }
+          }
+        });
+
+        jResourceElement.on("select2:unselect", function (e) {
+          if (resource === "sd_outcomes") {
+            that.apiCall(`/${resource}/null`, "DELETE", {
+              name: e.params.data.text,
+              ...multiParams,
+            });
+          } else if (multiParams) {
+            that.apiCall(`/${url || resource}/null`, "DELETE", {
+              name: e.params.data.text,
+              ...multiParams,
+            });
+          } else {
+            that.updateResource(
+              url ? `/${url}` : `/sd_meta_data/${that.sdMetaDatumId}`,
+              `${resource.substring(0, resource.length - 1)}_id`,
+              null
+            );
+          }
+        });
+        selected.forEach((selectedOption) => {
+          const option = new Option(
+            selectedOption.name,
+            selectedOption.id,
+            true,
+            true
+          );
+          jResourceElement.append(option).trigger("change");
+        });
+      },
+
+      async uploadFiles(element, url, resource, parentObject) {
+        let formData = new FormData();
+        for (let i = 0; i < element.files.length; i++) {
+          formData.append("pictures[]", element.files[i]);
+        }
+        const response = await fetch(url, {
+          method: "PATCH",
+          headers: {
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          body: formData,
+        });
+        const newResource = await response.json();
+        parentObject[resource] = newResource.pictures;
+      },
+
+      async updateResource(url, attribute, value) {
+        this.apiCall(url, "PATCH", {
+          [attribute]: value,
+        });
+      },
+
+      async updateSdMetaDatum(attribute, value) {
+        this.apiCall(`/sd_meta_data/${this.sdMetaDatumId}`, "PATCH", {
+          [attribute]: value,
+        });
+      },
+
+      async updateSubResource(resource, id, method, key, value) {
+        this.apiCall(`/${resource}/${id}`, method, {
+          [key]: value,
+        });
+      },
+
+      async createSubResource(
+        resource,
+        parentResource,
+        parentResourceId,
+        parentObject
+      ) {
+        const response = await this.apiCall(
+          `/${parentResource}/${parentResourceId}/${resource}`,
+          "POST"
+        );
+        parentObject[resource].push(response);
+      },
+
+      async apiCall(url, method, params = {}) {
+        const options = {
+          method: method,
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+        };
+        if (method !== "GET") {
+          options.body = JSON.stringify(params);
+        }
+        const response = await fetch(url, options);
+        return await response.json();
+      },
+
+      async getSdMetaDatum() {
+        const sdMetaDatum = await this.apiCall(window.location.href, "GET");
+        this.sdMetaDatum = sdMetaDatum;
+      },
+    }));
+  });
+</script>

@@ -19,11 +19,20 @@
 #
 
 class SdMetaDataFigure < ApplicationRecord
+  SD_FIGURABLE_TYPES = %w[SdMetaRegressionAnalysisResult
+                          SdNetworkMetaAnalysisResult
+                          SdPairwiseMetaAnalyticResult
+                          SdPrismaFlow
+                          SdSummaryOfEvidence
+                          SdAnalyticFramework
+                          SdEvidenceTable]
   has_many_attached :pictures
 
   belongs_to :sd_figurable, polymorphic: true
 
   after_create :follow_older_sibiling_values
+
+  delegate :project, to: :sd_figurable
 
   def pictures=(attachables)
     attachables = Array(attachables).compact_blank

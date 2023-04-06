@@ -9,5 +9,10 @@
 #
 
 class SdOutcome < ApplicationRecord
+  SD_OUTCOMEABLE_TYPES = %w[SdEvidenceTable SdMetaRegressionAnalysisResult SdNarrativeResult
+                            SdNetworkMetaAnalysisResult SdPairwiseMetaAnalyticResult].freeze
+
   belongs_to :sd_outcomeable, polymorphic: true
+
+  delegate :project, to: :sd_outcomeable
 end

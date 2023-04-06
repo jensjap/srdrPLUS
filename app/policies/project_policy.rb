@@ -59,6 +59,7 @@ class ProjectPolicy < ApplicationPolicy
         :_destroy,
         :user_id,
         :permissions,
+        :is_expert,
         { imports_attributes: [
           :import_type_id, {
             imported_files_attributes: [
@@ -84,6 +85,10 @@ class ProjectPolicy < ApplicationPolicy
         scope.joins(:projects_users).where('projects_users.user_id = ?', user.id)
       end
     end
+  end
+
+  def delete_image_attachment?
+    project_contributor?
   end
 
   def show?

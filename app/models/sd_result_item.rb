@@ -27,4 +27,6 @@ class SdResultItem < ApplicationRecord
   accepts_nested_attributes_for :sd_evidence_tables, allow_destroy: true
   accepts_nested_attributes_for :sd_network_meta_analysis_results, allow_destroy: true
   accepts_nested_attributes_for :sd_meta_regression_analysis_results, allow_destroy: true
+
+  delegate :project, to: :sd_meta_datum
 end

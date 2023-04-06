@@ -28,9 +28,9 @@ html class='no-js' lang='en'
     = stylesheet_link_tag 'https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css'
     = javascript_include_tag 'https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js'
 
-    = javascript_include_tag 'https://unpkg.com/@alpinejs/focus@3.11.1/dist/cdn.min.js', defer: true
-    = javascript_include_tag 'https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js', defer: true
-    = javascript_include_tag 'https://unpkg.com/alpinejs@3.11.1/dist/cdn.min.js', defer: true
+    = javascript_include_tag '/alpinejs@3.12.0.focus.min.js', defer: true
+    = javascript_include_tag '/alpinejs@3.12.0.collapse.min.js', defer: true
+    = javascript_include_tag '/alpinejs@3.12.0.min.js', defer: true
 
     = csrf_meta_tag
 
@@ -58,7 +58,7 @@ html class='no-js' lang='en'
           .off-canvas.position-right#offCanvasRightReportHtml data-off-canvas=''
             button.close-button aria-label='Close menu' type='button' data-close=''
               span aria-hidden='true' &times;
-            iframe class="iframe" onload="resizeIframe(this)" id='htmlReportIframe' src='/TOC.html' text='Systematic Review Report' title='Systematic Review Report' width='100%'
+            iframe class="iframe" style="height: 100vh" id='htmlReportIframe' src='/TOC.html' text='Systematic Review Report' title='Systematic Review Report' width='100%'
 
         .off-canvas-content data-off-canvas-content=''
           = render "shared/topbar_nav"

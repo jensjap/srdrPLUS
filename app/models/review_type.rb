@@ -12,4 +12,14 @@ class ReviewType < ApplicationRecord
   include SharedQueryableMethods
 
   has_many :sd_meta_data, inverse_of: :review_type
+
+  def self.by_query_and_page(query, page)
+    result = if query.blank?
+               all
+             else
+               where("#{name.pluralize.underscore}.name like ?", "%#{query}%")
+             end
+
+    result.page(page)
+  end
 end

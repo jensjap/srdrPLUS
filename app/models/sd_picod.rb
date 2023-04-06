@@ -37,6 +37,8 @@ class SdPicod < ApplicationRecord
   accepts_nested_attributes_for :sd_key_questions, allow_destroy: true
   accepts_nested_attributes_for :sd_picods_types, allow_destroy: true
 
+  delegate :project, to: :sd_meta_datum
+
   def sd_picods_type_ids=(tokens)
     tokens.map do |token|
       resource = SdPicodsType.new

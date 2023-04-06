@@ -37,6 +37,8 @@ class SdKeyQuestion < ApplicationRecord
 
   accepts_nested_attributes_for :sd_key_questions_key_question_types, allow_destroy: true
 
+  delegate :project, to: :sd_meta_datum
+
   def key_question_id=(token)
     save_resource_name_with_token(KeyQuestion.new, token)
     super

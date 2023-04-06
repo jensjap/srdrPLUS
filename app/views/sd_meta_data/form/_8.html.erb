@@ -1,0 +1,1563 @@
+<div class="border text-sm w-3/12 xl:w-1/12 p-1">
+  <div class="text-xs font-semibold">Results for Individual Outcomes</div>
+  <ul>
+    <template
+      x-for="(sd_result_item, sd_result_item_index) in sdMetaDatum.sd_result_items"
+    >
+      <li class="text-xs cursor-pointer pb-2">
+        <span
+          class="text-[11px] font-semibold"
+          x-text="`Results by KQ (${sd_result_item_index + 1})`"
+        ></span>
+        <div class="text-[10px] font-semibold">Narrative Results</div>
+        <ul>
+          <template
+            x-for="(sd_narrative_result, sd_narrative_result_index) in sd_result_item.sd_narrative_results"
+          >
+            <li
+              class="text-[9px]"
+              x-text="`Narrative ${sd_narrative_result_index + 1}`"
+            ></li>
+          </template>
+        </ul>
+        <div class="text-[10px] font-semibold">Results</div>
+        <ul>
+          <template
+            x-for="(sd_evidence_table, sd_evidence_table_index) in sd_result_item.sd_evidence_tables"
+          >
+            <li
+              class="text-[9px]"
+              x-text="`Result Outcome ${sd_evidence_table_index + 1}`"
+            ></li>
+          </template>
+        </ul>
+        <div class="text-[10px] font-semibold">Pairwise Meta-analyses</div>
+        <ul>
+          <template
+            x-for="(sd_pairwise_meta_analytic_result, sd_pairwise_meta_analytic_result_index) in sd_result_item.sd_pairwise_meta_analytic_results"
+          >
+            <li
+              class="text-[9px]"
+              x-text="`Pairwise ${sd_pairwise_meta_analytic_result_index + 1}`"
+            ></li>
+          </template>
+        </ul>
+        <div class="text-[10px] font-semibold">Network Meta-analyses</div>
+        <ul>
+          <template
+            x-for="(sd_network_meta_analysis_result, sd_network_meta_analysis_result_index) in sd_result_item.sd_network_meta_analysis_results"
+          >
+            <li
+              class="text-[9px]"
+              x-text="`Network ${sd_network_meta_analysis_result_index + 1}`"
+            ></li>
+          </template>
+        </ul>
+        <div class="text-[10px] font-semibold">Meta-regression Results</div>
+        <ul>
+          <template
+            x-for="(sd_meta_regression_analysis_result, sd_meta_regression_analysis_result_index) in sd_result_item.sd_meta_regression_analysis_results"
+          >
+            <li
+              class="text-[9px]"
+              x-text="`Regression ${sd_meta_regression_analysis_result_index + 1}`"
+            ></li>
+          </template>
+        </ul>
+      </li>
+    </template>
+  </ul>
+</div>
+<div class="border p-2 w-9/12 xl:w-11/12 space-y-2">
+  <h2 class="text-base font-bold border-b-2">
+    Results for Individual Outcomes
+  </h2>
+  <div class="bg-purple-50 p-2">
+    <h3
+      class="text-sm font-bold border-b-2 flex items-center cursor-pointer"
+      @click="createSubResource('sd_result_items', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
+    >
+      Results by Key Questions
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="green"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="white"
+        class="w-5 h-5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    </h3>
+    <template
+      x-for="(sd_result_item, sd_result_item_index) in sdMetaDatum.sd_result_items"
+      :key="sd_result_item.id"
+    >
+      <div
+        class="bg-purple-200 m-2 p-2 rounded-md space-y-2"
+        x-init="sd_result_item.show = false"
+      >
+        <div class="flex justify-between items-center">
+          <div class="flex justify-center items-center space-x-2">
+            <select
+              class="w-12"
+              @change="moveElementInArray(sdMetaDatum, 'sd_result_items', sd_result_item_index, $el.value - 1)"
+            >
+              <template x-for="i in sdMetaDatum.sd_result_items.length">
+                <option
+                  :value="i"
+                  x-text="i"
+                  :selected="i === sd_result_item_index + 1"
+                ></option>
+              </template>
+            </select>
+            <span
+              class="text-xs p-1 bg-gray-100 rounded-md cursor-pointer m-auto shadow-sm"
+              @click="sd_result_item.show = !sd_result_item.show"
+              >Show/Hide Results</span
+            >
+          </div>
+          <div
+            class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+            @click="if (confirm('Are you sure?')) {
+              await updateSubResource('sd_result_items', sd_result_item.id, 'DELETE')
+              sdMetaDatum.sd_result_items.splice(sd_result_item_index, 1)
+            }"
+          >
+            Remove Results for this Key Question
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-700"
+            >Key Question (Required) (must include at least one result
+            type)</label
+          >
+          <div>
+            <template x-if="Object.keys(sdMetaDatum).length !== 0">
+              <select
+                x-init="$nextTick(() => {
+                  const jResourceElement = $($el);
+                  jResourceElement.select2({
+                    allowClear: true,
+                    placeholder: 'Make a selection',
+                    ajax: {
+                      url: `/sd_key_questions?sd_meta_datum_id=${sdMetaDatumId}`,
+                      dataType: 'json',
+                      processResults: (data, params) => {
+                        params.page = params.page || 1;
+                        return {
+                          results: $.map(data.items, (i) => {
+                            return {
+                              id: i.id,
+                              text: i.name,
+                            };
+                          }),
+                        };
+                      },
+                    },
+                  })
+                  jResourceElement.on('select2:select', function (e) {
+                    updateSubResource('sd_result_items', sd_result_item.id, 'PATCH', 'sd_key_question_id', e.params.data.id)
+                  });
+                  jResourceElement.on('select2:unselect', function (e) {
+                    updateSubResource('sd_result_items', sd_result_item.id, 'PATCH', 'sd_key_question_id', null)
+                  });
+                  sd_result_item.sd_key_questions.forEach((selectedOption) => {
+                    const option = new Option(selectedOption.name, selectedOption.id, true, true);
+                    jResourceElement.append(option).trigger('change');
+                  });
+                })"
+              ></select>
+            </template>
+          </div>
+        </div>
+        <div
+          x-show="sd_result_item.show"
+          x-transition:enter="ease-out duration-300"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave="ease-in duration-200"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          class="bg-blue-50 p-2"
+        >
+          <h4
+            class="text-xs font-bold border-b-2 flex items-center cursor-pointer"
+            @click="createSubResource('sd_narrative_results', 'sd_result_items', sd_result_item.id, sd_result_item)"
+          >
+            Narrative Results by Outcome(s)
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="green"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="white"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </h4>
+          <template
+            x-for="(sd_narrative_result, sd_narrative_result_index) in sd_result_item.sd_narrative_results"
+            :key="sd_narrative_result.id"
+          >
+            <div class="bg-blue-200 m-2 p-2 rounded-md space-y-2">
+              <div class="flex justify-between items-center">
+                <select
+                  class="w-12"
+                  @change="moveElementInArray(sd_result_item, 'sd_narrative_results', sd_narrative_result_index, $el.value - 1)"
+                >
+                  <template
+                    x-for="i in sd_result_item.sd_narrative_results.length"
+                  >
+                    <option
+                      :value="i"
+                      x-text="i"
+                      :selected="i === sd_narrative_result_index + 1"
+                    ></option>
+                  </template>
+                </select>
+                <div
+                  class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+                  @click="if (confirm('Are you sure?')) {
+                    await updateSubResource('sd_narrative_results', sd_narrative_result.id, 'DELETE')
+                    sd_result_item.sd_narrative_results.splice(sd_narrative_result_index, 1)
+                  }"
+                >
+                  Remove Narrative Result
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700"
+                  >Outcome(s) (Required)</label
+                >
+                <div>
+                  <template x-if="Object.keys(sdMetaDatum).length !== 0">
+                    <select
+                      multiple="multiple"
+                      x-init="$nextTick(() => {
+                        initSelect2(
+                          $el,
+                          'sd_outcomes',
+                          sd_narrative_result.sd_outcomes,
+                          `sd_narrative_results/${sd_narrative_result.id}/sd_outcomes`,
+                          { sd_outcomeable_id: sd_narrative_result.id, sd_outcomeable_type: 'SdNarrativeResult' },
+                          `sd_narrative_results/${sd_narrative_result.id}/sd_outcomes`
+                        );
+                      })"
+                    ></select>
+                  </template>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700"
+                  >Narrative Results (Overall)</label
+                >
+                <div>
+                  <textarea
+                    rows="4"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                    x-model="sd_narrative_result.narrative_results"
+                    @input.debounce="updateSubResource('sd_narrative_results', sd_narrative_result.id, 'PATCH', 'narrative_results', sd_narrative_result.narrative_results)"
+                  ></textarea>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700"
+                  >Narrative Results by Population Subgroup</label
+                >
+                <div>
+                  <textarea
+                    rows="4"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                    x-model="sd_narrative_result.narrative_results_by_population"
+                    @input.debounce="updateSubResource('sd_narrative_results', sd_narrative_result.id, 'PATCH', 'narrative_results_by_population', sd_narrative_result.narrative_results_by_population)"
+                  ></textarea>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700"
+                  >Narrative Results by Intervention Subgroup</label
+                >
+                <div>
+                  <textarea
+                    rows="4"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                    x-model="sd_narrative_result.narrative_results_by_intervention"
+                    @input.debounce="updateSubResource('sd_narrative_results', sd_narrative_result.id, 'PATCH', 'narrative_results_by_intervention', sd_narrative_result.narrative_results_by_intervention)"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </template>
+          <div
+            class="border-4 border-blue-200 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+            @click="createSubResource('sd_narrative_results', 'sd_result_items', sd_result_item.id, sd_result_item)"
+          >
+            Add Narrative Result
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="green"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="white"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div
+          x-show="sd_result_item.show"
+          x-transition:enter="ease-out duration-300"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave="ease-in duration-200"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          class="bg-green-50 p-2"
+        >
+          <h4
+            class="text-xs font-bold border-b-2 flex items-center cursor-pointer"
+            @click="createSubResource('sd_evidence_tables', 'sd_result_items', sd_result_item.id, sd_result_item)"
+          >
+            Results by Outcome(s)
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="green"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="white"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </h4>
+          <template
+            x-for="(sd_evidence_table, sd_evidence_table_index) in sd_result_item.sd_evidence_tables"
+            :key="sd_evidence_table.id"
+          >
+            <div class="bg-green-200 m-2 p-2 rounded-md space-y-2">
+              <div class="flex justify-between items-center">
+                <select
+                  class="w-12"
+                  @change="moveElementInArray(sd_result_item, 'sd_evidence_tables', sd_evidence_table_index, $el.value - 1)"
+                >
+                  <template
+                    x-for="i in sd_result_item.sd_evidence_tables.length"
+                  >
+                    <option
+                      :value="i"
+                      x-text="i"
+                      :selected="i === sd_evidence_table_index + 1"
+                    ></option>
+                  </template>
+                </select>
+                <div
+                  class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+                  @click="if (confirm('Are you sure?')) {
+                    await updateSubResource('sd_evidence_tables', sd_evidence_table.id, 'DELETE')
+                    sd_result_item.sd_evidence_tables.splice(sd_evidence_table_index, 1)
+                  }"
+                >
+                  Remove Result
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700"
+                  >Outcome(s)</label
+                >
+                <div>
+                  <template x-if="Object.keys(sdMetaDatum).length !== 0">
+                    <select
+                      multiple="multiple"
+                      x-init="$nextTick(() => {
+                        initSelect2(
+                          $el,
+                          'sd_outcomes',
+                          sd_evidence_table.sd_outcomes,
+                          `sd_evidence_tables/${sd_evidence_table.id}/sd_outcomes`,
+                          { sd_outcomeable_id: sd_evidence_table.id, sd_outcomeable_type: 'SdEvidenceTable' },
+                          `sd_evidence_tables/${sd_evidence_table.id}/sd_outcomes`
+                        );
+                      })"
+                    ></select>
+                  </template>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700"
+                  >Description</label
+                >
+                <div>
+                  <input
+                    type="text"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                    x-model="sd_evidence_table.name"
+                    @input.debounce="updateSubResource('sd_evidence_tables', sd_evidence_table.id, 'PATCH', 'name', sd_evidence_table.name)"
+                  />
+                </div>
+              </div>
+              <div
+                class="flex items-center cursor-pointer"
+                @click="sd_evidence_table.sd_meta_data_figures.push(await apiCall('/sd_meta_data_figures', 'POST', { sd_figurable_type: 'SdEvidenceTable', sd_figurable_id: sd_evidence_table.id }))"
+              >
+                <label class="block text-xs font-bold text-gray-700"
+                  >Figure(s)</label
+                >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="green"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="white"
+                  class="w-4 h-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <template
+                x-for="(sd_meta_data_figure, sd_meta_data_figure_index) in sd_evidence_table.sd_meta_data_figures"
+              >
+                <div class="bg-green-300 m-2 p-2 rounded-md space-y-2">
+                  <div class="flex justify-end">
+                    <div
+                      class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+                      @click="if (confirm('Are you sure?')) {
+                        await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
+                        sd_evidence_table.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)
+                      }"
+                    >
+                      Remove Figure
+                    </div>
+                  </div>
+                  <div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-700"
+                        >Alt text</label
+                      >
+                      <textarea
+                        rows="4"
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                        x-model="sd_meta_data_figure.alt_text"
+                        @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'alt_text', sd_meta_data_figure.alt_text)"
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700"
+                      >Pictures</label
+                    >
+                    <div>
+                      <input
+                        multiple
+                        type="file"
+                        @change="uploadFiles($el, `/sd_meta_data_figures/${sd_meta_data_figure.id}`, 'pictures', sd_meta_data_figure)"
+                      />
+                    </div>
+                  </div>
+                  <div class="flex flex-wrap">
+                    <template
+                      x-for="(picture, picture_index) in sd_meta_data_figure.pictures"
+                    >
+                      <div class="relative w-64 p-1">
+                        <img
+                          :src="picture.url"
+                          class="w-full"
+                          :title="sd_meta_data_figure.alt_text"
+                        />
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="w-6 h-6 absolute top-0 right-0 bg-red-800 text-white p-2 rounded hover:bg-red-500 m-2 cursor-pointer"
+                          @click="if (confirm('Are you sure?')) {
+                            await apiCall(`/pictures/${picture.id}/delete_image_attachment`, 'DELETE')
+                            sd_meta_data_figure.pictures.splice(picture_index, 1)
+                          }"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                          />
+                        </svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="w-6 h-6 absolute top-0 left-0 bg-purple-800 text-white p-2 rounded hover:bg-purple-500 m-2 cursor-pointer"
+                          @click="imageModalObject = picture"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6"
+                          />
+                        </svg>
+                        <a :href="picture.url" target="_blank">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="w-6 h-6 absolute bottom-0 right-0 bg-purple-800 text-white p-2 rounded hover:bg-purple-500 m-2 cursor-pointer"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+                            />
+                          </svg>
+                        </a>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </template>
+              <div
+                class="border-4 border-green-300 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+                @click="sd_evidence_table.sd_meta_data_figures.push(await apiCall('/sd_meta_data_figures', 'POST', { sd_figurable_type: 'SdEvidenceTable', sd_figurable_id: sd_evidence_table.id }))"
+              >
+                Figure
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="green"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="white"
+                  class="w-5 h-5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </template>
+          <div
+            class="border-4 border-green-200 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+            @click="createSubResource('sd_evidence_tables', 'sd_result_items', sd_result_item.id, sd_result_item)"
+          >
+            Add Result
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="green"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="white"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div
+          x-show="sd_result_item.show"
+          x-transition:enter="ease-out duration-300"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave="ease-in duration-200"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          class="bg-orange-50 p-2"
+        >
+          <h4
+            class="text-xs font-bold border-b-2 flex items-center"
+            @click="createSubResource('sd_pairwise_meta_analytic_results', 'sd_result_items', sd_result_item.id, sd_result_item)"
+          >
+            Pairwise Meta-analyses by Outcome(s)
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="green"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="white"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </h4>
+          <template
+            x-for="(sd_pairwise_meta_analytic_result, sd_pairwise_meta_analytic_result_index) in sd_result_item.sd_pairwise_meta_analytic_results"
+            :key="sd_pairwise_meta_analytic_result.id"
+          >
+            <div class="bg-orange-200 m-2 p-2 rounded-md space-y-2">
+              <div class="flex justify-between items-center">
+                <select
+                  class="w-12"
+                  @change="moveElementInArray(sd_result_item, 'sd_pairwise_meta_analytic_results', sd_pairwise_meta_analytic_result_index, $el.value - 1)"
+                >
+                  <template
+                    x-for="i in sd_result_item.sd_pairwise_meta_analytic_results.length"
+                  >
+                    <option
+                      :value="i"
+                      x-text="i"
+                      :selected="i === sd_pairwise_meta_analytic_result_index + 1"
+                    ></option>
+                  </template>
+                </select>
+                <div
+                  class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+                  @click="if (confirm('Are you sure?')) {
+                    await updateSubResource('sd_pairwise_meta_analytic_results', sd_pairwise_meta_analytic_result.id, 'DELETE')
+                    sd_result_item.sd_pairwise_meta_analytic_results.splice(sd_pairwise_meta_analytic_result_index, 1)
+                  }"
+                >
+                  Remove Pairwise Meta-Analysis
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700"
+                  >Outcome(s)</label
+                >
+                <div>
+                  <template x-if="Object.keys(sdMetaDatum).length !== 0">
+                    <select
+                      multiple="multiple"
+                      x-init="$nextTick(() => {
+                        initSelect2(
+                          $el,
+                          'sd_outcomes',
+                          sd_pairwise_meta_analytic_result.sd_outcomes,
+                          `sd_pairwise_meta_analytic_results/${sd_pairwise_meta_analytic_result.id}/sd_outcomes`,
+                          { sd_outcomeable_id: sd_pairwise_meta_analytic_result.id, sd_outcomeable_type: 'SdPairwiseMetaAnalyticResult' },
+                          `sd_pairwise_meta_analytic_results/${sd_pairwise_meta_analytic_result.id}/sd_outcomes`
+                        );
+                      })"
+                    ></select>
+                  </template>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700"
+                  >Description</label
+                >
+                <div>
+                  <input
+                    type="text"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                    x-model="sd_pairwise_meta_analytic_result.name"
+                    @input.debounce="updateSubResource('sd_pairwise_meta_analytic_results', sd_pairwise_meta_analytic_result.id, 'PATCH', 'name', sd_pairwise_meta_analytic_result.name)"
+                  />
+                </div>
+              </div>
+              <div
+                class="flex items-center cursor-pointer"
+                @click="sd_pairwise_meta_analytic_result.sd_meta_data_figures.push(await apiCall('/sd_meta_data_figures', 'POST', { sd_figurable_type: 'SdPairwiseMetaAnalyticResult', sd_figurable_id: sd_pairwise_meta_analytic_result.id }))"
+              >
+                <label class="block text-xs font-bold text-gray-700"
+                  >Figure(s)</label
+                >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="green"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="white"
+                  class="w-4 h-4"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <template
+                x-for="(sd_meta_data_figure, sd_meta_data_figure_index) in sd_pairwise_meta_analytic_result.sd_meta_data_figures"
+              >
+                <div class="bg-orange-300 m-2 p-2 rounded-md space-y-2">
+                  <div class="flex justify-end">
+                    <div
+                      class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+                      @click="if (confirm('Are you sure?')) {
+                        await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
+                        sd_pairwise_meta_analytic_result.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)
+                      }"
+                    >
+                      Remove Figure
+                    </div>
+                  </div>
+                  <div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-700"
+                        >Type</label
+                      >
+                      <select
+                        x-model="sd_meta_data_figure.p_type"
+                        @change="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'p_type', sd_meta_data_figure.p_type)"
+                      >
+                        <option value="">--Make a selection--</option>
+                        <option
+                          value="Forest plot with summary estimate, type of model, and estimates of heterogeneity"
+                        >
+                          Forest plot with summary estimate, type of model, and
+                          estimates of heterogeneity
+                        </option>
+                        <option value="Meta-analysis results table">
+                          Meta-analysis results table
+                        </option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-700"
+                        >Alt text</label
+                      >
+                      <textarea
+                        rows="4"
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                        x-model="sd_meta_data_figure.alt_text"
+                        @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'alt_text', sd_meta_data_figure.alt_text)"
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700"
+                      >Pictures</label
+                    >
+                    <div>
+                      <input
+                        multiple
+                        type="file"
+                        @change="uploadFiles($el, `/sd_meta_data_figures/${sd_meta_data_figure.id}`, 'pictures', sd_meta_data_figure)"
+                      />
+                    </div>
+                  </div>
+                  <div class="flex flex-wrap">
+                    <template
+                      x-for="(picture, picture_index) in sd_meta_data_figure.pictures"
+                    >
+                      <div class="relative w-64 p-1">
+                        <img
+                          :src="picture.url"
+                          class="w-full"
+                          :title="sd_meta_data_figure.alt_text"
+                        />
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="w-6 h-6 absolute top-0 right-0 bg-red-800 text-white p-2 rounded hover:bg-red-500 m-2 cursor-pointer"
+                          @click="if (confirm('Are you sure?')) {
+                            await apiCall(`/pictures/${picture.id}/delete_image_attachment`, 'DELETE')
+                            sd_meta_data_figure.pictures.splice(picture_index, 1)
+                          }"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                          />
+                        </svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="w-6 h-6 absolute top-0 left-0 bg-purple-800 text-white p-2 rounded hover:bg-purple-500 m-2 cursor-pointer"
+                          @click="imageModalObject = picture"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6"
+                          />
+                        </svg>
+                        <a :href="picture.url" target="_blank">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="w-6 h-6 absolute bottom-0 right-0 bg-purple-800 text-white p-2 rounded hover:bg-purple-500 m-2 cursor-pointer"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+                            />
+                          </svg>
+                        </a>
+                      </div>
+                    </template>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700"
+                      >Outcome Type</label
+                    >
+                    <div>
+                      <select
+                        x-model="sd_meta_data_figure.outcome_type"
+                        @change="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'outcome_type', sd_meta_data_figure.outcome_type)"
+                      >
+                        <option value="">--Make a selection--</option>
+                        <option value="Categorical">Categorical</option>
+                        <option value="Continuous">Continuous</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700"
+                      >Intervention name</label
+                    >
+                    <div>
+                      <input
+                        type="text"
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                        x-model="sd_meta_data_figure.intervention_name"
+                        @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'intervention_name', sd_meta_data_figure.intervention_name)"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700"
+                      >Comparator name</label
+                    >
+                    <div>
+                      <input
+                        type="text"
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                        x-model="sd_meta_data_figure.comparator_name"
+                        @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'comparator_name', sd_meta_data_figure.comparator_name)"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700"
+                      >Effect size measure name</label
+                    >
+                    <div>
+                      <input
+                        type="text"
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                        x-model="sd_meta_data_figure.effect_size_measure_name"
+                        @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'effect_size_measure_name', sd_meta_data_figure.effect_size_measure_name)"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700"
+                      >Overall effect size</label
+                    >
+                    <div>
+                      <input
+                        type="text"
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                        x-model="sd_meta_data_figure.overall_effect_size"
+                        @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'overall_effect_size', sd_meta_data_figure.overall_effect_size)"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700"
+                      >Overall 95 ci low</label
+                    >
+                    <div>
+                      <input
+                        type="text"
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                        x-model="sd_meta_data_figure.overall_95_ci_low"
+                        @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'overall_95_ci_low', sd_meta_data_figure.overall_95_ci_low)"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700"
+                      >Overall 95 ci high</label
+                    >
+                    <div>
+                      <input
+                        type="text"
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                        x-model="sd_meta_data_figure.overall_95_ci_high"
+                        @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'overall_95_ci_high', sd_meta_data_figure.overall_95_ci_high)"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700"
+                      >Overall I Squared (%)</label
+                    >
+                    <div>
+                      <input
+                        type="text"
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                        x-model="sd_meta_data_figure.overall_i_squared"
+                        @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'overall_i_squared', sd_meta_data_figure.overall_i_squared)"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700"
+                      >Other heterogeneity statistics</label
+                    >
+                    <div>
+                      <input
+                        type="text"
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                        x-model="sd_meta_data_figure.other_heterogeneity_statistics"
+                        @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'other_heterogeneity_statistics', sd_meta_data_figure.other_heterogeneity_statistics)"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <div
+                class="border-4 border-orange-300 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+                @click="sd_pairwise_meta_analytic_result.sd_meta_data_figures.push(await apiCall('/sd_meta_data_figures', 'POST', { sd_figurable_type: 'SdPairwiseMetaAnalyticResult', sd_figurable_id: sd_pairwise_meta_analytic_result.id }))"
+              >
+                Figure
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="green"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="white"
+                  class="w-5 h-5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </template>
+          <div
+            class="border-4 border-orange-200 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+            @click="createSubResource('sd_pairwise_meta_analytic_results', 'sd_result_items', sd_result_item.id, sd_result_item)"
+          >
+            Add Pairwise Meta-analysis
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="green"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="white"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div
+          x-show="sd_result_item.show"
+          x-transition:enter="ease-out duration-300"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave="ease-in duration-200"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          class="bg-stone-50 p-2"
+        >
+          <h4
+            class="text-xs font-bold border-b-2 flex items-center cursor-pointer"
+            @click="createSubResource('sd_network_meta_analysis_results', 'sd_result_items', sd_result_item.id, sd_result_item)"
+          >
+            Network Meta-analyses by Outcome(s)
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="green"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="white"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </h4>
+          <template
+            x-for="(sd_network_meta_analysis_result, sd_network_meta_analysis_result_index) in sd_result_item.sd_network_meta_analysis_results"
+            :key="sd_network_meta_analysis_result.id"
+          >
+            <div class="bg-stone-200 m-2 p-2 rounded-md space-y-2">
+              <div class="flex justify-between items-center">
+                <select
+                  class="w-12"
+                  @change="moveElementInArray(sd_result_item, 'sd_network_meta_analysis_results', sd_network_meta_analysis_result_index, $el.value - 1)"
+                >
+                  <template
+                    x-for="i in sd_result_item.sd_network_meta_analysis_results.length"
+                  >
+                    <option
+                      :value="i"
+                      x-text="i"
+                      :selected="i === sd_network_meta_analysis_result_index + 1"
+                    ></option>
+                  </template>
+                </select>
+                <div
+                  class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+                  @click="if (confirm('Are you sure?')) {
+                    await updateSubResource('sd_network_meta_analysis_results', sd_network_meta_analysis_result.id, 'DELETE')
+                    sd_result_item.sd_network_meta_analysis_results.splice(sd_network_meta_analysis_result_index, 1)
+                  }"
+                >
+                  Remove Network Meta-analysis
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700"
+                  >Outcome(s)</label
+                >
+                <div>
+                  <template x-if="Object.keys(sdMetaDatum).length !== 0">
+                    <select
+                      multiple="multiple"
+                      x-init="$nextTick(() => {
+                        initSelect2(
+                          $el,
+                          'sd_outcomes',
+                          sd_network_meta_analysis_result.sd_outcomes,
+                          `sd_network_meta_analysis_results/${sd_network_meta_analysis_result.id}/sd_outcomes`,
+                          { sd_outcomeable_id: sd_network_meta_analysis_result.id, sd_outcomeable_type: 'SdNetworkMetaAnalysisResult' },
+                          `sd_network_meta_analysis_results/${sd_network_meta_analysis_result.id}/sd_outcomes`
+                        );
+                      })"
+                    ></select>
+                  </template>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700"
+                  >Description</label
+                >
+                <div>
+                  <input
+                    type="text"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                    x-model="sd_network_meta_analysis_result.name"
+                    @input.debounce="updateSubResource('sd_network_meta_analysis_results', sd_network_meta_analysis_result.id, 'PATCH', 'name', sd_network_meta_analysis_result.name)"
+                  />
+                </div>
+              </div>
+              <div
+                class="flex items-center cursor-pointer"
+                @click="sd_network_meta_analysis_result.sd_meta_data_figures.push(await apiCall('/sd_meta_data_figures', 'POST', { sd_figurable_type: 'SdNetworkMetaAnalysisResult', sd_figurable_id: sd_network_meta_analysis_result.id }))"
+              >
+                <label class="block text-xs font-bold text-gray-700"
+                  >Figure(s)</label
+                >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="green"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="white"
+                  class="w-4 h-4 cursor-pointer"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <template
+                x-for="(sd_meta_data_figure, sd_meta_data_figure_index) in sd_network_meta_analysis_result.sd_meta_data_figures"
+              >
+                <div class="bg-stone-300 m-2 p-2 rounded-md space-y-2">
+                  <div class="flex justify-end">
+                    <div
+                      class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+                      @click="if (confirm('Are you sure?')) {
+                        await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
+                        sd_network_meta_analysis_result.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)
+                      }"
+                    >
+                      Remove Figure
+                    </div>
+                  </div>
+                  <div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-700"
+                        >Type</label
+                      >
+                      <select
+                        x-model="sd_meta_data_figure.p_type"
+                        @change="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'p_type', sd_meta_data_figure.p_type)"
+                      >
+                        <option value="">--Make a selection--</option>
+                        <option value="Network graph">Network graph</option>
+                        <option
+                          value="Network meta-analysis results table with estimates of consistency"
+                        >
+                          Network meta-analysis results table with estimates of
+                          consistency
+                        </option>
+                        <option
+                          value="Network meta-analysis rank ordering table"
+                        >
+                          Network meta-analysis rank ordering table
+                        </option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-700"
+                        >Alt text</label
+                      >
+                      <textarea
+                        rows="4"
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                        x-model="sd_meta_data_figure.alt_text"
+                        @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'alt_text', sd_meta_data_figure.alt_text)"
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700"
+                      >Pictures</label
+                    >
+                    <div>
+                      <input
+                        multiple
+                        type="file"
+                        @change="uploadFiles($el, `/sd_meta_data_figures/${sd_meta_data_figure.id}`, 'pictures', sd_meta_data_figure)"
+                      />
+                    </div>
+                  </div>
+                  <div class="flex flex-wrap">
+                    <template
+                      x-for="(picture, picture_index) in sd_meta_data_figure.pictures"
+                    >
+                      <div class="relative w-64 p-1">
+                        <img
+                          :src="picture.url"
+                          class="w-full"
+                          :title="sd_meta_data_figure.alt_text"
+                        />
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="w-6 h-6 absolute top-0 right-0 bg-red-800 text-white p-2 rounded hover:bg-red-500 m-2 cursor-pointer"
+                          @click="if (confirm('Are you sure?')) {
+                            await apiCall(`/pictures/${picture.id}/delete_image_attachment`, 'DELETE')
+                            sd_meta_data_figure.pictures.splice(picture_index, 1)
+                          }"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                          />
+                        </svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="w-6 h-6 absolute top-0 left-0 bg-purple-800 text-white p-2 rounded hover:bg-purple-500 m-2 cursor-pointer"
+                          @click="imageModalObject = picture"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6"
+                          />
+                        </svg>
+                        <a :href="picture.url" target="_blank">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="w-6 h-6 absolute bottom-0 right-0 bg-purple-800 text-white p-2 rounded hover:bg-purple-500 m-2 cursor-pointer"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+                            />
+                          </svg>
+                        </a>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </template>
+              <div
+                class="border-4 border-stone-300 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+                @click="sd_network_meta_analysis_result.sd_meta_data_figures.push(await apiCall('/sd_meta_data_figures', 'POST', { sd_figurable_type: 'SdNetworkMetaAnalysisResult', sd_figurable_id: sd_network_meta_analysis_result.id }))"
+              >
+                Figure
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="green"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="white"
+                  class="w-5 h-5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </template>
+          <div
+            class="border-4 border-stone-200 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+            @click="createSubResource('sd_network_meta_analysis_results', 'sd_result_items', sd_result_item.id, sd_result_item)"
+          >
+            Add Network Meta-analysis
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="green"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="white"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div
+          x-show="sd_result_item.show"
+          x-transition:enter="ease-out duration-300"
+          x-transition:enter-start="opacity-0"
+          x-transition:enter-end="opacity-100"
+          x-transition:leave="ease-in duration-200"
+          x-transition:leave-start="opacity-100"
+          x-transition:leave-end="opacity-0"
+          class="bg-rose-50 p-2"
+        >
+          <h4
+            class="text-xs font-bold border-b-2 flex items-center cursor-pointer"
+            @click="createSubResource('sd_meta_regression_analysis_results', 'sd_result_items', sd_result_item.id, sd_result_item)"
+          >
+            Meta-regression Results by Outcome(s)
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="green"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="white"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </h4>
+          <template
+            x-for="(sd_meta_regression_analysis_result, sd_meta_regression_analysis_result_index) in sd_result_item.sd_meta_regression_analysis_results"
+            :key="sd_meta_regression_analysis_result.id"
+          >
+            <div class="bg-rose-200 m-2 p-2 rounded-md space-y-2">
+              <div class="flex justify-between items-center">
+                <select
+                  class="w-12"
+                  @change="moveElementInArray(sd_result_item, 'sd_meta_regression_analysis_results', sd_meta_regression_analysis_result_index, $el.value - 1)"
+                >
+                  <template
+                    x-for="i in sd_result_item.sd_meta_regression_analysis_results.length"
+                  >
+                    <option
+                      :value="i"
+                      x-text="i"
+                      :selected="i === sd_meta_regression_analysis_result_index + 1"
+                    ></option>
+                  </template>
+                </select>
+                <div
+                  class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+                  @click="if (confirm('Are you sure?')) {
+                    await updateSubResource('sd_meta_regression_analysis_results', sd_meta_regression_analysis_result.id, 'DELETE')
+                    sd_result_item.sd_meta_regression_analysis_results.splice(sd_meta_regression_analysis_result_index, 1)
+                  }"
+                >
+                  Remove Meta-regression Result
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700"
+                  >Outcome(s)</label
+                >
+                <div>
+                  <template x-if="Object.keys(sdMetaDatum).length !== 0">
+                    <select
+                      multiple="multiple"
+                      x-init="$nextTick(() => {
+                        initSelect2(
+                          $el,
+                          'sd_outcomes',
+                          sd_meta_regression_analysis_result.sd_outcomes,
+                          `sd_meta_regression_analysis_results/${sd_meta_regression_analysis_result.id}/sd_outcomes`,
+                          { sd_outcomeable_id: sd_meta_regression_analysis_result.id, sd_outcomeable_type: 'SdMetaRegressionAnalysisResult' },
+                          `sd_meta_regression_analysis_results/${sd_meta_regression_analysis_result.id}/sd_outcomes`
+                        );
+                      })"
+                    ></select>
+                  </template>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-700"
+                  >Description</label
+                >
+                <div>
+                  <input
+                    type="text"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                    x-model="sd_meta_regression_analysis_result.name"
+                    @input.debounce="updateSubResource('sd_meta_regression_analysis_results', sd_meta_regression_analysis_result.id, 'PATCH', 'name', sd_meta_regression_analysis_result.name)"
+                  />
+                </div>
+              </div>
+              <div
+                class="flex items-center cursor-pointer"
+                @click="sd_meta_regression_analysis_result.sd_meta_data_figures.push(await apiCall('/sd_meta_data_figures', 'POST', { sd_figurable_type: 'SdMetaRegressionAnalysisResult', sd_figurable_id: sd_meta_regression_analysis_result.id }))"
+              >
+                <label class="block text-xs font-bold text-gray-700"
+                  >Figure(s)</label
+                >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="green"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="white"
+                  class="w-4 h-4 cursor-pointer"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <template
+                x-for="(sd_meta_data_figure, sd_meta_data_figure_index) in sd_meta_regression_analysis_result.sd_meta_data_figures"
+              >
+                <div class="bg-rose-300 m-2 p-2 rounded-md space-y-2">
+                  <div class="flex justify-end">
+                    <div
+                      class="text-xs p-1 rounded-md cursor-pointer bg-red-800 text-white"
+                      @click="if (confirm('Are you sure?')) {
+                        await updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'DELETE')
+                        sd_meta_regression_analysis_result.sd_meta_data_figures.splice(sd_meta_data_figure_index, 1)
+                      }"
+                    >
+                      Remove Figure
+                    </div>
+                  </div>
+                  <div>
+                    <div>
+                      <label class="block text-xs font-bold text-gray-700"
+                        >Alt text</label
+                      >
+                      <textarea
+                        rows="4"
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                        x-model="sd_meta_data_figure.alt_text"
+                        @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'alt_text', sd_meta_data_figure.alt_text)"
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-gray-700"
+                      >Pictures</label
+                    >
+                    <div>
+                      <input
+                        multiple
+                        type="file"
+                        @change="uploadFiles($el, `/sd_meta_data_figures/${sd_meta_data_figure.id}`, 'pictures', sd_meta_data_figure)"
+                      />
+                    </div>
+                  </div>
+                  <div class="flex flex-wrap">
+                    <template
+                      x-for="(picture, picture_index) in sd_meta_data_figure.pictures"
+                    >
+                      <div class="relative w-64 p-1">
+                        <img
+                          :src="picture.url"
+                          class="w-full"
+                          :title="sd_meta_data_figure.alt_text"
+                        />
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="w-6 h-6 absolute top-0 right-0 bg-red-800 text-white p-2 rounded hover:bg-red-500 m-2 cursor-pointer"
+                          @click="if (confirm('Are you sure?')) {
+                            await apiCall(`/pictures/${picture.id}/delete_image_attachment`, 'DELETE')
+                            sd_meta_data_figure.pictures.splice(picture_index, 1)
+                          }"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                          />
+                        </svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="w-6 h-6 absolute top-0 left-0 bg-purple-800 text-white p-2 rounded hover:bg-purple-500 m-2 cursor-pointer"
+                          @click="imageModalObject = picture"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6"
+                          />
+                        </svg>
+                        <a :href="picture.url" target="_blank">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="w-6 h-6 absolute bottom-0 right-0 bg-purple-800 text-white p-2 rounded hover:bg-purple-500 m-2 cursor-pointer"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+                            />
+                          </svg>
+                        </a>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </template>
+              <div
+                class="border-4 border-rose-300 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+                @click="sd_meta_regression_analysis_result.sd_meta_data_figures.push(await apiCall('/sd_meta_data_figures', 'POST', { sd_figurable_type: 'SdMetaRegressionAnalysisResult', sd_figurable_id: sd_meta_regression_analysis_result.id }))"
+              >
+                Figure
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="green"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="white"
+                  class="w-5 h-5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+          </template>
+          <div
+            class="border-4 border-rose-200 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+            @click="createSubResource('sd_meta_regression_analysis_results', 'sd_result_items', sd_result_item.id, sd_result_item)"
+          >
+            Add Meta-regression Result
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="green"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="white"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </template>
+    <div
+      class="border-4 border-purple-300 border-dotted m-2 p-2 rounded-md flex items-center justify-center cursor-pointer"
+      @click="createSubResource('sd_result_items', 'sd_meta_data', sdMetaDatumId, sdMetaDatum)"
+    >
+      Add Results for Another Key Question
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="green"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="white"
+        class="w-5 h-5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    </div>
+  </div>
+</div>
