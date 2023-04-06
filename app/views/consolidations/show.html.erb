@@ -19,6 +19,20 @@
             x-text="mh?.current_citations_project?.section_name ? mh?.current_citations_project?.section_name : 'Loading...'"
             >Loading...</span
           >
+          <span
+            x-cloak
+            x-show="mh?.current_citations_project?.section_name === 'Results'"
+          >
+            <template
+              x-for="(section, section_index) in ['Descriptive', 'BAC', 'WAC', 'NET']"
+            >
+              <a
+                :href="`null?citations_project_id=${mh?.current_citations_project?.citations_project_id}&efps_id=${efps_id()}&result_statistic_section_type_id=${section_index + 1}`"
+                class="text-base font-bold p-1 ml-1 rounded-md cursor-pointer hover:no-underline"
+                :class="result_statistic_section_type_id == section_index + 1 ? 'bg-srdrpurple text-white hover:text-white' : 'bg-gray-300 text-gray-600 hover:text-gray-600'"
+                x-text="section"
+              ></a> </template
+          ></span>
         </h1>
       </div>
       <div class="flex justify-between">
