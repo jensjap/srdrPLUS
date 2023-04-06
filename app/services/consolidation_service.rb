@@ -14,6 +14,16 @@ class ConsolidationService
     }
     outcome_arm_check = {}
     results_lookup = {}
+    dimensions_lookup = {}
+    extractions.each do |extraction|
+      dimensions_lookup[extraction.id] = {
+        type1_type_type1: {},
+        population: {},
+        arm_comparison: {},
+        timepoint_comparison: {},
+        measure: {}
+      }
+    end
 
     eefpss =
       ExtractionsExtractionFormsProjectsSection
@@ -51,6 +61,7 @@ class ConsolidationService
         next unless eefps.extraction_forms_projects_section.section.name == 'Outcomes'
 
         outcome_arm_check["#{eefps.extraction_id}/#{eefpst1.type1_type.id}/#{eefpst1.type1.id}"] = true
+        dimensions_lookup[eefps.extraction_id][:type1_type_type1]["#{eefpst1.type1_type.id}/#{eefpst1.type1.id}"] = true
 
         master_template[eefpst1.type1_type.id][eefpst1.type1.id] ||= {
           name: eefpst1.type1.name,
@@ -65,6 +76,7 @@ class ConsolidationService
             arms: {},
             measures: {}
           }
+          dimensions_lookup[eefps.extraction_id][:population][eefpst1r.population_name.id] = true
           case result_statistic_section_type_id
           when 1, 2
             eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
@@ -72,6 +84,8 @@ class ConsolidationService
                 name: eefpst1rc.timepoint_name.name,
                 unit: eefpst1rc.timepoint_name.unit
               }
+              dimensions_lookup[eefps.extraction_id][:timepoint_comparison][eefpst1rc.timepoint_name.id] =
+                true
             end
           when 3, 4
             rss = eefpst1r.within_arm_comparisons_section
@@ -85,6 +99,7 @@ class ConsolidationService
                       end.join(' vs '),
                 unit: ''
               }
+              dimensions_lookup[eefps.extraction_id][:timepoint_comparison][consolidated_id] = true
             end
           end
           eefpst1r.result_statistic_sections.each do |rss|
@@ -94,6 +109,7 @@ class ConsolidationService
               master_template[eefpst1.type1_type.id][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:measures][rssm.measure.id] ||= {
                 name: rssm.measure.name
               }
+              dimensions_lookup[eefps.extraction_id][:measure][rssm.measure.id] = true
               population = rss.population
               timepoints = population.extractions_extraction_forms_projects_sections_type1_row_columns
 
@@ -260,6 +276,7 @@ class ConsolidationService
                   name: eefpst1.type1.name,
                   description: eefpst1.type1.description
                 }
+                dimensions_lookup[eefps.extraction_id][:arm_comparison][eefpst1.type1.id] = true
               end
             end
           end
@@ -282,6 +299,7 @@ class ConsolidationService
                       end.join(' vs '),
                 description: ''
               }
+              dimensions_lookup[eefps.extraction_id][:arm_comparison][consolidated_id] = true
             end
           end
         end
@@ -291,6 +309,7 @@ class ConsolidationService
     {
       master_template:,
       results_lookup:,
+      dimensions_lookup:,
       extraction_ids: extractions.sort_by do |extraction|
                         extraction.consolidated ? 999_999_999 : extraction.id
                       end.map { |extraction| { id: extraction.id, user: extraction.user.email.split('@').first } },

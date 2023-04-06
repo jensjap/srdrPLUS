@@ -85,7 +85,17 @@
                                           class="!h-4"
                                           type="text"
                                           :value="results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`]?.record_value"
-                                          :placeholder="results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`] ? '' : '-not available-'"
+                                          :placeholder="if (results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`]) {
+                                            return ''
+                                          } else {
+                                            let placeholderMessages = []
+                                            if (!dimensions_lookup[extraction.id].type1_type_type1[`${type1_type_id}/${type1_id}`]) { placeholderMessages.push(`no oc`) };
+                                            if (!dimensions_lookup[extraction.id].population[population_name_id]) { placeholderMessages.push(`no pop`) };
+                                            if (!dimensions_lookup[extraction.id].arm_comparison[arm_id]) { placeholderMessages.push(`no arm/comp`) };
+                                            if (!dimensions_lookup[extraction.id].timepoint_comparison[timepoint_name_id]) { placeholderMessages.push(`no time/comp`) };
+                                            if (!dimensions_lookup[extraction.id].measure[measure_id]) { placeholderMessages.push(`no measure`) };
+                                            return placeholderMessages.join('; ')
+                                          }"
                                         />
                                       </td>
                                     </template>

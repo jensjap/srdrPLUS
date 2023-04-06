@@ -43,6 +43,7 @@ class ConsolidationsController < ApplicationController
           suggestions:,
           master_template: results[:master_template],
           results_lookup: results[:results_lookup],
+          dimensions_lookup: results[:dimensions_lookup],
           extraction_ids: results[:extraction_ids],
           result_statistic_section_type_id: results[:result_statistic_section_type_id]
         }
