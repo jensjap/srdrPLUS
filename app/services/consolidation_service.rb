@@ -122,6 +122,7 @@ class ConsolidationService
                   arm = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1
                   timepoint_name = tps_arms_rssm.timepoint.timepoint_name
                   measure = rssm.measure
+                  tps_arms_rssm.records.create! if tps_arms_rssm.records.blank?
                   record = tps_arms_rssm.records.first
                   results_lookup["#{extraction.id}-#{type1_type.id}-#{outcome.id}-#{population_name.id}-#{arm.id}-#{timepoint_name.id}-#{measure.id}"] = {
                     extraction_id: extraction.id,
@@ -153,6 +154,7 @@ class ConsolidationService
                   end.join('/')
                   timepoint_name = tps_comparisons_rssm.timepoint.timepoint_name
                   measure = rssm.measure
+                  tps_comparisons_rssm.records.create! if tps_comparisons_rssm.records.blank?
                   record = tps_comparisons_rssm.records.first
                   results_lookup["#{extraction.id}-#{type1_type.id}-#{outcome.id}-#{population_name.id}-#{consolidated_bac_id}-#{timepoint_name.id}-#{measure.id}"] = {
                     extraction_id: extraction.id,
@@ -189,6 +191,7 @@ class ConsolidationService
                     comparate.comparable_element.comparable.timepoint_name.id
                   end.join('/')
                   measure = rssm.measure
+                  comparisons_arms_rssm.records.create! if comparisons_arms_rssm.records.blank?
                   record = comparisons_arms_rssm.records.first
                   results_lookup["#{extraction.id}-#{type1_type.id}-#{outcome.id}-#{population_name.id}-#{arm.id}-#{consolidated_wac_id}-#{measure.id}"] = {
                     extraction_id: extraction.id,
@@ -224,6 +227,7 @@ class ConsolidationService
                     comparate.comparable_element.comparable.timepoint_name.id
                   end.join('/')
                   measure = rssm.measure
+                  wacs_bacs_rssm.records.create! if wacs_bacs_rssm.records.blank?
                   record = wacs_bacs_rssm.records.first
                   results_lookup["#{extraction.id}-#{type1_type.id}-#{outcome.id}-#{population_name.id}-#{consolidated_bac_id}-#{consolidated_wac_id}-#{measure.id}"] = {
                     extraction_id: extraction.id,
