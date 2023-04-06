@@ -18,8 +18,8 @@ class ConsolidationService
     eefpss =
       ExtractionsExtractionFormsProjectsSection
       .includes(
-        :extraction,
         {
+          extraction: :user,
           extraction_forms_projects_section: :section,
           extractions_extraction_forms_projects_sections_type1s: [
             :type1,
@@ -293,7 +293,7 @@ class ConsolidationService
       results_lookup:,
       extraction_ids: extractions.sort_by do |extraction|
                         extraction.consolidated ? 999_999_999 : extraction.id
-                      end.map(&:id),
+                      end.map { |extraction| { id: extraction.id, user: extraction.user.email.split('@').first } },
       result_statistic_section_type_id:
     }
   end

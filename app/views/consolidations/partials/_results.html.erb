@@ -85,19 +85,19 @@
                                 >
                                   <tr>
                                     <template
-                                      x-for="(extraction_id, extraction_id_index) in extraction_ids"
+                                      x-for="(extraction, extraction_id_index) in extraction_ids"
                                     >
                                       <td
                                         class="text-center whitespace-nowrap"
-                                        :title="`Extraction: ${extraction_id}`"
+                                        :title="`Extraction ID: ${extraction.id} by ${extraction.user}`"
                                       >
                                         <input
-                                          :disabled="!results_lookup[`${extraction_id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`] || extraction_id_index !== extraction_ids.length - 1"
-                                          @input.debounce.1000ms="updateRecord(results_lookup[`${extraction_id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`]?.record_id, $el.value)"
+                                          :disabled="!results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`] || extraction_id_index !== extraction_ids.length - 1"
+                                          @input.debounce.1000ms="updateRecord(results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`]?.record_id, $el.value)"
                                           class="!h-4"
                                           type="text"
-                                          :value="results_lookup[`${extraction_id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`]?.record_value"
-                                          :placeholder="results_lookup[`${extraction_id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`] ? '' : '-not available-'"
+                                          :value="results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`]?.record_value"
+                                          :placeholder="results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`] ? '' : '-not available-'"
                                         />
                                       </td>
                                     </template>
