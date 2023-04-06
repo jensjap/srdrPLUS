@@ -1,8 +1,4 @@
 class ConsolidationService
-  def self.check
-    results(ExtractionFormsProjectsSection.find(5602), CitationsProject.find(267_373), 1)
-  end
-
   def self.results(efps, citations_project, result_statistic_section_type_id)
     return {} unless efps.extraction_forms_projects_section_type.name == 'Results'
 
