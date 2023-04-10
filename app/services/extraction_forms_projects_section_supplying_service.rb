@@ -85,6 +85,10 @@ class ExtractionFormsProjectsSectionSupplyingService
           'linkId' => question_linkid,
           'text' => question.name,
           'type' => 'group',
+          'code' => {
+            'code' => 'question',
+            'display' => 'question'
+          },
           'item' => []
         }
 
@@ -94,6 +98,10 @@ class ExtractionFormsProjectsSectionSupplyingService
             'linkId' => question_row_linkid,
             'text' => row.name,
             'type' => 'group',
+            'code' => {
+              'code' => 'row',
+              'display' => 'row'
+            },
             'item' => []
           }
           for row_column in row.question_row_columns do
@@ -123,17 +131,19 @@ class ExtractionFormsProjectsSectionSupplyingService
               ]
               item['type'] = 'decimal'
             elsif row_column.question_row_column_type.id == 5
-              item['type'] = 'text'
+              item['type'] = 'coding'
               item['repeats'] = true
               item['answerConstraint'] = 'optionsOnly'
-              
+
               if not row_column.question_row_columns_question_row_column_options.nil?
                 item['answerOption'] = []
                 for candidate in row_column.question_row_columns_question_row_column_options do
                   if candidate['question_row_column_option_id'] == 1
                     if not candidate['name'].empty?
                       item['answerOption'].append({
-                        'valueString' => candidate['name']
+                        'valueCoding' => {
+                          'code' => candidate['name']
+                        }
                       })
                       if not candidate.followup_field.nil?
                         item['item'] = {
@@ -143,7 +153,9 @@ class ExtractionFormsProjectsSectionSupplyingService
                           'enableWhen' => {
                             'question' => question_row_column_linkid,
                             'operator' => '=',
-                            'answerString' => candidate['name']
+                            'answerCoding' => {
+                              'code' => candidate['name']
+                            }
                           }
                         }
                       end
@@ -152,34 +164,38 @@ class ExtractionFormsProjectsSectionSupplyingService
                 end
               end
             elsif row_column.question_row_column_type.id == 6
-              item['type'] = 'text'
+              item['type'] = 'coding'
               item['repeats'] = false
               item['answerConstraint'] = 'optionsOnly'
-              
+
               if not row_column.question_row_columns_question_row_column_options.nil?
                 item['answerOption'] = []
                 for candidate in row_column.question_row_columns_question_row_column_options do
                   if candidate['question_row_column_option_id'] == 1
                     if not candidate['name'].empty?
                       item['answerOption'].append({
-                        'valueString' => candidate['name']
+                        'valueCoding' => {
+                          'code' => candidate['name']
+                        }
                       })
                     end
                   end
                 end
               end
             elsif row_column.question_row_column_type.id == 7
-              item['type'] = 'text'
+              item['type'] = 'coding'
               item['repeats'] = false
               item['answerConstraint'] = 'optionsOnly'
-              
+
               if not row_column.question_row_columns_question_row_column_options.nil?
                 item['answerOption'] = []
                 for candidate in row_column.question_row_columns_question_row_column_options do
                   if candidate['question_row_column_option_id'] == 1
                     if not candidate['name'].empty?
                       item['answerOption'].append({
-                        'valueString' => candidate['name']
+                        'valueCoding' => {
+                          'code' => candidate['name']
+                        }
                       })
                       if not candidate.followup_field.nil?
                         item['item'] = {
@@ -189,7 +205,9 @@ class ExtractionFormsProjectsSectionSupplyingService
                           'enableWhen' => {
                             'question' => question_row_column_linkid,
                             'operator' => '=',
-                            'answerString' => candidate['name']
+                            'answerCoding' => {
+                              'code' => candidate['name']
+                            }
                           }
                         }
                       end
@@ -201,7 +219,7 @@ class ExtractionFormsProjectsSectionSupplyingService
               item['type'] = 'text'
               item['repeats'] = false
               item['answerConstraint'] = 'optionsOrString'
-              
+
               if not row_column.question_row_columns_question_row_column_options.nil?
                 item['answerOption'] = []
                 for candidate in row_column.question_row_columns_question_row_column_options do
@@ -218,7 +236,7 @@ class ExtractionFormsProjectsSectionSupplyingService
               item['type'] = 'text'
               item['repeats'] = true
               item['answerConstraint'] = 'optionsOrString'
-              
+
               if not row_column.question_row_columns_question_row_column_options.nil?
                 item['answerOption'] = []
                 for candidate in row_column.question_row_columns_question_row_column_options do
