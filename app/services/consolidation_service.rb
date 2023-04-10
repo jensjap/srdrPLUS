@@ -11,6 +11,7 @@ class ConsolidationService
     outcome_arm_check = {}
     results_lookup = {}
     dimensions_lookup = {}
+    rss_lookup = {}
     extractions.each do |extraction|
       dimensions_lookup[extraction.id] = {
         type1_type_type1: {},
@@ -101,6 +102,7 @@ class ConsolidationService
           eefpst1r.result_statistic_sections.each do |rss|
             next unless rss.result_statistic_section_type_id == result_statistic_section_type_id
 
+            rss_lookup["#{eefps.extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}"] = rss.id
             rss.result_statistic_sections_measures.each do |rssm|
               master_template[eefpst1.type1_type.id][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:measures][rssm.measure.id] ||= {
                 name: rssm.measure.name
@@ -306,6 +308,7 @@ class ConsolidationService
       master_template:,
       results_lookup:,
       dimensions_lookup:,
+      rss_lookup:,
       extraction_ids: extractions.sort_by do |extraction|
                         extraction.consolidated ? 999_999_999 : extraction.id
                       end.map { |extraction| { id: extraction.id, user: extraction.user.email.split('@').first } },

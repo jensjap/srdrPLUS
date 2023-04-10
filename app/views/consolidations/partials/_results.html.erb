@@ -25,7 +25,7 @@
                     class="text-sm font-medium"
                     x-text="master_template[type1_type_id][type1_id].populations[population_name_id].name"
                   ></h4>
-                  <table>
+                  <table class="table-fixed">
                     <thead>
                       <tr>
                         <th class="text-left whitespace-nowrap">Timepoint</th>
@@ -49,7 +49,7 @@
                             class="whitespace-nowrap"
                             x-text="master_template[type1_type_id][type1_id].populations[population_name_id].timepoints[timepoint_name_id].name"
                           ></td>
-                          <td class="">
+                          <td>
                             <table>
                               <template
                                 x-for="measure_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].measures)"
@@ -66,8 +66,8 @@
                           <template
                             x-for="arm_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].arms)"
                           >
-                            <td>
-                              <table>
+                            <td class="border-x-2 border-gray-300">
+                              <table class="table-fixed">
                                 <template
                                   x-for="measure_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].measures)"
                                 >
@@ -79,24 +79,31 @@
                                         class="text-center whitespace-nowrap"
                                         :title="`Extraction ID: ${extraction.id} by ${extraction.user}`"
                                       >
-                                        <input
-                                          :disabled="!results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`] || extraction_id_index !== extraction_ids.length - 1"
-                                          @input.debounce.1000ms="updateRecord(results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`]?.record_id, $el.value)"
-                                          class="!h-4"
-                                          type="text"
-                                          :value="results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`]?.record_value"
-                                          :placeholder="if (results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`]) {
-                                            return ''
-                                          } else {
-                                            let placeholderMessages = []
-                                            if (!dimensions_lookup[extraction.id].type1_type_type1[`${type1_type_id}/${type1_id}`]) { placeholderMessages.push(`no oc`) };
-                                            if (!dimensions_lookup[extraction.id].population[population_name_id]) { placeholderMessages.push(`no pop`) };
-                                            if (!dimensions_lookup[extraction.id].arm_comparison[arm_id]) { placeholderMessages.push(`no arm/comp`) };
-                                            if (!dimensions_lookup[extraction.id].timepoint_comparison[timepoint_name_id]) { placeholderMessages.push(`no time/comp`) };
-                                            if (!dimensions_lookup[extraction.id].measure[measure_id]) { placeholderMessages.push(`no measure`) };
-                                            return placeholderMessages.join('; ')
-                                          }"
-                                        />
+                                        <template
+                                          x-if="createPlaceholderMessage(extraction.id, type1_type_id, type1_id, population_name_id, arm_id, timepoint_name_id, measure_id) !== 'no measure'"
+                                        >
+                                          <div>
+                                            <input
+                                              :disabled="!results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`] || extraction_id_index !== extraction_ids.length - 1"
+                                              @input.debounce.1000ms="updateRecord(results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`]?.record_id, $el.value)"
+                                              class="!h-4"
+                                              type="text"
+                                              size="4"
+                                              :value="results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`]?.record_value"
+                                              :placeholder="createPlaceholderMessage(extraction.id, type1_type_id, type1_id, population_name_id, arm_id, timepoint_name_id, measure_id)"
+                                            />
+                                          </div>
+                                        </template>
+                                        <template
+                                          x-if="createPlaceholderMessage(extraction.id, type1_type_id, type1_id, population_name_id, arm_id, timepoint_name_id, measure_id) === 'no measure'"
+                                        >
+                                          <div
+                                            class="bg-srdrpurple text-white rounded-md text-center cursor-pointer text-xs"
+                                            @click="createRssm(rss_lookup[`${extraction.id}-${type1_id}-${population_name_id}`], measure_id)"
+                                          >
+                                            Add
+                                          </div>
+                                        </template>
                                       </td>
                                     </template>
                                   </tr>
