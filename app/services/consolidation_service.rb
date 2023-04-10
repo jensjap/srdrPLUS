@@ -304,7 +304,7 @@ class ConsolidationService
                 comparate.comparable_element.comparable.type1.id
               end.join('/')
               master_template[eefpst1.type1_type_id][eefpst1.type1_id][:populations][eefpst1r.population_name_id][:arms][consolidated_id] ||= {
-                name: comparison.comparates.map do |comparate|
+                name: comparison.is_anova ? 'All Arms (ANOVA)' : comparison.comparates.map do |comparate|
                         comparate.comparable_element.comparable.type1.name
                       end.join(' vs '),
                 description: ''
