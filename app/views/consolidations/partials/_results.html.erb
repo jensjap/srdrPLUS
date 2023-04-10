@@ -80,7 +80,7 @@
                                         :title="`Extraction ID: ${extraction.id} by ${extraction.user}`"
                                       >
                                         <template
-                                          x-if="createPlaceholderMessage(extraction.id, type1_type_id, type1_id, population_name_id, arm_id, timepoint_name_id, measure_id) !== 'no measure'"
+                                          x-if="extraction_ids.length !== extraction_id_index + 1 || createPlaceholderMessage(extraction.id, type1_type_id, type1_id, population_name_id, arm_id, timepoint_name_id, measure_id) !== 'no measure'"
                                         >
                                           <div>
                                             <input
@@ -95,7 +95,7 @@
                                           </div>
                                         </template>
                                         <template
-                                          x-if="createPlaceholderMessage(extraction.id, type1_type_id, type1_id, population_name_id, arm_id, timepoint_name_id, measure_id) === 'no measure'"
+                                          x-if="extraction_ids.length === extraction_id_index + 1 && createPlaceholderMessage(extraction.id, type1_type_id, type1_id, population_name_id, arm_id, timepoint_name_id, measure_id) === 'no measure'"
                                         >
                                           <div
                                             class="bg-srdrpurple text-white rounded-md text-center cursor-pointer text-xs"
