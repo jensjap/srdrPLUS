@@ -124,7 +124,10 @@ class ConsolidationService
                         timepoint_id: eefpst1rc.id,
                         extractions_extraction_forms_projects_sections_type1_id: second_eefpst1.id
                       )
-                      tps_arms_rssm.records.create! if tps_arms_rssm.records.blank?
+                      if tps_arms_rssm.records.blank?
+                        tps_arms_rssm.records.create!
+                        rssm.reload
+                      end
                     end
                   end
                 end
@@ -155,7 +158,10 @@ class ConsolidationService
                       timepoint_id: eefpst1rc.id,
                       comparison_id: comparison.id
                     )
-                    tps_comparisons_rssm.records.create! if tps_comparisons_rssm.records.blank?
+                    if tps_comparisons_rssm.records.blank?
+                      tps_comparisons_rssm.records.create!
+                      rssm.reload
+                    end
                   end
                 end
                 rssm.tps_comparisons_rssms.each do |tps_comparisons_rssm|
@@ -191,7 +197,10 @@ class ConsolidationService
                         extractions_extraction_forms_projects_sections_type1: second_eefpst1,
                         comparison_id: comparison.id
                       )
-                      comparisons_arms_rssm.records.create! if comparisons_arms_rssm.records.blank?
+                      if comparisons_arms_rssm.records.blank?
+                        comparisons_arms_rssm.records.create!
+                        rssm.reload
+                      end
                     end
                   end
                 end
@@ -226,7 +235,10 @@ class ConsolidationService
                       wac: wac_comparison,
                       bac: bac_comparison
                     )
-                    wacs_bacs_rssm.records.create! if wacs_bacs_rssm.records.blank?
+                    if wacs_bacs_rssm.records.blank?
+                      wacs_bacs_rssm.records.create!
+                      rssm.reload
+                    end
                   end
                 end
                 rssm.wacs_bacs_rssms.each do |wacs_bacs_rssm|
