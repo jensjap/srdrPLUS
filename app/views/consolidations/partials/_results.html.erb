@@ -21,10 +21,20 @@
                 x-for="population_name_id in Object.keys(master_template[type1_type_id][type1_id].populations)"
               >
                 <div class="overflow-x-auto overflow-y-hidden ml-4">
-                  <h4
-                    class="text-sm font-medium"
-                    x-text="master_template[type1_type_id][type1_id].populations[population_name_id].name"
-                  ></h4>
+                  <h4 class="text-sm font-medium">
+                    <span
+                      x-text="master_template[type1_type_id][type1_id].populations[population_name_id].name"
+                    ></span>
+                    <template
+                      x-if="rss_lookup[`${extraction_ids[extraction_ids.length - 1].id}-${type1_id}-${population_name_id}`]"
+                    >
+                      <span
+                        class="ml-1 font-bold text-xs text-srdrpurple cursor-pointer"
+                        @click="current_rss_id = rss_lookup[`${extraction_ids[extraction_ids.length - 1].id}-${type1_id}-${population_name_id}`]"
+                        >(Add Comparisons)</span
+                      >
+                    </template>
+                  </h4>
                   <table class="table-fixed">
                     <thead>
                       <tr>
@@ -34,8 +44,9 @@
                           x-for="arm_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].arms)"
                         >
                           <th
-                            class="text-center whitespace-nowrap"
+                            class="text-center whitespace-nowrap truncate"
                             x-text="master_template[type1_type_id][type1_id].populations[population_name_id].arms[arm_id].name"
+                            :title="master_template[type1_type_id][type1_id].populations[population_name_id].arms[arm_id].name"
                           ></th>
                         </template>
                       </tr>

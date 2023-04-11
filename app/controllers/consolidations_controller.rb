@@ -45,6 +45,7 @@ class ConsolidationsController < ApplicationController
           results_lookup: results[:results_lookup],
           dimensions_lookup: results[:dimensions_lookup],
           rss_lookup: results[:rss_lookup],
+          comparables: results[:comparables],
           extraction_ids: results[:extraction_ids],
           result_statistic_section_type_id: results[:result_statistic_section_type_id]
         }
