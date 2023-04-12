@@ -206,9 +206,7 @@ class ExtractionSupplyingService
             checkbox_id = match[0].to_i
             name = ans_form.find(checkbox_id)['name']
             item['answer'] = {
-              'valueCoding' => {
-                'code' => name
-              }
+              'valueString' => name
             }
 
             eefps['item'].append(item.dup)
@@ -224,17 +222,13 @@ class ExtractionSupplyingService
         elsif type == 6
           name = ans_form.find(value)['name']
           item['answer'] = {
-            'valueCoding' => {
-              'code' => name
-            }
+            'valueString' => name
           }
           eefps['item'].append(item)
         elsif type == 7
           name = ans_form.find(value)['name']
           item['answer'] = {
-            'valueCoding' => {
-              'code' => name
-            }
+            'valueString' => name
           }
           eefps['item'].append(item)
           if followups.has_key?(value.to_i)

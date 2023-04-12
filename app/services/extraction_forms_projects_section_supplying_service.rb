@@ -85,10 +85,7 @@ class ExtractionFormsProjectsSectionSupplyingService
           'linkId' => question_linkid,
           'text' => question.name,
           'type' => 'group',
-          'code' => {
-            'code' => 'question',
-            'display' => 'question'
-          },
+          'definition' => 'doc/fhir/questionnaire_group_question.txt'
           'item' => []
         }
 
@@ -98,13 +95,11 @@ class ExtractionFormsProjectsSectionSupplyingService
             'linkId' => question_row_linkid,
             'text' => row.name,
             'type' => 'group',
-            'code' => {
-              'code' => 'row',
-              'display' => 'row'
-            },
+            'definition' => 'doc/fhir/questionnaire_group_row.txt'
             'item' => []
           }
           for row_column in row.question_row_columns do
+            options = row_column.question_row_columns_question_row_column_options
             question_row_column_linkid = question_row_linkid + '-' + row_column.id.to_s
             item = {
               'linkId' => question_row_column_linkid,
@@ -113,141 +108,82 @@ class ExtractionFormsProjectsSectionSupplyingService
 
             if row_column.question_row_column_type.id == 1
               item['type'] = 'text'
-              item['maxLength'] = row_column.question_row_columns_question_row_column_options[2]['name'].to_i
+              item['maxLength'] = options[2]['name'].to_i
               item['extension'] = [{
                 'url' => 'http://hl7.org/fhir/StructureDefinition/minLength',
-                'valueInteger' => row_column.question_row_columns_question_row_column_options[1]['name'].to_i
+                'valueInteger' => options[1]['name'].to_i
               }]
             elsif row_column.question_row_column_type.id == 2
               item['extension'] = [
                 {
                   'url' => 'http://hl7.org/fhir/StructureDefinition/minValue',
-                  'valueDecimal' => row_column.question_row_columns_question_row_column_options[4]['name']
+                  'valueDecimal' => options[4]['name']
                 },
                 {
                   'url' => 'http://hl7.org/fhir/StructureDefinition/maxValue',
-                  'valueDecimal' => row_column.question_row_columns_question_row_column_options[5]['name']
+                  'valueDecimal' => options[5]['name']
                 }
               ]
               item['type'] = 'decimal'
             elsif row_column.question_row_column_type.id == 5
-              item['type'] = 'coding'
+              item['type'] = 'text'
               item['repeats'] = true
               item['answerConstraint'] = 'optionsOnly'
 
-              if not row_column.question_row_columns_question_row_column_options.nil?
-                item['answerOption'] = []
-                for candidate in row_column.question_row_columns_question_row_column_options do
-                  if candidate['question_row_column_option_id'] == 1
-                    if not candidate['name'].empty?
-                      item['answerOption'].append({
-                        'valueCoding' => {
-                          'code' => candidate['name']
-                        }
-                      })
-                      if not candidate.followup_field.nil?
-                        item['item'] = {
-                          'linkId' => question_row_column_linkid + '-' + candidate.followup_field.id.to_s,
-                          'type' => 'text',
-                          'answerOption' => 'valueString',
-                          'enableWhen' => {
-                            'question' => question_row_column_linkid,
-                            'operator' => '=',
-                            'answerCoding' => {
-                              'code' => candidate['name']
-                            }
-                          }
-                        }
-                      end
-                    end
-                  end
-                end
+              if not options.nil?
+                item = add_answer_options_and_followups_to_item(
+                  item = item,
+                  options = options,
+                  linkid = question_row_column_linkid
+                )
               end
             elsif row_column.question_row_column_type.id == 6
-              item['type'] = 'coding'
+              item['type'] = 'text'
               item['repeats'] = false
               item['answerConstraint'] = 'optionsOnly'
 
-              if not row_column.question_row_columns_question_row_column_options.nil?
-                item['answerOption'] = []
-                for candidate in row_column.question_row_columns_question_row_column_options do
-                  if candidate['question_row_column_option_id'] == 1
-                    if not candidate['name'].empty?
-                      item['answerOption'].append({
-                        'valueCoding' => {
-                          'code' => candidate['name']
-                        }
-                      })
-                    end
-                  end
-                end
+              if not options.nil?
+                item = add_answer_options_and_followups_to_item(
+                  item = item,
+                  options = options,
+                  linkid = question_row_column_linkid
+                )
               end
             elsif row_column.question_row_column_type.id == 7
-              item['type'] = 'coding'
+              item['type'] = 'text'
               item['repeats'] = false
               item['answerConstraint'] = 'optionsOnly'
 
-              if not row_column.question_row_columns_question_row_column_options.nil?
-                item['answerOption'] = []
-                for candidate in row_column.question_row_columns_question_row_column_options do
-                  if candidate['question_row_column_option_id'] == 1
-                    if not candidate['name'].empty?
-                      item['answerOption'].append({
-                        'valueCoding' => {
-                          'code' => candidate['name']
-                        }
-                      })
-                      if not candidate.followup_field.nil?
-                        item['item'] = {
-                          'linkId' => question_row_column_linkid + '-' + candidate.followup_field.id.to_s,
-                          'type' => 'text',
-                          'answerOption' => 'valueString',
-                          'enableWhen' => {
-                            'question' => question_row_column_linkid,
-                            'operator' => '=',
-                            'answerCoding' => {
-                              'code' => candidate['name']
-                            }
-                          }
-                        }
-                      end
-                    end
-                  end
-                end
+              if not options.nil?
+                item = add_answer_options_and_followups_to_item(
+                  item = item,
+                  options = options,
+                  linkid = question_row_column_linkid
+                )
               end
             elsif row_column.question_row_column_type.id == 8
               item['type'] = 'text'
               item['repeats'] = false
               item['answerConstraint'] = 'optionsOrString'
 
-              if not row_column.question_row_columns_question_row_column_options.nil?
-                item['answerOption'] = []
-                for candidate in row_column.question_row_columns_question_row_column_options do
-                  if candidate['question_row_column_option_id'] == 1
-                    if not candidate['name'].empty?
-                      item['answerOption'].append({
-                        'valueString' => candidate['name']
-                      })
-                    end
-                  end
-                end
+              if not options.nil?
+                item = add_answer_options_and_followups_to_item(
+                  item = item,
+                  options = options,
+                  linkid = question_row_column_linkid
+                )
               end
             elsif row_column.question_row_column_type.id == 9
               item['type'] = 'text'
               item['repeats'] = true
               item['answerConstraint'] = 'optionsOrString'
 
-              if not row_column.question_row_columns_question_row_column_options.nil?
-                item['answerOption'] = []
-                for candidate in row_column.question_row_columns_question_row_column_options do
-                  if candidate['question_row_column_option_id'] == 1
-                    if not candidate['name'].empty?
-                      item['answerOption'].append({
-                        'valueString' => candidate['name']
-                      })
-                    end
-                  end
-                end
+              if not options.nil?
+                item = add_answer_options_and_followups_to_item(
+                  item = item,
+                  options = options,
+                  linkid = question_row_column_linkid
+                )
               end
             end
             row_item['item'].append(item)
@@ -327,4 +263,56 @@ class ExtractionFormsProjectsSectionSupplyingService
       return FHIR::EvidenceVariable.new(extraction_forms_projects_sections)
     end
   end
+
+  def add_followup_to_item(
+    item,
+    linkid,
+    followup_field_id,
+    enable_answer
+  )
+    old_followup_item = item['item']
+    followup_item = {
+      'linkId' => linkid + '-' + followup_field_id,
+      'type' => 'text',
+      'answerOption' => 'valueString',
+      'enableWhen' => {
+        'question' => linkid,
+        'operator' => '=',
+        'answerString' => enable_answer
+      }
+    }
+    if old_followup_item
+      item['item'].append(followup_item)
+    else
+      item['item'] = [followup_item]
+    end
+    return item
+  end
+
+  def add_answer_options_and_followups_to_item(
+    item,
+    options,
+    linkid
+  )
+    item['answerOption'] = []
+    for option in options do
+      if option['question_row_column_option_id'] == 1
+        if not option['name'].empty?
+          item['answerOption'].append({
+            'valueString' => option['name']
+          })
+          if not option.followup_field.nil?
+            item = add_followup_to_item(
+              item = item,
+              linkid = linkid,
+              followup_field_id = option.followup_field.id.to_s,
+              enable_answer = option['name']
+            )
+          end
+        end
+      end
+    end
+    return item
+  end
+
 end
