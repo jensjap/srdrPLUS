@@ -1,7 +1,7 @@
 class ExtractionFormsProjectsSectionSupplyingService
 
   def find_by_extraction_forms_project_id(id)
-    extraction_forms_projects_sections = ExtractionFormsProject.find(id).extraction_forms_projects_sections
+    efpss = ExtractionFormsProject.find(id).extraction_forms_projects_sections
     link_info = [
       {
         'relation' => 'tag',
@@ -12,15 +12,15 @@ class ExtractionFormsProjectsSectionSupplyingService
         'url' => 'doc/fhir/extraction_form.txt'
       }
     ]
-    create_bundle(objs=extraction_forms_projects_sections, type='collection', link_info=link_info)
+    create_bundle(objs=efpss, type='collection', link_info=link_info)
   end
 
   def find_by_extraction_forms_projects_section_id(id)
-    extraction_forms_projects_section = ExtractionFormsProjectsSection.find(id)
-    extraction_forms_projects_section_in_fhir = create_fhir_obj(extraction_forms_projects_section)
-    return extraction_forms_projects_section_in_fhir.validate unless extraction_forms_projects_section_in_fhir.valid?
+    efps = ExtractionFormsProjectsSection.find(id)
+    efps_in_fhir = create_fhir_obj(efps)
+    return efps_in_fhir.validate unless efps_in_fhir.valid?
 
-    extraction_forms_projects_section_in_fhir
+    efps_in_fhir
   end
 
   private
@@ -42,8 +42,8 @@ class ExtractionFormsProjectsSectionSupplyingService
 
   def create_fhir_obj(raw)
     if raw.extraction_forms_projects_section_type_id == 1
-      extraction_forms_projects_sections = {
-        'status' => 'draft',
+      efps = {
+        'status' => 'active',
         'id' => '3' + '-' + raw.id.to_s,
         'title' => raw.section_label,
         'identifier' => [{
@@ -53,20 +53,22 @@ class ExtractionFormsProjectsSectionSupplyingService
           'system' => 'https://srdrplus.ahrq.gov/',
           'value' => 'ExtractionFormsProjectsSection/' + raw.id.to_s
         }],
-        'characteristic' => []
+        'compose' => {
+          'include' => [{
+            'concept' => []
+          }]
+        }
       }
       for row in raw.extraction_forms_projects_sections_type1s do
         info = Type1.find(row['type1_id'])
-        extraction_forms_projects_sections['characteristic'].append({
-          'description' => info['description'],
-          'definitionCodeableConcept' => {
-            'text' => info['name']
-          }
+        efps['compose']['include'][0]['concept'].append({
+          'display' => info['description'],
+          'code' => info['name']
         })
       end
-      return FHIR::EvidenceVariable.new(extraction_forms_projects_sections)
+      return FHIR::ValueSet.new(efps)
     elsif raw.extraction_forms_projects_section_type_id == 2
-      extraction_forms_projects_sections = {
+      efps = {
         'status' => 'active',
         'id' => '3' + '-' + raw.id.to_s,
         'title' => raw.section_label,
@@ -85,7 +87,7 @@ class ExtractionFormsProjectsSectionSupplyingService
           'linkId' => question_linkid,
           'text' => question.name,
           'type' => 'group',
-          'definition' => 'doc/fhir/questionnaire_group_question.txt'
+          'definition' => 'doc/fhir/questionnaire_group_question.txt',
           'item' => []
         }
 
@@ -95,7 +97,7 @@ class ExtractionFormsProjectsSectionSupplyingService
             'linkId' => question_row_linkid,
             'text' => row.name,
             'type' => 'group',
-            'definition' => 'doc/fhir/questionnaire_group_row.txt'
+            'definition' => 'doc/fhir/questionnaire_group_row.txt',
             'item' => []
           }
           for row_column in row.question_row_columns do
@@ -225,13 +227,13 @@ class ExtractionFormsProjectsSectionSupplyingService
             end
           end
         end
-        extraction_forms_projects_sections['item'].append(question_item)
+        efps['item'].append(question_item)
       end
 
-      return FHIR::Questionnaire.new(extraction_forms_projects_sections)
+      return FHIR::Questionnaire.new(efps)
     elsif raw.extraction_forms_projects_section_type_id == 4
-      extraction_forms_projects_sections = {
-        'status' => 'draft',
+      efps = {
+        'status' => 'active',
         'id' => '3' + '-' + raw.id.to_s,
         'title' => raw.section_label,
         'identifier' => [{
@@ -241,26 +243,20 @@ class ExtractionFormsProjectsSectionSupplyingService
           'system' => 'https://srdrplus.ahrq.gov/',
           'value' => 'ExtractionFormsProjectsSection/' + raw.id.to_s
         }],
-        'characteristic' => []
+        'compose' => {
+          'include' => [{
+            'concept' => []
+          }]
+        }
       }
       for row in raw.extraction_forms_projects_sections_type1s do
         info = Type1.find(row['type1_id'])
-        characteristic = {
-          'description' => info['description'],
-          'definitionCodeableConcept' => {
-            'text' => info['name']
-          }
-        }
-
-        if row['type1_type_id'] == 5
-          characteristic['note'] = {'text' => 'Index Test'}
-        elsif row['type1_type_id'] == 6
-          characteristic['note'] = {'text' => 'Reference Test'}
-        end
-
-        extraction_forms_projects_sections['characteristic'].append(characteristic)
+        efps['compose']['include'][0]['concept'].append({
+          'display' => info['description'],
+          'code' => info['name']
+        })
       end
-      return FHIR::EvidenceVariable.new(extraction_forms_projects_sections)
+      return FHIR::ValueSet.new(efps)
     end
   end
 
