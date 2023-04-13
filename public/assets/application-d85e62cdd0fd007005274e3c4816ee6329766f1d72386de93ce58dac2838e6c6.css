@@ -26424,7 +26424,7 @@ body.sd_meta_data .sd-meta-data-index-edit {
 
 /* line 150, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
 .about .hero {
-  height: 300px;
+  height: 240px;
 }
 
 /* line 155, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/static_pages.scss */
@@ -29596,7 +29596,7 @@ td {
 }
 
 /* line 710, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
-table.unstriped tbody tr td:first-child {
+table.governance-board.unstriped tbody tr td {
   text-align: center;
   vertical-align: middle;
   font-size: 14px;
@@ -29604,11 +29604,19 @@ table.unstriped tbody tr td:first-child {
 }
 
 /* line 717, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+table.unstriped tbody tr td:first-child {
+  text-align: center;
+  vertical-align: middle;
+  font-size: 14px;
+  width: 11em;
+}
+
+/* line 724, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .overlay-parent {
   position: relative;
 }
 
-/* line 721, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 728, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 input,
 textarea,
 table,
@@ -29630,38 +29638,38 @@ select,
   margin: 0;
 }
 
-/* line 742, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 749, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 ul {
   margin-bottom: 0;
 }
 
-/* line 746, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 753, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .card-divider {
   background: rgba(248, 248, 255, 0.75);
 }
 
-/* line 750, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 757, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .button {
   margin: 0rem;
 }
 
-/* line 754, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 761, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .table-fixed-headers td {
   position: relative;
 }
 
-/* line 758, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 765, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .mx-10 {
   margin-left: 10px;
   margin-right: 10px;
 }
 
-/* line 763, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 770, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .m-10 {
   margin: 10px;
 }
 
-/* line 767, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 774, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 .project-info-header {
   border-top: 1px solid white;
   border-bottom: 1px solid white;
@@ -29670,47 +29678,47 @@ ul {
   color: white;
 }
 
-/* line 775, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 782, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 ul.submenu {
   background: #4c0d7d;
 }
 
-/* line 779, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 786, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 li.submenu {
   border-right: 1px white solid;
 }
 
-/* line 783, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 790, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 li.submenu > a {
   color: white;
   font-weight: bold;
 }
 
-/* line 788, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 795, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 ul.dropdown li ul li:hover {
   background: lightgrey;
 }
 
 @media (max-width: 640px) {
-  /* line 793, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+  /* line 800, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
   .res-menu {
     left: 0 !important;
     position: fixed !important;
     top: inherit !important;
   }
 
-  /* line 798, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+  /* line 805, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
   .mobile-overflow {
     overflow-x: scroll;
     overflow-y: visible;
   }
 }
-/* line 804, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 811, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 [x-cloak] {
   display: none !important;
 }
 
-/* line 808, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
+/* line 815, /home/jensjap/Hive/srdrPLUS/app/assets/stylesheets/application.css.scss */
 #toast-container {
   white-space: pre-line;
 }
