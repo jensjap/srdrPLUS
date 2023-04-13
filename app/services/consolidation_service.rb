@@ -12,7 +12,7 @@ class ConsolidationService
     results_lookup = {}
     dimensions_lookup = {}
     rss_lookup = {}
-    comparables = []
+    comparables = {}
     extractions.each do |extraction|
       dimensions_lookup[extraction.id] = {
         type1_type_type1: {},
@@ -82,7 +82,9 @@ class ConsolidationService
                 name: eefpst1rc.timepoint_name.name,
                 unit: eefpst1rc.timepoint_name.unit
               }
-              dimensions_lookup[eefps.extraction_id][:timepoint_comparison][eefpst1rc.timepoint_name.id] =
+              dimensions_lookup[eefps.extraction_id][:timepoint_comparison] ||= {}
+              dimensions_lookup[eefps.extraction_id][:timepoint_comparison][eefpst1r.population_name.id] ||= { timepoint_comparison: {} }
+              dimensions_lookup[eefps.extraction_id][:timepoint_comparison][eefpst1r.population_name.id][:timepoint_comparison][eefpst1rc.timepoint_name.id] =
                 true
             end
           when 3, 4
@@ -97,7 +99,10 @@ class ConsolidationService
                       end.join(' vs '),
                 unit: ''
               }
-              dimensions_lookup[eefps.extraction_id][:timepoint_comparison][consolidated_id] = true
+              dimensions_lookup[eefps.extraction_id][:timepoint_comparison] ||= {}
+              dimensions_lookup[eefps.extraction_id][:timepoint_comparison][eefpst1r.population_name.id] ||= { timepoint_comparison: {} }
+              dimensions_lookup[eefps.extraction_id][:timepoint_comparison][eefpst1r.population_name.id][:timepoint_comparison][consolidated_id] =
+                true
             end
           end
           eefpst1r.result_statistic_sections.each do |rss|
@@ -280,61 +285,79 @@ class ConsolidationService
     when 1, 3
       eefpss.each do |eefps|
         eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-          next unless eefps.extraction_forms_projects_section.section.name == 'Arms'
+          if eefps.extraction_forms_projects_section.section.name == 'Arms'
 
-          master_template.each do |type1_type_id, outcomes|
-            outcomes.each do |type1_id, outcome|
-              next unless outcome_arm_check["#{eefps.extraction_id}/#{type1_type_id}/#{type1_id}"]
+            master_template.each do |type1_type_id, outcomes|
+              outcomes.each do |type1_id, outcome|
+                next unless outcome_arm_check["#{eefps.extraction_id}/#{type1_type_id}/#{type1_id}"]
 
-              outcome[:populations].each do |population_name_id, _population|
-                master_template[type1_type_id][type1_id][:populations][population_name_id][:arms][eefpst1.type1.id] ||= {
-                  name: eefpst1.type1.name,
-                  description: eefpst1.type1.description
-                }
-                dimensions_lookup[eefps.extraction_id][:population] ||= {}
-                dimensions_lookup[eefps.extraction_id][:population][population_name_id] ||= { arm_comparison: {} }
-                dimensions_lookup[eefps.extraction_id][:population][population_name_id][:arm_comparison][eefpst1.type1.id] =
-                  true
+                outcome[:populations].each do |population_name_id, _population|
+                  master_template[type1_type_id][type1_id][:populations][population_name_id][:arms][eefpst1.type1.id] ||= {
+                    name: eefpst1.type1.name,
+                    description: eefpst1.type1.description
+                  }
+                  dimensions_lookup[eefps.extraction_id][:population] ||= {}
+                  dimensions_lookup[eefps.extraction_id][:population][population_name_id] ||= { arm_comparison: {} }
+                  dimensions_lookup[eefps.extraction_id][:population][population_name_id][:arm_comparison][eefpst1.type1.id] =
+                    true
+                end
               end
             end
-          end
-
-          if eefps.extraction.consolidated
-            comparables << { name: eefpst1.type1.name, comparable_id: eefpst1.id,
-                             comparable_type: eefpst1.class.to_s }
+          elsif eefps.extraction_forms_projects_section.section.name == 'Outcomes'
+            if eefps.extraction.consolidated
+              eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+                eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+                  comparables[eefpst1r.population_name.id] ||= []
+                  comparables[eefpst1r.population_name.id] << { name: eefpst1rc.timepoint_name.name, comparable_id: eefpst1rc.id,
+                                                                comparable_type: eefpst1rc.class.to_s }
+                end
+              end
+            end
           end
         end
       end
     when 2, 4
       eefpss.each do |eefps|
         eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-          if eefps.extraction_forms_projects_section.section.name == 'Outcomes'
+          next unless eefps.extraction_forms_projects_section.section.name == 'Outcomes'
 
-            eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
-              rss = eefpst1r.between_arm_comparisons_section
-              rss.comparisons.each do |comparison|
-                consolidated_id = comparison.comparates.map do |comparate|
-                  comparate.comparable_element.comparable.type1.id
-                end.join('/')
-                consolidated_id = 'ANOVA' if comparison.is_anova
-                master_template[eefpst1.type1_type_id][eefpst1.type1_id][:populations][eefpst1r.population_name_id][:arms][consolidated_id] ||= {
-                  name: if comparison.is_anova
-                          'All Arms (ANOVA)'
-                        else
-                          comparison.comparates.map do |comparate|
-                            comparate.comparable_element.comparable.type1.name
-                          end.join(' vs ')
-                        end,
-                  description: ''
-                }
-                dimensions_lookup[eefps.extraction_id][:population] ||= {}
-                dimensions_lookup[eefps.extraction_id][:population][eefpst1r.population_name_id] ||= { arm_comparison: {} }
-                dimensions_lookup[eefps.extraction_id][:population][eefpst1r.population_name_id][:arm_comparison][consolidated_id] =
-                  true
+          eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+            rss = eefpst1r.between_arm_comparisons_section
+            rss.comparisons.each do |comparison|
+              consolidated_id = comparison.comparates.map do |comparate|
+                comparate.comparable_element.comparable.type1.id
+              end.join('/')
+              consolidated_id = 'ANOVA' if comparison.is_anova
+              master_template[eefpst1.type1_type_id][eefpst1.type1_id][:populations][eefpst1r.population_name_id][:arms][consolidated_id] ||= {
+                name: if comparison.is_anova
+                        'All Arms (ANOVA)'
+                      else
+                        comparison.comparates.map do |comparate|
+                          comparate.comparable_element.comparable.type1.name
+                        end.join(' vs ')
+                      end,
+                description: ''
+              }
+              dimensions_lookup[eefps.extraction_id][:population] ||= {}
+              dimensions_lookup[eefps.extraction_id][:population][eefpst1r.population_name_id] ||= { arm_comparison: {} }
+              dimensions_lookup[eefps.extraction_id][:population][eefpst1r.population_name_id][:arm_comparison][consolidated_id] =
+                true
+            end
+
+            eefpss.each do |second_eefps|
+              unless second_eefps.extraction_forms_projects_section.section.name == 'Arms' && second_eefps.extraction.consolidated
+                next
+              end
+
+              second_eefps.extractions_extraction_forms_projects_sections_type1s.each do |second_eefpst1|
+                comparables[eefpst1r.population_name.id] ||= []
+                comparable = { name: second_eefpst1.type1.name, comparable_id: second_eefpst1.id,
+                               comparable_type: second_eefpst1.class.to_s }
+                next if comparables[eefpst1r.population_name.id].include?(comparable)
+
+                comparables[eefpst1r.population_name.id] << comparable
               end
             end
-          elsif eefps.extraction_forms_projects_section.section.name == 'Arms' && eefps.extraction.consolidated
-            comparables << { name: eefpst1.type1.name, comparable_id: eefpst1.id, comparable_type: eefpst1.class.to_s }
           end
         end
       end

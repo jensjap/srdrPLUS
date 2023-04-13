@@ -65,7 +65,9 @@
               Consolidated Extraction Comparisons
             </h3>
             <div>
-              <template x-for="(comparable, comparable_index) in comparables">
+              <template
+                x-for="(comparable, comparable_index) in comparables[current_population_name_id]"
+              >
                 <div class="flex justify-center items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -74,7 +76,7 @@
                     stroke-width="3"
                     stroke="green"
                     class="w-3 h-3 cursor-pointer"
-                    @click="comparable_group_1.push(comparables.splice(comparable_index, comparable_index + 1)[0])"
+                    @click="comparable_group_1.push(comparables[current_population_name_id].splice(comparable_index, comparable_index + 1)[0])"
                   >
                     <path
                       stroke-linecap="round"
@@ -90,7 +92,7 @@
                     stroke-width="3"
                     stroke="green"
                     class="w-3 h-3 cursor-pointer"
-                    @click="comparable_group_2.push(comparables.splice(comparable_index, comparable_index + 1)[0])"
+                    @click="comparable_group_2.push(comparables[current_population_name_id].splice(comparable_index, comparable_index + 1)[0])"
                   >
                     <path
                       stroke-linecap="round"
@@ -115,7 +117,7 @@
                       stroke-width="1.5"
                       stroke="red"
                       class="ml-2 cursor-pointer w-4 h-4"
-                      @click="comparables.push(comparable_group_1.splice(comparable_index, comparable_index + 1)[0])"
+                      @click="comparables[current_population_name_id].push(comparable_group_1.splice(comparable_index, comparable_index + 1)[0])"
                     >
                       <path
                         stroke-linecap="round"
@@ -140,7 +142,7 @@
                       stroke-width="1.5"
                       stroke="red"
                       class="ml-2 cursor-pointer w-4 h-4"
-                      @click="comparables.push(comparable_group_2.splice(comparable_index, comparable_index + 1)[0])"
+                      @click="comparables[current_population_name_id].push(comparable_group_2.splice(comparable_index, comparable_index + 1)[0])"
                     >
                       <path
                         stroke-linecap="round"

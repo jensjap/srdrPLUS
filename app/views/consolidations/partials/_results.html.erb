@@ -26,11 +26,12 @@
                       x-text="master_template[type1_type_id][type1_id].populations[population_name_id].name"
                     ></span>
                     <template
-                      x-if="rss_lookup[`${extraction_ids[extraction_ids.length - 1].id}-${type1_id}-${population_name_id}`]"
+                      x-if="rss_lookup[`${extraction_ids[extraction_ids.length - 1].id}-${type1_id}-${population_name_id}`] && (result_statistic_section_type_id > 1 && result_statistic_section_type_id < 4)"
                     >
                       <span
                         class="ml-1 font-bold text-xs text-srdrpurple cursor-pointer"
-                        @click="current_rss_id = rss_lookup[`${extraction_ids[extraction_ids.length - 1].id}-${type1_id}-${population_name_id}`]"
+                        @click="current_rss_id = rss_lookup[`${extraction_ids[extraction_ids.length - 1].id}-${type1_id}-${population_name_id}`];
+                        current_population_name_id = population_name_id;"
                         >(Add Comparisons)</span
                       >
                     </template>
