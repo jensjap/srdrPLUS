@@ -247,13 +247,13 @@
         if (!dLookup.population[population_name_id]) {
           placeholderMessages.push(`no pop`);
         }
-        if (!dLookup.arm_comparison[arm_id]) {
+        if (!dLookup.population[population_name_id]?.arm_comparison[arm_id]) {
           placeholderMessages.push(`no arm/comp`);
         }
         if (!dLookup.timepoint_comparison[timepoint_name_id]) {
           placeholderMessages.push(`no time/comp`);
         }
-        if (!dLookup.rss[rss_id].measure[measure_id]) {
+        if (!dLookup.rss[rss_id]?.measure[measure_id]) {
           placeholderMessages.push(`no measure`);
         }
         return placeholderMessages.join("; ");

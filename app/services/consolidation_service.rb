@@ -74,7 +74,7 @@ class ConsolidationService
             arms: {},
             measures: {}
           }
-          dimensions_lookup[eefps.extraction_id][:population][eefpst1r.population_name.id] = true
+          dimensions_lookup[eefps.extraction_id][:population][eefpst1r.population_name.id] ||= { arm_comparison: {} }
           case result_statistic_section_type_id
           when 1, 2
             eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
@@ -291,7 +291,10 @@ class ConsolidationService
                   name: eefpst1.type1.name,
                   description: eefpst1.type1.description
                 }
-                dimensions_lookup[eefps.extraction_id][:arm_comparison][eefpst1.type1.id] = true
+                dimensions_lookup[eefps.extraction_id][:population] ||= {}
+                dimensions_lookup[eefps.extraction_id][:population][population_name_id] ||= { arm_comparison: {} }
+                dimensions_lookup[eefps.extraction_id][:population][population_name_id][:arm_comparison][eefpst1.type1.id] =
+                  true
               end
             end
           end
@@ -324,7 +327,10 @@ class ConsolidationService
                         end,
                   description: ''
                 }
-                dimensions_lookup[eefps.extraction_id][:arm_comparison][consolidated_id] = true
+                dimensions_lookup[eefps.extraction_id][:population] ||= {}
+                dimensions_lookup[eefps.extraction_id][:population][eefpst1r.population_name_id] ||= { arm_comparison: {} }
+                dimensions_lookup[eefps.extraction_id][:population][eefpst1r.population_name_id][:arm_comparison][consolidated_id] =
+                  true
               end
             end
           elsif eefps.extraction_forms_projects_section.section.name == 'Arms' && eefps.extraction.consolidated
