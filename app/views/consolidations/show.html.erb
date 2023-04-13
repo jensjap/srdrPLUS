@@ -149,16 +149,63 @@
               this.result_statistic_section_type_id
             ],
             comparisons_attributes: {
-              1: {
-                is_anova: "false",
-                comparate_groups_attributes: {
-                  1: { comparates_attributes: {} },
-                  2: { comparates_attributes: {} },
-                },
-              },
+              1: {},
             },
           },
         };
+
+        if (
+          this.comparable_group_1.length === 0 &&
+          this.comparable_group_2.length === 0 &&
+          this.result_statistic_section_type_id !== 2
+        ) {
+          toastr.error(
+            "You must enter comparables by clicking the green arrows",
+            null,
+            { timeOut: 3000 }
+          );
+          return;
+        } else if (
+          this.comparable_group_1.length === 0 &&
+          this.comparable_group_2.length === 0
+        ) {
+          is_anova = "true";
+          params.result_statistic_section.comparisons_attributes[1] = {
+            is_anova: "true",
+          };
+        } else if (
+          this.comparable_group_1.length === 0 ||
+          this.comparable_group_2.length === 0
+        ) {
+          toastr.error(
+            "Comparisons must consist of at least one comparable per group",
+            null,
+            { timeOut: 3000 }
+          );
+          return;
+        } else {
+          params.result_statistic_section.comparisons_attributes[1] = {
+            is_anova: "false",
+            comparate_groups_attributes: {
+              1: { comparates_attributes: {} },
+              2: { comparates_attributes: {} },
+            },
+          };
+        }
+
+        if (
+          this.result_statistic_section_type_id === 3 &&
+          (this.comparable_group_1.length !== 1 ||
+            this.comparable_group_2.length !== 1)
+        ) {
+          toastr.error(
+            "WAC comparisons need to consist of one comparable per group",
+            null,
+            { timeOut: 3000 }
+          );
+          return;
+        }
+
         this.comparable_group_1.forEach((comparable, comparable_index) => {
           params.result_statistic_section.comparisons_attributes[1].comparate_groups_attributes[1].comparates_attributes[
             comparable_index
