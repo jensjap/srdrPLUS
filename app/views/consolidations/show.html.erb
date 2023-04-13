@@ -236,34 +236,27 @@
         population_name_id,
         arm_id,
         timepoint_name_id,
-        measure_id
+        measure_id,
+        rss_id
       ) {
-        if (
-          this.results_lookup[
-            `${extraction_id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`
-          ]
-        ) {
-          return "";
-        } else {
-          let placeholderMessages = [];
-          const dLookup = this.dimensions_lookup[extraction_id];
-          if (!dLookup.type1_type_type1[`${type1_type_id}/${type1_id}`]) {
-            placeholderMessages.push(`no oc`);
-          }
-          if (!dLookup.population[population_name_id]) {
-            placeholderMessages.push(`no pop`);
-          }
-          if (!dLookup.arm_comparison[arm_id]) {
-            placeholderMessages.push(`no arm/comp`);
-          }
-          if (!dLookup.timepoint_comparison[timepoint_name_id]) {
-            placeholderMessages.push(`no time/comp`);
-          }
-          if (!dLookup.measure[measure_id]) {
-            placeholderMessages.push(`no measure`);
-          }
-          return placeholderMessages.join("; ");
+        let placeholderMessages = [];
+        const dLookup = this.dimensions_lookup[extraction_id];
+        if (!dLookup.type1_type_type1[`${type1_type_id}/${type1_id}`]) {
+          placeholderMessages.push(`no oc`);
         }
+        if (!dLookup.population[population_name_id]) {
+          placeholderMessages.push(`no pop`);
+        }
+        if (!dLookup.arm_comparison[arm_id]) {
+          placeholderMessages.push(`no arm/comp`);
+        }
+        if (!dLookup.timepoint_comparison[timepoint_name_id]) {
+          placeholderMessages.push(`no time/comp`);
+        }
+        if (!dLookup.rss[rss_id].measure[measure_id]) {
+          placeholderMessages.push(`no measure`);
+        }
+        return placeholderMessages.join("; ");
       },
 
       async toggleSectionCompletionStatus() {

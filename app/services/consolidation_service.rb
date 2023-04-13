@@ -108,7 +108,9 @@ class ConsolidationService
               master_template[eefpst1.type1_type.id][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:measures][rssm.measure.id] ||= {
                 name: rssm.measure.name
               }
-              dimensions_lookup[eefps.extraction_id][:measure][rssm.measure.id] = true
+              dimensions_lookup[eefps.extraction_id][:rss] ||= {}
+              dimensions_lookup[eefps.extraction_id][:rss][rss.id] ||= { measure: {} }
+              dimensions_lookup[eefps.extraction_id][:rss][rss.id][:measure][rssm.measure.id] = true
               population = rss.population
               timepoints = population.extractions_extraction_forms_projects_sections_type1_row_columns
 
