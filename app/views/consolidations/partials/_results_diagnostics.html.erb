@@ -5,360 +5,370 @@
         <h2 class="text-base font-bold">Diagnoses</h2>
       </div>
       <div>
-        <template x-for="comparison in ['3 vs 5', '2 vs 1']">
-          <div class="ml-4 mt-6">
+        <template x-for="population in ['All Participants', 'Elderly']">
+          <div class="ml-4 mt-4">
             <h3
               class="text-sm font-bold border-b-2 border-srdrpurple"
-              x-text="`Comparison: ${comparison}`"
+              x-text="`Population: ${population}`"
             ></h3>
-            <template x-for="timepoint in ['Baseline', '24']">
-              <div class="overflow-x-auto overflow-y-hidden ml-4 mt-4">
-                <h4
-                  class="text-sm font-bold border-b-2 border-purple-400"
-                  x-text="`Timepoint: ${timepoint}`"
-                ></h4>
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <h5 class="text-sm font-semibold text-center">
-                      Descriptive Statistics
-                    </h5>
-                    <table class="table-auto">
-                      <thead>
-                        <tr>
-                          <th>Measure</th>
-                          <th>Value</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td># of participants recruited</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td># not receiving Index test</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td># not receiving Reference test</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>% of participants recruited</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>% not receiving Index test</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+            <template x-for="comparison in ['3 vs 5', '2 vs 1']">
+              <div class="ml-4 mt-4">
+                <h3
+                  class="text-sm font-bold border-b-2 border-srdrpurple-light"
+                  x-text="`Comparison: ${comparison}`"
+                ></h3>
+                <template x-for="timepoint in ['Baseline', '24']">
+                  <div class="overflow-x-auto overflow-y-hidden ml-4 mt-4">
+                    <h4
+                      class="text-sm font-bold border-b-2 border-purple-400"
+                      x-text="`Timepoint: ${timepoint}`"
+                    ></h4>
+                    <div class="grid grid-cols-2 gap-4">
+                      <div>
+                        <h5 class="text-sm font-semibold text-center">
+                          Descriptive Statistics
+                        </h5>
+                        <table class="table-auto">
+                          <thead>
+                            <tr>
+                              <th>Measure</th>
+                              <th>Value</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td># of participants recruited</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td># not receiving Index test</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td># not receiving Reference test</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>% of participants recruited</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>% not receiving Index test</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h5 class="text-sm font-semibold text-center">
+                          Special area for AUC and Q*
+                        </h5>
+                        <table class="table-auto">
+                          <thead>
+                            <tr>
+                              <th>Measure</th>
+                              <th>Value</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Sensitivity (%)</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Sensitivity 95% LCI</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Sensitivity 95% HCI</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Specificity (%)</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Specificity 95% LCI</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Specificity 95% HCI</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>ROC - AUC</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>ROC (AUC) +/- SD</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>ROC (AUC) P-Value</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h5 class="text-sm font-semibold text-center">
+                          2X2 Table
+                        </h5>
+                        <table class="table-auto">
+                          <thead>
+                            <tr>
+                              <th></th>
+                              <th>Disease (+)</th>
+                              <th>Disease (-)</th>
+                              <th>Total</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Test (+)</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Test (-)</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Total</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h5 class="text-sm font-semibold text-center">
+                          Test Accuracy Metrics
+                        </h5>
+                        <table class="table-auto">
+                          <thead>
+                            <tr>
+                              <th>Measure</th>
+                              <th>Value</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Hazard Ratio (HR)</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Risk Ratio (RR)</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Odds Ratio (OR)</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Univariate (Y/N)</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>95% LCI</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>95% HCI</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>P-value</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Adj. Hazard Ratio (HR)</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Adj. Risk Ratio (RR)</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Adj. Odds Ratio (OR)</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Adj. 95% LCI</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Adj. 95% HCI</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Adj. P-Value</td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                If multivariate model, list covariates in model
+                              </td>
+                              <td>
+                                <input
+                                  class="!h-4 rounded-sm bg-white border w-full"
+                                />
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <h5 class="text-sm font-semibold text-center">
-                      Special area for AUC and Q*
-                    </h5>
-                    <table class="table-auto">
-                      <thead>
-                        <tr>
-                          <th>Measure</th>
-                          <th>Value</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Sensitivity (%)</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Sensitivity 95% LCI</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Sensitivity 95% HCI</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Specificity (%)</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Specificity 95% LCI</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Specificity 95% HCI</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>ROC - AUC</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>ROC (AUC) +/- SD</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>ROC (AUC) P-Value</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div>
-                    <h5 class="text-sm font-semibold text-center">2X2 Table</h5>
-                    <table class="table-auto">
-                      <thead>
-                        <tr>
-                          <th></th>
-                          <th>Disease (+)</th>
-                          <th>Disease (-)</th>
-                          <th>Total</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Test (+)</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Test (-)</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Total</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <div>
-                    <h5 class="text-sm font-semibold text-center">
-                      Test Accuracy Metrics
-                    </h5>
-                    <table class="table-auto">
-                      <thead>
-                        <tr>
-                          <th>Measure</th>
-                          <th>Value</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Hazard Ratio (HR)</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Risk Ratio (RR)</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Odds Ratio (OR)</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Univariate (Y/N)</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>95% LCI</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>95% HCI</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>P-value</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Adj. Hazard Ratio (HR)</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Adj. Risk Ratio (RR)</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Adj. Odds Ratio (OR)</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Adj. 95% LCI</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Adj. 95% HCI</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Adj. P-Value</td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            If multivariate model, list covariates in model
-                          </td>
-                          <td>
-                            <input
-                              class="!h-4 rounded-sm bg-white border w-full"
-                            />
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+                </template>
               </div>
             </template>
           </div>
