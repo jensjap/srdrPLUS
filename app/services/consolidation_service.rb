@@ -1,6 +1,85 @@
 class ConsolidationService
+  def self.diagnostic_results(_efps, citations_project, result_statistic_section_type_id)
+    extractions = Extraction.includes(projects_users_role: { projects_user: :user }).where(citations_project:)
+
+    master_template = {}
+
+    eefpss = preload_eefpss(extractions, %w[Diagnoses])
+
+    eefpss.each do |eefps|
+      eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+        master_template[eefpst1.type1.id] = {
+          name: eefpst1.type1.name,
+          description: eefpst1.type1.description,
+          populations: {}
+        }
+
+        eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+          master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id] = {
+            name: eefpst1r.population_name.name,
+            description: eefpst1r.population_name.description,
+            comparisons: {}
+          }
+          eefpst1r.result_statistic_sections.each do |rss|
+            rss.comparisons.each do |comparison|
+              consolidated_id = comparison.comparates.map do |comparate|
+                comparate.comparable_element.comparable.type1.id
+              end.join('/')
+              master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id][:comparisons][consolidated_id] = {
+                name: comparison.comparates.map do |comparate|
+                  comparate.comparable_element.comparable.type1.name
+                end.join(' vs '),
+                timepoints: {}
+              }
+              eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+                master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id][:comparisons][consolidated_id][:timepoints][eefpst1rc.timepoint_name.id] = {
+                  name: eefpst1rc.timepoint_name.name,
+                  unit: eefpst1rc.timepoint_name.unit,
+                  rss_types: {}
+                }
+                eefpst1r.result_statistic_sections.each do |second_rss|
+                  next unless second_rss.result_statistic_section_type_id.between?(5, 8)
+
+                  master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id][:comparisons][consolidated_id][:timepoints][eefpst1rc.timepoint_name.id][:rss_types][second_rss.result_statistic_section_type_id] = {
+                    measures: []
+                  }
+                  second_rss.measures.each do |measure|
+                    ms = master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id][:comparisons][consolidated_id][:timepoints][eefpst1rc.timepoint_name.id][:rss_types][second_rss.result_statistic_section_type_id][:measures]
+
+                    m = {
+                      id: measure.id,
+                      name: measure.name
+                    }
+                    ms << m unless ms.include?(m)
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+    ap master_template
+    {
+      master_template:,
+      results_lookup: {},
+      dimensions_lookup: {},
+      rss_lookup: {},
+      comparables: {},
+      extraction_ids: extractions.sort_by do |extraction|
+                        extraction.consolidated ? 999_999_999 : extraction.id
+                      end.map { |extraction| { id: extraction.id, user: extraction.user.email.split('@').first } },
+      result_statistic_section_type_id:
+    }
+  end
+
   def self.results(efps, citations_project, result_statistic_section_type_id)
     return {} unless efps.extraction_forms_projects_section_type.name == 'Results'
+
+    if result_statistic_section_type_id == 5
+      return diagnostic_results(efps, citations_project,
+                                result_statistic_section_type_id)
+    end
 
     extractions = Extraction.includes(projects_users_role: { projects_user: :user }).where(citations_project:)
 
@@ -23,36 +102,7 @@ class ConsolidationService
       }
     end
 
-    eefpss =
-      ExtractionsExtractionFormsProjectsSection
-      .includes(
-        {
-          extraction: :user,
-          extraction_forms_projects_section: :section,
-          extractions_extraction_forms_projects_sections_type1s: [
-            :type1,
-            :type1_type,
-            { extractions_extraction_forms_projects_sections_type1_rows: [
-              :population_name,
-              {
-                extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name,
-                result_statistic_sections: { result_statistic_sections_measures: [
-                  :measure,
-                  { tps_arms_rssms: [
-                    :records,
-                    { timepoint: :timepoint_name,
-                      extractions_extraction_forms_projects_sections_type1: [
-                        :type1,
-                        { extractions_extraction_forms_projects_section: :extraction }
-                      ] }
-                  ] }
-                ] }
-              }
-            ] }
-          ]
-        }
-      )
-      .where(extractions:, extraction_forms_projects_sections: { sections: { name: %w[Arms Outcomes] } })
+    eefpss = preload_eefpss(extractions, %w[Arms Outcomes])
 
     eefpss.each do |eefps|
       eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
@@ -932,5 +982,37 @@ class ConsolidationService
       end
     end
     citations_grouping_hash
+  end
+
+  def self.preload_eefpss(extractions, section_names)
+    ExtractionsExtractionFormsProjectsSection
+      .includes(
+        {
+          extraction: :user,
+          extraction_forms_projects_section: :section,
+          extractions_extraction_forms_projects_sections_type1s: [
+            :type1,
+            :type1_type,
+            { extractions_extraction_forms_projects_sections_type1_rows: [
+              :population_name,
+              {
+                extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name,
+                result_statistic_sections: { result_statistic_sections_measures: [
+                  :measure,
+                  { tps_arms_rssms: [
+                    :records,
+                    { timepoint: :timepoint_name,
+                      extractions_extraction_forms_projects_sections_type1: [
+                        :type1,
+                        { extractions_extraction_forms_projects_section: :extraction }
+                      ] }
+                  ] }
+                ] }
+              }
+            ] }
+          ]
+        }
+      )
+      .where(extractions:, extraction_forms_projects_sections: { sections: { name: section_names } })
   end
 end
