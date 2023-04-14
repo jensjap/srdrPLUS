@@ -22,7 +22,7 @@
           >
           <span
             x-cloak
-            x-show="mh?.current_citations_project?.section_name === 'Results'"
+            x-show="mh?.current_citations_project?.section_name === 'Results' && result_statistic_section_type_id !== 5"
           >
             <template
               x-for="(section, section_index) in ['Descriptive', 'BAC', 'WAC', 'NET']"
@@ -80,8 +80,15 @@
   <template x-if="mh?.current_citations_project?.efpst_id == 2">
     <%= render 'consolidations/partials/type2' %>
   </template>
-  <template x-if="mh?.current_citations_project?.efpst_id == 3">
+  <template
+    x-if="mh?.current_citations_project?.efpst_id == 3 && result_statistic_section_type_id !== 5"
+  >
     <%= render 'consolidations/partials/results' %>
+  </template>
+  <template
+    x-if="mh?.current_citations_project?.efpst_id == 3 && result_statistic_section_type_id === 5"
+  >
+    <%= render 'consolidations/partials/results_diagnostics' %>
   </template>
   <!-- <div class="px-4 lg:px-8 space-y-2 h-64 overflow-auto" id="json"></div> -->
 </div>

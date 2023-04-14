@@ -35,8 +35,12 @@ class ConsolidationsController < ApplicationController
           ExtractionFormsProject.find_by(project: @project).extraction_forms_projects_sections.first
         mh = ConsolidationService.efps(efps, @citations_project)
         suggestions = ConsolidationService.suggestions(mh[:current_citations_project][:current_section_eefpss].last['id'])
-        results = ConsolidationService.results(efps, @citations_project,
-                                               (params[:result_statistic_section_type_id] || 1).to_i)
+        result_statistic_section_type = if efps.extraction_forms_project.extraction_forms_project_type_id == 2
+                                          5
+                                        else
+                                          (params[:result_statistic_section_type_id] || 1).to_i
+                                        end
+        results = ConsolidationService.results(efps, @citations_project, result_statistic_section_type)
         return render json: {
           efps_sections: ConsolidationService.efps_sections(@project),
           mh:,
