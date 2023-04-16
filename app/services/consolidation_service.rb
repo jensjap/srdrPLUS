@@ -885,7 +885,9 @@ class ConsolidationService
       end
     end
 
-    Record.where(recordable: eefpsffs).each do |record|
+    Record
+      .includes(:recordable)
+      .where(recordable: eefpsffs).each do |record|
       name = record.name
       eefpsff = record.recordable
       eefpst1_id = eefpsff.extractions_extraction_forms_projects_sections_type1_id
