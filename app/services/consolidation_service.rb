@@ -945,7 +945,12 @@ class ConsolidationService
 
   def self.project_citations_grouping_hash(project)
     citations_grouping_hash = {}
-    citations_projects = project.citations_projects
+    citations_projects =
+      project
+      .citations_projects
+      .includes(
+        citation: :journal
+      )
     extractions =
       project
       .extractions
@@ -970,7 +975,7 @@ class ConsolidationService
       if extraction.consolidated
         citations_grouping_hash[extraction.citations_project_id][:consolidated_extraction] = extraction
         citations_grouping_hash[extraction.citations_project_id][:consolidated_extraction_status] =
-          extraction.status.name
+          extraction.statusing.status.name
       else
         citations_grouping_hash[extraction.citations_project_id][:extractions] << extraction
         checksum = extraction.extraction_checksum
