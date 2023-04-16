@@ -470,7 +470,10 @@ class ConsolidationService
     extractions_lookup = {}
     project = citations_project.project
 
-    extractions = Extraction.includes(projects_users_role: { projects_user: :user }).where(citations_project:)
+    extractions = Extraction
+                  .includes(:user)
+                  .includes(projects_users_role: { projects_user: :user })
+                  .where(citations_project:)
     extractions.each do |extraction|
       extractions_lookup[extraction.id] = extraction.user.email.split('@').first
     end
