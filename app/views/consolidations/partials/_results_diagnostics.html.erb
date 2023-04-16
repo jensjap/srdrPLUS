@@ -1,0 +1,92 @@
+<div class="px-4 lg:px-8 space-y-2">
+  <template x-if="mh !== null">
+    <div>
+      <div>
+        <h2 class="text-base font-bold">Diagnoses</h2>
+      </div>
+      <div>
+        <template x-for="diagnosis_id in Object.keys(master_template)">
+          <div class="ml-4 mt-4">
+            <h3
+              class="text-sm font-bold border-b-2 border-black"
+              x-text="`Diagnosis: ${master_template[diagnosis_id].name}`"
+            ></h3>
+            <template
+              x-for="population_id in Object.keys(master_template[diagnosis_id].populations)"
+            >
+              <div class="ml-4 mt-4">
+                <h3 class="text-sm font-bold border-b-2 border-srdrpurple">
+                  <span
+                    x-text="`Population: ${master_template[diagnosis_id].populations[population_id].name}`"
+                  ></span>
+                  <span class="text-xs cursor-pointer text-srdrpurple"
+                    >(Add Comparison)</span
+                  >
+                </h3>
+                <template
+                  x-for="comparison_id in Object.keys(master_template[diagnosis_id].populations[population_id].comparisons)"
+                >
+                  <div class="ml-4 mt-4">
+                    <h3
+                      class="text-sm font-bold border-b-2 border-srdrpurple-light"
+                      x-text="`Comparison: ${master_template[diagnosis_id].populations[population_id].comparisons[comparison_id].name}`"
+                    ></h3>
+                    <template
+                      x-for="timepoint_id in Object.keys(master_template[diagnosis_id].populations[population_id].comparisons[comparison_id].timepoints)"
+                    >
+                      <div class="overflow-x-auto overflow-y-hidden ml-4 mt-4">
+                        <h4
+                          class="text-sm font-bold border-b-2 border-purple-400"
+                          x-text="`Timepoint: ${master_template[diagnosis_id].populations[population_id].comparisons[comparison_id].timepoints[timepoint_id].name}`"
+                        ></h4>
+                        <div class="grid grid-cols-2 gap-4">
+                          <template
+                            x-for="rss_type_id in Object.keys(master_template[diagnosis_id].populations[population_id].comparisons[comparison_id].timepoints[timepoint_id].rss_types)"
+                          >
+                            <div>
+                              <h5
+                                class="text-sm font-semibold text-center"
+                                x-text="{ 5: 'Descriptive Statistics', 6: 'Special area for AUC and Q*', 7: '2X2 Table', 8: 'Test Accuracy Metrics' }[rss_type_id]"
+                              ></h5>
+                              <table class="table-auto">
+                                <thead>
+                                  <tr>
+                                    <th>Measure</th>
+                                    <th>Value</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <template
+                                    x-for="measure in master_template[diagnosis_id].populations[population_id].comparisons[comparison_id].timepoints[timepoint_id].rss_types[rss_type_id].measures"
+                                  >
+                                    <tr>
+                                      <td x-text="measure.name"></td>
+                                      <td class="flex">
+                                        <template
+                                          x-for="extraction in extraction_ids"
+                                        >
+                                          <input
+                                            :title="`Extraction ID: ${extraction.id} by ${extraction.user}`"
+                                            class="!h-4 rounded-sm bg-white border w-full"
+                                          />
+                                        </template>
+                                      </td>
+                                    </tr>
+                                  </template>
+                                </tbody>
+                              </table>
+                            </div>
+                          </template>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </template>
+              </div>
+            </template>
+          </div>
+        </template>
+      </div>
+    </div>
+  </template>
+</div>

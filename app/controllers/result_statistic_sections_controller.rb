@@ -48,7 +48,7 @@ class ResultStatisticSectionsController < ApplicationController
           redirect_to edit_result_statistic_section_path(@result_statistic_section),
                       notice: t('success')
         end
-        format.json { render :show, status: :ok, location: @result_statistic_section }
+        format.json { render json: {}, status: :ok, location: @result_statistic_section }
         format.js { flash.now[:notice] = 'Comparison added' }
       else
         format.html do

@@ -462,7 +462,7 @@
                           >
                             <span
                               class="ml-2 bg-srdr-primary text-xs text-white p-1 rounded-md cursor-pointer"
-                              @click="createArm(eefps.id, section_eefpst1.name, section_eefpst1.description)"
+                              @click="createArm(eefps.id, section_eefpst1.name, section_eefpst1.description, section_eefpst1.type1_type_name === 'Categorical' ? 1 : 2)"
                             >
                               Create
                             </span>

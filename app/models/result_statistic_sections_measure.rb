@@ -35,6 +35,7 @@ class ResultStatisticSectionsMeasure < ApplicationRecord
 
   delegate :extraction,                                    to: :result_statistic_section
   delegate :extractions_extraction_forms_projects_section, to: :result_statistic_section
+  delegate :project, to: :extraction
 
   private
 

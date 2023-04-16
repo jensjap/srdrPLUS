@@ -1,0 +1,138 @@
+<div class="px-4 lg:px-8 space-y-2">
+  <template x-if="mh !== null">
+    <template x-for="type1_type_id in Object.keys(master_template)">
+      <div>
+        <div>
+          <h2
+            class="text-base font-bold"
+            x-text="type1_type_id == 1 ? 'Categorical Outcomes' : 'Continuous Outcomes'"
+          ></h2>
+        </div>
+        <div>
+          <template
+            x-for="type1_id in Object.keys(master_template[type1_type_id])"
+          >
+            <div class="ml-4">
+              <h3
+                class="text-base font-medium border-b-2"
+                x-text="master_template[type1_type_id][type1_id].name"
+              ></h3>
+              <template
+                x-for="population_name_id in Object.keys(master_template[type1_type_id][type1_id].populations)"
+              >
+                <div class="overflow-x-auto overflow-y-hidden ml-4">
+                  <h4 class="text-sm font-medium">
+                    <span
+                      x-text="master_template[type1_type_id][type1_id].populations[population_name_id].name"
+                    ></span>
+                    <template
+                      x-if="rss_lookup[`${extraction_ids[extraction_ids.length - 1].id}-${type1_id}-${population_name_id}`] && (result_statistic_section_type_id > 1 && result_statistic_section_type_id < 4)"
+                    >
+                      <span
+                        class="ml-1 font-bold text-xs text-srdrpurple cursor-pointer"
+                        @click="current_rss_id = rss_lookup[`${extraction_ids[extraction_ids.length - 1].id}-${type1_id}-${population_name_id}`];
+                        current_population_name_id = population_name_id;"
+                        >(Add Comparisons)</span
+                      >
+                    </template>
+                  </h4>
+                  <table class="table-fixed">
+                    <thead>
+                      <tr>
+                        <th class="text-left whitespace-nowrap">Timepoint</th>
+                        <th class="text-left whitespace-nowrap">Measure</th>
+                        <template
+                          x-for="arm_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].arms)"
+                        >
+                          <th
+                            class="text-center whitespace-nowrap truncate"
+                            x-text="master_template[type1_type_id][type1_id].populations[population_name_id].arms[arm_id].name"
+                            :title="master_template[type1_type_id][type1_id].populations[population_name_id].arms[arm_id].name"
+                          ></th>
+                        </template>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <template
+                        x-for="timepoint_name_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].timepoints)"
+                      >
+                        <tr>
+                          <td
+                            class="whitespace-nowrap"
+                            x-text="master_template[type1_type_id][type1_id].populations[population_name_id].timepoints[timepoint_name_id].name"
+                          ></td>
+                          <td>
+                            <table>
+                              <template
+                                x-for="measure_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].measures)"
+                              >
+                                <tr>
+                                  <td
+                                    class="whitespace-nowrap"
+                                    x-text="master_template[type1_type_id][type1_id].populations[population_name_id].measures[measure_id].name"
+                                  ></td>
+                                </tr>
+                              </template>
+                            </table>
+                          </td>
+                          <template
+                            x-for="arm_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].arms)"
+                          >
+                            <td class="border-x-2 border-gray-300">
+                              <table class="table-fixed">
+                                <template
+                                  x-for="measure_id in Object.keys(master_template[type1_type_id][type1_id].populations[population_name_id].measures)"
+                                >
+                                  <tr>
+                                    <template
+                                      x-for="(extraction, extraction_id_index) in extraction_ids"
+                                    >
+                                      <td
+                                        class="text-center whitespace-nowrap"
+                                        :title="`Extraction ID: ${extraction.id} by ${extraction.user}`"
+                                      >
+                                        <template
+                                          x-if="extraction_ids.length !== extraction_id_index + 1 || (extraction_ids.length === extraction_id_index + 1 && createPlaceholderMessage(extraction.id, type1_type_id, type1_id, population_name_id, arm_id, timepoint_name_id, measure_id, rss_lookup[`${extraction.id}-${type1_id}-${population_name_id}`]) !== 'no measure')"
+                                        >
+                                          <div>
+                                            <input
+                                              :disabled="!results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`] || extraction_id_index !== extraction_ids.length - 1"
+                                              @input.debounce.1000ms="updateRecord(results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`]?.record_id, $el.value)"
+                                              class="!h-4"
+                                              type="text"
+                                              size="4"
+                                              :value="results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`]?.record_value"
+                                              :placeholder="createPlaceholderMessage(extraction.id, type1_type_id, type1_id, population_name_id, arm_id, timepoint_name_id, measure_id, rss_lookup[`${extraction.id}-${type1_id}-${population_name_id}`])"
+                                            />
+                                          </div>
+                                        </template>
+                                        <template
+                                          x-if="extraction_ids.length === extraction_id_index + 1 && createPlaceholderMessage(extraction.id, type1_type_id, type1_id, population_name_id, arm_id, timepoint_name_id, measure_id, rss_lookup[`${extraction.id}-${type1_id}-${population_name_id}`]) === 'no measure'"
+                                        >
+                                          <div
+                                            class="bg-srdrpurple text-white rounded-md text-center cursor-pointer text-xs"
+                                            @click="createRssm(rss_lookup[`${extraction.id}-${type1_id}-${population_name_id}`], measure_id)"
+                                          >
+                                            Add
+                                          </div>
+                                        </template>
+                                      </td>
+                                    </template>
+                                  </tr>
+                                </template>
+                              </table>
+                            </td>
+                          </template>
+                        </tr>
+                      </template>
+                    </tbody>
+                  </table>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+      </div>
+    </template>
+  </template>
+</div>

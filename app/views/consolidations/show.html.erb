@@ -4,6 +4,7 @@
   <%= render 'consolidations/partials/type1_change_modal' %>
   <%= render 'consolidations/partials/change_tp_modal' %>
   <%= render 'consolidations/partials/suggestions_modal' %>
+  <%= render 'consolidations/partials/comparisons_modal' %>
   <% efps = ExtractionFormsProject.find_by(project: @project).extraction_forms_projects_sections.fifth %>
   <div
     class="px-4 lg:px-8 py-1 sm:flex sm:items-center z-[5] !sticky top-32 bg-gray-100"
@@ -19,6 +20,20 @@
             x-text="mh?.current_citations_project?.section_name ? mh?.current_citations_project?.section_name : 'Loading...'"
             >Loading...</span
           >
+          <span
+            x-cloak
+            x-show="mh?.current_citations_project?.section_name === 'Results' && result_statistic_section_type_id !== 5"
+          >
+            <template
+              x-for="(section, section_index) in ['Descriptive', 'BAC', 'WAC', 'NET']"
+            >
+              <a
+                :href="`null?citations_project_id=${mh?.current_citations_project?.citations_project_id}&efps_id=${efps_id()}&result_statistic_section_type_id=${section_index + 1}`"
+                class="text-base font-bold p-1 ml-1 rounded-md cursor-pointer hover:no-underline"
+                :class="result_statistic_section_type_id == section_index + 1 ? 'bg-srdrpurple text-white hover:text-white' : 'bg-gray-300 text-gray-600 hover:text-gray-600'"
+                x-text="section"
+              ></a> </template
+          ></span>
         </h1>
       </div>
       <div class="flex justify-between">
@@ -65,6 +80,16 @@
   <template x-if="mh?.current_citations_project?.efpst_id == 2">
     <%= render 'consolidations/partials/type2' %>
   </template>
+  <template
+    x-if="mh?.current_citations_project?.efpst_id == 3 && result_statistic_section_type_id !== 5"
+  >
+    <%= render 'consolidations/partials/results' %>
+  </template>
+  <template
+    x-if="mh?.current_citations_project?.efpst_id == 3 && result_statistic_section_type_id === 5"
+  >
+    <%= render 'consolidations/partials/results_diagnostics' %>
+  </template>
   <!-- <div class="px-4 lg:px-8 space-y-2 h-64 overflow-auto" id="json"></div> -->
 </div>
 <script>
@@ -106,6 +131,7 @@
       addTimepointModal: false,
       suggestions_modal: false,
       suggestions: [],
+      result_statistic_section_type_id: null,
       change_type: "",
       change_ids: {},
       old_eefpst1: {},
@@ -113,9 +139,185 @@
       old_tp_description_unit: "",
       new_tp_name: "",
       new_tp_description_unit: "",
+      comparable_group_1: [],
+      comparable_group_2: [],
+      comparables: [],
+      current_rss_id: null,
+      current_population_name_id: null,
 
       init() {
-        this.fetch_efps(this.efps_id());
+        this.fetch_efps();
+      },
+
+      async addComparison(rss_id) {
+        const params = {
+          result_statistic_section: {
+            comparison_type: { 2: "bac", 3: "wac" }[
+              this.result_statistic_section_type_id
+            ],
+            comparisons_attributes: {
+              1: {},
+            },
+          },
+        };
+
+        if (
+          this.comparable_group_1.length === 0 &&
+          this.comparable_group_2.length === 0 &&
+          this.result_statistic_section_type_id !== 2
+        ) {
+          toastr.error(
+            "You must enter comparables by clicking the green arrows",
+            null,
+            { timeOut: 3000 }
+          );
+          return;
+        } else if (
+          this.comparable_group_1.length === 0 &&
+          this.comparable_group_2.length === 0
+        ) {
+          is_anova = "true";
+          params.result_statistic_section.comparisons_attributes[1] = {
+            is_anova: "true",
+          };
+        } else if (
+          this.comparable_group_1.length === 0 ||
+          this.comparable_group_2.length === 0
+        ) {
+          toastr.error(
+            "Comparisons must consist of at least one comparable per group",
+            null,
+            { timeOut: 3000 }
+          );
+          return;
+        } else {
+          params.result_statistic_section.comparisons_attributes[1] = {
+            is_anova: "false",
+            comparate_groups_attributes: {
+              1: { comparates_attributes: {} },
+              2: { comparates_attributes: {} },
+            },
+          };
+        }
+
+        if (
+          this.result_statistic_section_type_id === 3 &&
+          (this.comparable_group_1.length !== 1 ||
+            this.comparable_group_2.length !== 1)
+        ) {
+          toastr.error(
+            "WAC comparisons need to consist of one comparable per group",
+            null,
+            { timeOut: 3000 }
+          );
+          return;
+        }
+
+        this.comparable_group_1.forEach((comparable, comparable_index) => {
+          params.result_statistic_section.comparisons_attributes[1].comparate_groups_attributes[1].comparates_attributes[
+            comparable_index
+          ] = { comparable_element_attributes: {} };
+          params.result_statistic_section.comparisons_attributes[1].comparate_groups_attributes[1].comparates_attributes[
+            comparable_index
+          ].comparable_element_attributes = {
+            comparable_type: comparable.comparable_type,
+            comparable_id: comparable.comparable_id,
+          };
+        });
+        this.comparable_group_2.forEach((comparable, comparable_index) => {
+          params.result_statistic_section.comparisons_attributes[1].comparate_groups_attributes[2].comparates_attributes[
+            comparable_index
+          ] = { comparable_element_attributes: {} };
+          params.result_statistic_section.comparisons_attributes[1].comparate_groups_attributes[2].comparates_attributes[
+            comparable_index
+          ].comparable_element_attributes = {
+            comparable_type: comparable.comparable_type,
+            comparable_id: comparable.comparable_id,
+          };
+        });
+
+        const response = await fetch(
+          `/result_statistic_sections/${rss_id}/add_comparison`,
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Created successfully!", null, { timeOut: 1000 });
+          this.current_rss_id = null;
+          this.current_population_name_id = null;
+          this.fetch_efps();
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+
+      async createRssm(rss_id, measure_id) {
+        const response = await fetch("/result_statistic_sections_measures", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+          body: JSON.stringify({
+            result_statistic_section_id: rss_id,
+            measure_id,
+          }),
+        });
+
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Created successfully!", null, { timeOut: 1000 });
+          this.fetch_efps();
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+
+      createPlaceholderMessage(
+        extraction_id,
+        type1_type_id,
+        type1_id,
+        population_name_id,
+        arm_id,
+        timepoint_name_id,
+        measure_id,
+        rss_id
+      ) {
+        let placeholderMessages = [];
+        const dLookup = this.dimensions_lookup[extraction_id];
+        if (!dLookup.type1_type_type1[`${type1_type_id}/${type1_id}`]) {
+          placeholderMessages.push(`no oc`);
+        }
+        if (!dLookup.population[population_name_id]) {
+          placeholderMessages.push(`no pop`);
+        }
+        if (!dLookup.population[population_name_id]?.arm_comparison[arm_id]) {
+          placeholderMessages.push(`no arm/comp`);
+        }
+        if (
+          !dLookup.timepoint_comparison[population_name_id]
+            ?.timepoint_comparison[timepoint_name_id]
+        ) {
+          placeholderMessages.push(`no time/comp`);
+        }
+        if (!dLookup.rss[rss_id]?.measure[measure_id]) {
+          placeholderMessages.push(`no measure`);
+        }
+        return placeholderMessages.join("; ");
       },
 
       async toggleSectionCompletionStatus() {
@@ -212,7 +414,7 @@
           this.type1_previews.loading = false;
           this.changeTPModal = false;
           toastr.success("Updated successfully", null, { timeOut: 1000 });
-          this.fetch_efps(this.mh?.current_citations_project?.efps_id);
+          this.fetch_efps();
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
@@ -249,7 +451,7 @@
 
         if (response.status >= 200 && response.status < 300) {
           toastr.success("Deleted successfully", null, { timeOut: 1000 });
-          this.fetch_efps(this.mh?.current_citations_project?.efps_id);
+          this.fetch_efps();
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
@@ -292,7 +494,7 @@
 
         if (response.status >= 200 && response.status < 300) {
           toastr.success("Deleted successfully", null, { timeOut: 1000 });
-          this.fetch_efps(this.mh?.current_citations_project?.efps_id);
+          this.fetch_efps();
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
@@ -428,11 +630,11 @@
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
-        this.fetch_efps(this.mh?.current_citations_project?.efps_id);
+        this.fetch_efps();
         this.type1_change_modal = false;
       },
 
-      async createArm(eefps_id, name, description) {
+      async createArm(eefps_id, name, description, new_eefpst1_type_id = null) {
         if (name.trim() === "") {
           toastr.error("Name/ domain cannot be blank", null, {
             timeOut: 1000,
@@ -453,11 +655,13 @@
         };
 
         if (this.isOutcome()) {
+          const type1_type_id =
+            new_eefpst1_type_id || this.$refs.new_eefpst1_type.value;
           const eefpst1_attributes =
             params.extractions_extraction_forms_projects_section
               .extractions_extraction_forms_projects_sections_type1s_attributes[0];
           eefpst1_attributes.units = this.$refs.new_eefpst1_units.value;
-          eefpst1_attributes.type1_type_id = this.$refs.new_eefpst1_type.value;
+          eefpst1_attributes.type1_type_id = type1_type_id;
           for (
             let populationIndex = 0;
             populationIndex < this.populations.length;
@@ -519,7 +723,7 @@
         const data = await response.json();
         if (response.status >= 200 && response.status < 300) {
           toastr.success("Saved successfully", null, { timeOut: 1000 });
-          this.fetch_efps(this.mh?.current_citations_project?.efps_id);
+          this.fetch_efps();
           this.$refs.new_eefpst1_name.value = "";
           this.$refs.new_eefpst1_description.value = "";
           this.$refs.new_eefpst1_units.value = "";
@@ -558,7 +762,7 @@
         );
         if (response.status >= 200 && response.status < 300) {
           toastr.success("Deleted successfully", null, { timeOut: 1000 });
-          this.fetch_efps(this.mh?.current_citations_project?.efps_id);
+          this.fetch_efps();
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
@@ -629,13 +833,21 @@
         }
       },
 
-      async fetch_efps(efps_id) {
+      async fetch_efps() {
+        this.efps_sections = [];
         this.mh = null;
-        let query_param = "";
-        if (efps_id) {
-          query_param = `&efps_id=${efps_id}`;
-        }
-        const response = await fetch(location.href + query_param, {
+        this.master_template = null;
+        this.dimensions_lookup = null;
+        this.results_lookup = null;
+        this.rss_lookup = null;
+        this.comparables = [];
+        this.comparable_group_1 = [];
+        this.comparable_group_2 = [];
+        this.extraction_ids = [];
+        this.suggestions = [];
+        this.result_statistic_section_type_id = null;
+
+        const response = await fetch(location.href, {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -646,10 +858,19 @@
 
         this.efps_sections = data.efps_sections;
         this.mh = data.mh;
+        this.master_template = data.master_template;
+        this.dimensions_lookup = data.dimensions_lookup;
+        this.results_lookup = data.results_lookup;
+        this.rss_lookup = data.rss_lookup;
+        this.comparables = data.comparables;
+        this.extraction_ids = data.extraction_ids;
         this.suggestions = data.suggestions;
-
-        $("#json").empty();
-        $("#json").append("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
+        this.result_statistic_section_type_id =
+          data.result_statistic_section_type_id;
+        // $("#json").empty();
+        // $("#json").append(
+        //   "<pre>" + JSON.stringify(data.results_lookup, null, 2) + "</pre>"
+        // );
       },
     }));
   });

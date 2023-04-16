@@ -198,6 +198,9 @@ Rails.application.routes.draw do
 
   resources :abstract_screening_results, only: %i[show update]
   resources :fulltext_screening_results, only: %i[show update]
+
+  resources :result_statistic_sections_measures, only: %i[create]
+
   resources :data_audits, only: %i[index update]
   resources :projects, concerns: :paginatable, shallow: true do
     resources :consolidations
