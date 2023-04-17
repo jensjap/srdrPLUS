@@ -32,21 +32,19 @@
                       x-text="`Comparison: ${master_template[diagnosis_id].populations[population_id].comparisons[comparison_id].name}`"
                     ></h3>
                     <template
-                      x-for="timepoint_id in Object.keys(master_template[diagnosis_id].populations[population_id].comparisons[comparison_id].timepoints)"
+                      x-for="timepoint_id in Object.keys(master_template[diagnosis_id].populations[population_id].timepoints)"
                     >
                       <div class="overflow-x-auto overflow-y-hidden ml-4 mt-4">
                         <h4
                           class="text-sm font-bold border-b-2 border-purple-400"
-                          x-text="`Timepoint: ${master_template[diagnosis_id].populations[population_id].comparisons[comparison_id].timepoints[timepoint_id].name}`"
+                          x-text="`Timepoint: ${master_template[diagnosis_id].populations[population_id].timepoints[timepoint_id].name}`"
                         ></h4>
                         <div class="grid grid-cols-2 gap-4">
-                          <template
-                            x-for="rss_type_id in Object.keys(master_template[diagnosis_id].populations[population_id].comparisons[comparison_id].timepoints[timepoint_id].rss_types)"
-                          >
+                          <template x-for="rss_type_id in 4">
                             <div>
                               <h5
                                 class="text-sm font-semibold text-center"
-                                x-text="{ 5: 'Descriptive Statistics', 6: 'Special area for AUC and Q*', 7: '2X2 Table', 8: 'Test Accuracy Metrics' }[rss_type_id]"
+                                x-text="{ 5: 'Descriptive Statistics', 6: 'Special area for AUC and Q*', 7: '2X2 Table', 8: 'Test Accuracy Metrics' }[rss_type_id + 4]"
                               ></h5>
                               <table class="table-auto">
                                 <thead>
@@ -57,7 +55,7 @@
                                 </thead>
                                 <tbody>
                                   <template
-                                    x-for="measure in master_template[diagnosis_id].populations[population_id].comparisons[comparison_id].timepoints[timepoint_id].rss_types[rss_type_id].measures"
+                                    x-for="measure in master_template[diagnosis_id].populations[population_id].rss_types[rss_type_id + 4].measures"
                                   >
                                     <tr>
                                       <td x-text="measure.name"></td>
@@ -68,9 +66,9 @@
                                           <input
                                             class="!h-4 rounded-sm bg-white border w-full"
                                             :title="`Extraction ID: ${extraction.id} by ${extraction.user}`"
-                                            :value="results_lookup[`${extraction.id}-${diagnosis_id}-${population_id}-${comparison_id}-${timepoint_id}-${rss_type_id}-${measure.id}`]?.record_value"
-                                            @input.debounce.1000ms="updateRecord(results_lookup[`${extraction.id}-${diagnosis_id}-${population_id}-${comparison_id}-${timepoint_id}-${rss_type_id}-${measure.id}`]?.record_id, $el.value)"
-                                            :disabled="!results_lookup[`${extraction.id}-${diagnosis_id}-${population_id}-${comparison_id}-${timepoint_id}-${rss_type_id}-${measure.id}`] || extraction_ids.length !== extraction_index + 1"
+                                            :value="results_lookup[`${extraction.id}-${diagnosis_id}-${population_id}-${comparison_id}-${timepoint_id}-${rss_type_id + 4}-${measure.id}`]?.record_value"
+                                            @input.debounce.1000ms="updateRecord(results_lookup[`${extraction.id}-${diagnosis_id}-${population_id}-${comparison_id}-${timepoint_id}-${rss_type_id + 4}-${measure.id}`]?.record_id, $el.value)"
+                                            :disabled="!results_lookup[`${extraction.id}-${diagnosis_id}-${population_id}-${comparison_id}-${timepoint_id}-${rss_type_id + 4}-${measure.id}`] || extraction_ids.length !== extraction_index + 1"
                                             :placeholder="createDiagnosticsPlaceholderMessage(extraction.id, diagnosis_id, population_id, comparison_id, timepoint_id)"
                                           />
                                         </template>
