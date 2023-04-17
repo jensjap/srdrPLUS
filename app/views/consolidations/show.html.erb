@@ -287,6 +287,52 @@
         }
       },
 
+      createDiagnosticsPlaceholderMessage(
+        extraction_id,
+        diagnosis_id,
+        population_id,
+        comparison_id,
+        timepoint_id
+      ) {
+        const placeholderMessages = [];
+        const dLookup = this.dimensions_lookup[extraction_id];
+        if (!dLookup?.outcomes[diagnosis_id]) {
+          placeholderMessages.push("no diagnosis");
+          placeholderMessages.push("no population");
+          placeholderMessages.push("no timepoint");
+          placeholderMessages.push("no comparison");
+        }
+
+        if (
+          dLookup?.outcomes[diagnosis_id] &&
+          !dLookup?.outcomes[diagnosis_id]?.populations[population_id]
+        ) {
+          placeholderMessages.push("no population");
+          placeholderMessages.push("no timepoint");
+          placeholderMessages.push("no comparison");
+        }
+
+        if (
+          dLookup?.outcomes[diagnosis_id] &&
+          dLookup?.outcomes[diagnosis_id]?.populations[population_id] &&
+          !dLookup?.outcomes[diagnosis_id]?.populations[population_id]
+            ?.comparisons[comparison_id]
+        ) {
+          placeholderMessages.push("no comparison");
+        }
+
+        if (
+          dLookup?.outcomes[diagnosis_id] &&
+          dLookup?.outcomes[diagnosis_id]?.populations[population_id] &&
+          !dLookup?.outcomes[diagnosis_id]?.populations[population_id]
+            ?.timepoints[timepoint_id]
+        ) {
+          placeholderMessages.push("no timepoint");
+        }
+
+        return placeholderMessages.join("; ");
+      },
+
       createPlaceholderMessage(
         extraction_id,
         type1_type_id,
@@ -297,7 +343,7 @@
         measure_id,
         rss_id
       ) {
-        let placeholderMessages = [];
+        const placeholderMessages = [];
         const dLookup = this.dimensions_lookup[extraction_id];
         if (!dLookup.type1_type_type1[`${type1_type_id}/${type1_id}`]) {
           placeholderMessages.push(`no oc`);

@@ -70,7 +70,8 @@
                                             :title="`Extraction ID: ${extraction.id} by ${extraction.user}`"
                                             :value="results_lookup[`${extraction.id}-${diagnosis_id}-${population_id}-${comparison_id}-${timepoint_id}-${rss_type_id}-${measure.id}`]?.record_value"
                                             @input.debounce.1000ms="updateRecord(results_lookup[`${extraction.id}-${diagnosis_id}-${population_id}-${comparison_id}-${timepoint_id}-${rss_type_id}-${measure.id}`]?.record_id, $el.value)"
-                                            :disabled="extraction_ids.length !== extraction_index + 1"
+                                            :disabled="!results_lookup[`${extraction.id}-${diagnosis_id}-${population_id}-${comparison_id}-${timepoint_id}-${rss_type_id}-${measure.id}`] || extraction_ids.length !== extraction_index + 1"
+                                            :placeholder="createDiagnosticsPlaceholderMessage(extraction.id, diagnosis_id, population_id, comparison_id, timepoint_id)"
                                           />
                                         </template>
                                       </td>
