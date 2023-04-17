@@ -5,6 +5,8 @@ class ConsolidationService
     master_template = {}
     results_lookup = {}
     dimensions_lookup = {}
+    rss_lookup = {}
+    comparables = {}
 
     extractions.each do |extraction|
       dimensions_lookup[extraction.id] = {
@@ -13,6 +15,19 @@ class ConsolidationService
     end
 
     eefpss = preload_eefpss(extractions, %w[Diagnoses])
+    dt_eefpss = preload_eefpss(extractions, ['Diagnostic Tests'])
+    arms = []
+    dt_eefpss.each do |dt_eefps|
+      next unless dt_eefps.extraction.consolidated
+
+      dt_eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+        arms << {
+          name: eefpst1.type1.name,
+          comparable_id: eefpst1.id,
+          comparable_type: eefpst1.class.to_s
+        }
+      end
+    end
 
     eefpss.each do |eefps|
       eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
@@ -26,6 +41,7 @@ class ConsolidationService
         }
 
         eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+          comparables[eefpst1r.population_name.id] ||= arms if eefps.extraction.consolidated
           master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id] ||= {
             name: eefpst1r.population_name.name,
             description: eefpst1r.population_name.description,
@@ -39,6 +55,7 @@ class ConsolidationService
           }
 
           eefpst1r.result_statistic_sections.each do |rss|
+            rss_lookup["#{eefps.extraction.id}-#{eefpst1r.population_name.id}"] = rss.id
             rss.comparisons.each do |comparison|
               consolidated_id = comparison.comparates.map do |comparate|
                 comparate.comparable_element.comparable.type1.id
@@ -113,8 +130,8 @@ class ConsolidationService
       master_template:,
       results_lookup:,
       dimensions_lookup:,
-      rss_lookup: {},
-      comparables: {},
+      rss_lookup:,
+      comparables:,
       extraction_ids: extractions.sort_by do |extraction|
                         extraction.consolidated ? 999_999_999 : extraction.id
                       end.map { |extraction| { id: extraction.id, user: extraction.user.email.split('@').first } },

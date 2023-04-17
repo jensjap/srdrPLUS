@@ -152,7 +152,7 @@
       async addComparison(rss_id) {
         const params = {
           result_statistic_section: {
-            comparison_type: { 2: "bac", 3: "wac" }[
+            comparison_type: { 2: "bac", 3: "wac", 5: "diagnostic_test" }[
               this.result_statistic_section_type_id
             ],
             comparisons_attributes: {
