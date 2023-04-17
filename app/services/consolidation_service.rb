@@ -16,7 +16,7 @@ class ConsolidationService
 
     eefpss.each do |eefps|
       eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-        master_template[eefpst1.type1.id] = {
+        master_template[eefpst1.type1.id] ||= {
           name: eefpst1.type1.name,
           description: eefpst1.type1.description,
           populations: {}
@@ -83,13 +83,10 @@ class ConsolidationService
                       record_value: record.name
                     }
 
-                    ms = master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id][:comparisons][consolidated_id][:timepoints][eefpst1rc.timepoint_name.id][:rss_types][second_rss.result_statistic_section_type_id][:measures]
-
-                    m = {
+                    master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id][:comparisons][consolidated_id][:timepoints][eefpst1rc.timepoint_name.id][:rss_types][second_rss.result_statistic_section_type_id][:measures] << {
                       id: measure.id,
                       name: measure.name
                     }
-                    ms << m
                   end
                 end
               end
@@ -98,7 +95,7 @@ class ConsolidationService
         end
       end
     end
-
+    ap master_template
     {
       master_template:,
       results_lookup:,
