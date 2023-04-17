@@ -108,6 +108,8 @@ class ConsolidationService
       eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
         next unless eefps.extraction_forms_projects_section.section.name == 'Outcomes'
 
+        eefpst1.update!(type1_type_id: 1) if eefpst1.type1_type.nil?
+
         outcome_arm_check["#{eefps.extraction_id}/#{eefpst1.type1_type.id}/#{eefpst1.type1.id}"] = true
         dimensions_lookup[eefps.extraction_id][:type1_type_type1]["#{eefpst1.type1_type.id}/#{eefpst1.type1.id}"] = true
 
