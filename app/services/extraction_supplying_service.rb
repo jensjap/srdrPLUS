@@ -152,6 +152,12 @@ class ExtractionSupplyingService
           type1 = nil
         end
 
+        if not eefpsqrf.extractions_extraction_forms_projects_sections_type1.type1_type.nil?
+          type1_type = eefpsqrf.extractions_extraction_forms_projects_sections_type1.type1_type
+        else
+          type1_type = nil
+        end
+
         if value.nil?
           if type != 9
             next
@@ -162,7 +168,10 @@ class ExtractionSupplyingService
               'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
             }
             if not type1.nil?
-              item['text'] = type1.name
+              item['text'] = type1.name + ' (' + type1.description + ')'
+              if not type1_type.nil?
+                item['text'] = item['text'] + ' (' + type1_type.name + ')'
+              end
             end
           end
         end
@@ -251,7 +260,10 @@ class ExtractionSupplyingService
             'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
           }
           if not type1.nil?
-            item['text'] = type1.name
+            item['text'] = type1.name + ' (' + type1.description + ')'
+            if not type1_type.nil?
+              item['text'] = item['text'] + ' (' + type1_type.name + ')'
+            end
           end
           for dicts in question_row_column_field.extractions_extraction_forms_projects_sections_question_row_column_fields[0].extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options do
             value = dicts.question_row_columns_question_row_column_option_id
