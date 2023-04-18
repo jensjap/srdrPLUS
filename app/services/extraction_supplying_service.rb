@@ -111,6 +111,7 @@ class ExtractionSupplyingService
       end
 
       questions = ExtractionFormsProjectsSectionSupplyingService.new.find_by_extraction_forms_projects_section_id(form.id)
+      return if questions.blank?
 
       eefps = {
         'status' => status,
