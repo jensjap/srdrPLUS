@@ -962,6 +962,9 @@
                       <input
                         type="text"
                         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                        :class="if (isNaN(sd_meta_data_figure.overall_effect_size) || (sd_meta_data_figure.outcome_type === 'Categorical' && parseFloat(sd_meta_data_figure.overall_effect_size) <= 0)) {
+                          return '!bg-red-300'
+                        }"
                         x-model="sd_meta_data_figure.overall_effect_size"
                         @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'overall_effect_size', sd_meta_data_figure.overall_effect_size)"
                       />
@@ -975,6 +978,9 @@
                       <input
                         type="text"
                         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                        :class="if (isNaN(sd_meta_data_figure.overall_95_ci_low) || (sd_meta_data_figure.outcome_type === 'Categorical' && parseFloat(sd_meta_data_figure.overall_95_ci_low) <= 0)) {
+                          return '!bg-red-300'
+                        }"
                         x-model="sd_meta_data_figure.overall_95_ci_low"
                         @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'overall_95_ci_low', sd_meta_data_figure.overall_95_ci_low)"
                       />
@@ -988,6 +994,9 @@
                       <input
                         type="text"
                         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                        :class="if (isNaN(sd_meta_data_figure.overall_95_ci_high) || (sd_meta_data_figure.outcome_type === 'Categorical' && parseFloat(sd_meta_data_figure.overall_95_ci_high) <= 0)) {
+                          return '!bg-red-300'
+                        }"
                         x-model="sd_meta_data_figure.overall_95_ci_high"
                         @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'overall_95_ci_high', sd_meta_data_figure.overall_95_ci_high)"
                       />
@@ -1001,6 +1010,12 @@
                       <input
                         type="text"
                         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
+                        :class="if (isNaN(sd_meta_data_figure.overall_i_squared)) {
+                          return '!bg-red-300'
+                        }
+                        if (parseFloat(sd_meta_data_figure.overall_i_squared) < 0 || parseFloat(sd_meta_data_figure.overall_i_squared) > 100) {
+                          return '!bg-red-300'
+                        }"
                         x-model="sd_meta_data_figure.overall_i_squared"
                         @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'overall_i_squared', sd_meta_data_figure.overall_i_squared)"
                       />
