@@ -380,11 +380,9 @@
   document.addEventListener("alpine:init", () => {
     Alpine.data("sdMetaDatum", () => ({
       sdMetaDatum: {},
-      panel_number: null,
       sdMetaDatumId: /\d+/.exec(window.location.pathname)[0],
-      panel_number: new URLSearchParams(window.location.search).get(
-        "panel_number"
-      ),
+      panel_number:
+        new URLSearchParams(window.location.search).get("panel_number") || 0,
       completion_percentage: "0",
       imageModalObject: false,
       srdrPlusKQSelection: null,
