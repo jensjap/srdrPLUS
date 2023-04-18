@@ -1,72 +1,85 @@
 <div class="border text-sm w-3/12 xl:w-1/12 p-1">
-  <div class="text-xs font-semibold">Results for Individual Outcomes</div>
-  <ul>
-    <template
-      x-for="(sd_result_item, sd_result_item_index) in sdMetaDatum.sd_result_items"
-    >
-      <li class="text-xs cursor-pointer pb-2">
-        <span
-          class="text-[11px] font-semibold"
-          x-text="`Results by KQ (${sd_result_item_index + 1})`"
-        ></span>
-        <div class="text-[10px] font-semibold">Narrative Results</div>
-        <ul>
-          <template
-            x-for="(sd_narrative_result, sd_narrative_result_index) in sd_result_item.sd_narrative_results"
-          >
-            <li
-              class="text-[9px]"
-              x-text="`Narrative ${sd_narrative_result_index + 1}`"
-            ></li>
-          </template>
-        </ul>
-        <div class="text-[10px] font-semibold">Results</div>
-        <ul>
-          <template
-            x-for="(sd_evidence_table, sd_evidence_table_index) in sd_result_item.sd_evidence_tables"
-          >
-            <li
-              class="text-[9px]"
-              x-text="`Result Outcome ${sd_evidence_table_index + 1}`"
-            ></li>
-          </template>
-        </ul>
-        <div class="text-[10px] font-semibold">Pairwise Meta-analyses</div>
-        <ul>
-          <template
-            x-for="(sd_pairwise_meta_analytic_result, sd_pairwise_meta_analytic_result_index) in sd_result_item.sd_pairwise_meta_analytic_results"
-          >
-            <li
-              class="text-[9px]"
-              x-text="`Pairwise ${sd_pairwise_meta_analytic_result_index + 1}`"
-            ></li>
-          </template>
-        </ul>
-        <div class="text-[10px] font-semibold">Network Meta-analyses</div>
-        <ul>
-          <template
-            x-for="(sd_network_meta_analysis_result, sd_network_meta_analysis_result_index) in sd_result_item.sd_network_meta_analysis_results"
-          >
-            <li
-              class="text-[9px]"
-              x-text="`Network ${sd_network_meta_analysis_result_index + 1}`"
-            ></li>
-          </template>
-        </ul>
-        <div class="text-[10px] font-semibold">Meta-regression Results</div>
-        <ul>
-          <template
-            x-for="(sd_meta_regression_analysis_result, sd_meta_regression_analysis_result_index) in sd_result_item.sd_meta_regression_analysis_results"
-          >
-            <li
-              class="text-[9px]"
-              x-text="`Regression ${sd_meta_regression_analysis_result_index + 1}`"
-            ></li>
-          </template>
-        </ul>
-      </li>
-    </template>
-  </ul>
+  <div
+    class="sidebar-wrapper"
+    style="
+      height: calc(100vh - 8rem);
+      top: 8rem;
+      position: sticky;
+      overflow-y: auto;
+    "
+  >
+    <div class="text-xs font-semibold">Results for Individual Outcomes</div>
+    <ul>
+      <template
+        x-for="(sd_result_item, sd_result_item_index) in sdMetaDatum.sd_result_items"
+      >
+        <li
+          class="text-xs cursor-pointer pb-2"
+          @click="document.getElementById(`sd_result_item-${sd_result_item.id}`).scrollIntoView()"
+        >
+          <span
+            class="text-[11px] font-semibold"
+            x-text="`Results by KQ (${sd_result_item_index + 1})`"
+          ></span>
+          <div class="text-[10px] font-semibold">Narrative Results</div>
+          <ul>
+            <template
+              x-for="(sd_narrative_result, sd_narrative_result_index) in sd_result_item.sd_narrative_results"
+            >
+              <li
+                class="text-[9px]"
+                x-text="`Narrative ${sd_narrative_result_index + 1}`"
+              ></li>
+            </template>
+          </ul>
+          <div class="text-[10px] font-semibold">Results</div>
+          <ul>
+            <template
+              x-for="(sd_evidence_table, sd_evidence_table_index) in sd_result_item.sd_evidence_tables"
+            >
+              <li
+                class="text-[9px]"
+                x-text="`Result Outcome ${sd_evidence_table_index + 1}`"
+              ></li>
+            </template>
+          </ul>
+          <div class="text-[10px] font-semibold">Pairwise Meta-analyses</div>
+          <ul>
+            <template
+              x-for="(sd_pairwise_meta_analytic_result, sd_pairwise_meta_analytic_result_index) in sd_result_item.sd_pairwise_meta_analytic_results"
+            >
+              <li
+                class="text-[9px]"
+                x-text="`Pairwise ${sd_pairwise_meta_analytic_result_index + 1}`"
+              ></li>
+            </template>
+          </ul>
+          <div class="text-[10px] font-semibold">Network Meta-analyses</div>
+          <ul>
+            <template
+              x-for="(sd_network_meta_analysis_result, sd_network_meta_analysis_result_index) in sd_result_item.sd_network_meta_analysis_results"
+            >
+              <li
+                class="text-[9px]"
+                x-text="`Network ${sd_network_meta_analysis_result_index + 1}`"
+              ></li>
+            </template>
+          </ul>
+          <div class="text-[10px] font-semibold">Meta-regression Results</div>
+          <ul>
+            <template
+              x-for="(sd_meta_regression_analysis_result, sd_meta_regression_analysis_result_index) in sd_result_item.sd_meta_regression_analysis_results"
+            >
+              <li
+                class="text-[9px]"
+                x-text="`Regression ${sd_meta_regression_analysis_result_index + 1}`"
+              ></li>
+            </template>
+          </ul>
+        </li>
+      </template>
+    </ul>
+  </div>
 </div>
 <div class="border p-2 w-9/12 xl:w-11/12 space-y-2">
   <h2 class="text-base font-bold border-b-2">
@@ -100,6 +113,7 @@
       <div
         class="bg-purple-200 m-2 p-2 rounded-md space-y-2"
         x-init="sd_result_item.show = false"
+        :id="`sd_result_item-${sd_result_item.id}`"
       >
         <div class="flex justify-between items-center">
           <div class="flex justify-center items-center space-x-2">

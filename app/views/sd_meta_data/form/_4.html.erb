@@ -1,13 +1,24 @@
 <div class="border text-sm w-3/12 xl:w-1/12 p-1">
-  <div class="text-xs font-semibold">PICODTS</div>
-  <ul class="text-xs">
-    <template x-for="(sd_picod, sd_picod_index) in sdMetaDatum.sd_picods">
-      <li
-        class="text-xs cursor-pointer"
-        x-text="`SD PICODTS: ${sd_picod_index + 1}`"
-      ></li>
-    </template>
-  </ul>
+  <div
+    class="sidebar-wrapper"
+    style="
+      height: calc(100vh - 8rem);
+      top: 8rem;
+      position: sticky;
+      overflow-y: auto;
+    "
+  >
+    <div class="text-xs font-semibold">PICODTS</div>
+    <ul class="text-xs">
+      <template x-for="(sd_picod, sd_picod_index) in sdMetaDatum.sd_picods">
+        <li
+          class="text-xs cursor-pointer"
+          x-text="`SD PICODTS: ${sd_picod_index + 1}`"
+          @click="document.getElementById(`sd_picod-${sd_picod.id}`).scrollIntoView()"
+        ></li>
+      </template>
+    </ul>
+  </div>
 </div>
 <div class="border p-2 w-9/12 xl:w-11/12 space-y-2">
   <h2 class="text-base font-bold border-b-2">PICODTS</h2>
@@ -36,7 +47,10 @@
       x-for="(sd_picod, sd_picod_index) in sdMetaDatum.sd_picods"
       :key="sd_picod.id"
     >
-      <div class="bg-green-200 m-2 p-2 rounded-md space-y-2">
+      <div
+        class="bg-green-200 m-2 p-2 rounded-md space-y-2"
+        :id="`sd_picod-${sd_picod.id}`"
+      >
         <div class="flex justify-between items-center">
           <select
             class="w-12"
