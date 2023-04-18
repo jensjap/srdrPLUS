@@ -826,10 +826,16 @@
                     <label class="block text-xs font-bold text-gray-700"
                       >Outcome Type</label
                     >
-                    <div>
+                    <div
+                      x-data="{ last_outcome_type: sd_meta_data_figure.outcome_type }"
+                    >
                       <select
                         x-model="sd_meta_data_figure.outcome_type"
-                        @change="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'outcome_type', sd_meta_data_figure.outcome_type)"
+                        @change="if (sd_meta_data_figure.outcome_type === '' || last_outcome_type !== sd_meta_data_figure.outcome_type) {
+                          sd_meta_data_figure.effect_size_measure_name = '';
+                        }
+                        updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'outcome_type', sd_meta_data_figure.outcome_type)
+                        last_outcome_type = sd_meta_data_figure.outcome_type"
                       >
                         <option value="">--Make a selection--</option>
                         <option value="Categorical">Categorical</option>
@@ -867,13 +873,85 @@
                     <label class="block text-xs font-bold text-gray-700"
                       >Effect size measure name</label
                     >
-                    <div>
-                      <input
-                        type="text"
+                    <div
+                      x-data="{
+                        effect_size_measure_name_options: {
+                          '': [
+                            {
+                              id: '',
+                              text: 'Please select Outcome Type above first',
+                            },
+                          ],
+                          'Categorical': [
+                            {
+                              id: '',
+                              text: '--Make a selection--',
+                            },
+                            {
+                              id: 'OR',
+                              text: 'OR',
+                            },
+                            {
+                              id: 'HR',
+                              text: 'HR',
+                            },
+                            {
+                              id: 'RR',
+                              text: 'RR',
+                            },
+                            {
+                              id: 'RD',
+                              text: 'RD',
+                            },
+                            {
+                              id: 'Percent',
+                              text: 'Percent',
+                            },
+                            {
+                              id: 'Proportion',
+                              text: 'Proportion',
+                            },
+                          ],
+                          'Continuous': [
+                            {
+                              id: '',
+                              text: '--Make a selection--',
+                            },
+                            {
+                              id: 'Mean Difference',
+                              text: 'Mean Difference',
+                            },
+                            {
+                              id: 'Standardized Mean Difference',
+                              text: 'Standardized Mean Difference',
+                            },
+                            {
+                              id: 'Net Mean Difference',
+                              text: 'Net Mean Difference',
+                            },
+                            {
+                              id: 'Mean',
+                              text: 'Mean',
+                            },
+                          ],
+                        }
+                      }"
+                    >
+                      <select
                         class="block w-full rounded-md border-gray-300 shadow-sm focus:!border-purple-500 focus:!ring-purple-500 sm:text-sm"
                         x-model="sd_meta_data_figure.effect_size_measure_name"
-                        @input.debounce="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'effect_size_measure_name', sd_meta_data_figure.effect_size_measure_name)"
-                      />
+                        @change="updateSubResource('sd_meta_data_figures', sd_meta_data_figure.id, 'PATCH', 'effect_size_measure_name', sd_meta_data_figure.effect_size_measure_name)"
+                      >
+                        <template
+                          x-for="option in (effect_size_measure_name_options[sd_meta_data_figure.outcome_type || ''])"
+                        >
+                          <option
+                            x-text="option.text"
+                            :value="option.id"
+                            :selected="sd_meta_data_figure.effect_size_measure_name === option.id"
+                          ></option>
+                        </template>
+                      </select>
                     </div>
                   </div>
                   <div>
