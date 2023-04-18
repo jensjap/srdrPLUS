@@ -205,7 +205,7 @@ class ExtractionFormsProjectsSectionSupplyingService
         efps['item'].append(question_item)
       end
 
-      return FHIR::Questionnaire.new(efps) if not efps['item'].empty?
+      return FHIR::Questionnaire.new(efps)
     end
   end
 
