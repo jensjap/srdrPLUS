@@ -23,7 +23,6 @@ group :development do
   gem 'web-console'
 end
 
-gem 'ahoy_matey'
 gem 'amoeba' # for things like cloning questions (extraction forms maybe?)
 gem 'apipie-rails' # Api documentation.
 gem 'autoprefixer-rails' # Use Zurb Foundation as Front-End Framework
