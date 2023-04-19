@@ -607,6 +607,7 @@ class ConsolidationService
         { extractions_extraction_forms_projects_sections_type1_id: eefpst1.id,
           extractions_extraction_forms_projects_section_id: eefps.id,
           type1_id: eefpst1.type1_id,
+          type1_type_id: eefpst1.type1_type.id,
           name: eefpst1.type1.name,
           description: eefpst1.type1.description,
           type1_type_name: eefpst1&.type1_type&.name,
@@ -617,13 +618,21 @@ class ConsolidationService
       parent_eefps_eefpst1s.each do |eefpst1|
         current_section_eefpst1_objects << eefpst1
         type1_id = eefpst1[:type1_id]
+        type1_type_id = eefpst1[:type1_type_id]
         eefps_id = eefpst1[:extractions_extraction_forms_projects_section_id]
         populations = eefpst1[:populations]
         timepoints = eefpst1[:timepoints]
 
-        if current_section_eefpst1s.any? { |current_section_eefpst1| current_section_eefpst1[:type1_id] == type1_id }
+        already_exists = current_section_eefpst1s.any? do |current_section_eefpst1|
+          current_section_eefpst1[:type1_id] == type1_id &&
+            current_section_eefpst1[:type1_type_id] == type1_type_id
+        end
+        if already_exists
           current_section_eefpst1s.each do |current_section_eefpst1|
-            next unless current_section_eefpst1[:type1_id] == type1_id
+            unless current_section_eefpst1[:type1_id] == type1_id &&
+                   current_section_eefpst1[:type1_type_id] == type1_type_id
+              next
+            end
 
             current_section_eefpst1[:eefpst1_lookups][eefps_id] =
               eefpst1[:extractions_extraction_forms_projects_sections_type1_id]
@@ -632,6 +641,7 @@ class ConsolidationService
           end
         else
           current_section_eefpst1 = {}
+          current_section_eefpst1[:type1_type_id] = type1_type_id
           current_section_eefpst1[:type1_id] = type1_id
           current_section_eefpst1[:name] = eefpst1[:name]
           current_section_eefpst1[:description] = eefpst1[:description]
