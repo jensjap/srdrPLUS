@@ -3,54 +3,120 @@ class ConsolidationService
     extractions = Extraction.includes(projects_users_role: { projects_user: :user }).where(citations_project:)
 
     master_template = {}
+    results_lookup = {}
+    dimensions_lookup = {}
+    rss_lookup = {}
+    comparables = {}
+
+    extractions.each do |extraction|
+      dimensions_lookup[extraction.id] = {
+        outcomes: {}
+      }
+    end
 
     eefpss = preload_eefpss(extractions, %w[Diagnoses])
+    dt_eefpss = preload_eefpss(extractions, ['Diagnostic Tests'])
+    arms = []
+    dt_eefpss.each do |dt_eefps|
+      next unless dt_eefps.extraction.consolidated
+
+      dt_eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+        arms << {
+          name: eefpst1.type1.name,
+          comparable_id: eefpst1.id,
+          comparable_type: eefpst1.class.to_s
+        }
+      end
+    end
 
     eefpss.each do |eefps|
       eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-        master_template[eefpst1.type1.id] = {
+        master_template[eefpst1.type1.id] ||= {
           name: eefpst1.type1.name,
           description: eefpst1.type1.description,
           populations: {}
         }
+        dimensions_lookup[eefps.extraction.id][:outcomes][eefpst1.type1.id] ||= {
+          populations: {}
+        }
 
         eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
-          master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id] = {
+          comparables[eefpst1r.population_name.id] ||= arms if eefps.extraction.consolidated
+          master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id] ||= {
             name: eefpst1r.population_name.name,
             description: eefpst1r.population_name.description,
-            comparisons: {}
+            comparisons: {},
+            timepoints: {},
+            rss_types: {}
           }
+          dimensions_lookup[eefps.extraction.id][:outcomes][eefpst1.type1.id][:populations][eefpst1r.population_name.id] ||= {
+            comparisons: {},
+            timepoints: {}
+          }
+
+          eefpst1r.result_statistic_sections.each do |rss|
+            rss_lookup["#{eefps.extraction.id}-#{eefpst1r.population_name.id}"] = rss.id
+            rss.comparisons.each do |comparison|
+              consolidated_id = comparison.comparates.map do |comparate|
+                comparate.comparable_element.comparable.type1.id
+              end.join('/')
+              master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id][:comparisons][consolidated_id] ||= {
+                name: comparison.comparates.map do |comparate|
+                  comparate.comparable_element.comparable.type1.name
+                end.join(' vs ')
+              }
+              dimensions_lookup[eefps.extraction.id][:outcomes][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:comparisons][consolidated_id] =
+                true
+            end
+
+            next unless rss.result_statistic_section_type_id.between?(5, 8)
+
+            master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id][:rss_types][rss.result_statistic_section_type_id] ||= {
+              measures: rss.result_statistic_sections_measures.map do |rssm|
+                          { id: rssm.measure.id, name: rssm.measure.name }
+                        end
+            }
+          end
+
+          eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+            master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id][:timepoints][eefpst1rc.timepoint_name.id] ||= {
+              name: eefpst1rc.timepoint_name.name,
+              unit: eefpst1rc.timepoint_name.unit
+            }
+            dimensions_lookup[eefps.extraction.id][:outcomes][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:timepoints][eefpst1rc.timepoint_name.id] =
+              true
+          end
+        end
+      end
+    end
+
+    eefpss.each do |eefps|
+      eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+        eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
           eefpst1r.result_statistic_sections.each do |rss|
             rss.comparisons.each do |comparison|
               consolidated_id = comparison.comparates.map do |comparate|
                 comparate.comparable_element.comparable.type1.id
               end.join('/')
-              master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id][:comparisons][consolidated_id] = {
-                name: comparison.comparates.map do |comparate|
-                  comparate.comparable_element.comparable.type1.name
-                end.join(' vs '),
-                timepoints: {}
-              }
               eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
-                master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id][:comparisons][consolidated_id][:timepoints][eefpst1rc.timepoint_name.id] = {
-                  name: eefpst1rc.timepoint_name.name,
-                  unit: eefpst1rc.timepoint_name.unit,
-                  rss_types: {}
-                }
                 eefpst1r.result_statistic_sections.each do |second_rss|
                   next unless second_rss.result_statistic_section_type_id.between?(5, 8)
 
-                  master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id][:comparisons][consolidated_id][:timepoints][eefpst1rc.timepoint_name.id][:rss_types][second_rss.result_statistic_section_type_id] = {
-                    measures: []
-                  }
-                  second_rss.measures.each do |measure|
-                    ms = master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id][:comparisons][consolidated_id][:timepoints][eefpst1rc.timepoint_name.id][:rss_types][second_rss.result_statistic_section_type_id][:measures]
+                  second_rss.result_statistic_sections_measures.each do |rssm|
+                    tps_comparisons_rssm = TpsComparisonsRssm.find_or_create_by(
+                      timepoint: eefpst1rc,
+                      comparison:,
+                      result_statistic_sections_measure: rssm
+                    )
 
-                    m = {
-                      id: measure.id,
-                      name: measure.name
+                    tps_comparisons_rssm.records.create! if tps_comparisons_rssm.records.blank?
+                    rssm.reload
+                    measure = rssm.measure
+                    record = tps_comparisons_rssm.records.first
+                    results_lookup["#{eefps.extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{consolidated_id}-#{eefpst1rc.timepoint_name.id}-#{second_rss.result_statistic_section_type_id}-#{measure.id}"] ||= {
+                      record_id: record.id,
+                      record_value: record.name
                     }
-                    ms << m unless ms.include?(m)
                   end
                 end
               end
@@ -59,13 +125,13 @@ class ConsolidationService
         end
       end
     end
-    ap master_template
+
     {
       master_template:,
-      results_lookup: {},
-      dimensions_lookup: {},
-      rss_lookup: {},
-      comparables: {},
+      results_lookup:,
+      dimensions_lookup:,
+      rss_lookup:,
+      comparables:,
       extraction_ids: extractions.sort_by do |extraction|
                         extraction.consolidated ? 999_999_999 : extraction.id
                       end.map { |extraction| { id: extraction.id, user: extraction.user.email.split('@').first } },
