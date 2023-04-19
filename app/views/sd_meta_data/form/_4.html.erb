@@ -14,7 +14,7 @@
         <li
           class="text-xs cursor-pointer"
           x-text="`SD PICODTS: ${sd_picod_index + 1}`"
-          @click="document.getElementById(`sd_picod-${sd_picod.id}`).scrollIntoView()"
+          @click="scrollTo(document.getElementById(`sd_picod-${sd_picod.id}`))"
         ></li>
       </template>
     </ul>

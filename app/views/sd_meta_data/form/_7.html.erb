@@ -16,7 +16,7 @@
         <li
           class="text-xs cursor-pointer"
           x-text="`Summaries of Evidence: ${sd_summary_of_evidence_index + 1}`"
-          @click="document.getElementById(`sd_summary_of_evidence-${sd_summary_of_evidence.id}`).scrollIntoView()"
+          @click="scrollTo(document.getElementById(`sd_summary_of_evidence-${sd_summary_of_evidence.id}`))"
         ></li>
       </template>
     </ul>

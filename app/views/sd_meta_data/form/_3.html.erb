@@ -16,7 +16,7 @@
         <li
           class="text-xs cursor-pointer"
           x-text="`Framework ${sd_analytic_framework_index + 1}`"
-          @click="document.getElementById(`sd_analytic_framework-${sd_analytic_framework.id}`).scrollIntoView()"
+          @click="scrollTo(document.getElementById(`sd_analytic_framework-${sd_analytic_framework.id}`))"
         ></li>
       </template>
     </ul>
@@ -28,7 +28,7 @@
         <li
           class="text-xs cursor-pointer"
           x-text="`KQ ${sd_key_question_index + 1}`"
-          @click="document.getElementById(`sd_key_question-${sd_key_question.id}`).scrollIntoView()"
+          @click="scrollTo(document.getElementById(`sd_key_question-${sd_key_question.id}`))"
         ></li>
       </template>
     </ul>

@@ -1,8 +1,3 @@
-<style>
-  html {
-    scroll-behavior: smooth;
-  }
-</style>
 <div x-data="sdMetaDatum" class="p-4 lg:p-8 space-y-2 relative">
   <div class="flex items-center justify-end absolute top-0 right-0">
     <svg
@@ -395,6 +390,18 @@
       async init() {
         await this.getSdMetaDatum();
         this.calcCompletionPercentage();
+      },
+
+      scrollTo(element) {
+        const headerOffset = 128;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition =
+          elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
       },
 
       moveElementInArray(parentObject, key, old_index, new_index) {

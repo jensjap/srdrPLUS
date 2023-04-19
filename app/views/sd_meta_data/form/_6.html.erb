@@ -16,7 +16,7 @@
         <li
           class="text-xs cursor-pointer"
           x-text="`Search Strategy: ${sd_search_strategy_index + 1}`"
-          @click="document.getElementById(`sd_search_strategy-${sd_search_strategy.id}`).scrollIntoView()"
+          @click="scrollTo(document.getElementById(`sd_search_strategy-${sd_search_strategy.id}`))"
         ></li>
       </template>
     </ul>
@@ -28,7 +28,7 @@
         <li
           class="text-xs cursor-pointer"
           x-text="`Grey Literature Search: ${sd_grey_literature_search_index + 1}`"
-          @click="document.getElementById(`sd_grey_literature_search-${sd_grey_literature_search.id}`).scrollIntoView()"
+          @click="scrollTo(document.getElementById(`sd_grey_literature_search-${sd_grey_literature_search.id}`))"
         ></li>
       </template>
     </ul>
@@ -40,7 +40,7 @@
         <li
           class="text-xs cursor-pointer"
           x-text="`PRISMA / Literature Flow Diagram: ${sd_prisma_flow_index + 1}`"
-          @click="document.getElementById(`sd_prisma_flow-${sd_prisma_flow.id}`).scrollIntoView()"
+          @click="scrollTo(document.getElementById(`sd_prisma_flow-${sd_prisma_flow.id}`))"
         ></li>
       </template>
     </ul>

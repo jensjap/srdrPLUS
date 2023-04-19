@@ -15,7 +15,7 @@
       >
         <li
           class="text-xs cursor-pointer pb-2"
-          @click="document.getElementById(`sd_result_item-${sd_result_item.id}`).scrollIntoView()"
+          @click="scrollTo(document.getElementById(`sd_result_item-${sd_result_item.id}`))"
         >
           <span
             class="text-[11px] font-semibold"
