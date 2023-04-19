@@ -1,0 +1,1 @@
+This collection may contains arms, outcomes, user-defined evidence variable.
