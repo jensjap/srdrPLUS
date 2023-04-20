@@ -16,6 +16,7 @@ class SimpleImportJob < ApplicationJob
     'Design Details' => { column_offset: 11, arms_by_rows: false },
     'Arm Details' => { column_offset: 13, arms_by_rows: true },
     'Sample Characteristics' => { column_offset: 13, arms_by_rows: true },
+    'Risk of Bias Assessment' => { column_offset: 11, arms_by_rows: false },
     'Risk of Bias - RCTs' => { column_offset: 11, arms_by_rows: false },
     'Risk of Bias - NRCSs' => { column_offset: 11, arms_by_rows: false },
     'Risk of Bias - SGSs' => { column_offset: 11, arms_by_rows: false }
