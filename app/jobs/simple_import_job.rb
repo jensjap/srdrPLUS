@@ -49,6 +49,7 @@ class SimpleImportJob < ApplicationJob
 
     @xlsx = Roo::Excelx.new(file.path)
     @sheet_names = @xlsx.sheets
+
     process_all
 
     ImportMailer.notify_import_completion(imported_file.id).deliver_later
@@ -134,7 +135,7 @@ class SimpleImportJob < ApplicationJob
 
     qrc_ids = sheet
               .row(1)[(column_offset - 1)..-1]
-              .map { |header| header.split("\n")[1][/(?<=x)(.*?)(?=\])/m, 1] }
+              .map { |header| header[/\[Field\sID:\s*\d+x(\d+)\]\z/, 1] }
 
     sheet.each_with_index do |row, row_index|
       next if row_index == 0
@@ -150,8 +151,15 @@ class SimpleImportJob < ApplicationJob
         @current_column = column_index + column_offset
         qrc_id = qrc_ids[column_index]
         clean_answer = dirty_answer.to_s.dup
-        update_type2_section_record(extraction_id, sheet_name, qrc_id, clean_answer, arms_by_rows, arm_name,
-                                    arm_description)
+        update_type2_section_record(
+          extraction_id,
+          sheet_name,
+          qrc_id,
+          clean_answer,
+          arms_by_rows,
+          arm_name,
+          arm_description
+        )
       end
     end
     @current_row, @current_column = nil
