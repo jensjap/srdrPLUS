@@ -7,7 +7,7 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins(Rails.env.production? ? 'https://srdrplus.ahrq.gov' : '*')
+    origins(Rails.env.production? ? 'https://srdrplus.ahrq.gov:443' : '*')
 
     resource '*',
       headers: :any,
