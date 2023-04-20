@@ -59,9 +59,6 @@ class ImportJobs::JsonImportJob::ProjectImporter
       ## CITATIONS
       phash['citations']&.each(&method(:import_citation))
 
-      ## TASKS
-      phash['tasks']&.values&.each(&method(:import_task))
-
       ## EFPSs
       # We destroy default EFPSs first
       @p.extraction_forms_projects.first.extraction_forms_projects_sections.destroy_all
@@ -302,26 +299,6 @@ class ImportJobs::JsonImportJob::ProjectImporter
     end
     cp = CitationsProject.find_or_create_by!(citation: c, project: @p)
     @id_map['cp'][cpid.to_i] = cp
-  end
-
-  def import_task(thash)
-    tt = TaskType.find_by(name: thash['task_type']['name'])
-    if tt.nil?
-      tt = TaskType.first
-      Rails.logger.debug "Could not find task_type with name '" + thash['task_type']['name'] + ", used '" + tt.name + "' instead."
-    end
-    na = thash['num_assigned']
-
-    t = Task.create!(project: @p, task_type: tt, num_assigned: na)
-
-    thash['assignments']&.values&.each do |ahash|
-      pur = find_projects_users_role(ahash['assignee_user_id'], ahash['assignee_role_id'])
-
-      t.assignments << Assignment.create!({ projects_users_role: pur,
-                                            done_so_far: ahash['dones_so_far'],
-                                            date_due: ahash['date_due'],
-                                            done: ahash['done'] })
-    end
   end
 
   def get_efps_dedup_key(shash, linked_shash)
