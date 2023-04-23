@@ -71,38 +71,41 @@ class ExtractionSupplyingService
     form = ExtractionFormsProjectsSection.find(raw.extraction_forms_projects_section_id)
 
     if form.extraction_forms_projects_section_type_id == 1
+      evidence_variables = []
       if raw.status['name'] == 'Draft'
         status = 'draft'
       elsif raw.status['name'] == 'Completed'
         status = 'active'
       end
 
-      eefps = {
-        'status' => status,
-        'id' => '4' + '-' + raw.id.to_s,
-        'title' => form.section_label,
-        'identifier' => [{
-          'type' => {
-            'text' => 'SRDR+ Object Identifier'
-          },
-          'system' => 'https://srdrplus.ahrq.gov/',
-          'value' => 'ExtractionsExtractionFormsProjectsSection/' + raw.id.to_s
-        }],
-        'characteristic' => []
-      }
       for row in raw.extractions_extraction_forms_projects_sections_type1s do
         info = Type1.find(row['type1_id'])
-        eefps['characteristic'].append({
+        evidence_variable = {
+          'status' => status,
+          'id' => '6' + '-' + row['type1_id'].to_s,
+          'title' => info['name'],
           'description' => info['description'],
-          'definitionCodeableConcept' => {
-            'text' => info['name']
-          }
-        })
+          'identifier' => [{
+            'type' => {
+              'text' => 'SRDR+ Object Identifier'
+            },
+            'system' => 'https://srdrplus.ahrq.gov/',
+            'value' => 'Type1/' + row['type1_id'].to_s
+          }],
+        }
+
+        evidence_variables.append(FHIR::EvidenceVariable.new(evidence_variable))
       end
-      if eefps['characteristic'].empty?
+
+      if evidence_variables.empty?
         return
       end
-      return FHIR::EvidenceVariable.new(eefps)
+
+      link_info = [{
+        'relation' => 'service-doc',
+        'url' => 'doc/fhir/evidence_variable.txt'
+      }]
+      return create_bundle(objs=evidence_variables, type='collection', link_info=link_info)
     elsif form.extraction_forms_projects_section_type_id == 2
       if raw.status['name'] == 'Draft'
         status = 'in-progress'
@@ -111,6 +114,7 @@ class ExtractionSupplyingService
       end
 
       questions = ExtractionFormsProjectsSectionSupplyingService.new.find_by_extraction_forms_projects_section_id(form.id)
+      return if questions.blank?
 
       eefps = {
         'status' => status,
@@ -151,6 +155,12 @@ class ExtractionSupplyingService
           type1 = nil
         end
 
+        if not eefpsqrf.extractions_extraction_forms_projects_sections_type1.type1_type.nil?
+          type1_type = eefpsqrf.extractions_extraction_forms_projects_sections_type1.type1_type
+        else
+          type1_type = nil
+        end
+
         if value.nil?
           if type != 9
             next
@@ -161,7 +171,10 @@ class ExtractionSupplyingService
               'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
             }
             if not type1.nil?
-              item['text'] = type1.name
+              item['text'] = type1.name + ' (' + type1.description + ')'
+              if not type1_type.nil?
+                item['text'] = item['text'] + ' (' + type1_type.name + ')'
+              end
             end
           end
         end
@@ -250,7 +263,10 @@ class ExtractionSupplyingService
             'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
           }
           if not type1.nil?
-            item['text'] = type1.name
+            item['text'] = type1.name + ' (' + type1.description + ')'
+            if not type1_type.nil?
+              item['text'] = item['text'] + ' (' + type1_type.name + ')'
+            end
           end
           for dicts in question_row_column_field.extractions_extraction_forms_projects_sections_question_row_column_fields[0].extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options do
             value = dicts.question_row_columns_question_row_column_option_id

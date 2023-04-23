@@ -18,6 +18,7 @@ class ExtractionFormsProjectsSectionSupplyingService
   def find_by_extraction_forms_projects_section_id(id)
     efps = ExtractionFormsProjectsSection.find(id)
     efps_in_fhir = create_fhir_obj(efps)
+    return efps_in_fhir if efps_in_fhir.blank?
     return efps_in_fhir.validate unless efps_in_fhir.valid?
 
     efps_in_fhir
@@ -41,33 +42,7 @@ class ExtractionFormsProjectsSectionSupplyingService
   end
 
   def create_fhir_obj(raw)
-    if raw.extraction_forms_projects_section_type_id == 1
-      efps = {
-        'status' => 'active',
-        'id' => '3' + '-' + raw.id.to_s,
-        'title' => raw.section_label,
-        'identifier' => [{
-          'type' => {
-            'text' => 'SRDR+ Object Identifier'
-          },
-          'system' => 'https://srdrplus.ahrq.gov/',
-          'value' => 'ExtractionFormsProjectsSection/' + raw.id.to_s
-        }],
-        'compose' => {
-          'include' => [{
-            'concept' => []
-          }]
-        }
-      }
-      for row in raw.extraction_forms_projects_sections_type1s do
-        info = Type1.find(row['type1_id'])
-        efps['compose']['include'][0]['concept'].append({
-          'display' => info['description'],
-          'code' => info['name']
-        })
-      end
-      return FHIR::ValueSet.new(efps)
-    elsif raw.extraction_forms_projects_section_type_id == 2
+    if raw.extraction_forms_projects_section_type_id == 2
       efps = {
         'status' => 'active',
         'id' => '3' + '-' + raw.id.to_s,
@@ -230,33 +205,7 @@ class ExtractionFormsProjectsSectionSupplyingService
         efps['item'].append(question_item)
       end
 
-      return FHIR::Questionnaire.new(efps)
-    elsif raw.extraction_forms_projects_section_type_id == 4
-      efps = {
-        'status' => 'active',
-        'id' => '3' + '-' + raw.id.to_s,
-        'title' => raw.section_label,
-        'identifier' => [{
-          'type' => {
-            'text' => 'SRDR+ Object Identifier'
-          },
-          'system' => 'https://srdrplus.ahrq.gov/',
-          'value' => 'ExtractionFormsProjectsSection/' + raw.id.to_s
-        }],
-        'compose' => {
-          'include' => [{
-            'concept' => []
-          }]
-        }
-      }
-      for row in raw.extraction_forms_projects_sections_type1s do
-        info = Type1.find(row['type1_id'])
-        efps['compose']['include'][0]['concept'].append({
-          'display' => info['description'],
-          'code' => info['name']
-        })
-      end
-      return FHIR::ValueSet.new(efps)
+      return FHIR::Questionnaire.new(efps) if not efps['item'].empty?
     end
   end
 
