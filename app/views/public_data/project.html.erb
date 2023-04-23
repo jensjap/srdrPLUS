@@ -336,7 +336,7 @@
                         <% else %>
                         <form
                           method="POST"
-                          action="/projects/#{@project.id}/export"
+                          action="<%= "/projects/#{@project.id}/export" %>"
                         >
                           <input
                             name="authenticity_token"

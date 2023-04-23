@@ -148,7 +148,13 @@ class ProjectsController < ApplicationController
     if @project.public? || authorize(@project)
       SimpleExportJob.set(wait: 1.minute).perform_later(current_user ? current_user.email : email, @project.id,
                                                         export_type_name_params)
-      ahoy.track 'Export', { project_id: @project.id, export_type_name_params: }
+      Event.create(
+        sent: current_user ? current_user.email : email,
+        action: 'Export',
+        resource: @project.class.to_s,
+        resource_id: @project.id,
+        notes: export_type_name_params
+      )
       flash[:success] =
         "Export request submitted for project '#{@project.name}'. You will be notified by email of its completion."
     else
@@ -434,7 +440,8 @@ class ProjectsController < ApplicationController
   end
 
   def import_assignments_and_mappings_params
-    params.require(:import).permit(:projects_user_id, :import_type_id, :simple_import_strategy, imported_file: %i[file_type_id content])
+    params.require(:import).permit(:projects_user_id, :import_type_id, :simple_import_strategy,
+                                   imported_file: %i[file_type_id content])
   end
 
   # def import_project_from_distiller(project)

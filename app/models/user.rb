@@ -76,9 +76,6 @@ class User < ApplicationRecord
   has_many :taggings, through: :projects_users, dependent: :destroy
   has_many :tags, through: :taggings, dependent: :destroy
 
-  has_many :visits, class_name: 'Ahoy::Visit'
-  has_many :events, class_name: 'Ahoy::Event'
-
   delegate :username, to: :profile, allow_nil: true
   delegate :first_name, to: :profile, allow_nil: true
   delegate :middle_name, to: :profile, allow_nil: true
