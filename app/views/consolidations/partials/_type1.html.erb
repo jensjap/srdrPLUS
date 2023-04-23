@@ -429,7 +429,7 @@
       <tbody>
         <template
           x-for="(section_eefpst1, section_eefpst1_index) in mh?.current_citations_project?.current_section_eefpst1s"
-          :key="section_eefpst1.type1_id"
+          :key="`${section_eefpst1.type1_id}-${section_eefpst1.type1_type_id}`"
         >
           <tr>
             <template x-if="isOutcome()">
