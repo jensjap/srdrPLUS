@@ -509,7 +509,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_18_010905) do
     t.index ["question_row_columns_question_row_column_option_id"], name: "index_eefpsqrcfqrcqrco_on_qrcqrco_id"
   end
 
-  create_table "events", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "events", charset: "utf8mb3", force: :cascade do |t|
     t.string "sent"
     t.string "action"
     t.string "resource"
