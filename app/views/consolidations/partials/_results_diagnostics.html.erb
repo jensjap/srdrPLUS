@@ -1,5 +1,5 @@
 <div class="px-4 lg:px-8 space-y-2">
-  <template x-if="mh !== null">
+  <template x-if="mh !== null && master_template !== null">
     <div>
       <div>
         <h2 class="text-base font-bold">Diagnoses</h2>
@@ -19,9 +19,16 @@
                   <span
                     x-text="`Population: ${master_template[diagnosis_id].populations[population_id].name}`"
                   ></span>
-                  <span class="text-xs cursor-pointer text-srdrpurple"
-                    >(Add Comparison)</span
+                  <template
+                    x-if="dimensions_lookup[extraction_ids[extraction_ids.length - 1].id]?.outcomes[diagnosis_id] && dimensions_lookup[extraction_ids[extraction_ids.length - 1].id]?.outcomes[diagnosis_id]?.populations[population_id]"
                   >
+                    <span
+                      class="text-xs cursor-pointer text-srdrpurple"
+                      @click="current_rss_id = rss_lookup[`${extraction_ids[extraction_ids.length - 1].id}-${population_id}`];
+                      current_population_name_id = population_id;"
+                      >(Add Comparison)</span
+                    >
+                  </template>
                 </h3>
                 <template
                   x-for="comparison_id in Object.keys(master_template[diagnosis_id].populations[population_id].comparisons)"
@@ -32,21 +39,19 @@
                       x-text="`Comparison: ${master_template[diagnosis_id].populations[population_id].comparisons[comparison_id].name}`"
                     ></h3>
                     <template
-                      x-for="timepoint_id in Object.keys(master_template[diagnosis_id].populations[population_id].comparisons[comparison_id].timepoints)"
+                      x-for="timepoint_id in Object.keys(master_template[diagnosis_id].populations[population_id].timepoints)"
                     >
                       <div class="overflow-x-auto overflow-y-hidden ml-4 mt-4">
                         <h4
                           class="text-sm font-bold border-b-2 border-purple-400"
-                          x-text="`Timepoint: ${master_template[diagnosis_id].populations[population_id].comparisons[comparison_id].timepoints[timepoint_id].name}`"
+                          x-text="`Timepoint: ${master_template[diagnosis_id].populations[population_id].timepoints[timepoint_id].name}`"
                         ></h4>
                         <div class="grid grid-cols-2 gap-4">
-                          <template
-                            x-for="rss_type_id in Object.keys(master_template[diagnosis_id].populations[population_id].comparisons[comparison_id].timepoints[timepoint_id].rss_types)"
-                          >
+                          <template x-for="rss_type_id in 4">
                             <div>
                               <h5
                                 class="text-sm font-semibold text-center"
-                                x-text="{ 5: 'Descriptive Statistics', 6: 'Special area for AUC and Q*', 7: '2X2 Table', 8: 'Test Accuracy Metrics' }[rss_type_id]"
+                                x-text="{ 5: 'Descriptive Statistics', 6: 'Special area for AUC and Q*', 7: '2X2 Table', 8: 'Test Accuracy Metrics' }[rss_type_id + 4]"
                               ></h5>
                               <table class="table-auto">
                                 <thead>
@@ -57,17 +62,21 @@
                                 </thead>
                                 <tbody>
                                   <template
-                                    x-for="measure in master_template[diagnosis_id].populations[population_id].comparisons[comparison_id].timepoints[timepoint_id].rss_types[rss_type_id].measures"
+                                    x-for="measure in master_template[diagnosis_id].populations[population_id].rss_types[rss_type_id + 4].measures"
                                   >
                                     <tr>
                                       <td x-text="measure.name"></td>
                                       <td class="flex">
                                         <template
-                                          x-for="extraction in extraction_ids"
+                                          x-for="(extraction, extraction_index) in extraction_ids"
                                         >
                                           <input
-                                            :title="`Extraction ID: ${extraction.id} by ${extraction.user}`"
                                             class="!h-4 rounded-sm bg-white border w-full"
+                                            :title="`Extraction ID: ${extraction.id} by ${extraction.user}`"
+                                            :value="results_lookup[`${extraction.id}-${diagnosis_id}-${population_id}-${comparison_id}-${timepoint_id}-${rss_type_id + 4}-${measure.id}`]?.record_value"
+                                            @input.debounce.1000ms="updateRecord(results_lookup[`${extraction.id}-${diagnosis_id}-${population_id}-${comparison_id}-${timepoint_id}-${rss_type_id + 4}-${measure.id}`]?.record_id, $el.value)"
+                                            :disabled="!results_lookup[`${extraction.id}-${diagnosis_id}-${population_id}-${comparison_id}-${timepoint_id}-${rss_type_id + 4}-${measure.id}`] || extraction_ids.length !== extraction_index + 1"
+                                            :placeholder="createDiagnosticsPlaceholderMessage(extraction.id, diagnosis_id, population_id, comparison_id, timepoint_id)"
                                           />
                                         </template>
                                       </td>
