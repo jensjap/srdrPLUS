@@ -380,11 +380,9 @@
   document.addEventListener("alpine:init", () => {
     Alpine.data("sdMetaDatum", () => ({
       sdMetaDatum: {},
-      panel_number: null,
       sdMetaDatumId: /\d+/.exec(window.location.pathname)[0],
-      panel_number: new URLSearchParams(window.location.search).get(
-        "panel_number"
-      ),
+      panel_number:
+        new URLSearchParams(window.location.search).get("panel_number") || 0,
       completion_percentage: "0",
       imageModalObject: false,
       srdrPlusKQSelection: null,
@@ -392,6 +390,18 @@
       async init() {
         await this.getSdMetaDatum();
         this.calcCompletionPercentage();
+      },
+
+      scrollTo(element) {
+        const headerOffset = 128;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition =
+          elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
       },
 
       moveElementInArray(parentObject, key, old_index, new_index) {
@@ -552,6 +562,11 @@
           },
           body: formData,
         });
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Uploaded successfully!", null, { timeOut: 1000 });
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
         const newResource = await response.json();
         parentObject[resource] = newResource.pictures;
       },
@@ -601,6 +616,17 @@
           options.body = JSON.stringify(params);
         }
         const response = await fetch(url, options);
+        if (response.status >= 200 && response.status < 300) {
+          if (method === "PATCH") {
+            toastr.success("Updated successfully!", null, { timeOut: 1000 });
+          } else if (method === "POST") {
+            toastr.success("Created successfully!", null, { timeOut: 1000 });
+          } else if (method === "DELETE") {
+            toastr.success("Removed successfully!", null, { timeOut: 1000 });
+          }
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
         return await response.json();
       },
 

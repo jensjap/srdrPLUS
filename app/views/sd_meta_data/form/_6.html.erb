@@ -1,37 +1,50 @@
 <div class="border text-sm w-3/12 xl:w-1/12 p-1">
-  <div class="text-xs font-semibold">Search Strategies</div>
-  <ul class="text-xs">
-    <template
-      x-for="(sd_search_strategy, sd_search_strategy_index) in sdMetaDatum.sd_search_strategies"
-    >
-      <li
-        class="text-xs cursor-pointer"
-        x-text="`Search Strategy: ${sd_search_strategy_index + 1}`"
-      ></li>
-    </template>
-  </ul>
-  <div class="text-xs font-semibold">Grey Literature Searches</div>
-  <ul class="text-xs">
-    <template
-      x-for="(sd_grey_literature_search, sd_grey_literature_search_index) in sdMetaDatum.sd_grey_literature_searches"
-    >
-      <li
-        class="text-xs cursor-pointer"
-        x-text="`Grey Literature Search: ${sd_grey_literature_search_index + 1}`"
-      ></li>
-    </template>
-  </ul>
-  <div class="text-xs font-semibold">PRISMA / Literature Flow Diagrams</div>
-  <ul class="text-xs">
-    <template
-      x-for="(sd_prisma_flow, sd_prisma_flow_index) in sdMetaDatum.sd_prisma_flows"
-    >
-      <li
-        class="text-xs cursor-pointer"
-        x-text="`PRISMA / Literature Flow Diagram: ${sd_prisma_flow_index + 1}`"
-      ></li>
-    </template>
-  </ul>
+  <div
+    class="sidebar-wrapper"
+    style="
+      height: calc(100vh - 8rem);
+      top: 8rem;
+      position: sticky;
+      overflow-y: auto;
+    "
+  >
+    <div class="text-xs font-semibold">Search Strategies</div>
+    <ul class="text-xs">
+      <template
+        x-for="(sd_search_strategy, sd_search_strategy_index) in sdMetaDatum.sd_search_strategies"
+      >
+        <li
+          class="text-xs cursor-pointer"
+          x-text="`Search Strategy: ${sd_search_strategy_index + 1}`"
+          @click="scrollTo(document.getElementById(`sd_search_strategy-${sd_search_strategy.id}`))"
+        ></li>
+      </template>
+    </ul>
+    <div class="text-xs font-semibold">Grey Literature Searches</div>
+    <ul class="text-xs">
+      <template
+        x-for="(sd_grey_literature_search, sd_grey_literature_search_index) in sdMetaDatum.sd_grey_literature_searches"
+      >
+        <li
+          class="text-xs cursor-pointer"
+          x-text="`Grey Literature Search: ${sd_grey_literature_search_index + 1}`"
+          @click="scrollTo(document.getElementById(`sd_grey_literature_search-${sd_grey_literature_search.id}`))"
+        ></li>
+      </template>
+    </ul>
+    <div class="text-xs font-semibold">PRISMA / Literature Flow Diagrams</div>
+    <ul class="text-xs">
+      <template
+        x-for="(sd_prisma_flow, sd_prisma_flow_index) in sdMetaDatum.sd_prisma_flows"
+      >
+        <li
+          class="text-xs cursor-pointer"
+          x-text="`PRISMA / Literature Flow Diagram: ${sd_prisma_flow_index + 1}`"
+          @click="scrollTo(document.getElementById(`sd_prisma_flow-${sd_prisma_flow.id}`))"
+        ></li>
+      </template>
+    </ul>
+  </div>
 </div>
 <div class="border p-2 w-9/12 xl:w-11/12 space-y-2">
   <h2 class="text-base font-bold border-b-2">
@@ -62,7 +75,10 @@
       x-for="(sd_search_strategy, sd_search_strategy_index) in sdMetaDatum.sd_search_strategies"
       :key="sd_search_strategy.id"
     >
-      <div class="bg-pink-200 m-2 p-2 rounded-md space-y-2">
+      <div
+        class="bg-pink-200 m-2 p-2 rounded-md space-y-2"
+        :id="`sd_search_strategy-${sd_search_strategy.id}`"
+      >
         <div class="flex justify-between items-center">
           <select
             class="w-12"
@@ -195,7 +211,10 @@
       x-for="(sd_grey_literature_search, sd_grey_literature_search_index) in sdMetaDatum.sd_grey_literature_searches"
       :key="sd_grey_literature_search.id"
     >
-      <div class="bg-gray-200 m-2 p-2 rounded-md space-y-2">
+      <div
+        class="bg-gray-200 m-2 p-2 rounded-md space-y-2"
+        :id="`sd_grey_literature_search-${sd_grey_literature_search.id}`"
+      >
         <div class="flex justify-between items-center">
           <select
             class="w-12"
@@ -282,7 +301,10 @@
       x-for="(sd_prisma_flow, sd_prisma_flow_index) in sdMetaDatum.sd_prisma_flows"
       :key="sd_prisma_flow.id"
     >
-      <div class="bg-orange-100 m-2 p-2 rounded-md space-y-2">
+      <div
+        class="bg-orange-100 m-2 p-2 rounded-md space-y-2"
+        :id="`sd_prisma_flow-${sd_prisma_flow.id}`"
+      >
         <div class="flex justify-between items-center">
           <select
             class="w-12"
