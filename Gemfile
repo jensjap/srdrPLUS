@@ -78,7 +78,7 @@ gem 'searchkick'
 gem 'sentry-rails'
 gem 'sentry-ruby' # full-stack error tracking system
 gem 'sentry-sidekiq' # full-stack error tracking system
-gem 'sidekiq', '<7' # Background jobs.
+gem 'sidekiq', '<8' # Background jobs.
 gem 'sidekiq-cron' # Allows periodic background jobs
 gem 'simple_form'
 gem 'slim-rails'
