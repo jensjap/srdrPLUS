@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_18_010905) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_24_121047) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -993,14 +993,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_18_010905) do
     t.index ["label_id"], name: "index_labels_reasons_on_label_id"
     t.index ["projects_users_role_id"], name: "index_labels_reasons_on_projects_users_role_id"
     t.index ["reason_id"], name: "index_labels_reasons_on_reason_id"
-  end
-
-  create_table "measurements", id: :integer, charset: "utf8mb3", force: :cascade do |t|
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "value"
-    t.integer "comparisons_measure_id"
-    t.index ["comparisons_measure_id"], name: "index_measurements_on_comparisons_measure_id"
   end
 
   create_table "measures", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -2151,7 +2143,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_18_010905) do
   add_foreign_key "labels_reasons", "labels"
   add_foreign_key "labels_reasons", "projects_users_roles"
   add_foreign_key "labels_reasons", "reasons"
-  add_foreign_key "measurements", "comparisons_measures"
   add_foreign_key "message_types", "frequencies"
   add_foreign_key "messages", "message_types"
   add_foreign_key "notes", "projects_users_roles"
