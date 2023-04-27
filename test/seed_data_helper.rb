@@ -1,16 +1,18 @@
 # Seed data essential to get things rolling.
 module SeedData
   def self.extended(object)
-    object.instance_exec do
-      return unless UserType.all.count == 0
+    return if Rails.env.production?
+    puts 'Running SeedData module.'
 
+    object.instance_exec do
       # UserTypes.
       %w[Admin Member Trainee].each do |user_type|
         UserType.find_or_create_by!(user_type:)
       end
 
       # Frequency.
-      %w[Daily Weekly Monthly Annually].each do |name|
+      puts 'Updating frequencies table.'
+      %w[Daily Weekly Monthly Annually Scheduled].each do |name|
         Frequency.find_or_create_by!(name:)
       end
 
@@ -26,12 +28,24 @@ module SeedData
       end
 
       # MessageTypes.
-      MessageType.find_or_create_by!(name: 'Tip Of the Day',
-                                     frequency: Frequency.find_or_create_by!(name: 'Daily'))
-      MessageType.find_or_create_by!(name: 'General Announcement',
-                                     frequency: Frequency.find_or_create_by!(name: 'Daily'))
-      MessageType.find_or_create_by!(name: 'Maintenance Announcement',
-                                     frequency: Frequency.find_or_create_by!(name: 'Daily'))
+      puts 'Updating message_types table.'
+      @frequency_daily = Frequency.find_or_create_by!(name: 'Daily')
+      MessageType.find_or_create_by!(
+        name: 'Tip Of the Day',
+        frequency: @frequency_daily
+      )
+      MessageType.find_or_create_by!(
+        name: 'General Announcement',
+        frequency: @frequency_daily
+      )
+      MessageType.find_or_create_by!(
+        name: 'Maintenance Announcement',
+        frequency: @frequency_daily
+      )
+      MessageType.find_or_create_by!(
+        name: 'Publication Reminder',
+        frequency: Frequency.find_or_create_by!(name: 'Scheduled')
+      )
 
       # ActionTypes.
       %w[Create Destroy Update New Index Show Edit].each do |name|
@@ -1013,7 +1027,7 @@ module SeedData
       )
 
       # Extraction Forms Projects Section Types.
-      ['Type 1', 'Type 2', 'Results'].each do |name|
+      ['Type 1', 'Type 2', 'Results', 'Type 4'].each do |name|
         ExtractionFormsProjectsSectionType.find_or_create_by!(name:)
       end
 
@@ -1150,6 +1164,9 @@ end
 # Sample Data.
 module SeedDataExtended
   def self.extended(object)
+    return if Rails.env.production?
+    puts 'Running SeedDataExtended module.'
+
     project_titles = [
       ['Definition of Treatment-Resistant Depression in the Medicare Population',
        'The purpose of this technology assessment is to review the current definitions of treatment-resistant depression (TRD), to assess how closely current TRD treatment studies fit the most common definition, and to suggest how to improove TRD treatment research.'],
@@ -1202,25 +1219,25 @@ module SeedDataExtended
       @kq2 = KeyQuestion.find_or_create_by!(name: 'kq2')
 
       # Users.
-      @superadmin = User.create(
+      @superadmin = User.find_or_create_by!(
         email: 'superadmin@test.com',
         password: 'password',
         confirmed_at: Time.now
       )
 
-      @contributor = User.create(
+      @contributor = User.find_or_create_by!(
         email: 'jensjap@gmail.com',
         password: 'password',
         confirmed_at: Time.now
       )
 
-      @auditor = User.create(
+      @auditor = User.find_or_create_by!(
         email: 'auditor@test.com',
         password: 'password',
         confirmed_at: Time.now
       )
 
-      @tester = User.create(
+      @tester = User.find_or_create_by!(
         email: 'tester@test.com',
         password: 'password',
         confirmed_at: Time.now
@@ -1237,19 +1254,19 @@ module SeedDataExtended
       @roger_pirates     = Organization.find_or_create_by!(name: 'Roger Pirates')
 
       # For assignments.
-      @screener_1 = User.create(
+      @screener_1 = User.find_or_create_by!(
         email: 'screener_1@test.com',
         password: 'password',
         confirmed_at: Time.now
       )
 
-      @screener_2 = User.create(
+      @screener_2 = User.find_or_create_by!(
         email: 'screener_2@test.com',
         password: 'password',
         confirmed_at: Time.now
       )
 
-      @screener_3 = User.create(
+      @screener_3 = User.find_or_create_by!(
         email: 'screener_3@test.com',
         password: 'password',
         confirmed_at: Time.now
@@ -1341,7 +1358,7 @@ module SeedDataExtended
       project_titles.each do |n|
         updated_at = Faker::Time.between(from: DateTime.now - 1000, to: DateTime.now - 1)
         User.current = User.first
-        Project.create(name: n[0],
+        Project.find_or_create_by!(name: n[0],
                        description: n[1],
                        attribution: Faker::Creature::Cat.registry,
                        methodology_description: Faker::Movies::HarryPotter.quote,
@@ -1366,7 +1383,7 @@ module SeedDataExtended
       # Citations, Journals, Authors and Keywords
       200.times do |_n|
         updated_at = Faker::Time.between(from: DateTime.now - 1000, to: DateTime.now - 1)
-        c = Citation.create(
+        c = Citation.find_or_create_by!(
           name: Faker::Lorem.sentence,
           pmid: Faker::Number.number(digits: 10),
           refman: Faker::Number.number(digits: 9),
@@ -1377,7 +1394,7 @@ module SeedDataExtended
         )
 
         # Journals
-        Journal.create(
+        Journal.find_or_create_by!(
           name: Faker::Music::RockBand.name,
           publication_date: Faker::Date.backward(days: 10_000),
           volume: Faker::Number.number(digits: 1),
@@ -1415,7 +1432,7 @@ module SeedDataExtended
           p.request_publishing_by(User.first)
           p.request_publishing_by(User.third)
         when 2  # Create Publishing object and approve it.
-          Publishing.create(publishable: p, user: requested_by)
+          Publishing.find_or_create_by!(publishable: p, user: requested_by)
                     .approve_by(approved_by)
         end
 
@@ -1440,9 +1457,10 @@ module SeedDataExtended
       # Messages.
       @totd = MessageType.find_by(name: 'Tip of the Day')
       100.times do
-        @totd.messages.create(name: Faker::Book.unique.title,
-                              description: Faker::ChuckNorris.unique.fact,
-                              start_at: 10.minute.ago)
+        @totd.messages.find_or_create_by!(
+          name: Faker::Book.unique.title,
+          description: Faker::ChuckNorris.unique.fact,
+          start_at: 10.minute.ago)
         Faker::UniqueGenerator.clear
       end
     end
