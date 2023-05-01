@@ -149,13 +149,13 @@ class ExtractionSupplyingService
           value = nil
         end
 
-        if not eefpsqrf.extractions_extraction_forms_projects_sections_type1.nil?
+        if not eefpsqrf.extractions_extraction_forms_projects_sections_type1&.nil?
           type1 = eefpsqrf.extractions_extraction_forms_projects_sections_type1.type1
         else
           type1 = nil
         end
 
-        if not eefpsqrf.extractions_extraction_forms_projects_sections_type1.type1_type.nil?
+        if not eefpsqrf.extractions_extraction_forms_projects_sections_type1&.type1_type.nil?
           type1_type = eefpsqrf.extractions_extraction_forms_projects_sections_type1.type1_type
         else
           type1_type = nil
