@@ -673,7 +673,7 @@ class ConsolidationService
         { extractions_extraction_forms_projects_sections_type1_id: eefpst1.id,
           extractions_extraction_forms_projects_section_id: eefps.id,
           type1_id: eefpst1.type1_id,
-          type1_type_id: eefpst1.type1_type.id,
+          type1_type_id: eefpst1.type1_type&.id,
           name: eefpst1.type1.name,
           description: eefpst1.type1.description,
           type1_type_name: eefpst1&.type1_type&.name,

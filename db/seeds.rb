@@ -1,4 +1,5 @@
 require Rails.root.join 'test/seed_data_helper'
+
 extend SeedData
 extend SeedDataExtended if ENV['with_extended']
 

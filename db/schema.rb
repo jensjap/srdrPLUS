@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_24_121047) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_27_075438) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1033,6 +1033,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_24_121047) do
     t.datetime "end_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.boolean "active", default: true
     t.index ["message_type_id"], name: "index_messages_on_message_type_id"
   end
 
@@ -1211,6 +1212,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_24_121047) do
     t.integer "term_id"
     t.index ["projects_users_term_groups_color_id"], name: "index_putgcp_on_putc_id"
     t.index ["term_id"], name: "index_putgcp_on_terms_id"
+  end
+
+  create_table "publication_reminders", charset: "utf8mb3", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "project_id", null: false
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "publishings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
