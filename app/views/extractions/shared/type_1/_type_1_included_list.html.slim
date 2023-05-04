@@ -13,8 +13,8 @@
         col style="width: 25%;"
         col style="width: 10%;"
         col style="width: 10%;"
-        col style="width: 10%;"
         col style="width: 4%;"
+        col style="width: 10%;"
 
       - else
         col style="width:45%"
@@ -31,8 +31,8 @@
           - if ['Outcomes', 'Diagnoses'].include? section_name
             th style="border: none;" Populations
             th style="border: none;" Timepoints
-            th style="border: none;" FHIR Format
             th style="border: none;"
+            th style="border: none;" FHIR Format
 
       tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
         - eefps.eefpst1s_without_total.each do |eefpst1|
@@ -72,11 +72,6 @@
                   - else
                     li No Timepoints
 
-              td
-                ul
-                  li = link_to 'JSON', api_v1_evidence_variable_path(eefpst1, format: :json), target: '_blank'
-                  li = link_to 'ODV', "https://computablepublishing.com/outcome-definition-viewer/?srdr#{ eefpst1.id }", target: '_blank', data: { confirm: @exit_disclaimer }
-
             td
               div = link_to edit_extractions_extraction_forms_projects_sections_type1_path(eefpst1) do
                 i.fi-pencil>
@@ -85,3 +80,9 @@
               div = link_to eefpst1, data: { confirm: 'Are you sure?' }, method: :delete do
                 i.fi-trash>
                 | Remove
+
+            - if ['Outcomes', 'Diagnoses'].include? section_name
+              td
+                ul
+                  li = link_to 'JSON', api_v1_evidence_variable_path(eefpst1, format: :json), target: '_blank'
+                  li = link_to 'ODV', "https://computablepublishing.com/outcome-definition-viewer/?srdr#{ eefpst1.id }", target: '_blank', data: { confirm: @exit_disclaimer }
