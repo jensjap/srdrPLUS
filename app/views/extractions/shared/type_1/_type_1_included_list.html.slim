@@ -52,14 +52,16 @@
               td = eefpst1.type1.name
 
             td = eefpst1.type1.description
-
+            - confirmation_message = "Are you sure you would like to delete: '#{eefpst1.type1.name}'?"
             - if ['Outcomes', 'Diagnoses'].include? section_name
+              - populations = []
+              - timepoints = []
               td
                 ul
                   - if eefpst1.extractions_extraction_forms_projects_sections_type1_rows.present?
                     - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
                       li = pop.population_name.name
-
+                      - populations << pop.population_name.name
                   - else
                     li No populations
 
@@ -68,16 +70,16 @@
                   - if eefpst1.extractions_extraction_forms_projects_sections_type1_rows.try(:first).try(:extractions_extraction_forms_projects_sections_type1_row_columns).present?
                     - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
                       li = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '')
-
+                      - timepoints << tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '')
                   - else
                     li No Timepoints
+              - confirmation_message = "Are you sure you would like to delete: '#{eefpst1.type1.name}' with populations: '#{populations.join(', ')}' and timepoints: '#{timepoints.join(', ')}'?"
 
             td
               div = link_to edit_extractions_extraction_forms_projects_sections_type1_path(eefpst1) do
                 i.fi-pencil>
                 | Edit
-
-              div = link_to eefpst1, data: { confirm: 'Are you sure?' }, method: :delete do
+              div = link_to eefpst1, data: { confirm: confirmation_message }, method: :delete do
                 i.fi-trash>
                 | Remove
 
