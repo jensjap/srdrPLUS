@@ -5,18 +5,10 @@ html
 
   body
     h1 Huzzah!
-    p We have finished importing following file you have uploaded
+    p The following citation file, "#{ @filename }", has been imported into your SRDRPlus project.
 
-    .file-list
-      = @filename
+    p Project Name: "#{ @project.name }"
 
-    p and your project
+    p Please follow this link to view your project:
 
-    .project-name
-      h2 "#{ @project.name }"
-
-    p is ready to view.
-    p Please follow this link:
-
-  p
-    = link_to @project.name, project_citations_url(@project)
+    p = link_to @project.name, project_citations_url(@project)
