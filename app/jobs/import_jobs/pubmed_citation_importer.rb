@@ -58,12 +58,16 @@ module ImportJobs::PubmedCitationImporter
       j_h['volume'] = cit_h['VI'].strip if cit_h['VI'].present?
       j_h['issue'] = cit_h['IP'].strip if cit_h['IP'].present?
       row_h['journal_attributes'] = j_h
-      s_h = {}
-      s_h['name'] = cit_h['TA'].strip if cit_h['TA'].present?
-      s_h['volume'] = cit_h['VI'].strip if cit_h['VI'].present?
-      s_h['issue'] = cit_h['IP'].strip if cit_h['IP'].present?
-      row_h['source'] = s_h
-      row_h['publication_date'] = cit_h['DP'].strip if cit_h['DP'].present?
+
+      # If preview only, otherwise it crashes Citation.create(h_arr)
+      if preview
+        s_h = {}
+        s_h['name'] = cit_h['TA'].strip if cit_h['TA'].present?
+        s_h['volume'] = cit_h['VI'].strip if cit_h['VI'].present?
+        s_h['issue'] = cit_h['IP'].strip if cit_h['IP'].present?
+        row_h['source'] = s_h
+        row_h['publication_date'] = cit_h['DP'].strip if cit_h['DP'].present?
+      end
 
       h_arr << row_h
 
