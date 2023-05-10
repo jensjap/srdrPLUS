@@ -28,11 +28,12 @@
     <table>
       <thead>
         <tr>
-          <th>Name</th>
+          <th>Title</th>
           <th>Authors</th>
-          <th>Journals</th>
+          <th>Source</th>
+          <th>Publication Year</th>
           <th>Refman</th>
-          <th>Pmid</th>
+          <th>PMID</th>
           <th>Abstract</th>
         </tr>
       </thead>
@@ -41,12 +42,9 @@
         <% preview[:citations].each do |citation| %>
         <tr>
           <td><%= citation['name'] %></td>
-          <td>
-            <ul>
-              <li><%= citation['authors'] %></li>
-            </ul>
-          </td>
-          <td><%= citation['journal_attributes']&.values&.join(', ') %></td>
+          <td><%= citation['authors'] %></td>
+          <td><%= citation['source']&.values&.join(', ') %></td>
+          <td><%= citation['publication_date'] %></td>
           <td><%= citation['refman'] %></td>
           <td><%= citation['pmid'] %></td>
           <td><%= citation['abstract'] %></td>
