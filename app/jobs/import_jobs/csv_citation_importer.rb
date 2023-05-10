@@ -68,6 +68,12 @@ module ImportJobs::CsvCitationImporter
       j_h['volume'] = row_h['Volume'].strip if row_h['Volume'].present?
       j_h['issue'] = row_h['Issue'].strip if row_h['Issue'].present?
       cit_h['journal_attributes'] = j_h
+      s_h = {}
+      s_h['name'] = row_h['Journal'].strip if row_h['Journal'].present?
+      s_h['volume'] = row_h['Volume'].strip if row_h['Volume'].present?
+      s_h['issue'] = row_h['Issue'].strip if row_h['Issue'].present?
+      cit_h['source'] = s_h
+      cit_h['publication_date'] = row_h['Year'].strip if row_h['Year'].present?
 
       cit_h['name'] = row_h['Title'].strip if row_h['Title'].present?
       cit_h['abstract'] = row_h['Abstract'].strip if row_h['Abstract'].present?

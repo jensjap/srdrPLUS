@@ -156,7 +156,7 @@
               <label for="notes" class="block text-sm text-gray-700"
                 >Select up to one reason</label
               >
-              <div class="grid grid-rows sm:grid-cols-6 gap-4 mt-4 mb-8">
+              <div class="flex flex-wrap gap-2 mt-4 mb-8">
                 <template x-for="(reason, index) in fsr.predefined_reasons">
                   <span
                     :class=" reason.selected ? 'bg-srdrpurple' : 'bg-white text-black'"
@@ -302,7 +302,7 @@
                 <label for="notes" class="block text-sm text-gray-700"
                   >Select tags</label
                 >
-                <div class="grid grid-rows sm:grid-cols-6 gap-4 mt-4 mb-8">
+                <div class="flex flex-wrap gap-2 mt-4 mb-8">
                   <template x-for="(tag, index) in fsr.predefined_tags">
                     <span
                       :class="tag.selected ? 'bg-srdrpurple' : 'bg-white text-black'"
@@ -479,7 +479,7 @@
 
         <div
           x-show="desktop"
-          class="border-l border-gray-600 fixed bottom-0 right-0 w-1/2 h-32 text-white"
+          class="border-l border-gray-600 fixed bottom-0 right-0 w-1/3 h-24 text-white"
         >
           <div class="grid grid-cols-3 h-full">
             <div
