@@ -156,7 +156,7 @@
               <label for="notes" class="block text-sm text-gray-700"
                 >Select up to one reason</label
               >
-              <div class="grid grid-rows sm:grid-cols-6 gap-4 mt-4 mb-8">
+              <div class="flex flex-wrap gap-2 mt-4 mb-8">
                 <template x-for="(reason, index) in asr.predefined_reasons">
                   <span
                     :class="reason.selected ? 'bg-srdrpurple' : 'bg-white !text-black'"
@@ -302,7 +302,7 @@
                 <label for="notes" class="block text-sm text-gray-700"
                   >Select tags</label
                 >
-                <div class="grid grid-rows sm:grid-cols-6 gap-4 mt-4 mb-8">
+                <div class="flex flex-wrap gap-2 mt-4 mb-8">
                   <template x-for="(tag, index) in asr.predefined_tags">
                     <span
                       :class="tag.selected ? 'bg-srdrpurple' : 'bg-white !text-black'"
