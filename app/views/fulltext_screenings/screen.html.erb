@@ -8,14 +8,14 @@
   <%= render 'fulltext_screenings/screen/confirmation_modal' %>
   <%= render 'fulltext_screenings/screen/history_panel' %>
   <div
-    :class="desktop ? 'top-0 bottom-32 border-l border-b border-gray-600 fixed p-4 left-1/2 right-0 overflow-y-scroll overflow-x-hidden bg-white' : ''"
+    :class="desktop ? 'top-0 bottom-32 border-l border-b border-gray-600 fixed p-4 left-2/3 right-0 overflow-y-scroll overflow-x-hidden bg-white' : ''"
   >
     <!-- prettier-ignore -->
     <%= render 'fulltext_screenings/screen/reasoning_menu' %>
     <%= render 'fulltext_screenings/screen/screening_form' %>
   </div>
   <div
-    class="mx-auto lg:mx-0 lg:w-1/2 h-32 absolute inset-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
+    class="mx-auto lg:mx-0 lg:w-2/3 h-32 absolute inset-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
   >
     <a
       href="<%= fulltext_screening_path(params[:fulltext_screening_id]) %>"
@@ -84,7 +84,7 @@
     </div>
   </div>
   <div
-    class="mx-auto lg:mx-0 lg:w-1/2 h-auto block absolute inset-0 mt-32 overflow-y-auto overflow-x-hidden bg-gray-100"
+    class="mx-auto lg:mx-0 lg:w-2/3 h-auto block absolute inset-0 mt-32 overflow-y-auto overflow-x-hidden bg-gray-100"
     :class="desktop ? '' : 'mb-32'"
   >
     <div class="vertical-scroll-wrapper">
@@ -106,7 +106,7 @@
   </div>
 
   <div
-    :class="desktop ? 'hidden' : 'mx-auto lg:mx-0 lg:w-1/2 absolute bottom-0 left-0 right-0 bg-gray-100 h-32'"
+    :class="desktop ? 'hidden' : 'mx-auto lg:mx-0 lg:w-2/3 absolute bottom-0 left-0 right-0 bg-gray-100 h-32'"
   >
     <div class="h-full text-white">
       <div class="grid grid-cols-3 h-full">
