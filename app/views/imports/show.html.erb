@@ -11,10 +11,17 @@
     </div>
     <% if total <= 100_000 %>
     <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+      <!-- prettier-ignore -->
       <%= link_to('Start Import', "/imports/#{@import.id}/start", method: :post,
       class: "inline-flex items-center justify-center rounded-md border
       border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white
       shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2
+      focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
+      hover:text-white") %>
+      <%= link_to('Cancel', "/projects/#{@project.id}/citations",
+      class: "inline-flex items-center justify-center rounded-md border
+      border-transparent bg-red-800 px-4 py-2 text-sm font-medium text-white
+      shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2
       focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
       hover:text-white") %>
     </div>
@@ -28,13 +35,13 @@
     <table>
       <thead>
         <tr>
-          <th>Title</th>
-          <th>Authors</th>
-          <th>Source</th>
-          <th>Publication Year</th>
-          <th>Refman</th>
-          <th>PMID</th>
-          <th>Abstract</th>
+          <th class="text-left">Title</th>
+          <th class="text-left">Authors</th>
+          <th class="text-left">Source</th>
+          <th class="text-left">Publication Year</th>
+          <th class="text-left">Refman</th>
+          <th class="text-left">PMID</th>
+          <th class="text-left">Abstract</th>
         </tr>
       </thead>
       <tbody>
