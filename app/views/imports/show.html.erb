@@ -50,8 +50,10 @@
         <tr>
           <td><%= citation['name'] %></td>
           <td><%= citation['authors'] %></td>
-          <td><%= citation['source']&.values&.join(', ') %></td>
-          <td><%= citation['publication_date'] %></td>
+          <!-- prettier-ignore -->
+          <td><%= citation['journal_attributes']&.reject { |k, v| k == 'publication_date' }&.values&.join(', ') %></td>
+          <!-- prettier-ignore -->
+          <td><%= citation['journal_attributes']&.dig('publication_date') %></td>
           <td><%= citation['refman'] %></td>
           <td><%= citation['pmid'] %></td>
           <td><%= citation['abstract'] %></td>

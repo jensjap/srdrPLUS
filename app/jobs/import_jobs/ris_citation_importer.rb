@@ -110,17 +110,6 @@ module ImportJobs::RisCitationImporter
     end
     j_h['issue'] = cit_h['IS'].strip if cit_h['IS'].present?
     row_h['journal_attributes'] = j_h
-    s_h = {}
-    s_h['name'] = cit_h['T2'].strip if cit_h['T2'].present?
-    s_h['name'] = cit_h['JF'].strip if cit_h['JF'].present?
-    s_h['name'] = cit_h['JO'].strip if cit_h['JO'].present?
-    if cit_h.has_key?('VL')
-      cit_h['VL'].is_a?(Array) ? (s_h['volume'] = cit_h['VL'].join(' ')) : (s_h['volume'] = cit_h['VL'].try(:strip))
-    end
-    s_h['issue'] = cit_h['IS'].strip if cit_h['IS'].present?
-    row_h['source'] = s_h
-    row_h['publication_date'] = cit_h['PY'].strip if cit_h['PY'].present?
-    row_h['publication_date'] = cit_h['Y1'].strip if cit_h['Y1'].present?
 
     row_h
   end

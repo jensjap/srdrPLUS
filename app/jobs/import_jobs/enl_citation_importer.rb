@@ -62,12 +62,6 @@ module ImportJobs::EnlCitationImporter
       j_h['volume'] = cit_h['V'].strip if cit_h['V'].present?
       j_h['issue'] = cit_h['I'].strip if cit_h['I'].present?
       row_h['journal_attributes'] = j_h
-      s_h = {}
-      s_h['name'] = cit_h['B'].strip if cit_h['B'].present?
-      s_h['volume'] = cit_h['V'].strip if cit_h['V'].present?
-      s_h['issue'] = cit_h['I'].strip if cit_h['I'].present?
-      row_h['source'] = s_h
-      row_h['publication_date'] = cit_h['D'].strip if cit_h['D'].present?
 
       h_arr << row_h
 
