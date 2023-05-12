@@ -132,151 +132,169 @@ class ExtractionSupplyingService
         'item' => []
       }
 
-      restriction_symbol = ''
-
-      for eefpsqrf in raw.extractions_extraction_forms_projects_sections_question_row_column_fields do
-        question_row_column_field = eefpsqrf.question_row_column_field
-        question_row_column_id = question_row_column_field.question_row_column_id
-        question_row_column = QuestionRowColumn.find(question_row_column_id)
-        ans_form = question_row_column.question_row_columns_question_row_column_options
-        question_row_id = question_row_column.question_row_id
-        question_row = QuestionRow.find(question_row_id)
-        question_id = question_row.question_id
-        question = Question.find(question_id)
-        type = question_row_column.question_row_column_type.id
-        value = eefpsqrf.records[0]['name']
-        if value.is_a?(String) && value.empty?
-          value = nil
-        end
-
-        if not eefpsqrf.extractions_extraction_forms_projects_sections_type1&.nil?
-          type1 = eefpsqrf.extractions_extraction_forms_projects_sections_type1&.type1
+      eefpsqrcf_grouped_by_type1 = raw.extractions_extraction_forms_projects_sections_question_row_column_fields.group_by { |item| item["extractions_extraction_forms_projects_sections_type1_id"] }
+      eefpsqrcf_grouped_by_type1.each do |eefps_type1_id, eefpsqrcfs|
+        if eefps_type1_id.blank?
+          next
         else
-          type1 = nil
-        end
+          type1 = ExtractionsExtractionFormsProjectsSectionsType1.find(eefps_type1_id).type1
+          type1_display = type1.name + ' (' + type1.description + ')'
+          item_for_each_type1 = {
+            'linkId' => type1_display,
+            'text' => 'group',
+            'item' => []
+          }
 
-        if not eefpsqrf.extractions_extraction_forms_projects_sections_type1&.type1_type.nil?
-          type1_type = eefpsqrf.extractions_extraction_forms_projects_sections_type1&.type1_type
-        else
-          type1_type = nil
-        end
+            restriction_symbol = ''
 
-        if value.nil?
-          if type != 9
-            next
-          end
-        else
-          if type != 9
-            item = {
-              'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
-            }
-            if not type1.nil?
-              item['text'] = type1.name + ' (' + type1.description + ')'
-              if not type1_type.nil?
-                item['text'] = item['text'] + ' (' + type1_type.name + ')'
+            for eefpsqrcf in eefpsqrcfs do
+              question_row_column_field = eefpsqrcf.question_row_column_field
+              question_row_column_id = question_row_column_field.question_row_column_id
+              question_row_column = QuestionRowColumn.find(question_row_column_id)
+              ans_form = question_row_column.question_row_columns_question_row_column_options
+              question_row_id = question_row_column.question_row_id
+              question_row = QuestionRow.find(question_row_id)
+              question_id = question_row.question_id
+              question = Question.find(question_id)
+              type = question_row_column.question_row_column_type.id
+              value = eefpsqrcf.records[0]['name']
+              if value.is_a?(String) && value.empty?
+                value = nil
+              end
+      
+              if not eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.nil?
+                type1 = eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.type1
+              else
+                type1 = nil
+              end
+      
+              if not eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.type1_type.nil?
+                type1_type = eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.type1_type
+              else
+                type1_type = nil
+              end
+      
+              if value.nil?
+                if type != 9
+                  next
+                end
+              else
+                if type != 9
+                  item = {
+                    'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
+                  }
+                  if not type1.nil?
+                    item['text'] = type1.name + ' (' + type1.description + ')'
+                    if not type1_type.nil?
+                      item['text'] = item['text'] + ' (' + type1_type.name + ')'
+                    end
+                  end
+                end
+              end
+      
+              followups = {}
+              for followup in raw.extractions_extraction_forms_projects_sections_followup_fields do
+                followups = followups.merge({
+                  FollowupField.find(followup.followup_field_id).question_row_columns_question_row_column_option_id => {
+                    'name' => followup.records[0]['name'],
+                    'id' => followup.followup_field_id
+                  }
+                })
+              end
+      
+              if type == 1
+                item['answer'] = {
+                  'valueString' => value
+                }
+                item_for_each_type1['item'].append(item)
+              elsif type == 2
+                if /-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?/.match(value)
+                  item['answer'] = {
+                    'valueDecimal' => value
+                  }
+                  item_for_each_type1['item'].append(item)
+                  unless restriction_symbol.empty?
+                    symbol_item = {
+                      'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s,
+                      'answer' => {
+                        'valueString' => restriction_symbol
+                      }
+                    }
+                    item_for_each_type1['item'].append(symbol_item)
+                  end
+                  restriction_symbol = ''
+                else
+                  restriction_symbol = value
+                end
+              elsif type == 5
+                matches = value.scan(/\D*(\d+)\D*/)
+                for match in matches do
+                  checkbox_id = match[0].to_i
+                  name = ans_form.find(checkbox_id)['name']
+                  item['answer'] = {
+                    'valueString' => name
+                  }
+      
+                  item_for_each_type1['item'].append(item.dup)
+                  if followups.has_key?(checkbox_id)
+                    followup_item = {}
+                    followup_item['linkId'] = item['linkId'] + '-' + followups[checkbox_id]['id'].to_s
+                    followup_item['answer'] = {
+                      'valueString' => followups[checkbox_id]['name']
+                    }
+                    item_for_each_type1['item'].append(followup_item)
+                  end
+                end
+              elsif type == 6
+                name = ans_form.find(value)['name']
+                item['answer'] = {
+                  'valueString' => name
+                }
+                item_for_each_type1['item'].append(item)
+              elsif type == 7
+                name = ans_form.find(value)['name']
+                item['answer'] = {
+                  'valueString' => name
+                }
+                item_for_each_type1['item'].append(item)
+                if followups.has_key?(value.to_i)
+                  followup_item = {}
+                  followup_item['linkId'] = item['linkId'] + '-' + followups[value.to_i]['id'].to_s
+                  followup_item['answer'] = {
+                    'valueString' => followups[value.to_i]['name']
+                  }
+                  item_for_each_type1['item'].append(followup_item)
+                end
+              elsif type == 8
+                name = ans_form.find(value)['name']
+                item['answer'] = {
+                  'valueString' => name
+                }
+                item_for_each_type1['item'].append(item)
+              elsif type == 9
+                if not type1.nil?
+                  item_text = type1.name + ' (' + type1.description + ')'
+                  if not type1_type.nil?
+                    item_text = item['text'] + ' (' + type1_type.name + ')'
+                  end
+                end
+                for dicts in eefpsqrcf.extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options do
+                  item = {
+                    'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
+                  }
+                  item['text'] = item_text
+                  value = dicts.question_row_columns_question_row_column_option_id
+                  name = ans_form.find(value)['name']
+                  item['answer'] = {
+                    'valueString' => name
+                  }
+                  item_for_each_type1['item'].append(item)
+                end
+                item = {}
               end
             end
-          end
-        end
 
-        followups = {}
-        for followup in raw.extractions_extraction_forms_projects_sections_followup_fields do
-          followups = followups.merge({
-            FollowupField.find(followup.followup_field_id).question_row_columns_question_row_column_option_id => {
-              'name' => followup.records[0]['name'],
-              'id' => followup.followup_field_id
-            }
-          })
-        end
-
-        if type == 1
-          item['answer'] = {
-            'valueString' => value
-          }
-          eefps['item'].append(item)
-        elsif type == 2
-          if /-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?/.match(value)
-            item['answer'] = {
-              'valueDecimal' => value
-            }
-            eefps['item'].append(item)
-            unless restriction_symbol.empty?
-              symbol_item = {
-                'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s,
-                'answer' => {
-                  'valueString' => restriction_symbol
-                }
-              }
-              eefps['item'].append(symbol_item)
-            end
-            restriction_symbol = ''
-          else
-            restriction_symbol = value
-          end
-        elsif type == 5
-          matches = value.scan(/\D*(\d+)\D*/)
-          for match in matches do
-            checkbox_id = match[0].to_i
-            name = ans_form.find(checkbox_id)['name']
-            item['answer'] = {
-              'valueString' => name
-            }
-
-            eefps['item'].append(item.dup)
-            if followups.has_key?(checkbox_id)
-              followup_item = {}
-              followup_item['linkId'] = item['linkId'] + '-' + followups[checkbox_id]['id'].to_s
-              followup_item['answer'] = {
-                'valueString' => followups[checkbox_id]['name']
-              }
-              eefps['item'].append(followup_item)
-            end
-          end
-        elsif type == 6
-          name = ans_form.find(value)['name']
-          item['answer'] = {
-            'valueString' => name
-          }
-          eefps['item'].append(item)
-        elsif type == 7
-          name = ans_form.find(value)['name']
-          item['answer'] = {
-            'valueString' => name
-          }
-          eefps['item'].append(item)
-          if followups.has_key?(value.to_i)
-            followup_item = {}
-            followup_item['linkId'] = item['linkId'] + '-' + followups[value.to_i]['id'].to_s
-            followup_item['answer'] = {
-              'valueString' => followups[value.to_i]['name']
-            }
-            eefps['item'].append(followup_item)
-          end
-        elsif type == 8
-          name = ans_form.find(value)['name']
-          item['answer'] = {
-            'valueString' => name
-          }
-          eefps['item'].append(item)
-        elsif type == 9
-          item = {
-            'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
-          }
-          if not type1.nil?
-            item['text'] = type1.name + ' (' + type1.description + ')'
-            if not type1_type.nil?
-              item['text'] = item['text'] + ' (' + type1_type.name + ')'
-            end
-          end
-          for dicts in question_row_column_field.extractions_extraction_forms_projects_sections_question_row_column_fields[0].extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options do
-            value = dicts.question_row_columns_question_row_column_option_id
-            name = ans_form.find(value)['name']
-            item['answer'] = {
-              'valueString' => name
-            }
-            eefps['item'].append(item.dup)
-          end
-          item = {}
+          eefps['item'].append(item_for_each_type1)
         end
       end
 
