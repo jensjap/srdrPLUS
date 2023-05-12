@@ -42,9 +42,14 @@
       tools_menu: false
     }"
   >
-    <div class="relative my-1" x-data="{ project_menu: false }">
+    <div
+      class="relative my-1"
+      x-data="{ project_menu: false }"
+      @mouseover.away="project_menu = false"
+    >
       <button
         @click="project_menu = !project_menu"
+        @mouseover="project_menu = true"
         type="button"
         class="p-2 h-8 inline-flex items-center justify-between lg:justify-normal w-full lg:w-auto gap-x-1 text-sm font-light leading-6 text-white cursor-pointer"
         :class="(project_info || key_questions || citation_pool || members_and_roles) && 'bg-srdr-primary !text-white'"
@@ -65,7 +70,7 @@
         </svg>
       </button>
       <div
-        class="absolute z-10 mt-1 flex w-[calc(100vw-32px)] lg:w-auto"
+        class="absolute z-10 flex w-[calc(100vw-32px)] lg:w-auto"
         x-show="project_menu"
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 translate-y-1"
@@ -106,9 +111,14 @@
         </div>
       </div>
     </div>
-    <div class="relative my-1" x-data="{ screening_menu: false }">
+    <div
+      class="relative my-1"
+      x-data="{ screening_menu: false }"
+      @mouseover.away="screening_menu = false"
+    >
       <button
         @click="screening_menu = !screening_menu"
+        @mouseover="screening_menu = true"
         type="button"
         class="p-2 h-8 inline-flex items-center justify-between lg:justify-normal w-full lg:w-auto gap-x-1 text-sm font-light leading-6 text-white cursor-pointer"
         :class="(lifecycle_management || screening_forms || abstract_screening || fulltext_screening) && 'bg-srdr-primary !text-white'"
@@ -129,7 +139,7 @@
         </svg>
       </button>
       <div
-        class="absolute z-10 mt-1 flex w-[calc(100vw-32px)] lg:w-auto"
+        class="absolute z-10 flex w-[calc(100vw-32px)] lg:w-auto"
         x-show="screening_menu"
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 translate-y-1"
@@ -174,9 +184,14 @@
         </div>
       </div>
     </div>
-    <div class="relative my-1" x-data="{ extracting_menu: false }">
+    <div
+      class="relative my-1"
+      x-data="{ extracting_menu: false }"
+      @mouseover.away="extracting_menu = false"
+    >
       <button
         @click="extracting_menu = !extracting_menu"
+        @mouseover="extracting_menu = true"
         type="button"
         class="p-2 h-8 inline-flex items-center justify-between lg:justify-normal w-full lg:w-auto gap-x-1 text-sm font-light leading-6 text-white cursor-pointer"
         :class="(extractions || comparison_tool || sr_360) && 'bg-srdr-primary !text-white'"
@@ -197,7 +212,7 @@
         </svg>
       </button>
       <div
-        class="absolute z-10 mt-1 flex w-[calc(100vw-32px)] lg:w-auto"
+        class="absolute z-10 flex w-[calc(100vw-32px)] lg:w-auto"
         x-show="extracting_menu"
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 translate-y-1"
@@ -232,9 +247,14 @@
         </div>
       </div>
     </div>
-    <div class="relative my-1" x-data="{ tools_menu: false }">
+    <div
+      class="relative my-1"
+      x-data="{ tools_menu: false }"
+      @mouseover.away="tools_menu = false"
+    >
       <button
         @click="tools_menu = !tools_menu"
+        @mouseover="tools_menu = true"
         type="button"
         class="p-2 h-8 inline-flex items-center justify-between lg:justify-normal w-full lg:w-auto gap-x-1 text-sm font-light leading-6 text-white cursor-pointer"
         :class="(import_export || publication) && 'bg-srdr-primary !text-white'"
@@ -255,7 +275,7 @@
         </svg>
       </button>
       <div
-        class="absolute z-10 mt-1 flex w-[calc(100vw-32px)] lg:w-auto"
+        class="absolute z-10 flex w-[calc(100vw-32px)] lg:w-auto"
         x-show="tools_menu"
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 translate-y-1"
