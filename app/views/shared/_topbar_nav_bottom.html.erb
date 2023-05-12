@@ -2,9 +2,9 @@
 <% if add_submenu?(controller_name, action_name, controller, @publishable_record) %>
     <% project = find_project(@project, @extraction, @extraction_forms_project, @question, @extraction_forms_projects_section, @publishable_record) %>
 <div
-  class="bg-srdr-secondary mx-auto px-4 lg:px-8 text-white overflow-x-auto whitespace-nowrap"
+  class="bg-srdr-secondary mx-auto px-4 lg:px-8 text-white whitespace-nowrap"
 >
-  <div class="flex h-8 items-center justify-between">
+  <div class="flex h-8 items-center justify-between overflow-auto">
     <div>
       <!-- prettier-ignore -->
       <%= "Project ID##{project.id}: #{project.name}" %>
@@ -33,97 +33,71 @@
       </a>
     </div>
   </div>
-  <div class="flex h-8 items-center justify-between">
-    <div class="flex items-center">
-      <!-- Current: "rounded-md bg-srdr-secondary px-3 py-2 text-sm font-medium text-white" -->
-      <a
-        href="<%= edit_project_path(project) %>?page=info"
-        class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-        :class="project_info && 'bg-srdr-primary !text-white'"
-        >Project Info</a
+  <div class="flex flex-col lg:flex-row lg:space-x-1">
+    <div class="relative my-1" x-data="{ submenu: false }">
+      <button
+        @click="submenu = !submenu"
+        type="button"
+        class="p-2 h-8 inline-flex items-center justify-between lg:justify-normal w-full lg:w-auto gap-x-1 text-sm font-light leading-6 text-white cursor-pointer"
+        :class="(project_info || key_questions || citation_pool || members_and_roles) && 'bg-srdr-primary !text-white'"
+        aria-expanded="false"
       >
-      <a
-        href="<%= edit_project_path(project) %>?page=key_questions"
-        class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-        :class="key_questions && 'bg-srdr-primary !text-white'"
-        >Key Questions</a
+        <span>Project</span>
+        <svg
+          class="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+      <div
+        style="width: calc(100vw - 32px)"
+        class="absolute z-10 mt-1 flex lg:w-auto"
+        x-show="submenu"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 translate-y-1"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 translate-y-1"
+        x-cloak
+        @click.outside="submenu = false"
       >
-      <a
-        href="<%= edit_project_path(project) %>?page=members_and_roles"
-        class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-        :class="members_and_roles && 'bg-srdr-primary !text-white'"
-        >Member(s) & Role(s)</a
-      >
-      <a
-        href="<%= project_citations_path(project) %>"
-        class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-        :class="citation_pool && 'bg-srdr-primary !text-white'"
-        >Citations</a
-      >
-      <% if AbstractScreeningService.as_user?(current_user) %>
-      <a
-        href="<%= project_citation_lifecycle_management_path(project) %>"
-        class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-        :class="lifecycle_management && 'bg-srdr-primary !text-white'"
-        >Citation Phase Management</a
-      >
-      <% end %>
-      <a
-        href="<%= project_screening_forms_path(project) %>"
-        class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-        :class="screening_forms && 'bg-srdr-primary !text-white'"
-        >Screening Form Builder</a
-      >
-      <a
-        href="<%= project_abstract_screenings_path(project) %>"
-        class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-        :class="abstract_screening && 'bg-srdr-primary !text-white'"
-        >Abstract Screening</a
-      >
-      <% if AbstractScreeningService.as_user?(current_user) %>
-      <a
-        href="<%= project_fulltext_screenings_path(project) %>"
-        class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-        :class="fulltext_screening && 'bg-srdr-primary !text-white'"
-        >Full-Text Screening</a
-      >
-      <% end %>
-      <a
-        href="<%= build_extraction_forms_project_path(project.extraction_forms_projects.first, 'panel-tab': project.extraction_forms_projects.first.default_section_id) %>"
-        class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-        :class="extractions_form_builder && 'bg-srdr-primary !text-white'"
-        >Extractions Form Builder</a
-      >
-      <a
-        href="<%= project_extractions_path(project) %>"
-        class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-        :class="extractions && 'bg-srdr-primary !text-white'"
-        >Extractions</a
-      >
-      <a
-        href="<%= comparison_tool_project_extractions_path(project) %>"
-        class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-        :class="comparison_tool && 'bg-srdr-primary !text-white'"
-        >Comparison Tool</a
-      >
-      <a
-        href="<%= project_sd_meta_data_path(project) %>"
-        class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-        :class="sr_360 && 'bg-srdr-primary !text-white'"
-        >SR-360</a
-      >
-      <a
-        href="<%= project_imports_path(project) %>"
-        class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-        :class="import_export && 'bg-srdr-primary !text-white'"
-        >Data Import & Export</a
-      >
-      <a
-        href="<%= new_publishing_path(type: Project.to_s, id: project.id) %>"
-        class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-        :class="publication && 'bg-srdr-primary !text-white'"
-        >Publication</a
-      >
+        <div
+          class="w-screen lg:w-auto shrink rounded-xl bg-white p-4 text-sm font-light leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5"
+        >
+          <a
+            href="<%= edit_project_path(project) %>?page=info"
+            class="block p-2 hover:text-indigo-600"
+            :class="project_info && 'bg-srdr-primary rounded-md !text-white'"
+            >Project Info</a
+          >
+          <a
+            href="<%= edit_project_path(project) %>?page=key_questions"
+            class="block p-2 hover:text-indigo-600"
+            :class="key_questions && 'bg-srdr-primary rounded-md !text-white'"
+            >Key Questions</a
+          >
+          <a
+            href="<%= project_citations_path(project) %>"
+            class="block p-2 hover:text-indigo-600"
+            :class="citation_pool && 'bg-srdr-primary rounded-md !text-white'"
+            >Citations</a
+          >
+          <a
+            href="<%= edit_project_path(project) %>?page=members_and_roles"
+            class="block p-2 hover:text-indigo-600"
+            :class="members_and_roles && 'bg-srdr-primary rounded-md !text-white'"
+            >Member(s) & Role(s)</a
+          >
+        </div>
+      </div>
     </div>
   </div>
 </div>
