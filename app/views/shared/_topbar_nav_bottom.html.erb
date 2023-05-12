@@ -33,10 +33,18 @@
       </a>
     </div>
   </div>
-  <div class="flex flex-col lg:flex-row lg:space-x-1">
-    <div class="relative my-1" x-data="{ submenu: false }">
+  <div
+    class="flex flex-col lg:flex-row lg:space-x-1"
+    x-data="{
+      project_menu: false,
+      screening_menu: false,
+      extracting_menu: false,
+      tools_menu: false
+    }"
+  >
+    <div class="relative my-1" x-data="{ project_menu: false }">
       <button
-        @click="submenu = !submenu"
+        @click="project_menu = !project_menu"
         type="button"
         class="p-2 h-8 inline-flex items-center justify-between lg:justify-normal w-full lg:w-auto gap-x-1 text-sm font-light leading-6 text-white cursor-pointer"
         :class="(project_info || key_questions || citation_pool || members_and_roles) && 'bg-srdr-primary !text-white'"
@@ -57,9 +65,8 @@
         </svg>
       </button>
       <div
-        style="width: calc(100vw - 32px)"
-        class="absolute z-10 mt-1 flex lg:w-auto"
-        x-show="submenu"
+        class="absolute z-10 mt-1 flex w-[calc(100vw-32px)] lg:w-auto"
+        x-show="project_menu"
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 translate-y-1"
         x-transition:enter-end="opacity-100 translate-y-0"
@@ -67,7 +74,7 @@
         x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 translate-y-1"
         x-cloak
-        @click.outside="submenu = false"
+        @click.outside="project_menu = false"
       >
         <div
           class="w-screen lg:w-auto shrink rounded-xl bg-white p-4 text-sm font-light leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5"
@@ -99,9 +106,9 @@
         </div>
       </div>
     </div>
-    <div class="relative my-1" x-data="{ submenu: false }">
+    <div class="relative my-1" x-data="{ screening_menu: false }">
       <button
-        @click="submenu = !submenu"
+        @click="screening_menu = !screening_menu"
         type="button"
         class="p-2 h-8 inline-flex items-center justify-between lg:justify-normal w-full lg:w-auto gap-x-1 text-sm font-light leading-6 text-white cursor-pointer"
         :class="(lifecycle_management || screening_forms || abstract_screening || fulltext_screening) && 'bg-srdr-primary !text-white'"
@@ -122,9 +129,8 @@
         </svg>
       </button>
       <div
-        style="width: calc(100vw - 32px)"
-        class="absolute z-10 mt-1 flex lg:w-auto"
-        x-show="submenu"
+        class="absolute z-10 mt-1 flex w-[calc(100vw-32px)] lg:w-auto"
+        x-show="screening_menu"
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 translate-y-1"
         x-transition:enter-end="opacity-100 translate-y-0"
@@ -132,7 +138,7 @@
         x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 translate-y-1"
         x-cloak
-        @click.outside="submenu = false"
+        @click.outside="screening_menu = false"
       >
         <div
           class="w-screen lg:w-auto shrink rounded-xl bg-white p-4 text-sm font-light leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5"
@@ -168,9 +174,9 @@
         </div>
       </div>
     </div>
-    <div class="relative my-1" x-data="{ submenu: false }">
+    <div class="relative my-1" x-data="{ extracting_menu: false }">
       <button
-        @click="submenu = !submenu"
+        @click="extracting_menu = !extracting_menu"
         type="button"
         class="p-2 h-8 inline-flex items-center justify-between lg:justify-normal w-full lg:w-auto gap-x-1 text-sm font-light leading-6 text-white cursor-pointer"
         :class="(extractions || comparison_tool || sr_360) && 'bg-srdr-primary !text-white'"
@@ -191,9 +197,8 @@
         </svg>
       </button>
       <div
-        style="width: calc(100vw - 32px)"
-        class="absolute z-10 mt-1 flex lg:w-auto"
-        x-show="submenu"
+        class="absolute z-10 mt-1 flex w-[calc(100vw-32px)] lg:w-auto"
+        x-show="extracting_menu"
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 translate-y-1"
         x-transition:enter-end="opacity-100 translate-y-0"
@@ -201,7 +206,7 @@
         x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 translate-y-1"
         x-cloak
-        @click.outside="submenu = false"
+        @click.outside="extracting_menu = false"
       >
         <div
           class="w-screen lg:w-auto shrink rounded-xl bg-white p-4 text-sm font-light leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5"
@@ -227,9 +232,9 @@
         </div>
       </div>
     </div>
-    <div class="relative my-1" x-data="{ submenu: false }">
+    <div class="relative my-1" x-data="{ tools_menu: false }">
       <button
-        @click="submenu = !submenu"
+        @click="tools_menu = !tools_menu"
         type="button"
         class="p-2 h-8 inline-flex items-center justify-between lg:justify-normal w-full lg:w-auto gap-x-1 text-sm font-light leading-6 text-white cursor-pointer"
         :class="(import_export || publication) && 'bg-srdr-primary !text-white'"
@@ -250,9 +255,8 @@
         </svg>
       </button>
       <div
-        style="width: calc(100vw - 32px)"
-        class="absolute z-10 mt-1 flex lg:w-auto"
-        x-show="submenu"
+        class="absolute z-10 mt-1 flex w-[calc(100vw-32px)] lg:w-auto"
+        x-show="tools_menu"
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 translate-y-1"
         x-transition:enter-end="opacity-100 translate-y-0"
@@ -260,7 +264,7 @@
         x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 translate-y-1"
         x-cloak
-        @click.outside="submenu = false"
+        @click.outside="tools_menu = false"
       >
         <div
           class="w-screen lg:w-auto shrink rounded-xl bg-white p-4 text-sm font-light leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5"
