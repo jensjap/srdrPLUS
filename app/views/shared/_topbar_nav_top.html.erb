@@ -1,0 +1,239 @@
+<div class="mx-auto px-4 lg:px-8">
+  <div class="flex h-16 items-center justify-between">
+    <div class="flex items-center">
+      <div class="flex-shrink-0">
+        <a href="/?no_redirect=true">
+          <!-- prettier-ignore -->
+          <%= image_tag('brand.png', alt: 'srdrPLUS - Home', class: 'block h-8 w-auto lg:hidden') %></a
+        >
+        <a href="/?no_redirect=true">
+          <%= image_tag('brand.png', alt: 'srdrPLUS - Home', class: 'hidden h-8
+          w-auto lg:block') %>
+        </a>
+      </div>
+      <div class="hidden lg:ml-6 lg:block">
+        <div class="flex space-x-4">
+          <!-- Current: "rounded-md bg-srdr-secondary px-3 py-2 text-sm font-medium text-white" -->
+          <a
+            href="<%= root_path(no_redirect: true) %>"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+            :class="home && 'bg-srdr-secondary !text-white underline'"
+            >Home</a
+          >
+          <% if current_user %>
+          <a
+            href="<%= projects_path %>"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+            :class="my_projects && 'bg-srdr-secondary !text-white underline'"
+            >My Projects</a
+          >
+          <% end %>
+          <a
+            href="<%= blog_path %>"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+            :class="blog && 'bg-srdr-secondary !text-white underline'"
+            >Blog</a
+          >
+          <a
+            href="<%= published_projects_path %>"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+            :class="published_projects && 'bg-srdr-secondary !text-white underline'"
+            >Published Projects</a
+          >
+          <a
+            href="<%= searches_path %>"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+            :class="search && 'bg-srdr-secondary !text-white underline'"
+            >Search</a
+          >
+          <a
+            href="/contact"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+            :class="contact && 'bg-srdr-secondary !text-white underline'"
+            >Contact</a
+          >
+          <a
+            href="/about"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+            :class="about && 'bg-srdr-secondary !text-white underline'"
+            >About</a
+          >
+          <a
+            href="<%= help_path %>"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+            :class="help && 'bg-srdr-secondary !text-white underline'"
+            >Help</a
+          >
+        </div>
+      </div>
+    </div>
+    <div class="hidden lg:ml-6 lg:block">
+      <div class="flex items-center space-x-4">
+        <% if current_user %>
+        <div>
+          <a
+            href="<%= edit_user_registration_path %>"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+            :class="account && 'bg-srdr-secondary !text-white underline'"
+            ><%= current_user.handle %></a
+          >
+        </div>
+        <% else %>
+        <div>
+          <a
+            href="<%= new_user_session_path %>"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+            :class="signin && 'bg-srdr-secondary !text-white underline'"
+            >Login</a
+          >
+        </div>
+        <div>
+          <a
+            href="<%= new_user_registration_path %>"
+            class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+            :class="signup && 'bg-srdr-secondary !text-white underline'"
+            >Register</a
+          >
+        </div>
+        <% end %>
+      </div>
+    </div>
+    <div class="-mr-2 flex lg:hidden">
+      <!-- Mobile menu button -->
+      <button
+        type="button"
+        class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-srdr-secondary hover:text-white focus:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white cursor-pointer"
+        aria-controls="mobile-menu"
+        :aria-expanded="mobile"
+        @click="mobile = !mobile"
+      >
+        <span class="sr-only">Open main menu</span>
+        <!--
+          Icon when menu is closed.
+
+          Heroicon name: outline/bars-3
+
+          Menu open: "hidden", Menu closed: "block"
+        -->
+        <svg
+          class="block h-6 w-6"
+          :class="mobile ? 'hidden' : 'block'"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+          />
+        </svg>
+        <!--
+          Icon when menu is open.
+
+          Heroicon name: outline/x-mark
+
+          Menu open: "block", Menu closed: "hidden"
+        -->
+        <svg
+          class="h-6 w-6"
+          :class="mobile ? 'block' : 'hidden'"
+          x-cloak
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile menu, show/hide based on menu state. -->
+<div class="lg:hidden" id="mobile-menu" x-show="mobile" x-cloak>
+  <div class="space-y-1 px-2 pt-2 pb-3">
+    <!-- Current: "block rounded-md bg-srdr-secondary px-3 py-2 text-base font-medium text-white" -->
+    <a
+      href="<%= root_path(no_redirect: true) %>"
+      class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+      :class="home && 'bg-srdr-secondary text-white'"
+      >Home</a
+    >
+    <% if current_user %>
+    <a
+      href="<%= projects_path %>"
+      class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+      :class="my_projects && 'bg-srdr-secondary text-white'"
+      >My Projects</a
+    >
+    <% end %>
+    <a
+      href="<%= blog_path %>"
+      class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+      :class="blog && 'bg-srdr-secondary text-white'"
+      >Blog</a
+    >
+    <a
+      href="<%= published_projects_path %>"
+      class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+      :class="published_projects && 'bg-srdr-secondary text-white'"
+      >Published Projects</a
+    >
+    <a
+      href="/contact"
+      class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+      :class="search && 'bg-srdr-secondary text-white'"
+      >Search</a
+    >
+    <a
+      href="<%= searches_path %>"
+      class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+      :class="contact && 'bg-srdr-secondary text-white'"
+      >Contact</a
+    >
+    <a
+      href="/about"
+      class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+      :class="about && 'bg-srdr-secondary text-white'"
+      >About</a
+    >
+    <a
+      href="<%= help_path %>"
+      class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+      :class="help && 'bg-srdr-secondary text-white'"
+      >Help</a
+    >
+    <% if current_user %>
+    <a
+      href="<%= edit_user_registration_path %>"
+      class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+      :class="account && 'bg-srdr-secondary text-white'"
+      >Account</a
+    >
+    <% else %>
+    <a
+      href="<%= new_user_session_path %>"
+      class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+      :class="signin && 'bg-srdr-secondary text-white'"
+      >Login</a
+    >
+    <a
+      href="<%= new_user_registration_path %>"
+      class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+      :class="signup && 'bg-srdr-secondary text-white'"
+      >Register</a
+    >
+    <% end %>
+  </div>
+</div>
