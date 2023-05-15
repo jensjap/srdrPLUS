@@ -161,19 +161,19 @@ class ExtractionSupplyingService
               if value.is_a?(String) && value.empty?
                 value = nil
               end
-      
+
               if not eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.nil?
                 type1 = eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.type1
               else
                 type1 = nil
               end
-      
+
               if not eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.type1_type.nil?
                 type1_type = eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.type1_type
               else
                 type1_type = nil
               end
-      
+
               if value.nil?
                 if type != 9
                   next
@@ -191,17 +191,19 @@ class ExtractionSupplyingService
                   end
                 end
               end
-      
+
               followups = {}
               for followup in raw.extractions_extraction_forms_projects_sections_followup_fields do
-                followups = followups.merge({
-                  FollowupField.find(followup.followup_field_id).question_row_columns_question_row_column_option_id => {
-                    'name' => followup.records[0]['name'],
-                    'id' => followup.followup_field_id
-                  }
-                })
+                if not followup.records[0]['name'].blank?
+                  followups = followups.merge({
+                    FollowupField.find(followup.followup_field_id).question_row_columns_question_row_column_option_id => {
+                      'name' => followup.records[0]['name'],
+                      'id' => followup.followup_field_id
+                    }
+                  })
+                end
               end
-      
+
               if type == 1
                 item['answer'] = {
                   'valueString' => value
@@ -234,16 +236,19 @@ class ExtractionSupplyingService
                   item['answer'] = {
                     'valueString' => name
                   }
-      
-                  item_for_each_type1['item'].append(item.dup)
+
                   if followups.has_key?(checkbox_id)
                     followup_item = {}
                     followup_item['linkId'] = item['linkId'] + '-' + followups[checkbox_id]['id'].to_s
                     followup_item['answer'] = {
                       'valueString' => followups[checkbox_id]['name']
                     }
-                    item_for_each_type1['item'].append(followup_item)
+                    item['item'] = followup_item
+                  else
+                    item['item'] = []
                   end
+
+                  item_for_each_type1['item'].append(item.dup)
                 end
               elsif type == 6
                 name = ans_form.find(value)['name']
