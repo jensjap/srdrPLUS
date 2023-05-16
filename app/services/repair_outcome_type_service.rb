@@ -7,7 +7,7 @@
 class RepairOutcomeTypeService
   def self.repair!(project_id = nil, get_count_only: true)
     # Project ID 2847 'VA Airborne Hazards Constrictive Bronchiolitis and Interstitial Lung Diseases'
-    project_id = 2847 if project_id
+    project_id = 2847 if project_id.blank?
 
     candidates = find_candidates_for_repair(project_id)
     puts "#{candidates.count} need repair"
@@ -24,8 +24,12 @@ class RepairOutcomeTypeService
   def self.repair_outcome_type(eefpst1)
     template = find_template_for_repair(eefpst1)
     if template.present?
+      puts 'Found suitable template!!'
+      puts "  Applying fix using type: \"#{template.type1_type.name}\""
       eefpst1.update(type1_type: template.type1_type)
     else
+      puts 'No suitable template found =('
+      puts '  Applying fix using default type: "Categorical"'
       eefpst1.update(type1_type: Type1Type.find_by(name: 'Categorical'))
     end
   end
