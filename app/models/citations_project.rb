@@ -22,6 +22,7 @@ class CitationsProject < ApplicationRecord
   has_many :abstract_screening_results, dependent: :destroy
   has_many :fulltext_screening_results, dependent: :destroy
   has_many :screening_qualifications, dependent: :destroy
+  has_many :ml_predictions
 
   accepts_nested_attributes_for :citation, reject_if: :all_blank
 
