@@ -5,13 +5,13 @@
 # Possible options for type1_type for Outcomes should be:
 # ['Continuous' ,'Categorical']
 class RepairOutcomeTypeService
-  def self.repair!(project_id = nil, get_count_only: true)
+  def self.repair!(project_id = nil, only_count: true)
     # Project ID 2847 'VA Airborne Hazards Constrictive Bronchiolitis and Interstitial Lung Diseases'
     project_id = 2847 if project_id.blank?
 
     candidates = find_candidates_for_repair(project_id)
     puts "#{candidates.count} need repair"
-    unless get_count_only
+    unless only_count
       candidates.each do |candidate|
         repair_outcome_type(candidate)
       end
@@ -50,14 +50,20 @@ class RepairOutcomeTypeService
   def self.query_for_template_candidates(eefpst1, local_only: true)
     if local_only
       ExtractionsExtractionFormsProjectsSectionsType1
-        .joins(:type1, extractions_extraction_forms_projects_section: [{ extraction: :project }])
+        .joins(:type1, extractions_extraction_forms_projects_section:
+          [{ extraction_forms_projects_section: :section },
+           { extraction: :project }])
         .where('projects.id=?', eefpst1.extraction.project.id)
         .where('type1s.name=? AND type1s.description=?', eefpst1.type1.name, eefpst1.type1.description)
+        .where('sections.name=?', 'Outcomes')
         .where.not(type1_type: nil)
     else
       ExtractionsExtractionFormsProjectsSectionsType1
-        .joins(:type1, extractions_extraction_forms_projects_section: [{ extraction: :project }])
+        .joins(:type1, extractions_extraction_forms_projects_section:
+          [{ extraction_forms_projects_section: :section },
+           { extraction: :project }])
         .where('type1s.name=? AND type1s.description=?', eefpst1.type1.name, eefpst1.type1.description)
+        .where('sections.name=?', 'Outcomes')
         .where.not(type1_type: nil)
     end
   end
