@@ -19,7 +19,16 @@ class RobotScreenService
       }
     )
 
-    return res.body
+    response_hash = JSON.parse(res.body)
+    if response_hash["success"]
+      timestamp = response_hash["timestamp"]
+      ml_model = MlModel.new(project_id: @project_id, timestamp: timestamp)
+      ml_model.save
+      return "Training complete (model timestamp: #{timestamp})"
+    else
+      message = response_hash["message"]
+      return "Failed (message: #{message})"
+    end
   end
 
   def predict(timestamp)
@@ -35,7 +44,22 @@ class RobotScreenService
       }
     )
 
-    return res.body
+    response_hash = JSON.parse(res.body)
+    predictions = response_hash["predictions"]
+
+    ml_model = MlModel.find_by(timestamp: timestamp, project_id: @project_id)
+
+    data.each_with_index do |citation, index|
+      citation_id = citation["citation_id"]
+      score = predictions[index]
+
+      citations_project = CitationsProject.find_by(citation_id: citation_id, project_id: @project_id)
+
+      ml_prediction = MlPrediction.new(citations_project_id: citations_project.id, ml_model_id: ml_model.id, score: score)
+      ml_prediction.save
+    end
+
+    return "Predictions saved"
   end
 
 end

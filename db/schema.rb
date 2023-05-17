@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_20_035508) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_16_123001) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -482,6 +482,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_20_035508) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["eefps_qrcf_id", "question_row_columns_question_row_column_option_id"], name: "index_eefpsqrcfqrcqrco_on_eefps_qrcf_id_qrcqrco_id"
     t.index ["question_row_columns_question_row_column_option_id"], name: "index_eefpsqrcfqrcqrco_on_qrcqrco_id"
+  end
+
+  create_table "events", charset: "utf8", force: :cascade do |t|
+    t.string "sent"
+    t.string "action"
+    t.string "resource"
+    t.integer "resource_id"
+    t.string "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "export_types", charset: "utf8", force: :cascade do |t|
@@ -1006,7 +1016,26 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_20_035508) do
     t.datetime "end_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.boolean "active", default: true
     t.index ["message_type_id"], name: "index_messages_on_message_type_id"
+  end
+
+  create_table "ml_models", charset: "utf8", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "timestamp", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "fk_rails_51e87f7c50"
+  end
+
+  create_table "ml_predictions", charset: "utf8", force: :cascade do |t|
+    t.integer "citations_project_id", null: false
+    t.bigint "ml_model_id", null: false
+    t.float "score", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["citations_project_id"], name: "fk_rails_c7d0d53a87"
+    t.index ["ml_model_id"], name: "fk_rails_6c1d59597a"
   end
 
   create_table "notes", id: :integer, charset: "utf8", force: :cascade do |t|
@@ -1184,6 +1213,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_20_035508) do
     t.integer "term_id"
     t.index ["projects_users_term_groups_color_id"], name: "index_putgcp_on_putc_id"
     t.index ["term_id"], name: "index_putgcp_on_terms_id"
+  end
+
+  create_table "publication_reminders", charset: "utf8", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "project_id", null: false
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "publishings", id: :integer, charset: "utf8", force: :cascade do |t|
@@ -2096,6 +2133,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_20_035508) do
   add_foreign_key "measurements", "comparisons_measures"
   add_foreign_key "message_types", "frequencies"
   add_foreign_key "messages", "message_types"
+  add_foreign_key "ml_models", "projects"
+  add_foreign_key "ml_predictions", "citations_projects"
+  add_foreign_key "ml_predictions", "ml_models"
   add_foreign_key "notes", "projects_users_roles"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"

@@ -54,6 +54,7 @@ class MachineLearningDataSupplyingService
     for asr in project.abstract_screening_results
                       .includes(citations_project: :citation) do
       label_data = {
+        'citation_id' => asr.citation.id,
         'ti' => '',
         'abs' => '',
       }
