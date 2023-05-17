@@ -57,21 +57,31 @@ class AbstractScreeningService
   def self.get_next_singles_citation_id(abstract_screening)
     project_screened_citation_ids = project_screened_citation_ids(abstract_screening.project)
 
-    preferred_citation = abstract_screening.project.citations
-      .joins('INNER JOIN citations_projects AS cp1 ON cp1.citation_id = citations.id')
-      .joins('INNER JOIN ml_predictions AS mp1 ON mp1.citations_project_id = cp1.id')
-      .joins('LEFT JOIN ml_predictions AS mp2 ON (mp1.citations_project_id = mp2.citations_project_id AND mp1.created_at < mp2.created_at)')
-      .where('mp2.id IS NULL')
-      .where.not(id: project_screened_citation_ids)
-      .where('mp1.score BETWEEN 0.3 AND 0.7')
-      .sample
+    preferred_citation = abstract_screening
+                         .project
+                         .citations
+                         .joins('INNER JOIN citations_projects AS cp1 ON cp1.citation_id = citations.id')
+                         .joins('INNER JOIN ml_predictions AS mp1 ON mp1.citations_project_id = cp1.id')
+                         .joins('LEFT JOIN ml_predictions AS mp2 ON
+                                   (
+                                     mp1.citations_project_id = mp2.citations_project_id
+                                     AND
+                                     mp1.created_at < mp2.created_at
+                                   )'
+                               )
+                         .where('mp2.id IS NULL')
+                         .where.not(id: project_screened_citation_ids)
+                         .where('mp1.score BETWEEN ? AND ?', 0.3, 0.7)
+                         .sample
 
     return preferred_citation.id if preferred_citation.present?
 
-    random_citation = abstract_screening.project.citations
-      .joins('INNER JOIN citations_projects AS cp2 ON cp2.citation_id = citations.id')
-      .where.not(id: project_screened_citation_ids)
-      .sample
+    random_citation = abstract_screening
+                      .project
+                      .citations
+                      .joins('INNER JOIN citations_projects AS cp2 ON cp2.citation_id = citations.id')
+                      .where.not(id: project_screened_citation_ids)
+                      .sample
 
     random_citation&.id
   end
