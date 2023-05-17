@@ -25,11 +25,13 @@ class RepairOutcomeTypeService
     template = find_template_for_repair(eefpst1)
     if template.present?
       puts 'Found suitable template!!'
-      puts "  Applying fix using type: \"#{template.type1_type.name}\""
+      puts "Applying fix using type: \"#{template.type1_type.name}\""
+      puts '==========================================================='
       eefpst1.update(type1_type: template.type1_type)
     else
       puts 'No suitable template found =('
-      puts '  Applying fix using default type: "Categorical"'
+      puts 'Applying fix using default type: "Categorical"'
+      puts '==========================================================='
       eefpst1.update(type1_type: Type1Type.find_by(name: 'Categorical'))
     end
   end
@@ -49,6 +51,7 @@ class RepairOutcomeTypeService
 
   def self.query_for_template_candidates(eefpst1, local_only: true)
     if local_only
+      puts '..Looking locally'
       ExtractionsExtractionFormsProjectsSectionsType1
         .joins(:type1, extractions_extraction_forms_projects_section:
           [{ extraction_forms_projects_section: :section },
@@ -58,6 +61,7 @@ class RepairOutcomeTypeService
         .where('sections.name=?', 'Outcomes')
         .where.not(type1_type: nil)
     else
+      puts '..Looking globally'
       ExtractionsExtractionFormsProjectsSectionsType1
         .joins(:type1, extractions_extraction_forms_projects_section:
           [{ extraction_forms_projects_section: :section },
