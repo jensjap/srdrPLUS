@@ -51,14 +51,12 @@ class MachineLearningDataSupplyingService
     project = Project.find(project_id)
     project_data = []
 
-    for asr in project.abstract_screening_results
-                      .includes(citations_project: :citation) do
+    for citation in project.citations do
       label_data = {
-        'citation_id' => asr.citation.id,
+        'citation_id' => citation.id,
         'ti' => '',
         'abs' => '',
       }
-      citation = asr.citation
 
       ti = citation.name.gsub('"', "'")
       if ti.nil? || ti.empty?
@@ -74,8 +72,9 @@ class MachineLearningDataSupplyingService
         label_data['abs'] = abs
       end
 
-      label = asr.label
-      if label.nil?
+      citations_project = CitationsProject.find_by(citation_id: citation.id, project_id: project_id)
+      asr = citations_project.abstract_screening_results
+      if asr.blank?
         project_data.append(label_data)
       else
         next
