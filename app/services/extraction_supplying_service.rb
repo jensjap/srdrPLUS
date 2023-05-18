@@ -341,19 +341,23 @@ class ExtractionSupplyingService
                   measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
                   for tps_arms_rssm in result_statistic_sections_measure.tps_arms_rssms do
                     record = tps_arms_rssm.records[0]
-                    if record.nil?
+                    if record.blank?
                       next
                     else
-                      record = record['name']
+                      if record['name'].blank?
+                        next
+                      else
+                        record = record['name']
+                      end
                     end
                     record_id = tps_arms_rssm.records[0]['id']
                     time_point = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(id: tps_arms_rssm.timepoint_id)
-                    if time_point.nil?
+                    if time_point.blank?
                       next
                     end
                     time_point_name = time_point.timepoint_name['name'] + ' ' + time_point.timepoint_name['unit']
                     arm = ExtractionsExtractionFormsProjectsSectionsType1.find_by(id: tps_arms_rssm.extractions_extraction_forms_projects_sections_type1_id)
-                    if arm.nil?
+                    if arm.blank?
                       next
                     end
                     arm_name = Type1.find(arm.type1_id)['name']
@@ -377,19 +381,23 @@ class ExtractionSupplyingService
                   measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
                   for tps_comparisons_rssm in result_statistic_sections_measure.tps_comparisons_rssms do
                     record = tps_comparisons_rssm.records[0]
-                    if record.nil?
+                    if record.blank?
                       next
                     else
-                      record = record['name']
+                      if record['name'].blank?
+                        next
+                      else
+                        record = record['name']
+                      end
                     end
                     record_id = tps_comparisons_rssm.records[0]['id']
                     time_point = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(id: tps_comparisons_rssm.timepoint_id)
-                    if time_point.nil?
+                    if time_point.blank?
                       next
                     end
                     time_point_name = time_point.timepoint_name['name'] + ' ' + time_point.timepoint_name['unit']
                     comparison = Comparison.find_by(id: tps_comparisons_rssm.comparison_id)
-                    if comparison.nil?
+                    if comparison.blank?
                       next
                     end
                     arm_names = []
@@ -417,14 +425,18 @@ class ExtractionSupplyingService
                   measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
                   for comparisons_arms_rssm in result_statistic_sections_measure.comparisons_arms_rssms do
                     record = comparisons_arms_rssm.records[0]
-                    if record.nil?
+                    if record.blank?
                       next
                     else
-                      record = record['name']
+                      if record['name'].blank?
+                        next
+                      else
+                        record = record['name']
+                      end
                     end
                     record_id = comparisons_arms_rssm.records[0]['id']
                     comparison = Comparison.find_by(id: comparisons_arms_rssm.comparison_id)
-                    if comparison.nil?
+                    if comparison.blank?
                       next
                     end
                     time_point_names = []
@@ -435,7 +447,7 @@ class ExtractionSupplyingService
                       time_point_names.append(time_point_name)
                     end
                     arm = ExtractionsExtractionFormsProjectsSectionsType1.find_by(id: comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1_id)
-                    if arm.nil?
+                    if arm.blank?
                       next
                     end
                     arm_name = Type1.find(arm.type1_id)['name']
@@ -459,15 +471,19 @@ class ExtractionSupplyingService
                   measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
                   for wacs_bacs_rssm in result_statistic_sections_measure.wacs_bacs_rssms do
                     record = wacs_bacs_rssm.records[0]
-                    if record.nil?
+                    if record.blank?
                       next
                     else
-                      record = record['name']
+                      if record['name'].blank?
+                        next
+                      else
+                        record = record['name']
+                      end
                     end
                     record_id = wacs_bacs_rssm.records[0]['id']
 
                     comparison_arm = Comparison.find_by(id: wacs_bacs_rssm.bac_id)
-                    if comparison_arm.nil?
+                    if comparison_arm.blank?
                       next
                     end
                     arm_names = []
@@ -477,7 +493,7 @@ class ExtractionSupplyingService
                     end
 
                     comparison_time_point = Comparison.find_by(id: wacs_bacs_rssm.wac_id)
-                    if comparison_time_point.nil?
+                    if comparison_time_point.blank?
                       next
                     end
                     time_point_names = []
@@ -507,14 +523,18 @@ class ExtractionSupplyingService
           end
         end
 
-        if evidences.empty?
+        if evidences.blank?
           return
         else
+          merged_evidences = merge_evidence_by_variable_definition(evidences)
+          merged_evidences = merged_evidences.map do |element|
+            FHIR::Evidence.new(element)
+          end
           link_info_evidence = [{
             'relation' => 'service-doc',
             'url' => 'doc/fhir/extraction.txt'
           }]
-          return create_bundle(fhir_objs=evidences, type='collection', link_info=link_info_evidence)
+          return create_bundle(fhir_objs=merged_evidences, type='collection', link_info=link_info_evidence)
         end
 
       else
@@ -545,19 +565,23 @@ class ExtractionSupplyingService
                 measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
                 for tps_comparisons_rssm in result_statistic_sections_measure.tps_comparisons_rssms do
                   record = tps_comparisons_rssm.records[0]
-                  if record.nil?
+                  if record.blank?
                     next
                   else
-                    record = record['name']
+                    if record['name'].blank?
+                      next
+                    else
+                      record = record['name']
+                    end
                   end
                   record_id = tps_comparisons_rssm.records[0]['id']
                   time_point = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(id: tps_comparisons_rssm.timepoint_id)
-                  if time_point.nil?
+                  if time_point.blank?
                     next
                   end
                   time_point_name = time_point.timepoint_name['name'] + ' ' + time_point.timepoint_name['unit']
                   comparison = Comparison.find_by(id: tps_comparisons_rssm.comparison_id)
-                  if comparison.nil?
+                  if comparison.blank?
                     next
                   end
                   arm_names = []
@@ -584,17 +608,46 @@ class ExtractionSupplyingService
           end
         end
 
-        if evidences.empty?
+        if evidences.blank?
           return
         else
+          merged_evidences = merge_evidence_by_variable_definition(evidences)
+          merged_evidences = merged_evidences.map do |element|
+            FHIR::Evidence.new(element)
+          end
           link_info_evidence = [{
             'relation' => 'service-doc',
             'url' => 'doc/fhir/extraction.txt'
           }]
-          return create_bundle(fhir_objs=evidences, type='collection', link_info=link_info_evidence)
+          return create_bundle(fhir_objs=merged_evidences, type='collection', link_info=link_info_evidence)
         end
       end
     end
+  end
+
+  def merge_evidence_by_variable_definition(evidences)
+    grouped_evidences = evidences.group_by { |e| e['variableDefinition'].to_json }
+
+    merged_evidences = []
+
+    grouped_evidences.each do |_, group|
+      merged_resource = group.first.deep_dup
+
+      group[1..-1].each do |resource|
+        if resource['id'] && resource['statistic'] && resource['identifier']
+          merged_resource['id'] += "-#{resource['id'].split('-').last}"
+          merged_resource['statistic'] += resource['statistic']
+
+          if resource['identifier'].first && resource['identifier'].first['value']
+            merged_resource['identifier'].first['value'] += "-#{resource['identifier'].first['value'].split('/').last}"
+          end
+        end
+      end
+
+      merged_evidences << merged_resource
+    end
+
+    merged_evidences
   end
 
   def get_evidence_obj(
@@ -768,6 +821,6 @@ class ExtractionSupplyingService
       }
     end
 
-    return FHIR::Evidence.new(evidence)
+    return evidence
   end
 end
