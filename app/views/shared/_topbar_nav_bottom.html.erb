@@ -82,29 +82,29 @@
         @click.outside="project_menu = false"
       >
         <div
-          class="w-screen lg:w-auto shrink rounded-xl bg-white p-4 text-sm font-light leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5"
+          class="w-screen lg:w-auto shrink rounded-xl bg-white p-3 text-sm font-light leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5"
         >
           <a
             href="<%= edit_project_path(project) %>?page=info"
-            class="block p-2 hover:text-indigo-600"
-            :class="project_info && 'bg-srdr-primary rounded-md !text-white'"
+            class="block p-2 mb-1 rounded-md hover:bg-srdr-primary hover:text-white hover:no-underline"
+            :class="project_info && 'bg-srdr-primary !text-white'"
             >Project Info</a
           >
           <a
             href="<%= edit_project_path(project) %>?page=key_questions"
-            class="block p-2 hover:text-indigo-600"
+            class="block p-2 mb-1 rounded-md hover:bg-srdr-primary hover:text-white hover:no-underline"
             :class="key_questions && 'bg-srdr-primary rounded-md !text-white'"
             >Key Questions</a
           >
           <a
             href="<%= project_citations_path(project) %>"
-            class="block p-2 hover:text-indigo-600"
+            class="block p-2 mb-1 rounded-md hover:bg-srdr-primary hover:text-white hover:no-underline"
             :class="citation_pool && 'bg-srdr-primary rounded-md !text-white'"
             >Citations</a
           >
           <a
             href="<%= edit_project_path(project) %>?page=members_and_roles"
-            class="block p-2 hover:text-indigo-600"
+            class="block p-2 mb-1 rounded-md hover:bg-srdr-primary hover:text-white hover:no-underline"
             :class="members_and_roles && 'bg-srdr-primary rounded-md !text-white'"
             >Member(s) & Role(s)</a
           >
@@ -151,32 +151,32 @@
         @click.outside="screening_menu = false"
       >
         <div
-          class="w-screen lg:w-auto shrink rounded-xl bg-white p-4 text-sm font-light leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5"
+          class="w-screen lg:w-auto shrink rounded-xl bg-white p-3 text-sm font-light leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5"
         >
           <% if AbstractScreeningService.as_user?(current_user) %>
           <a
             href="<%= project_citation_lifecycle_management_path(project) %>"
-            class="block p-2 hover:text-indigo-600"
+            class="block p-2 mb-1 rounded-md hover:bg-srdr-primary hover:text-white hover:no-underline"
             :class="lifecycle_management && 'bg-srdr-primary rounded-md !text-white'"
             >Citation Phase Management</a
           >
           <% end %>
           <a
             href="<%= project_screening_forms_path(project) %>"
-            class="block p-2 hover:text-indigo-600"
+            class="block p-2 mb-1 rounded-md hover:bg-srdr-primary hover:text-white hover:no-underline"
             :class="screening_forms && 'bg-srdr-primary rounded-md !text-white'"
             >Screening Form Builder</a
           >
           <a
             href="<%= project_abstract_screenings_path(project) %>"
-            class="block p-2 hover:text-indigo-600"
+            class="block p-2 mb-1 rounded-md hover:bg-srdr-primary hover:text-white hover:no-underline"
             :class="abstract_screening && 'bg-srdr-primary rounded-md !text-white'"
             >Abstract Screening</a
           >
           <% if AbstractScreeningService.as_user?(current_user) %>
           <a
             href="<%= project_fulltext_screenings_path(project) %>"
-            class="block p-2 hover:text-indigo-600"
+            class="block p-2 mb-1 rounded-md hover:bg-srdr-primary hover:text-white hover:no-underline"
             :class="fulltext_screening && 'bg-srdr-primary rounded-md !text-white'"
             >Full-Text Screening</a
           >
@@ -224,23 +224,23 @@
         @click.outside="extracting_menu = false"
       >
         <div
-          class="w-screen lg:w-auto shrink rounded-xl bg-white p-4 text-sm font-light leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5"
+          class="w-screen lg:w-auto shrink rounded-xl bg-white p-3 text-sm font-light leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5"
         >
           <a
             href="<%= project_extractions_path(project) %>"
-            class="block p-2 hover:text-indigo-600"
+            class="block p-2 mb-1 rounded-md hover:bg-srdr-primary hover:text-white hover:no-underline"
             :class="extractions && 'bg-srdr-primary rounded-md !text-white'"
             >Extractions</a
           >
           <a
             href="<%= comparison_tool_project_extractions_path(project) %>"
-            class="block p-2 hover:text-indigo-600"
+            class="block p-2 mb-1 rounded-md hover:bg-srdr-primary hover:text-white hover:no-underline"
             :class="comparison_tool && 'bg-srdr-primary rounded-md !text-white'"
             >Comparison Tool</a
           >
           <a
             href="<%= project_sd_meta_data_path(project) %>"
-            class="block p-2 hover:text-indigo-600"
+            class="block p-2 mb-1 rounded-md hover:bg-srdr-primary hover:text-white hover:no-underline"
             :class="sr_360 && 'bg-srdr-primary rounded-md !text-white'"
             >SR-360</a
           >
@@ -287,17 +287,17 @@
         @click.outside="tools_menu = false"
       >
         <div
-          class="w-screen lg:w-auto shrink rounded-xl bg-white p-4 text-sm font-light leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5"
+          class="w-screen lg:w-auto shrink rounded-xl bg-white p-3 text-sm font-light leading-6 text-gray-900 shadow-lg ring-1 ring-gray-900/5"
         >
           <a
             href="<%= project_imports_path(project) %>"
-            class="block p-2 hover:text-indigo-600"
+            class="block p-2 mb-1 rounded-md hover:bg-srdr-primary hover:text-white hover:no-underline"
             :class="import_export && 'bg-srdr-primary rounded-md !text-white'"
             >Data Import & Export</a
           >
           <a
             href="<%= new_publishing_path(type: Project.to_s, id: project.id) %>"
-            class="block p-2 hover:text-indigo-600"
+            class="block p-2 mb-1 rounded-md hover:bg-srdr-primary hover:text-white hover:no-underline"
             :class="publication && 'bg-srdr-primary rounded-md !text-white'"
             >Publication</a
           >
