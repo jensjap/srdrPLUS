@@ -24,7 +24,6 @@ module ProjectsHelper
       controller_name.eql?('extractions') ||
       controller_name.eql?('extraction_forms_projects') ||
       (controller_name.eql?('citations') && action_name.eql?('index')) ||
-      (controller_name.eql?('tasks') && action_name.eql?('index')) ||
       (controller_name.eql?('questions') && (action_name.eql?('dependencies') ||
       action_name.eql?('edit'))) ||
       (controller_name.eql?('extractions_extraction_forms_projects_sections_type1s') && action_name.eql?('edit')) ||

@@ -91,6 +91,9 @@ class Project < ApplicationRecord
   has_many :mesh_descriptors_projects, dependent: :destroy
   has_many :mesh_descriptors, through: :mesh_descriptors_projects
 
+  has_many :ml_models_projects
+  has_many :ml_models, through: :ml_models_projects
+
   validates :name, presence: true
 
   accepts_nested_attributes_for :key_questions

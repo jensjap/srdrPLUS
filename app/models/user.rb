@@ -55,8 +55,6 @@ class User < ApplicationRecord
 
   has_many :approvals, dependent: :destroy, inverse_of: :user
 
-  # has_many :assignments, dependent: :destroy, inverse_of: :user
-
   has_many :degrees, through: :profile
 
   has_many :dispatches, dependent: :destroy, inverse_of: :user

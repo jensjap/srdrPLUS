@@ -246,7 +246,8 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     _build_header_index_lookup_dict_aam(header_row)
 
     data_rows.each do |row|
-      next if row[1].blank?
+      next if row[0]&.value.blank?
+      next if row[1]&.value.blank?
 
       email          = row[0]&.value
       wb_cit_ref_ids = row[1]&.value&.to_s&.split(',')&.map(&:to_i)
