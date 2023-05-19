@@ -95,7 +95,10 @@
                           stroke-width="1.5"
                           stroke="currentColor"
                           class="cursor-pointer text-red-900 w-4 h-4"
-                          @click="if (confirm(`Are you sure you want to delete '${population.name}'`)) deletePopulation(extraction_eefpst1.id, population.eefpst1r_id)"
+                          @click="if (extraction_eefpst1.populations.length < 2) {
+                            return alert('At least one population must remain.')
+                          }
+                          if (confirm(`Are you sure you want to delete '${population.name}'`)) deletePopulation(extraction_eefpst1.id, population.eefpst1r_id)"
                         >
                           <path
                             stroke-linecap="round"
@@ -174,7 +177,10 @@
                           stroke-width="1.5"
                           stroke="currentColor"
                           class="cursor-pointer text-red-900 w-4 h-4"
-                          @click="if (confirm(`Are you sure you want to delete '${timepoint.name}'`)) deleteTimepoint(extraction_eefpst1.id, timepoint.eefpst1r_id, timepoint.eefpst1rc_id)"
+                          @click="if (extraction_eefpst1.timepoints.length < 2) {
+                            return alert('At least one timepoint must remain')
+                          }
+                          if (confirm(`Are you sure you want to delete '${timepoint.name}'`)) deleteTimepoint(extraction_eefpst1.id, timepoint.eefpst1r_id, timepoint.eefpst1rc_id)"
                         >
                           <path
                             stroke-linecap="round"
