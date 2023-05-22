@@ -17,63 +17,26 @@
     <%= simple_form_for([action_name == 'edit' ? nil : @project, @abstract_screening]) do |f| %>
     <div
       class="mt-8 relative"
-      x-data="{ pns: 'abstract_screening', cns: 'abstract_screening_type', customInput: false, open: false , defOpen: false}"
+      x-data="{ pns: 'abstract_screening', cns: 'abstract_screening_type', customInput: false, open: false , exportDefinitionModal: false}"
     >
       <div class="flex items-center">
-        <div @click="defOpen = !defOpen" class="cursor-pointer">Abstract Screening Type <i class='fi-info' style="color:#28b0f3;font-size:20px;"></i></div>
-        &nbsp&nbsp(<a href="/projects/<%= @project.id %>/edit?page=members_and_roles" target="_blank" class="ml-1 mr-1 text-blue-600">Who are my Experts?</a>)
-      </div>
-      <div x-show="defOpen" x-init="defOpen=false" class="fixed inset-0 flex items-center justify-center z-50" @click="defOpen = false">
-        <div class="absolute inset-0 bg-black opacity-50"></div>
-        <div @click.stop class="bg-white border p-4 mt-2 shadow-lg rounded w-3/5" style="z-index: 100;">
-          <table class="divide-y divide-gray-200 table-fixed">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">Screening Type</th>
-                <th class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider">Screening Type Details and Description</th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">Perpetual (Single)</td>
-                <td class="px-6 py-4 whitespace-wrap">Continue screening until citation pool is exhausted. 1 label is required to determine status of citation as included, excluded or in conflict. A 'maybe' label is treated as in conflict and requires conflict resolution.</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">Perpetual (Double)</td>
-                <td class="px-6 py-4 whitespace-wrap">Continue screening until citation pool is exhausted. 2 labels are required to determine status of citation as included, excluded or in conflict. 2 'maybe' labels are treated as in conflict and require conflict resolution.</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">Perpetual (Expert Needed)</td>
-                <td class="px-6 py-4 whitespace-wrap">Continue screening until citation pool is exhausted. 2 labels are required to determine status of citation as included, excluded or in conflict. At least 1 Expert label must be provided (two are permitted). 2 'maybe' labels are treated as in conflict and require conflict resolution.</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">Perpetual (Only Mixed with Expert)</td>
-                <td class="px-6 py-4 whitespace-wrap">Continue screening until citation pool is exhausted. 2 labels are required to determine status of citation as included, excluded or in conflict. Exactly 1 Expert label and 1 Novice label are desired. 2 Expert or 2 Novice labels are not desired. 2 'maybe' labels are treated as in conflict and require conflict resolution.</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">Fixed N Size (Single)</td>
-                <td class="px-6 py-4 whitespace-wrap">Continue screening until N citations are labeled. 1 label is required to determine status of citation as included, excluded or in conflict. A 'maybe' label is treated as in conflict and requires conflict resolution.</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">Fixed N Size (Double)</td>
-                <td class="px-6 py-4 whitespace-wrap">Continue screening until N citations are labeled. 2 labels are required to determine status of citation as included, excluded or in conflict. 2 'maybe' labels are treated as in conflict and require conflict resolution.</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">Fixed N Size (Expert Needed)</td>
-                <td class="px-6 py-4 whitespace-wrap">Continue screening until N citations are labeled. 2 labels are required to determine status of citation as included, excluded or in conflict. At least 1 Expert label must be provided (two are permitted). 2 'maybe' labels are treated as in conflict and require conflict resolution.</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">Fixed N Size (Only Mixed with Expert)</td>
-                <td class="px-6 py-4 whitespace-wrap">Continue screening until N citations are labeled. 2 labels are required to determine status of citation as included, excluded or in conflict. Exactly 1 Expert label and 1 Novice label are desired. 2 Expert or 2 Novice labels are not desired. 2 'maybe' labels are treated as in conflict and require conflict resolution.</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-4 whitespace-nowrap">Pilot</td>
-                <td class="px-6 py-4 whitespace-wrap">Continue screening until N citations are labeled. Every participant in this Abstract Screening will provide a label.</td>
-              </tr>
-            </tbody>
-          </table>
+        <div>
+          Abstract Screening Type
+          <i
+            class="fi-info cursor-pointer"
+            @click="exportDefinitionModal = true"
+            style="color: #28b0f3; font-size: 20px"
+          ></i>
         </div>
+        &nbsp&nbsp(<a
+          href="/projects/<%= @project.id %>/edit?page=members_and_roles"
+          target="_blank"
+          class="ml-1 mr-1 text-blue-600"
+          >Who are my Experts?</a
+        >)
       </div>
+      <!-- prettier-ignore -->
+      <%= render 'expert_definitions' %>
       <%= render 'components/single_select' %>
     </div>
 

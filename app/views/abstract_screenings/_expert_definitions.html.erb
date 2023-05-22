@@ -1,0 +1,125 @@
+<div
+  x-cloak
+  x-show="exportDefinitionModal"
+  x-transition:enter="ease-out duration-300"
+  x-transition:enter-start="opacity-0"
+  x-transition:enter-end="opacity-100"
+  x-transition:leave="ease-in duration-200"
+  x-transition:leave-start="opacity-100"
+  x-transition:leave-end="opacity-0"
+  class="fixed inset-0 flex items-center justify-center z-50"
+>
+  <div class="absolute inset-0 bg-black opacity-50"></div>
+  <div
+    class="bg-white border p-8 shadow-lg rounded w-5/6 max-h-[83.333333%] overflow-y-auto z-50"
+    @click.outside="exportDefinitionModal = false"
+  >
+    <table>
+      <thead class="bg-gray-50">
+        <tr>
+          <th
+            class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider"
+          >
+            Screening Type
+          </th>
+          <th
+            class="px-6 py-3 text-left text-xs text-gray-500 uppercase tracking-wider"
+          >
+            Screening Type Details and Description
+          </th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">Perpetual (Single)</td>
+          <td class="px-6 py-4 whitespace-wrap">
+            Continue screening until citation pool is exhausted. 1 label is
+            required to determine status of citation as included, excluded or in
+            conflict. A 'maybe' label is treated as in conflict and requires
+            conflict resolution.
+          </td>
+        </tr>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">Perpetual (Double)</td>
+          <td class="px-6 py-4 whitespace-wrap">
+            Continue screening until citation pool is exhausted. 2 labels are
+            required to determine status of citation as included, excluded or in
+            conflict. 2 'maybe' labels are treated as in conflict and require
+            conflict resolution.
+          </td>
+        </tr>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">Perpetual (Expert Needed)</td>
+          <td class="px-6 py-4 whitespace-wrap">
+            Continue screening until citation pool is exhausted. 2 labels are
+            required to determine status of citation as included, excluded or in
+            conflict. At least 1 Expert label must be provided (two are
+            permitted). 2 'maybe' labels are treated as in conflict and require
+            conflict resolution.
+          </td>
+        </tr>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">
+            Perpetual (Only Mixed with Expert)
+          </td>
+          <td class="px-6 py-4 whitespace-wrap">
+            Continue screening until citation pool is exhausted. 2 labels are
+            required to determine status of citation as included, excluded or in
+            conflict. Exactly 1 Expert label and 1 Novice label are desired. 2
+            Expert or 2 Novice labels are not desired. 2 'maybe' labels are
+            treated as in conflict and require conflict resolution.
+          </td>
+        </tr>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">Fixed N Size (Single)</td>
+          <td class="px-6 py-4 whitespace-wrap">
+            Continue screening until N citations are labeled. 1 label is
+            required to determine status of citation as included, excluded or in
+            conflict. A 'maybe' label is treated as in conflict and requires
+            conflict resolution.
+          </td>
+        </tr>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">Fixed N Size (Double)</td>
+          <td class="px-6 py-4 whitespace-wrap">
+            Continue screening until N citations are labeled. 2 labels are
+            required to determine status of citation as included, excluded or in
+            conflict. 2 'maybe' labels are treated as in conflict and require
+            conflict resolution.
+          </td>
+        </tr>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">
+            Fixed N Size (Expert Needed)
+          </td>
+          <td class="px-6 py-4 whitespace-wrap">
+            Continue screening until N citations are labeled. 2 labels are
+            required to determine status of citation as included, excluded or in
+            conflict. At least 1 Expert label must be provided (two are
+            permitted). 2 'maybe' labels are treated as in conflict and require
+            conflict resolution.
+          </td>
+        </tr>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">
+            Fixed N Size (Only Mixed with Expert)
+          </td>
+          <td class="px-6 py-4 whitespace-wrap">
+            Continue screening until N citations are labeled. 2 labels are
+            required to determine status of citation as included, excluded or in
+            conflict. Exactly 1 Expert label and 1 Novice label are desired. 2
+            Expert or 2 Novice labels are not desired. 2 'maybe' labels are
+            treated as in conflict and require conflict resolution.
+          </td>
+        </tr>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">Pilot</td>
+          <td class="px-6 py-4 whitespace-wrap">
+            Continue screening until N citations are labeled. Every participant
+            in this Abstract Screening will provide a label.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
