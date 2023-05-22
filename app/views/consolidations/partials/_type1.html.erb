@@ -224,17 +224,29 @@
     </table>
   </div>
   <div class="mt-6">
-    <h3 class="text-base font-bold">
-      Add
-      <span x-text="mh?.current_citations_project?.section_name"></span>
-      to Consolidated Extraction
-      <button
-        class="cursor-pointer p-1 my-1 bg-srdrpurple text-xs text-white"
-        @click="suggestions_modal = true"
-      >
-        Suggested
+    <h3 class="text-base font-bold flex justify-between">
+      <div>
+        Add
         <span x-text="mh?.current_citations_project?.section_name"></span>
-      </button>
+        to Consolidated Extraction
+        <button
+          class="cursor-pointer p-1 my-1 bg-srdrpurple text-xs text-white"
+          @click="suggestions_modal = true"
+        >
+          Suggested
+          <span x-text="mh?.current_citations_project?.section_name"></span>
+        </button>
+      </div>
+      <template x-if="isOutcome()">
+        <div>
+          <button
+            class="cursor-pointer p-1 my-1 bg-orange-700 text-xs text-white"
+            @click="autoConsolidateOutcomes()"
+          >
+            Auto Consolidate
+          </button>
+        </div>
+      </template>
     </h3>
 
     <div class="border-2 rounded-md p-2">
