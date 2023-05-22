@@ -630,7 +630,8 @@
                 current_section_eefpst1.description,
                 current_section_eefpst1.type1_type_name === "Categorical"
                   ? 1
-                  : 2
+                  : 2,
+                true
               );
             }
           }
@@ -707,13 +708,34 @@
         this.type1_change_modal = false;
       },
 
-      async createArm(eefps_id, name, description, new_eefpst1_type_id = null) {
+      async createArm(
+        eefps_id,
+        name,
+        description,
+        new_eefpst1_type_id = null,
+        autoConsolidation = false
+      ) {
         if (name.trim() === "") {
           toastr.error("Name/ domain cannot be blank", null, {
             timeOut: 1000,
           });
           return;
         }
+        if (autoConsolidation) {
+          this.populations = [
+            {
+              name: "All Participants",
+              description: "All patients enrolled in this study.",
+            },
+          ];
+          this.timepoints = [
+            {
+              name: "Baseline",
+              unit: "",
+            },
+          ];
+        }
+
         const params = {
           extractions_extraction_forms_projects_section: {
             extractions_extraction_forms_projects_sections_type1s_attributes: {
