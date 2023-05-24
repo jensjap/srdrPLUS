@@ -34,7 +34,8 @@ class ExtractionSupplyingService
         end
       end
     end
-    for extraction_section in extraction_sections do
+    for extraction_section in [extraction_sections[7]] do
+      return create_fhir_obj(extraction_section)
       fhir_extraction_sections.append(create_fhir_obj(extraction_section))
     end
 
@@ -340,27 +341,14 @@ class ExtractionSupplyingService
                 for result_statistic_sections_measure in result_statistic_sections[sec_num].result_statistic_sections_measures do
                   measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
                   for tps_arms_rssm in result_statistic_sections_measure.tps_arms_rssms do
-                    record = tps_arms_rssm.records[0]
-                    if record.blank?
-                      next
-                    else
-                      if record['name'].blank?
-                        next
-                      else
-                        record = record['name']
-                      end
-                    end
-                    record_id = tps_arms_rssm.records[0]['id']
-                    time_point = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(id: tps_arms_rssm.timepoint_id)
-                    if time_point.blank?
-                      next
-                    end
-                    time_point_name = time_point.timepoint_name['name'] + ' ' + time_point.timepoint_name['unit']
-                    arm = ExtractionsExtractionFormsProjectsSectionsType1.find_by(id: tps_arms_rssm.extractions_extraction_forms_projects_sections_type1_id)
-                    if arm.blank?
-                      next
-                    end
-                    arm_name = Type1.find(arm.type1_id)['name']
+                    record, record_id = get_record_and_id(tps_arms_rssm)
+                    next if record.nil?
+
+                    time_point_name = get_time_point_name(tps_arms_rssm.timepoint_id)
+                    next if time_point_name.nil?
+
+                    arm_name = get_arm_name(tps_arms_rssm.extractions_extraction_forms_projects_sections_type1_id)
+                    next if arm_name.nil?
 
                     evidence = get_evidence_obj(
                       record_id,
@@ -380,30 +368,24 @@ class ExtractionSupplyingService
                 for result_statistic_sections_measure in result_statistic_sections[sec_num].result_statistic_sections_measures do
                   measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
                   for tps_comparisons_rssm in result_statistic_sections_measure.tps_comparisons_rssms do
-                    record = tps_comparisons_rssm.records[0]
-                    if record.blank?
-                      next
-                    else
-                      if record['name'].blank?
-                        next
-                      else
-                        record = record['name']
-                      end
-                    end
-                    record_id = tps_comparisons_rssm.records[0]['id']
-                    time_point = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(id: tps_comparisons_rssm.timepoint_id)
-                    if time_point.blank?
-                      next
-                    end
-                    time_point_name = time_point.timepoint_name['name'] + ' ' + time_point.timepoint_name['unit']
+                    record, record_id = get_record_and_id(tps_comparisons_rssm)
+                    next if record.nil?
+
+                    time_point_name = get_time_point_name(tps_comparisons_rssm.timepoint_id)
+                    next if time_point_name.nil?
+
                     comparison = Comparison.find_by(id: tps_comparisons_rssm.comparison_id)
-                    if comparison.blank?
-                      next
-                    end
+                    next if comparison.blank?
+
                     arm_names = []
                     for comparate_group in comparison.comparate_groups do
                       comparable_elements = comparate_group.comparable_elements
-                      arm_names.append(Type1.find(ExtractionsExtractionFormsProjectsSectionsType1.find(comparable_elements[0].comparable_id).type1_id)['name'])
+                      arm_name_in_same_comparate_group = []
+                      for comparable_element in comparable_elements do
+                        arm_name = get_arm_name(comparable_element.comparable_id)
+                        arm_name_in_same_comparate_group.append(arm_name)
+                      end
+                      arm_names.append(arm_name_in_same_comparate_group)
                     end
 
                     evidence = get_evidence_obj(
@@ -424,33 +406,21 @@ class ExtractionSupplyingService
                 for result_statistic_sections_measure in result_statistic_sections[sec_num].result_statistic_sections_measures do
                   measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
                   for comparisons_arms_rssm in result_statistic_sections_measure.comparisons_arms_rssms do
-                    record = comparisons_arms_rssm.records[0]
-                    if record.blank?
-                      next
-                    else
-                      if record['name'].blank?
-                        next
-                      else
-                        record = record['name']
-                      end
-                    end
-                    record_id = comparisons_arms_rssm.records[0]['id']
+                    record, record_id = get_record_and_id(comparisons_arms_rssm)
+                    next if record.nil?
+
                     comparison = Comparison.find_by(id: comparisons_arms_rssm.comparison_id)
-                    if comparison.blank?
-                      next
-                    end
+                    next if comparison.blank?
+
                     time_point_names = []
                     for comparate_group in comparison.comparate_groups do
                       comparable_elements = comparate_group.comparable_elements
-                      timepoint_name = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find(comparable_elements[0].comparable_id).timepoint_name
-                      time_point_name = timepoint_name['name'] + ' ' + timepoint_name['unit']
+                      time_point_name = get_time_point_name(comparable_elements[0].comparable_id)
                       time_point_names.append(time_point_name)
                     end
-                    arm = ExtractionsExtractionFormsProjectsSectionsType1.find_by(id: comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1_id)
-                    if arm.blank?
-                      next
-                    end
-                    arm_name = Type1.find(arm.type1_id)['name']
+
+                    arm_name = get_arm_name(comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1_id)
+                    next if arm_name.nil?
 
                     evidence = get_evidence_obj(
                       record_id,
@@ -470,37 +440,30 @@ class ExtractionSupplyingService
                 for result_statistic_sections_measure in result_statistic_sections[sec_num].result_statistic_sections_measures do
                   measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
                   for wacs_bacs_rssm in result_statistic_sections_measure.wacs_bacs_rssms do
-                    record = wacs_bacs_rssm.records[0]
-                    if record.blank?
-                      next
-                    else
-                      if record['name'].blank?
-                        next
-                      else
-                        record = record['name']
-                      end
-                    end
-                    record_id = wacs_bacs_rssm.records[0]['id']
+                    record, record_id = get_record_and_id(wacs_bacs_rssm)
+                    next if record.nil?
 
                     comparison_arm = Comparison.find_by(id: wacs_bacs_rssm.bac_id)
-                    if comparison_arm.blank?
-                      next
-                    end
+                    next if comparison_arm.blank?
+
                     arm_names = []
                     for comparate_group in comparison_arm.comparate_groups do
                       comparable_elements = comparate_group.comparable_elements
-                      arm_names.append(Type1.find(ExtractionsExtractionFormsProjectsSectionsType1.find(comparable_elements[0].comparable_id).type1_id)['name'])
+                      arm_name_in_same_comparate_group = []
+                      for comparable_element in comparable_elements do
+                        arm_name = get_arm_name(comparable_element.comparable_id)
+                        arm_name_in_same_comparate_group.append(arm_name)
+                      end
+                      arm_names.append(arm_name_in_same_comparate_group)
                     end
 
                     comparison_time_point = Comparison.find_by(id: wacs_bacs_rssm.wac_id)
-                    if comparison_time_point.blank?
-                      next
-                    end
+                    next if comparison_time_point.blank?
+
                     time_point_names = []
                     for comparate_group in comparison_time_point.comparate_groups do
                       comparable_elements = comparate_group.comparable_elements
-                      timepoint_name = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find(comparable_elements[0].comparable_id).timepoint_name
-                      time_point_name = timepoint_name['name'] + ' ' + timepoint_name['unit']
+                      time_point_name = get_time_point_name(comparable_elements[0].comparable_id)
                       time_point_names.append(time_point_name)
                     end
 
@@ -564,22 +527,12 @@ class ExtractionSupplyingService
               for result_statistic_sections_measure in result_statistic_sections[sec_num].result_statistic_sections_measures do
                 measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
                 for tps_comparisons_rssm in result_statistic_sections_measure.tps_comparisons_rssms do
-                  record = tps_comparisons_rssm.records[0]
-                  if record.blank?
-                    next
-                  else
-                    if record['name'].blank?
-                      next
-                    else
-                      record = record['name']
-                    end
-                  end
-                  record_id = tps_comparisons_rssm.records[0]['id']
-                  time_point = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(id: tps_comparisons_rssm.timepoint_id)
-                  if time_point.blank?
-                    next
-                  end
-                  time_point_name = time_point.timepoint_name['name'] + ' ' + time_point.timepoint_name['unit']
+                  record, record_id = get_record_and_id(tps_comparisons_rssm)
+                  next if record.nil?
+
+                  time_point_name = get_time_point_name(tps_comparisons_rssm.timepoint_id)
+                  next if time_point_name.nil?
+
                   comparison = Comparison.find_by(id: tps_comparisons_rssm.comparison_id)
                   if comparison.blank?
                     next
@@ -587,7 +540,12 @@ class ExtractionSupplyingService
                   arm_names = []
                   for comparate_group in comparison.comparate_groups do
                     comparable_elements = comparate_group.comparable_elements
-                    arm_names.append(Type1.find(ExtractionsExtractionFormsProjectsSectionsType1.find(comparable_elements[0].comparable_id).type1_id)['name'])
+                    arm_name_in_same_comparate_group = []
+                    for comparable_element in comparable_elements do
+                      arm_name = get_arm_name(comparable_element.comparable_id)
+                      arm_name_in_same_comparate_group.append(arm_name)
+                    end
+                    arm_names.append(arm_name_in_same_comparate_group)
                   end
 
                   evidence = get_evidence_obj(
@@ -625,6 +583,32 @@ class ExtractionSupplyingService
     end
   end
 
+  def get_record_and_id(rssm)
+    record = rssm.records[0]
+    return nil if record.blank?
+    return nil if record['name'].blank?
+
+    record_id = rssm.records[0]['id']
+    record = record['name']
+    return record, record_id
+  end
+
+  def get_time_point_name(timepoint_id)
+    time_point = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(id: timepoint_id)
+    return nil if time_point.blank?
+
+    time_point_name = time_point.timepoint_name['name'] + ' ' + time_point.timepoint_name['unit']
+    return time_point_name
+  end
+
+  def get_arm_name(arm_id)
+    arm = ExtractionsExtractionFormsProjectsSectionsType1.find_by(id: arm_id)
+    return nil if arm.blank?
+
+    arm_name = Type1.find(arm.type1_id)['name']
+    return arm_name
+  end
+
   def merge_evidence_by_variable_definition(evidences)
     grouped_evidences = evidences.group_by { |e| e['variableDefinition'].to_json }
 
@@ -654,7 +638,7 @@ class ExtractionSupplyingService
     record_id,
     outcome_status,
     population_name,
-    arm_names,
+    arm_name_groups,
     outcome_name,
     time_point_names,
     record,
@@ -689,31 +673,53 @@ class ExtractionSupplyingService
       }]
     }
 
-    for arm_name in arm_names do
+    arm_name_variableRoles = ['exposure', 'referenceExposure']
+    if arm_name_groups.length == 1
       variable_definition = {
-        'description' => arm_name,
+        'description' => arm_name_groups[0],
         'variableRole' => {
           'coding' => [{
             'system' => 'http://terminology.hl7.org/CodeSystem/variable-role',
-            'code' => 'exposure'
+            'code' => arm_name_variableRoles[0]
           }]
         }
       }
+
       evidence['variableDefinition'].append(variable_definition)
+    else
+      arm_name_groups.each_with_index do |arm_name_group, index|
+        arm_name_group.each do |arm_name|
+          variable_definition = {
+            'description' => arm_name,
+            'variableRole' => {
+              'coding' => [{
+                'system' => 'http://terminology.hl7.org/CodeSystem/variable-role',
+                'code' => arm_name_variableRoles[index]
+              }]
+            }
+          }
+
+          evidence['variableDefinition'].append(variable_definition)
+        end
+      end
     end
 
-    for time_point_name in time_point_names do
-      variable_definition = {
-        'description' => outcome_name + ', ' + time_point_name,
-        'variableRole' => {
-          'coding' => [{
-            'system' => 'http://terminology.hl7.org/CodeSystem/variable-role',
-            'code' => 'measuredVariable'
-          }]
-        }
-      }
-      evidence['variableDefinition'].append(variable_definition)
+    time_point_description = outcome_name
+    if time_point_names.size == 1
+      time_point_description += ', ' + time_point_names[0]
+    elsif time_point_names.size == 2
+      time_point_description += ', ' + time_point_names[0] + ' - ' + time_point_names[1]
     end
+    variable_definition = {
+      'description' => time_point_description,
+      'variableRole' => {
+        'coding' => [{
+          'system' => 'http://terminology.hl7.org/CodeSystem/variable-role',
+          'code' => 'measuredVariable'
+        }]
+      }
+    }
+    evidence['variableDefinition'].append(variable_definition)
 
     if measure_name == 'Total (N analyzed)'
       evidence['statistic'][0]['statisticType'] = {
@@ -818,6 +824,10 @@ class ExtractionSupplyingService
           'code' => '0000424',
           'display' => 'Risk Difference'
         }]
+      }
+    else
+      evidence['statistic'][0]['statisticType'] = {
+        'text' => measure_name
       }
     end
 
