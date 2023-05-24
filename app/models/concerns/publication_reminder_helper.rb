@@ -36,15 +36,13 @@ module PublicationReminderHelper
     # 2. Neither the Project nor the youngest Extraction has been edited in the last 6 months
     def projects_of_concern
       Extraction
-        .select('project_id')
-        .group('project_id')
-        .having('count(*) > ?', 4)
+        .select('project_id').group('project_id').having('count(*) > ?', 4)
         .map { |group| Project.find(group.project_id) }
-        .select { |project|
-          project.extractions.none? do |extraction|
-            extraction.updated_at > 6.months.ago
-          end && !project.public?
-        }
+        .select do |project|
+          project.extractions.all? do |extraction|
+            extraction.updated_at < 6.months.ago
+          end && !project.public? && project.updated_at < 6.months.ago
+        end
     end
   end
 end
