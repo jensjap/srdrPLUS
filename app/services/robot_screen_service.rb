@@ -64,22 +64,32 @@ class RobotScreenService
 
     data_0 = all_data.select { |data| data['label'] == '0' }
     data_1 = all_data.select { |data| data['label'] == '1' }
+
     train_size_0 = [(data_0.size * (x / 100.0)).round, 1].max
     train_size_1 = [(data_1.size * (x / 100.0)).round, 1].max
+
     train_data = data_0.take(train_size_0) + data_1.take(train_size_1)
     predict_data = data_0.drop(train_size_0) + data_1.drop(train_size_1)
 
     train_url = "#{@url}/train/#{@method}/#{@project_id}"
     train_response_hash = send_post_request(train_url, { labeled_data: train_data })
+  
     return "Failed (message: #{train_response_hash['message']})" unless train_response_hash['success']
+  
     timestamp = train_response_hash['timestamp']
-    @project.ml_models.create(timestamp: timestamp)
+    ml_model = @project.ml_models.create(timestamp: timestamp)
 
     predict_url = "#{@url}/predict/#{@method}/#{@project_id}"
     predict_response_hash = send_post_request(predict_url, { input_citations: predict_data, timestamp: timestamp })
+
     predictions = predict_response_hash['predictions']
-    ml_model = @project.ml_models.find_by(timestamp: timestamp)
+
     human_labels = predict_data.map { |data| data['label'] }
-    [human_labels, predictions]
+  
+    human_labels.zip(predictions).each do |label, prediction|
+      ml_model.model_performances.create(label: label, score: prediction)
+    end
+
+    "Training complete (model timestamp: #{timestamp})"
   end
 end
