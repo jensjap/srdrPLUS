@@ -6,60 +6,90 @@ class RobotScreenService
     @method = method
   end
 
-  def train
-    data = MachineLearningDataSupplyingService.get_labeled_abstract(@project_id)
-    train_url = "#{@url}/train/#{@method}/#{@project_id}"
-
+  def send_post_request(url, body)
     res = HTTParty.post(
-      train_url,
+      url,
       {
-        body: { labeled_data: data }.to_json,
+        body: body.to_json,
         headers: { 'Content-Type' => 'application/json', 'Accept': 'application/json' },
         timeout: 300
       }
     )
+    JSON.parse(res.body)
+  end
 
-    response_hash = JSON.parse(res.body)
+  def check_labels(data)
+    labels = data.map { |item| item['label'] }.uniq
+    labels.include?('0') && labels.include?('1')
+  end
+
+  def train
+    data = MachineLearningDataSupplyingService.get_labeled_abstract(@project_id)
+
+    return "Failed (message: The training data must contain both '0' and '1' labels)" unless check_labels(data)
+
+    train_url = "#{@url}/train/#{@method}/#{@project_id}"
+    response_hash = send_post_request(train_url, { labeled_data: data })
+
     if response_hash['success']
       timestamp = response_hash['timestamp']
-      @project.ml_models.create(timestamp:)
-      # ml_model = MlModel.new(project_id: @project_id, timestamp: timestamp)
-      # ml_model.save
+      @project.ml_models.create(timestamp: timestamp)
       "Training complete (model timestamp: #{timestamp})"
     else
-      message = response_hash['message']
-      "Failed (message: #{message})"
+      "Failed (message: #{response_hash['message']})"
     end
   end
 
   def predict(timestamp)
     data = MachineLearningDataSupplyingService.get_unlabel_abstract(@project_id)
+
     predict_url = "#{@url}/predict/#{@method}/#{@project_id}"
-
-    res = HTTParty.post(
-      predict_url,
-      {
-        body: { input_citations: data, timestamp: }.to_json,
-        headers: { 'Content-Type' => 'application/json', 'Accept': 'application/json' },
-        timeout: 300
-      }
-    )
-
-    response_hash = JSON.parse(res.body)
+    response_hash = send_post_request(predict_url, { input_citations: data, timestamp: timestamp })
     predictions = response_hash['predictions']
-
-    ml_model = @project.ml_models.find_by(timestamp:)
+    ml_model = @project.ml_models.find_by(timestamp: timestamp)
 
     data.each_with_index do |citation, index|
       citation_id = citation['citation_id']
       score = predictions[index]
-
-      citations_project = CitationsProject.find_by(citation_id:, project_id: @project_id)
-
-      ml_prediction = MlPrediction.new(citations_project_id: citations_project.id, ml_model_id: ml_model.id, score:)
+      citations_project = CitationsProject.find_by(citation_id: citation_id, project_id: @project_id)
+      ml_prediction = MlPrediction.new(citations_project_id: citations_project.id, ml_model_id: ml_model.id, score: score)
       ml_prediction.save
     end
-
     'Predictions saved'
+  end
+
+  def partial_train_and_predict(x)
+    all_data = MachineLearningDataSupplyingService.get_labeled_abstract(@project_id)
+    return "Failed (message: The training data must contain both '0' and '1' labels)" unless check_labels(all_data)
+
+    data_0 = all_data.select { |data| data['label'] == '0' }
+    data_1 = all_data.select { |data| data['label'] == '1' }
+
+    train_size_0 = [(data_0.size * (x / 100.0)).round, 1].max
+    train_size_1 = [(data_1.size * (x / 100.0)).round, 1].max
+
+    train_data = data_0.take(train_size_0) + data_1.take(train_size_1)
+    predict_data = data_0.drop(train_size_0) + data_1.drop(train_size_1)
+
+    train_url = "#{@url}/train/#{@method}/#{@project_id}"
+    train_response_hash = send_post_request(train_url, { labeled_data: train_data })
+  
+    return "Failed (message: #{train_response_hash['message']})" unless train_response_hash['success']
+  
+    timestamp = train_response_hash['timestamp']
+    ml_model = @project.ml_models.create(timestamp: timestamp)
+
+    predict_url = "#{@url}/predict/#{@method}/#{@project_id}"
+    predict_response_hash = send_post_request(predict_url, { input_citations: predict_data, timestamp: timestamp })
+
+    predictions = predict_response_hash['predictions']
+
+    human_labels = predict_data.map { |data| data['label'] }
+  
+    human_labels.zip(predictions).each do |label, prediction|
+      ml_model.model_performances.create(label: label, score: prediction)
+    end
+
+    "Training complete (model timestamp: #{timestamp})"
   end
 end
