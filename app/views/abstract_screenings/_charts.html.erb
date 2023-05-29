@@ -1,0 +1,253 @@
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6"></script>
+<script src="/chart-tools.js"></script>
+
+<div class="flex flex-wrap lg:flex-nowrap" x-data="screening_charts">
+  <div class="w-full p-1 flex flex-col items-center justify-start">
+    <svg class="p-1" id="accepted-donut"></svg>
+    <svg class="p-1" id="accepted-barchart"></svg>
+    <div class="p-1 w-full flex items-center justify-around">
+      <input
+        style="border: none; box-shadow: none; border-bottom: 1px solid black"
+        disabled
+        value="2"
+        type="text"
+        class="!text-xs !w-1/3 !bg-transparent text-center"
+      />
+      <div>of</div>
+      <input
+        style="border: none; box-shadow: none; border-bottom: 1px solid black"
+        disabled
+        value="2"
+        type="text"
+        class="!text-xs !w-1/3 !bg-transparent text-center"
+      />
+    </div>
+    <!-- <div
+      class="text-xs p-1 w-full flex items-center justify-center text-green-700 font-bold"
+    >
+      Citations Accepted
+    </div> -->
+  </div>
+  <div class="w-full p-1 flex flex-col items-center justify-start">
+    <svg class="p-1" id="rejected-donut"></svg>
+    <svg class="p-1" id="rejected-barchart"></svg>
+    <div class="p-1 w-full flex items-center justify-around">
+      <input
+        style="border: none; box-shadow: none; border-bottom: 1px solid black"
+        disabled
+        value="2"
+        type="text"
+        class="!text-xs !w-1/3 !bg-transparent text-center"
+      />
+      <div>of</div>
+      <input
+        style="border: none; box-shadow: none; border-bottom: 1px solid black"
+        disabled
+        value="2"
+        type="text"
+        class="!text-xs !w-1/3 !bg-transparent text-center"
+      />
+    </div>
+    <!-- <div
+      class="text-xs p-1 w-full flex items-center justify-center text-red-700 font-bold"
+    >
+      Citations Rejected
+    </div> -->
+  </div>
+  <div
+    class="w-full p-1 bg-purple-50 flex flex-col items-center justify-start rounded-md"
+    x-init="mintrigger(); maxtrigger()"
+  >
+    <svg class="p-1" id="labels-donut"></svg>
+    <svg class="p-1" id="labels-barchart"></svg>
+    <div class="p-1 w-full flex items-center justify-around">
+      <input
+        style="border: none; box-shadow: none; border-bottom: 1px solid black"
+        disabled
+        value="2"
+        type="text"
+        class="!text-xs !w-1/3 !bg-transparent text-center"
+      />
+      <div>of</div>
+      <input
+        style="border: none; box-shadow: none; border-bottom: 1px solid black"
+        disabled
+        value="2"
+        type="text"
+        class="!text-xs !w-1/3 !bg-transparent text-center"
+      />
+    </div>
+    <div
+      class="text-xs p-1 w-full flex items-center justify-center text-black-700 font-bold"
+    >
+      Citations Unscreened
+    </div>
+    <div class="p-1 w-full flex items-center justify-around">
+      <input
+        value="2"
+        type="text"
+        class="!text-xs !w-1/3 !bg-transparent text-center"
+        x-on:input="mintrigger"
+        x-model="minprice"
+      />
+      <div>to</div>
+      <input
+        value="2"
+        type="text"
+        class="!text-xs !w-1/3 !bg-transparent text-center"
+        x-on:input="maxtrigger"
+        x-model="maxprice"
+      />
+    </div>
+    <div
+      class="text-xs p-1 w-full flex items-center justify-center text-black-700 font-bold"
+    >
+      % Certainty
+    </div>
+    <div
+      class="p-1 px-8 w-full flex items-center justify-center text-black-700 font-bold"
+    >
+      <style>
+        input[type="range"]::-webkit-slider-thumb {
+          pointer-events: all;
+          width: 24px;
+          height: 24px;
+          -webkit-appearance: none;
+        }
+      </style>
+      <div class="relative max-w-xl w-full">
+        <div>
+          <input
+            style="
+              border: none;
+              box-shadow: none;
+              border-bottom: 1px solid black;
+            "
+            type="range"
+            step="1"
+            x-bind:min="min"
+            x-bind:max="max"
+            x-on:input="mintrigger"
+            x-model="minprice"
+            class="absolute pointer-events-none appearance-none z-20 h-2 w-full opacity-0 cursor-pointer"
+          />
+
+          <input
+            style="
+              border: none;
+              box-shadow: none;
+              border-bottom: 1px solid black;
+            "
+            type="range"
+            step="1"
+            x-bind:min="min"
+            x-bind:max="max"
+            x-on:input="maxtrigger"
+            x-model="maxprice"
+            class="absolute pointer-events-none appearance-none z-20 h-2 w-full opacity-0 cursor-pointer"
+          />
+
+          <div class="relative z-10 h-2">
+            <div
+              class="absolute z-10 left-0 right-0 bottom-0 top-0 rounded-md bg-gray-200"
+            ></div>
+
+            <div
+              class="absolute z-20 top-0 bottom-0 rounded-md bg-purple-800"
+              x-bind:style="'right:'+maxthumb+'%; left:'+minthumb+'%'"
+            ></div>
+
+            <div
+              class="absolute z-30 w-6 h-6 top-0 left-0 bg-purple-800 rounded-full -mt-2 -ml-1"
+              x-bind:style="'left: '+minthumb+'%'"
+            ></div>
+
+            <div
+              class="absolute z-30 w-6 h-6 top-0 right-0 bg-purple-800 rounded-full -mt-2 -mr-3"
+              x-bind:style="'right: '+maxthumb+'%'"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("screening_charts", () => ({
+      donutLabels: [
+        { name: "Accepted", value: 0.3 },
+        { name: "Rejected", value: 0.5 },
+        { name: "Unlabeled", value: 0.2 },
+      ],
+      barLabels: [
+        { frequency: "2", "certainty in %": 0.1 },
+        { frequency: "3", "certainty in %": 0.2 },
+        { frequency: "2", "certainty in %": 0.3 },
+        { frequency: "1", "certainty in %": 0.4 },
+        { frequency: "5", "certainty in %": 0.6 },
+        { frequency: "4", "certainty in %": 0.7 },
+        { frequency: "1", "certainty in %": 0.8 },
+        { frequency: "2", "certainty in %": 0.9 },
+      ],
+
+      minprice: 0,
+      maxprice: 100,
+      min: 0,
+      max: 100,
+      minthumb: 0,
+      maxthumb: 0,
+
+      init() {
+        this.renderCharts();
+      },
+
+      mintrigger() {
+        this.minprice = Math.min(this.minprice, this.maxprice - 1);
+        this.minthumb =
+          ((this.minprice - this.min) / (this.max - this.min)) * 100;
+      },
+
+      maxtrigger() {
+        this.maxprice = Math.max(this.maxprice, this.minprice + 1);
+        this.maxthumb =
+          100 - ((this.maxprice - this.min) / (this.max - this.min)) * 100;
+      },
+
+      renderCharts() {
+        DonutChart("#accepted-donut", this.donutLabels, {
+          name: (d) => d.name,
+          value: (d) => d.value,
+          colors: [
+            "rgba(0, 200, 0, 1)",
+            "rgba(255, 0, 0, 0.05)",
+            "rgba(255, 255, 255, 0.05)",
+          ],
+        });
+        DonutChart("#rejected-donut", this.donutLabels, {
+          name: (d) => d.name,
+          value: (d) => d.value,
+          colors: [
+            "rgba(0, 255, 0, 0.05)",
+            "rgba(200, 0, 0, 1)",
+            "rgba(255, 255, 255, 0.05)",
+          ],
+        });
+        DonutChart("#labels-donut", this.donutLabels, {
+          name: (d) => d.name,
+          value: (d) => d.value,
+          colors: [
+            "rgba(0, 255, 0, 0.05)",
+            "rgba(255, 0, 0, 0.05)",
+            "rgba(150, 150, 150, 1)",
+          ],
+        });
+
+        BarChart("#accepted-barchart", this.barLabels, 150);
+        BarChart("#rejected-barchart", this.barLabels, 150);
+        BarChart("#labels-barchart", this.barLabels, 150);
+      },
+    }));
+  });
+</script>
