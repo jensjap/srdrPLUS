@@ -45,7 +45,10 @@
         type="number"
         class="!text-xs !w-1/3 !bg-transparent text-center"
         x-on:input="mintrigger"
-        x-model="minprice"
+        x-model="mincertainty"
+        min="0"
+        max="99"
+        onkeyup="if(value<0) value=0;"
       />
       <div>to</div>
       <input
@@ -53,7 +56,9 @@
         type="number"
         class="!text-xs !w-1/3 !bg-transparent text-center"
         x-on:input="maxtrigger"
-        x-model="maxprice"
+        x-model="maxcertainty"
+        min="1"
+        max="100"
       />
     </div>
     <div
@@ -80,7 +85,7 @@
             x-bind:min="min"
             x-bind:max="max"
             x-on:input="mintrigger"
-            x-model="minprice"
+            x-model="mincertainty"
             class="absolute pointer-events-none appearance-none z-20 h-2 w-full opacity-0 cursor-pointer"
           />
 
@@ -95,7 +100,7 @@
             x-bind:min="min"
             x-bind:max="max"
             x-on:input="maxtrigger"
-            x-model="maxprice"
+            x-model="maxcertainty"
             class="absolute pointer-events-none appearance-none z-20 h-2 w-full opacity-0 cursor-pointer"
           />
 
@@ -224,27 +229,27 @@
 <script>
   document.addEventListener("alpine:init", () => {
     Alpine.data("screening_charts", () => ({
-      minprice: 30,
-      maxprice: 70,
+      mincertainty: 30,
+      maxcertainty: 70,
       min: 0,
       max: 100,
       minthumb: 0,
-      maxthumb: 0,
+      maxthumb: 100,
 
       init() {
         this.renderCharts();
       },
 
       mintrigger() {
-        this.minprice = Math.min(this.minprice, this.maxprice - 1);
+        this.mincertainty = Math.min(this.mincertainty, this.maxcertainty - 1);
         this.minthumb =
-          ((this.minprice - this.min) / (this.max - this.min)) * 100;
+          ((this.mincertainty - this.min) / (this.max - this.min)) * 100;
       },
 
       maxtrigger() {
-        this.maxprice = Math.max(this.maxprice, this.minprice + 1);
+        this.maxcertainty = Math.max(this.maxcertainty, this.mincertainty + 1);
         this.maxthumb =
-          100 - ((this.maxprice - this.min) / (this.max - this.min)) * 100;
+          100 - ((this.maxcertainty - this.min) / (this.max - this.min)) * 100;
       },
 
       renderCharts() {
@@ -257,7 +262,9 @@
       },
 
       donutChart(id) {
-        const myChart = echarts.init(document.getElementById(id));
+        const myChart = echarts.init(document.getElementById(id), null, {
+          renderer: "svg",
+        });
         const option = {
           grid: {
             left: 0,
@@ -316,7 +323,9 @@
       },
 
       barChart(id) {
-        const myChart = echarts.init(document.getElementById(id));
+        const myChart = echarts.init(document.getElementById(id), null, {
+          renderer: "svg",
+        });
         // Specify the configuration items and data for the chart
         const option = {
           grid: {
