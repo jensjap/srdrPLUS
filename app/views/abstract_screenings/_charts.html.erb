@@ -6,50 +6,10 @@
   <div class="w-full p-1 flex flex-col items-center justify-start">
     <svg class="p-1" id="accepted-donut"></svg>
     <svg class="p-1" id="accepted-barchart"></svg>
-    <div class="p-1 w-full flex items-center justify-around">
-      <input
-        style="border: none; box-shadow: none; border-bottom: 1px solid black"
-        disabled
-        value="2"
-        type="text"
-        class="!text-xs !w-1/3 !bg-transparent text-center"
-      />
-      <div>of</div>
-      <input
-        style="border: none; box-shadow: none; border-bottom: 1px solid black"
-        disabled
-        value="2"
-        type="text"
-        class="!text-xs !w-1/3 !bg-transparent text-center"
-      />
-    </div>
-    <div class="text-xs p-1 w-full flex items-center justify-center">
-      <span class="text-green-700 font-bold">Accepted</span>
-    </div>
   </div>
   <div class="w-full p-1 flex flex-col items-center justify-start">
     <svg class="p-1" id="rejected-donut"></svg>
     <svg class="p-1" id="rejected-barchart"></svg>
-    <div class="p-1 w-full flex items-center justify-around">
-      <input
-        style="border: none; box-shadow: none; border-bottom: 1px solid black"
-        disabled
-        value="2"
-        type="text"
-        class="!text-xs !w-1/3 !bg-transparent text-center"
-      />
-      <div>of</div>
-      <input
-        style="border: none; box-shadow: none; border-bottom: 1px solid black"
-        disabled
-        value="2"
-        type="text"
-        class="!text-xs !w-1/3 !bg-transparent text-center"
-      />
-    </div>
-    <div class="text-xs p-1 w-full flex items-center justify-center">
-      <span class="text-red-700 font-bold">Rejected</span>
-    </div>
   </div>
   <div
     class="w-full p-1 bg-purple-50 flex flex-col items-center justify-start rounded-md"
@@ -59,36 +19,16 @@
     <svg class="p-1" id="labels-barchart"></svg>
     <div class="p-1 w-full flex items-center justify-around">
       <input
-        style="border: none; box-shadow: none; border-bottom: 1px solid black"
-        disabled
-        value="2"
-        type="text"
-        class="!text-xs !w-1/3 !bg-transparent text-center"
-      />
-      <div>of</div>
-      <input
-        style="border: none; box-shadow: none; border-bottom: 1px solid black"
-        disabled
-        value="2"
-        type="text"
-        class="!text-xs !w-1/3 !bg-transparent text-center"
-      />
-    </div>
-    <div class="text-xs p-1 w-full flex items-center justify-center">
-      <span class="font-bold">Unlabeled</span>
-    </div>
-    <div class="p-1 w-full flex items-center justify-around">
-      <input
-        value="2"
-        type="text"
+        value=""
+        type="number"
         class="!text-xs !w-1/3 !bg-transparent text-center"
         x-on:input="mintrigger"
         x-model="minprice"
       />
       <div>to</div>
       <input
-        value="2"
-        type="text"
+        value=""
+        type="number"
         class="!text-xs !w-1/3 !bg-transparent text-center"
         x-on:input="maxtrigger"
         x-model="maxprice"
@@ -186,8 +126,8 @@
         { frequency: "2", "certainty in %": 0.9 },
       ],
 
-      minprice: 0,
-      maxprice: 100,
+      minprice: 30,
+      maxprice: 70,
       min: 0,
       max: 100,
       minthumb: 0,
