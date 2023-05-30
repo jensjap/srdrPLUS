@@ -1,22 +1,44 @@
-<script src="/d3.v7.min.js"></script>
-<script src="/plot@0.6"></script>
-<script src="/chart-tools.js"></script>
+<script src="/echarts.min.js"></script>
 
 <div class="flex flex-wrap" x-data="screening_charts">
   <div class="w-full lg:w-1/2 p-1 flex flex-col items-center justify-start">
-    <svg class="p-1" id="accepted-donut"></svg>
-    <svg class="p-1" id="accepted-barchart"></svg>
+    <div
+      class="h-32 w-full"
+      id="accepted-donut"
+      @click="donutChart('accepted-donut');"
+    ></div>
+    <div
+      class="h-48 w-full"
+      id="accepted-barchart"
+      @click="barChart('accepted-barchart');"
+    ></div>
   </div>
   <div class="w-full lg:w-1/2 p-1 flex flex-col items-center justify-start">
-    <svg class="p-1" id="rejected-donut"></svg>
-    <svg class="p-1" id="rejected-barchart"></svg>
+    <div
+      class="h-32 w-full"
+      id="rejected-donut"
+      @click="donutChart('rejected-donut');"
+    ></div>
+    <div
+      class="h-48 w-full"
+      id="rejected-barchart"
+      @click="barChart('rejected-barchart');"
+    ></div>
   </div>
   <div
     class="w-full lg:w-1/2 p-1 bg-purple-50 flex flex-col items-center justify-start rounded-md"
     x-init="mintrigger(); maxtrigger()"
   >
-    <svg class="p-1" id="labels-donut"></svg>
-    <svg class="p-1" id="labels-barchart"></svg>
+    <div
+      class="h-32 w-full"
+      id="labels-donut"
+      @click="donutChart('labels-donut');"
+    ></div>
+    <div
+      class="h-48 w-full"
+      id="labels-barchart"
+      @click="barChart('labels-barchart');"
+    ></div>
     <div class="p-1 w-full flex items-center justify-around">
       <input
         value=""
@@ -202,22 +224,6 @@
 <script>
   document.addEventListener("alpine:init", () => {
     Alpine.data("screening_charts", () => ({
-      donutLabels: [
-        { name: "Accepted", value: 0.3 },
-        { name: "Rejected", value: 0.5 },
-        { name: "Unlabeled", value: 0.2 },
-      ],
-      barLabels: [
-        { frequency: "2", "certainty in %": 0.1 },
-        { frequency: "3", "certainty in %": 0.2 },
-        { frequency: "2", "certainty in %": 0.3 },
-        { frequency: "1", "certainty in %": 0.4 },
-        { frequency: "5", "certainty in %": 0.6 },
-        { frequency: "4", "certainty in %": 0.7 },
-        { frequency: "1", "certainty in %": 0.8 },
-        { frequency: "2", "certainty in %": 0.9 },
-      ],
-
       minprice: 30,
       maxprice: 70,
       min: 0,
@@ -242,37 +248,123 @@
       },
 
       renderCharts() {
-        DonutChart("#accepted-donut", this.donutLabels, {
-          name: (d) => d.name,
-          value: (d) => d.value,
-          colors: [
-            "rgba(0, 200, 0, 1)",
-            "rgba(255, 0, 0, 0.05)",
-            "rgba(255, 255, 255, 0.05)",
-          ],
-        });
-        DonutChart("#rejected-donut", this.donutLabels, {
-          name: (d) => d.name,
-          value: (d) => d.value,
-          colors: [
-            "rgba(0, 255, 0, 0.05)",
-            "rgba(200, 0, 0, 1)",
-            "rgba(255, 255, 255, 0.05)",
-          ],
-        });
-        DonutChart("#labels-donut", this.donutLabels, {
-          name: (d) => d.name,
-          value: (d) => d.value,
-          colors: [
-            "rgba(0, 255, 0, 0.05)",
-            "rgba(255, 0, 0, 0.05)",
-            "rgba(150, 150, 150, 1)",
-          ],
-        });
+        this.donutChart("accepted-donut");
+        this.donutChart("rejected-donut");
+        this.donutChart("labels-donut");
+        this.barChart("accepted-barchart");
+        this.barChart("rejected-barchart");
+        this.barChart("labels-barchart");
+      },
 
-        BarChart("#accepted-barchart", this.barLabels, 150);
-        BarChart("#rejected-barchart", this.barLabels, 150);
-        BarChart("#labels-barchart", this.barLabels, 150);
+      donutChart(id) {
+        const myChart = echarts.init(document.getElementById(id));
+        const option = {
+          grid: {
+            left: 0,
+            top: 0,
+            right: 0,
+            bottom: 0,
+          },
+          tooltip: {
+            trigger: "item",
+          },
+          series: [
+            {
+              type: "pie",
+              radius: ["40%", "70%"],
+              avoidLabelOverlap: false,
+              labelLine: {
+                show: false,
+              },
+              label: {
+                show: false,
+              },
+              data: [
+                {
+                  value: Math.round(Math.random() * 100),
+                  name: "Rejected",
+                  itemStyle: {
+                    color: `rgba(150, 0, 0, ${
+                      id.includes("rejected") ? 1 : 0.2
+                    })`,
+                  },
+                },
+                {
+                  value: Math.round(Math.random() * 100),
+                  name: "Unlabed",
+                  itemStyle: {
+                    color: `rgba(100, 100, 100, ${
+                      id.includes("labels") ? 1 : 0.2
+                    })`,
+                  },
+                },
+                {
+                  value: Math.round(Math.random() * 100),
+                  name: "Accepted",
+                  itemStyle: {
+                    color: `rgba(0, 100, 0, ${
+                      id.includes("accepted") ? 1 : 0.2
+                    })`,
+                  },
+                },
+              ],
+            },
+          ],
+        };
+
+        option && myChart.setOption(option);
+      },
+
+      barChart(id) {
+        const myChart = echarts.init(document.getElementById(id));
+        // Specify the configuration items and data for the chart
+        const option = {
+          grid: {
+            left: 50,
+            top: 50,
+            right: 50,
+            bottom: 50,
+          },
+          tooltip: {},
+          xAxis: {
+            data: [0.1, 0.2, 0.4, 0.6, 0.7, 0.9],
+          },
+          yAxis: {},
+          series: [
+            {
+              name: "Labels",
+              type: "bar",
+              data: [
+                {
+                  value: Math.round(Math.random() * 100),
+                  itemStyle: { color: "rgba(150, 0, 0, 1)" },
+                },
+                {
+                  value: Math.round(Math.random() * 100),
+                  itemStyle: { color: "rgba(150, 0, 0, 1)" },
+                },
+                {
+                  value: Math.round(Math.random() * 100),
+                  itemStyle: { color: "rgba(150, 0, 0, 1)" },
+                },
+                {
+                  value: Math.round(Math.random() * 100),
+                  itemStyle: { color: "#33124b" },
+                },
+                {
+                  value: Math.round(Math.random() * 100),
+                  itemStyle: { color: "rgba(0, 100, 0, 1)" },
+                },
+                {
+                  value: Math.round(Math.random() * 100),
+                  itemStyle: { color: "rgba(0, 100, 0, 1)" },
+                },
+              ],
+            },
+          ],
+        };
+
+        myChart.setOption(option);
       },
     }));
   });
