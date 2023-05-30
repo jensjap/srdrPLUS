@@ -4,6 +4,7 @@ function BarChart(id, barLabels, height) {
     y: "frequency",
   }).plot({
     height: 150,
+    width: 900,
   });
   plot.style.backgroundColor = "transparent";
   const svg = document.querySelector(id);
