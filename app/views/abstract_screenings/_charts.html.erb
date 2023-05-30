@@ -2,17 +2,17 @@
 <script src="/plot@0.6"></script>
 <script src="/chart-tools.js"></script>
 
-<div class="flex flex-wrap lg:flex-nowrap" x-data="screening_charts">
-  <div class="w-full p-1 flex flex-col items-center justify-start">
+<div class="flex flex-wrap" x-data="screening_charts">
+  <div class="w-full lg:w-1/2 p-1 flex flex-col items-center justify-start">
     <svg class="p-1" id="accepted-donut"></svg>
     <svg class="p-1" id="accepted-barchart"></svg>
   </div>
-  <div class="w-full p-1 flex flex-col items-center justify-start">
+  <div class="w-full lg:w-1/2 p-1 flex flex-col items-center justify-start">
     <svg class="p-1" id="rejected-donut"></svg>
     <svg class="p-1" id="rejected-barchart"></svg>
   </div>
   <div
-    class="w-full p-1 bg-purple-50 flex flex-col items-center justify-start rounded-md"
+    class="w-full lg:w-1/2 p-1 bg-purple-50 flex flex-col items-center justify-start rounded-md"
     x-init="mintrigger(); maxtrigger()"
   >
     <svg class="p-1" id="labels-donut"></svg>
@@ -104,6 +104,98 @@
       class="text-xs p-1 w-full flex items-center justify-center text-black-700 font-bold"
     >
       % Certainty
+    </div>
+  </div>
+  <div class="w-full lg:w-1/2 p-1 flex flex-col items-center justify-start">
+    <table class="h-full text-center">
+      <tbody>
+        <tr>
+          <td class="text-xs font-bold align-middle" rowspan="2"></td>
+          <td class="text-xs font-bold align-middle"></td>
+          <td
+            class="text-xs font-bold align-middle"
+            colspan="2"
+            style="background: #bbeeee"
+          >
+            Predicted condition
+          </td>
+        </tr>
+        <tr>
+          <td class="text-xs font-bold align-middle bg-gray-200">
+            Total population = P + N
+          </td>
+          <td class="text-xs font-bold align-middle bg-teal-100">
+            Positive (PP)
+          </td>
+          <td class="text-xs font-bold align-middle bg-teal-200">
+            Negative (PN)
+          </td>
+        </tr>
+        <tr>
+          <td
+            class="text-xs font-bold align-middle"
+            rowspan="2"
+            style="
+              vertical-align: middle;
+              padding: 0.4em 0.4em 0.2em;
+              background-position: 50% 0.4em !important;
+              min-width: 0.875em;
+              max-width: 0.875em;
+              overflow: hidden;
+              background: #eeeebb;
+            "
+          >
+            <div
+              style="
+                -o-writing-mode: vertical-rl;
+                -ms-writing-mode: tb-rl;
+                writing-mode: tb-rl;
+                writing-mode: vertical-rl;
+                transform: rotate(180deg);
+                display: inline-block;
+                padding-left: 1px;
+                text-align: center;
+              "
+            >
+              Actual condition
+            </div>
+          </td>
+          <td class="text-xs font-bold align-middle bg-amber-100">
+            Positive (P)
+          </td>
+          <td class="text-xs font-bold align-middle bg-green-100">
+            True Positive(TP) #
+          </td>
+          <td class="text-xs font-bold align-middle bg-red-100">
+            False Positive(FN) #
+          </td>
+        </tr>
+        <tr>
+          <td class="text-xs font-bold align-middle bg-amber-200">
+            Negative (N) #
+          </td>
+          <td class="text-xs font-bold align-middle bg-red-200">
+            False Positive (FP) #
+          </td>
+          <td class="text-xs font-bold align-middle bg-green-200">
+            True Negative (TN) #
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="w-full grid grid-cols-3 text-xs">
+      <div class="border">TPR: 789</div>
+      <div class="border">TNR: 789</div>
+      <div class="border">PPV: 789</div>
+      <div class="border">NPV: 789</div>
+      <div class="border">FNR: 789</div>
+      <div class="border">FPR: 789</div>
+      <div class="border">FDR: 789</div>
+      <div class="border">FOR: 789</div>
+      <div class="border">LR+: 789</div>
+      <div class="border">LR-: 789</div>
+      <div class="border">PT: 789</div>
+      <div class="border">TS: 789</div>
     </div>
   </div>
 </div>
