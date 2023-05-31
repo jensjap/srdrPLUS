@@ -74,7 +74,7 @@
         x-model="mincertainty"
         min="0"
         max="99"
-        onkeyup="if(value<0) value=0;"
+        x-on:change="barChart('labels-barchart'); donutChart('labels-donut')"
       />
       <div>to</div>
       <input
@@ -85,6 +85,7 @@
         x-model="maxcertainty"
         min="1"
         max="100"
+        x-on:change="barChart('labels-barchart'); donutChart('labels-donut')"
       />
     </div>
     <div
