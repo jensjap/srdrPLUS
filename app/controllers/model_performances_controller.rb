@@ -1,29 +1,40 @@
 class ModelPerformancesController < ApplicationController
   ### If production, uncomment ###
-  # before_action :set_ml_model, only: [:show_by_project, :show_by_timestamp]
+  # before_action :set_project, only: :show_by_project
+  # before_action :set_ml_model, only: :show_by_timestamp
 
   def show_by_project
     render json: fake_data # for test without ml server
 
-    ### If production, uncomment ###
-    # performances = @ml_model.model_performances.group_by(&:label).transform_values do |v|
-    #  v.map(&:score)
+    ### If production, uncomment below and comment above ###
+    # ml_models_performances = @project.ml_models.order(:timestamp).map do |ml_model|
+    #  performances = ml_model.model_performances.group_by(&:label).transform_values do |v|
+    #    v.map(&:score)
+    #  end
+
+    #  {
+    #    timestamp: ml_model.timestamp,
+    #    performances: performances,
+    #    confusion_matrix: ml_model.confusion_matrix,
+    #    precision: ml_model.precision,
+    #    recall: ml_model.recall,
+    #    f1_score: ml_model.f1_score,
+    #    accuracy_score: ml_model.accuracy_score
+    #  }
     # end
 
-    # render json: {
-    #  performances: performances,
-    #  confusion_matrix: @ml_model.confusion_matrix,
-    #  precision: @ml_model.precision,
-    #  recall: @ml_model.recall,
-    #  f1_score: @ml_model.f1_score,
-    #  accuracy_score: @ml_model.accuracy_score
-    # }
+    # ml_models_performances.sort_by! { |m| -m[:timestamp].to_i }
+    # render json: ml_models_performances
   end
 
   def show_by_timestamp
-    render json: fake_data # for test without ml server
+    timestamp = params[:timestamp]
+    all_fake_data = fake_data
+    data_for_timestamp = all_fake_data.find { |data| data[:timestamp] == timestamp }
 
-    ### If production, uncomment ###
+    render json: data_for_timestamp || { error: 'Model not found for this timestamp' }
+
+    ### If production, uncomment below and comment above ###
     # performances = @ml_model.model_performances.group_by(&:label).transform_values do |v|
     #  v.map(&:score)
     # end
@@ -41,7 +52,7 @@ class ModelPerformancesController < ApplicationController
   def show_timestamps
     render json: fake_timestamps # for test without ml server
 
-    ### If production, uncomment ###
+    ### If production, uncomment below and comment above ###
     # project_id = params[:project_id]
     # timestamps = MlModel.joins(:projects).where("projects.id = ?", project_id).pluck(:timestamp)
 
@@ -50,11 +61,15 @@ class ModelPerformancesController < ApplicationController
 
   private
 
+  def set_project
+    project_id = params[:project_id]
+    @project = Project.find(project_id)
+
+    render json: { error: 'Project not found' }, status: :not_found if @project.nil?
+  end
+
   def set_ml_model
-    if params[:project_id]
-      project_id = params[:project_id]
-      @ml_model = MlModel.joins(:projects).where('projects.id = ?', project_id).order(:timestamp).last
-    elsif params[:timestamp]
+    if params[:timestamp]
       timestamp = params[:timestamp]
       @ml_model = MlModel.find_by(timestamp:)
     end
@@ -63,17 +78,28 @@ class ModelPerformancesController < ApplicationController
   end
 
   def fake_data
-    confusion_matrix = { TP: 25, TN: 25, FP: 25, FN: 0 }
-    precision = 0.5
-    recall = nil
-    f1_score = 0.5
-    accuracy_score = 0.5
+    timestamps = %w[
+      20230517104819
+      20230517105932
+      20230525082200
+      20230525083151
+      20230525083314
+      20230525084827
+      20230525084854
+      20230526023153
+    ]
 
-    data = []
-    10.times do |i|
-      data << {
-        timestamp: Time.new.to_i + i,
-        performances: { '0' => Array.new(50) { rand(0.0..0.5) }, '1' => Array.new(50) { rand(0.5..1.0) } },
+    ml_models_performances = timestamps.map do |timestamp|
+      performances = { '0' => Array.new(50) { rand(0.0..0.5) }, '1' => Array.new(50) { rand(0.5..1.0) } }
+      confusion_matrix = { TP: 25, TN: 25, FP: 25, FN: 0 }
+      precision = 0.5
+      recall = nil
+      f1_score = 0.5
+      accuracy_score = 0.5
+
+      {
+        timestamp:,
+        performances:,
         confusion_matrix:,
         precision:,
         recall:,
@@ -81,7 +107,8 @@ class ModelPerformancesController < ApplicationController
         accuracy_score:
       }
     end
-    data
+
+    ml_models_performances.sort_by { |m| -m[:timestamp].to_i }
   end
 
   def fake_timestamps
