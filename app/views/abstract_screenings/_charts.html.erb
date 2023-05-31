@@ -12,6 +12,16 @@
       id="accepted-barchart"
       @click="barChart('accepted-barchart');"
     ></div>
+    <div x-text="ml_model_timestamps[ml_model_timestamp_index]"></div>
+    <input
+      class="w-full accent-srdrpurple"
+      type="range"
+      min="0"
+      :max="ml_model_timestamps.length - 1"
+      step="1"
+      x-model="ml_model_timestamp_index"
+      x-on:change.debounce="demoChange()"
+    />
   </div>
   <div class="w-full lg:w-1/2 p-1 flex flex-col items-center justify-start">
     <div
@@ -24,6 +34,16 @@
       id="rejected-barchart"
       @click="barChart('rejected-barchart');"
     ></div>
+    <div x-text="ml_model_timestamps[ml_model_timestamp_index]"></div>
+    <input
+      class="w-full accent-srdrpurple"
+      type="range"
+      min="0"
+      :max="ml_model_timestamps.length - 1"
+      step="1"
+      x-model="ml_model_timestamp_index"
+      x-on:change.debounce="demoChange()"
+    />
   </div>
   <div
     class="w-full lg:w-1/2 p-1 bg-purple-50 flex flex-col items-center justify-start rounded-md"
@@ -235,9 +255,24 @@
       max: 100,
       minthumb: 0,
       maxthumb: 100,
+      ml_model_timestamps: [],
+      ml_model_timestamp_index: 0,
 
       init() {
         this.renderCharts();
+        for (let i = 1; i < 10; i++) {
+          this.ml_model_timestamps.push(`2023-01-0${i}`);
+        }
+        this.ml_model_timestamp_index = this.ml_model_timestamps.length - 1;
+      },
+
+      demoChange() {
+        this.barChart("accepted-barchart");
+        this.donutChart("accepted-donut");
+        this.barChart("rejected-barchart");
+        this.donutChart("rejected-donut");
+        this.barChart("labels-barchart");
+        this.donutChart("labels-donut");
       },
 
       mintrigger() {
