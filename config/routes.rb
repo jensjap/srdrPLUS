@@ -377,4 +377,8 @@ Rails.application.routes.draw do
 
   resources :screening_qualifications, only: %i[create]
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+
+  get '/model_performances/by_project/:project_id', to: 'model_performances#show_by_project'
+  get '/model_performances/by_timestamp/:timestamp', to: 'model_performances#show_by_timestamp'
+  get '/model_performances/timestamps/:project_id', to: 'model_performances#show_timestamps'
 end
