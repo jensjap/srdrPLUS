@@ -23,7 +23,7 @@
       :max="ml_model_timestamps.length - 1"
       step="1"
       x-model="ml_model_timestamp_index"
-      x-on:change.debounce="demoChange()"
+      x-on:change="demoChange()"
     />
   </div>
   <div class="w-full lg:w-1/2 p-1 flex flex-col items-center justify-start">
@@ -48,7 +48,7 @@
       :max="ml_model_timestamps.length - 1"
       step="1"
       x-model="ml_model_timestamp_index"
-      x-on:change.debounce="demoChange()"
+      x-on:change="demoChange()"
     />
   </div>
   <div
@@ -112,7 +112,7 @@
             x-bind:max="max"
             x-on:input="mintrigger"
             x-model="mincertainty"
-            x-on:change.debounce="barChart('labels-barchart'); donutChart('labels-donut')"
+            x-on:change="barChart('labels-barchart'); donutChart('labels-donut')"
             class="absolute pointer-events-none appearance-none z-20 h-2 w-full opacity-0 cursor-pointer"
           />
 
@@ -128,7 +128,7 @@
             x-bind:max="max"
             x-on:input="maxtrigger"
             x-model="maxcertainty"
-            x-on:change.debounce="barChart('labels-barchart'); donutChart('labels-donut')"
+            x-on:change="barChart('labels-barchart'); donutChart('labels-donut')"
             class="absolute pointer-events-none appearance-none z-20 h-2 w-full opacity-0 cursor-pointer"
           />
 
