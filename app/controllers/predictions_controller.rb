@@ -13,7 +13,7 @@ class PredictionsController < ApplicationController
       '0.9-1.0' => 100
     }
     ### If production, uncomment ###
-    #scores_intervals = MachineLearningDataSupplyingService.get_unlabeled_predictions_with_intervals(params[:id])
+    # scores_intervals = MachineLearningDataSupplyingService.get_unlabeled_predictions_with_intervals(params[:id])
     render json: scores_intervals
   end
 end
