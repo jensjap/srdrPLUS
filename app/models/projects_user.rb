@@ -8,6 +8,7 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  permissions :integer          default(0), not null
+#  is_expert   :boolean          default(FALSE)
 #
 
 class ProjectsUser < ApplicationRecord
