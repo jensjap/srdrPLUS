@@ -239,8 +239,6 @@
               >Outcome Type
               <select
                 class="!px-1 !text-xs cursor-pointer"
-                name="pets"
-                id="pet-select"
                 x-ref="new_eefpst1_type"
               >
                 <option value="1">Categorical</option>
@@ -496,8 +494,10 @@
                               oldType1.id = section_eefpst1?.eefpst1_lookups[eefps.id];
                               oldType1.name = section_eefpst1?.name;
                               oldType1.description = section_eefpst1?.description;
+                              oldType1.type1_type_id = section_eefpst1?.type1_type_id;
                               newType1.name = oldType1.name;
-                              newType1.description = oldType1.description;"
+                              newType1.description = oldType1.description;
+                              newType1.type1_type_id = oldType1?.type1_type_id;"
                             >
                               Change
                             </span>

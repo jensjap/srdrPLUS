@@ -101,11 +101,13 @@
       newType1: {
         name: "",
         description: "",
+        type1_type_id: null,
       },
       newType1Index: null,
       oldType1: {
         name: "",
         description: "",
+        type1_type_id: null,
       },
       type1_change_modal: false,
       scopeOfChange: "false",
@@ -644,6 +646,7 @@
         }
       },
 
+      // TODO be able to update type1_type id
       async updateArmsData(eefpst1_id, name, description) {
         const params = {
           extractions_extraction_forms_projects_sections_type1: {

@@ -68,6 +68,18 @@
               ></option>
             </template></select
         ></label>
+        <template x-if="isOutcome()">
+          <label class="text-xs"
+            >Outcome Type
+            <select
+              class="!px-1 !text-xs cursor-pointer"
+              x-model="newType1.type1_type_id"
+            >
+              <option value="1">Categorical</option>
+              <option value="2">Continuous</option>
+            </select>
+          </label>
+        </template>
         <label class="text-xs"
           >Name
           <input
