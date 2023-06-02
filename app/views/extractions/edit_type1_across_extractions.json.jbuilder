@@ -15,8 +15,9 @@ eefpst1s =
   .extraction_collection(@efps.section.name, @efps.extraction_forms_project.id)
   .includes(:type1)
   .joins(:type1)
-  .where('select distinct type1s.id')
   .order('type1s.name ASC')
+eefpst1s = eefpst1s.uniq { |eefpst1| [eefpst1.type1.name, eefpst1.type1.description] }
+
 json.all_type1s do
   json.array! eefpst1s do |eefpst1|
     json.id eefpst1.type1.id
