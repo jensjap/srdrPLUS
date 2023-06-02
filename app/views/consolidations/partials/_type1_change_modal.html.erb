@@ -8,7 +8,6 @@
   x-transition:leave="ease-in duration-200"
   x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
   x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-  @click.outside="type1_change_modal = !type1_change_modal"
   @keyup.window.esc="type1_change_modal = false"
 >
   <div class="mb-2">
@@ -51,14 +50,18 @@
           >Pre-fill from existing
           <select
             class="mb-2 cursor-pointer"
-            @change="
-            newType1.name = type1_previews.all_type1s[$el.value]?.name;
-            newType1.description = type1_previews.all_type1s[$el.value]?.description;
-            newType1Index = null;
-          "
-            x-model="newType1Index"
+            value=""
+            x-init="$($el).select2({
+              allowClear: true,
+            });
+            $($el).on('select2:select', e => {
+              newType1.name = type1_previews.all_type1s[$el.value]?.name;
+              newType1.description = type1_previews.all_type1s[$el.value]?.description;
+              newType1.type1_type_id = type1_previews.all_type1s[$el.value]?.type1_type?.id;
+              $($el).val(null).trigger('change');
+            });"
           >
-            <option value="null" disabled>Choose an existing outcome</option>
+            <option value="">Choose an existing outcome</option>
             <template
               x-for="(all_type1, all_type1_index) in type1_previews?.all_type1s"
             >

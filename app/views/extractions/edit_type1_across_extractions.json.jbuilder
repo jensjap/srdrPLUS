@@ -11,11 +11,12 @@ json.loading false
 json.loading false
 eefpst1s =
   ExtractionsExtractionFormsProjectsSectionsType1
+  .unscope(:order)
   .extraction_collection(@efps.section.name, @efps.extraction_forms_project.id)
   .includes(:type1)
   .joins(:type1)
   .where('select distinct type1s.id')
-  .order('type1s.name DESC')
+  .order('type1s.name ASC')
 json.all_type1s do
   json.array! eefpst1s do |eefpst1|
     json.id eefpst1.type1.id
