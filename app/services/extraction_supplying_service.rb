@@ -34,8 +34,7 @@ class ExtractionSupplyingService
         end
       end
     end
-    for extraction_section in [extraction_sections[7]] do
-      return create_fhir_obj(extraction_section)
+    for extraction_section in extraction_sections do
       fhir_extraction_sections.append(create_fhir_obj(extraction_section))
     end
 
