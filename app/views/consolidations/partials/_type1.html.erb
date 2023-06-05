@@ -57,6 +57,31 @@
                 >
                   Delete
                 </span>
+                <span
+                  class="ml-2 bg-orange-500 text-xs text-white p-1 rounded-md cursor-pointer"
+                  @click="const section_eefpst1 = mh?.current_citations_project?.current_section_eefpst1s.find((section_eefpst1) => {
+                    return section_eefpst1.type1_id === extraction_eefpst1.type1_id
+                  })
+                  const eefps = consolidatedEefps();
+                  type1_previews = {
+                    loading: true,
+                    false: [],
+                    citations: [],
+                    project: []
+                  };
+                  scopeOfChange = 'false';
+                  type1_change_modal = true;
+                  getArmData(section_eefpst1.type1_id, eefps.extraction_forms_projects_section_id, eefps.id);
+                  oldType1.id = section_eefpst1?.eefpst1_lookups[eefps.id];
+                  oldType1.name = section_eefpst1?.name;
+                  oldType1.description = section_eefpst1?.description;
+                  oldType1.type1_type_id = section_eefpst1?.type1_type_id;
+                  newType1.name = oldType1.name;
+                  newType1.description = oldType1.description;
+                  newType1.type1_type_id = oldType1?.type1_type_id;"
+                >
+                  Change
+                </span>
               </td>
             </template>
             <template x-if="isOutcome()">
