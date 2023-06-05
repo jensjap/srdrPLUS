@@ -1,0 +1,1 @@
+In this bundle, there are numerous QuestionnaireResponses, each belonging to a different Type1 and answering the same Questionnaire. Type1 refers to potential intervention measures, outcomes, or other user-defined items.
