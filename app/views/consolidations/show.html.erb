@@ -626,19 +626,72 @@
         if (toBeConsolidated.length === 0) {
           return alert("Nothing to consolidate");
         }
-
         const consolidatedEefps =
           this?.mh?.current_citations_project?.current_section_eefpss[
             this?.mh?.current_citations_project?.current_section_eefpss
               ?.length - 1
           ];
         toBeConsolidated.forEach((current_section_eefpst1) => {
+          let customPopulations = [];
+          if (
+            Object.values(current_section_eefpst1.population_lookups).length > 0
+          ) {
+            if (
+              Object.keys(current_section_eefpst1.population_lookups).every(
+                (key, index, array) =>
+                  current_section_eefpst1.population_lookups[key].every(
+                    (key2, index2, array2) => {
+                      const id =
+                        current_section_eefpst1.population_lookups[array[0]][
+                          index2
+                        ]?.id;
+                      return current_section_eefpst1.population_lookups[
+                        key
+                      ].find((el) => el.id === id);
+                    }
+                  )
+              )
+            ) {
+              customPopulations = Object.values(
+                current_section_eefpst1.population_lookups
+              )[0];
+            }
+          }
+
+          let customTimepoints = [];
+          if (
+            Object.values(current_section_eefpst1.timepoint_lookups).length > 0
+          ) {
+            if (
+              Object.keys(current_section_eefpst1.timepoint_lookups).every(
+                (key, index, array) =>
+                  current_section_eefpst1.timepoint_lookups[key].every(
+                    (key2, index2, array2) => {
+                      const id =
+                        current_section_eefpst1.timepoint_lookups[array[0]][
+                          index2
+                        ]?.id;
+                      return current_section_eefpst1.timepoint_lookups[
+                        key
+                      ].find((el) => el.id === id);
+                    }
+                  )
+              )
+            ) {
+              customTimepoints = Object.values(
+                current_section_eefpst1.timepoint_lookups
+              )[0];
+            }
+          }
+
           this.createArm(
             consolidatedEefps.id,
             current_section_eefpst1.name,
             current_section_eefpst1.description,
             current_section_eefpst1.type1_type_id,
-            true
+            true,
+            customPopulations,
+            customTimepoints
           );
         });
       },
@@ -718,7 +771,9 @@
         name,
         description,
         new_eefpst1_type_id = null,
-        autoConsolidation = false
+        autoConsolidation = false,
+        customPopulations = [],
+        customTimepoints = []
       ) {
         if (name.trim() === "") {
           toastr.error("Name/ domain cannot be blank", null, {
@@ -727,18 +782,24 @@
           return;
         }
         if (autoConsolidation) {
-          this.populations = [
-            {
-              name: "All Participants",
-              description: "All patients enrolled in this study.",
-            },
-          ];
-          this.timepoints = [
-            {
-              name: "Baseline",
-              unit: "",
-            },
-          ];
+          this.populations =
+            customPopulations.length === 0
+              ? [
+                  {
+                    name: "All Participants",
+                    description: "All patients enrolled in this study.",
+                  },
+                ]
+              : customPopulations;
+          this.timepoints =
+            customTimepoints.length === 0
+              ? [
+                  {
+                    name: "Baseline",
+                    unit: "",
+                  },
+                ]
+              : customTimepoints;
         }
 
         const params = {
