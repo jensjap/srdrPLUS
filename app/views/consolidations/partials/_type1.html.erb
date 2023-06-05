@@ -9,6 +9,9 @@
         <tr>
           <th class="w-20"></th>
           <template x-if="isOutcome()">
+            <th></th>
+          </template>
+          <template x-if="isOutcome()">
             <th class="text-left">Type</th>
           </template>
           <th class="text-left" x-text="isOutcome() ? 'Domain' : 'Name' "></th>
@@ -44,6 +47,18 @@
                 aria-hidden="true"
               ></i>
             </td>
+            <template x-if="isOutcome()">
+              <td class="text-sm">
+                <span
+                  class="ml-2 bg-red-700 text-xs text-white p-1 rounded-md cursor-pointer"
+                  @click="if (confirm(`Are you sure you want to delete '${extraction_eefpst1.name}'`)) {
+                    deleteArm(extraction_eefpst1.id);
+                  }"
+                >
+                  Delete
+                </span>
+              </td>
+            </template>
             <template x-if="isOutcome()">
               <td
                 class="text-sm"
