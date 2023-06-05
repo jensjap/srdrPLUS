@@ -610,7 +610,6 @@
         return this.mh?.current_citations_project?.section_name === "Outcomes";
       },
 
-      // TODO: add threshold criteria beside the non-existence of the eefpst1 in the consolidated eefps
       autoConsolidateOutcomes() {
         const toBeConsolidated =
           this.mh?.current_citations_project?.current_section_eefpst1s.filter(
