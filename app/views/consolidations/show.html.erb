@@ -612,30 +612,36 @@
 
       // TODO: add threshold criteria beside the non-existence of the eefpst1 in the consolidated eefps
       autoConsolidateOutcomes() {
-        this?.mh?.current_citations_project?.current_section_eefpst1s?.forEach(
-          (current_section_eefpst1) => {
-            const consolidatedEefps =
-              this?.mh?.current_citations_project?.current_section_eefpss[
-                this?.mh?.current_citations_project?.current_section_eefpss
-                  ?.length - 1
-              ];
-            if (
-              consolidatedEefps?.consolidated &&
-              current_section_eefpst1?.eefpst1_lookups[consolidatedEefps.id] ===
-                undefined
-            ) {
-              this.createArm(
-                consolidatedEefps.id,
-                current_section_eefpst1.name,
-                current_section_eefpst1.description,
-                current_section_eefpst1.type1_type_name === "Categorical"
-                  ? 1
-                  : 2,
-                true
+        const toBeConsolidated =
+          this.mh?.current_citations_project?.current_section_eefpst1s.filter(
+            (section_eefpst1) => {
+              return this.mh?.current_citations_project?.current_section_eefpss.every(
+                (eefps) =>
+                  (eefps.consolidated &&
+                    section_eefpst1?.eefpst1_lookups[eefps.id] === undefined) ||
+                  (!eefps.consolidated &&
+                    section_eefpst1?.eefpst1_lookups[eefps.id])
               );
             }
-          }
-        );
+          );
+        if (toBeConsolidated.length === 0) {
+          return alert("Nothing to consolidate");
+        }
+
+        const consolidatedEefps =
+          this?.mh?.current_citations_project?.current_section_eefpss[
+            this?.mh?.current_citations_project?.current_section_eefpss
+              ?.length - 1
+          ];
+        toBeConsolidated.forEach((current_section_eefpst1) => {
+          this.createArm(
+            consolidatedEefps.id,
+            current_section_eefpst1.name,
+            current_section_eefpst1.description,
+            current_section_eefpst1.type1_type_id,
+            true
+          );
+        });
       },
 
       initializeOrderings() {
