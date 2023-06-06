@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 # Needs to be at the top.
-# if ENV['RAILS_ENV'] == 'test'
-#   require 'simplecov'
-#   SimpleCov.start do
-#     add_filter '/.bundle/' # We don't want to include bundled gems.
-#   end
-# end
+if ENV['RAILS_ENV'] == 'test'
+  require 'simplecov'
+  SimpleCov.start do
+    add_filter '/.bundle/' # We don't want to include bundled gems.
+  end
+end
 
 ENV['RAILS_ENV'] ||= 'test'
 
