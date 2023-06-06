@@ -13,7 +13,7 @@ RUN apk add --update --no-cache \
       less \
       libstdc++ \
       libffi-dev \
-      libc-dev \ 
+      libc-dev \
       linux-headers \
       libxml2-dev \
       libxslt-dev \
@@ -27,7 +27,7 @@ RUN apk add --update --no-cache \
       pkgconfig \
       python3 \
       tzdata \
-      yarn 
+      yarn
 
 RUN gem install bundler -v 2.3.15
 
@@ -37,8 +37,8 @@ COPY Gemfile Gemfile.lock ./
 
 RUN bundle config build.nokogiri --use-system-libraries
 
-RUN bundle check || bundle install 
+RUN bundle check || bundle install
 
-COPY . ./ 
+COPY . ./
 
 ENTRYPOINT ["./entrypoints/docker-entrypoint.sh"]
