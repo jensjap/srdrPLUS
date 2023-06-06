@@ -7,6 +7,12 @@ GIT
       i18n (>= 1.8.11, < 2)
 
 GIT
+  remote: https://github.com/jensjap/ref_parsers.git
+  revision: 6c337491d2b90cc28195669f9295e67ad63e135a
+  specs:
+    ref_parsers (0.2.2)
+
+GIT
   remote: https://github.com/mshibuya/remotipart.git
   revision: a1860d64aef484047bc1ef50e2f19ef2480eacf9
   specs:
@@ -410,7 +416,6 @@ GEM
     redis (4.7.1)
     redis-client (0.14.1)
       connection_pool
-    ref_parsers (0.2.2)
     representable (3.2.0)
       declarative (< 0.1.0)
       trailblazer-option (>= 0.1.1, < 0.2.0)
@@ -591,7 +596,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 7.0.3)
   redis (= 4.7.1)
-  ref_parsers (~> 0.2.0)
+  ref_parsers (~> 0.2.0)!
   remotipart!
   responders
   roo (~> 2.9.0)
