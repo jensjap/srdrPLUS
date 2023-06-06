@@ -3,10 +3,9 @@
 one:
   extractions_extraction_forms_projects_sections_type1: one
   population_name: one
-  deleted_at:
+#  deleted_at:
 
 two:
   extractions_extraction_forms_projects_sections_type1: two
   population_name: two
-  deleted_at:
-
+#  deleted_at:

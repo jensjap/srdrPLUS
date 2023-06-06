@@ -4,13 +4,12 @@ one:
   comparison: one
   extractions_extraction_forms_projects_sections_type1: one
   result_statistic_sections_measure: one
-  deleted_at:
-  active: true
+#  deleted_at:
+#  active: true
 
 two:
   comparison: two
   extractions_extraction_forms_projects_sections_type1: two
   result_statistic_sections_measure: two
-  deleted_at:
-  active: true
-
+#  deleted_at:
+#  active: true

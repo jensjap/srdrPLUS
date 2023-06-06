@@ -4,11 +4,10 @@ one:
   question_row: one
   name: MyString
   question_row_column_type: one
-  deleted_at:
+#  deleted_at:
 
 two:
   question_row: two
   name: MyString
   question_row_column_type: two
-  deleted_at:
-
+#  deleted_at:

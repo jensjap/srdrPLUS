@@ -5,14 +5,13 @@ one:
   dependable_type: Dependable
   prerequisitable: one
   prerequisitable_type: Prerequisitable
-  deleted_at:
-  active: true
+#  deleted_at:
+#  active: true
 
 two:
   dependable: two
   dependable_type: Dependable
   prerequisitable: two
   prerequisitable_type: Prerequisitable
-  deleted_at:
-  active: true
-
+#  deleted_at:
+#  active: true

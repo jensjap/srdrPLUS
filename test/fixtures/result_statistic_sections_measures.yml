@@ -3,12 +3,11 @@
 one:
   measure: one
   result_statistic_section: one
-  deleted_at:
-  active: true
+#  deleted_at:
+#  active: true
 
 two:
   measure: two
   result_statistic_section: two
-  deleted_at:
-  active: true
-
+#  deleted_at:
+#  active: true
