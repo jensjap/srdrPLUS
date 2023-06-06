@@ -101,11 +101,13 @@
       newType1: {
         name: "",
         description: "",
+        type1_type_id: null,
       },
       newType1Index: null,
       oldType1: {
         name: "",
         description: "",
+        type1_type_id: null,
       },
       type1_change_modal: false,
       scopeOfChange: "false",
@@ -616,6 +618,12 @@
         });
       },
 
+      consolidatedEefps() {
+        return this.mh?.current_citations_project?.current_section_eefpss.find(
+          (eefps) => eefps.consolidated
+        );
+      },
+
       async getArmData(type1_id, efps_id, eefps_id) {
         const response = await fetch(
           `/projects/${this.mh?.current_citations_project?.project_id}/extractions/edit_type1_across_extractions?` +
@@ -644,10 +652,11 @@
         }
       },
 
-      async updateArmsData(eefpst1_id, name, description) {
+      async updateArmsData(eefpst1_id, name, description, type1_type_id) {
         const params = {
           extractions_extraction_forms_projects_sections_type1: {
             should: { propagate: this.scopeOfChange },
+            type1_type_id,
             type1_attributes: {
               name,
               description,
