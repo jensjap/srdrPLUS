@@ -2,7 +2,6 @@
 module SeedData
   def self.extended(object)
     return if Rails.env.production?
-    return if Rails.env.development?
     puts 'Running SeedData module.'
 
     object.instance_exec do
