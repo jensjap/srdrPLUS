@@ -12,7 +12,7 @@ class CitationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     json_response = JSON.parse(response.body)
-    assert_equal @project.citations.count, json_response.length
+    assert_equal @project.citations.count, json_response['entry'].count
   end
 
   test 'should show citation' do
@@ -20,6 +20,6 @@ class CitationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     json_response = JSON.parse(response.body)
-    assert_equal @citation.id, json_response['id']
+    assert_equal @citation.id, json_response['id'].split('-').last.to_i
   end
 end
