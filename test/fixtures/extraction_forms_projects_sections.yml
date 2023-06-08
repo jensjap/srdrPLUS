@@ -2,7 +2,7 @@
 
 one:
   extraction_forms_project: one
-  extraction_forms_projects_section_type: one
+  extraction_forms_projects_section_type_id: 2
   section: one
 #  active: true
 
