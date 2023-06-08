@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_08_062016) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -28,6 +28,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "privileged", default: false
     t.index ["abstract_screening_id"], name: "index_abstract_screening_results_on_abstract_screening_id"
     t.index ["citations_project_id"], name: "asr_on_cp"
     t.index ["user_id"], name: "asr_on_u"
@@ -727,6 +728,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "privileged", default: false
     t.index ["citations_project_id"], name: "fsr_on_cp"
     t.index ["fulltext_screening_id"], name: "index_fulltext_screening_results_on_fulltext_screening_id"
     t.index ["user_id"], name: "fsr_on_u"
@@ -1020,13 +1022,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
     t.index ["message_type_id"], name: "index_messages_on_message_type_id"
   end
 
-  create_table "ml_models", charset: "utf8mb3", force: :cascade do |t|
+  create_table "ml_models", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "timestamp", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "ml_models_projects", charset: "utf8mb3", force: :cascade do |t|
+  create_table "ml_models_projects", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "ml_model_id", null: false
     t.integer "project_id", null: false
     t.datetime "created_at", null: false
@@ -1034,7 +1036,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
     t.index ["ml_model_id", "project_id"], name: "index_ml_models_projects_on_ml_model_id_and_project_id", unique: true
   end
 
-  create_table "ml_predictions", charset: "utf8mb3", force: :cascade do |t|
+  create_table "ml_predictions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "citations_project_id", null: false
     t.bigint "ml_model_id", null: false
     t.float "score", null: false
@@ -1042,6 +1044,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
     t.datetime "updated_at", null: false
     t.index ["citations_project_id"], name: "fk_rails_c7d0d53a87"
     t.index ["ml_model_id"], name: "fk_rails_6c1d59597a"
+  end
+
+  create_table "model_performances", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "ml_model_id"
+    t.string "label"
+    t.float "score"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ml_model_id"], name: "index_model_performances_on_ml_model_id"
   end
 
   create_table "notes", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -2141,6 +2152,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
   add_foreign_key "messages", "message_types"
   add_foreign_key "ml_predictions", "citations_projects"
   add_foreign_key "ml_predictions", "ml_models"
+  add_foreign_key "model_performances", "ml_models"
   add_foreign_key "notes", "projects_users_roles"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
