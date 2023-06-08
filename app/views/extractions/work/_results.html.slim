@@ -17,7 +17,7 @@
 / Standard extraction and there are at least one Arm and one Outcome.
 - if extraction_forms_project_type.id.eql?(1) && @extraction.results_section_ready_for_extraction?
   #results-panel
-    .reveal#manage-measures-modal.large data-reveal='' style='min-height: 80vh'
+    .reveal#manage-measures-modal.large data-reveal='' style='min-height: 80vh' data-options="closeOnClick:false;closeOnEsc:false;"
       button.close-button data-close='' aria-label='Close modal' type='button'
         span aria-hidden='true' &times;
 

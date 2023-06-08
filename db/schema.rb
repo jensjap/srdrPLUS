@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_27_075438) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -254,22 +254,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_075438) do
     t.index ["user_id"], name: "index_approvals_on_user_id"
   end
 
-  create_table "assignments", id: :integer, charset: "utf8mb3", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "task_id"
-    t.integer "done_so_far"
-    t.datetime "date_assigned", precision: nil
-    t.datetime "date_due", precision: nil
-    t.integer "done"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.integer "projects_users_role_id"
-    t.boolean "mutable", default: true
-    t.index ["projects_users_role_id"], name: "index_assignments_on_projects_users_role_id"
-    t.index ["task_id"], name: "index_assignments_on_task_id"
-    t.index ["user_id"], name: "index_assignments_on_user_id"
-  end
-
   create_table "authors", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", collation: "utf8mb3_general_ci"
     t.datetime "created_at", precision: nil, null: false
@@ -331,15 +315,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_075438) do
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id"
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id"
     t.index ["project_id"], name: "index_citations_projects_on_project_id"
-  end
-
-  create_table "citations_tasks", id: :integer, charset: "utf8mb3", force: :cascade do |t|
-    t.integer "citation_id"
-    t.integer "task_id"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.index ["citation_id"], name: "index_citations_tasks_on_citation_id"
-    t.index ["task_id"], name: "index_citations_tasks_on_task_id"
   end
 
   create_table "color_choices", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -509,7 +484,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_075438) do
     t.index ["question_row_columns_question_row_column_option_id"], name: "index_eefpsqrcfqrcqrco_on_qrcqrco_id"
   end
 
-  create_table "events", charset: "utf8mb3", force: :cascade do |t|
+  create_table "events", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "sent"
     t.string "action"
     t.string "resource"
@@ -995,6 +970,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_075438) do
     t.index ["reason_id"], name: "index_labels_reasons_on_reason_id"
   end
 
+  create_table "measurements", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.string "value"
+    t.integer "comparisons_measure_id"
+    t.index ["comparisons_measure_id"], name: "index_measurements_on_comparisons_measure_id"
+  end
+
   create_table "measures", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
@@ -1035,6 +1018,30 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_075438) do
     t.datetime "updated_at", precision: nil, null: false
     t.boolean "active", default: true
     t.index ["message_type_id"], name: "index_messages_on_message_type_id"
+  end
+
+  create_table "ml_models", charset: "utf8mb3", force: :cascade do |t|
+    t.string "timestamp", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "ml_models_projects", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "ml_model_id", null: false
+    t.integer "project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ml_model_id", "project_id"], name: "index_ml_models_projects_on_ml_model_id_and_project_id", unique: true
+  end
+
+  create_table "ml_predictions", charset: "utf8mb3", force: :cascade do |t|
+    t.integer "citations_project_id", null: false
+    t.bigint "ml_model_id", null: false
+    t.float "score", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["citations_project_id"], name: "fk_rails_c7d0d53a87"
+    t.index ["ml_model_id"], name: "fk_rails_6c1d59597a"
   end
 
   create_table "notes", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -1214,7 +1221,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_075438) do
     t.index ["term_id"], name: "index_putgcp_on_terms_id"
   end
 
-  create_table "publication_reminders", charset: "utf8mb3", force: :cascade do |t|
+  create_table "publication_reminders", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "project_id", null: false
     t.boolean "active", default: true
@@ -1911,24 +1918,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_075438) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "task_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-  end
-
-  create_table "tasks", id: :integer, charset: "utf8mb3", force: :cascade do |t|
-    t.integer "task_type_id"
-    t.integer "project_id"
-    t.integer "num_assigned"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.boolean "required_inclusion_reason", default: false
-    t.boolean "required_exclusion_reason", default: false
-    t.boolean "required_maybe_reason", default: false
-    t.index ["task_type_id"], name: "index_tasks_on_task_type_id"
-  end
-
   create_table "team_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
@@ -2076,15 +2065,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_075438) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "approvals", "users"
-  add_foreign_key "assignments", "projects_users_roles"
-  add_foreign_key "assignments", "tasks"
-  add_foreign_key "assignments", "users"
   add_foreign_key "citations", "citation_types"
   add_foreign_key "citations_projects", "citations"
   add_foreign_key "citations_projects", "consensus_types"
   add_foreign_key "citations_projects", "projects"
-  add_foreign_key "citations_tasks", "citations"
-  add_foreign_key "citations_tasks", "tasks"
   add_foreign_key "colorings", "color_choices"
   add_foreign_key "comparate_groups", "comparisons"
   add_foreign_key "comparates", "comparable_elements"
@@ -2152,8 +2136,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_075438) do
   add_foreign_key "labels_reasons", "labels"
   add_foreign_key "labels_reasons", "projects_users_roles"
   add_foreign_key "labels_reasons", "reasons"
+  add_foreign_key "measurements", "comparisons_measures"
   add_foreign_key "message_types", "frequencies"
   add_foreign_key "messages", "message_types"
+  add_foreign_key "ml_predictions", "citations_projects"
+  add_foreign_key "ml_predictions", "ml_models"
   add_foreign_key "notes", "projects_users_roles"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
@@ -2226,7 +2213,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_27_075438) do
   add_foreign_key "suggestions", "users"
   add_foreign_key "taggings", "projects_users_roles"
   add_foreign_key "taggings", "tags"
-  add_foreign_key "tasks", "task_types"
   add_foreign_key "teams", "projects"
   add_foreign_key "teams", "team_types"
   add_foreign_key "term_groups_colors", "colors"

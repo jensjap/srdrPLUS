@@ -116,174 +116,198 @@ class ExtractionSupplyingService
       questions = ExtractionFormsProjectsSectionSupplyingService.new.find_by_extraction_forms_projects_section_id(form.id)
       return if questions.blank?
 
-      eefps = {
-        'status' => status,
-        'id' => '4' + '-' + raw.id.to_s,
-        'text' => form.section_label,
-        'identifier' => [{
-          'type' => {
-            'text' => 'SRDR+ Object Identifier'
-          },
-          'system' => 'https://srdrplus.ahrq.gov/',
-          'value' => 'ExtractionsExtractionFormsProjectsSection/' + raw.id.to_s
-        }],
-        'contained' => questions,
-        'questionnaire' => '#' + questions.id,
-        'item' => []
-      }
+      eefpss = []
+      eefpsqrcf_grouped_by_type1 = raw.extractions_extraction_forms_projects_sections_question_row_column_fields.group_by { |item| item["extractions_extraction_forms_projects_sections_type1_id"] }
+      eefpsqrcf_grouped_by_type1.each do |eefps_type1_id, eefpsqrcfs|
 
-      restriction_symbol = ''
+        eefps = {
+          'status' => status,
+          'id' => '4' + '-' + raw.id.to_s,
+          'text' => form.section_label,
+          'identifier' => [{
+            'type' => {
+              'text' => 'SRDR+ Object Identifier'
+            },
+            'system' => 'https://srdrplus.ahrq.gov/',
+            'value' => 'ExtractionsExtractionFormsProjectsSection/' + raw.id.to_s
+          }],
+          'contained' => questions,
+          'questionnaire' => '#' + questions.id,
+          'subject' => {},
+          'item' => []
+        }
 
-      for eefpsqrf in raw.extractions_extraction_forms_projects_sections_question_row_column_fields do
-        question_row_column_field = eefpsqrf.question_row_column_field
-        question_row_column_id = question_row_column_field.question_row_column_id
-        question_row_column = QuestionRowColumn.find(question_row_column_id)
-        ans_form = question_row_column.question_row_columns_question_row_column_options
-        question_row_id = question_row_column.question_row_id
-        question_row = QuestionRow.find(question_row_id)
-        question_id = question_row.question_id
-        question = Question.find(question_id)
-        type = question_row_column.question_row_column_type.id
-        value = eefpsqrf.records[0]['name']
-        if value.is_a?(String) && value.empty?
-          value = nil
-        end
-
-        if not eefpsqrf.extractions_extraction_forms_projects_sections_type1.nil?
-          type1 = eefpsqrf.extractions_extraction_forms_projects_sections_type1.type1
+        if eefps_type1_id.blank?
+          next
         else
-          type1 = nil
-        end
+          type1 = ExtractionsExtractionFormsProjectsSectionsType1.find(eefps_type1_id).type1
+          type1_display = type1.name + ' (' + type1.description + ')'
+          eefps['subject'] = {
+            'reference' => 'Type1/' + type1.id.to_s,
+            'type' => 'EvidenceVariable',
+            'display' => type1_display
+          }
 
-        if not eefpsqrf.extractions_extraction_forms_projects_sections_type1.type1_type.nil?
-          type1_type = eefpsqrf.extractions_extraction_forms_projects_sections_type1.type1_type
-        else
-          type1_type = nil
-        end
+          restriction_symbol = ''
+          for eefpsqrcf in eefpsqrcfs do
+            question_row_column_field = eefpsqrcf.question_row_column_field
+            question_row_column_id = question_row_column_field.question_row_column_id
+            question_row_column = QuestionRowColumn.find(question_row_column_id)
+            ans_form = question_row_column.question_row_columns_question_row_column_options
+            question_row_id = question_row_column.question_row_id
+            question_row = QuestionRow.find(question_row_id)
+            question_id = question_row.question_id
+            question = Question.find(question_id)
+            type = question_row_column.question_row_column_type.id
+            value = eefpsqrcf.records[0]['name']
+            if value.is_a?(String) && value.empty?
+              value = nil
+            end
 
-        if value.nil?
-          if type != 9
-            next
-          end
-        else
-          if type != 9
-            item = {
-              'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
-            }
-            if not type1.nil?
-              item['text'] = type1.name + ' (' + type1.description + ')'
-              if not type1_type.nil?
-                item['text'] = item['text'] + ' (' + type1_type.name + ')'
+            if not eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.nil?
+              type1 = eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.type1
+            else
+              type1 = nil
+            end
+
+            if not eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.type1_type.nil?
+              type1_type = eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.type1_type
+            else
+              type1_type = nil
+            end
+
+            if value.nil?
+              if type != 9
+                next
+              end
+            else
+              if type != 9
+                item = {
+                  'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
+                }
               end
             end
-          end
-        end
 
-        followups = {}
-        for followup in raw.extractions_extraction_forms_projects_sections_followup_fields do
-          followups = followups.merge({
-            FollowupField.find(followup.followup_field_id).question_row_columns_question_row_column_option_id => {
-              'name' => followup.records[0]['name'],
-              'id' => followup.followup_field_id
-            }
-          })
-        end
+            followups = {}
+            for followup in raw.extractions_extraction_forms_projects_sections_followup_fields do
+              if not followup.records[0]['name'].blank?
+                followups = followups.merge({
+                  FollowupField.find(followup.followup_field_id).question_row_columns_question_row_column_option_id => {
+                    'name' => followup.records[0]['name'],
+                    'id' => followup.followup_field_id
+                  }
+                })
+              end
+            end
 
-        if type == 1
-          item['answer'] = {
-            'valueString' => value
-          }
-          eefps['item'].append(item)
-        elsif type == 2
-          if /-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?/.match(value)
-            item['answer'] = {
-              'valueDecimal' => value
-            }
-            eefps['item'].append(item)
-            unless restriction_symbol.empty?
-              symbol_item = {
-                'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s,
-                'answer' => {
-                  'valueString' => restriction_symbol
+            if type == 1
+              item['answer'] = {
+                'valueString' => value
+              }
+              eefps['item'].append(item)
+            elsif type == 2
+              if /-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?/.match(value)
+                item['answer'] = {
+                  'valueDecimal' => value
                 }
-              }
-              eefps['item'].append(symbol_item)
-            end
-            restriction_symbol = ''
-          else
-            restriction_symbol = value
-          end
-        elsif type == 5
-          matches = value.scan(/\D*(\d+)\D*/)
-          for match in matches do
-            checkbox_id = match[0].to_i
-            name = ans_form.find(checkbox_id)['name']
-            item['answer'] = {
-              'valueString' => name
-            }
+                eefps['item'].append(item)
+                unless restriction_symbol.empty?
+                  symbol_item = {
+                    'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s,
+                    'answer' => {
+                      'valueString' => restriction_symbol
+                    }
+                  }
+                  eefps['item'].append(symbol_item)
+                end
+                restriction_symbol = ''
+              else
+                restriction_symbol = value
+              end
+            elsif type == 5
+              matches = value.scan(/\D*(\d+)\D*/)
+              for match in matches do
+                checkbox_id = match[0].to_i
+                name = ans_form.find(checkbox_id)['name']
+                item['answer'] = {
+                  'valueString' => name
+                }
 
-            eefps['item'].append(item.dup)
-            if followups.has_key?(checkbox_id)
-              followup_item = {}
-              followup_item['linkId'] = item['linkId'] + '-' + followups[checkbox_id]['id'].to_s
-              followup_item['answer'] = {
-                'valueString' => followups[checkbox_id]['name']
+                if followups.has_key?(checkbox_id)
+                  followup_item = {}
+                  followup_item['linkId'] = item['linkId'] + '-' + followups[checkbox_id]['id'].to_s
+                  followup_item['answer'] = {
+                    'valueString' => followups[checkbox_id]['name']
+                  }
+                  item['item'] = followup_item
+                else
+                  item['item'] = []
+                end
+
+                eefps['item'].append(item.dup)
+              end
+            elsif type == 6
+              name = ans_form.find(value)['name']
+              item['answer'] = {
+                'valueString' => name
               }
-              eefps['item'].append(followup_item)
+              eefps['item'].append(item)
+            elsif type == 7
+              name = ans_form.find(value)['name']
+              item['answer'] = {
+                'valueString' => name
+              }
+              eefps['item'].append(item)
+              if followups.has_key?(value.to_i)
+                followup_item = {}
+                followup_item['linkId'] = item['linkId'] + '-' + followups[value.to_i]['id'].to_s
+                followup_item['answer'] = {
+                  'valueString' => followups[value.to_i]['name']
+                }
+                eefps['item'].append(followup_item)
+              end
+            elsif type == 8
+              name = ans_form.find(value)['name']
+              item['answer'] = {
+                'valueString' => name
+              }
+              eefps['item'].append(item)
+            elsif type == 9
+              for dicts in eefpsqrcf.extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options do
+                item = {
+                  'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
+                }
+                value = dicts.question_row_columns_question_row_column_option_id
+                name = ans_form.find(value)['name']
+                item['answer'] = {
+                  'valueString' => name
+                }
+                eefps['item'].append(item)
+              end
+              item = {}
             end
           end
-        elsif type == 6
-          name = ans_form.find(value)['name']
-          item['answer'] = {
-            'valueString' => name
-          }
-          eefps['item'].append(item)
-        elsif type == 7
-          name = ans_form.find(value)['name']
-          item['answer'] = {
-            'valueString' => name
-          }
-          eefps['item'].append(item)
-          if followups.has_key?(value.to_i)
-            followup_item = {}
-            followup_item['linkId'] = item['linkId'] + '-' + followups[value.to_i]['id'].to_s
-            followup_item['answer'] = {
-              'valueString' => followups[value.to_i]['name']
-            }
-            eefps['item'].append(followup_item)
+
+          if eefps['item'].empty?
+            next
           end
-        elsif type == 8
-          name = ans_form.find(value)['name']
-          item['answer'] = {
-            'valueString' => name
-          }
-          eefps['item'].append(item)
-        elsif type == 9
-          item = {
-            'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
-          }
-          if not type1.nil?
-            item['text'] = type1.name + ' (' + type1.description + ')'
-            if not type1_type.nil?
-              item['text'] = item['text'] + ' (' + type1_type.name + ')'
-            end
-          end
-          for dicts in question_row_column_field.extractions_extraction_forms_projects_sections_question_row_column_fields[0].extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options do
-            value = dicts.question_row_columns_question_row_column_option_id
-            name = ans_form.find(value)['name']
-            item['answer'] = {
-              'valueString' => name
-            }
-            eefps['item'].append(item.dup)
-          end
-          item = {}
+
+          eefpss.append(FHIR::QuestionnaireResponse.new(eefps))
         end
       end
 
-      if eefps['item'].empty?
+      if eefpss.empty?
         return
       end
-      return FHIR::QuestionnaireResponse.new(eefps)
+
+      link_info = [
+        {
+          'relation' => 'service-doc',
+          'url' => 'doc/fhir/questionnaire_response_group_by_type1.txt'
+        }
+      ]
+      return create_bundle(objs=eefpss, type='collection', link_info=link_info)
+
     elsif form.extraction_forms_projects_section_type_id == 3
       extraction = Extraction.find(raw.extraction_id)
       project = Project.find(extraction.project_id)
@@ -316,23 +340,14 @@ class ExtractionSupplyingService
                 for result_statistic_sections_measure in result_statistic_sections[sec_num].result_statistic_sections_measures do
                   measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
                   for tps_arms_rssm in result_statistic_sections_measure.tps_arms_rssms do
-                    record = tps_arms_rssm.records[0]
-                    if record.nil?
-                      next
-                    else
-                      record = record['name']
-                    end
-                    record_id = tps_arms_rssm.records[0]['id']
-                    time_point = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(id: tps_arms_rssm.timepoint_id)
-                    if time_point.nil?
-                      next
-                    end
-                    time_point_name = time_point.timepoint_name['name'] + ' ' + time_point.timepoint_name['unit']
-                    arm = ExtractionsExtractionFormsProjectsSectionsType1.find_by(id: tps_arms_rssm.extractions_extraction_forms_projects_sections_type1_id)
-                    if arm.nil?
-                      next
-                    end
-                    arm_name = Type1.find(arm.type1_id)['name']
+                    record, record_id = get_record_and_id(tps_arms_rssm)
+                    next if record.nil?
+
+                    time_point_name = get_time_point_name(tps_arms_rssm.timepoint_id)
+                    next if time_point_name.nil?
+
+                    arm_name = get_arm_name(tps_arms_rssm.extractions_extraction_forms_projects_sections_type1_id)
+                    next if arm_name.nil?
 
                     evidence = get_evidence_obj(
                       record_id,
@@ -352,26 +367,24 @@ class ExtractionSupplyingService
                 for result_statistic_sections_measure in result_statistic_sections[sec_num].result_statistic_sections_measures do
                   measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
                   for tps_comparisons_rssm in result_statistic_sections_measure.tps_comparisons_rssms do
-                    record = tps_comparisons_rssm.records[0]
-                    if record.nil?
-                      next
-                    else
-                      record = record['name']
-                    end
-                    record_id = tps_comparisons_rssm.records[0]['id']
-                    time_point = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(id: tps_comparisons_rssm.timepoint_id)
-                    if time_point.nil?
-                      next
-                    end
-                    time_point_name = time_point.timepoint_name['name'] + ' ' + time_point.timepoint_name['unit']
+                    record, record_id = get_record_and_id(tps_comparisons_rssm)
+                    next if record.nil?
+
+                    time_point_name = get_time_point_name(tps_comparisons_rssm.timepoint_id)
+                    next if time_point_name.nil?
+
                     comparison = Comparison.find_by(id: tps_comparisons_rssm.comparison_id)
-                    if comparison.nil?
-                      next
-                    end
+                    next if comparison.blank?
+
                     arm_names = []
                     for comparate_group in comparison.comparate_groups do
                       comparable_elements = comparate_group.comparable_elements
-                      arm_names.append(Type1.find(ExtractionsExtractionFormsProjectsSectionsType1.find(comparable_elements[0].comparable_id).type1_id)['name'])
+                      arm_name_in_same_comparate_group = []
+                      for comparable_element in comparable_elements do
+                        arm_name = get_arm_name(comparable_element.comparable_id)
+                        arm_name_in_same_comparate_group.append(arm_name)
+                      end
+                      arm_names.append(arm_name_in_same_comparate_group)
                     end
 
                     evidence = get_evidence_obj(
@@ -392,29 +405,21 @@ class ExtractionSupplyingService
                 for result_statistic_sections_measure in result_statistic_sections[sec_num].result_statistic_sections_measures do
                   measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
                   for comparisons_arms_rssm in result_statistic_sections_measure.comparisons_arms_rssms do
-                    record = comparisons_arms_rssm.records[0]
-                    if record.nil?
-                      next
-                    else
-                      record = record['name']
-                    end
-                    record_id = comparisons_arms_rssm.records[0]['id']
+                    record, record_id = get_record_and_id(comparisons_arms_rssm)
+                    next if record.nil?
+
                     comparison = Comparison.find_by(id: comparisons_arms_rssm.comparison_id)
-                    if comparison.nil?
-                      next
-                    end
+                    next if comparison.blank?
+
                     time_point_names = []
                     for comparate_group in comparison.comparate_groups do
                       comparable_elements = comparate_group.comparable_elements
-                      timepoint_name = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find(comparable_elements[0].comparable_id).timepoint_name
-                      time_point_name = timepoint_name['name'] + ' ' + timepoint_name['unit']
+                      time_point_name = get_time_point_name(comparable_elements[0].comparable_id)
                       time_point_names.append(time_point_name)
                     end
-                    arm = ExtractionsExtractionFormsProjectsSectionsType1.find_by(id: comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1_id)
-                    if arm.nil?
-                      next
-                    end
-                    arm_name = Type1.find(arm.type1_id)['name']
+
+                    arm_name = get_arm_name(comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1_id)
+                    next if arm_name.nil?
 
                     evidence = get_evidence_obj(
                       record_id,
@@ -434,33 +439,30 @@ class ExtractionSupplyingService
                 for result_statistic_sections_measure in result_statistic_sections[sec_num].result_statistic_sections_measures do
                   measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
                   for wacs_bacs_rssm in result_statistic_sections_measure.wacs_bacs_rssms do
-                    record = wacs_bacs_rssm.records[0]
-                    if record.nil?
-                      next
-                    else
-                      record = record['name']
-                    end
-                    record_id = wacs_bacs_rssm.records[0]['id']
+                    record, record_id = get_record_and_id(wacs_bacs_rssm)
+                    next if record.nil?
 
                     comparison_arm = Comparison.find_by(id: wacs_bacs_rssm.bac_id)
-                    if comparison_arm.nil?
-                      next
-                    end
+                    next if comparison_arm.blank?
+
                     arm_names = []
                     for comparate_group in comparison_arm.comparate_groups do
                       comparable_elements = comparate_group.comparable_elements
-                      arm_names.append(Type1.find(ExtractionsExtractionFormsProjectsSectionsType1.find(comparable_elements[0].comparable_id).type1_id)['name'])
+                      arm_name_in_same_comparate_group = []
+                      for comparable_element in comparable_elements do
+                        arm_name = get_arm_name(comparable_element.comparable_id)
+                        arm_name_in_same_comparate_group.append(arm_name)
+                      end
+                      arm_names.append(arm_name_in_same_comparate_group)
                     end
 
                     comparison_time_point = Comparison.find_by(id: wacs_bacs_rssm.wac_id)
-                    if comparison_time_point.nil?
-                      next
-                    end
+                    next if comparison_time_point.blank?
+
                     time_point_names = []
                     for comparate_group in comparison_time_point.comparate_groups do
                       comparable_elements = comparate_group.comparable_elements
-                      timepoint_name = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find(comparable_elements[0].comparable_id).timepoint_name
-                      time_point_name = timepoint_name['name'] + ' ' + timepoint_name['unit']
+                      time_point_name = get_time_point_name(comparable_elements[0].comparable_id)
                       time_point_names.append(time_point_name)
                     end
 
@@ -483,14 +485,18 @@ class ExtractionSupplyingService
           end
         end
 
-        if evidences.empty?
+        if evidences.blank?
           return
         else
+          merged_evidences = merge_evidence_by_variable_definition(evidences)
+          merged_evidences = merged_evidences.map do |element|
+            FHIR::Evidence.new(element)
+          end
           link_info_evidence = [{
             'relation' => 'service-doc',
             'url' => 'doc/fhir/extraction.txt'
           }]
-          return create_bundle(fhir_objs=evidences, type='collection', link_info=link_info_evidence)
+          return create_bundle(fhir_objs=merged_evidences, type='collection', link_info=link_info_evidence)
         end
 
       else
@@ -520,26 +526,25 @@ class ExtractionSupplyingService
               for result_statistic_sections_measure in result_statistic_sections[sec_num].result_statistic_sections_measures do
                 measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
                 for tps_comparisons_rssm in result_statistic_sections_measure.tps_comparisons_rssms do
-                  record = tps_comparisons_rssm.records[0]
-                  if record.nil?
-                    next
-                  else
-                    record = record['name']
-                  end
-                  record_id = tps_comparisons_rssm.records[0]['id']
-                  time_point = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(id: tps_comparisons_rssm.timepoint_id)
-                  if time_point.nil?
-                    next
-                  end
-                  time_point_name = time_point.timepoint_name['name'] + ' ' + time_point.timepoint_name['unit']
+                  record, record_id = get_record_and_id(tps_comparisons_rssm)
+                  next if record.nil?
+
+                  time_point_name = get_time_point_name(tps_comparisons_rssm.timepoint_id)
+                  next if time_point_name.nil?
+
                   comparison = Comparison.find_by(id: tps_comparisons_rssm.comparison_id)
-                  if comparison.nil?
+                  if comparison.blank?
                     next
                   end
                   arm_names = []
                   for comparate_group in comparison.comparate_groups do
                     comparable_elements = comparate_group.comparable_elements
-                    arm_names.append(Type1.find(ExtractionsExtractionFormsProjectsSectionsType1.find(comparable_elements[0].comparable_id).type1_id)['name'])
+                    arm_name_in_same_comparate_group = []
+                    for comparable_element in comparable_elements do
+                      arm_name = get_arm_name(comparable_element.comparable_id)
+                      arm_name_in_same_comparate_group.append(arm_name)
+                    end
+                    arm_names.append(arm_name_in_same_comparate_group)
                   end
 
                   evidence = get_evidence_obj(
@@ -560,24 +565,79 @@ class ExtractionSupplyingService
           end
         end
 
-        if evidences.empty?
+        if evidences.blank?
           return
         else
+          merged_evidences = merge_evidence_by_variable_definition(evidences)
+          merged_evidences = merged_evidences.map do |element|
+            FHIR::Evidence.new(element)
+          end
           link_info_evidence = [{
             'relation' => 'service-doc',
             'url' => 'doc/fhir/extraction.txt'
           }]
-          return create_bundle(fhir_objs=evidences, type='collection', link_info=link_info_evidence)
+          return create_bundle(fhir_objs=merged_evidences, type='collection', link_info=link_info_evidence)
         end
       end
     end
+  end
+
+  def get_record_and_id(rssm)
+    record = rssm.records[0]
+    return nil if record.blank?
+    return nil if record['name'].blank?
+
+    record_id = rssm.records[0]['id']
+    record = record['name']
+    return record, record_id
+  end
+
+  def get_time_point_name(timepoint_id)
+    time_point = ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_by(id: timepoint_id)
+    return nil if time_point.blank?
+
+    time_point_name = time_point.timepoint_name['name'] + ' ' + time_point.timepoint_name['unit']
+    return time_point_name
+  end
+
+  def get_arm_name(arm_id)
+    arm = ExtractionsExtractionFormsProjectsSectionsType1.find_by(id: arm_id)
+    return nil if arm.blank?
+
+    arm_name = Type1.find(arm.type1_id)['name']
+    return arm_name
+  end
+
+  def merge_evidence_by_variable_definition(evidences)
+    grouped_evidences = evidences.group_by { |e| e['variableDefinition'].to_json }
+
+    merged_evidences = []
+
+    grouped_evidences.each do |_, group|
+      merged_resource = group.first.deep_dup
+
+      group[1..-1].each do |resource|
+        if resource['id'] && resource['statistic'] && resource['identifier']
+          merged_resource['id'] += "-#{resource['id'].split('-').last}"
+          merged_resource['statistic'] += resource['statistic']
+
+          if resource['identifier'].first && resource['identifier'].first['value']
+            merged_resource['identifier'].first['value'] += "-#{resource['identifier'].first['value'].split('/').last}"
+          end
+        end
+      end
+
+      merged_evidences << merged_resource
+    end
+
+    merged_evidences
   end
 
   def get_evidence_obj(
     record_id,
     outcome_status,
     population_name,
-    arm_names,
+    arm_name_groups,
     outcome_name,
     time_point_names,
     record,
@@ -612,31 +672,53 @@ class ExtractionSupplyingService
       }]
     }
 
-    for arm_name in arm_names do
+    arm_name_variableRoles = ['exposure', 'referenceExposure']
+    if arm_name_groups.length == 1
       variable_definition = {
-        'description' => arm_name,
+        'description' => arm_name_groups[0],
         'variableRole' => {
           'coding' => [{
             'system' => 'http://terminology.hl7.org/CodeSystem/variable-role',
-            'code' => 'exposure'
+            'code' => arm_name_variableRoles[0]
           }]
         }
       }
+
       evidence['variableDefinition'].append(variable_definition)
+    else
+      arm_name_groups.each_with_index do |arm_name_group, index|
+        arm_name_group.each do |arm_name|
+          variable_definition = {
+            'description' => arm_name,
+            'variableRole' => {
+              'coding' => [{
+                'system' => 'http://terminology.hl7.org/CodeSystem/variable-role',
+                'code' => arm_name_variableRoles[index]
+              }]
+            }
+          }
+
+          evidence['variableDefinition'].append(variable_definition)
+        end
+      end
     end
 
-    for time_point_name in time_point_names do
-      variable_definition = {
-        'description' => outcome_name + ', ' + time_point_name,
-        'variableRole' => {
-          'coding' => [{
-            'system' => 'http://terminology.hl7.org/CodeSystem/variable-role',
-            'code' => 'measuredVariable'
-          }]
-        }
-      }
-      evidence['variableDefinition'].append(variable_definition)
+    time_point_description = outcome_name
+    if time_point_names.size == 1
+      time_point_description += ', ' + time_point_names[0]
+    elsif time_point_names.size == 2
+      time_point_description += ', ' + time_point_names[0] + ' - ' + time_point_names[1]
     end
+    variable_definition = {
+      'description' => time_point_description,
+      'variableRole' => {
+        'coding' => [{
+          'system' => 'http://terminology.hl7.org/CodeSystem/variable-role',
+          'code' => 'measuredVariable'
+        }]
+      }
+    }
+    evidence['variableDefinition'].append(variable_definition)
 
     if measure_name == 'Total (N analyzed)'
       evidence['statistic'][0]['statisticType'] = {
@@ -742,8 +824,12 @@ class ExtractionSupplyingService
           'display' => 'Risk Difference'
         }]
       }
+    else
+      evidence['statistic'][0]['statisticType'] = {
+        'text' => measure_name
+      }
     end
 
-    return FHIR::Evidence.new(evidence)
+    return evidence
   end
 end

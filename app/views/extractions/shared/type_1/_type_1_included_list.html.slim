@@ -13,8 +13,8 @@
         col style="width: 25%;"
         col style="width: 10%;"
         col style="width: 10%;"
-        col style="width: 10%;"
         col style="width: 4%;"
+        col style="width: 10%;"
 
       - else
         col style="width:45%"
@@ -31,8 +31,8 @@
           - if ['Outcomes', 'Diagnoses'].include? section_name
             th style="border: none;" Populations
             th style="border: none;" Timepoints
-            th style="border: none;" FHIR Format
             th style="border: none;"
+            th style="border: none;" FHIR Format
 
       tbody.orderable-list orderable-url="#{ update_positions_api_v1_orderings_url }"
         - eefps.eefpst1s_without_total.each do |eefpst1|
@@ -52,14 +52,16 @@
               td = eefpst1.type1.name
 
             td = eefpst1.type1.description
-
+            - confirmation_message = "Deleting this data point will potentially remove any data associated with it as well. Are you sure you would like to delete: '#{eefpst1.type1.name}'?"
             - if ['Outcomes', 'Diagnoses'].include? section_name
+              - populations = []
+              - timepoints = []
               td
                 ul
                   - if eefpst1.extractions_extraction_forms_projects_sections_type1_rows.present?
                     - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop|
                       li = pop.population_name.name
-
+                      - populations << pop.population_name.name
                   - else
                     li No populations
 
@@ -68,20 +70,21 @@
                   - if eefpst1.extractions_extraction_forms_projects_sections_type1_rows.try(:first).try(:extractions_extraction_forms_projects_sections_type1_row_columns).present?
                     - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
                       li = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '')
-
+                      - timepoints << tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '')
                   - else
                     li No Timepoints
-
-              td
-                ul
-                  li = link_to 'JSON', api_v1_evidence_variable_path(eefpst1, format: :json), target: '_blank'
-                  li = link_to 'ODV', "https://computablepublishing.com/outcome-definition-viewer/?srdr#{ eefpst1.id }", target: '_blank', data: { confirm: @exit_disclaimer }
+              - confirmation_message = "Deleting this data point will potentially remove any data associated with it as well. Are you sure you would like to delete: '#{eefpst1.type1.name}' with populations: '#{populations.join(', ')}' and timepoints: '#{timepoints.join(', ')}'?"
 
             td
               div = link_to edit_extractions_extraction_forms_projects_sections_type1_path(eefpst1) do
                 i.fi-pencil>
                 | Edit
-
-              div = link_to eefpst1, data: { confirm: 'Are you sure?' }, method: :delete do
+              div = link_to eefpst1, data: { confirm: confirmation_message }, method: :delete do
                 i.fi-trash>
                 | Remove
+
+            - if ['Outcomes', 'Diagnoses'].include? section_name
+              td
+                ul
+                  li = link_to 'JSON', api_v1_evidence_variable_path(eefpst1, format: :json), target: '_blank'
+                  li = link_to 'ODV', "https://computablepublishing.com/outcome-definition-viewer/?srdr#{ eefpst1.id }", target: '_blank', data: { confirm: @exit_disclaimer }

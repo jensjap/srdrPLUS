@@ -11,8 +11,7 @@ module ImportJobs::CsvCitationImporter
     preview_citations = []
     h_arr = []
 
-    file_string = imported_file.content.download.encode('UTF-8', invalid: :replace, undef: :replace, replace: '',
-                                                                 universal_newline: true)
+    file_string = imported_file.content.download
 
     CSV.parse(file_string, headers: :true) do |row|
       key_counter = 0

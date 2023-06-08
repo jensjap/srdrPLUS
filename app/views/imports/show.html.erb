@@ -2,7 +2,7 @@
 <div class="p-4 lg:p-8">
   <div class="sm:flex sm:items-center">
     <div class="sm:flex-auto">
-      <h1 class="text-xl font-bold">Import Citations</h1>
+      <h1 class="text-xl font-bold">PREVIEW: Import Citations</h1>
       <p class="mt-2 text-sm text-gray-700">
         Please review the first (up to) 3 citations of each file that you
         uploaded. We've found a total of <%= total %> citations. Please click on
@@ -11,10 +11,17 @@
     </div>
     <% if total <= 100_000 %>
     <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+      <!-- prettier-ignore -->
       <%= link_to('Start Import', "/imports/#{@import.id}/start", method: :post,
       class: "inline-flex items-center justify-center rounded-md border
       border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white
       shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2
+      focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
+      hover:text-white") %>
+      <%= link_to('Cancel', "/projects/#{@project.id}/citations",
+      class: "inline-flex items-center justify-center rounded-md border
+      border-transparent bg-red-800 px-4 py-2 text-sm font-medium text-white
+      shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2
       focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
       hover:text-white") %>
     </div>
@@ -28,12 +35,13 @@
     <table>
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Authors</th>
-          <th>Journals</th>
-          <th>Refman</th>
-          <th>Pmid</th>
-          <th>Abstract</th>
+          <th class="text-left">Title</th>
+          <th class="text-left">Authors</th>
+          <th class="text-left">Source</th>
+          <th class="text-left">Publication Year</th>
+          <th class="text-left">Refman</th>
+          <th class="text-left">PMID</th>
+          <th class="text-left">Abstract</th>
         </tr>
       </thead>
       <tbody>
@@ -41,12 +49,11 @@
         <% preview[:citations].each do |citation| %>
         <tr>
           <td><%= citation['name'] %></td>
-          <td>
-            <ul>
-              <li><%= citation['authors'] %></li>
-            </ul>
-          </td>
-          <td><%= citation['journal_attributes']&.values&.join(', ') %></td>
+          <td><%= citation['authors'] %></td>
+          <!-- prettier-ignore -->
+          <td><%= citation['journal_attributes']&.reject { |k, v| k == 'publication_date' }&.values&.join(', ') %></td>
+          <!-- prettier-ignore -->
+          <td><%= citation['journal_attributes']&.dig('publication_date') %></td>
           <td><%= citation['refman'] %></td>
           <td><%= citation['pmid'] %></td>
           <td><%= citation['abstract'] %></td>

@@ -9,6 +9,9 @@
         <tr>
           <th class="w-20"></th>
           <template x-if="isOutcome()">
+            <th></th>
+          </template>
+          <template x-if="isOutcome()">
             <th class="text-left">Type</th>
           </template>
           <th class="text-left" x-text="isOutcome() ? 'Domain' : 'Name' "></th>
@@ -44,6 +47,43 @@
                 aria-hidden="true"
               ></i>
             </td>
+            <template x-if="isOutcome()">
+              <td class="text-sm">
+                <span
+                  class="ml-2 bg-red-700 text-xs text-white p-1 rounded-md cursor-pointer"
+                  @click="if (confirm(`Are you sure you want to delete '${extraction_eefpst1.name}'`)) {
+                    deleteArm(extraction_eefpst1.id);
+                  }"
+                >
+                  Delete
+                </span>
+                <span
+                  class="ml-2 bg-orange-500 text-xs text-white p-1 rounded-md cursor-pointer"
+                  @click="const section_eefpst1 = mh?.current_citations_project?.current_section_eefpst1s.find((section_eefpst1) => {
+                    return section_eefpst1.type1_id === extraction_eefpst1.type1_id
+                  })
+                  const eefps = consolidatedEefps();
+                  type1_previews = {
+                    loading: true,
+                    false: [],
+                    citations: [],
+                    project: []
+                  };
+                  scopeOfChange = 'false';
+                  type1_change_modal = true;
+                  getArmData(section_eefpst1.type1_id, eefps.extraction_forms_projects_section_id, eefps.id);
+                  oldType1.id = section_eefpst1?.eefpst1_lookups[eefps.id];
+                  oldType1.name = section_eefpst1?.name;
+                  oldType1.description = section_eefpst1?.description;
+                  oldType1.type1_type_id = section_eefpst1?.type1_type_id;
+                  newType1.name = oldType1.name;
+                  newType1.description = oldType1.description;
+                  newType1.type1_type_id = oldType1?.type1_type_id;"
+                >
+                  Change
+                </span>
+              </td>
+            </template>
             <template x-if="isOutcome()">
               <td
                 class="text-sm"
@@ -239,8 +279,6 @@
               >Outcome Type
               <select
                 class="!px-1 !text-xs cursor-pointer"
-                name="pets"
-                id="pet-select"
                 x-ref="new_eefpst1_type"
               >
                 <option value="1">Categorical</option>
@@ -496,8 +534,10 @@
                               oldType1.id = section_eefpst1?.eefpst1_lookups[eefps.id];
                               oldType1.name = section_eefpst1?.name;
                               oldType1.description = section_eefpst1?.description;
+                              oldType1.type1_type_id = section_eefpst1?.type1_type_id;
                               newType1.name = oldType1.name;
-                              newType1.description = oldType1.description;"
+                              newType1.description = oldType1.description;
+                              newType1.type1_type_id = oldType1?.type1_type_id;"
                             >
                               Change
                             </span>

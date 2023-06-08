@@ -7,6 +7,12 @@ GIT
       i18n (>= 1.8.11, < 2)
 
 GIT
+  remote: https://github.com/jensjap/ref_parsers.git
+  revision: 6c337491d2b90cc28195669f9295e67ad63e135a
+  specs:
+    ref_parsers (0.2.2)
+
+GIT
   remote: https://github.com/mshibuya/remotipart.git
   revision: a1860d64aef484047bc1ef50e2f19ef2480eacf9
   specs:
@@ -155,7 +161,7 @@ GEM
       execjs
     coffee-script-source (1.12.2)
     concurrent-ruby (1.2.0)
-    connection_pool (2.3.0)
+    connection_pool (2.4.0)
     countries (5.3.1)
       unaccent (~> 0.3)
     country_select (8.0.1)
@@ -408,7 +414,8 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     redis (4.7.1)
-    ref_parsers (0.2.2)
+    redis-client (0.14.1)
+      connection_pool
     representable (3.2.0)
       declarative (< 0.1.0)
       trailblazer-option (>= 0.1.1, < 0.2.0)
@@ -454,10 +461,11 @@ GEM
     sentry-sidekiq (5.8.0)
       sentry-ruby (~> 5.8.0)
       sidekiq (>= 3.0)
-    sidekiq (6.5.8)
-      connection_pool (>= 2.2.5, < 3)
-      rack (~> 2.0)
-      redis (>= 4.5.0, < 5)
+    sidekiq (7.0.8)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      rack (>= 2.2.4)
+      redis-client (>= 0.11.0)
     sidekiq-cron (1.9.1)
       fugit (~> 1.8)
       sidekiq (>= 4.2.1)
@@ -588,7 +596,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 7.0.3)
   redis (= 4.7.1)
-  ref_parsers (~> 0.2.0)
+  ref_parsers (~> 0.2.0)!
   remotipart!
   responders
   roo (~> 2.9.0)
@@ -599,7 +607,7 @@ DEPENDENCIES
   sentry-rails
   sentry-ruby
   sentry-sidekiq
-  sidekiq (< 7)
+  sidekiq (< 8)
   sidekiq-cron
   simple_form
   simplecov

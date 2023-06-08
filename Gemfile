@@ -67,7 +67,7 @@ gem 'rack-attack' # Limit request rates
 gem 'rack-cors' # CORS.
 gem 'rails', '~> 7.0.3'
 gem 'redis', '4.7.1'
-gem 'ref_parsers', '~> 0.2.0' # for parsing ris files.
+gem 'ref_parsers', '~> 0.2.0', github: 'jensjap/ref_parsers' # for parsing ris files.
 gem 'remotipart', github: 'mshibuya/remotipart'
 gem 'responders' # Help DRY up code.
 gem 'roo', '~> 2.9.0'
@@ -78,7 +78,7 @@ gem 'searchkick'
 gem 'sentry-rails'
 gem 'sentry-ruby' # full-stack error tracking system
 gem 'sentry-sidekiq' # full-stack error tracking system
-gem 'sidekiq', '<7' # Background jobs.
+gem 'sidekiq', '<8' # Background jobs.
 gem 'sidekiq-cron' # Allows periodic background jobs
 gem 'simple_form'
 gem 'slim-rails'

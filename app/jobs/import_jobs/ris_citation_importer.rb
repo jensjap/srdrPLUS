@@ -10,13 +10,6 @@ module ImportJobs::RisCitationImporter
                   .content
                   .download
                   .gsub('"', "'")
-                  .encode(
-                    'UTF-8',
-                    invalid: :replace,
-                    undef: :replace,
-                    replace: '',
-                    universal_newline: true
-                  )
 
     return false unless file_string
 
