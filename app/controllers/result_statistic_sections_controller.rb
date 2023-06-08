@@ -167,8 +167,7 @@ class ResultStatisticSectionsController < ApplicationController
     #
     #        measure_ids: [],
     #        comparisons_attributes: [ :id, :_destroy, :result_statistic_section_id,
-    #          comparisons_measures_attributes: [ :id, :_destroy, :comparison_id, :measure_id ,
-    #          measurement_attributes: [ :id, :_destroy, :comparisons_measure_id, :value ] ],
+    #          comparisons_measures_attributes: [ :id, :_destroy, :comparison_id, :measure_id ],
     #        comparate_groups_attributes: [ :id, :_destroy, :comparison_id,
     #        comparates_attributes: [ :id, :_destroy, :comparate_group_id, :comparable_element_id,
     #        comparable_element_attributes: [ :id, :_destroy, :comparable_type, :comparable_id, :_destroy ] ] ] ] )
