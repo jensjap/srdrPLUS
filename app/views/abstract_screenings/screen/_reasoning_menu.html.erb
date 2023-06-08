@@ -154,13 +154,13 @@
               </div>
               <hr class="m-0" />
               <label for="notes" class="block text-sm text-gray-700"
-                >Select up to one reason</label
+                >Select reasons</label
               >
               <div class="flex flex-wrap gap-2 mt-4 mb-8">
                 <template x-for="(reason, index) in asr.predefined_reasons">
                   <span
                     :class="reason.selected ? 'bg-srdrpurple' : 'bg-white !text-black'"
-                    @click="const value = reason.selected; turnOffAllReasons(); reason.selected = !value; updateAsr('reasons_and_tags')"
+                    @click="reason.selected = !reason.selected; updateAsr('reasons_and_tags')"
                     class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
                     x-text="reason.name"
                   >
@@ -203,7 +203,7 @@
                         '!bg-white !text-black': !reason.selected,
                         '!bg-purple-400 !text-white': (dropIndex == index && dropType == dragType && dragIndex != dropIndex && dragType == 'custom_reasons')
                       }"
-                      @click="const value = reason.selected; turnOffAllReasons(); reason.selected = !value; updateAsr('reasons_and_tags')"
+                      @click="reason.selected = !reason.selected; updateAsr('reasons_and_tags')"
                       x-text="reason.name"
                     >
                     </span>

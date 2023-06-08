@@ -331,15 +331,6 @@
         return satisfactory;
       },
 
-      turnOffAllReasons() {
-        for (var i = 0; i < this.asr.predefined_reasons.length; i++) {
-          this.asr.predefined_reasons[i].selected = false;
-        }
-        for (var i = 0; i < this.asr.custom_reasons.length; i++) {
-          this.asr.custom_reasons[i].selected = false;
-        }
-      },
-
       invalidCustomValue() {
         if (this.newCustomValue == "") {
           toastr.error("This field cannot be empty.");
