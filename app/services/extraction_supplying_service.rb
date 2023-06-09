@@ -489,6 +489,7 @@ class ExtractionSupplyingService
           return
         else
           merged_evidences = merge_evidence_by_variable_definition(evidences)
+          merged_evidences = merge_statistics(merged_evidences)
           merged_evidences = merged_evidences.map do |element|
             FHIR::Evidence.new(element)
           end
@@ -569,6 +570,7 @@ class ExtractionSupplyingService
           return
         else
           merged_evidences = merge_evidence_by_variable_definition(evidences)
+          merged_evidences = merge_statistics(merged_evidences)
           merged_evidences = merged_evidences.map do |element|
             FHIR::Evidence.new(element)
           end
@@ -633,6 +635,49 @@ class ExtractionSupplyingService
     merged_evidences
   end
 
+  def merge_statistics(array)
+    array.map do |item|
+      statistic_type_count = item["statistic"].count do |statistic|
+        statistic.key?("statisticType")
+      end
+  
+      merge_targets = item["statistic"].select do |statistic|
+        statistic_type_count != 1 || statistic_type_count == 1
+      end
+  
+      attribute_estimate_arr = []
+  
+      merged_statistic = merge_targets.reduce({}) do |result, current|
+        if current.key?("attributeEstimate")
+          attribute_estimate_arr += current["attributeEstimate"]
+          current = current.reject { |key, _| key == "attributeEstimate" }
+        end
+  
+        result.merge(current) { |key, oldval, newval| oldval.is_a?(Hash) && newval.is_a?(Hash) ? oldval.merge(newval) : newval }
+      end
+  
+      unless attribute_estimate_arr.empty?
+        merged_statistic["attributeEstimate"] = attribute_estimate_arr
+      end
+  
+      item["statistic"] = [merged_statistic]
+  
+      item
+    end
+  end
+
+  def build_variable_definition(description, code)
+    {
+      'description' => description,
+      'variableRole' => {
+        'coding' => [{
+          'system' => 'http://terminology.hl7.org/CodeSystem/variable-role',
+          'code' => code
+        }]
+      }
+    }
+  end
+
   def get_evidence_obj(
     record_id,
     outcome_status,
@@ -644,192 +689,123 @@ class ExtractionSupplyingService
     measure_name
   )
     evidence = {
-      'id' => '5' + '-' + record_id.to_s,
+      'id' => "5-#{record_id}",
       'status' => outcome_status,
       'identifier' => [{
         'type' => {
           'text' => 'SRDR+ Object Identifier'
         },
         'system' => 'https://srdrplus.ahrq.gov/',
-        'value' => 'Record/' + record_id.to_s
+        'value' => "Record/#{record_id}"
       }],
       'variableDefinition' => [
-        {
-          'description' => population_name,
-          'variableRole' => {
-            'coding' => [{
-              'system' => 'http://terminology.hl7.org/CodeSystem/variable-role',
-              'code' => 'population'
-            }]
-          }
-        }
+        build_variable_definition(population_name, 'population')
       ],
-      'statistic' => [{
-        'quantity' => {
-          'value' => record
-        },
-        'description' => measure_name
-      }]
+      'statistic' => [{}]
     }
 
-    arm_name_variableRoles = ['exposure', 'referenceExposure']
-    if arm_name_groups.length == 1
-      variable_definition = {
-        'description' => arm_name_groups[0],
-        'variableRole' => {
+    case measure_name
+    when 'Total (N analyzed)'
+      evidence['statistic'][0]['sampleSize'] = {'knownDataCount' => {'value' => record}}
+    when 'Events'
+      evidence['statistic'][0]['numberOfEvents'] = record
+    when '95% CI low (OR)'
+      evidence['statistic'][0]['attributeEstimate'] = [{
+        'type' => {
           'coding' => [{
-            'system' => 'http://terminology.hl7.org/CodeSystem/variable-role',
-            'code' => arm_name_variableRoles[0]
+            'system' => 'http://terminology.hl7.org/CodeSystem/attribute-estimate-type',
+            'code' => 'C53324',
+            'display' => 'Confidence interval'
           }]
+        },
+        'level' => 0.95,
+        'range' => {
+          'low' => {
+            'value' => record
+          }
         }
-      }
-
-      evidence['variableDefinition'].append(variable_definition)
+      }]
+    when '95% CI high (OR)'
+      evidence['statistic'][0]['attributeEstimate'] = [{
+        'type' => {
+          'coding' => [{
+            'system' => 'http://terminology.hl7.org/CodeSystem/attribute-estimate-type',
+            'code' => 'C53324',
+            'display' => 'Confidence interval'
+          }]
+        },
+        'level' => 0.95,
+        'range' => {
+          'high' =>  {
+            'value' => record
+          }
+        }
+      }]
+    when 'p value'
+      evidence['statistic'][0]['attributeEstimate'] = [{
+        'type' => {
+          'coding' => [{
+            'system' => 'http://terminology.hl7.org/CodeSystem/attribute-estimate-type',
+            'code' => 'C44185',
+            'display' => 'P-value'
+          }]
+        },
+        'quantity' => {
+          'value' => record
+        }
+      }]
+    else
+      evidence['statistic'][0]['quantity'] = {'value' => record}
+      evidence['statistic'][0]['description'] = measure_name
+    end
+  
+    arm_name_variable_roles = ['exposure', 'referenceExposure']
+    if arm_name_groups.length == 1 and !arm_name_groups[0].is_a?(Array)
+      evidence['variableDefinition'].append(build_variable_definition(arm_name_groups[0], arm_name_variable_roles[0]))
     else
       arm_name_groups.each_with_index do |arm_name_group, index|
+        arm_name_group = [arm_name_group] unless arm_name_group.respond_to?(:each)
         arm_name_group.each do |arm_name|
-          variable_definition = {
-            'description' => arm_name,
-            'variableRole' => {
-              'coding' => [{
-                'system' => 'http://terminology.hl7.org/CodeSystem/variable-role',
-                'code' => arm_name_variableRoles[index]
-              }]
-            }
-          }
-
-          evidence['variableDefinition'].append(variable_definition)
+          evidence['variableDefinition'].append(build_variable_definition(arm_name, arm_name_variable_roles[index]))
         end
       end
     end
-
-    time_point_description = outcome_name
-    if time_point_names.size == 1
-      time_point_description += ', ' + time_point_names[0]
-    elsif time_point_names.size == 2
-      time_point_description += ', ' + time_point_names[0] + ' - ' + time_point_names[1]
-    end
-    variable_definition = {
-      'description' => time_point_description,
-      'variableRole' => {
-        'coding' => [{
-          'system' => 'http://terminology.hl7.org/CodeSystem/variable-role',
-          'code' => 'measuredVariable'
-        }]
-      }
+  
+    time_point_string = time_point_names.join(' - ')
+    evidence['variableDefinition'].append(build_variable_definition("#{outcome_name}, #{time_point_string}", 'measuredVariable'))
+  
+    statistic_type_mapping = {
+      'Proportion' => ['C44256', 'Proportion'],
+      'Incidence Rate (per 1000)' => ['C16726', 'Incidence'],
+      'Incidence rate (per 10,000)' => ['C16726', 'Incidence'],
+      'Incidence rate (per 100,000)' => ['C16726', 'Incidence'],
+      'Odds Ratio (OR)' => ['C16932', 'Odds Ratio'],
+      'Odds Ratio, Adjusted (adjOR)' => ['C16932', 'Odds Ratio'],
+      'Incidence Rate Ratio (IRR)' => ['rate-ratio', 'Incidence Rate Ratio'],
+      'Incidence Rate Ratio, Adjusted (adjIRR)' => ['rate-ratio', 'Incidence Rate Ratio'],
+      'Hazard Ratio (HR)' => ['C93150', 'Hazard Ratio'],
+      'Hazard Ratio, Adjusted (adjHR)' => ['C93150', 'Hazard Ratio'],
+      'Risk Difference (RD)' => ['0000424', 'Risk Difference'],
+      'Risk Difference, Adjusted (adjRD)' => ['0000424', 'Risk Difference']
     }
-    evidence['variableDefinition'].append(variable_definition)
+  
+    exception_measure_names = ['Total (N analyzed)', 'Events', '95% CI low (OR)', '95% CI high (OR)', 'p value']
 
-    if measure_name == 'Total (N analyzed)'
+    if statistic_type_mapping.key?(measure_name)
+      code, display = statistic_type_mapping[measure_name]
       evidence['statistic'][0]['statisticType'] = {
         'coding' => [{
           'system' => 'http://terminology.hl7.org/CodeSystem/statistic-type',
-          'code' => 'C25463',
-          'display' => 'Count'
+          'code' => code,
+          'display' => display
         }]
       }
-    elsif measure_name == 'Proportion'
-      evidence['statistic'][0]['statisticType'] = {
-        'coding' => [{
-          'system' => 'http://terminology.hl7.org/CodeSystem/statistic-type',
-          'code' => 'C44256',
-          'display' => 'Proportion'
-        }]
-      }
-    elsif measure_name == 'Incidence Rate (per 1000)'
-      evidence['statistic'][0]['statisticType'] = {
-        'coding' => [{
-          'system' => 'http://terminology.hl7.org/CodeSystem/statistic-type',
-          'code' => 'C16726',
-          'display' => 'Incidence'
-        }]
-      }
-    elsif measure_name == 'Incidence rate (per 10,000)'
-      evidence['statistic'][0]['statisticType'] = {
-        'coding' => [{
-          'system' => 'http://terminology.hl7.org/CodeSystem/statistic-type',
-          'code' => 'C16726',
-          'display' => 'Incidence'
-        }]
-      }
-    elsif measure_name == 'Incidence rate (per 100,000)'
-      evidence['statistic'][0]['statisticType'] = {
-        'coding' => [{
-          'system' => 'http://terminology.hl7.org/CodeSystem/statistic-type',
-          'code' => 'C16726',
-          'display' => 'Incidence'
-        }]
-      }
-    elsif measure_name == 'Odds Ratio (OR)'
-      evidence['statistic'][0]['statisticType'] = {
-        'coding' => [{
-          'system' => 'http://terminology.hl7.org/CodeSystem/statistic-type',
-          'code' => 'C16932',
-          'display' => 'Odds Ratio'
-        }]
-      }
-    elsif measure_name == 'Odds Ratio, Adjusted (adjOR)'
-      evidence['statistic'][0]['statisticType'] = {
-        'coding' => [{
-          'system' => 'http://terminology.hl7.org/CodeSystem/statistic-type',
-          'code' => 'C16932',
-          'display' => 'Odds Ratio'
-        }]
-      }
-    elsif measure_name == 'Incidence Rate Ratio (IRR)'
-      evidence['statistic'][0]['statisticType'] = {
-        'coding' => [{
-          'system' => 'http://terminology.hl7.org/CodeSystem/statistic-type',
-          'code' => 'rate-ratio',
-          'display' => 'Incidence Rate Ratio'
-        }]
-      }
-    elsif measure_name == 'Incidence Rate Ratio, Adjusted (adjIRR)'
-      evidence['statistic'][0]['statisticType'] = {
-        'coding' => [{
-          'system' => 'http://terminology.hl7.org/CodeSystem/statistic-type',
-          'code' => 'rate-ratio',
-          'display' => 'Incidence Rate Ratio'
-        }]
-      }
-    elsif measure_name == 'Hazard Ratio (HR)'
-      evidence['statistic'][0]['statisticType'] = {
-        'coding' => [{
-          'system' => 'http://terminology.hl7.org/CodeSystem/statistic-type',
-          'code' => 'C93150',
-          'display' => 'Hazard Ratio'
-        }]
-      }
-    elsif measure_name == 'Hazard Ratio, Adjusted (adjHR)'
-      evidence['statistic'][0]['statisticType'] = {
-        'coding' => [{
-          'system' => 'http://terminology.hl7.org/CodeSystem/statistic-type',
-          'code' => 'C93150',
-          'display' => 'Hazard Ratio'
-        }]
-      }
-    elsif measure_name == 'Risk Difference (RD)'
-      evidence['statistic'][0]['statisticType'] = {
-        'coding' => [{
-          'system' => 'http://terminology.hl7.org/CodeSystem/statistic-type',
-          'code' => '0000424',
-          'display' => 'Risk Difference'
-        }]
-      }
-    elsif measure_name == 'Risk Difference, Adjusted (adjRD)'
-      evidence['statistic'][0]['statisticType'] = {
-        'coding' => [{
-          'system' => 'http://terminology.hl7.org/CodeSystem/statistic-type',
-          'code' => '0000424',
-          'display' => 'Risk Difference'
-        }]
-      }
-    else
+    elsif !exception_measure_names.include?(measure_name)
       evidence['statistic'][0]['statisticType'] = {
         'text' => measure_name
       }
     end
-
-    return evidence
+  
+    evidence
   end
 end
