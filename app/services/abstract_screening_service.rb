@@ -44,9 +44,10 @@ class AbstractScreeningService
       label: nil
     )
     asrs = asrs.filter do |asr|
-      asr.citations_project.screening_qualifications.blank? && asr.citations_project.abstract_screening_results.all? do |asr|
-        asr.privileged.blank?
-      end
+      asr.citations_project.screening_qualifications.blank? &&
+        asr.citations_project.abstract_screening_results.all? do |asr2|
+          asr2.privileged.blank?
+        end
     end
     asrs.first
   end
