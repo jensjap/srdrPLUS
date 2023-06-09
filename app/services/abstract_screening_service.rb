@@ -1,3 +1,7 @@
+# TODOS:
+# need to check for the existence of screening_qualifications and citations_projects.screening_status
+# account for the consequence of having privileged ASR/FSR
+# affected methods: find_unfinished_asr, at_or_over_limit, get_next_... in find_citation_id
 class AbstractScreeningService
   def self.as_user?(user)
     return false if user.nil?
@@ -34,11 +38,17 @@ class AbstractScreeningService
   end
 
   def self.find_unfinished_asr(abstract_screening, user)
-    AbstractScreeningResult.find_by(
+    asrs = AbstractScreeningResult.includes(citations_project: :screening_qualifications).where(
       abstract_screening:,
       user:,
       label: nil
     )
+    asrs = asrs.filter do |asr|
+      asr.citations_project.screening_qualifications.blank? && asr.citations_project.abstract_screening_results.all? do |asr|
+        asr.privileged.blank?
+      end
+    end
+    asrs.first
   end
 
   def self.get_next_pilot_citation_id(abstract_screening, user)
@@ -67,8 +77,7 @@ class AbstractScreeningService
                                      mp1.citations_project_id = mp2.citations_project_id
                                      AND
                                      mp1.created_at < mp2.created_at
-                                   )'
-                               )
+                                   )')
                          .where('mp2.id IS NULL')
                          .where.not(id: project_screened_citation_ids)
                          .where('mp1.score BETWEEN ? AND ?', 0.3, 0.7)
@@ -98,7 +107,7 @@ class AbstractScreeningService
   end
 
   def self.get_next_expert_needed_citation_id(abstract_screening, user)
-    if abstract_screening.project.projects_users.find { |as| as.user_id==user.id }.is_expert
+    if abstract_screening.project.projects_users.find { |as| as.user_id == user.id }.is_expert
       get_next_doubles_citation_id(abstract_screening, user)
     else
       unscreened_citation_ids_by_experts = expert_screened_citation_ids(abstract_screening)
@@ -112,7 +121,7 @@ class AbstractScreeningService
   end
 
   def self.get_next_only_expert_novice_mixed_citation_id(abstract_screening, user)
-    if abstract_screening.project.projects_users.find { |as| as.user_id==user.id }.is_expert
+    if abstract_screening.project.projects_users.find { |as| as.user_id == user.id }.is_expert
       unscreened_citation_ids_by_novices =
         novice_screened_citation_ids(abstract_screening)
       citation_id = unscreened_citation_ids_by_novices.sample
@@ -157,10 +166,14 @@ class AbstractScreeningService
       .abstract_screening_results
       .joins(:citations_project)
       .group(:citations_project_id)
-      .having("count(*)=1")
+      .having('count(*)=1')
       .includes(citations_project: :citation,
                 user: { projects_users: :project })
-      .select { |asr| asr.user.projects_users.any? { |pu| pu.is_expert && pu.project == asr.abstract_screening.project } }
+      .select do |asr|
+      asr.user.projects_users.any? do |pu|
+        pu.is_expert && pu.project == asr.abstract_screening.project
+      end
+    end
       .map(&:citation)
       .map(&:id)
   end
@@ -170,10 +183,14 @@ class AbstractScreeningService
       .abstract_screening_results
       .joins(:citations_project)
       .group(:citations_project_id)
-      .having("count(*)=1")
+      .having('count(*)=1')
       .includes(citations_project: :citation,
                 user: { projects_users: :project })
-      .select { |asr| asr.user.projects_users.any? { |pu| !pu.is_expert && pu.project == asr.abstract_screening.project } }
+      .select do |asr|
+      asr.user.projects_users.any? do |pu|
+        !pu.is_expert && pu.project == asr.abstract_screening.project
+      end
+    end
       .map(&:citation)
       .map(&:id)
   end
