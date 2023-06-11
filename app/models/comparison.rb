@@ -15,7 +15,7 @@ class Comparison < ApplicationRecord
   has_many :comparable_elements, as: :comparable, dependent: :destroy
 
   has_many :comparisons_measures, dependent: :destroy, inverse_of: :comparison
-  has_many :measurements, through: :comparisons_measures, dependent: :destroy
+#  has_many :measurements, through: :comparisons_measures, dependent: :destroy
   has_many :measures,     through: :comparisons_measures
 
   has_many :comparisons_arms_rssms, dependent: :destroy, inverse_of: :comparison
@@ -27,7 +27,7 @@ class Comparison < ApplicationRecord
 
   accepts_nested_attributes_for :comparate_groups,     allow_destroy: true
   accepts_nested_attributes_for :comparisons_measures, allow_destroy: true
-  accepts_nested_attributes_for :measurements,         allow_destroy: true
+#  accepts_nested_attributes_for :measurements,         allow_destroy: true
 
   # Fetch records for this particular comparison
   # by timepoint, bac, and measure.

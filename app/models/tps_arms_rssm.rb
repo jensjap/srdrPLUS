@@ -52,4 +52,8 @@ class TpsArmsRssm < ApplicationRecord
                                        result_statistic_sections_measure:)
     Record.find_or_create_by!(recordable: tps_arms_rssm)
   end
+
+  def measure_name
+    result_statistic_sections_measure.measure.name
+  end
 end
