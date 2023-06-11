@@ -135,7 +135,10 @@
                           stroke-width="1.5"
                           stroke="currentColor"
                           class="cursor-pointer text-red-900 w-4 h-4"
-                          @click="if (confirm(`Are you sure you want to delete '${population.name}'`)) deletePopulation(extraction_eefpst1.id, population.eefpst1r_id)"
+                          @click="if (extraction_eefpst1.populations.length < 2) {
+                            return alert('At least one population must remain.')
+                          }
+                          if (confirm(`Are you sure you want to delete '${population.name}'`)) deletePopulation(extraction_eefpst1.id, population.eefpst1r_id)"
                         >
                           <path
                             stroke-linecap="round"
@@ -214,7 +217,10 @@
                           stroke-width="1.5"
                           stroke="currentColor"
                           class="cursor-pointer text-red-900 w-4 h-4"
-                          @click="if (confirm(`Are you sure you want to delete '${timepoint.name}'`)) deleteTimepoint(extraction_eefpst1.id, timepoint.eefpst1r_id, timepoint.eefpst1rc_id)"
+                          @click="if (extraction_eefpst1.timepoints.length < 2) {
+                            return alert('At least one timepoint must remain')
+                          }
+                          if (confirm(`Are you sure you want to delete '${timepoint.name}'`)) deleteTimepoint(extraction_eefpst1.id, timepoint.eefpst1r_id, timepoint.eefpst1rc_id)"
                         >
                           <path
                             stroke-linecap="round"
@@ -258,17 +264,29 @@
     </table>
   </div>
   <div class="mt-6">
-    <h3 class="text-base font-bold">
-      Add
-      <span x-text="mh?.current_citations_project?.section_name"></span>
-      to Consolidated Extraction
-      <button
-        class="cursor-pointer p-1 my-1 bg-srdrpurple text-xs text-white"
-        @click="suggestions_modal = true"
-      >
-        Suggested
+    <h3 class="text-base font-bold flex justify-between">
+      <div>
+        Add
         <span x-text="mh?.current_citations_project?.section_name"></span>
-      </button>
+        to Consolidated Extraction
+        <button
+          class="cursor-pointer p-1 my-1 bg-srdrpurple text-xs text-white"
+          @click="suggestions_modal = true"
+        >
+          Suggested
+          <span x-text="mh?.current_citations_project?.section_name"></span>
+        </button>
+      </div>
+      <template x-if="isOutcome()">
+        <div>
+          <button
+            class="cursor-pointer p-1 my-1 bg-orange-700 text-xs text-white"
+            @click="autoConsolidateOutcomes()"
+          >
+            Auto Consolidate
+          </button>
+        </div>
+      </template>
     </h3>
 
     <div class="border-2 rounded-md p-2">
@@ -367,7 +385,7 @@
                   @keyup.enter="addToNewPopulation()"
                 />
                 <div
-                  class="bg-srdr-secondary text-xs text-white p-2 rounded-md text-center mt-2 cursor-pointer"
+                  class="bg-srdrpurple text-xs text-white p-2 rounded-md text-center mt-2 cursor-pointer"
                   @click="addToNewPopulation()"
                 >
                   Add Population
@@ -420,7 +438,7 @@
                   @keyup.enter="addToNewTimepoint()"
                 />
                 <div
-                  class="bg-srdr-secondary text-xs text-white p-2 rounded-md text-center mt-2 cursor-pointer"
+                  class="bg-srdrpurple text-xs text-white p-2 rounded-md text-center mt-2 cursor-pointer"
                   @click="addToNewTimepoint()"
                 >
                   Add Timepoint
