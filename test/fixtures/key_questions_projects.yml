@@ -4,11 +4,10 @@ one:
   extraction_forms_projects_section: four
   key_question: one
   project: one
-  active: true
+#  active: true
 
 two:
   extraction_forms_projects_section: four
   key_question: two
   project: one
-  active: true
-
+#  active: true

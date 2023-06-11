@@ -2,9 +2,8 @@
 
 one:
   name: Extraction Form One
-  deleted_at:
+#  deleted_at:
 
 two:
   name: Extraction Form Two
-  deleted_at:
-
+#  deleted_at:

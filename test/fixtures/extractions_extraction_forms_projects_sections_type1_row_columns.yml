@@ -3,9 +3,9 @@
 one:
   extractions_extraction_forms_projects_sections_type1_row: one
   timepoint_name: one
-  deleted_at:
+#  deleted_at:
 
 two:
   extractions_extraction_forms_projects_sections_type1_row: two
   timepoint_name: two
-  deleted_at:
+#  deleted_at:

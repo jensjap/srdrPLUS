@@ -2,12 +2,12 @@
 
 one:
   citations_project: one
-  deleted_at:
+#  deleted_at:
 
 two:
   citations_project: two
-  deleted_at:
+#  deleted_at:
 
 three:
   citations_project: one
-  deleted_at:
+#  deleted_at:

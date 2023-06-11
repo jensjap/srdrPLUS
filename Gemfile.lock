@@ -587,6 +587,7 @@ DEPENDENCIES
   mysql2
   net-ftp
   net-smtp
+  nokogiri
   omniauth
   omniauth-google-oauth2
   passenger

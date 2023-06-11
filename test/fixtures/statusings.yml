@@ -1,0 +1,4 @@
+one:
+  status: draft
+  statusable: one
+  statusable_type: 'ExtractionsExtractionFormsProjectsSection'
