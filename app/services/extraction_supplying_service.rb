@@ -635,36 +635,41 @@ class ExtractionSupplyingService
     merged_evidences
   end
 
-  def merge_statistics(array)
-    array.map do |item|
-      statistic_type_count = item["statistic"].count do |statistic|
+def merge_statistics(array)
+  array.map do |item|
+    statistic_type_count = item["statistic"].count do |statistic|
+      statistic.key?("statisticType")
+    end
+
+    if statistic_type_count > 1
+      merge_targets = item["statistic"].select do |statistic|
+        !statistic.key?("statisticType")
+      end
+      keep_targets = item["statistic"].select do |statistic|
         statistic.key?("statisticType")
       end
-  
-      merge_targets = item["statistic"].select do |statistic|
-        statistic_type_count != 1 || statistic_type_count == 1
-      end
-  
-      attribute_estimate_arr = []
-  
-      merged_statistic = merge_targets.reduce({}) do |result, current|
-        if current.key?("attributeEstimate")
-          attribute_estimate_arr += current["attributeEstimate"]
-          current = current.reject { |key, _| key == "attributeEstimate" }
-        end
-  
-        result.merge(current) { |key, oldval, newval| oldval.is_a?(Hash) && newval.is_a?(Hash) ? oldval.merge(newval) : newval }
-      end
-  
-      unless attribute_estimate_arr.empty?
-        merged_statistic["attributeEstimate"] = attribute_estimate_arr
-      end
-  
-      item["statistic"] = [merged_statistic]
-  
-      item
+    else
+      merge_targets = item["statistic"]
+      keep_targets = []
     end
+
+    attribute_estimate_arr = []
+    merged_statistic = merge_targets.reduce({}) do |result, current|
+      if current.key?("attributeEstimate")
+        attribute_estimate_arr += current["attributeEstimate"]
+        current = current.reject { |key, _| key == "attributeEstimate" }
+      end
+      result.merge(current) { |key, oldval, newval| oldval + newval }
+    end
+
+    unless attribute_estimate_arr.empty?
+      merged_statistic["attributeEstimate"] = attribute_estimate_arr
+    end
+
+    item["statistic"] = [merged_statistic] + keep_targets
+    item
   end
+end
 
   def build_variable_definition(description, code)
     {
@@ -758,7 +763,7 @@ class ExtractionSupplyingService
       evidence['statistic'][0]['quantity'] = {'value' => record}
       evidence['statistic'][0]['description'] = measure_name
     end
-  
+
     arm_name_variable_roles = ['exposure', 'referenceExposure']
     if arm_name_groups.length == 1 and !arm_name_groups[0].is_a?(Array)
       evidence['variableDefinition'].append(build_variable_definition(arm_name_groups[0], arm_name_variable_roles[0]))
@@ -770,10 +775,10 @@ class ExtractionSupplyingService
         end
       end
     end
-  
+
     time_point_string = time_point_names.join(' - ')
     evidence['variableDefinition'].append(build_variable_definition("#{outcome_name}, #{time_point_string}", 'measuredVariable'))
-  
+
     statistic_type_mapping = {
       'Proportion' => ['C44256', 'Proportion'],
       'Incidence Rate (per 1000)' => ['C16726', 'Incidence'],
@@ -788,7 +793,7 @@ class ExtractionSupplyingService
       'Risk Difference (RD)' => ['0000424', 'Risk Difference'],
       'Risk Difference, Adjusted (adjRD)' => ['0000424', 'Risk Difference']
     }
-  
+
     exception_measure_names = ['Total (N analyzed)', 'Events', '95% CI low (OR)', '95% CI high (OR)', 'p value']
 
     if statistic_type_mapping.key?(measure_name)
@@ -805,7 +810,7 @@ class ExtractionSupplyingService
         'text' => measure_name
       }
     end
-  
+
     evidence
   end
 end
