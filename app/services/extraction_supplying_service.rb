@@ -693,6 +693,7 @@ end
     record,
     measure_name
   )
+    measure_name = measure_name.gsub(/\s+/, " ").downcase
     evidence = {
       'id' => "5-#{record_id}",
       'status' => outcome_status,
@@ -710,11 +711,11 @@ end
     }
 
     case measure_name
-    when 'Total (N analyzed)'
+    when 'total (n analyzed)'
       evidence['statistic'][0]['sampleSize'] = {'knownDataCount' => {'value' => record}}
-    when 'Events'
+    when 'events'
       evidence['statistic'][0]['numberOfEvents'] = record
-    when '95% CI low (OR)'
+    when '95% ci low (or)'
       evidence['statistic'][0]['attributeEstimate'] = [{
         'type' => {
           'coding' => [{
@@ -730,7 +731,7 @@ end
           }
         }
       }]
-    when '95% CI high (OR)'
+    when '95% ci high (or)'
       evidence['statistic'][0]['attributeEstimate'] = [{
         'type' => {
           'coding' => [{
@@ -780,21 +781,21 @@ end
     evidence['variableDefinition'].append(build_variable_definition("#{outcome_name}, #{time_point_string}", 'measuredVariable'))
 
     statistic_type_mapping = {
-      'Proportion' => ['C44256', 'Proportion'],
-      'Incidence Rate (per 1000)' => ['C16726', 'Incidence'],
-      'Incidence rate (per 10,000)' => ['C16726', 'Incidence'],
-      'Incidence rate (per 100,000)' => ['C16726', 'Incidence'],
-      'Odds Ratio (OR)' => ['C16932', 'Odds Ratio'],
-      'Odds Ratio, Adjusted (adjOR)' => ['C16932', 'Odds Ratio'],
-      'Incidence Rate Ratio (IRR)' => ['rate-ratio', 'Incidence Rate Ratio'],
-      'Incidence Rate Ratio, Adjusted (adjIRR)' => ['rate-ratio', 'Incidence Rate Ratio'],
-      'Hazard Ratio (HR)' => ['C93150', 'Hazard Ratio'],
-      'Hazard Ratio, Adjusted (adjHR)' => ['C93150', 'Hazard Ratio'],
-      'Risk Difference (RD)' => ['0000424', 'Risk Difference'],
-      'Risk Difference, Adjusted (adjRD)' => ['0000424', 'Risk Difference']
+      'proportion' => ['C44256', 'Proportion'],
+      'incidence rate (per 1000)' => ['C16726', 'Incidence'],
+      'incidence rate (per 10,000)' => ['C16726', 'Incidence'],
+      'incidence rate (per 100,000)' => ['C16726', 'Incidence'],
+      'odds ratio (or)' => ['C16932', 'Odds Ratio'],
+      'odds ratio, adjusted (adjor)' => ['C16932', 'Odds Ratio'],
+      'incidence rate ratio (irr)' => ['rate-ratio', 'Incidence Rate Ratio'],
+      'incidence rate ratio, adjusted (adjirr)' => ['rate-ratio', 'Incidence Rate Ratio'],
+      'hazard ratio (hr)' => ['C93150', 'Hazard Ratio'],
+      'hazard ratio, adjusted (adjhr)' => ['C93150', 'Hazard Ratio'],
+      'risk difference (rd)' => ['0000424', 'Risk Difference'],
+      'risk difference, adjusted (adjrd)' => ['0000424', 'Risk Difference']
     }
 
-    exception_measure_names = ['Total (N analyzed)', 'Events', '95% CI low (OR)', '95% CI high (OR)', 'p value']
+    exception_measure_names = ['total (n analyzed)', 'events', '95% ci low (or)', '95% ci high (or)', 'p value']
 
     if statistic_type_mapping.key?(measure_name)
       code, display = statistic_type_mapping[measure_name]
