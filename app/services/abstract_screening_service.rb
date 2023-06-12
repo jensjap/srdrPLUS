@@ -38,18 +38,11 @@ class AbstractScreeningService
   end
 
   def self.find_unfinished_asr(abstract_screening, user)
-    asrs = AbstractScreeningResult.includes(citations_project: :screening_qualifications).where(
+    AbstractScreeningResult.find_by(
       abstract_screening:,
       user:,
       label: nil
     )
-    asrs = asrs.filter do |asr|
-      asr.citations_project.screening_qualifications.blank? &&
-        asr.citations_project.abstract_screening_results.all? do |asr2|
-          asr2.privileged.blank?
-        end
-    end
-    asrs.first
   end
 
   def self.get_next_pilot_citation_id(abstract_screening, user)
