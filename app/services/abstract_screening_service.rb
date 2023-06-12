@@ -1,7 +1,3 @@
-# TODOS:
-# need to check for the existence of screening_qualifications and citations_projects.screening_status
-# account for the consequence of having privileged ASR/FSR
-# affected methods: find_unfinished_asr, at_or_over_limit, get_next_... in find_citation_id
 class AbstractScreeningService
   def self.as_user?(user)
     return false if user.nil?
@@ -60,7 +56,14 @@ class AbstractScreeningService
 
   def self.get_next_singles_citation_id(abstract_screening)
     project_screened_citation_ids = project_screened_citation_ids(abstract_screening.project)
-
+    non_asu_citation_ids =
+      CitationsProject
+      .where(project: abstract_screening.project)
+      .where.not(
+        screening_status: CitationsProject::AS_UNSCREENED
+      )
+      .map(&:citation_id)
+    ineligible_citation_ids = (project_screened_citation_ids + non_asu_citation_ids).uniq
     preferred_citation = abstract_screening
                          .project
                          .citations
@@ -73,7 +76,7 @@ class AbstractScreeningService
                                      mp1.created_at < mp2.created_at
                                    )')
                          .where('mp2.id IS NULL')
-                         .where.not(id: project_screened_citation_ids)
+                         .where.not(id: ineligible_citation_ids)
                          .where('mp1.score BETWEEN ? AND ?', 0.3, 0.7)
                          .sample
 
@@ -83,7 +86,7 @@ class AbstractScreeningService
                       .project
                       .citations
                       .joins('INNER JOIN citations_projects AS cp2 ON cp2.citation_id = citations.id')
-                      .where.not(id: project_screened_citation_ids)
+                      .where.not(id: ineligible_citation_ids)
                       .sample
 
     random_citation&.id
