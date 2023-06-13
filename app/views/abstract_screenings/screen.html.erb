@@ -698,6 +698,7 @@
         if (this.asr.id == null) {
           window.location.href =
             "/abstract_screenings/<%= params[:abstract_screening_id] %>?screening_finished=true";
+          return;
         }
         this.getAsr();
       },
