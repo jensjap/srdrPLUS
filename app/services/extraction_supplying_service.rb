@@ -635,41 +635,63 @@ class ExtractionSupplyingService
     merged_evidences
   end
 
-def merge_statistics(array)
-  array.map do |item|
-    statistic_type_count = item["statistic"].count do |statistic|
-      statistic.key?("statisticType")
-    end
-
-    if statistic_type_count > 1
-      merge_targets = item["statistic"].select do |statistic|
-        !statistic.key?("statisticType")
-      end
-      keep_targets = item["statistic"].select do |statistic|
+  def merge_statistics(array)
+    array.map do |item|
+      statistic_type_count = item["statistic"].count do |statistic|
         statistic.key?("statisticType")
       end
-    else
-      merge_targets = item["statistic"]
-      keep_targets = []
-    end
 
-    attribute_estimate_arr = []
-    merged_statistic = merge_targets.reduce({}) do |result, current|
-      if current.key?("attributeEstimate")
-        attribute_estimate_arr += current["attributeEstimate"]
-        current = current.reject { |key, _| key == "attributeEstimate" }
+      if statistic_type_count > 1
+        merge_targets = item["statistic"].select do |statistic|
+          !statistic.key?("statisticType")
+        end
+        keep_targets = item["statistic"].select do |statistic|
+          statistic.key?("statisticType")
+        end
+      else
+        merge_targets = item["statistic"]
+        keep_targets = []
       end
-      result.merge(current) { |key, oldval, newval| oldval + newval }
-    end
 
-    unless attribute_estimate_arr.empty?
-      merged_statistic["attributeEstimate"] = attribute_estimate_arr
-    end
+      attribute_estimate_arr = []
+      note_arr = []
+      merged_statistic = merge_targets.reduce({}) do |result, current|
+        if current.key?("attributeEstimate")
+          attribute_estimate_arr += current["attributeEstimate"]
+          current = current.reject { |key, _| key == "attributeEstimate" }
+        end
 
-    item["statistic"] = [merged_statistic] + keep_targets
-    item
+        if current.key?("note")
+          note_arr += current["note"]
+          current = current.reject { |key, _| key == "note" }
+        end
+
+        result.merge(current) do |key, oldval, newval|
+          if oldval.is_a?(Hash) && newval.is_a?(Hash)
+            oldval.merge(newval)
+          elsif oldval.is_a?(Array) && newval.is_a?(Array)
+            oldval + newval
+          elsif oldval != newval
+            keep_targets << { key => newval }
+            oldval
+          else
+            oldval + newval
+          end
+        end
+      end
+
+      unless attribute_estimate_arr.empty?
+        merged_statistic["attributeEstimate"] = attribute_estimate_arr
+      end
+
+      unless note_arr.empty?
+        merged_statistic["note"] = note_arr
+      end
+
+      item["statistic"] = [merged_statistic] + keep_targets
+      item
+    end
   end
-end
 
   def build_variable_definition(description, code)
     {
@@ -710,9 +732,15 @@ end
       'statistic' => [{}]
     }
 
+    begin
+      _ = Float(record)
+    rescue ArgumentError
+      evidence['statistic'][0]['note'] = [{'text' => record}]
+    end
+
     case measure_name
     when 'total (n analyzed)'
-      evidence['statistic'][0]['sampleSize'] = {'knownDataCount' => {'value' => record}}
+      evidence['statistic'][0]['sampleSize'] = { 'knownDataCount' => record }
     when 'events'
       evidence['statistic'][0]['numberOfEvents'] = record
     when '95% ci low (or)'
@@ -762,7 +790,7 @@ end
       }]
     else
       evidence['statistic'][0]['quantity'] = {'value' => record}
-      evidence['statistic'][0]['description'] = measure_name
+      evidence['statistic'][0]['description'] = "#{measure_name}: #{record}"
     end
 
     arm_name_variable_roles = ['exposure', 'referenceExposure']
