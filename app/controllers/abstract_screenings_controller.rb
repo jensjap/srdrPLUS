@@ -2,7 +2,7 @@ class AbstractScreeningsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: %i[update_word_weight kpis]
 
   before_action :set_project, only: %i[index new create citation_lifecycle_management export_screening_data kpis]
-  before_action :set_abstract_screening, only: %i[update_word_weight screen]
+  before_action :set_abstract_screening, only: %i[update_word_weight screen resolve]
   after_action :verify_authorized
 
   def new
@@ -102,17 +102,16 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def screen
-    as = AbstractScreening.find(params[:abstract_screening_id])
-    authorize(as)
+    authorize(@abstract_screening)
     respond_to do |format|
       format.json do
         asr =
-          AbstractScreeningService.before_asr_id(as, params[:before_asr_id], current_user) ||
+          AbstractScreeningService.before_asr_id(@abstract_screening, params[:before_asr_id], current_user) ||
           AbstractScreeningResult.find_by(id: params[:asr_id])
 
         return render json: { asr_id: nil } if asr && asr.user != current_user
 
-        asr ||= AbstractScreeningService.find_or_create_asr(as, current_user)
+        asr ||= AbstractScreeningService.find_or_create_asr(@abstract_screening, current_user)
         render json: { asr_id: asr&.id }
       end
       format.html do
