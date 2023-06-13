@@ -104,6 +104,10 @@ class AbstractScreeningResultsController < ApplicationController
       custom_tag[:selected] = true if @abstract_screening_result.tags.any? { |tag| tag.id == custom_tag[:tag_id] }
       custom_tag
     end
+
+    @all_labels = @abstract_screening_result.citations_project.abstract_screening_results.map do |label|
+      { updated_at: label.updated_at, label: label.label, user_handle: label.user.handle }
+    end
   end
 
   def asr_params

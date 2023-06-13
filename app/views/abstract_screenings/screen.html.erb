@@ -92,6 +92,20 @@
           class="px-8 break-all leading-none"
           x-text="citation.journal_meta_info"
         ></div>
+        <hr />
+        <div class="px-8 leading-5 text-xs">
+          <h5 class="text-sm font-bold">All Labels</h5>
+          <template x-for="label in all_labels">
+            <div class="flex">
+              <div class="w-1/3 border" x-text="label.updated_at"></div>
+              <div class="w-1/3 border" x-text="label.user_handle"></div>
+              <div
+                class="w-1/3 border"
+                x-text="{ null: 'Unlabeled', '-1': 'Rejected', 0: 'Maybe', 1: 'Accepted' }[label.label]"
+              ></div>
+            </div>
+          </template>
+        </div>
       </div>
     </div>
   </div>
@@ -224,6 +238,7 @@
         custom_tags: [],
         notes: "",
       },
+      all_labels: [],
       cps: [],
       word_weights: {},
       wordWeight: "",
@@ -726,6 +741,7 @@
         const data = await response.json();
         if (submissionType !== "notes") {
           this.asr = data.asr;
+          this.all_labels = data.all_labels;
           this.citation = data.citation;
           this.options = data.options;
           this.word_weights = data.word_weights;
