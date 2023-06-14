@@ -5,6 +5,12 @@ class AbstractScreeningService
     (ENV['SRDRPLUS_AS_USERS'].nil? ? [] : JSON.parse(ENV['SRDRPLUS_AS_USERS'])).include?(user.id)
   end
 
+  def self.find_asr_id_to_be_resolved(abstract_screening, resolution_mode)
+    return nil unless resolution_mode
+
+    abstract_screening.abstract_screening_results.first
+  end
+
   def self.find_citation_id(abstract_screening, user)
     unfinished_asr = find_unfinished_asr(abstract_screening, user)
     return unfinished_asr.citation.id if unfinished_asr

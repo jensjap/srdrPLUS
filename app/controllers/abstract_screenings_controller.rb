@@ -106,6 +106,7 @@ class AbstractScreeningsController < ApplicationController
     respond_to do |format|
       format.json do
         asr =
+          AbstractScreeningService.find_asr_id_to_be_resolved(@abstract_screening, params[:resolution_mode]) ||
           AbstractScreeningService.before_asr_id(@abstract_screening, params[:before_asr_id], current_user) ||
           AbstractScreeningResult.find_by(id: params[:asr_id])
 

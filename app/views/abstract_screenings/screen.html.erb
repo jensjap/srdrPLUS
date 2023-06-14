@@ -268,7 +268,7 @@
       dragType: null,
       dropIndex: null,
       dropType: null,
-      resolutionMode: false,
+      resolutionMode: <%= params[:resolution_mode] ? 'true' : 'false' %>,
 
       init() {
         const url = new URL(window.location.href);
@@ -692,6 +692,8 @@
           url = `/abstract_screenings/<%= params[:abstract_screening_id] %>/screen?asr_id=${asrId}`;
         } else if (beforeAsrId) {
           url = `/abstract_screenings/<%= params[:abstract_screening_id] %>/screen?before_asr_id=${beforeAsrId}`;
+        } else if (this.resolutionMode) {
+          url = `/abstract_screenings/<%= params[:abstract_screening_id] %>/screen?resolution_mode=true`;
         } else {
           url = `/abstract_screenings/<%= params[:abstract_screening_id] %>/screen`;
         }
@@ -745,8 +747,12 @@
             submissionType,
           });
         }
+        let url = `/abstract_screening_results/${this.asr.id}`
+        if (this.resolutionMode) {
+          url += '?resolution_mode=true'
+        }
         const response = await fetch(
-          `/abstract_screening_results/${this.asr.id}`,
+          url,
           headers
         );
         const data = await response.json();

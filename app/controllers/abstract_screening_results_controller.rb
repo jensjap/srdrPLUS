@@ -9,6 +9,8 @@ class AbstractScreeningResultsController < ApplicationController
         when 'label'
           @abstract_screening_result.update(asr_params)
           @abstract_screening_result =
+            AbstractScreeningService.find_asr_id_to_be_resolved(@abstract_screening_result.abstract_screening,
+                                                                params[:resolution_mode]) ||
             AbstractScreeningService.find_or_create_asr(
               @abstract_screening_result.abstract_screening, current_user
             )
