@@ -5,7 +5,7 @@ class AbstractScreeningService
     (ENV['SRDRPLUS_AS_USERS'].nil? ? [] : JSON.parse(ENV['SRDRPLUS_AS_USERS'])).include?(user.id)
   end
 
-  def self.find_asr_id_to_be_resolved(abstract_screening, user)
+  def self.find_asr_id_to_be_resolved(abstract_screening, user, create_record = true)
     unfinished_privileged_asr =
       abstract_screening
       .abstract_screening_results
@@ -23,7 +23,11 @@ class AbstractScreeningService
 
     return nil unless citations_project
 
-    AbstractScreeningResult.create!(user:, abstract_screening:, citations_project:, privileged: true)
+    if create_record
+      AbstractScreeningResult.create!(user:, abstract_screening:, citations_project:, privileged: true)
+    else
+      true
+    end
   end
 
   def self.find_citation_id(abstract_screening, user)

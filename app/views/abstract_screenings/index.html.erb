@@ -160,7 +160,7 @@
                     </button>
                     <% end %>
                     <!-- prettier-ignore -->
-                    <% if AbstractScreeningService.find_asr_id_to_be_resolved(as, current_user) %>
+                    <% if AbstractScreeningService.find_asr_id_to_be_resolved(as, current_user, false) %>
                       <%= link_to('Resolve Conflicts',
                         abstract_screening_screen_path(as, resolution_mode: true),
                         class: "w-48 inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 my-1 text-center text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white")
