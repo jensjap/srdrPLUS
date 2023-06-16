@@ -23,19 +23,35 @@
             hover:no-underline hover:text-white") %>
             <% else %>
             <button
-              class="text-center mb-2 cursor-not-allowed saturate-[0.25] w-full inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
+              class="text-center mb-2 cursor-not-allowed w-full inline-flex items-center justify-center rounded-md border border-transparent bg-purple-900 opacity-80 px-4 py-2 text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
             >
               Nothing Left to Screen
             </button>
             <% end %>
             <!-- prettier-ignore -->
+            <% if AbstractScreeningService.find_asr_id_to_be_resolved(@abstract_screening, true) %>
+              <%= link_to('Resolve Conflicts',
+              abstract_screening_screen_path(@abstract_screening, resolution_mode: true), class: "text-center mb-2
+              cursor-pointer inline-flex items-center justify-center rounded-md border
+              border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium
+              text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none
+              focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full
+              hover:no-underline hover:text-white") %>
+            <% else %>
+            <button
+              class="text-center mb-2 cursor-not-allowed w-full inline-flex items-center justify-center rounded-md border border-transparent bg-purple-900 opacity-80 px-4 py-2 text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
+            >
+              Nothing to Resolve
+            </button>
+            <% end %>
+            <!-- prettier-ignore -->
             <%= link_to('Back to Abstract Screenings',
-            project_abstract_screenings_path(@abstract_screening.project), class:
-            "text-center cursor-pointer inline-flex items-center justify-center rounded-md
-            border border-transparent bg-gray-700 px-4 py-2 text-sm font-medium
-            text-white shadow-sm hover:bg-gray-500 focus:outline-none focus:ring-2
-            focus:ring-indigo-500 focus:ring-offset-2 w-full hover:no-underline
-            hover:text-white") %>
+            project_abstract_screenings_path(@abstract_screening.project), class: "text-center mb-2
+            cursor-pointer inline-flex items-center justify-center rounded-md border
+            border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium
+            text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none
+            focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full
+            hover:no-underline hover:text-white") %>
           </div>
         </div>
         <div class="flex flex-wrap lg:flex-nowrap gap-4">
