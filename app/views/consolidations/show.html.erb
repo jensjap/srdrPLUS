@@ -101,11 +101,13 @@
       newType1: {
         name: "",
         description: "",
+        type1_type_id: null,
       },
       newType1Index: null,
       oldType1: {
         name: "",
         description: "",
+        type1_type_id: null,
       },
       type1_change_modal: false,
       scopeOfChange: "false",
@@ -124,7 +126,7 @@
       timepoints: [
         {
           name: "Baseline",
-          description: "",
+          unit: "",
         },
       ],
       changeTPModal: false,
@@ -610,10 +612,102 @@
         return this.mh?.current_citations_project?.section_name === "Outcomes";
       },
 
+      autoConsolidateOutcomes() {
+        const toBeConsolidated =
+          this.mh?.current_citations_project?.current_section_eefpst1s.filter(
+            (section_eefpst1) => {
+              return this.mh?.current_citations_project?.current_section_eefpss.every(
+                (eefps) =>
+                  (eefps.consolidated &&
+                    section_eefpst1?.eefpst1_lookups[eefps.id] === undefined) ||
+                  (!eefps.consolidated &&
+                    section_eefpst1?.eefpst1_lookups[eefps.id])
+              );
+            }
+          );
+        if (toBeConsolidated.length === 0) {
+          return alert("Nothing to consolidate");
+        }
+        const consolidatedEefps =
+          this?.mh?.current_citations_project?.current_section_eefpss[
+            this?.mh?.current_citations_project?.current_section_eefpss
+              ?.length - 1
+          ];
+        toBeConsolidated.forEach((current_section_eefpst1) => {
+          let customPopulations = [];
+          if (
+            Object.values(current_section_eefpst1.population_lookups).length > 0
+          ) {
+            if (
+              Object.keys(current_section_eefpst1.population_lookups).every(
+                (key, index, array) =>
+                  current_section_eefpst1.population_lookups[key].every(
+                    (key2, index2, array2) => {
+                      const id =
+                        current_section_eefpst1.population_lookups[array[0]][
+                          index2
+                        ]?.id;
+                      return current_section_eefpst1.population_lookups[
+                        key
+                      ].find((el) => el.id === id);
+                    }
+                  )
+              )
+            ) {
+              customPopulations = Object.values(
+                current_section_eefpst1.population_lookups
+              )[0];
+            }
+          }
+
+          let customTimepoints = [];
+          if (
+            Object.values(current_section_eefpst1.timepoint_lookups).length > 0
+          ) {
+            if (
+              Object.keys(current_section_eefpst1.timepoint_lookups).every(
+                (key, index, array) =>
+                  current_section_eefpst1.timepoint_lookups[key].every(
+                    (key2, index2, array2) => {
+                      const id =
+                        current_section_eefpst1.timepoint_lookups[array[0]][
+                          index2
+                        ]?.id;
+                      return current_section_eefpst1.timepoint_lookups[
+                        key
+                      ].find((el) => el.id === id);
+                    }
+                  )
+              )
+            ) {
+              customTimepoints = Object.values(
+                current_section_eefpst1.timepoint_lookups
+              )[0];
+            }
+          }
+
+          this.createArm(
+            consolidatedEefps.id,
+            current_section_eefpst1.name,
+            current_section_eefpst1.description,
+            current_section_eefpst1.type1_type_id,
+            true,
+            customPopulations,
+            customTimepoints
+          );
+        });
+      },
+
       initializeOrderings() {
         $(".orderable-list").each((_index, orderableElement) => {
           attachOrderable(orderableElement);
         });
+      },
+
+      consolidatedEefps() {
+        return this.mh?.current_citations_project?.current_section_eefpss.find(
+          (eefps) => eefps.consolidated
+        );
       },
 
       async getArmData(type1_id, efps_id, eefps_id) {
@@ -644,10 +738,11 @@
         }
       },
 
-      async updateArmsData(eefpst1_id, name, description) {
+      async updateArmsData(eefpst1_id, name, description, type1_type_id) {
         const params = {
           extractions_extraction_forms_projects_sections_type1: {
             should: { propagate: this.scopeOfChange },
+            type1_type_id,
             type1_attributes: {
               name,
               description,
@@ -680,13 +775,42 @@
         this.type1_change_modal = false;
       },
 
-      async createArm(eefps_id, name, description, new_eefpst1_type_id = null) {
+      async createArm(
+        eefps_id,
+        name,
+        description,
+        new_eefpst1_type_id = null,
+        autoConsolidation = false,
+        customPopulations = [],
+        customTimepoints = []
+      ) {
         if (name.trim() === "") {
           toastr.error("Name/ domain cannot be blank", null, {
             timeOut: 1000,
           });
           return;
         }
+        if (autoConsolidation) {
+          this.populations =
+            customPopulations.length === 0
+              ? [
+                  {
+                    name: "All Participants",
+                    description: "All patients enrolled in this study.",
+                  },
+                ]
+              : customPopulations;
+          this.timepoints =
+            customTimepoints.length === 0
+              ? [
+                  {
+                    name: "Baseline",
+                    unit: "",
+                  },
+                ]
+              : customTimepoints;
+        }
+
         const params = {
           extractions_extraction_forms_projects_section: {
             extractions_extraction_forms_projects_sections_type1s_attributes: {
@@ -783,7 +907,7 @@
           this.timepoints = [
             {
               name: "Baseline",
-              description: "",
+              unit: "",
             },
           ];
         } else {

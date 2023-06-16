@@ -4,10 +4,10 @@ one:
   name: min_length
   field_type: text
   description: MyString
-  deleted_at:
+#  deleted_at:
 
 two:
   name: max_length
   field_type: numeric
   description: MyString
-  deleted_at:
+#  deleted_at:

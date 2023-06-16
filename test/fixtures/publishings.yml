@@ -3,10 +3,9 @@
 one:
   publishable: one (Project)
   user: one
-  active: true
+#  active: true
 
 two:
   publishable: two (Project)
   user: one
-  active: true
-
+#  active: true
