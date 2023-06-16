@@ -233,17 +233,4 @@ class AbstractScreeningService
       .abstract_screening_results
       .count >= abstract_screening.no_of_citations
   end
-
-  def self.before_asr_id(abstract_screening, asr_id, user)
-    return nil if abstract_screening.blank? || asr_id.blank? || user.blank?
-
-    AbstractScreeningResult
-      .where(
-        abstract_screening:,
-        user:
-      )
-      .where(
-        'updated_at < ?', AbstractScreeningResult.find_by(id: asr_id).updated_at
-      ).order(:updated_at).last
-  end
 end

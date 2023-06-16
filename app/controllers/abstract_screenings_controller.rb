@@ -107,8 +107,6 @@ class AbstractScreeningsController < ApplicationController
       format.json do
         asr = if params[:resolution_mode]
                 AbstractScreeningService.find_asr_id_to_be_resolved(@abstract_screening, current_user)
-              elsif params[:before_asr_id]
-                AbstractScreeningService.before_asr_id(@abstract_screening, params[:before_asr_id], current_user)
               elsif params[:asr_id]
                 AbstractScreeningResult.find_by(id: params[:asr_id])
               else
