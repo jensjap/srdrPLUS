@@ -5,10 +5,25 @@ class AbstractScreeningService
     (ENV['SRDRPLUS_AS_USERS'].nil? ? [] : JSON.parse(ENV['SRDRPLUS_AS_USERS'])).include?(user.id)
   end
 
-  def self.find_asr_id_to_be_resolved(abstract_screening, resolution_mode)
-    return nil unless resolution_mode
+  def self.find_asr_id_to_be_resolved(abstract_screening, user)
+    unfinished_privileged_asr =
+      abstract_screening
+      .abstract_screening_results
+      .where(user:, privileged: true, label: nil)
+      .first
+    return unfinished_privileged_asr if unfinished_privileged_asr
 
-    abstract_screening.abstract_screening_results.first
+    citations_project =
+      abstract_screening
+      .abstract_screening_results
+      .includes(:citations_project)
+      .where(citations_project: { screening_status: CitationsProject::AS_IN_CONFLICT })
+      .first
+      &.citations_project
+
+    return nil unless citations_project
+
+    AbstractScreeningResult.create!(user:, abstract_screening:, citations_project:, privileged: true)
   end
 
   def self.find_citation_id(abstract_screening, user)

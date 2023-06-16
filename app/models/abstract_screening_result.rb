@@ -31,6 +31,8 @@ class AbstractScreeningResult < ApplicationRecord
   after_save :evaluate_screening_qualifications
 
   def evaluate_screening_qualifications
+    return if privileged && label.nil?
+
     if privileged || (citations_project
        .screening_qualifications
        .where.not(user: nil)

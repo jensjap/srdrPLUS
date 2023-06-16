@@ -8,29 +8,12 @@ class AbstractScreeningResultsController < ApplicationController
         case params[:submissionType]
         when 'label'
           @abstract_screening_result.update(asr_params)
-          @abstract_screening_result =
-            AbstractScreeningService.find_asr_id_to_be_resolved(@abstract_screening_result.abstract_screening,
-                                                                params[:resolution_mode]) ||
-            AbstractScreeningService.find_or_create_asr(
-              @abstract_screening_result.abstract_screening, current_user
-            )
-          prepare_json_data
-          @screened_cps =
-            AbstractScreeningResult
-            .includes(citations_project: :citation)
-            .where(user: current_user,
-                   abstract_screening: @abstract_screening_result.abstract_screening)
-          render :show
         when 'reasons_and_tags'
-          @screened_cps = []
           handle_reasons_and_tags
-          prepare_json_data
-          render :show
         when 'notes'
-          @abstract_screening_result.update(notes: params[:asr][:notes])
-          @screened_cps = []
-          render json: {}
+          @abstract_screening_result.update_column(:notes, params[:asr][:notes])
         end
+        render json: @abstract_screening_result
       end
     end
   end
@@ -107,9 +90,15 @@ class AbstractScreeningResultsController < ApplicationController
       custom_tag
     end
 
-    @all_labels = @abstract_screening_result.citations_project.abstract_screening_results.map do |label|
-      { updated_at: label.updated_at, label: label.label, user_handle: label.user.handle }
-    end
+    @all_labels =
+      @abstract_screening_result.citations_project.abstract_screening_results.order(updated_at: :desc).map do |label|
+        {
+          updated_at: label.updated_at,
+          label: label.label,
+          user_handle: label.user.handle,
+          privileged: label.privileged
+        }
+      end
   end
 
   def asr_params
