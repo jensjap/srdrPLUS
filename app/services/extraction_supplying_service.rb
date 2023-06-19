@@ -715,7 +715,7 @@ class ExtractionSupplyingService
     record,
     measure_name
   )
-    measure_name = measure_name.gsub(/\s+/, " ").downcase
+    measure_name = measure_name.gsub(/\s+/, ' ').downcase.strip
     evidence = {
       'id' => "5-#{record_id}",
       'status' => outcome_status,
