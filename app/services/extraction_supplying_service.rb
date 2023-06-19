@@ -640,28 +640,55 @@ class ExtractionSupplyingService
       statistic_type_count = item["statistic"].count do |statistic|
         statistic.key?("statisticType")
       end
-  
-      merge_targets = item["statistic"].select do |statistic|
-        statistic_type_count != 1 || statistic_type_count == 1
+
+      if statistic_type_count > 1
+        merge_targets = item["statistic"].select do |statistic|
+          !statistic.key?("statisticType")
+        end
+        keep_targets = item["statistic"].select do |statistic|
+          statistic.key?("statisticType")
+        end
+      else
+        merge_targets = item["statistic"]
+        keep_targets = []
       end
-  
+
       attribute_estimate_arr = []
-  
+      note_arr = []
       merged_statistic = merge_targets.reduce({}) do |result, current|
         if current.key?("attributeEstimate")
           attribute_estimate_arr += current["attributeEstimate"]
           current = current.reject { |key, _| key == "attributeEstimate" }
         end
-  
-        result.merge(current) { |key, oldval, newval| oldval.is_a?(Hash) && newval.is_a?(Hash) ? oldval.merge(newval) : newval }
+
+        if current.key?("note")
+          note_arr += current["note"]
+          current = current.reject { |key, _| key == "note" }
+        end
+
+        result.merge(current) do |key, oldval, newval|
+          if oldval.is_a?(Hash) && newval.is_a?(Hash)
+            oldval.merge(newval)
+          elsif oldval.is_a?(Array) && newval.is_a?(Array)
+            oldval + newval
+          elsif oldval != newval
+            keep_targets << { key => newval }
+            oldval
+          else
+            oldval + newval
+          end
+        end
       end
-  
+
       unless attribute_estimate_arr.empty?
         merged_statistic["attributeEstimate"] = attribute_estimate_arr
       end
-  
-      item["statistic"] = [merged_statistic]
-  
+
+      unless note_arr.empty?
+        merged_statistic["note"] = note_arr
+      end
+
+      item["statistic"] = [merged_statistic] + keep_targets
       item
     end
   end
@@ -688,6 +715,7 @@ class ExtractionSupplyingService
     record,
     measure_name
   )
+    measure_name = measure_name.gsub(/\s+/, " ").downcase
     evidence = {
       'id' => "5-#{record_id}",
       'status' => outcome_status,
@@ -704,12 +732,18 @@ class ExtractionSupplyingService
       'statistic' => [{}]
     }
 
+    begin
+      _ = Float(record)
+    rescue ArgumentError
+      evidence['statistic'][0]['note'] = [{'text' => record}]
+    end
+
     case measure_name
-    when 'Total (N analyzed)'
-      evidence['statistic'][0]['sampleSize'] = {'knownDataCount' => {'value' => record}}
-    when 'Events'
+    when 'total (n analyzed)'
+      evidence['statistic'][0]['sampleSize'] = { 'knownDataCount' => record }
+    when 'events'
       evidence['statistic'][0]['numberOfEvents'] = record
-    when '95% CI low (OR)'
+    when '95% ci low (or)'
       evidence['statistic'][0]['attributeEstimate'] = [{
         'type' => {
           'coding' => [{
@@ -725,7 +759,7 @@ class ExtractionSupplyingService
           }
         }
       }]
-    when '95% CI high (OR)'
+    when '95% ci high (or)'
       evidence['statistic'][0]['attributeEstimate'] = [{
         'type' => {
           'coding' => [{
@@ -756,9 +790,9 @@ class ExtractionSupplyingService
       }]
     else
       evidence['statistic'][0]['quantity'] = {'value' => record}
-      evidence['statistic'][0]['description'] = measure_name
+      evidence['statistic'][0]['description'] = "#{measure_name}: #{record}"
     end
-  
+
     arm_name_variable_roles = ['exposure', 'referenceExposure']
     if arm_name_groups.length == 1 and !arm_name_groups[0].is_a?(Array)
       evidence['variableDefinition'].append(build_variable_definition(arm_name_groups[0], arm_name_variable_roles[0]))
@@ -770,26 +804,26 @@ class ExtractionSupplyingService
         end
       end
     end
-  
+
     time_point_string = time_point_names.join(' - ')
     evidence['variableDefinition'].append(build_variable_definition("#{outcome_name}, #{time_point_string}", 'measuredVariable'))
-  
+
     statistic_type_mapping = {
-      'Proportion' => ['C44256', 'Proportion'],
-      'Incidence Rate (per 1000)' => ['C16726', 'Incidence'],
-      'Incidence rate (per 10,000)' => ['C16726', 'Incidence'],
-      'Incidence rate (per 100,000)' => ['C16726', 'Incidence'],
-      'Odds Ratio (OR)' => ['C16932', 'Odds Ratio'],
-      'Odds Ratio, Adjusted (adjOR)' => ['C16932', 'Odds Ratio'],
-      'Incidence Rate Ratio (IRR)' => ['rate-ratio', 'Incidence Rate Ratio'],
-      'Incidence Rate Ratio, Adjusted (adjIRR)' => ['rate-ratio', 'Incidence Rate Ratio'],
-      'Hazard Ratio (HR)' => ['C93150', 'Hazard Ratio'],
-      'Hazard Ratio, Adjusted (adjHR)' => ['C93150', 'Hazard Ratio'],
-      'Risk Difference (RD)' => ['0000424', 'Risk Difference'],
-      'Risk Difference, Adjusted (adjRD)' => ['0000424', 'Risk Difference']
+      'proportion' => ['C44256', 'Proportion'],
+      'incidence rate (per 1000)' => ['C16726', 'Incidence'],
+      'incidence rate (per 10,000)' => ['C16726', 'Incidence'],
+      'incidence rate (per 100,000)' => ['C16726', 'Incidence'],
+      'odds ratio (or)' => ['C16932', 'Odds Ratio'],
+      'odds ratio, adjusted (adjor)' => ['C16932', 'Odds Ratio'],
+      'incidence rate ratio (irr)' => ['rate-ratio', 'Incidence Rate Ratio'],
+      'incidence rate ratio, adjusted (adjirr)' => ['rate-ratio', 'Incidence Rate Ratio'],
+      'hazard ratio (hr)' => ['C93150', 'Hazard Ratio'],
+      'hazard ratio, adjusted (adjhr)' => ['C93150', 'Hazard Ratio'],
+      'risk difference (rd)' => ['0000424', 'Risk Difference'],
+      'risk difference, adjusted (adjrd)' => ['0000424', 'Risk Difference']
     }
-  
-    exception_measure_names = ['Total (N analyzed)', 'Events', '95% CI low (OR)', '95% CI high (OR)', 'p value']
+
+    exception_measure_names = ['total (n analyzed)', 'events', '95% ci low (or)', '95% ci high (or)', 'p value']
 
     if statistic_type_mapping.key?(measure_name)
       code, display = statistic_type_mapping[measure_name]
@@ -805,7 +839,7 @@ class ExtractionSupplyingService
         'text' => measure_name
       }
     end
-  
+
     evidence
   end
 end
