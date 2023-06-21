@@ -29,6 +29,8 @@
             </button>
             <% end %>
             <!-- prettier-ignore -->
+            <% if ProjectsUser.find_by(user: current_user, project: @project).project_leader? || ProjectsUser.find_by(user: current_user, project: @project).project_consolidator? %>
+            <!-- prettier-ignore -->
             <% if AbstractScreeningService.find_asr_id_to_be_resolved(@abstract_screening, current_user, false) %>
               <%= link_to('Resolve Conflicts',
               abstract_screening_screen_path(@abstract_screening, resolution_mode: true), class: "text-center mb-2
@@ -45,6 +47,7 @@
             </button>
             <% end %>
             <!-- prettier-ignore -->
+            <% end %>
             <%= link_to('Back to Abstract Screenings',
             project_abstract_screenings_path(@abstract_screening.project), class: "text-center mb-2
             cursor-pointer inline-flex items-center justify-center rounded-md border

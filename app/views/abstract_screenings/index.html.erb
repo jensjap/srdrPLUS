@@ -160,6 +160,8 @@
                     </button>
                     <% end %>
                     <!-- prettier-ignore -->
+                    <% if ProjectsUser.find_by(user: current_user, project: @project).project_leader? || ProjectsUser.find_by(user: current_user, project: @project).project_consolidator? %>
+                    <!-- prettier-ignore -->
                     <% if AbstractScreeningService.find_asr_id_to_be_resolved(as, current_user, false) %>
                       <%= link_to('Resolve Conflicts',
                         abstract_screening_screen_path(as, resolution_mode: true),
@@ -171,6 +173,8 @@
                     >
                       Nothing to Resolve
                     </button>
+                    <% end %>
+                    <!-- prettier-ignore -->
                     <% end %>
                     <!-- prettier-ignore -->
                     <%= link_to('Show Results',
