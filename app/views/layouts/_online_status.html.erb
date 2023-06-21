@@ -1,0 +1,51 @@
+<div x-data="websocket"></div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("websocket", () => ({
+      socket: null,
+      init() {
+        this.setupSockets();
+      },
+
+      setupSockets() {
+        const socket = new WebSocket(`ws://${window.location.host}/cable`);
+        this.socket = socket;
+        socket.onopen = function (event) {
+          const msg = {
+            command: "subscribe",
+            identifier: JSON.stringify({
+              channel: "OnlineStatusChannel",
+            }),
+          };
+          socket.send(JSON.stringify(msg));
+        };
+
+        socket.onmessage = function (event) {
+          const data = JSON.parse(event.data);
+          if (data.type === "ping") return;
+        };
+
+        socket.onclose = (event) => {
+          const data = JSON.parse(event.data);
+        };
+
+        socket.onerror = (event) => {
+          const data = JSON.parse(event.data);
+        };
+      },
+
+      // send() {
+      //   const socket = this.socket;
+      //   const msg = {
+      //     command: "message",
+      //     identifier: JSON.stringify({
+      //       channel: "AppearanceChannel",
+      //     }),
+      //     data: JSON.stringify({ action: "", content: "" }),
+      //   };
+      //   socket.send(JSON.stringify(msg));
+      // },
+    }));
+  });
+</script>

@@ -41,6 +41,7 @@ html class='no-js' lang='en'
   body class="#{controller_name} #{action_name}"
     = Gon::Base.render_data(camelCase: true)
     = render 'shared/noscript'
+    = render 'layouts/online_status'
 
     / Google Tag Manager (noscript)
     noscript

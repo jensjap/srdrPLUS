@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_21_012011) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -2029,6 +2029,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
     t.boolean "expires"
     t.string "refresh_token"
     t.string "api_key"
+    t.string "online_status", default: "offline", null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
