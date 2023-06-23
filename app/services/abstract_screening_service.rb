@@ -9,7 +9,13 @@ class AbstractScreeningService
     unfinished_privileged_asr =
       abstract_screening
       .abstract_screening_results
-      .where(user:, privileged: true, label: nil)
+      .includes(:citations_project)
+      .where(
+        user:,
+        privileged: true,
+        label: nil,
+        citations_project: { screening_status: CitationsProject::AS_IN_CONFLICT }
+      )
       .first
     return unfinished_privileged_asr if unfinished_privileged_asr
 
