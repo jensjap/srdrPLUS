@@ -165,493 +165,536 @@
         Clear Results (X)
       </div>
     </div>
-    <div class="mb-8 flex flex-col">
-      <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-          <div
-            class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
-          >
-            <table class="w-full divide-y divide-gray-300">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th
-                    scope="col"
-                    class="cursor-pointer py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-                    @click="changeOrderBy('accession_number_alts')"
+    <div
+      class="overflow-auto mb-8 shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
+    >
+      <table class="w-full divide-y divide-gray-300">
+        <thead class="bg-gray-50">
+          <tr>
+            <th
+              scope="col"
+              class="cursor-pointer py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              @click="changeOrderBy('accession_number_alts')"
+            >
+              <div class="flex justify-between">
+                Accession No. (e.g. PubMed ID)
+                <template
+                  x-if="pagination.sort == 'asc' && pagination.order_by == 'accession_number_alts'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
                   >
-                    <div class="flex justify-between">
-                      Accession No. (e.g. PubMed ID)
-                      <template
-                        x-if="pagination.sort == 'asc' && pagination.order_by == 'accession_number_alts'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-                          />
-                        </svg>
-                      </template>
-                      <template
-                        x-if="pagination.sort == 'desc' && pagination.order_by == 'accession_number_alts'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
-                          />
-                        </svg>
-                      </template>
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    @click="changeOrderBy('author_map_string')"
-                  >
-                    <div class="flex justify-between">
-                      Authors
-                      <template
-                        x-if="pagination.sort == 'asc' && pagination.order_by == 'author_map_string'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-                          />
-                        </svg>
-                      </template>
-                      <template
-                        x-if="pagination.sort == 'desc' && pagination.order_by == 'author_map_string'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
-                          />
-                        </svg>
-                      </template>
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    @click="changeOrderBy('name')"
-                  >
-                    <div class="flex justify-between">
-                      Title
-                      <template
-                        x-if="pagination.sort == 'asc' && pagination.order_by == 'name'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-                          />
-                        </svg>
-                      </template>
-                      <template
-                        x-if="pagination.sort == 'desc' && pagination.order_by == 'name'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
-                          />
-                        </svg>
-                      </template>
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    @click="changeOrderBy('year')"
-                  >
-                    <div class="flex justify-between">
-                      Publication Date
-                      <template
-                        x-if="pagination.sort == 'asc' && pagination.order_by == 'year'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-                          />
-                        </svg>
-                      </template>
-                      <template
-                        x-if="pagination.sort == 'desc' && pagination.order_by == 'year'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
-                          />
-                        </svg>
-                      </template>
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    @click="changeOrderBy('user')"
-                  >
-                    <div class="flex justify-between">
-                      Participant
-                      <template
-                        x-if="pagination.sort == 'asc' && pagination.order_by == 'user'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-                          />
-                        </svg>
-                      </template>
-                      <template
-                        x-if="pagination.sort == 'desc' && pagination.order_by == 'user'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
-                          />
-                        </svg>
-                      </template>
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    @click="changeOrderBy('label')"
-                  >
-                    <div class="flex justify-between">
-                      Label
-                      <template
-                        x-if="pagination.sort == 'asc' && pagination.order_by == 'label'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-                          />
-                        </svg>
-                      </template>
-                      <template
-                        x-if="pagination.sort == 'desc' && pagination.order_by == 'label'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
-                          />
-                        </svg>
-                      </template>
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    @click="changeOrderBy('reasons')"
-                  >
-                    <div class="flex justify-between">
-                      Reason(s)
-                      <template
-                        x-if="pagination.sort == 'asc' && pagination.order_by == 'reasons'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-                          />
-                        </svg>
-                      </template>
-                      <template
-                        x-if="pagination.sort == 'desc' && pagination.order_by == 'reasons'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
-                          />
-                        </svg>
-                      </template>
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    @click="changeOrderBy('tags')"
-                  >
-                    <div class="flex justify-between">
-                      Tag(s)
-                      <template
-                        x-if="pagination.sort == 'asc' && pagination.order_by == 'tags'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-                          />
-                        </svg>
-                      </template>
-                      <template
-                        x-if="pagination.sort == 'desc' && pagination.order_by == 'tags'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
-                          />
-                        </svg>
-                      </template>
-                    </div>
-                  </th>
-                  <th
-                    scope="col"
-                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                    @click="changeOrderBy('notes')"
-                  >
-                    <div class="flex justify-between">
-                      Notes<template
-                        x-if="pagination.sort == 'asc' && pagination.order_by == 'notes'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-                          />
-                        </svg>
-                      </template>
-                      <template
-                        x-if="pagination.sort == 'desc' && pagination.order_by == 'notes'"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
-                          />
-                        </svg>
-                      </template>
-                    </div>
-                  </th>
-                  <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                    <span class="sr-only">Edit</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-200 bg-white">
-                <template x-if="results == null">
-                  <tr>
-                    <td>Loading..</td>
-                  </tr>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                    />
+                  </svg>
                 </template>
-                <template x-if="results != null && results.length == 0">
-                  <tr>
-                    <td>No results</td>
-                  </tr>
+                <template
+                  x-if="pagination.sort == 'desc' && pagination.order_by == 'accession_number_alts'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                    />
+                  </svg>
                 </template>
-                <template x-if="results != null">
-                  <template x-for="result in results">
-                    <tr>
-                      <td
-                        class="whitespace-nowrap pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
-                        x-text="result.accession_number_alts"
-                      ></td>
-                      <td
-                        class="px-3 text-sm text-gray-500 max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap"
-                        x-text="result.author_map_string"
-                      ></td>
-                      <td
-                        class="px-3 text-sm text-gray-500"
-                        x-text="result.name"
-                      ></td>
-                      <td
-                        class="px-3 text-sm text-gray-500"
-                        x-text="result.year"
-                      ></td>
-                      <td
-                        class="px-3 text-sm text-gray-500"
-                        x-text="result.user"
-                      ></td>
-                      <td
-                        class="font-bold whitespace-nowrap px-3 text-sm text-gray-500"
-                        x-text="result.label"
-                      ></td>
-                      <td
-                        class="px-3 text-sm text-gray-500"
-                        x-text="result.reasons"
-                      ></td>
-                      <td
-                        class="px-3 text-sm text-gray-500"
-                        x-text="result.tags"
-                      ></td>
-                      <td
-                        class="px-3 text-sm text-gray-500"
-                        x-text="result.notes"
-                      ></td>
-                      <td
-                        class="relative whitespace-nowrap pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
-                      >
-                        <a
-                          :href="`/abstract_screenings/${result.abstract_screening_id}/screen?asr_id=${result.id}`"
-                          x-cloak
-                          x-show="result.user_id == <%= current_user.id %>"
-                          class="hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-1 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
-                          >Screen Again</a
-                        >
-                      </td>
-                    </tr>
-                  </template>
+              </div>
+            </th>
+            <th
+              scope="col"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              @click="changeOrderBy('author_map_string')"
+            >
+              <div class="flex justify-between">
+                Authors
+                <template
+                  x-if="pagination.sort == 'asc' && pagination.order_by == 'author_map_string'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                    />
+                  </svg>
                 </template>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+                <template
+                  x-if="pagination.sort == 'desc' && pagination.order_by == 'author_map_string'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                    />
+                  </svg>
+                </template>
+              </div>
+            </th>
+            <th
+              scope="col"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              @click="changeOrderBy('name')"
+            >
+              <div class="flex justify-between">
+                Title
+                <template
+                  x-if="pagination.sort == 'asc' && pagination.order_by == 'name'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                    />
+                  </svg>
+                </template>
+                <template
+                  x-if="pagination.sort == 'desc' && pagination.order_by == 'name'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                    />
+                  </svg>
+                </template>
+              </div>
+            </th>
+            <th
+              scope="col"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              @click="changeOrderBy('year')"
+            >
+              <div class="flex justify-between">
+                Publication Date
+                <template
+                  x-if="pagination.sort == 'asc' && pagination.order_by == 'year'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                    />
+                  </svg>
+                </template>
+                <template
+                  x-if="pagination.sort == 'desc' && pagination.order_by == 'year'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                    />
+                  </svg>
+                </template>
+              </div>
+            </th>
+            <th
+              scope="col"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              @click="changeOrderBy('user')"
+            >
+              <div class="flex justify-between">
+                Participant
+                <template
+                  x-if="pagination.sort == 'asc' && pagination.order_by == 'user'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                    />
+                  </svg>
+                </template>
+                <template
+                  x-if="pagination.sort == 'desc' && pagination.order_by == 'user'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                    />
+                  </svg>
+                </template>
+              </div>
+            </th>
+            <th
+              scope="col"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              @click="changeOrderBy('label')"
+            >
+              <div class="flex justify-between">
+                Label
+                <template
+                  x-if="pagination.sort == 'asc' && pagination.order_by == 'label'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                    />
+                  </svg>
+                </template>
+                <template
+                  x-if="pagination.sort == 'desc' && pagination.order_by == 'label'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                    />
+                  </svg>
+                </template>
+              </div>
+            </th>
+            <th
+              scope="col"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              @click="changeOrderBy('privileged')"
+            >
+              <div class="flex justify-between">
+                Privileged
+                <template
+                  x-if="pagination.sort == 'asc' && pagination.order_by == 'privileged'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                    />
+                  </svg>
+                </template>
+                <template
+                  x-if="pagination.sort == 'desc' && pagination.order_by == 'privileged'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                    />
+                  </svg>
+                </template>
+              </div>
+            </th>
+            <th
+              scope="col"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              @click="changeOrderBy('reasons')"
+            >
+              <div class="flex justify-between">
+                Reason(s)
+                <template
+                  x-if="pagination.sort == 'asc' && pagination.order_by == 'reasons'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                    />
+                  </svg>
+                </template>
+                <template
+                  x-if="pagination.sort == 'desc' && pagination.order_by == 'reasons'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                    />
+                  </svg>
+                </template>
+              </div>
+            </th>
+            <th
+              scope="col"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              @click="changeOrderBy('tags')"
+            >
+              <div class="flex justify-between">
+                Tag(s)
+                <template
+                  x-if="pagination.sort == 'asc' && pagination.order_by == 'tags'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                    />
+                  </svg>
+                </template>
+                <template
+                  x-if="pagination.sort == 'desc' && pagination.order_by == 'tags'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                    />
+                  </svg>
+                </template>
+              </div>
+            </th>
+            <th
+              scope="col"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              @click="changeOrderBy('notes')"
+            >
+              <div class="flex justify-between">
+                Notes<template
+                  x-if="pagination.sort == 'asc' && pagination.order_by == 'notes'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                    />
+                  </svg>
+                </template>
+                <template
+                  x-if="pagination.sort == 'desc' && pagination.order_by == 'notes'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                    />
+                  </svg>
+                </template>
+              </div>
+            </th>
+            <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+              <span class="sr-only">Edit</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 bg-white">
+          <template x-if="results == null">
+            <tr>
+              <td>Loading..</td>
+            </tr>
+          </template>
+          <template x-if="results != null && results.length == 0">
+            <tr>
+              <td>No results</td>
+            </tr>
+          </template>
+          <template x-if="results != null">
+            <template x-for="result in results">
+              <tr>
+                <td
+                  class="whitespace-nowrap pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                  x-text="result.accession_number_alts"
+                ></td>
+                <td
+                  class="px-3 text-sm text-gray-500 max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap"
+                  x-text="result.author_map_string"
+                ></td>
+                <td
+                  class="px-3 text-sm text-gray-500"
+                  x-text="result.name"
+                ></td>
+                <td
+                  class="px-3 text-sm text-gray-500"
+                  x-text="result.year"
+                ></td>
+                <td
+                  class="px-3 text-sm text-gray-500"
+                  x-text="result.user"
+                ></td>
+                <td
+                  class="font-bold whitespace-nowrap px-3 text-sm text-gray-500"
+                  x-text="result.label"
+                ></td>
+                <td
+                  class="font-bold whitespace-nowrap px-3 text-sm text-gray-500"
+                  x-text="result.privileged"
+                ></td>
+                <td
+                  class="px-3 text-sm text-gray-500"
+                  x-text="result.reasons"
+                ></td>
+                <td
+                  class="px-3 text-sm text-gray-500"
+                  x-text="result.tags"
+                ></td>
+                <td
+                  class="px-3 text-sm text-gray-500"
+                  x-text="result.notes"
+                ></td>
+                <td
+                  class="relative whitespace-nowrap pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+                >
+                  <a
+                    :href="`/abstract_screenings/${result.abstract_screening_id}/screen?asr_id=${result.id}`"
+                    x-cloak
+                    x-show="result.user_id == <%= current_user.id %>"
+                    class="hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-1 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+                    >Screen Again</a
+                  >
+                </td>
+              </tr>
+            </template>
+          </template>
+        </tbody>
+      </table>
     </div>
     <div><%= render '/components/pagination' %></div>
   </div>
