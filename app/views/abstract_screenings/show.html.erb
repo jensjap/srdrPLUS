@@ -29,7 +29,7 @@
             </button>
             <% end %>
             <!-- prettier-ignore -->
-            <% if ProjectsUser.find_by(user: current_user, project: @project).project_leader? || ProjectsUser.find_by(user: current_user, project: @project).project_consolidator? %>
+            <% if @projects_user.project_consolidator? %>
             <!-- prettier-ignore -->
             <% if AbstractScreeningService.find_asr_id_to_be_resolved(@abstract_screening, current_user, false) %>
               <%= link_to('Resolve Conflicts',
@@ -664,7 +664,7 @@
                   x-text="result.label"
                 ></td>
                 <td
-                  class="font-bold whitespace-nowrap px-3 text-sm text-gray-500"
+                  class="px-3 whitespace-nowrap"
                   x-text="result.privileged"
                 ></td>
                 <td
@@ -679,9 +679,7 @@
                   class="px-3 text-sm text-gray-500"
                   x-text="result.notes"
                 ></td>
-                <td
-                  class="relative whitespace-nowrap pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
-                >
+                <td class="p-3 whitespace-nowrap">
                   <a
                     :href="`/abstract_screenings/${result.abstract_screening_id}/screen?asr_id=${result.id}`"
                     x-cloak
