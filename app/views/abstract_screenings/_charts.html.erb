@@ -208,7 +208,7 @@
 
       async fetchUnlabeledMlData() {
         const response = await fetch(
-          "/projects/<%= params[:id] %>/unlabeled_predictions",
+          "/projects/<%= project.id %>/unlabeled_predictions",
           {
             method: "GET",
             headers: {
@@ -223,7 +223,7 @@
 
       async fetchLabeledMlData() {
         const response = await fetch(
-          "/model_performances/by_project/<%= params[:id] %>",
+          "/model_performances/by_project/<%= project.id %>",
           {
             method: "GET",
             headers: {
