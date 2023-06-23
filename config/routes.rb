@@ -196,7 +196,7 @@ Rails.application.routes.draw do
     resources :fulltext_screenings_reasons_users
   end
 
-  resources :abstract_screening_results, only: %i[show update]
+  resources :abstract_screening_results, only: %i[show update destroy]
   resources :fulltext_screening_results, only: %i[show update]
 
   resources :result_statistic_sections_measures, only: %i[create]

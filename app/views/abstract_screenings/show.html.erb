@@ -664,7 +664,7 @@
                   x-text="result.label"
                 ></td>
                 <td
-                  class="px-3 whitespace-nowrap"
+                  class="px-3 whitespace-nowrap text-sm text-gray-500"
                   x-text="result.privileged"
                 ></td>
                 <td
@@ -679,14 +679,22 @@
                   class="px-3 text-sm text-gray-500"
                   x-text="result.notes"
                 ></td>
-                <td class="p-3 whitespace-nowrap">
+                <td class="p-3 whitespace-nowrap flex flex-col space-y-2">
                   <a
                     :href="`/abstract_screenings/${result.abstract_screening_id}/screen?asr_id=${result.id}`"
                     x-cloak
                     x-show="result.user_id == <%= current_user.id %>"
-                    class="hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-1 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+                    class="hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple hover:bg-srdrpurple-light px-4 py-1 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
                     >Screen Again</a
                   >
+                  <button
+                    x-cloak
+                    x-show="result.privileged && <%= @projects_user.project_leader? %>"
+                    class="cursor-pointer hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-red-800 hover:bg-red-700 px-4 py-1 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+                    @click="if (confirm(`Are you sure you want to delete this screening result for: '${result.name}'`)) { deleteAsr(result.id) }"
+                  >
+                    Remove
+                  </button>
                 </td>
               </tr>
             </template>
@@ -775,6 +783,26 @@
         const data = await response.json();
         this.results = data.results;
         this.pagination = data.pagination;
+      },
+
+      async deleteAsr(asr_id) {
+        const response = await fetch(`/abstract_screening_results/${asr_id}`, {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+        });
+        if (response.status >= 200 && response.status < 300) {
+          this.results = this.results.filter((result) => result.id !== asr_id);
+          toastr.success("Deleted successfully", null, { timeOut: 1000 });
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
       },
     }));
   });

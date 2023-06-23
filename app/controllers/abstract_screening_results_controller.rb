@@ -1,10 +1,13 @@
 class AbstractScreeningResultsController < ApplicationController
+  after_action :verify_authorized
+
   def update
     respond_to do |format|
       format.json do
         @abstract_screening_result = AbstractScreeningResult
                                      .includes(citations_project: :citation)
                                      .find(params[:id])
+        authorize(@abstract_screening_result)
         case params[:submissionType]
         when 'label'
           @abstract_screening_result.update(asr_params)
@@ -24,11 +27,26 @@ class AbstractScreeningResultsController < ApplicationController
         @abstract_screening_result = AbstractScreeningResult
                                      .includes(citations_project: :citation)
                                      .find(params[:id])
+        authorize(@abstract_screening_result)
         @screened_cps = AbstractScreeningResult
                         .includes(citations_project: :citation)
                         .where(user: current_user,
                                abstract_screening: @abstract_screening_result.abstract_screening)
         prepare_json_data
+      end
+    end
+  end
+
+  def destroy
+    respond_to do |format|
+      format.json do
+        @abstract_screening_result = AbstractScreeningResult
+                                     .includes(citations_project: :citation)
+                                     .find(params[:id])
+        authorize(@abstract_screening_result)
+        @abstract_screening_result.destroy
+
+        render json: @abstract_screening_result
       end
     end
   end
