@@ -20,12 +20,14 @@ class AbstractScreeningService
     return unfinished_privileged_asr if unfinished_privileged_asr
 
     citations_project =
-      abstract_screening
-      .abstract_screening_results
-      .includes(:citations_project)
-      .where(citations_project: { screening_status: CitationsProject::AS_IN_CONFLICT })
+      CitationsProject
+      .left_joins(:abstract_screening_results)
+      .where(
+        project: abstract_screening.project,
+        screening_status: CitationsProject::AS_IN_CONFLICT,
+        abstract_screening_results: { id: nil }
+      )
       .first
-      &.citations_project
 
     return nil unless citations_project
 
