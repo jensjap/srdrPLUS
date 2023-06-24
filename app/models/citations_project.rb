@@ -73,15 +73,6 @@ class CitationsProject < ApplicationRecord
     cp_to_remove.extractions.each do |e|
       e.dup.update_attributes(citations_project_id: master_cp.id)
     end
-    cp_to_remove.labels.each do |l|
-      l.dup.update_attributes(citations_project_id: master_cp.id)
-    end
-    cp_to_remove.notes.each do |n|
-      n.dup.update_attributes(notable_id: master_cp.id)
-    end
-    cp_to_remove.taggings.each do |t|
-      t.dup.update_attributes(taggable_id: master_cp.id)
-    end
   end
 
   def search_data
