@@ -21,7 +21,7 @@ div.row style="margin: 0;"
             - @citations.each do |citation|
               tr
                 td style="text-align: center;" = citation.accession_number_alts
-                td style="text-align: center;" = citation.refman
+                td style="text-align: center;" = @citations_projects_dict[citation.id]&.refman
                 td
                   div style="overflow: hidden; height: 18px;" title="#{citation.authors}" = citation.authors_short
                 td
