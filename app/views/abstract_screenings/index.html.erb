@@ -150,11 +150,11 @@
                     <% if AbstractScreeningService.find_citation_id(as, current_user) %>
                       <%= link_to('Continue Screening',
                         abstract_screening_screen_path(as),
-                        class: "w-48 inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 my-1 text-center text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white")
+                        class: "w-full items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 my-1 text-center text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white")
                       %>
                     <% else %>
                     <button
-                      class="w-48 inline-flex cursor-not-allowed items-center justify-center rounded-md border border-transparent bg-purple-900 opacity-80 px-4 py-2 my-1 text-center text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
+                      class="w-full cursor-not-allowed items-center justify-center rounded-md border border-transparent bg-purple-900 opacity-80 px-4 py-2 my-1 text-center text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
                     >
                       Nothing Left to Screen
                     </button>
@@ -163,13 +163,33 @@
                     <% if ProjectsUser.find_by(user: current_user, project: @project).project_leader? || ProjectsUser.find_by(user: current_user, project: @project).project_consolidator? %>
                     <!-- prettier-ignore -->
                     <% if AbstractScreeningService.find_asr_id_to_be_resolved(as, current_user, false) %>
-                      <%= link_to('Resolve Conflicts',
-                        abstract_screening_screen_path(as, resolution_mode: true),
-                        class: "w-48 inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 my-1 text-center text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white")
-                      %>
+                    <div class="w-full flex space-x-2">
+                      <!-- prettier-ignore -->
+                      <%= link_to(abstract_screening_screen_path(as,
+                      resolution_mode: true), class: "w-full items-center
+                      justify-center rounded-md border border-transparent
+                      bg-srdrpurple px-4 py-2 my-1 text-center text-sm
+                      font-medium text-white shadow-sm hover:bg-srdrpurple-light
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500
+                      focus:ring-offset-2 hover:no-underline hover:text-white") do %>
+                      <div>Resolve Conflicts</div>
+                      <div class="text-xs">(Don't Show Labels)</div>
+                      <% end %>
+                      <!-- prettier-ignore -->
+                      <%= link_to(abstract_screening_screen_path(as,
+                      { resolution_mode: true, show_all_labels: true }), class: "w-full items-center
+                      justify-center rounded-md border border-transparent
+                      bg-srdrpurple px-4 py-2 my-1 text-center text-sm
+                      font-medium text-white shadow-sm hover:bg-srdrpurple-light
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500
+                      focus:ring-offset-2 hover:no-underline hover:text-white") do %>
+                      <div>Resolve Conflicts</div>
+                      <div class="text-xs">(Show All Labels)</div>
+                      <% end %>
+                    </div>
                     <% else %>
                     <button
-                      class="w-48 inline-flex cursor-not-allowed items-center justify-center rounded-md border border-transparent bg-purple-900 opacity-80 px-4 py-2 my-1 text-center text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
+                      class="w-full cursor-not-allowed items-center justify-center rounded-md border border-transparent bg-purple-900 opacity-80 px-4 py-2 my-1 text-center text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
                     >
                       Nothing to Resolve
                     </button>
@@ -178,7 +198,7 @@
                     <% end %>
                     <!-- prettier-ignore -->
                     <%= link_to('Show Results',
-                      abstract_screening_path(as), class: "w-48 inline-flex
+                      abstract_screening_path(as), class: "w-full
                       items-center justify-center rounded-md border
                       border-transparent bg-srdrpurple px-4 py-2 my-1
                       text-center text-sm font-medium text-white shadow-sm
@@ -188,7 +208,7 @@
                     <!-- prettier-ignore -->
                     <% if @project.leaders.include?(current_user) %>
                     <%= link_to('Edit', edit_abstract_screening_path(as),
-                      class: "w-48 inline-flex items-center justify-center
+                      class: "w-full items-center justify-center
                       rounded-md border border-transparent bg-srdrpurple px-4
                       py-2 my-1 text-center text-sm font-medium text-white
                       shadow-sm hover:bg-srdrpurple-light focus:outline-none

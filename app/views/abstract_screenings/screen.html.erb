@@ -93,7 +93,7 @@
           x-text="citation.journal_meta_info"
         ></div>
         <hr />
-        <div class="px-8 leading-5 text-xs">
+        <div x-cloak x-show="show_all_labels" class="px-8 leading-5 text-xs">
           <h5 class="text-sm font-bold">All Labels</h5>
           <template x-for="label in all_labels">
             <div class="flex">
@@ -277,11 +277,12 @@
       dragType: null,
       dropIndex: null,
       dropType: null,
-      resolutionMode: new URL(window.location.href).searchParams.get(
-        "resolution_mode"
-      )
-        ? true
-        : false,
+      resolutionMode:
+        new URL(window.location.href).searchParams.get("resolution_mode") ==
+        "true",
+      show_all_labels:
+        new URL(window.location.href).searchParams.get("show_all_labels") ==
+        "true",
 
       init() {
         const url = new URL(window.location.href);

@@ -11,7 +11,7 @@
               A list of all results for citations that have been labeled.
             </p>
           </div>
-          <div class="flex-col items-end">
+          <div class="flex-col items-end md:w-96">
             <!-- prettier-ignore -->
             <% if AbstractScreeningService.find_citation_id(@abstract_screening, current_user) %>
             <%= link_to('Continue Screening',
@@ -32,13 +32,28 @@
             <% if @projects_user.project_consolidator? %>
             <!-- prettier-ignore -->
             <% if AbstractScreeningService.find_asr_id_to_be_resolved(@abstract_screening, current_user, false) %>
-              <%= link_to('Resolve Conflicts',
-              abstract_screening_screen_path(@abstract_screening, resolution_mode: true), class: "text-center mb-2
-              cursor-pointer inline-flex items-center justify-center rounded-md border
+            <div class="w-full flex space-x-2">
+              <%= link_to(abstract_screening_screen_path(@abstract_screening,
+              resolution_mode: true), class: "text-center mb-2 cursor-pointer
+              items-center justify-center rounded-md border border-transparent
+              bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm
+              hover:bg-srdrpurple-light focus:outline-none focus:ring-2
+              focus:ring-indigo-500 focus:ring-offset-2 w-full
+              hover:no-underline hover:text-white") do %>
+              <div>Resolve Conflicts</div>
+              <div class="text-xs">(Don't Show Labels)</div>
+              <% end %>
+              <!-- prettier-ignore -->
+              <%= link_to(abstract_screening_screen_path(@abstract_screening, { resolution_mode: true, show_all_labels: true }),
+              class: "text-center mb-2 cursor-pointer items-center justify-center rounded-md border
               border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium
               text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none
               focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full
-              hover:no-underline hover:text-white") %>
+              hover:no-underline hover:text-white") do %>
+              <div>Resolve Conflicts</div>
+              <div class="text-xs">(Show All Labels)</div>
+              <% end %>
+            </div>
             <% else %>
             <button
               class="text-center mb-2 cursor-not-allowed w-full inline-flex items-center justify-center rounded-md border border-transparent bg-purple-900 opacity-80 px-4 py-2 text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
