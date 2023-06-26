@@ -216,7 +216,6 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     citation = Citation.create!(name:)
     citation.journal = Journal.find_or_create_by!(publication_date: year)
     citation.authors = authors if authors.present?
-    citation.refman = refman
     citation.save!
 
     citation

@@ -40,7 +40,7 @@ module GsheetsExportJob::GeResultsSection
               username: extraction.username,
               citation_id: extraction.citations_project.citation.id,
               citation_name: extraction.citations_project.citation.name,
-              refman: extraction.citations_project.citation.refman,
+              refman: extraction.citations_project.refman,
               pmid: extraction.citations_project.citation.pmid
             )
 

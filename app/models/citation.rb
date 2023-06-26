@@ -52,7 +52,6 @@ class Citation < ApplicationRecord
   def accession_number_alts
     (pmid.present? && pmid) ||
       (registry_number.present? && registry_number) ||
-      (refman.present? && refman) ||
       (accession_number.present? && accession_number) ||
       (doi.present? && doi) ||
       (other.present? && other)

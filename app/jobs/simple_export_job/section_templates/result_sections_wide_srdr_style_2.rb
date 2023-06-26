@@ -509,7 +509,7 @@ module SimpleExportJob::SectionTemplates::ResultSectionsWideSrdrStyle2
     lsof_identifiers << extraction.user.handle
     lsof_identifiers << extraction.citation.id
     lsof_identifiers << extraction.citation.name
-    lsof_identifiers << extraction.citation.refman
+    lsof_identifiers << extraction.citations_project.refman
     lsof_identifiers << extraction.citation.pmid
     lsof_identifiers << extraction.citation.authors
     lsof_identifiers << extraction.citation.year

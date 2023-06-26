@@ -299,7 +299,7 @@ class SimpleExportJob::SheetInfo
         citation_name: extraction.citation.name,
         authors: extraction.citation.authors,
         publication_date: extraction.citation.try(:journal).try(:get_publication_year),
-        refman: extraction.citation.refman,
+        refman: extraction.citations_project.refman,
         pmid: extraction.citation.pmid,
         kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
       )
@@ -488,7 +488,7 @@ class SimpleExportJob::SheetInfo
         citation_name: extraction.citation.name,
         authors: extraction.citation.authors,
         publication_date: extraction.citation.try(:journal).try(:get_publication_year),
-        refman: extraction.citation.refman,
+        refman: extraction.citations_project.refman,
         pmid: extraction.citation.pmid,
         kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
       )
