@@ -131,7 +131,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
       wb_cit_ref_id = row[dict_header_index_lookup['Workbook Citation Reference ID']]&.value&.to_i
       pmid          = row[dict_header_index_lookup['PMID']]&.value
       citation_name = row[dict_header_index_lookup['Citation Name']]&.value
-      refman        = row[dict_header_index_lookup['RefMan']]&.value&.truncate(200)
+      refman        = row[dict_header_index_lookup['RefMan']]&.value
       authors       = row[dict_header_index_lookup['Authors']]&.value
       year          = row[dict_header_index_lookup['Publication Year']]&.value
 

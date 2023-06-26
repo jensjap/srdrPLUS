@@ -37,6 +37,7 @@ class Citation < ApplicationRecord
 
   accepts_nested_attributes_for :keywords, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :journal, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :citations_projects, reject_if: :all_blank
 
   # Redundant?
   def abstract_utf8

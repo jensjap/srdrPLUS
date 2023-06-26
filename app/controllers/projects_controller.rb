@@ -87,9 +87,12 @@ class ProjectsController < ApplicationController
           flash[:alert] = 'You must have at least one leader in the project.'
           redirect_to(edit_project_path(@project, page: 'members_and_roles'))
         elsif @project.update(project_params)
-          redirect_path = params.try(:[], :project).try(:[], :redirect_path)
+          redirect_path = params.dig(:project, :redirect_path)
           if redirect_path.present?
-            redirect_to(redirect_path, notice: t('success'))
+            redirect_to(
+              redirect_path,
+              notice: t('success')
+            )
           else
             redirect_back(
               fallback_location: edit_project_path(@project, page: 'info'),
@@ -97,8 +100,19 @@ class ProjectsController < ApplicationController
             )
           end
         else
-          flash.now[:alert] = @project.errors.full_messages.join(' - ')
-          render :edit
+          flash[:alert] = @project.errors.full_messages.join(' - ')
+          redirect_path = params.dig(:project, :redirect_path)
+          if redirect_path.present?
+            redirect_to(
+              redirect_path,
+              error: t('failure')
+            )
+          else
+            redirect_back(
+              fallback_location: edit_project_path(@project, page: 'info'),
+              error: t('failure')
+            )
+          end
         end
       end
 

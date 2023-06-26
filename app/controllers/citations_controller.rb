@@ -70,6 +70,7 @@ class CitationsController < ApplicationController
                  .order(:id)
     @citations_projects_dict = @project.citations_projects.map { |cp| [cp.citation_id, cp] }.to_h
     @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
+    @project.citations.build
   end
 
   private
@@ -95,12 +96,12 @@ class CitationsController < ApplicationController
         :pmid,
         :registry_number,
         :doi,
-        :other,
         :abstract,
         :page_number_start,
         :page_number_end,
         :_destroy,
         citations_attributes: %i[id name _destroy],
+        citations_projects_attributes: %i[id refman other_reference],
         journal_attributes: %i[id name publication_date issue volume _destroy],
         keywords_attributes: %i[id name _destroy]
       )

@@ -165,7 +165,7 @@ document.addEventListener 'DOMContentLoaded', ->
       $( '.citation-fields' ).find( '.journal-volume input' ).val citation[ 'journal' ][ 'vol' ]
       $( '.citation-fields' ).find( '.journal-issue input' ).val citation[ 'journal' ][ 'issue' ]
       $( '.citation-fields' ).find( '.journal-year input' ).val citation[ 'journal' ][ 'year' ]
-      $( '.citation-fields' ).find( '.project_citations_pmid input' ).val citation[ 'pmid' ]
+      $( '.citation-fields' ).find( 'input.input-citation-pmid' ).val citation[ 'pmid' ]
 
       for keyword in citation[ 'keywords' ]
         keywordselect = $('.KEYWORDS select')
@@ -249,7 +249,7 @@ document.addEventListener 'DOMContentLoaded', ->
           $( insertedItem ).find('.journal-year input').val(null)
 
           ## fetch citations using value in "Accession Number"
-          fetch_from_pubmed $( '.project_citations_accession_number input' ).val()
+          fetch_from_pubmed $( 'input.accession-number-lookup-field' ).val()
 
         $( insertedItem ).find( '.citation-select' ).select2
           minimumInputLength: 0
