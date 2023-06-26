@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_23_084825) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_23_084830) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -313,7 +313,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_23_084825) do
     t.integer "consensus_type_id"
     t.boolean "pilot_flag"
     t.string "screening_status", default: "asu"
-    t.string "refman"
+    t.text "refman"
+    t.text "other_reference"
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id"
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id"
     t.index ["project_id"], name: "index_citations_projects_on_project_id"
