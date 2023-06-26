@@ -72,6 +72,7 @@ module SimpleExportJob::SectionTemplates::Type1SectionsWide
             new_row << extraction[:extraction_info][:citation_id]
             new_row << extraction[:extraction_info][:citation_name]
             new_row << extraction[:extraction_info][:refman]
+            new_row << extraction[:extraction_info][:other_reference]
             new_row << extraction[:extraction_info][:pmid]
             new_row << extraction[:extraction_info][:authors]
             new_row << extraction[:extraction_info][:publication_date]

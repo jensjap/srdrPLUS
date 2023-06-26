@@ -93,6 +93,7 @@ module SimpleExportJob::SectionTemplates::ResultSectionsWideSrdrStyle2
               new_row << extraction[:extraction_info][:citation_id]
               new_row << extraction[:extraction_info][:citation_name]
               new_row << extraction[:extraction_info][:refman]
+              new_row << extraction[:extraction_info][:other_reference]
               new_row << extraction[:extraction_info][:pmid]
               new_row << extraction[:extraction_info][:authors]
               new_row << extraction[:extraction_info][:publication_date]
@@ -363,6 +364,7 @@ module SimpleExportJob::SectionTemplates::ResultSectionsWideSrdrStyle2
       + extraction[:extraction_info][:citation_id].to_s\
       + extraction[:extraction_info][:citation_name].to_s\
       + extraction[:extraction_info][:refman].to_s\
+      + extraction[:extraction_info][:other_reference].to_s\
       + extraction[:extraction_info][:pmid].to_s\
       + extraction[:extraction_info][:authors].to_s\
       + extraction[:extraction_info][:publication_date].to_s\
@@ -510,6 +512,7 @@ module SimpleExportJob::SectionTemplates::ResultSectionsWideSrdrStyle2
     lsof_identifiers << extraction.citation.id
     lsof_identifiers << extraction.citation.name
     lsof_identifiers << extraction.citations_project.refman
+    lsof_identifiers << extraction.citations_project.other_reference
     lsof_identifiers << extraction.citation.pmid
     lsof_identifiers << extraction.citation.authors
     lsof_identifiers << extraction.citation.year

@@ -498,6 +498,11 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     refman = @wb_data[:wcr][wb_cit_ref_id]['refman']
     citations_project.update(refman:)
 
+    # We wish to record the Workbook Citation Reference ID from the
+    # 'Assignments and Mappings' Template. We save this to the
+    # CitationsProject.other_reference field
+    citations_project.update(other_reference: wb_cit_ref_id)
+
     # Find ProjectsUser with Contributor permissions.
     pu = ProjectsUser.find_or_create_by!(
       project: @project,

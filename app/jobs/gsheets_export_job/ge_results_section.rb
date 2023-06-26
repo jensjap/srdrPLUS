@@ -41,6 +41,7 @@ module GsheetsExportJob::GeResultsSection
               citation_id: extraction.citations_project.citation.id,
               citation_name: extraction.citations_project.citation.name,
               refman: extraction.citations_project.refman,
+              other_reference: extraction.citations_project.other_reference,
               pmid: extraction.citations_project.citation.pmid
             )
 
@@ -197,7 +198,7 @@ module GsheetsExportJob::GeResultsSection
           end # project.extractions.each do |extraction|
 
           # Start printing rows to the spreadsheet. First the basic headers:
-          # ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
+          # ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'other_reference', 'PMID']
           header_row = sheet.add_row sheet_info.header_info
 
           # Next continue the header row by adding all rssms together.
@@ -245,6 +246,7 @@ module GsheetsExportJob::GeResultsSection
             new_row << extraction[:extraction_info][:citation_id]
             new_row << extraction[:extraction_info][:citation_name]
             new_row << extraction[:extraction_info][:refman]
+            new_row << extraction[:extraction_info][:other_reference]
             new_row << extraction[:extraction_info][:pmid]
 
             # Add question information.

@@ -37,6 +37,7 @@ module SimpleExportJob::SectionTemplates::Type1SectionsCompact
               new_row << extraction.citations_project.citation.id.to_s
               new_row << extraction.citations_project.citation.name
               new_row << extraction.citations_project.citations_project.refman.to_s
+              new_row << extraction.citations_project.citations_project.other_reference.to_s
               new_row << extraction.citations_project.citation.pmid.to_s
               new_row << extraction.citations_project.citation.authors
               new_row << extraction.citations_project.citation.try(:journal).try(:get_publication_year)
