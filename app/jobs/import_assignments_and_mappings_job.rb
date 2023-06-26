@@ -217,18 +217,8 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     citation.journal = Journal.find_or_create_by!(publication_date: year)
     citation.authors = authors if authors.present?
     citation.refman = refman
-
-#    if authors&.match(/\[(.*?)\]/)
-#      authors.scan(/\[(.*?)\]/).each do |author|
-#        citation.authors << Author.find_or_create_by!(name: author)
-#      end
-#    else
-#      authors&.split(';').each do |author|
-#        citation.authors << Author.find_or_create_by!(name: author)
-#      end
-#    end
-
     citation.save!
+
     citation
   end
 
@@ -445,7 +435,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     user = User.find_by(email: user_email)
     citation = Citation.find(citation_id)
 
-    extraction = _retrieve_extraction_record(user, citation)
+    extraction = _retrieve_extraction_record(user, citation, data[:wb_cit_ref_id])
     _toggle_true_all_kqs_for_extraction(extraction) if extraction.present?
 
     @lsof_type1_section_names.each do |type1_section_name|
@@ -498,12 +488,16 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     end
   end
 
-  def _retrieve_extraction_record(user, citation)
+  def _retrieve_extraction_record(user, citation, wb_cit_ref_id)
     # CitationsProject may or not exist. Call find_or_create_by.
     citations_project = CitationsProject.find_or_create_by!(
       citation:,
       project: @project
     )
+
+    # Retrieve Reference Manager ID if available to citations_project record.
+    refman = @wb_data[:wcr][wb_cit_ref_id]['refman']
+    citations_project.update(refman:)
 
     # Find ProjectsUser with Contributor permissions.
     pu = ProjectsUser.find_or_create_by!(
