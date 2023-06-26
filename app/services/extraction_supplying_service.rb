@@ -137,16 +137,19 @@ class ExtractionSupplyingService
           'item' => []
         }
 
-        if eefps_type1_id.blank?
+        all_blank = eefpsqrcf_grouped_by_type1.keys.all?(&:blank?)
+        if eefps_type1_id.blank? && !all_blank
           next
         else
-          type1 = ExtractionsExtractionFormsProjectsSectionsType1.find(eefps_type1_id).type1
-          type1_display = type1.name + ' (' + type1.description + ')'
-          eefps['subject'] = {
-            'reference' => 'Type1/' + type1.id.to_s,
-            'type' => 'EvidenceVariable',
-            'display' => type1_display
-          }
+          if !all_blank
+            type1 = ExtractionsExtractionFormsProjectsSectionsType1.find(eefps_type1_id).type1
+            type1_display = type1.name + ' (' + type1.description + ')'
+            eefps['subject'] = {
+              'reference' => 'Type1/' + type1.id.to_s,
+              'type' => 'EvidenceVariable',
+              'display' => type1_display
+            }
+          end
 
           restriction_symbol = ''
           for eefpsqrcf in eefpsqrcfs do
