@@ -643,6 +643,8 @@ class ExtractionSupplyingService
       attribute_estimate_arr = []
       note_arr = []
       description_arr = []
+      number_of_events = nil
+      sample_size = nil
 
       merge_targets = []
       keep_targets = []
@@ -670,6 +672,16 @@ class ExtractionSupplyingService
           description_arr << statistic["description"]
           statistic.delete("description")
         end
+
+        if statistic.key?("numberOfEvents")
+          number_of_events ||= statistic["numberOfEvents"]
+          statistic.delete("numberOfEvents")
+        end
+
+        if statistic.key?("sampleSize")
+          sample_size ||= statistic["sampleSize"]
+          statistic.delete("sampleSize")
+        end
       end
 
       merged_statistic = merge_targets.reduce({}, :merge)
@@ -682,6 +694,9 @@ class ExtractionSupplyingService
         if note_arr.any?
           merged_statistic["note"] = note_arr
         end
+
+        merged_statistic["numberOfEvents"] = number_of_events if number_of_events
+        merged_statistic["sampleSize"] = sample_size if sample_size
       else
         keep_targets.each do |statistic|
           if attribute_estimate_arr.any?
@@ -699,6 +714,9 @@ class ExtractionSupplyingService
               statistic["note"] = note_arr.dup
             end
           end
+
+          statistic["numberOfEvents"] ||= number_of_events
+          statistic["sampleSize"] ||= sample_size
         end
       end
 
@@ -708,6 +726,7 @@ class ExtractionSupplyingService
       item
     end
   end
+
 
   def build_variable_definition(description, code)
     {
