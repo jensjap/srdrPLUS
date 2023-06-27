@@ -137,16 +137,19 @@ class ExtractionSupplyingService
           'item' => []
         }
 
-        if eefps_type1_id.blank?
+        all_blank = eefpsqrcf_grouped_by_type1.keys.all?(&:blank?)
+        if eefps_type1_id.blank? && !all_blank
           next
         else
-          type1 = ExtractionsExtractionFormsProjectsSectionsType1.find(eefps_type1_id).type1
-          type1_display = type1.name + ' (' + type1.description + ')'
-          eefps['subject'] = {
-            'reference' => 'Type1/' + type1.id.to_s,
-            'type' => 'EvidenceVariable',
-            'display' => type1_display
-          }
+          if !all_blank
+            type1 = ExtractionsExtractionFormsProjectsSectionsType1.find(eefps_type1_id).type1
+            type1_display = type1.name + ' (' + type1.description + ')'
+            eefps['subject'] = {
+              'reference' => 'Type1/' + type1.id.to_s,
+              'type' => 'EvidenceVariable',
+              'display' => type1_display
+            }
+          end
 
           restriction_symbol = ''
           for eefpsqrcf in eefpsqrcfs do
@@ -637,56 +640,69 @@ class ExtractionSupplyingService
 
   def merge_statistics(array)
     array.map do |item|
-      statistic_type_count = item["statistic"].count do |statistic|
-        statistic.key?("statisticType")
-      end
-
-      if statistic_type_count > 1
-        merge_targets = item["statistic"].select do |statistic|
-          !statistic.key?("statisticType")
-        end
-        keep_targets = item["statistic"].select do |statistic|
-          statistic.key?("statisticType")
-        end
-      else
-        merge_targets = item["statistic"]
-        keep_targets = []
-      end
-
       attribute_estimate_arr = []
       note_arr = []
-      merged_statistic = merge_targets.reduce({}) do |result, current|
-        if current.key?("attributeEstimate")
-          attribute_estimate_arr += current["attributeEstimate"]
-          current = current.reject { |key, _| key == "attributeEstimate" }
+      description_arr = []
+
+      merge_targets = []
+      keep_targets = []
+
+      item["statistic"].each do |statistic|
+        if statistic.key?("statisticType")
+          keep_targets << statistic
+        else
+          merge_targets << statistic
+        end
+      end
+
+      merge_targets.each do |statistic|
+        if statistic.key?("attributeEstimate")
+          attribute_estimate_arr += statistic["attributeEstimate"]
+          statistic.delete("attributeEstimate")
         end
 
-        if current.key?("note")
-          note_arr += current["note"]
-          current = current.reject { |key, _| key == "note" }
+        if statistic.key?("note")
+          note_arr += statistic["note"]
+          statistic.delete("note")
         end
 
-        result.merge(current) do |key, oldval, newval|
-          if oldval.is_a?(Hash) && newval.is_a?(Hash)
-            oldval.merge(newval)
-          elsif oldval.is_a?(Array) && newval.is_a?(Array)
-            oldval + newval
-          elsif oldval != newval
-            keep_targets << { key => newval }
-            oldval
-          else
-            oldval + newval
+        if statistic.key?("description")
+          description_arr << statistic["description"]
+          statistic.delete("description")
+        end
+      end
+
+      merged_statistic = merge_targets.reduce({}, :merge)
+
+      if keep_targets.empty?
+        if attribute_estimate_arr.any?
+          merged_statistic["attributeEstimate"] = attribute_estimate_arr
+        end
+
+        if note_arr.any?
+          merged_statistic["note"] = note_arr
+        end
+      else
+        keep_targets.each do |statistic|
+          if attribute_estimate_arr.any?
+            if statistic.key?("attributeEstimate")
+              statistic["attributeEstimate"] += attribute_estimate_arr
+            else
+              statistic["attributeEstimate"] = attribute_estimate_arr.dup
+            end
+          end
+
+          if note_arr.any?
+            if statistic.key?("note")
+              statistic["note"] += note_arr
+            else
+              statistic["note"] = note_arr.dup
+            end
           end
         end
       end
 
-      unless attribute_estimate_arr.empty?
-        merged_statistic["attributeEstimate"] = attribute_estimate_arr
-      end
-
-      unless note_arr.empty?
-        merged_statistic["note"] = note_arr
-      end
+      merged_statistic["description"] = description_arr.join(', ') unless description_arr.empty?
 
       item["statistic"] = [merged_statistic] + keep_targets
       item
@@ -735,7 +751,7 @@ class ExtractionSupplyingService
     begin
       _ = Float(record)
     rescue ArgumentError
-      evidence['statistic'][0]['note'] = [{'text' => record}]
+      evidence['statistic'][0]['note'] = [{'text' => "#{measure_name}: #{record}"}]
     end
 
     case measure_name
@@ -743,7 +759,7 @@ class ExtractionSupplyingService
       evidence['statistic'][0]['sampleSize'] = { 'knownDataCount' => record }
     when 'events'
       evidence['statistic'][0]['numberOfEvents'] = record
-    when '95% ci low (or)'
+    when /95% ci low/
       evidence['statistic'][0]['attributeEstimate'] = [{
         'type' => {
           'coding' => [{
@@ -759,7 +775,7 @@ class ExtractionSupplyingService
           }
         }
       }]
-    when '95% ci high (or)'
+    when /95% ci high/
       evidence['statistic'][0]['attributeEstimate'] = [{
         'type' => {
           'coding' => [{
@@ -775,13 +791,26 @@ class ExtractionSupplyingService
           }
         }
       }]
-    when 'p value'
+    when /p value/
       evidence['statistic'][0]['attributeEstimate'] = [{
         'type' => {
           'coding' => [{
             'system' => 'http://terminology.hl7.org/CodeSystem/attribute-estimate-type',
             'code' => 'C44185',
             'display' => 'P-value'
+          }]
+        },
+        'quantity' => {
+          'value' => record
+        }
+      }]
+    when 'sd'
+      evidence['statistic'][0]['attributeEstimate'] = [{
+        'type' => {
+          'coding' => [{
+            'system' => 'http://terminology.hl7.org/CodeSystem/attribute-estimate-type',
+            'code' => 'C53322',
+            'display' => 'Standard deviation'
           }]
         },
         'quantity' => {
@@ -820,10 +849,14 @@ class ExtractionSupplyingService
       'hazard ratio (hr)' => ['C93150', 'Hazard Ratio'],
       'hazard ratio, adjusted (adjhr)' => ['C93150', 'Hazard Ratio'],
       'risk difference (rd)' => ['0000424', 'Risk Difference'],
-      'risk difference, adjusted (adjrd)' => ['0000424', 'Risk Difference']
+      'risk difference, adjusted (adjrd)' => ['0000424', 'Risk Difference'],
+      'risk ratio (rr)' => ['C93152', 'Relative Risk'],
+      'mean' => ['C53319', 'Mean'],
+      'mean difference (md)' => ['0000457', 'Mean Difference']
     }
 
-    exception_measure_names = ['total (n analyzed)', 'events', '95% ci low (or)', '95% ci high (or)', 'p value']
+    exact_exception_measure_names = ['total (n analyzed)', 'events', 'sd']
+    partial_exception_measure_names = ['95% ci low', '95% ci high', 'p value']
 
     if statistic_type_mapping.key?(measure_name)
       code, display = statistic_type_mapping[measure_name]
@@ -834,7 +867,7 @@ class ExtractionSupplyingService
           'display' => display
         }]
       }
-    elsif !exception_measure_names.include?(measure_name)
+    elsif !exact_exception_measure_names.include?(measure_name) && !partial_exception_measure_names.any? { |s| measure_name.include? s }
       evidence['statistic'][0]['statisticType'] = {
         'text' => measure_name
       }
