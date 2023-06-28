@@ -28,7 +28,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_23_084830) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "privileged", default: false
     t.index ["abstract_screening_id"], name: "index_abstract_screening_results_on_abstract_screening_id"
     t.index ["citations_project_id"], name: "asr_on_cp"
     t.index ["user_id"], name: "asr_on_u"
@@ -730,7 +729,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_23_084830) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "privileged", default: false
     t.index ["citations_project_id"], name: "fsr_on_cp"
     t.index ["fulltext_screening_id"], name: "index_fulltext_screening_results_on_fulltext_screening_id"
     t.index ["user_id"], name: "fsr_on_u"
