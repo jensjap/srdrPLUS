@@ -722,6 +722,30 @@ class ExtractionSupplyingService
 
       merged_statistic["description"] = description_arr.join(', ') unless description_arr.empty?
 
+      item["statistic"].each do |statistic|
+        if statistic.key?("attributeEstimate")
+          groups = statistic["attributeEstimate"].group_by { |e| [e['type'], e['level']] }
+
+          new_attribute_estimate = []
+
+          groups.each do |key, group|
+            if group.count { |e| e['range'] && e['range'].key?('low') } == 1 &&
+               group.count { |e| e['range'] && e['range'].key?('high') } == 1 &&
+               group.size == 2
+              low_element = group.find { |e| e['range'].key?('low') }
+              high_element = group.find { |e| e['range'].key?('high') }
+              merged = low_element
+              merged['range']['high'] = high_element['range']['high']
+              new_attribute_estimate << merged
+            else
+              new_attribute_estimate.concat(group)
+            end
+          end
+
+          statistic["attributeEstimate"] = new_attribute_estimate
+        end
+      end
+
       item["statistic"] = [merged_statistic] + keep_targets
       item
     end
