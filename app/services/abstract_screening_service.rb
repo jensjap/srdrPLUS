@@ -87,7 +87,7 @@ class AbstractScreeningService
     end
   end
 
-  def self.get_next_singles_citation_id(abstract_screening)
+  def self.get_next_singles_citation_id(abstract_screening, x = 0)
     project_screened_citation_ids = project_screened_citation_ids(abstract_screening.project)
     non_asu_citation_ids =
       CitationsProject
@@ -110,10 +110,28 @@ class AbstractScreeningService
                                    )')
                          .where('mp2.id IS NULL')
                          .where.not(id: ineligible_citation_ids)
-                         .where('mp1.score BETWEEN ? AND ?', 0.3, 0.7)
+                         .where('mp1.score BETWEEN ? AND ?',  0.5 - x, 0.5 + x)
                          .sample
 
     return preferred_citation.id if preferred_citation.present?
+
+    highest_score_citation = abstract_screening
+                             .project
+                             .citations
+                             .joins('INNER JOIN citations_projects AS cp2 ON cp2.citation_id = citations.id')
+                             .joins('INNER JOIN ml_predictions AS mp3 ON mp3.citations_project_id = cp2.id')
+                             .joins('LEFT JOIN ml_predictions AS mp4 ON
+                                        (
+                                          mp3.citations_project_id = mp4.citations_project_id
+                                          AND
+                                          mp3.created_at < mp4.created_at
+                                        )')
+                             .where('mp4.id IS NULL')
+                             .where.not(id: ineligible_citation_ids)
+                             .order('mp3.score DESC')
+                             .first
+
+    return highest_score_citation.id if highest_score_citation.present?
 
     random_citation = abstract_screening
                       .project
