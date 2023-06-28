@@ -643,6 +643,8 @@ class ExtractionSupplyingService
       attribute_estimate_arr = []
       note_arr = []
       description_arr = []
+      number_of_events = nil
+      sample_size = nil
 
       merge_targets = []
       keep_targets = []
@@ -670,6 +672,16 @@ class ExtractionSupplyingService
           description_arr << statistic["description"]
           statistic.delete("description")
         end
+
+        if statistic.key?("numberOfEvents")
+          number_of_events ||= statistic["numberOfEvents"]
+          statistic.delete("numberOfEvents")
+        end
+
+        if statistic.key?("sampleSize")
+          sample_size ||= statistic["sampleSize"]
+          statistic.delete("sampleSize")
+        end
       end
 
       merged_statistic = merge_targets.reduce({}, :merge)
@@ -682,6 +694,9 @@ class ExtractionSupplyingService
         if note_arr.any?
           merged_statistic["note"] = note_arr
         end
+
+        merged_statistic["numberOfEvents"] = number_of_events if number_of_events
+        merged_statistic["sampleSize"] = sample_size if sample_size
       else
         keep_targets.each do |statistic|
           if attribute_estimate_arr.any?
@@ -699,15 +714,43 @@ class ExtractionSupplyingService
               statistic["note"] = note_arr.dup
             end
           end
+
+          statistic["numberOfEvents"] ||= number_of_events
+          statistic["sampleSize"] ||= sample_size
         end
       end
 
       merged_statistic["description"] = description_arr.join(', ') unless description_arr.empty?
 
+      item["statistic"].each do |statistic|
+        if statistic.key?("attributeEstimate")
+          groups = statistic["attributeEstimate"].group_by { |e| [e['type'], e['level']] }
+
+          new_attribute_estimate = []
+
+          groups.each do |key, group|
+            if group.count { |e| e['range'] && e['range'].key?('low') } == 1 &&
+               group.count { |e| e['range'] && e['range'].key?('high') } == 1 &&
+               group.size == 2
+              low_element = group.find { |e| e['range'].key?('low') }
+              high_element = group.find { |e| e['range'].key?('high') }
+              merged = low_element
+              merged['range']['high'] = high_element['range']['high']
+              new_attribute_estimate << merged
+            else
+              new_attribute_estimate.concat(group)
+            end
+          end
+
+          statistic["attributeEstimate"] = new_attribute_estimate
+        end
+      end
+
       item["statistic"] = [merged_statistic] + keep_targets
       item
     end
   end
+
 
   def build_variable_definition(description, code)
     {
