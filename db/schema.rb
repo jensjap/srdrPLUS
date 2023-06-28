@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_08_062016) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -20,7 +20,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["profile_id"], name: "index_abstrackr_settings_on_profile_id"
   end
 
-  create_table "abstract_screening_results", charset: "utf8", force: :cascade do |t|
+  create_table "abstract_screening_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "abstract_screening_id"
     t.bigint "user_id"
     t.bigint "citations_project_id"
@@ -34,7 +34,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["user_id"], name: "asr_on_u"
   end
 
-  create_table "abstract_screening_results_reasons", charset: "utf8", force: :cascade do |t|
+  create_table "abstract_screening_results_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "abstract_screening_result_id", null: false
     t.bigint "reason_id", null: false
     t.datetime "created_at", null: false
@@ -44,7 +44,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["reason_id"], name: "asrr_on_r"
   end
 
-  create_table "abstract_screening_results_tags", charset: "utf8", force: :cascade do |t|
+  create_table "abstract_screening_results_tags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "abstract_screening_result_id", null: false
     t.bigint "tag_id", null: false
     t.datetime "created_at", null: false
@@ -54,7 +54,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["tag_id"], name: "asrt_on_t"
   end
 
-  create_table "abstract_screenings", charset: "utf8", force: :cascade do |t|
+  create_table "abstract_screenings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "project_id"
     t.string "abstract_screening_type", default: "single-perpetual", null: false
     t.integer "no_of_citations", default: 0, null: false
@@ -77,7 +77,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["project_id"], name: "index_abstract_screenings_on_project_id"
   end
 
-  create_table "abstract_screenings_reasons", charset: "utf8", force: :cascade do |t|
+  create_table "abstract_screenings_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "abstract_screening_id", null: false
     t.bigint "reason_id", null: false
     t.datetime "created_at", null: false
@@ -88,7 +88,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["reason_id"], name: "asr_on_r"
   end
 
-  create_table "abstract_screenings_reasons_users", charset: "utf8", force: :cascade do |t|
+  create_table "abstract_screenings_reasons_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "abstract_screening_id"
     t.bigint "reason_id"
     t.bigint "user_id"
@@ -101,7 +101,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["user_id"], name: "asru_on_u"
   end
 
-  create_table "abstract_screenings_tags", charset: "utf8", force: :cascade do |t|
+  create_table "abstract_screenings_tags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "abstract_screening_id", null: false
     t.bigint "tag_id", null: false
     t.datetime "created_at", null: false
@@ -112,7 +112,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["tag_id"], name: "ast_on_t"
   end
 
-  create_table "abstract_screenings_tags_users", charset: "utf8", force: :cascade do |t|
+  create_table "abstract_screenings_tags_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "abstract_screening_id"
     t.bigint "tag_id"
     t.bigint "user_id"
@@ -125,7 +125,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["user_id"], name: "astu_on_u"
   end
 
-  create_table "abstract_screenings_users", charset: "utf8", force: :cascade do |t|
+  create_table "abstract_screenings_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "abstract_screening_id", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
@@ -485,7 +485,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["question_row_columns_question_row_column_option_id"], name: "index_eefpsqrcfqrcqrco_on_qrcqrco_id"
   end
 
-  create_table "events", charset: "utf8", force: :cascade do |t|
+  create_table "events", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "sent"
     t.string "action"
     t.string "resource"
@@ -720,7 +720,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "fulltext_screening_results", charset: "utf8", force: :cascade do |t|
+  create_table "fulltext_screening_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "fulltext_screening_id"
     t.bigint "user_id"
     t.bigint "citations_project_id"
@@ -734,7 +734,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["user_id"], name: "fsr_on_u"
   end
 
-  create_table "fulltext_screening_results_reasons", charset: "utf8", force: :cascade do |t|
+  create_table "fulltext_screening_results_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "fulltext_screening_result_id", null: false
     t.bigint "reason_id", null: false
     t.datetime "created_at", null: false
@@ -744,7 +744,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["reason_id"], name: "fsrr_on_r"
   end
 
-  create_table "fulltext_screening_results_tags", charset: "utf8", force: :cascade do |t|
+  create_table "fulltext_screening_results_tags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "fulltext_screening_result_id", null: false
     t.bigint "tag_id", null: false
     t.datetime "created_at", null: false
@@ -754,7 +754,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["tag_id"], name: "fsrt_on_t"
   end
 
-  create_table "fulltext_screenings", charset: "utf8", force: :cascade do |t|
+  create_table "fulltext_screenings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "project_id"
     t.string "fulltext_screening_type", default: "single-perpetual", null: false
     t.integer "no_of_citations", default: 0, null: false
@@ -777,7 +777,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["project_id"], name: "index_fulltext_screenings_on_project_id"
   end
 
-  create_table "fulltext_screenings_reasons", charset: "utf8", force: :cascade do |t|
+  create_table "fulltext_screenings_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "fulltext_screening_id", null: false
     t.bigint "reason_id", null: false
     t.datetime "created_at", null: false
@@ -788,7 +788,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["reason_id"], name: "fsr_on_r"
   end
 
-  create_table "fulltext_screenings_reasons_users", charset: "utf8", force: :cascade do |t|
+  create_table "fulltext_screenings_reasons_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "fulltext_screening_id"
     t.bigint "reason_id"
     t.bigint "user_id"
@@ -801,7 +801,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["user_id"], name: "fsru_on_u"
   end
 
-  create_table "fulltext_screenings_tags", charset: "utf8", force: :cascade do |t|
+  create_table "fulltext_screenings_tags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "fulltext_screening_id", null: false
     t.bigint "tag_id", null: false
     t.datetime "created_at", null: false
@@ -812,7 +812,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["tag_id"], name: "fst_on_t"
   end
 
-  create_table "fulltext_screenings_tags_users", charset: "utf8", force: :cascade do |t|
+  create_table "fulltext_screenings_tags_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "fulltext_screening_id"
     t.bigint "tag_id"
     t.bigint "user_id"
@@ -825,7 +825,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["user_id"], name: "fstu_on_u"
   end
 
-  create_table "fulltext_screenings_users", charset: "utf8", force: :cascade do |t|
+  create_table "fulltext_screenings_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "fulltext_screening_id", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
@@ -972,14 +972,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["reason_id"], name: "index_labels_reasons_on_reason_id"
   end
 
-  create_table "measurements", id: :integer, charset: "utf8", force: :cascade do |t|
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "value"
-    t.integer "comparisons_measure_id"
-    t.index ["comparisons_measure_id"], name: "index_measurements_on_comparisons_measure_id"
-  end
-
   create_table "measures", id: :integer, charset: "utf8", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
@@ -1022,13 +1014,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["message_type_id"], name: "index_messages_on_message_type_id"
   end
 
-  create_table "ml_models", charset: "utf8", force: :cascade do |t|
+  create_table "ml_models", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "timestamp", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "ml_models_projects", charset: "utf8", force: :cascade do |t|
+  create_table "ml_models_projects", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "ml_model_id", null: false
     t.integer "project_id", null: false
     t.datetime "created_at", null: false
@@ -1036,7 +1028,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["ml_model_id", "project_id"], name: "index_ml_models_projects_on_ml_model_id_and_project_id", unique: true
   end
 
-  create_table "ml_predictions", charset: "utf8", force: :cascade do |t|
+  create_table "ml_predictions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "citations_project_id", null: false
     t.bigint "ml_model_id", null: false
     t.float "score", null: false
@@ -1232,7 +1224,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["term_id"], name: "index_putgcp_on_terms_id"
   end
 
-  create_table "publication_reminders", charset: "utf8", force: :cascade do |t|
+  create_table "publication_reminders", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "project_id", null: false
     t.boolean "active", default: true
@@ -1434,7 +1426,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["name"], name: "index_roles_on_name", unique: true
   end
 
-  create_table "screening_forms", charset: "utf8", force: :cascade do |t|
+  create_table "screening_forms", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "project_id"
     t.string "form_type", null: false
     t.datetime "created_at", null: false
@@ -1459,7 +1451,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["screening_option_type_id"], name: "index_screening_options_on_screening_option_type_id"
   end
 
-  create_table "screening_qualifications", charset: "utf8", force: :cascade do |t|
+  create_table "screening_qualifications", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "citations_project_id"
     t.bigint "user_id"
     t.string "qualification_type"
@@ -1810,7 +1802,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["name"], name: "index_sections_on_name", unique: true
   end
 
-  create_table "sf_abstract_records", charset: "utf8", force: :cascade do |t|
+  create_table "sf_abstract_records", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "value"
     t.string "followup"
     t.string "equality"
@@ -1822,7 +1814,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["sf_cell_id"], name: "index_sf_abstract_records_on_sf_cell_id"
   end
 
-  create_table "sf_cells", charset: "utf8", force: :cascade do |t|
+  create_table "sf_cells", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "sf_row_id"
     t.bigint "sf_column_id"
     t.string "cell_type", null: false
@@ -1836,7 +1828,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["sf_row_id"], name: "index_sf_cells_on_sf_row_id"
   end
 
-  create_table "sf_columns", charset: "utf8", force: :cascade do |t|
+  create_table "sf_columns", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.bigint "sf_question_id"
     t.integer "pos", default: 999999
@@ -1845,7 +1837,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["sf_question_id"], name: "index_sf_columns_on_sf_question_id"
   end
 
-  create_table "sf_fulltext_records", charset: "utf8", force: :cascade do |t|
+  create_table "sf_fulltext_records", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "value"
     t.string "followup"
     t.string "equality"
@@ -1857,7 +1849,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["sf_cell_id"], name: "index_sf_fulltext_records_on_sf_cell_id"
   end
 
-  create_table "sf_options", charset: "utf8", force: :cascade do |t|
+  create_table "sf_options", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "sf_cell_id"
     t.string "name", null: false
     t.boolean "with_followup", default: false, null: false
@@ -1868,7 +1860,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["sf_cell_id"], name: "index_sf_options_on_sf_cell_id"
   end
 
-  create_table "sf_questions", charset: "utf8", force: :cascade do |t|
+  create_table "sf_questions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "screening_form_id"
     t.string "name"
     t.text "description"
@@ -1878,7 +1870,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["screening_form_id"], name: "index_sf_questions_on_screening_form_id"
   end
 
-  create_table "sf_rows", charset: "utf8", force: :cascade do |t|
+  create_table "sf_rows", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.bigint "sf_question_id"
     t.integer "pos", default: 999999
@@ -2058,7 +2050,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
     t.index ["wac_id"], name: "index_wacs_bacs_rssms_on_wac_id"
   end
 
-  create_table "word_weights", charset: "utf8", force: :cascade do |t|
+  create_table "word_weights", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "abstract_screening_id"
     t.integer "weight", limit: 1, null: false
@@ -2147,7 +2139,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_000000) do
   add_foreign_key "labels_reasons", "labels"
   add_foreign_key "labels_reasons", "projects_users_roles"
   add_foreign_key "labels_reasons", "reasons"
-  add_foreign_key "measurements", "comparisons_measures"
   add_foreign_key "message_types", "frequencies"
   add_foreign_key "messages", "message_types"
   add_foreign_key "ml_predictions", "citations_projects"
