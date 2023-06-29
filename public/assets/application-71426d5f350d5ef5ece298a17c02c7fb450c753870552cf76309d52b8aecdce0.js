@@ -66209,7 +66209,7 @@ function __guardMethod__(obj, methodName, transform) {
         $('.citation-fields').find('.journal-volume input').val(citation['journal']['vol']);
         $('.citation-fields').find('.journal-issue input').val(citation['journal']['issue']);
         $('.citation-fields').find('.journal-year input').val(citation['journal']['year']);
-        $('.citation-fields').find('.project_citations_pmid input').val(citation['pmid']);
+        $('.citation-fields').find('input.input-citation-pmid').val(citation['pmid']);
         ref = citation['keywords'];
         for (i = 0, len = ref.length; i < len; i++) {
           keyword = ref[i];
@@ -66288,7 +66288,7 @@ function __guardMethod__(obj, methodName, transform) {
             $(insertedItem).find('.journal-volume input').val(null);
             $(insertedItem).find('.journal-issue input').val(null);
             $(insertedItem).find('.journal-year input').val(null);
-            return fetch_from_pubmed($('.project_citations_accession_number input').val());
+            return fetch_from_pubmed($('input.accession-number-lookup-field').val());
           });
           $(insertedItem).find('.citation-select').select2({
             minimumInputLength: 0,
