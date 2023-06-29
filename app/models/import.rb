@@ -70,7 +70,7 @@ class Import < ApplicationRecord
         when '.enl'
           @previews << EnlImportJob.new.import_citations_from_enl(imported_file, true)
         when 'PubMed'
-          @previews << PubmedImportJob.new.import_citations_from_pubmed_file(imported_file, true)
+          @previews << PubmedImportJob.new.import_citations_from_pubmed_file(imported_file, preview: true)
         end
       end
     end

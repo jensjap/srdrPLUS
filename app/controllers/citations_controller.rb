@@ -66,10 +66,11 @@ class CitationsController < ApplicationController
     @nav_buttons.push('citation_pool', 'my_projects')
     @citations = @project
                  .citations
-                 .select(:id, :refman, :name, :pmid, :registry_number, :accession_number, :doi, :other, :authors)
+                 .select(:id, :name, :pmid, :registry_number, :accession_number, :doi, :other, :authors)
                  .order(:id)
     @citations_projects_dict = @project.citations_projects.map { |cp| [cp.citation_id, cp] }.to_h
     @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
+    @project.citations.build
   end
 
   private
@@ -85,11 +86,25 @@ class CitationsController < ApplicationController
   end
 
   def citation_params
-    params.require(:citation)
-          .permit(:accession_number, :authors, :name, :citation_type_id, :pmid, :registry_number, :refman, :doi, :other, :abstract, :page_number_start, :page_number_end, :_destroy,
-                  citations_attributes: %i[id name _destroy],
-                  journal_attributes: %i[id name publication_date issue volume _destroy],
-                  keywords_attributes: %i[id name _destroy])
+    params
+      .require(:citation)
+      .permit(
+        :accession_number,
+        :authors,
+        :name,
+        :citation_type_id,
+        :pmid,
+        :registry_number,
+        :doi,
+        :abstract,
+        :page_number_start,
+        :page_number_end,
+        :_destroy,
+        citations_attributes: %i[id name _destroy],
+        citations_projects_attributes: %i[id refman other_reference],
+        journal_attributes: %i[id name publication_date issue volume _destroy],
+        keywords_attributes: %i[id name _destroy]
+      )
   end
 
   def authorize_access

@@ -59,8 +59,9 @@ class Api::V1::CitationsController < Api::V1::BaseController
 
     if query.present?
       citation_hash_pool = citation_pool.each_with_object({}) do |citation, citation_pool|
+        citations_project = CitationsProject.find_by(project_id:, citation:)
         citation_title_words = citation.name.to_s.split(/@+/)
-        fuzzy_winner = FuzzyMatch.new([citation.pmid.to_s, citation.refman.to_s,
+        fuzzy_winner = FuzzyMatch.new([citation.pmid.to_s, citations_project.refman.to_s,
                                        citation.authors.to_s] + citation_title_words).find(query) || ''
         citation_pool[citation] = fuzzy_winner
       end

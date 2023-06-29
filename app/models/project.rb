@@ -97,7 +97,6 @@ class Project < ApplicationRecord
   validates :name, presence: true
 
   accepts_nested_attributes_for :key_questions
-  accepts_nested_attributes_for :citations
   accepts_nested_attributes_for :citations_projects, allow_destroy: true
   accepts_nested_attributes_for :key_questions_projects, allow_destroy: true
   accepts_nested_attributes_for :projects_users, allow_destroy: true

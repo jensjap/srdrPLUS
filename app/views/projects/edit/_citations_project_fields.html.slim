@@ -1,30 +1,54 @@
-li.accordion-item.citation-row.nested-fields data-accordion-item=''
-  a.citation-label.accordion-title href='#'
-    span[style='font-weight:bold;']
-      | Accession No. (e.g. PubMed ID)
-    '
-    .citation-numbers
-      /= ( @citation_dict[ f.object.citation_id ].pmid || 'N/A' )
-    .citation-authors.row.column
-      /= ( @citation_dict[ f.object.citation_id ].authors.map { |a| a.initials } ).join( ', ' )
-      /= ( @citation_dict[ f.object.citation_id ].authors.map { |a| a.name } ).join( ', ' )
-    /- if @citation_dict[ f.object.citation_id ].journal.present?
-      .citation-journal
-        /= @citation_dict[ f.object.citation_id ].journal.name || ''
-      .citation-journal-date
-        /= (@citation_dict[ f.object.citation_id ].journal.publication_date || '')
-    .citation-journal
-    .citation-journal-date
-    .citation-title.row.column
-      /= @citation_dict[ f.object.citation_id ].name || '----Untitled Citation----'
+.nested-fields.citation-fields.added-item
+  .citation-inputs
+    = f.simple_fields_for :citation, Citation.new do |citation_fields|
+      .accession-number
+        |Accession Number (e.g. PubMed ID)
+        span data-tooltip="" tabindex="1" title="e.g. Pubmed ID, Cochrane, MBASE, etc."
+          | &nbsp;
+          i class="fi-info"
+        = citation_fields.input :accession_number, label: false, required: false, input_html: { class: 'accession-number-lookup-field' }
+        .pmid-checkbox
+          a#is-pmid style='display: inline-block;'
+            | Fetch from Pubmed
+      = citation_fields.input :authors, placeholder: 'Author name(s)', required: true, label: 'Authors', wrapper_html: { class: "citation-authors" }
+      = citation_fields.input :name, placeholder: 'New Citation', label: 'Title', required: true, wrapper_html: { class: "citation-name" }
+      = citation_fields.input :abstract, as: :text, placeholder: 'Abstract goes here', required: false, wrapper_html: { class: "citation-abstract" }
+      = citation_fields.association :citation_type, label: 'Citation Type', selected: 1
+      br
+      .grid-x
+        = citation_fields.simple_fields_for :journal_attributes do |j_f|
+          .small-12
+            h5 Journal
+          .small-12
+            = j_f.input :name, label: "Name", required: false, wrapper_html: { class: "journal-name" }
+          .small-4
+            = j_f.input :issue, label: "Issue", required: false, wrapper_html: { class: "journal-issue" }
+          .small-4
+            = j_f.input :volume, label: "Volume", required: false, wrapper_html: { class: "journal-volume" }
+          .small-4
+            = j_f.input :publication_date, label: "Pub Year", required: false, wrapper_html: { class: "journal-year" }
+      .grid-x
+        .small-12
+          h6 Page Numbers
+        .small-6
+          = citation_fields.input :page_number_start, label: false, required: false, wrapper_html: { class: "page-number-start" }
+        .small-6
+          = citation_fields.input :page_number_end, label: false, required: false, wrapper_html: { class: "page-number-end" }
+        .small-12 style="margin-top: 20px;"
+          h5 System Numbers
+        .small-12
+          = citation_fields.input :pmid, label: 'Pubmed ID', input_html: { class: 'input-citation-pmid' }
+        .small-12
+          = f.input :refman, label: 'Reference Manager ID'
+          = f.input :other_reference, label: 'Other Reference ID'
+        .small-12
+          = citation_fields.input :registry_number, label: 'Registry Number'
+        .small-12
+          = citation_fields.input :doi, label: 'DOI'
 
-  .accordion-content data-tab-content=''
-    .row.column.medium-12
-    .citation-abstract.row.column.medium-12
-      /= @citation_dict[ f.object.citation_id ].abstract
-
-    .row.edit-citation-row.column
-      = link_to_remove_association 'Delete', f, class: 'button alert small remove-button', data: { confirm: 'Are you sure you want to delete this citation?' }
-      /= link_to_remove_association f, class: 'remove-button' do
-        i.fi-trash>
-    /= f.label @citation_dict[f.object.citation_id].name , class: 'citation-label'
+      br
+      .buttons-row.m-10
+        .save-citation.button.success.small
+          | Save Citation
+        = link_to_remove_association 'Cancel', f, class: 'button alert small cancel-button'
+        /= link_to_remove_association '✖', f, class: 'remove-button', style: 'position: relative; top: 0.2rem; right: 0.2rem;'

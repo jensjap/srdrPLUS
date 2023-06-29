@@ -49,7 +49,7 @@ json.project do
       json.set! cp.citation.id do
         json.name cp.citation.name
         json.abstract cp.citation.abstract
-        json.refman cp.citation.refman
+        json.refman cp.refman
         json.pmid cp.citation.pmid
         json.journal do
           json.id cp.citation.journal&.id

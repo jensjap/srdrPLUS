@@ -20,6 +20,7 @@ class QuestionRow < ApplicationRecord
 
   accepts_nested_attributes_for :question_row_columns
 
+  delegate :project, to: :question
   delegate :question_type, to: :question
 
   amoeba do

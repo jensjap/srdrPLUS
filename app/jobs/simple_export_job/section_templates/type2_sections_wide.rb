@@ -25,7 +25,8 @@ module SimpleExportJob::SectionTemplates::Type2SectionsWide
             citation_name: extraction.citation.name,
             authors: extraction.citation.authors,
             publication_date: extraction.citation.try(:journal).try(:get_publication_year),
-            refman: extraction.citation.refman,
+            refman: extraction.citations_project.refman,
+            other_reference: extraction.citations_project.other_reference,
             pmid: extraction.citation.pmid
           )
 
@@ -130,6 +131,7 @@ module SimpleExportJob::SectionTemplates::Type2SectionsWide
           new_row << extraction[:extraction_info][:citation_id]
           new_row << extraction[:extraction_info][:citation_name]
           new_row << extraction[:extraction_info][:refman]
+          new_row << extraction[:extraction_info][:other_reference]
           new_row << extraction[:extraction_info][:pmid]
           new_row << extraction[:extraction_info][:authors]
           new_row << extraction[:extraction_info][:publication_date]

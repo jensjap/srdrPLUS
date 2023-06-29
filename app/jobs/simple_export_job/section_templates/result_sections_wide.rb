@@ -16,7 +16,7 @@ module SimpleExportJob::SectionTemplates::ResultSectionsWide
           sheet_info.populate_sheet_info_with_extractions_results_data(sheet_info, kq_ids, efp, efps)
 
           # Start printing rows to the spreadsheet. First the basic headers:
-          #['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
+          #['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'other_reference', 'PMID']
           header_row = sheet.add_row sheet_info.header_info
 
           # Next continue the header row by adding all rssms together.
@@ -64,6 +64,7 @@ module SimpleExportJob::SectionTemplates::ResultSectionsWide
             new_row << extraction[:extraction_info][:citation_id]
             new_row << extraction[:extraction_info][:citation_name]
             new_row << extraction[:extraction_info][:refman]
+            new_row << extraction[:extraction_info][:other_reference]
             new_row << extraction[:extraction_info][:pmid]
             new_row << extraction[:extraction_info][:authors]
             new_row << extraction[:extraction_info][:publication_date]

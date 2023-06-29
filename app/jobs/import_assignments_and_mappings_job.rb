@@ -128,12 +128,13 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     data_rows.each do |row|
       next if row[0].blank?
 
-      wb_cit_ref_id = row[dict_header_index_lookup['Workbook Citation Reference ID']]&.value&.to_i
-      pmid          = row[dict_header_index_lookup['PMID']]&.value
-      citation_name = row[dict_header_index_lookup['Citation Name']]&.value
-      refman        = row[dict_header_index_lookup['RefMan']]&.value&.truncate(200)
-      authors       = row[dict_header_index_lookup['Authors']]&.value
-      year          = row[dict_header_index_lookup['Publication Year']]&.value
+      wb_cit_ref_id   = row[dict_header_index_lookup['Workbook Citation Reference ID']]&.value&.to_i
+      pmid            = row[dict_header_index_lookup['PMID']]&.value
+      citation_name   = row[dict_header_index_lookup['Citation Name']]&.value
+      refman          = row[dict_header_index_lookup['RefMan']]&.value
+      other_reference = row[dict_header_index_lookup['other_reference']]&.value
+      authors         = row[dict_header_index_lookup['Authors']]&.value
+      year            = row[dict_header_index_lookup['Publication Year']]&.value
 
       if wb_cit_ref_id.blank? || wb_cit_ref_id.eql?(0)
         @dict_errors[:ws_errors] << "Row with invalid Workbook Reference ID found. #{row.cells.to_a}"
@@ -147,16 +148,17 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
         'pmid' => pmid,
         'citation_name' => citation_name,
         'refman' => refman,
+        'other_reference' => other_reference,
         'authors' => authors,
         'year' => year,
-        'citation_id' => _find_citation_id_in_db(pmid, citation_name, refman, authors, year)
+        'citation_id' => _find_citation_id_in_db(pmid, citation_name, authors, year)
       }
     end
   end
 
   # Find the number of rows based on presence of data in specificied column.
   def _find_number_of_data_rows(rows, col=0)
-    puts "Finding number of data rows. rows.length is returning: #{ rows.length.to_s }"
+    puts "Finding number of data rows. rows.length is returning: #{rows.length.to_s}"
     cnt_data_rows = 0
 
     rows.each do |row|
@@ -179,7 +181,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
   #   3. #!!! TODO: search by authors and year combined.
   #
   # return [INTEGER]
-  def _find_citation_id_in_db(pmid, name, refman, authors, year)
+  def _find_citation_id_in_db(pmid, name, authors, year)
     # PMID is a string. Do a little clean-up.
     pmid = pmid.to_i.to_s
 
@@ -208,27 +210,16 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     end
 
     puts 'Creating citation from citation_name, authors, year'
-    citation = _create_citation_from_citation_name__authors__year(name, refman, authors, year)
+    citation = _create_citation_from_citation_name__authors__year(name, authors, year)
     citation.id
   end
 
-  def _create_citation_from_citation_name__authors__year(name, refman, authors, year)
+  def _create_citation_from_citation_name__authors__year(name, authors, year)
     citation = Citation.create!(name:)
     citation.journal = Journal.find_or_create_by!(publication_date: year)
     citation.authors = authors if authors.present?
-    citation.refman = refman
-
-#    if authors&.match(/\[(.*?)\]/)
-#      authors.scan(/\[(.*?)\]/).each do |author|
-#        citation.authors << Author.find_or_create_by!(name: author)
-#      end
-#    else
-#      authors&.split(';').each do |author|
-#        citation.authors << Author.find_or_create_by!(name: author)
-#      end
-#    end
-
     citation.save!
+
     citation
   end
 
@@ -318,6 +309,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
       /PMID/i,
       /Citation Name/i,
       /RefMan/i,
+      /other_reference/i,
       /Authors/i,
       /Publication Year/i
     ]
@@ -445,7 +437,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     user = User.find_by(email: user_email)
     citation = Citation.find(citation_id)
 
-    extraction = _retrieve_extraction_record(user, citation)
+    extraction = _retrieve_extraction_record(user, citation, data[:wb_cit_ref_id])
     _toggle_true_all_kqs_for_extraction(extraction) if extraction.present?
 
     @lsof_type1_section_names.each do |type1_section_name|
@@ -498,12 +490,20 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     end
   end
 
-  def _retrieve_extraction_record(user, citation)
+  def _retrieve_extraction_record(user, citation, wb_cit_ref_id)
     # CitationsProject may or not exist. Call find_or_create_by.
     citations_project = CitationsProject.find_or_create_by!(
       citation:,
       project: @project
     )
+
+    # Retrieve Reference Manager ID if available to citations_project record.
+    citations_project.update(refman: @wb_data[:wcr][wb_cit_ref_id]['refman'])
+
+    # We wish to record the Workbook Citation Reference ID from the
+    # 'Assignments and Mappings' Template. We save this to the
+    # CitationsProject.other_reference field
+    citations_project.update(other_reference: @wb_data[:wcr][wb_cit_ref_id]['other_reference'])
 
     # Find ProjectsUser with Contributor permissions.
     pu = ProjectsUser.find_or_create_by!(

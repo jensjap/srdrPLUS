@@ -49,7 +49,7 @@ class SimpleExportJob::SheetInfo
 
   def initialize(project = nil)
     @header_info             = ['Extraction ID', 'Consolidated', 'Username', 'Citation ID', 'Citation Name', 'RefMan',
-                                'PMID', 'Authors', 'Publication Date', 'Key Questions']
+                                'other_reference', 'PMID', 'Authors', 'Publication Date', 'Key Questions']
     # @data_header_hash key structure rss_type_id > outcome_type > col_id > rssm
     @data_header_hash        = {}
     @key_question_selections = []
@@ -299,7 +299,8 @@ class SimpleExportJob::SheetInfo
         citation_name: extraction.citation.name,
         authors: extraction.citation.authors,
         publication_date: extraction.citation.try(:journal).try(:get_publication_year),
-        refman: extraction.citation.refman,
+        refman: extraction.citations_project.refman,
+        other_reference: extraction.citations_project.other_reference,
         pmid: extraction.citation.pmid,
         kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
       )
@@ -488,7 +489,8 @@ class SimpleExportJob::SheetInfo
         citation_name: extraction.citation.name,
         authors: extraction.citation.authors,
         publication_date: extraction.citation.try(:journal).try(:get_publication_year),
-        refman: extraction.citation.refman,
+        refman: extraction.citations_project.refman,
+        other_reference: extraction.citations_project.other_reference,
         pmid: extraction.citation.pmid,
         kq_selection: KeyQuestion.where(id: kq_ids_by_extraction).collect(&:name).map(&:strip).join("\x0D\x0A")
       )

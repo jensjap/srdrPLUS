@@ -14,42 +14,39 @@ class ProjectPolicy < ApplicationPolicy
       mesh_descriptor_ids: []
     },
     {
-      citations_attributes: [
-        :id,
-        :name,
-        :authors,
-        :abstract,
-        :accession_number,
-        :registry_number,
-        :doi,
-        :other,
-        :pmid,
-        :refman,
-        :citation_type_id,
-        :page_number_start,
-        :page_number_end,
-        :_destroy,
-        { keyword_ids: [],
-          journal_attributes: %i[
-            id
-            name
-            volume
-            issue
-            publication_date
-          ] }
-      ]
-    },
-    {
       citations_projects_attributes: [
         :id,
         :_destroy,
         :citation_id,
         :project_id,
-        { citation_attributes: %i[
-          id
-          _destroy
-          name
-        ] }
+        :refman,
+        :other_reference,
+        {
+          citation_attributes: [
+            :id,
+            :name,
+            :authors,
+            :abstract,
+            :accession_number,
+            :registry_number,
+            :doi,
+            :other,
+            :pmid,
+            :refman,
+            :citation_type_id,
+            :page_number_start,
+            :page_number_end,
+            :_destroy,
+            { keyword_ids: [],
+              journal_attributes: %i[
+                id
+                name
+                volume
+                issue
+                publication_date
+              ] }
+          ]
+        }
       ]
     },
     { key_questions_attributes: [:name] },

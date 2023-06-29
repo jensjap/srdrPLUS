@@ -88,17 +88,19 @@ class ExportAssignmentsAndMappingsJob < ApplicationJob
       case name
       when /Outcomes/
         lsof_type1_column_headers << [
-          "Outcome Name",
-          "Outcome Specific Measurement",
-          "Outcome Type",
-          "Population Name",
-          "Population Description",
-          "Timepoint Name",
-          "Timepoint Unit" ]
+          'Outcome Name',
+          'Outcome Specific Measurement',
+          'Outcome Type',
+          'Population Name',
+          'Population Description',
+          'Timepoint Name',
+          'Timepoint Unit'
+        ]
       else
         lsof_type1_column_headers << [
-          "#{ name.singularize } Name",
-          "#{ name.singularize } Description" ]
+          "#{name.singularize} Name",
+          "#{name.singularize} Description"
+        ]
       end
     end  # @lsof_type1_names.each do |name|
 
@@ -108,22 +110,24 @@ class ExportAssignmentsAndMappingsJob < ApplicationJob
   def _fill_workbook_citation_references_section(p)
     # Add header row.
     @ws_workbook_citation_references.add_row [
-      "Workbook Citation Reference ID",
-      "PMID",
-      "Citation Name",
-      "RefMan",
-      "Authors" ]
+      'Workbook Citation Reference ID',
+      'PMID',
+      'Citation Name',
+      'RefMan',
+      'other_reference',
+      'Authors'
+    ]
 
     # Fill in the rest of the worksheet.
-    @project.citations.each_with_index do |citation, index|
+    @project.citations_projects.each_with_index do |citations_project, index|
       @ws_workbook_citation_references.add_row [
         index + 1,
-        citation.pmid.to_s,
-        citation.name.to_s,
-        citation.refman.to_s,
-        citation.authors.to_s
+        citations_project.citation.pmid.to_s,
+        citations_project.citation.name.to_s,
+        citations_project.refman.to_s,
+        citations_project.other_reference.to_s,
+        citations_project.citation.authors.to_s
       ]
-    end  # @project.citations.each_with_index do |citation, index|
-  end  # END def _fill_workbook_citation_references_section(p)
-
+    end
+  end
 end
