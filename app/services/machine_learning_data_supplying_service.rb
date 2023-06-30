@@ -1,4 +1,15 @@
 class MachineLearningDataSupplyingService
+  # Returns true if we should use fake data and false when
+  # real data should be used.
+  #
+  # @return [Bool] whether to stub the ML data or not
+  def self.stub_ml_data?
+    if ENV.key?('SRDRPLUS_STUB_ML_DATA')
+      ENV['SRDRPLUS_STUB_ML_DATA'].to_bool
+    else
+      false
+    end
+  end
 
   def self.get_labeled_abstract(project_id)
     project = Project.find(project_id)
