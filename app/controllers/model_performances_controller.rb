@@ -1,62 +1,62 @@
 class ModelPerformancesController < ApplicationController
   ### If production, uncomment ###
-  # before_action :set_project, only: :show_by_project
-  # before_action :set_ml_model, only: :show_by_timestamp
+  before_action :set_project, only: :show_by_project
+  before_action :set_ml_model, only: :show_by_timestamp
 
   def show_by_project
-    render json: fake_data # for test without ml server
+    # render json: fake_data # for test without ml server
 
     ### If production, uncomment below and comment above ###
-    # ml_models_performances = @project.ml_models.order(:timestamp).map do |ml_model|
-    #  performances = ml_model.model_performances.group_by(&:label).transform_values do |v|
-    #    v.map(&:score)
-    #  end
+    ml_models_performances = @project.ml_models.order(:timestamp).map do |ml_model|
+      performances = ml_model.model_performances.group_by(&:label).transform_values do |v|
+        v.map(&:score)
+      end
 
-    #  {
-    #    timestamp: ml_model.timestamp,
-    #    performances: performances,
-    #    confusion_matrix: ml_model.confusion_matrix,
-    #    precision: ml_model.precision,
-    #    recall: ml_model.recall,
-    #    f1_score: ml_model.f1_score,
-    #    accuracy_score: ml_model.accuracy_score
-    #  }
-    # end
+      {
+        timestamp: ml_model.timestamp,
+        performances: performances,
+        confusion_matrix: ml_model.confusion_matrix,
+        precision: ml_model.precision,
+        recall: ml_model.recall,
+        f1_score: ml_model.f1_score,
+        accuracy_score: ml_model.accuracy_score
+      }
+    end
 
-    # ml_models_performances.sort_by! { |m| -m[:timestamp].to_i }
-    # render json: ml_models_performances
+    ml_models_performances.sort_by! { |m| -m[:timestamp].to_i }
+    render json: ml_models_performances
   end
 
   def show_by_timestamp
-    timestamp = params[:timestamp]
-    all_fake_data = fake_data
-    data_for_timestamp = all_fake_data.find { |data| data[:timestamp] == timestamp }
+    # timestamp = params[:timestamp]
+    # all_fake_data = fake_data
+    # data_for_timestamp = all_fake_data.find { |data| data[:timestamp] == timestamp }
 
-    render json: data_for_timestamp || { error: 'Model not found for this timestamp' }
+    # render json: data_for_timestamp || { error: 'Model not found for this timestamp' }
 
     ### If production, uncomment below and comment above ###
-    # performances = @ml_model.model_performances.group_by(&:label).transform_values do |v|
-    #  v.map(&:score)
-    # end
+    performances = @ml_model.model_performances.group_by(&:label).transform_values do |v|
+      v.map(&:score)
+    end
 
-    # render json: {
-    #  performances: performances,
-    #  confusion_matrix: @ml_model.confusion_matrix,
-    #  precision: @ml_model.precision,
-    #  recall: @ml_model.recall,
-    #  f1_score: @ml_model.f1_score,
-    #  accuracy_score: @ml_model.accuracy_score
-    # }
+    render json: {
+      performances:,
+      confusion_matrix: @ml_model.confusion_matrix,
+      precision: @ml_model.precision,
+      recall: @ml_model.recall,
+      f1_score: @ml_model.f1_score,
+      accuracy_score: @ml_model.accuracy_score
+    }
   end
 
   def show_timestamps
-    render json: fake_timestamps # for test without ml server
+    # render json: fake_timestamps # for test without ml server
 
     ### If production, uncomment below and comment above ###
-    # project_id = params[:project_id]
-    # timestamps = MlModel.joins(:projects).where("projects.id = ?", project_id).pluck(:timestamp)
+    project_id = params[:project_id]
+    timestamps = MlModel.joins(:projects).where("projects.id = ?", project_id).pluck(:timestamp)
 
-    # render json: { timestamps: timestamps }
+    render json: { timestamps: timestamps }
   end
 
   private
