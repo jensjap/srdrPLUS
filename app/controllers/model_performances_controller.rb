@@ -56,7 +56,7 @@ class ModelPerformancesController < ApplicationController
     project_id = params[:project_id]
     timestamps = MlModel.joins(:projects).where("projects.id = ?", project_id).pluck(:timestamp)
 
-    render json: { timestamps: timestamps }
+    render json: { timestamps: }
   end
 
   private
