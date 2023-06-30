@@ -10,6 +10,7 @@ class ProjectPolicy < ApplicationPolicy
     :prospero,
     :doi,
     :funding_source,
+    :auto_train,
     {
       mesh_descriptor_ids: []
     },
