@@ -69,11 +69,6 @@ class User < ApplicationRecord
 
   has_many :suggestions, dependent: :destroy, inverse_of: :user
 
-  # has_many :notes, dependent: :destroy, inverse_of: :user
-
-  has_many :taggings, through: :projects_users, dependent: :destroy
-  has_many :tags, through: :taggings, dependent: :destroy
-
   delegate :username, to: :profile, allow_nil: true
   delegate :first_name, to: :profile, allow_nil: true
   delegate :middle_name, to: :profile, allow_nil: true
