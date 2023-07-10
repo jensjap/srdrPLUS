@@ -66129,7 +66129,7 @@ function __guardMethod__(obj, methodName, transform) {
       list_options = {
         valueNames: ['citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract']
       };
-      fetch_from_pubmed = function(pmid) {
+      fetch_from_pubmed = function(pmid, insertedItem) {
         return $.ajax('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi', {
           type: 'GET',
           dataType: 'xml',
@@ -66196,20 +66196,20 @@ function __guardMethod__(obj, methodName, transform) {
               journal: journal,
               authors: authors.join(', ')
             };
-            return populate_citation_fields(citation_hash);
+            return populate_citation_fields(citation_hash, insertedItem);
           }
         });
       };
-      populate_citation_fields = function(citation) {
+      populate_citation_fields = function(citation, insertedItem) {
         var i, keyword, keywordselect, len, ref;
-        $('.citation-fields').find('.citation-name input').val(citation['name']);
-        $('.citation-fields').find('.citation-authors textarea').val(citation['authors']);
-        $('.citation-fields').find('.citation-abstract textarea').val(citation['abstract']);
-        $('.citation-fields').find('.journal-name input').val(citation['journal']['name']);
-        $('.citation-fields').find('.journal-volume input').val(citation['journal']['vol']);
-        $('.citation-fields').find('.journal-issue input').val(citation['journal']['issue']);
-        $('.citation-fields').find('.journal-year input').val(citation['journal']['year']);
-        $('.citation-fields').find('input.input-citation-pmid').val(citation['pmid']);
+        $(insertedItem).find('.citation-name input').val(citation['name']);
+        $(insertedItem).find('.citation-authors textarea').val(citation['authors']);
+        $(insertedItem).find('.citation-abstract textarea').val(citation['abstract']);
+        $(insertedItem).find('.journal-name input').val(citation['journal']['name']);
+        $(insertedItem).find('.journal-volume input').val(citation['journal']['vol']);
+        $(insertedItem).find('.journal-issue input').val(citation['journal']['issue']);
+        $(insertedItem).find('.journal-year input').val(citation['journal']['year']);
+        $(insertedItem).find('input.input-citation-pmid').val(citation['pmid']);
         ref = citation['keywords'];
         for (i = 0, len = ref.length; i < len; i++) {
           keyword = ref[i];
@@ -66280,7 +66280,8 @@ function __guardMethod__(obj, methodName, transform) {
               }
             }
           });
-          $(insertedItem).find('#is-pmid').on('click', function() {
+          $(insertedItem).find('.is-pmid').on('click', function() {
+            var pmid_lookup_value;
             $(insertedItem).find('.KEYWORDS select').val(null).trigger('change');
             $(insertedItem).find('.citation-name input').val(null);
             $(insertedItem).find('.citation-abstract textarea').val(null);
@@ -66288,7 +66289,8 @@ function __guardMethod__(obj, methodName, transform) {
             $(insertedItem).find('.journal-volume input').val(null);
             $(insertedItem).find('.journal-issue input').val(null);
             $(insertedItem).find('.journal-year input').val(null);
-            return fetch_from_pubmed($('input.accession-number-lookup-field').val());
+            pmid_lookup_value = $(insertedItem).find('input.accession-number-lookup-field').val();
+            return fetch_from_pubmed(pmid_lookup_value, insertedItem);
           });
           $(insertedItem).find('.citation-select').select2({
             minimumInputLength: 0,
