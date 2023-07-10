@@ -100,7 +100,7 @@ document.addEventListener 'DOMContentLoaded', ->
     list_options = { valueNames: [ 'citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
 
     ## Method to pull citation info from PUBMED as XML
-    fetch_from_pubmed = ( pmid ) ->
+    fetch_from_pubmed = (pmid, insertedItem) ->
       $.ajax 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi',
         type: 'GET'
         dataType: 'xml'
@@ -155,17 +155,17 @@ document.addEventListener 'DOMContentLoaded', ->
             journal: journal,
             authors: authors.join(', ')
           }
-          populate_citation_fields citation_hash
+          populate_citation_fields(citation_hash, insertedItem)
 
-    populate_citation_fields = ( citation ) ->
-      $( '.citation-fields' ).find( '.citation-name input' ).val citation[ 'name' ]
-      $( '.citation-fields' ).find( '.citation-authors textarea' ).val citation[ 'authors' ]
-      $( '.citation-fields' ).find( '.citation-abstract textarea' ).val citation[ 'abstract' ]
-      $( '.citation-fields' ).find( '.journal-name input' ).val citation[ 'journal' ][ 'name' ]
-      $( '.citation-fields' ).find( '.journal-volume input' ).val citation[ 'journal' ][ 'vol' ]
-      $( '.citation-fields' ).find( '.journal-issue input' ).val citation[ 'journal' ][ 'issue' ]
-      $( '.citation-fields' ).find( '.journal-year input' ).val citation[ 'journal' ][ 'year' ]
-      $( '.citation-fields' ).find( 'input.input-citation-pmid' ).val citation[ 'pmid' ]
+    populate_citation_fields = (citation, insertedItem) ->
+      $(insertedItem).find('.citation-name input').val citation['name']
+      $(insertedItem).find('.citation-authors textarea').val citation['authors']
+      $(insertedItem).find('.citation-abstract textarea').val citation['abstract']
+      $(insertedItem).find('.journal-name input').val citation['journal']['name']
+      $(insertedItem).find('.journal-volume input').val citation['journal']['vol']
+      $(insertedItem).find('.journal-issue input').val citation['journal']['issue']
+      $(insertedItem).find('.journal-year input').val citation['journal']['year']
+      $(insertedItem).find('input.input-citation-pmid').val citation['pmid']
 
       for keyword in citation[ 'keywords' ]
         keywordselect = $('.KEYWORDS select')
@@ -238,18 +238,18 @@ document.addEventListener 'DOMContentLoaded', ->
               q: params.term
               page: params.page || 1
 
-        $( insertedItem ).find( '#is-pmid' ).on 'click', () ->
-          ## clean up the citation fields
-          $( insertedItem ).find('.KEYWORDS select').val(null).trigger('change')
-          $( insertedItem ).find('.citation-name input').val(null)
-          $( insertedItem ).find('.citation-abstract textarea').val(null)
-          $( insertedItem ).find('.journal-name input').val(null)
-          $( insertedItem ).find('.journal-volume input').val(null)
-          $( insertedItem ).find('.journal-issue input').val(null)
-          $( insertedItem ).find('.journal-year input').val(null)
-
-          ## fetch citations using value in "Accession Number"
-          fetch_from_pubmed $( 'input.accession-number-lookup-field' ).val()
+        $(insertedItem).find('.is-pmid').on 'click', () ->
+          # clean up the citation fields.
+          $(insertedItem).find('.KEYWORDS select').val(null).trigger('change')
+          $(insertedItem).find('.citation-name input').val(null)
+          $(insertedItem).find('.citation-abstract textarea').val(null)
+          $(insertedItem).find('.journal-name input').val(null)
+          $(insertedItem).find('.journal-volume input').val(null)
+          $(insertedItem).find('.journal-issue input').val(null)
+          $(insertedItem).find('.journal-year input').val(null)
+          # Fetch citations using value in "Accession Number".
+          pmid_lookup_value = $(insertedItem).find('input.accession-number-lookup-field').val()
+          fetch_from_pubmed(pmid_lookup_value, insertedItem)
 
         $( insertedItem ).find( '.citation-select' ).select2
           minimumInputLength: 0

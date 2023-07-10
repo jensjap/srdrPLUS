@@ -8,7 +8,7 @@
           i class="fi-info"
         = citation_fields.input :accession_number, label: false, required: false, input_html: { class: 'accession-number-lookup-field' }
         .pmid-checkbox
-          a#is-pmid style='display: inline-block;'
+          a.is-pmid style='display: inline-block;'
             | Fetch from Pubmed
       = citation_fields.input :authors, placeholder: 'Author name(s)', required: true, label: 'Authors', wrapper_html: { class: "citation-authors" }
       = citation_fields.input :name, placeholder: 'New Citation', label: 'Title', required: true, wrapper_html: { class: "citation-name" }
@@ -49,6 +49,6 @@
       br
       .buttons-row.m-10
         .save-citation.button.success.small
-          | Save Citation
+          | Save
         = link_to_remove_association 'Cancel', f, class: 'button alert small cancel-button'
         /= link_to_remove_association '✖', f, class: 'remove-button', style: 'position: relative; top: 0.2rem; right: 0.2rem;'
