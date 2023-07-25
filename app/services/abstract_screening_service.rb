@@ -19,12 +19,13 @@ class AbstractScreeningService
       .abstract_screening_results
       .includes(:citations_project)
       .where(
-        user:,
+        user: user,
         privileged: true,
         label: nil,
         citations_project: { screening_status: CitationsProject::AS_IN_CONFLICT }
       )
       .first
+
     return unfinished_privileged_asr if unfinished_privileged_asr
 
     citations_project =
@@ -32,15 +33,20 @@ class AbstractScreeningService
       .left_joins(:abstract_screening_results)
       .where(
         project: abstract_screening.project,
-        screening_status: CitationsProject::AS_IN_CONFLICT,
-        abstract_screening_results: { id: nil }
+        screening_status: CitationsProject::AS_IN_CONFLICT
       )
+      .where.not(abstract_screening_results: { privileged: true })
       .first
 
     return nil unless citations_project
 
     if create_record
-      AbstractScreeningResult.create!(user:, abstract_screening:, citations_project:, privileged: true)
+      AbstractScreeningResult.create!(
+        user: user,
+        abstract_screening: abstract_screening,
+        citations_project: citations_project,
+        privileged: true
+      )
     else
       true
     end
