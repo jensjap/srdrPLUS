@@ -21,7 +21,7 @@
   >
     <a
       href="<%= abstract_screening_path(params[:abstract_screening_id]) %>"
-      class="cursor-pointer z-[5] absolute top-4 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+      class="cursor-pointer z-[5] absolute top-4 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-black hover:no-underline hover:text-black"
     >
       <span class="sr-only">Close menu</span>
       <!-- Heroicon name: outline/x -->
@@ -29,7 +29,7 @@
     </a>
     <button
       type="button"
-      :class="desktop ? 'hidden' : 'cursor-pointer z-[5] absolute top-14 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500'"
+      :class="desktop ? 'hidden' : 'cursor-pointer z-[5] absolute top-14 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-black'"
       @click="word_weight_menu = !word_weight_menu"
     >
       <span class="sr-only">Word weights</span>
@@ -37,7 +37,7 @@
     </button>
     <button
       @click="historyPanel = true"
-      class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+      class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-black"
     >
       Past Labels
     </button>
