@@ -1040,7 +1040,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_05_155314) do
     t.index ["ml_model_id"], name: "fk_rails_6c1d59597a"
   end
 
-  create_table "model_performances", charset: "utf8mb3", force: :cascade do |t|
+  create_table "model_performances", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "ml_model_id"
     t.string "label"
     t.float "score"
@@ -1987,7 +1987,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_05_155314) do
     t.index ["timepoint_id"], name: "index_tps_comparisons_rssms_on_timepoint_id"
   end
 
-  create_table "training_data_infos", charset: "utf8", force: :cascade do |t|
+  create_table "training_data_infos", charset: "utf8mb3", force: :cascade do |t|
     t.string "category"
     t.integer "count"
     t.bigint "ml_model_id", null: false
