@@ -33,8 +33,8 @@ class AbstractScreeningService
       .where(
         project: abstract_screening.project,
         screening_status: CitationsProject::AS_IN_CONFLICT,
-        abstract_screening_results: { id: nil }
       )
+      .where.not(abstract_screening_results: { privileged: true })
       .first
 
     return nil unless citations_project

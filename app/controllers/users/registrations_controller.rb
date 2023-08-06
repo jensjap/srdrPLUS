@@ -1,5 +1,4 @@
 class Users::RegistrationsController < Devise::RegistrationsController
-  before_action :skip_authorization, :skip_policy_scope
   # before_action :configure_sign_up_params, only: [:create]
   # before_action :configure_account_update_params, only: [:update]
 
@@ -16,6 +15,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # GET /resource/edit
   def edit
+    authorize(current_user)
     @nav_buttons.push('account')
     @profile = current_user.profile
     super
@@ -27,9 +27,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   # DELETE /resource
-  # def destroy
-  #   super
-  # end
+  def destroy
+    authorize(current_user)
+    super
+  end
 
   # GET /resource/cancel
   # Forces the session data which is usually expired after sign
@@ -41,6 +42,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   def api_key_reset
+    authorize(current_user)
     current_user.regenerate_api_key
     redirect_to edit_user_registration_path
   end

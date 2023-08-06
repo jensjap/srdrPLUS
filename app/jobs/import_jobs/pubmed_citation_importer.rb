@@ -2,7 +2,7 @@ PRIMARY_ID = CitationType.find_by(name: 'Primary').id
 
 module ImportJobs::PubmedCitationImporter
   def import_citations_from_pubmed_file(imported_file, preview: false)
-    pmid_arr = imported_file.content.download.split("\n").map(&:strip)
+    pmid_arr = imported_file.content.download.split("\n").map(&:strip).compact_blank
     import_citations_from_pubmed_array(imported_file.project, pmid_arr, preview)
   end
 
@@ -67,7 +67,7 @@ module ImportJobs::PubmedCitationImporter
     # This will return an array with a single element if none of the PMIDs in the input
     # are valid.
     pubmed_id_array.each_slice(10000) do |batched_pubmed_id_array|
-      Bio::PubMed.efetch(pubmed_id_array).each do |cit_txt|
+      Bio::PubMed.efetch(batched_pubmed_id_array).each do |cit_txt|
         row_h = {}
         cit_h = Bio::MEDLINE.new(cit_txt).pubmed
 
@@ -80,7 +80,7 @@ module ImportJobs::PubmedCitationImporter
 
         # will add as primary citation by default, there is no way to figure that out from pubmed
         row_h['pmid'] = cit_h['PMID'].strip if cit_h['PMID'].present?
-        row_h['name'] = cit_h['TI'].strip if cit_h['TI'].present?
+        row_h['name'] = cit_h['TI'].strip.truncate(500) if cit_h['TI'].present?
         row_h['abstract'] = cit_h['AB'].strip if cit_h['AB'].present?
         row_h['citation_type_id'] = PRIMARY_ID
 
@@ -123,7 +123,7 @@ module ImportJobs::PubmedCitationImporter
         row_h['journal_attributes'] = j_h
 
         h_arr << row_h
-      end  # Bio::PubMed.efetch(pubmed_id_array).each do |cit_txt|
+      end  # Bio::PubMed.efetch(batched_pubmed_id_array).each do |cit_txt|
     end  # pubmed_id_array.each_slice(10000) do |batched_pubmed_id_array|
 
     h_arr

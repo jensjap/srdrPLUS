@@ -60,7 +60,7 @@ class User < ApplicationRecord
   has_many :dispatches, dependent: :destroy, inverse_of: :user
 
   has_many :projects_users, dependent: :destroy, inverse_of: :user
-  has_many :projects, through: :projects_users, dependent: :destroy
+  has_many :projects, through: :projects_users
   has_many :citations_projects, through: :projects
 
   has_many :imported_files, through: :projects_users, dependent: :destroy
@@ -68,11 +68,6 @@ class User < ApplicationRecord
   has_many :publishings, dependent: :destroy, inverse_of: :user
 
   has_many :suggestions, dependent: :destroy, inverse_of: :user
-
-  # has_many :notes, dependent: :destroy, inverse_of: :user
-
-  has_many :taggings, through: :projects_users, dependent: :destroy
-  has_many :tags, through: :taggings, dependent: :destroy
 
   delegate :username, to: :profile, allow_nil: true
   delegate :first_name, to: :profile, allow_nil: true

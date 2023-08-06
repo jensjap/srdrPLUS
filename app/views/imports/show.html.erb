@@ -4,7 +4,7 @@
     <div class="sm:flex-auto">
       <h1 class="text-xl font-bold">PREVIEW: Import Citations</h1>
       <p class="mt-2 text-sm text-gray-700">
-        Please review the first (up to) 3 citations of each file that you
+        Please review the first (up to) <%= @previews.sum { |preview| preview[:citations].size } %> citations of each file that you
         uploaded. We've found a total of <%= total %> citations. Please click on
         '<b>Start Import</b>' to confirm.
       </p>

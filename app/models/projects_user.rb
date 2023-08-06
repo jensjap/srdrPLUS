@@ -27,6 +27,10 @@ class ProjectsUser < ApplicationRecord
   accepts_nested_attributes_for :imports, allow_destroy: true
   accepts_nested_attributes_for :imported_files, allow_destroy: true
 
+  validates :user_id, uniqueness: {
+    scope: :project_id,
+    message: 'must be unique. A user you are attempting to add to this project is already a member.' }
+
   def highest_role_string
     if project_leader?
       'Leader'
