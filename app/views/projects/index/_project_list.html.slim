@@ -3,7 +3,4 @@
   h4 No Projects found.
 
 - else
-  ul style="list-style-type: none; margin: 0;"
-    - @projects.each_with_index do |project, ix|
-      li style="padding: 1rem; margin: 0; background-color: #{if ix % 2 == 0 then 'lavender' else 'transparent'}"
-        = render 'projects/index/compact_project_list_item', project: project
+  = render 'projects/index/compact_project_list_item'

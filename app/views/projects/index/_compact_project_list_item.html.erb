@@ -1,0 +1,105 @@
+<div class="text-sm">
+  <% @projects.each_with_index do |project, index| %>
+  <div class="<%= index % 2 == 0 ? '!bg-purple-100' : '!bg-white' %> pt-1 px-1">
+    <b><%= project.name %></b>
+    <!-- prettier-ignore -->
+    <%= "(#{ @order.split("-").first } #{t("time_prefix")} #{time_ago_in_words(project.send(@order.underscore).in_time_zone(current_user.profile.time_zone))} #{t("ago")})" %>
+  </div>
+  <div
+    class="overflow-x-auto pb-1 px-1 grid grid-cols-3 gap-2 lg:grid-cols-12 <%= index % 2 == 0 ? '!bg-purple-100' : '!bg-white' %>"
+  >
+    <div class="break-words">
+      <!-- prettier-ignore -->
+      <% pu_count = @projects_projects_user_counts[project.id] %>
+      <% pu_title = "Members (#{pu_count || 0})" %>
+      <%= link_to pu_title, edit_project_path(project, page: 'members_and_roles'), title: t('.members_and_roles') %>
+    </div>
+    <div class="break-words">
+      <!-- prettier-ignore -->
+      <% kqp_count = @projects_key_questions_project_counts[project.id] %>
+      <% kqp_title = "Key Questions (#{kqp_count || 0})" %>
+      <%= link_to kqp_title, edit_project_path(project, page: 'key_questions'), title: t('.key_questions') %>
+    </div>
+    <div class="break-words">
+      <!-- prettier-ignore -->
+      <% cp_count = @projects_citations_project_counts[project.id] %>
+      <% cp_title = "Citations (#{cp_count || 0})" %>
+      <%= link_to cp_title, project_citations_path(project), title: t('manage_citations') %>
+      <%= link_to "+", project_citations_path(project), title: t('manage_citations'), class:"bg-purple-800 px-1 rounded-md text-white hover:text-white" %>
+    </div>
+    <div class="break-words">
+      <!-- prettier-ignore -->
+      <% e_count = @projects_extraction_counts[project.id] %>
+      <% e_title = "Extractions (#{e_count || 0})" %>
+      <%= link_to e_title, project_extractions_path(project), title: t('manage_extractions') %>
+      <%= link_to "+", new_project_extraction_path(project), title: t('manage_citations'), class:"bg-purple-800 px-1 rounded-md text-white hover:text-white" %>
+    </div>
+    <div class="break-words">
+      <a
+        id="export-modal-button"
+        data-open='<%= "export-modal-#{ project.id.to_s }" %>'
+      >
+        Export SRDR+ Data
+      </a>
+      <!-- prettier-ignore -->
+      <%= render partial: 'shared/select_export_type', locals: { project: project } %>
+    </div>
+    <% if project.leaders.include?(current_user) %>
+    <div class="break-words">
+      <!-- prettier-ignore -->
+      <%= link_to 'Edit Project Info', edit_project_path(project, page: 'info'), title: 'Edit Project Information' %>
+    </div>
+    <div class="break-words">
+      <!-- prettier-ignore -->
+      <%= link_to 'Edit Extraction Form', build_extraction_forms_project_path(project.extraction_forms_projects.first), title: 'Edit Extraction Form' %>
+    </div>
+    <% else %>
+    <div class="break-words">
+      <div style="opacity: 0.3; cursor: not-allowed">Edit Project Info</div>
+    </div>
+    <div class="break-words">
+      <div style="opacity: 0.3; cursor: not-allowed">Edit Extraction Form</div>
+    </div>
+    <% end %>
+    <div class="break-words">
+      <!-- prettier-ignore -->
+      <%= link_to "Export & Import Tools", project_imports_path(project), title: 'Data Export & Import' %>
+    </div>
+    <div class="break-words">
+      <!-- prettier-ignore -->
+      <%= link_to 'Request Publication', new_publishing_path(type: Project.to_s, id: project.id), title: t('request_publication') %>
+    </div>
+    <div class="break-words">
+      <!-- prettier-ignore -->
+      <%= link_to "SR-360", project_sd_meta_data_path(project), title: 'SR-360' %>
+    </div>
+    <div class="break-words">
+      <!-- prettier-ignore -->
+      <%= link_to "Abstract Screening", project_abstract_screenings_path(project), title: 'Abstract Screening' %>
+    </div>
+    <div class="break-words">
+      <!-- prettier-ignore -->
+      <%= link_to "Full-text Screening", project_fulltext_screenings_path(project), title: 'Full-text Screening' %>
+    </div>
+  </div>
+  <!-- prettier-ignore -->
+  <% if project.publishing.present? %>
+  <% if project.publishing.approved? %>
+  <div class="mx-4 text-xs mb-2">
+    <span class="bg-green-800 text-white p-1 rounded-md">
+      <!-- prettier-ignore -->
+      Publishing approved on <%= project.publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P") %>
+    </span>
+  </div>
+  <% else %>
+  <div class="mx-4 text-xs mb-2">
+    <span class="bg-orange-800 text-white p-1 rounded-md">
+      <!-- prettier-ignore -->
+      Publishing requested on <%= project.publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P") + " (by #{ project.publishing.user.profile.first_name })" %></span
+    >
+  </div>
+  <!-- prettier-ignore -->
+  <% end %>
+  <% end %>
+  <% end %>
+</div>
