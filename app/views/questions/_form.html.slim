@@ -40,9 +40,6 @@
         i.fi-arrow-down>
         | Add Row
 
-  div class="form-actions flex justify-end space-x-8 mt-2"
-    div @click='destroyResource("/questions/#{@question.id}", "question")' class='delete-question button alert !p-2' Delete
-    div @click="await updateQuestionTable(edit_question_id, document.getElementById(`edit_question_${edit_question_id}`)); question_modal = false;" class="cursor-pointer p-2 rounded-md bg-green-800 text-white text-sm hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2" Save and Exit
-    / = link_to @question, method: :delete, class: 'delete-question button alert', data: { confirm: t('confirm') } do
-    /   i.fi-trash>
-    /   = 'Delete'
+  div class="form-actions flex justify-between space-x-8 mt-2"
+    div class="cursor-pointer !p-2 rounded-md bg-gray-600 text-white text-sm" @click="question_modal = false;" Close without saving changes
+    div class="cursor-pointer p-2 rounded-md bg-green-800 text-white text-sm" @click="await updateQuestionTable(edit_question_id, document.getElementById(`edit_question_${edit_question_id}`)); question_modal = false;" Save
