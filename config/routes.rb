@@ -116,6 +116,7 @@ Rails.application.routes.draw do
         resources :citations, only: %i[index show]
         resources :key_questions, only: %i[index show]
         resources :extractions, only: %i[index show]
+        resources :sd_meta_data, only: %i[index show]
       end
       resources :extraction_forms_projects, shallow: true, only: [] do
         resources :extraction_forms_projects_sections, only: %i[index show]

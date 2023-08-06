@@ -1,0 +1,19 @@
+# Routes #
+- /api/v3/sd_meta_data/{sd_meta_data_number}
+- /api/v3/projects/{project_number}/sd_meta_data
+
+# Including Elements #
+- title, funding sources, dates
+- authors and stakeholders
+- url links
+- purpose, analytic framework, and key questions
+- PICODTS
+- search strategy
+- risk of bias and overall summary of evidence
+- results for individual outcomes
+
+# FHIR Version #
+4.3.0
+
+# Description #
+It will return a bundle resource. The first element is a composition resource, and following elements are the resource composition reference to.

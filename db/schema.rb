@@ -1987,6 +1987,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_05_155314) do
     t.index ["timepoint_id"], name: "index_tps_comparisons_rssms_on_timepoint_id"
   end
 
+  create_table "training_data_infos", charset: "utf8", force: :cascade do |t|
+    t.string "category"
+    t.integer "count"
+    t.bigint "ml_model_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ml_model_id"], name: "index_training_data_infos_on_ml_model_id"
+  end
+
   create_table "type1_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
@@ -2227,6 +2236,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_05_155314) do
   add_foreign_key "tps_arms_rssms", "result_statistic_sections_measures"
   add_foreign_key "tps_comparisons_rssms", "comparisons"
   add_foreign_key "tps_comparisons_rssms", "result_statistic_sections_measures"
+  add_foreign_key "training_data_infos", "ml_models"
   add_foreign_key "users", "user_types"
   add_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures"
 end
