@@ -73,14 +73,16 @@
       <!-- prettier-ignore -->
       <%= link_to "SR-360", project_sd_meta_data_path(project), title: 'SR-360' %>
     </div>
-    <div class="break-words">
-      <!-- prettier-ignore -->
-      <%= link_to "Abstract Screening", project_abstract_screenings_path(project), title: 'Abstract Screening' %>
-    </div>
-    <div class="break-words">
-      <!-- prettier-ignore -->
-      <%= link_to "Full-text Screening", project_fulltext_screenings_path(project), title: 'Full-text Screening' %>
-    </div>
+    <% if AbstractScreeningService.as_user?(current_user) %>
+      <div class="break-words">
+        <!-- prettier-ignore -->
+        <%= link_to "Abstract Screening", project_abstract_screenings_path(project), title: 'Abstract Screening' %>
+      </div>
+      <div class="break-words">
+        <!-- prettier-ignore -->
+        <%= link_to "Full-text Screening", project_fulltext_screenings_path(project), title: 'Full-text Screening' %>
+      </div>
+    <% end %>
   </div>
   <!-- prettier-ignore -->
   <% if project.publishing.present? %>
