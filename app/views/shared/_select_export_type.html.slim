@@ -31,12 +31,6 @@
     label for="xlsx-legacy-radio-#{project.id.to_s}"
       | Microsoft Excel - legacy format (.xlsx)
 
-    br
-
-    input[class='export-type-radio' type='radio' name="export-type-#{project.id.to_s}" value="#{export_project_path(project, export_type_name: 'Google Sheets')}" id="gsheets-radio-#{project.id.to_s}"]
-    label for="gsheets-radio-#{project.id.to_s}"
-      | Google Sheets
-
     = link_to "Export Project Data", export_project_path(project, export_type_name: '.xlsx'), method: :post, class: "button expanded start-export-button"
 
     br
