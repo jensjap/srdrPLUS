@@ -71,14 +71,18 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def destroy
-    @abstract_screening = AbstractScreening.find(params[:id])
-    authorize(@abstract_screening)
-    if @abstract_screening.destroy
-      flash[:success] = 'The abstract screening was deleted.'
-    else
-      flash[:error] = 'The abstract screening could not be deleted.'
+    respond_to do |format|
+      format.html do
+        @abstract_screening = AbstractScreening.find(params[:id])
+        authorize(@abstract_screening)
+        if @abstract_screening.destroy
+          flash[:success] = 'The abstract screening was deleted.'
+        else
+          flash[:error] = 'The abstract screening could not be deleted.'
+        end
+        redirect_to project_abstract_screenings_path(@abstract_screening.project)
+      end
     end
-    redirect_to project_abstract_screenings_path(@abstract_screening.project)
   end
 
   def edit
