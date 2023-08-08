@@ -3,7 +3,7 @@
 # Table name: extractions_extraction_forms_projects_sections_type1s
 #
 #  id                                               :integer          not null, primary key
-#  type1_type_id                                    :integer
+#  type1_type_id                                    :integer          default(1)
 #  extractions_extraction_forms_projects_section_id :integer
 #  type1_id                                         :integer
 #  units                                            :string(255)

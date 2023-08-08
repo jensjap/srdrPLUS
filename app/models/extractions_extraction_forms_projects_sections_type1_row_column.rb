@@ -7,6 +7,7 @@
 #  timepoint_name_id                                           :integer
 #  created_at                                                  :datetime         not null
 #  updated_at                                                  :datetime         not null
+#  pos                                                         :integer          default(999999)
 #
 
 # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1RowColumn. This is meant to be Outcome Timepoint.
