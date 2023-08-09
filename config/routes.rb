@@ -122,6 +122,12 @@ Rails.application.routes.draw do
         resources :extraction_forms_projects_sections, only: %i[index show]
       end
     end # END namespace :v3 do
+
+    namespace :v4 do
+      resources :projects, shallow: true, only: [:show] do
+        resources :extractions, only: %i[index]
+      end
+    end # END namespace :v4 do
   end # END namespace :api do
 
   resources :comparisons
