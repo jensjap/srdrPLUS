@@ -44,7 +44,6 @@ Rails.application.routes.draw do
   devise_for :admins
   devise_for :users, controllers: {
     confirmations: 'users/confirmations',
-    omniauth_callbacks: 'users/omniauth_callbacks',
     passwords: 'users/passwords',
     registrations: 'users/registrations',
     sessions: 'users/sessions',
@@ -324,7 +323,6 @@ Rails.application.routes.draw do
     member do
       post 'export'
       post 'export_citation_labels'
-      post 'export_to_gdrive'
       get  'export_assignments_and_mappings'
       post 'import_assignments_and_mappings'
       post 'simple_import'

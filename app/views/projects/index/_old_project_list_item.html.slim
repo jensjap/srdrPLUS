@@ -67,29 +67,3 @@ a.accordion-title href="#"
 
       .column.row
         = link_to "Delete Project", confirm_deletion_project_path(project), method: :get, class: "alert button expanded", remote: true
-      .reveal[data-reveal id="gdrive-export-modal-#{project.id.to_s}"]
-        .column.row
-          = link_to "Sign In to Google", user_google_oauth2_omniauth_authorize_path, method: :get, class: "button"
-        .column.row
-          = link_to "Export to Google Drive", export_to_gdrive_project_path(project), method: :post, class: "button"
-
-/  .row.gutter-small
-    .column.medium-8
-      .row
-        .column.large-4
-          span.label Key Questions:
-          .callout = project.key_questions.length
-        .column.large-4
-          span.label Citations:
-          .callout = Random.rand(1000) + 1
-        .column.large-4
-          span.label Extraction Forms:
-          .callout = project.extraction_forms.length
-    .column.medium-4
-      .column.row
-        .column.row
-          = link_to "Edit Project", edit_project_path(project), class: "button expanded"
-        .column.row
-          = link_to "List of Extractions", project_extractions_path(project), class: "button expanded"
-        .column.row
-          = link_to "Export", export_project_path(project), method: :post, class: "button expanded"
