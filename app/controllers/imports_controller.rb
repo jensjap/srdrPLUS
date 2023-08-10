@@ -19,14 +19,14 @@ class ImportsController < ApplicationController
     authorize(@import)
     unless current_user == @import.user
       flash[:error] = 'This import file does not belong to your user.'
-      return redirect_to project_citations_path(@project)
+      return redirect_to(project_citations_path(@project), status: 303)
     end
 
     @previews = @import.preview_import_job
 
     if @previews.blank?
       flash[:error] = 'This import cannot be previewed.'
-      redirect_to project_citations_path(@project)
+      redirect_to(project_citations_path(@project), status: 303)
     end
     @nav_buttons.push('citation_pool', 'my_projects')
   end
@@ -42,7 +42,7 @@ class ImportsController < ApplicationController
     else
       flash[:error] = 'This import file does not belong to your user.'
     end
-    redirect_to project_citations_path(@project)
+    redirect_to(project_citations_path(@project), status: 303)
   end
 
   def create

@@ -15,7 +15,7 @@ class AbstractScreeningsController < ApplicationController
     authorize(@abstract_screening)
     if @abstract_screening.save
       flash[:notice] = 'Screening was successfully created'
-      redirect_to project_abstract_screenings_path(@project)
+      redirect_to project_abstract_screenings_path(@project), status: 303
     else
       flash[:now] = @abstract_screening.errors.full_messages.join(',')
       render :new
@@ -163,7 +163,7 @@ class AbstractScreeningsController < ApplicationController
     authorize(@abstract_screening)
     if @abstract_screening.update(abstract_screening_params)
       flash[:notice] = 'Screening was successfully updated'
-      redirect_to project_abstract_screenings_path(@project)
+      redirect_to project_abstract_screenings_path(@project), status: 303
     else
       flash[:now] = @abstract_screening.errors.full_messages.join(',')
       render :edit

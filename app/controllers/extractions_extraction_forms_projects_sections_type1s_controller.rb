@@ -84,8 +84,11 @@ class ExtractionsExtractionFormsProjectsSectionsType1sController < ApplicationCo
       eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.create
     end
 
-    redirect_to edit_populations_extractions_extraction_forms_projects_sections_type1(@extractions_extraction_forms_projects_sections_type1),
-                notice: t('success')
+    redirect_to(
+      edit_populations_extractions_extraction_forms_projects_sections_type1(@extractions_extraction_forms_projects_sections_type1),
+      notice: t('success'),
+      status: 303
+    )
   end
 
   def get_results_populations
