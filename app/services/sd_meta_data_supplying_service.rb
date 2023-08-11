@@ -17,7 +17,7 @@ class SdMetaDataSupplyingService
     sd_outcomes = get_sd_outcomes(sd_meta_data)
 
     kq_full_url = get_identifier_values(sd_meta_data.sd_key_questions, 'SdKeyQuestion')
-    pico_full_url = get_identifier_values(sd_meta_data.sd_picods, 'SdPico')
+    pico_full_url = get_identifier_values(sd_meta_data.sd_picods, 'SdPicod')
     ss_full_url = get_identifier_values(sd_meta_data.sd_search_strategies, 'SdSearchStrategy')
     outcome_full_url = get_identifier_values(sd_outcomes, 'SdOutcome')
 
@@ -26,6 +26,7 @@ class SdMetaDataSupplyingService
     sd_search_strategy_in_fhir = sd_meta_data.sd_search_strategies.map {|ss| create_search_strategy_fhir_obj(ss)}
     sd_outcome_in_fhir = sd_outcomes.map {|outcome| create_outcome_fhir_obj(outcome)}
     sd_meta_data_in_fhir = create_composition_fhir_obj(sd_meta_data)
+    return sd_meta_data_in_fhir
 
     combination_full_url = pico_full_url.dup + kq_full_url.dup + ss_full_url.dup + outcome_full_url.dup
     combination_full_url.unshift(nil)
@@ -56,7 +57,7 @@ class SdMetaDataSupplyingService
     add_date_section(composition, 'Date of Publication of Full Report', raw.date_of_publication_full_report)
 
     add_reference_section(composition, 'Key Questions', raw.sd_key_questions, 'SdKeyQuestion')
-    add_reference_section(composition, 'PICODTS', raw.sd_picods, 'SdPico')
+    add_reference_section(composition, 'PICODTS', raw.sd_picods, 'SdPicod')
     add_reference_section(composition, 'Search Strategies', raw.sd_search_strategies, 'SdSearchStrategy')
 
     sd_outcomes = get_sd_outcomes(raw)
@@ -70,18 +71,6 @@ class SdMetaDataSupplyingService
       'Stakeholders Involved - Technical Expert Panel' => raw.stakeholders_technical_experts,
       'Stakeholders Involved - Peer Reviewers' => raw.stakeholders_peer_reviewers,
       'Stakeholders Involved - Others' => raw.stakeholders_others,
-      'PROSPERO Link' => raw.prospero_link,
-      'Protocol Link' => raw.protocol_link,
-      'Full Report Link' => raw.full_report_link,
-      'Structured Abstract Link' => raw.structured_abstract_link,
-      'Main Points or Key Messages Link' => raw.key_messages_link,
-      'Lay Abstract / Lay Language Summary Link' => raw.abstract_summary_link,
-      'Evidence Summary / Executive Summary Link' => raw.evidence_summary_link,
-      'Disposition of Comments Link' => raw.disposition_of_comments_link,
-      'Downloadable Content Link' => raw.srdr_data_link,
-      'Most Recent Previous Version of SRDR+ Data Link' => raw.most_previous_version_srdr_link,
-      'Most Recent Previous Version of Full Report Link' => raw.most_previous_version_full_report_link,
-      'Journal Articles' => raw.sd_journal_article_urls&.map { |source| source['name'] },
       'Overall Purpose of Review' => raw.overall_purpose_of_review,
       'Type of Review' => raw.review_type['name'],
       'Grey Literature Searches' => raw.sd_grey_literature_searches&.map { |source| source['name'] }
@@ -96,9 +85,33 @@ class SdMetaDataSupplyingService
       end
     end
 
+    url_items = {
+      'PROSPERO Link' => raw.prospero_link,
+      'Protocol Link' => raw.protocol_link,
+      'Full Report Link' => raw.full_report_link,
+      'Structured Abstract Link' => raw.structured_abstract_link,
+      'Main Points or Key Messages Link' => raw.key_messages_link,
+      'Lay Abstract / Lay Language Summary Link' => raw.abstract_summary_link,
+      'Evidence Summary / Executive Summary Link' => raw.evidence_summary_link,
+      'Disposition of Comments Link' => raw.disposition_of_comments_link,
+      'Downloadable Content Link' => raw.srdr_data_link,
+      'Most Recent Previous Version of SRDR+ Data Link' => raw.most_previous_version_srdr_link,
+      'Most Recent Previous Version of Full Report Link' => raw.most_previous_version_full_report_link
+    }
+
+    url_items.each do |title, url|
+      add_url(composition, title, url) if !url.blank?
+    end
+
+    raw.sd_journal_article_urls&.each do |source|
+      title = 'Journal Article'
+      url = source['name']
+      add_url(composition, title, url)
+    end
+
     other_items_for_url = raw.sd_other_items&.map { |item| [item['name'], item['url']] }
-    other_items_for_url.each do |name, url|
-      add_section(composition, "#{name} Link", url)
+    other_items_for_url.each do |title, url|
+      add_url(composition, title, url)
     end
 
     sd_analytic_frameworks = raw.sd_analytic_frameworks&.map { |item| [item['name'], item.sd_meta_data_figures] }
@@ -262,26 +275,51 @@ class SdMetaDataSupplyingService
   def add_date_section(composition, title, date)
     return if date.blank?
 
-    code_value = date.strftime("%Y-%m-%dT%H:%M:%S%:z")
-    add_section(composition, title, code_value)
+    value = date.strftime("%Y-%m-%dT%H:%M:%S%:z")
+    add_section(composition, title, value)
   end
 
   def add_reference_section(composition, title, raw_data, prefix)
     id_values = get_identifier_values(raw_data, prefix)
 
-    entrys = id_values.map { |id_value| {"reference" => id_value} }
+    entrys = id_values.map { |id_value| {'reference' => id_value, 'type' => 'EvidenceVariable'} }
     add_section(composition, title, nil, entrys)
   end
 
-  def add_section(array_or_hash, title=nil, code_value=nil, entrys=nil)
-    code = { 'coding' => [{ 'code' => code_value }] } if code_value
-    section = { 'title' => title, 'code' => code, 'entry' => entrys }.compact
+  def add_section(array_or_hash, title=nil, value=nil, entrys=nil)
+    code = { 'coding' => [{ 'code' => title }] } if title
+    section = {
+      'title' => title,
+      'code' => code,
+      'text' => {
+        'status' => 'generated',
+        'div' => "<div xmlns=\"http://www.w3.org/1999/xhtml\">#{value}</div>"
+      },
+      'entry' => entrys
+    }.compact
+
     if array_or_hash.is_a?(Hash)
       array_or_hash['section'] = (array_or_hash['section'] || []) << section
     else
       array_or_hash << { 'section' => [section] }
     end
     section
+  end
+
+  def add_url(composition, title, url)
+    related_artifact = {
+      'type' => 'supported-with',
+      'document' => {
+        'url' => url,
+        'title' => title
+      }
+    }
+
+    if composition['relatesTo']
+      composition['relatesTo'] << related_artifact
+    else
+      composition['relatesTo'] = [related_artifact]
+    end
   end
 
   def create_section_with_entries_and_figures(composition, section_name, result_items)
