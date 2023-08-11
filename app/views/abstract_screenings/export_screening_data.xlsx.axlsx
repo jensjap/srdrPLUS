@@ -1,8 +1,8 @@
 wb = xlsx_package.workbook
-
-wb.add_worksheet(name: "citations for project id #{@project.id}") do |sheet|
-  sheet.add_row(
-    [
+users = @project.users.map { |user| [user.id, user.handle.squeeze(' ')] }
+%w[AS FS].each do |screening_type|
+  wb.add_worksheet(name: "#{screening_type} data by citations") do |sheet|
+    headers = [
       'srdr citation id',
       'accession no',
       'authors',
@@ -11,12 +11,52 @@ wb.add_worksheet(name: "citations for project id #{@project.id}") do |sheet|
       'abstract screening status',
       'fulltext screening status',
       'extraction status',
-      'sub status'
-    ].map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
-  )
-  CitationsProject.search(where: { project_id: @project.id }, load: false).each do |cp|
+      'sub status',
+      'consensus label',
+      'consensus user name'
+    ]
+    users.each do |user|
+      headers << "\"#{user[1]}\" Label"
+    end
+    headers << 'All User Tags'
+    users.each do |user|
+      headers << "\"#{user[1]}\" Reasons"
+    end
+    users.each do |user|
+      headers << "\"#{user[1]}\" Notes"
+    end
+    headers = headers.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
     sheet.add_row(
-      [
+      headers
+    )
+
+    mh = {}
+    screening_results =
+      case screening_type
+      when 'AS'
+        @project.abstract_screening_results
+      when 'FS'
+        @project.fulltext_screening_results
+      end
+    screening_results.each do |asr|
+      mh[asr.citations_project_id] ||= {
+        user_labels: {},
+        user_reasons: {},
+        user_notes: {},
+        tags: [],
+        consensus_label: nil,
+        consensus_user: nil
+      }
+      mh[asr.citations_project_id][:user_labels][asr.user_id] = asr.label
+      mh[asr.citations_project_id][:tags] += asr.tags.map(&:name)
+      mh[asr.citations_project_id][:user_reasons][asr.user_id] = asr.reasons.map do |reason|
+        "\"#{reason.name}\""
+      end.join(', ')
+      mh[asr.citations_project_id][:user_notes][asr.user_id] = asr.notes
+    end
+
+    CitationsProject.search(where: { project_id: @project.id }, load: false).each do |cp|
+      columns = [
         cp['citation_id'],
         cp['accession_number_alts'],
         cp['author_map_string'],
@@ -26,8 +66,24 @@ wb.add_worksheet(name: "citations for project id #{@project.id}") do |sheet|
         cp['fulltext_qualification'],
         cp['extraction_qualification'],
         cp['screening_status']
-      ].map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
-    )
+      ]
+      cp_id = cp.id.to_i
+      columns << (mh.dig(cp_id, :consensus_label) || '')
+      columns << (mh.dig(cp_id, :consensus_user) || '')
+      users.each do |user|
+        columns << (mh.dig(cp_id, :user_labels, user[0]) || '')
+      end
+      columns << ((mh.dig(cp_id, :tags) || []).uniq.map { |tag| "\"#{tag}\"" }.join(', '))
+      users.each do |user|
+        columns << (mh.dig(cp_id, :user_reasons, user[0]) || '')
+      end
+      users.each do |user|
+        columns << (mh.dig(cp_id, :user_notes, user[0]) || '')
+      end
+
+      columns = columns.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
+      sheet.add_row(columns)
+    end
   end
 end
 
