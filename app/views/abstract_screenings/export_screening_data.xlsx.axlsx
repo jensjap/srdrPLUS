@@ -1,5 +1,5 @@
 wb = xlsx_package.workbook
-users = @project.users.map { |user| [user.id, user.handle.squeeze(' ')] }
+users = @project.users.includes(:profile).map { |user| [user.id, user.handle.squeeze(' ')] }
 %w[AS FS].each do |screening_type|
   wb.add_worksheet(name: "#{screening_type} data by citations") do |sheet|
     headers = [
@@ -32,9 +32,9 @@ users = @project.users.map { |user| [user.id, user.handle.squeeze(' ')] }
     screening_results =
       case screening_type
       when 'AS'
-        @project.abstract_screening_results
+        @project.abstract_screening_results.includes(:tags, :reasons, user: :profile)
       when 'FS'
-        @project.fulltext_screening_results
+        @project.fulltext_screening_results.includes(:tags, :reasons, user: :profile)
       end
     screening_results.each do |asr|
       mh[asr.citations_project_id] ||= {
@@ -105,7 +105,8 @@ wb.add_worksheet(name: 'screening descriptions') do |sheet|
       'selected tags'
     ].map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
   )
-  @project.abstract_screenings.each do |as|
+
+  @project.abstract_screenings.includes(:reasons, :tags, users: :profile).each do |as|
     sheet.add_row(
       [
         'abstract',
@@ -127,6 +128,31 @@ wb.add_worksheet(name: 'screening descriptions') do |sheet|
         as.hide_journal,
         as.reasons.map(&:name),
         as.tags.map(&:name)
+      ].map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
+    )
+  end
+  @project.fulltext_screenings.includes(:reasons, :tags, users: :profile).each do |fs|
+    sheet.add_row(
+      [
+        'fulltext',
+        fs.id,
+        fs.fulltext_screening_type,
+        fs.exclusive_users,
+        fs.users.map(&:handle),
+        fs.yes_tag_required,
+        fs.no_tag_required,
+        fs.maybe_tag_required,
+        fs.no_reason_required,
+        fs.maybe_reason_required,
+        fs.yes_note_required,
+        fs.no_note_required,
+        fs.maybe_note_required,
+        fs.only_predefined_reasons,
+        fs.only_predefined_tags,
+        fs.hide_author,
+        fs.hide_journal,
+        fs.reasons.map(&:name),
+        fs.tags.map(&:name)
       ].map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
     )
   end
@@ -157,9 +183,9 @@ end
     sheet.add_row(
       headers.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
     )
-    as.abstract_screening_results.each do |asr|
+    as.abstract_screening_results.includes(:tags, :reasons, :citations_project, user: :profile).each do |asr|
       row = [
-        asr.citation.id,
+        asr.citations_project.citation_id,
         asr.abstract_screening.abstract_screening_type,
         asr.user.handle,
         asr.label,
@@ -243,9 +269,9 @@ end
     sheet.add_row(
       headers.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
     )
-    fs.fulltext_screening_results.each do |fsr|
+    fs.fulltext_screening_results.includes(:tags, :reasons, :citations_project, user: :profile).each do |fsr|
       row = [
-        fsr.citation.id,
+        fsr.citations_project.citation_id,
         fsr.fulltext_screening.fulltext_screening_type,
         fsr.user.handle,
         fsr.label,
