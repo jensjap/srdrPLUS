@@ -49,9 +49,7 @@ users = @project.users.map { |user| [user.id, user.handle.squeeze(' ')] }
       }
       mh[asr.citations_project_id][:user_labels][asr.user_id] = asr.label
       mh[asr.citations_project_id][:tags] += asr.tags.map(&:name)
-      mh[asr.citations_project_id][:user_reasons][asr.user_id] = asr.reasons.map do |reason|
-        "\"#{reason.name}\""
-      end.join(', ')
+      mh[asr.citations_project_id][:user_reasons][asr.user_id] = asr.reasons.join('; ')
       mh[asr.citations_project_id][:user_notes][asr.user_id] = asr.notes
     end
 
@@ -73,7 +71,7 @@ users = @project.users.map { |user| [user.id, user.handle.squeeze(' ')] }
       users.each do |user|
         columns << (mh.dig(cp_id, :user_labels, user[0]) || '')
       end
-      columns << ((mh.dig(cp_id, :tags) || []).uniq.map { |tag| "\"#{tag}\"" }.join(', '))
+      columns << ((mh.dig(cp_id, :tags) || []).uniq.join('; '))
       users.each do |user|
         columns << (mh.dig(cp_id, :user_reasons, user[0]) || '')
       end
