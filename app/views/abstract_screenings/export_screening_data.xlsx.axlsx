@@ -22,9 +22,7 @@ users = @project.users.map { |user| [user.id, user.handle.squeeze(' ')] }
     users.each do |user|
       headers << "\"#{user[1]}\" Reasons"
     end
-    users.each do |user|
-      headers << "\"#{user[1]}\" Notes"
-    end
+    headers << 'Notes'
     headers = headers.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
     sheet.add_row(
       headers
@@ -42,7 +40,7 @@ users = @project.users.map { |user| [user.id, user.handle.squeeze(' ')] }
       mh[asr.citations_project_id] ||= {
         user_labels: {},
         user_reasons: {},
-        user_notes: {},
+        notes: [],
         tags: [],
         consensus_label: nil,
         consensus_user: nil
@@ -50,7 +48,7 @@ users = @project.users.map { |user| [user.id, user.handle.squeeze(' ')] }
       mh[asr.citations_project_id][:user_labels][asr.user_id] = asr.label
       mh[asr.citations_project_id][:tags] += asr.tags.map(&:name)
       mh[asr.citations_project_id][:user_reasons][asr.user_id] = asr.reasons.join('; ')
-      mh[asr.citations_project_id][:user_notes][asr.user_id] = asr.notes
+      mh[asr.citations_project_id][:notes] << "#{asr.user.handle}: \"#{asr.notes}\"" unless asr.notes.blank?
     end
 
     CitationsProject.search(where: { project_id: @project.id }, load: false).each do |cp|
@@ -75,9 +73,7 @@ users = @project.users.map { |user| [user.id, user.handle.squeeze(' ')] }
       users.each do |user|
         columns << (mh.dig(cp_id, :user_reasons, user[0]) || '')
       end
-      users.each do |user|
-        columns << (mh.dig(cp_id, :user_notes, user[0]) || '')
-      end
+      columns << ((mh.dig(cp_id, :notes) || []).uniq.join("\n"))
 
       columns = columns.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
       sheet.add_row(columns)
