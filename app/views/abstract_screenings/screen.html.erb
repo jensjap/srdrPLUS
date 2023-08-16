@@ -573,13 +573,20 @@
         }
       },
 
-      paste_textarea_keywords_and_phrases() {
+      async paste_textarea_keywords_and_phrases() {
         this.textarea_keywords_and_phrases = Object.keys(this.word_weights)
           .sort()
           .map((word) => {
             return word + " " + this.word_weights[word].weight;
           })
           .join("\n");
+        try {
+          await navigator.clipboard.writeText(
+            this.textarea_keywords_and_phrases
+          );
+        } catch (err) {
+          alert("Your browser doesn't allow copying into your clipboard.");
+        }
       },
 
       processWeights(sourceKey, destinationKey) {
