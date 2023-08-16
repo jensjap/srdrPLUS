@@ -95,7 +95,7 @@
                     <div
                       class="cursor-pointer flex space-x-1 border-b"
                       :class="cp.fsr_id == fsr.id ? 'bg-yellow-100' : ''"
-                      @click="getFsrId(cp.fsr_id);"
+                      @click="await getFsrId(cp.fsr_id); historyPanel = false;"
                     >
                       <div
                         class="w-1/2 overflow-hidden whitespace-nowrap overflow-ellipsis"

@@ -94,7 +94,7 @@
                     <div
                       class="cursor-pointer flex space-x-1 border-b"
                       :class="cp.asr_id == asr.id ? 'bg-yellow-100' : ''"
-                      @click="getAsrId(cp.asr_id);"
+                      @click="await getAsrId(cp.asr_id); historyPanel = false;"
                     >
                       <div
                         class="w-11/12 overflow-hidden whitespace-nowrap overflow-ellipsis"
