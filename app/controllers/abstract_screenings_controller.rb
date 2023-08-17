@@ -62,12 +62,19 @@ class AbstractScreeningsController < ApplicationController
 
   def export_screening_data
     authorize(@project, policy_class: AbstractScreeningPolicy)
-    respond_to do |format|
-      format.xlsx do
-        response.headers['Content-Disposition'] =
-          "attachment; filename=\"screening_data_export_of_project_id_#{@project.id}.xlsx\""
-      end
-    end
+    ScreeningDataExportJob.set(wait: 5.second).perform_later(current_user.email, @project.id)
+    Event.create(
+      sent: current_user.email,
+      action: 'Export Screening Data',
+      resource: @project.class.to_s,
+      resource_id: @project.id,
+      notes: ''
+    )
+    redirect_back(
+      fallback_location: project_path(@project),
+      notice: 'Your export is being processed.  You will be notified via email when it is completed.',
+      status: 303
+    )
   end
 
   def destroy
