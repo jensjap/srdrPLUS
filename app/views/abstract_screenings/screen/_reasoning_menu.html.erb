@@ -200,8 +200,32 @@
                     <div class="w-8 h-5"></div>
                   </div>
                 </template>
-                <template x-for="(reason, index) in asr.custom_reasons">
+                <template
+                  x-for="(reason, index) in asr.custom_reasons"
+                  :key="reason.id"
+                >
                   <div class="w-full flex">
+                    <select
+                      class="w-fit text-xs py-0 px-1"
+                      @change="const dragId = asr['custom_reasons'][index].id;
+                      const dropId = asr['custom_reasons'][$el.value - 1].id;
+                      const dragPos = asr['custom_reasons'][index].pos;
+                      const dropPos = $el.value - 1;
+                      asr.custom_reasons = [];
+                      updateCustomValue('custom_reasons', { id: dragId, pos: dropPos });
+                      updateCustomValue('custom_reasons', { id: dropId, pos: dragPos });"
+                    >
+                      <template
+                        x-for="(rreason, iindex) in asr.custom_reasons"
+                        :key="rreason.id"
+                      >
+                        <option
+                          :value="iindex + 1"
+                          x-text="iindex + 1"
+                          :selected="iindex  === index"
+                        ></option>
+                      </template>
+                    </select>
                     <div
                       class="p w-1/2 pl-1 border-gray-200 border-b"
                       x-text="reason.selected ? '' : reason.name"
