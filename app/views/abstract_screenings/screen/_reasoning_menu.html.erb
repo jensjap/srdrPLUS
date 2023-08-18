@@ -156,13 +156,11 @@
               <div class="text-sm">
                 <div class="w-full flex">
                   <div class="p w-1/2 pl-1 font-bold border-gray-200 border-b">
-                    available reasons
+                    available
                   </div>
                   <div class="w-8 h-5"></div>
-                  <div
-                    class="p w-1/2 pl-1 text-purple-800 font-bold border-gray-200 border-b"
-                  >
-                    selected reasons
+                  <div class="p w-1/2 pl-1 font-bold border-gray-200 border-b">
+                    selected
                   </div>
                   <div class="w-8 h-5 ml-2"></div>
                   <div class="w-8 h-5"></div>
@@ -182,7 +180,7 @@
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke-width="2"
-                        :stroke="reason.selected ? 'black' : 'purple'"
+                        stroke="black"
                         class="w-8 h-5"
                       >
                         <path
@@ -193,7 +191,7 @@
                       </svg>
                     </button>
                     <div
-                      class="p w-1/2 pl-1 text-purple-800 border-gray-200 border-b"
+                      class="p w-1/2 pl-1 border-gray-200 border-b"
                       x-text="reason.selected ? reason.name : ''"
                     ></div>
                     <div class="w-8 h-5 ml-2"></div>
@@ -239,7 +237,7 @@
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke-width="2"
-                        :stroke="reason.selected ? 'black' : 'purple'"
+                        stroke="black"
                         class="w-8 h-5"
                       >
                         <path
@@ -250,7 +248,7 @@
                       </svg>
                     </button>
                     <div
-                      class="p w-1/2 pl-1 text-purple-800 border-gray-200 border-b"
+                      class="p w-1/2 pl-1 border-gray-200 border-b"
                       x-text="reason.selected ? reason.name : ''"
                     ></div>
                     <svg
