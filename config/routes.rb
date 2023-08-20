@@ -44,7 +44,6 @@ Rails.application.routes.draw do
   devise_for :admins
   devise_for :users, controllers: {
     confirmations: 'users/confirmations',
-    omniauth_callbacks: 'users/omniauth_callbacks',
     passwords: 'users/passwords',
     registrations: 'users/registrations',
     sessions: 'users/sessions',
@@ -122,6 +121,12 @@ Rails.application.routes.draw do
         resources :extraction_forms_projects_sections, only: %i[index show]
       end
     end # END namespace :v3 do
+
+    namespace :v4 do
+      resources :projects, shallow: true, only: [:show] do
+        resources :extractions, only: %i[index]
+      end
+    end # END namespace :v4 do
   end # END namespace :api do
 
   resources :comparisons
@@ -324,7 +329,6 @@ Rails.application.routes.draw do
     member do
       post 'export'
       post 'export_citation_labels'
-      post 'export_to_gdrive'
       get  'export_assignments_and_mappings'
       post 'import_assignments_and_mappings'
       post 'simple_import'

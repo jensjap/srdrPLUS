@@ -59,7 +59,7 @@ class ApplicationController < ActionController::Base
       #!           might redirect using the original request method
       #!           such as DELETE to an unintended fallback path.
       #! https://api.rubyonrails.org/classes/ActionController/Redirecting.html#method-i-redirect_to
-      format.html { redirect_back(fallback_location: root_path, status: 303) }
+      format.html { redirect_back(fallback_location: root_path, status: 303) unless request.xhr? }
     end
   end
 

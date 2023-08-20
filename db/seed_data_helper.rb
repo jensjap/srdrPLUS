@@ -1156,7 +1156,6 @@ module SeedData
 
       # Seed ExportType.
       ExportType.find_or_create_by!(name: '.xlsx')
-      ExportType.find_or_create_by!(name: 'Google Sheets')
     end
   end
 end

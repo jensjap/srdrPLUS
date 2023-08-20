@@ -69,7 +69,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   def type1s_suggested_by_project_leads
     extraction_forms_projects_section
       .extraction_forms_projects_sections_type1s
-      .includes(:timepoint_names, :type1, type1: { suggestion: { user: :profile } })
+      .includes(:timepoint_names, :type1_type, type1: { suggestion: { user: :profile } })
       .where.not(type1: type1s)
       .where.not(type1s: { name: 'Total',
                            description: "All #{extraction_forms_projects_section.link_to_type1.present? ? extraction_forms_projects_section.link_to_type1.section.name : extraction_forms_projects_section.section.name} combined" })
