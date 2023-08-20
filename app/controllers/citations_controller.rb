@@ -108,9 +108,9 @@ class CitationsController < ApplicationController
   end
 
   def authorize_access
-    if (current_user.projects & @citation.projects).empty?
-      flash[:error] = 'You are not authorized to update this citation'
-      redirect_to(request.referrer || root_path)
-    end
+    return unless (current_user.projects & @citation.projects).empty?
+
+    flash[:error] = 'You are not authorized to update this citation'
+    redirect_to((request.referrer || root_path), status: 303)
   end
 end

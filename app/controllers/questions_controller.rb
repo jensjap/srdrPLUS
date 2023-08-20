@@ -131,7 +131,7 @@ class QuestionsController < ApplicationController
 
   def duplicate
     @duplicated_question = @question.duplicate
-    redirect_to edit_question_path(@duplicated_question), notice: t('success')
+    redirect_to(edit_question_path(@duplicated_question), notice: t('success'), status: 303)
   end
 
   private

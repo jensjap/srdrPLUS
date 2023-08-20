@@ -25,7 +25,7 @@ class StaticPagesController < ApplicationController
       @recently_published_projects = []
     end
 
-    return redirect_to(projects_path) if current_user && !params[:no_redirect]
+    return redirect_to(projects_path, status: 303) if current_user && !params[:no_redirect]
   end
 
   def help

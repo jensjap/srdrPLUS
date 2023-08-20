@@ -175,7 +175,7 @@ class ProjectsController < ApplicationController
       flash[:error] = 'You are not authorized to export this project.'
     end
 
-    redirect_to request.referer
+    redirect_to(request.referer, status: 303)
   end
 
   def export_assignments_and_mappings
@@ -313,7 +313,7 @@ class ProjectsController < ApplicationController
     flash[:success] =
       "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
 
-    redirect_to project_citations_path(@project)
+    redirect_to(project_citations_path(@project), status: 303)
   end
 
   def import_csv
@@ -323,7 +323,7 @@ class ProjectsController < ApplicationController
     flash[:success] =
       "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
 
-    redirect_to project_citations_path(@project)
+    redirect_to(project_citations_path(@project), status: 303)
   end
 
   def import_pubmed
@@ -334,7 +334,7 @@ class ProjectsController < ApplicationController
       "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
     # @project.import_citations_from_pubmed( citation_import_params[:citation_file] )
 
-    redirect_to project_citations_path(@project)
+    redirect_to(project_citations_path(@project), status: 303)
   end
 
   def import_endnote
@@ -344,7 +344,7 @@ class ProjectsController < ApplicationController
     flash[:success] =
       "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
 
-    redirect_to project_citations_path(@project)
+    redirect_to(project_citations_path(@project), status: 303)
   end
 
   def dedupe_citations
@@ -353,7 +353,7 @@ class ProjectsController < ApplicationController
     # @project.dedupe_citations
     flash[:success] = 'Request to deduplicate citations has been received. Please come back later.'
 
-    redirect_to project_citations_path(@project)
+    redirect_to(project_citations_path(@project), status: 303)
   end
 
   def create_citation_screening_extraction_form
@@ -364,7 +364,7 @@ class ProjectsController < ApplicationController
     )
     flash[:success] = 'Success.'
 
-    redirect_to edit_project_path(@project, anchor: 'panel-citation-screening-extraction-form'), notice: t('success')
+    redirect_to(edit_project_path(@project, anchor: 'panel-citation-screening-extraction-form'), notice: t('success'), status: 303)
   end
 
   def create_full_text_screening_extraction_form
