@@ -72,7 +72,7 @@ class ScreeningDataExportJob < ApplicationJob
           }
           mh[asr.citations_project_id][:user_labels][asr.user_id] = asr.label
           mh[asr.citations_project_id][:tags] += asr.tags.map(&:name)
-          mh[asr.citations_project_id][:user_reasons][asr.user_id] = asr.reasons.join('; ')
+          mh[asr.citations_project_id][:user_reasons][asr.user_id] = asr.reasons.map(&:name).join('; ')
           mh[asr.citations_project_id][:notes] << "#{asr.user.handle}: \"#{asr.notes}\"" unless asr.notes.blank?
         end
 
