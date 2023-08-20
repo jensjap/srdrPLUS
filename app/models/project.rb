@@ -14,6 +14,7 @@
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
 #  authors_of_report       :text(65535)
+#  auto_train              :boolean          default(FALSE)
 #
 
 class Project < ApplicationRecord

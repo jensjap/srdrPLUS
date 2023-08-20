@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_05_155314) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_08_051817) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -666,6 +666,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_05_155314) do
     t.integer "timepoint_name_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "pos", default: 999999
     t.index ["extractions_extraction_forms_projects_sections_type1_row_id", "timepoint_name_id"], name: "index_eefpst1rc_on_eefpst1r_id_tn_id"
     t.index ["timepoint_name_id"], name: "index_eefpst1rc_on_tn_id"
   end
@@ -1987,7 +1988,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_05_155314) do
     t.index ["timepoint_id"], name: "index_tps_comparisons_rssms_on_timepoint_id"
   end
 
-  create_table "training_data_infos", charset: "utf8mb3", force: :cascade do |t|
+  create_table "training_data_infos", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "category"
     t.integer "count"
     t.bigint "ml_model_id", null: false
