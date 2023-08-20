@@ -2,7 +2,7 @@ class ProjectsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:export]
 
   before_action :set_project, only: %i[
-    export_data show edit update destroy export export_to_gdrive
+    export_data show edit update destroy export
     export_assignments_and_mappings import_assignments_and_mappings simple_import
     import_csv import_pubmed import_endnote import_ris
     confirm_deletion dedupe_citations create_citation_screening_extraction_form
@@ -10,10 +10,10 @@ class ProjectsController < ApplicationController
   ]
 
   before_action :skip_authorization, only: %i[
-    index edit show filter export export_to_gdrive new create
+    index edit show filter export new create
   ]
   before_action :skip_policy_scope, except: %i[
-    index show edit update destroy filter export export_to_gdrive import_csv
+    index show edit update destroy filter export import_csv
     import_pubmed import_endnote import_ris
   ]
 
@@ -176,15 +176,6 @@ class ProjectsController < ApplicationController
     end
 
     redirect_to request.referer
-  end
-
-  def export_to_gdrive
-    authorize(@project)
-    GsheetsExportJob.set(wait: 1.minute).perform_later(current_user.id, @project.id, gdrive_params)
-    flash[:success] =
-      "Export request submitted for project '#{@project.name}'. You will be notified by email of its completion."
-
-    redirect_to edit_project_path(@project)
   end
 
   def export_assignments_and_mappings
@@ -406,13 +397,6 @@ class ProjectsController < ApplicationController
 
   def import_params
     params.require(:import).permit(imported_files: [])
-  end
-
-  def gdrive_params
-    # params.permit( :kqp_ids => [], :payload => [ :column_name, :type, { :export_ids => [] } ] )
-    params.permit(kqp_ids: [],
-                  columns: [:name, :type,
-                            { export_items: %i[export_id type extraction_forms_projects_section_id] }])
   end
 
   def save_without_sections_if_imported_files_params_exist(project)
