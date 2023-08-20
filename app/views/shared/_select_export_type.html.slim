@@ -40,4 +40,4 @@
       legend[style='font-size: large;']
         |Export Citation Screening Labels:
 
-    = link_to "Export Project Citation Labels", export_citation_labels_project_path(project, export_type_name: '.csv'), method: :post, class: 'button expanded start-citation-labels-export-button'
+    = link_to "Export Project Citation Labels", "#{project_export_screening_data_path(project)}.xlsx", method: :post, class: 'button expanded start-citation-labels-export-button'
