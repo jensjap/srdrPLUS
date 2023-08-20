@@ -40,11 +40,16 @@
                   class="text-lg font-medium text-gray-900"
                   id="slide-over-title"
                 >
-                  Your Labels (<span x-text="cps.length"></span>)
+                  Your Labels (<span
+                    x-text="cps.filter(cp => cp.label !== null).length"
+                  ></span
+                  >)
                 </h2>
                 <div class="ml-3 flex h-7 items-center">
                   <button
-                    @click="historyPanel = false"
+                    @click="let nextFsr = cps.find(cp => cp.label === null)
+                    if (nextFsr) { await getFsrId(nextFsr.fsr_id) }
+                    historyPanel = false;"
                     type="button"
                     class="cursor-pointer rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                   >
@@ -92,7 +97,7 @@
                     <div
                       class="cursor-pointer flex space-x-1 border-b"
                       :class="cp.fsr_id == fsr.id ? 'bg-yellow-100' : ''"
-                      @click="getFsrId(cp.fsr_id);"
+                      @click="await getFsrId(cp.fsr_id); historyPanel = false;"
                     >
                       <div
                         class="w-1/2 overflow-hidden whitespace-nowrap overflow-ellipsis"
