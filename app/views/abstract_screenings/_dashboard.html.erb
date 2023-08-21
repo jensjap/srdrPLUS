@@ -9,9 +9,8 @@
     </div>
     <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
       <%= link_to('Export Screening Data in XLSX',
-      "#{project_export_screening_data_path(@project)}.xlsx",
-      method: :post,
-      class: "inline-flex items-center justify-center rounded-md border
+      "#{project_export_screening_data_path(@project)}", method: :post, class:
+      "inline-flex items-center justify-center rounded-md border
       border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium !text-white
       shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2
       focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
@@ -20,7 +19,9 @@
   </div>
   <dl class="mt-5 grid grid-cols-1 gap-3 lg:grid-cols-3">
     <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
-      <dt class="text-sm font-medium text-gray-500 truncate">I. Abstract Screening</dt>
+      <dt class="text-sm font-medium text-gray-500 truncate">
+        I. Abstract Screening
+      </dt>
       <dd class="mt-1 font-semibold text-gray-900">
         <div>
           <span
@@ -71,7 +72,9 @@
     </div>
 
     <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
-      <dt class="text-sm font-medium text-gray-500 truncate">II. Full-text Screening</dt>
+      <dt class="text-sm font-medium text-gray-500 truncate">
+        II. Full-text Screening
+      </dt>
       <dd class="mt-1 font-semibold text-gray-900">
         <div>
           <span

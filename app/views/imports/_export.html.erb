@@ -16,17 +16,8 @@
       value="<%= export_project_path(@project, export_type_name: '.xlsx legacy') %>"
     />
     <label for="xlsx-legacy-radio-<%= @project.id.to_s %>">
-      Microsoft Excel - legacy format (.xlsx) </label
-    ><br />
-
-    <input
-      class="export-type-radio"
-      id="gsheets-radio-<%= @project.id.to_s %>"
-      name="export-type-<%= @project.id.to_s %>"
-      type="radio"
-      value="<%= export_project_path(@project, export_type_name: 'Google Sheets') %>"
-    />
-    <label for="gsheets-radio-<%= @project.id.to_s %>"> Google Sheets </label>
+      Microsoft Excel - legacy format (.xlsx)
+    </label>
     <!-- prettier-ignore -->
     <%= link_to "Export Extraction Data", export_project_path(@project, export_type_name: '.xlsx legacy'), method: :post, class: "button expanded start-export-button" %>
 
@@ -35,7 +26,7 @@
     <p>Export Project Screening Labels:</p>
     <!-- prettier-ignore -->
     <%= link_to "Export Screening Data in XLSX",
-          "#{project_export_screening_data_path(@project)}.xlsx",
+          "#{project_export_screening_data_path(@project)}",
           method: :post,
           class: 'button expanded start-citation-labels-export-button' %>
   </div>

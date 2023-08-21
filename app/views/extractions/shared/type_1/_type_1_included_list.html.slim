@@ -66,10 +66,13 @@
                     li No populations
 
               td
-                ul
+                ul.orderable-list.list-none orderable-url="#{ update_positions_api_v1_orderings_url }"
                   - if eefpst1.extractions_extraction_forms_projects_sections_type1_rows.try(:first).try(:extractions_extraction_forms_projects_sections_type1_row_columns).present?
                     - eefpst1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp|
-                      li = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '')
+                      li.orderable-item table="extractions_extraction_forms_projects_sections_type1_row_columns" position="#{tp.pos}" ordering-id="#{tp.id}"
+                        span.sort-handle.mr-2 style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"
+                         i class="fa fa-arrows"
+                        = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '')
                       - timepoints << tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '')
                   - else
                     li No Timepoints

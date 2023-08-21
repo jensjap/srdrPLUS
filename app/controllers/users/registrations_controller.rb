@@ -44,7 +44,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def api_key_reset
     authorize(current_user)
     current_user.regenerate_api_key
-    redirect_to edit_user_registration_path
+    redirect_to(edit_user_registration_path, status: 303)
   end
 
   # protected

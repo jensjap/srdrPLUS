@@ -11,7 +11,7 @@ class PublishingsController < ApplicationController
   def create
     unless @publishable_record
       flash[:error] = 'Invalid record to publish.'
-      return redirect_to '/projects'
+      return redirect_to('/projects', status: 303)
     end
     authorize(@project, policy_class: PublishingPolicy)
 
@@ -43,7 +43,7 @@ class PublishingsController < ApplicationController
       flash[:success] = 'Success! Your request is received. We will inform you once the record is public.'
     end
 
-    redirect_to '/projects?project_status=pending'
+    redirect_to('/projects?project_status=pending', status: 303)
   end
 
   def approve
@@ -60,7 +60,7 @@ class PublishingsController < ApplicationController
       flash[:success] = 'The publication has been approved!'
     end
 
-    redirect_to '/projects?project_status=published'
+    redirect_to('/projects?project_status=published', status: 303)
   end
 
   def rescind_approval
@@ -77,7 +77,7 @@ class PublishingsController < ApplicationController
       flash[:success] = 'The publication approval has been rescinded!'
     end
 
-    redirect_to '/projects?project_status=pending'
+    redirect_to('/projects?project_status=pending', status: 303)
   end
 
   def destroy
@@ -87,7 +87,7 @@ class PublishingsController < ApplicationController
       flash[:error] = 'This publication does not exist or you are not authorized to cancel it.'
     end
 
-    redirect_to '/projects'
+    redirect_to('/projects', status: 303)
   end
 
   private

@@ -159,7 +159,7 @@
               <div class="flex flex-wrap gap-2 mt-4 mb-8">
                 <template x-for="(reason, index) in fsr.predefined_reasons">
                   <span
-                    :class=" reason.selected ? 'bg-srdrpurple' : 'bg-white text-black'"
+                    :class=" reason.selected ? 'bg-srdrpurple' : 'bg-white !text-black'"
                     @click="reason.selected = !reason.selected; updateFsr(false)"
                     class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
                     x-text="reason.name"
@@ -305,7 +305,7 @@
                 <div class="flex flex-wrap gap-2 mt-4 mb-8">
                   <template x-for="(tag, index) in fsr.predefined_tags">
                     <span
-                      :class="tag.selected ? 'bg-srdrpurple' : 'bg-white text-black'"
+                      :class="tag.selected ? 'bg-srdrpurple' : 'bg-white !text-black'"
                       @click="tag.selected = !tag.selected; updateFsr(false)"
                       class="text-center drop-shadow select-none cursor-pointer justify-center inline-flex items-center px-1 py-2 rounded-full text-sm text-white font-black"
                       x-text="tag.name"
