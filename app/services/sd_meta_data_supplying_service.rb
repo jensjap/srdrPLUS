@@ -26,7 +26,6 @@ class SdMetaDataSupplyingService
     sd_search_strategy_in_fhir = sd_meta_data.sd_search_strategies.map {|ss| create_search_strategy_fhir_obj(ss)}
     sd_outcome_in_fhir = sd_outcomes.map {|outcome| create_outcome_fhir_obj(outcome)}
     sd_meta_data_in_fhir = create_composition_fhir_obj(sd_meta_data)
-    return sd_meta_data_in_fhir
 
     combination_full_url = pico_full_url.dup + kq_full_url.dup + ss_full_url.dup + outcome_full_url.dup
     combination_full_url.unshift(nil)
@@ -40,7 +39,7 @@ class SdMetaDataSupplyingService
   def create_bundle(fhir_objs, type, link_info=nil, full_urls=nil)
     full_urls ||= []
     valid_objs = fhir_objs.zip(full_urls).each_with_object([]) do |(obj, url), array|
-      array << { 'fullUrl' => url, 'resource' => obj } if obj.valid?
+      array << { 'fullUrl' => url, 'resource' => obj }# if obj.valid?
     end
     FHIR::Bundle.new('type' => type, 'link' => link_info, 'entry' => valid_objs)
   end
@@ -116,18 +115,12 @@ class SdMetaDataSupplyingService
 
     sd_analytic_frameworks = raw.sd_analytic_frameworks&.map { |item| [item['name'], item.sd_meta_data_figures] }
     sd_analytic_frameworks.each do |name, figures|
-      framework_section = add_section(composition, 'Analytic / Conceptual Framework', name)
-      figures.each do |figure|
-        add_section(framework_section, 'Alt Text', figure.alt_text)
-      end
+      process_figures(composition, figures, name)
     end
 
     sd_prisma_flows = raw.sd_prisma_flows&.map { |item| [item['name'], item.sd_meta_data_figures] }
     sd_prisma_flows.each do |name, figures|
-      framework_section = add_section(composition, 'PRISMA / Literature Flow Diagrams', name)
-      figures.each do |figure|
-        add_section(framework_section, 'Alt Text', figure.alt_text)
-      end
+      process_figures(composition, figures, name)
     end
 
     sd_narrative_results = raw.sd_result_items&.map { |item| [item.sd_key_question, item.sd_narrative_results] }
@@ -306,19 +299,41 @@ class SdMetaDataSupplyingService
     section
   end
 
-  def add_url(composition, title, url)
+  def add_related_artifact(composition, type, attributes)
     related_artifact = {
-      'type' => 'supported-with',
+      'type' => type,
       'document' => {
-        'url' => url,
-        'title' => title
+        'url' => attributes[:url],
+        'title' => attributes[:title]
       }
     }
+    related_artifact['label'] = attributes[:label] if attributes[:label]
 
     if composition['relatesTo']
       composition['relatesTo'] << related_artifact
     else
       composition['relatesTo'] = [related_artifact]
+    end
+  end
+
+  def add_url(composition, title, url)
+    add_related_artifact(composition, 'supported-with', { url: url, title: title })
+  end
+
+  def add_picture(composition, label, display, url)
+    add_related_artifact(composition, 'supported-with', { url: url, title: display, label: label })
+  end
+
+  def process_figures(composition, figures, name)
+    figures.each do |figure|
+      process_pictures(composition, figure.pictures, name, figure.alt_text)
+    end
+  end
+
+  def process_pictures(composition, pictures, name, alt_text)
+    pictures.each do |picture|
+      url = Rails.application.routes.url_helpers.rails_blob_url(picture, only_path: false)
+      add_picture(composition, name, alt_text, url)
     end
   end
 
@@ -332,9 +347,7 @@ class SdMetaDataSupplyingService
           entries << {"reference" => "SdOutcome/#{outcome.id}"}
         end
         framework_section = add_section(composition, section_name, result.name, entries)
-        result.sd_meta_data_figures.each do |figure|
-          add_section(framework_section, 'Alt Text', figure.alt_text) if !figure.alt_text.blank?
-        end
+        process_figures(composition, result.sd_meta_data_figures, result.name)
       end
     end
   end
