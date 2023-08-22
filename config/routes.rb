@@ -350,11 +350,15 @@ Rails.application.routes.draw do
   get 'resources' => 'static_pages#resources'
   get 'published_projects' => 'static_pages#published_projects'
 
-  resource :profile, only: %i[show edit update]
   resources :degrees, only: [:index]
   resources :organizations, only: [:index]
   resources :sections, only: [:index]
   resources :imports, only: [:create]
+
+  resource :profile, only: %i[show edit update] do
+    post 'toggle_labels_visibility', on: :member
+    get 'get_labels_visibility', on: :member
+  end
 
   resources :screening_forms, only: [] do
     resources :sf_questions, shallow: true
