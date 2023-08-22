@@ -296,6 +296,7 @@
                     stroke="currentColor"
                     class="w-8 h-5 cursor-pointer"
                     @click="addReasonModal = { on: true, type: 'custom_reasons', action: 'Create' }"
+                    x-show="!options.only_predefined_reasons"
                   >
                     <path
                       stroke-linecap="round"
