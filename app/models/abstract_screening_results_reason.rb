@@ -11,4 +11,14 @@
 class AbstractScreeningResultsReason < ApplicationRecord
   belongs_to :abstract_screening_result
   belongs_to :reason
+
+  after_commit :reindex_asr
+
+  private
+
+  def reindex_asr
+    abstract_screening_result.try(:reindex)
+  rescue StandardError => e
+    Sentry.capture_exception(e)
+  end
 end

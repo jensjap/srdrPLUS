@@ -11,4 +11,14 @@
 class FulltextScreeningResultsReason < ApplicationRecord
   belongs_to :fulltext_screening_result
   belongs_to :reason
+
+  after_commit :reindex_fsr
+
+  private
+
+  def reindex_fsr
+    fulltext_screening_result.try(:reindex)
+  rescue StandardError => e
+    Sentry.capture_exception(e)
+  end
 end
