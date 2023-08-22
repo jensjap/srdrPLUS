@@ -41,7 +41,7 @@
                   id="slide-over-title"
                 >
                   Your Labels (<span
-                    x-text="cps.filter(cp => cp.label !== null).length"
+                    x-text="cps.filter(cp => cp.label !== null).filter(cp => cp.privileged == false).length"
                   ></span
                   >)
                 </h2>

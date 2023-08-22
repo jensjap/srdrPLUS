@@ -40,7 +40,7 @@
       class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-black"
     >
       Your Labels (<span
-        x-text="cps.filter(cp => cp.label !== null).length"
+        x-text="cps.filter(cp => cp.label !== null).filter(cp => cp.privileged == false).length"
       ></span
       >)
     </button>

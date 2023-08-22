@@ -259,7 +259,7 @@ class AbstractScreeningService
     return false unless AbstractScreening::NON_PERPETUAL.include?(abstract_screening.abstract_screening_type)
 
     if abstract_screening.abstract_screening_type == AbstractScreening::PILOT &&
-       (abstract_screening.abstract_screening_results.where(user:).count < abstract_screening.no_of_citations)
+       (abstract_screening.abstract_screening_results.where(user:, privileged: false).count < abstract_screening.no_of_citations)
       return false
     end
 

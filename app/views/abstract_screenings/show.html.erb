@@ -132,7 +132,7 @@
               <div><%= user.handle %></div>
               <div>
                 <!-- prettier-ignore -->
-                (<%= AbstractScreeningResult.where(user:, abstract_screening: @abstract_screening).where("label IS NOT NULL").count %>)
+                (<%= AbstractScreeningResult.where(user:, abstract_screening: @abstract_screening, privileged: false).where("label IS NOT NULL").count %>)
               </div>
             </div>
             <% end %>

@@ -36,7 +36,8 @@ cps = @screened_cps.reverse.map do |asr|
   {
     asr_id: asr.id,
     name: asr.citation.name,
-    label: asr.label
+    label: asr.label,
+    privileged: asr.privileged
   }
 end
 json.cps cps

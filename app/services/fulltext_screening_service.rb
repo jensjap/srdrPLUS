@@ -81,7 +81,7 @@ class FulltextScreeningService
     return false unless FulltextScreening::NON_PERPETUAL.include?(fulltext_screening.fulltext_screening_type)
 
     if fulltext_screening.fulltext_screening_type == FulltextScreening::PILOT &&
-       (fulltext_screening.fulltext_screening_results.where(user:).count < fulltext_screening.no_of_citations)
+       (fulltext_screening.fulltext_screening_results.where(user:, privileged: false).count < fulltext_screening.no_of_citations)
       return false
     end
 

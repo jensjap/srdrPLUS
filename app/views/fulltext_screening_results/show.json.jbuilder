@@ -36,7 +36,8 @@ cps = @screened_cps.reverse.map do |fsr|
     fsr_id: fsr.id,
     name: fsr.citation.name,
     authors: @fulltext_screening.hide_author ? '<hidden>' : fsr.citation.authors,
-    label: fsr.label
+    label: fsr.label,
+    privileged: fsr.privileged
   }
 end
 json.cps cps
