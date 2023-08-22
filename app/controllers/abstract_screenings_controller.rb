@@ -135,7 +135,7 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def show
-    @abstract_screening = AbstractScreening.find(params[:id])
+    @abstract_screening = AbstractScreening.includes(abstract_screening_results: :user).find(params[:id])
     @project = @abstract_screening.project
     authorize(@abstract_screening)
     @projects_user = ProjectsUser.find_by(user: current_user, project: @project)
