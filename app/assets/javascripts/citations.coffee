@@ -14,9 +14,20 @@ document.addEventListener 'DOMContentLoaded', ->
         data.search.search = ""
       "stateDuration": 0,
       "stateSaveCallback": (settings, data) ->
-        localStorage.setItem('DataTables-' + tableKey, JSON.stringify(data))
-      "stateLoadCallback": (settings) ->
-        return JSON.parse(localStorage.getItem('DataTables-'+ tableKey))
+        fetch('/profile/storage', {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            body: JSON.stringify({ storage: { "DataTables-#{tableKey}": data } })
+          })
+      "stateLoadCallback": (settings, cb) ->
+        fetch('/profile/storage').then((response) -> response.json().then((data) -> cb(data["DataTables-#{tableKey}"])))
+        return undefined
     })
 
 ######### CITATION MANAGEMENT

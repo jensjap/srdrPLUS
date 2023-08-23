@@ -1,5 +1,5 @@
 class ProfilesController < ApplicationController
-  before_action :set_profile, :skip_policy_scope, only: %i[show edit update destroy]
+  before_action :set_profile, :skip_policy_scope, only: %i[show edit update destroy read_storage set_storage]
   before_action :call_authorize
 
   # GET /profile
@@ -26,6 +26,22 @@ class ProfilesController < ApplicationController
         format.json { render json: @profile.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def read_storage
+    render json: @profile.storage, status: 200
+  end
+
+  def set_storage
+    begin
+      old_storage = JSON.parse(@profile.storage)
+    rescue StandardError => e
+      old_storage = {}
+    end
+
+    new_storage = old_storage.merge(request.parameters[:storage])
+    @profile.update(storage: new_storage.to_json)
+    render json: new_storage, status: 200
   end
 
   private

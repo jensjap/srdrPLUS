@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_08_051817) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_23_071254) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1165,6 +1165,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_08_051817) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "projects_paginate_per"
+    t.text "storage"
     t.index ["organization_id"], name: "index_profiles_on_organization_id"
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
     t.index ["username"], name: "index_profiles_on_username", unique: true
@@ -1349,7 +1350,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_08_051817) do
   end
 
   create_table "reasons", id: :integer, charset: "utf8mb3", force: :cascade do |t|
-    t.string "name", limit: 1000
+    t.string "name", limit: 1000, collation: "utf8mb4_bin"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "label_type_id"
