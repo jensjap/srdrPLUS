@@ -107,6 +107,6 @@ class ImportsController < ApplicationController
 end
 
 def _check_valid_file_type(file)
-  extension = file.original_filename.match(/(\.[a-z]+$)/i)[0]
+  extension = file.original_filename.match(/(\.[a-z]+$)/i)[0].downcase!
   ['.ris', '.csv', '.txt', '.enw', '.json'].include?(extension)
 end

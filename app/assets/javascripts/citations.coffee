@@ -56,7 +56,7 @@ document.addEventListener 'DOMContentLoaded', ->
           pubmed_type_id = $( "#dropzone-div input#pubmed-file-type-id" ).val()
           json_type_id = $( "#dropzone-div input#json-file-type-id" ).val()
 
-          file_extension = file.name.split('.').pop()
+          file_extension = file.name.split('.').pop().toLowerCase()
           switch
             when file_extension == 'ris'
               file_type_id = ris_type_id
@@ -70,12 +70,16 @@ document.addEventListener 'DOMContentLoaded', ->
             when file_extension == 'json'
               file_type_id = json_type_id
               file_type_name = "JSON File"
-            else
+            when file_extension == 'txt'
               file_type_id = pubmed_type_id
               file_type_name = "PubMed ID List"
+            else
+              toastr.error("ERROR: Unknown file extension. Unable to process.")
+              wrapperThis.removeFile(file)
+              return
 
           if not confirm("This looks like a " + file_type_name + ". Do you wish to continue?")
-            wrapperThis.removeFile(file);
+            wrapperThis.removeFile(file)
 
           formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val())
           formData.append("projects_user_id", $("#dropzone-div").find("#import_projects_user_id").val())
