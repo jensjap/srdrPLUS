@@ -29,7 +29,7 @@ class ProfilesController < ApplicationController
   end
 
   def read_storage
-    render json: @profile.storage, status: 200
+    render json: @profile.storage.blank? ? {} : @profile.storage, status: 200
   end
 
   def set_storage
