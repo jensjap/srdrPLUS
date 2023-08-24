@@ -120,183 +120,185 @@ class ExtractionSupplyingService
       eefpsqrcf_grouped_by_type1 = raw.extractions_extraction_forms_projects_sections_question_row_column_fields.group_by { |item| item["extractions_extraction_forms_projects_sections_type1_id"] }
       eefpsqrcf_grouped_by_type1.each do |eefps_type1_id, eefpsqrcfs|
 
+        all_blank = eefpsqrcf_grouped_by_type1.keys.all?(&:blank?)
+        if eefps_type1_id.blank? && !all_blank
+          next
+        end
+
+        type1_id = all_blank ? 'none' : ExtractionsExtractionFormsProjectsSectionsType1.find(eefps_type1_id).type1.id.to_s
+
         eefps = {
           'status' => status,
-          'id' => '4' + '-' + raw.id.to_s,
+          'id' => "4-#{raw.id}-type1id-#{type1_id}",
           'text' => form.section_label,
           'identifier' => [{
             'type' => {
               'text' => 'SRDR+ Object Identifier'
             },
             'system' => 'https://srdrplus.ahrq.gov/',
-            'value' => 'ExtractionsExtractionFormsProjectsSection/' + raw.id.to_s
+            'value' => "ExtractionsExtractionFormsProjectsSection/#{raw.id}"
           }],
           'contained' => questions,
-          'questionnaire' => '#' + questions.id,
+          'questionnaire' => "##{questions.id}",
           'subject' => {},
           'item' => []
         }
 
-        all_blank = eefpsqrcf_grouped_by_type1.keys.all?(&:blank?)
-        if eefps_type1_id.blank? && !all_blank
-          next
-        else
-          if !all_blank
-            type1 = ExtractionsExtractionFormsProjectsSectionsType1.find(eefps_type1_id).type1
-            type1_display = type1.name + ' (' + type1.description + ')'
-            eefps['subject'] = {
-              'reference' => 'Type1/' + type1.id.to_s,
-              'type' => 'EvidenceVariable',
-              'display' => type1_display
-            }
-          end
-
-          restriction_symbol = ''
-          for eefpsqrcf in eefpsqrcfs do
-            question_row_column_field = eefpsqrcf.question_row_column_field
-            question_row_column_id = question_row_column_field.question_row_column_id
-            question_row_column = QuestionRowColumn.find(question_row_column_id)
-            ans_form = question_row_column.question_row_columns_question_row_column_options
-            question_row_id = question_row_column.question_row_id
-            question_row = QuestionRow.find(question_row_id)
-            question_id = question_row.question_id
-            question = Question.find(question_id)
-            type = question_row_column.question_row_column_type.id
-            value = eefpsqrcf.records[0]['name']
-            if value.is_a?(String) && value.empty?
-              value = nil
-            end
-
-            if not eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.nil?
-              type1 = eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.type1
-            else
-              type1 = nil
-            end
-
-            if not eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.type1_type.nil?
-              type1_type = eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.type1_type
-            else
-              type1_type = nil
-            end
-
-            if value.nil?
-              if type != 9
-                next
-              end
-            else
-              if type != 9
-                item = {
-                  'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
-                }
-              end
-            end
-
-            followups = {}
-            for followup in raw.extractions_extraction_forms_projects_sections_followup_fields do
-              if not followup.records[0]['name'].blank?
-                followups = followups.merge({
-                  FollowupField.find(followup.followup_field_id).question_row_columns_question_row_column_option_id => {
-                    'name' => followup.records[0]['name'],
-                    'id' => followup.followup_field_id
-                  }
-                })
-              end
-            end
-
-            if type == 1
-              item['answer'] = {
-                'valueString' => value
-              }
-              eefps['item'].append(item)
-            elsif type == 2
-              if /-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?/.match(value)
-                item['answer'] = {
-                  'valueDecimal' => value
-                }
-                eefps['item'].append(item)
-                unless restriction_symbol.empty?
-                  symbol_item = {
-                    'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s,
-                    'answer' => {
-                      'valueString' => restriction_symbol
-                    }
-                  }
-                  eefps['item'].append(symbol_item)
-                end
-                restriction_symbol = ''
-              else
-                restriction_symbol = value
-              end
-            elsif type == 5
-              matches = value.scan(/\D*(\d+)\D*/)
-              for match in matches do
-                checkbox_id = match[0].to_i
-                name = ans_form.find(checkbox_id)['name']
-                item['answer'] = {
-                  'valueString' => name
-                }
-
-                if followups.has_key?(checkbox_id)
-                  followup_item = {}
-                  followup_item['linkId'] = item['linkId'] + '-' + followups[checkbox_id]['id'].to_s
-                  followup_item['answer'] = {
-                    'valueString' => followups[checkbox_id]['name']
-                  }
-                  item['item'] = followup_item
-                else
-                  item['item'] = []
-                end
-
-                eefps['item'].append(item.dup)
-              end
-            elsif type == 6
-              name = ans_form.find(value)['name']
-              item['answer'] = {
-                'valueString' => name
-              }
-              eefps['item'].append(item)
-            elsif type == 7
-              name = ans_form.find(value)['name']
-              item['answer'] = {
-                'valueString' => name
-              }
-              eefps['item'].append(item)
-              if followups.has_key?(value.to_i)
-                followup_item = {}
-                followup_item['linkId'] = item['linkId'] + '-' + followups[value.to_i]['id'].to_s
-                followup_item['answer'] = {
-                  'valueString' => followups[value.to_i]['name']
-                }
-                eefps['item'].append(followup_item)
-              end
-            elsif type == 8
-              name = ans_form.find(value)['name']
-              item['answer'] = {
-                'valueString' => name
-              }
-              eefps['item'].append(item)
-            elsif type == 9
-              for dicts in eefpsqrcf.extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options do
-                item = {
-                  'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
-                }
-                value = dicts.question_row_columns_question_row_column_option_id
-                name = ans_form.find(value)['name']
-                item['answer'] = {
-                  'valueString' => name
-                }
-                eefps['item'].append(item)
-              end
-              item = {}
-            end
-          end
-
-          if eefps['item'].empty?
-            next
-          end
-
-          eefpss.append(FHIR::QuestionnaireResponse.new(eefps))
+        unless all_blank
+          type1 = ExtractionsExtractionFormsProjectsSectionsType1.find(eefps_type1_id).type1
+          type1_display = "#{type1.name} (#{type1.description})"
+          eefps['subject'] = {
+            'reference' => "Type1/#{type1_id}",
+            'type' => 'EvidenceVariable',
+            'display' => type1_display
+          }
         end
+
+        restriction_symbol = ''
+        for eefpsqrcf in eefpsqrcfs do
+          question_row_column_field = eefpsqrcf.question_row_column_field
+          question_row_column_id = question_row_column_field.question_row_column_id
+          question_row_column = QuestionRowColumn.find(question_row_column_id)
+          ans_form = question_row_column.question_row_columns_question_row_column_options
+          question_row_id = question_row_column.question_row_id
+          question_row = QuestionRow.find(question_row_id)
+          question_id = question_row.question_id
+          question = Question.find(question_id)
+          type = question_row_column.question_row_column_type.id
+          value = eefpsqrcf.records[0]['name']
+          if value.is_a?(String) && value.empty?
+            value = nil
+          end
+
+          if not eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.nil?
+            type1 = eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.type1
+          else
+            type1 = nil
+          end
+
+          if not eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.type1_type.nil?
+            type1_type = eefpsqrcf.extractions_extraction_forms_projects_sections_type1&.type1_type
+          else
+            type1_type = nil
+          end
+
+          if value.nil?
+            if type != 9
+              next
+            end
+          else
+            if type != 9
+              item = {
+                'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
+              }
+            end
+          end
+
+          followups = {}
+          for followup in raw.extractions_extraction_forms_projects_sections_followup_fields do
+            if not followup.records[0]['name'].blank?
+              followups = followups.merge({
+                FollowupField.find(followup.followup_field_id).question_row_columns_question_row_column_option_id => {
+                  'name' => followup.records[0]['name'],
+                  'id' => followup.followup_field_id
+                }
+              })
+            end
+          end
+
+          if type == 1
+            item['answer'] = {
+              'valueString' => value
+            }
+            eefps['item'].append(item)
+          elsif type == 2
+            if /-?(0|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?/.match(value)
+              item['answer'] = {
+                'valueDecimal' => value
+              }
+              eefps['item'].append(item)
+              unless restriction_symbol.empty?
+                symbol_item = {
+                  'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s,
+                  'answer' => {
+                    'valueString' => restriction_symbol
+                  }
+                }
+                eefps['item'].append(symbol_item)
+              end
+              restriction_symbol = ''
+            else
+              restriction_symbol = value
+            end
+          elsif type == 5
+            matches = value.scan(/\D*(\d+)\D*/)
+            for match in matches do
+              checkbox_id = match[0].to_i
+              name = ans_form.find(checkbox_id)['name']
+              item['answer'] = {
+                'valueString' => name
+              }
+
+              if followups.has_key?(checkbox_id)
+                followup_item = {}
+                followup_item['linkId'] = item['linkId'] + '-' + followups[checkbox_id]['id'].to_s
+                followup_item['answer'] = {
+                  'valueString' => followups[checkbox_id]['name']
+                }
+                item['item'] = followup_item
+              else
+                item['item'] = []
+              end
+
+              eefps['item'].append(item.dup)
+            end
+          elsif type == 6
+            name = ans_form.find(value)['name']
+            item['answer'] = {
+              'valueString' => name
+            }
+            eefps['item'].append(item)
+          elsif type == 7
+            name = ans_form.find(value)['name']
+            item['answer'] = {
+              'valueString' => name
+            }
+            eefps['item'].append(item)
+            if followups.has_key?(value.to_i)
+              followup_item = {}
+              followup_item['linkId'] = item['linkId'] + '-' + followups[value.to_i]['id'].to_s
+              followup_item['answer'] = {
+                'valueString' => followups[value.to_i]['name']
+              }
+              eefps['item'].append(followup_item)
+            end
+          elsif type == 8
+            name = ans_form.find(value)['name']
+            item['answer'] = {
+              'valueString' => name
+            }
+            eefps['item'].append(item)
+          elsif type == 9
+            for dicts in eefpsqrcf.extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options do
+              item = {
+                'linkId' => question.pos.to_s + '-' + question_id.to_s + '-' + question_row_id.to_s + '-' + question_row_column_id.to_s
+              }
+              value = dicts.question_row_columns_question_row_column_option_id
+              name = ans_form.find(value)['name']
+              item['answer'] = {
+                'valueString' => name
+              }
+              eefps['item'].append(item)
+            end
+            item = {}
+          end
+        end
+
+        if eefps['item'].empty?
+          next
+        end
+
+        eefpss.append(FHIR::QuestionnaireResponse.new(eefps))
       end
 
       if eefpss.empty?
