@@ -18,6 +18,14 @@ class ProfilePolicy < ApplicationPolicy
     record.user.eql?(user)
   end
 
+  def read_storage?
+    record.user.eql?(user)
+  end
+
+  def set_storage?
+    record.user.eql?(user)
+  end
+
   def toggle_labels_visibility?
     record.user.eql?(user)
   end
