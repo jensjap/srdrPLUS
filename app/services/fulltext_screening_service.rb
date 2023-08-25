@@ -32,7 +32,8 @@ class FulltextScreeningService
     FulltextScreeningResult.find_by(
       fulltext_screening:,
       user:,
-      label: nil
+      label: nil,
+      privileged: false
     )
   end
 
@@ -71,11 +72,24 @@ class FulltextScreeningService
   end
 
   def self.other_users_screened_citation_ids(fulltext_screening, user)
-    fulltext_screening.fulltext_screening_results.where.not(user:).map(&:citation).map(&:id)
+    fulltext_screening
+      .fulltext_screening_results
+      .includes(citations_project: :citation)
+      .where(privileged: false)
+      .where
+      .not(user:)
+      .map(&:citation)
+      .map(&:id)
   end
 
   def self.user_screened_citation_ids(fulltext_screening, user)
-    fulltext_screening.fulltext_screening_results.where(user:).map(&:citation).map(&:id)
+    fulltext_screening
+      .fulltext_screening_results
+      .includes(citations_project: :citation)
+      .where(privileged: false)
+      .where(user:)
+      .map(&:citation)
+      .map(&:id)
   end
 
   def self.project_screened_citation_ids(project)
