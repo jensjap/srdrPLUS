@@ -17,4 +17,12 @@ class ProfilePolicy < ApplicationPolicy
   def update?
     record.user.eql?(user)
   end
+
+  def toggle_labels_visibility?
+    record.user.eql?(user)
+  end
+
+  def get_labels_visibility?
+    record.user.eql?(user)
+  end
 end
