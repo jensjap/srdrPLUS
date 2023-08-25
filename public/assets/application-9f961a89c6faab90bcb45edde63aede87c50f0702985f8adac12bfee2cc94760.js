@@ -66084,7 +66084,7 @@ function __guardMethod__(obj, methodName, transform) {
             endnote_type_id = $("#dropzone-div input#endnote-file-type-id").val();
             pubmed_type_id = $("#dropzone-div input#pubmed-file-type-id").val();
             json_type_id = $("#dropzone-div input#json-file-type-id").val();
-            file_extension = file.name.split('.').pop();
+            file_extension = file.name.split('.').pop().toLowerCase();
             switch (false) {
               case file_extension !== 'ris':
                 file_type_id = ris_type_id;
@@ -66102,9 +66102,14 @@ function __guardMethod__(obj, methodName, transform) {
                 file_type_id = json_type_id;
                 file_type_name = "JSON File";
                 break;
-              default:
+              case file_extension !== 'txt':
                 file_type_id = pubmed_type_id;
                 file_type_name = "PubMed ID List";
+                break;
+              default:
+                toastr.error("ERROR: Unknown file extension. Unable to process.");
+                wrapperThis.removeFile(file);
+                return;
             }
             if (!confirm("This looks like a " + file_type_name + ". Do you wish to continue?")) {
               wrapperThis.removeFile(file);
