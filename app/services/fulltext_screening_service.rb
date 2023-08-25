@@ -15,12 +15,17 @@ class FulltextScreeningService
     end
   end
 
-  def self.find_or_create_fsr(fulltext_screening, user)
+  def self.find_or_create_unprivileged_fsr(fulltext_screening, user)
     citation_id = find_citation_id(fulltext_screening, user)
     return nil if citation_id.nil?
 
     cp = CitationsProject.find_by(project: fulltext_screening.project, citation_id:)
-    FulltextScreeningResult.find_or_create_by!(fulltext_screening:, user:, citations_project: cp)
+    FulltextScreeningResult.find_or_create_by!(
+      fulltext_screening:,
+      user:,
+      citations_project: cp,
+      privileged: false
+    )
   end
 
   def self.find_unfinished_fsr(fulltext_screening, user)

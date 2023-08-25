@@ -121,7 +121,7 @@ class AbstractScreeningsController < ApplicationController
               elsif params[:asr_id]
                 AbstractScreeningResult.find_by(id: params[:asr_id])
               else
-                AbstractScreeningService.find_or_create_asr(@abstract_screening, current_user)
+                AbstractScreeningService.find_or_create_unprivileged_asr(@abstract_screening, current_user)
               end
 
         return render json: { asr_id: nil } if asr && asr.user != current_user

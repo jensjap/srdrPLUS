@@ -47,6 +47,10 @@ class AbstractScreeningService
   end
 
   def self.find_citation_id(abstract_screening, user)
+    #!!! TODO: consider the following scenario:
+    #          unfinished_asr exists, but before it is finished
+    #          citations_project.screening_status changes via
+    #          some other mechanism.
     unfinished_asr = find_unfinished_asr(abstract_screening, user)
     return unfinished_asr.citation.id if unfinished_asr
 
@@ -66,7 +70,7 @@ class AbstractScreeningService
     end
   end
 
-  def self.find_or_create_asr(abstract_screening, user)
+  def self.find_or_create_unprivileged_asr(abstract_screening, user)
     citation_id = find_citation_id(abstract_screening, user)
     return nil if citation_id.nil?
 
