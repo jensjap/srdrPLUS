@@ -1,5 +1,5 @@
 class ProfilesController < ApplicationController
-  before_action :set_profile, :skip_policy_scope, only: %i[show edit update destroy read_storage set_storage]
+  before_action :set_profile, :skip_policy_scope, only: %i[show edit update destroy read_storage set_storage toggle_labels_visibility get_labels_visibility]
   before_action :call_authorize
 
   # GET /profile
@@ -49,6 +49,20 @@ class ProfilesController < ApplicationController
     render json: new_storage, status: 200
   end
 
+  def toggle_labels_visibility
+    respond_to do |format|
+      if @profile.update(conflict_resolution_label_visibility: params[:show_all_labels])
+        format.json { head :no_content }
+      else
+        format.json { render json: @profile.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def get_labels_visibility
+    render json: { show_all_labels: @profile.conflict_resolution_label_visibility }
+  end
+
   private
 
   def call_authorize
@@ -75,6 +89,7 @@ class ProfilesController < ApplicationController
         :organization_id,
         :abstrackr_setting_id,
         :organization_id,
+        :conflict_resolution_label_visibility,
         degree_ids: []
       )
   end

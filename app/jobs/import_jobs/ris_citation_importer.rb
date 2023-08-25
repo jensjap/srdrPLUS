@@ -11,12 +11,17 @@ module ImportJobs::RisCitationImporter
                   .download
                   .gsub('"', "'")
 
+    # BOM sucks!
+    file_string.force_encoding('utf-8').gsub!(/\xEF\xBB\xBF/, '')
+    file_string.force_encoding('utf-8').gsub!(/<feff>/, '')
+
     return false unless file_string
 
     preview_citations = []
     h_arr = []
     successful_refman_arr = []
     failed_refman_arr = []
+
     parser.parse(file_string).each do |cit_h|
       h_arr << get_row_hash(cit_h, key_counter)
       # CITATION_BATCH_SIZE is defined in config/initializers/sidekiq.rb
