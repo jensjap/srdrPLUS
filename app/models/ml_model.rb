@@ -12,6 +12,7 @@ class MlModel < ApplicationRecord
   has_many :projects, through: :ml_models_projects
   has_many :model_performances
   has_many :model_predictions
+  has_many :training_data_infos
 
   validates :timestamp, presence: true
 

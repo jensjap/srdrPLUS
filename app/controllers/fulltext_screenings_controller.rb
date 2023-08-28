@@ -16,7 +16,7 @@ class FulltextScreeningsController < ApplicationController
     authorize(@fulltext_screening)
     if @fulltext_screening.save
       flash[:notice] = 'Screening was successfully created'
-      redirect_to project_fulltext_screenings_path(@project)
+      redirect_to(project_fulltext_screenings_path(@project), status: 303)
     else
       flash[:now] = @fulltext_screening.errors.full_messages.join(',')
       render :new
@@ -31,7 +31,7 @@ class FulltextScreeningsController < ApplicationController
     else
       flash[:error] = 'The screening could not be deleted.'
     end
-    redirect_to project_fulltext_screenings_path(@fulltext_screening.project)
+    redirect_to(project_fulltext_screenings_path(@fulltext_screening.project), status: 303)
   end
 
   def edit
@@ -61,7 +61,7 @@ class FulltextScreeningsController < ApplicationController
 
         return render json: { fsr_id: nil } if fsr && fsr.user != current_user
 
-        fsr ||= FulltextScreeningService.find_or_create_fsr(fs, current_user)
+        fsr ||= FulltextScreeningService.find_or_create_unprivileged_fsr(fs, current_user)
         render json: { fsr_id: fsr&.id }
       end
       format.html do
@@ -105,7 +105,7 @@ class FulltextScreeningsController < ApplicationController
     authorize(@fulltext_screening)
     if @fulltext_screening.update(fulltext_screening_params)
       flash[:notice] = 'Screening was successfully updated'
-      redirect_to project_fulltext_screenings_path(@project)
+      redirect_to(project_fulltext_screenings_path(@project), status: 303)
     else
       flash[:now] = @fulltext_screening.errors.full_messages.join(',')
       render :edit

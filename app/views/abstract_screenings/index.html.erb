@@ -123,11 +123,11 @@
                   </td>
                   <td class="px-3 text-sm text-gray-500">
                     <!-- prettier-ignore -->
-                    <% users = as.abstract_screening_results.map(&:user) %>
+                    <% users = as.abstract_screening_results.includes(user: :profile).map(&:user) %>
                     <% users += as.users.to_a if as.exclusive_users %>
                     <% users.uniq.each do |user| %>
                     <!-- prettier-ignore -->
-                    <div><%= user.handle %> (<%= AbstractScreeningResult.where(user:, abstract_screening: as).where("label IS NOT NULL").count %>)</div>
+                    <div><%= user.handle %> (<%= AbstractScreeningResult.where(user:, abstract_screening: as, privileged: false).where("label IS NOT NULL").count %>)</div>
                     <% end %>
                   </td>
                   <td class="px-3 text-sm text-gray-500">
@@ -173,18 +173,6 @@
                       focus:outline-none focus:ring-2 focus:ring-indigo-500
                       focus:ring-offset-2 hover:no-underline hover:text-white") do %>
                       <div>Resolve Conflicts</div>
-                      <div class="text-xs">(Don't Show Labels)</div>
-                      <% end %>
-                      <!-- prettier-ignore -->
-                      <%= link_to(abstract_screening_screen_path(as,
-                      { resolution_mode: true, show_all_labels: true }), class: "w-full items-center
-                      justify-center rounded-md border border-transparent
-                      bg-srdrpurple px-4 py-2 my-1 text-center text-sm
-                      font-medium text-white shadow-sm hover:bg-srdrpurple-light
-                      focus:outline-none focus:ring-2 focus:ring-indigo-500
-                      focus:ring-offset-2 hover:no-underline hover:text-white") do %>
-                      <div>Resolve Conflicts</div>
-                      <div class="text-xs">(Show All Labels)</div>
                       <% end %>
                     </div>
                     <% else %>

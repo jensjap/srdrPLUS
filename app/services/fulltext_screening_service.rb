@@ -15,19 +15,25 @@ class FulltextScreeningService
     end
   end
 
-  def self.find_or_create_fsr(fulltext_screening, user)
+  def self.find_or_create_unprivileged_fsr(fulltext_screening, user)
     citation_id = find_citation_id(fulltext_screening, user)
     return nil if citation_id.nil?
 
     cp = CitationsProject.find_by(project: fulltext_screening.project, citation_id:)
-    FulltextScreeningResult.find_or_create_by!(fulltext_screening:, user:, citations_project: cp)
+    FulltextScreeningResult.find_or_create_by!(
+      fulltext_screening:,
+      user:,
+      citations_project: cp,
+      privileged: false
+    )
   end
 
   def self.find_unfinished_fsr(fulltext_screening, user)
     FulltextScreeningResult.find_by(
       fulltext_screening:,
       user:,
-      label: nil
+      label: nil,
+      privileged: false
     )
   end
 
@@ -66,11 +72,24 @@ class FulltextScreeningService
   end
 
   def self.other_users_screened_citation_ids(fulltext_screening, user)
-    fulltext_screening.fulltext_screening_results.where.not(user:).map(&:citation).map(&:id)
+    fulltext_screening
+      .fulltext_screening_results
+      .includes(citations_project: :citation)
+      .where(privileged: false)
+      .where
+      .not(user:)
+      .map(&:citation)
+      .map(&:id)
   end
 
   def self.user_screened_citation_ids(fulltext_screening, user)
-    fulltext_screening.fulltext_screening_results.where(user:).map(&:citation).map(&:id)
+    fulltext_screening
+      .fulltext_screening_results
+      .includes(citations_project: :citation)
+      .where(privileged: false)
+      .where(user:)
+      .map(&:citation)
+      .map(&:id)
   end
 
   def self.project_screened_citation_ids(project)
@@ -81,7 +100,7 @@ class FulltextScreeningService
     return false unless FulltextScreening::NON_PERPETUAL.include?(fulltext_screening.fulltext_screening_type)
 
     if fulltext_screening.fulltext_screening_type == FulltextScreening::PILOT &&
-       (fulltext_screening.fulltext_screening_results.where(user:).count < fulltext_screening.no_of_citations)
+       (fulltext_screening.fulltext_screening_results.where(user:, privileged: false).count < fulltext_screening.no_of_citations)
       return false
     end
 

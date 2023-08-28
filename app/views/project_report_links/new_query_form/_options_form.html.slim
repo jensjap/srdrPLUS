@@ -2,9 +2,6 @@
   div No questions found. Please make another selection.
   = link_to('Go Back', project_report_links_path)
 - else
-  #export-to-gdrive-url.div.hide
-    = export_to_gdrive_project_url project.id
-
   div#project-ids.grid-x.grid-padding-x data-key-question-project-ids="#{key_question_project_ids}"
     div.cell.small-12
       div.button.success.start-query style="float: right; margin-left: 10px;" Start Query

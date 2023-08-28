@@ -82,9 +82,12 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
     authorize(@extraction_forms_projects_section)
 
     @extraction_forms_projects_section.type1s.destroy(Type1.find(dissociate_type1_params[1]))
-    redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                    'panel-tab': @extraction_forms_projects_section.id),
-                notice: t('success')
+    redirect_to(
+      build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
+                                          'panel-tab': @extraction_forms_projects_section.id),
+      notice: t('success'),
+      status: 303
+    )
   end
 
   def add_quality_dimension
@@ -92,13 +95,17 @@ class ExtractionFormsProjectsSectionsController < ApplicationController
 
     if @extraction_forms_projects_section.section.name == 'Risk of Bias Assessment'
       ExtractionFormsProjectsSection.add_quality_dimension_by_questions_or_section(params.require(%i[id a_qdqId]))
-      redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                      'panel-tab': @extraction_forms_projects_section.id),
-                  notice: t('success')
+      redirect_to(
+        build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project, 'panel-tab': @extraction_forms_projects_section.id),
+        notice: t('success'), status: 303
+      )
     else
-      redirect_to build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
-                                                      'panel-tab': @extraction_forms_projects_section.id),
-                  alert: t('failure')
+      redirect_to(
+        build_extraction_forms_project_path(@extraction_forms_projects_section.extraction_forms_project,
+                                            'panel-tab': @extraction_forms_projects_section.id),
+        alert: t('failure'),
+        status: 303
+      )
     end
   end
 

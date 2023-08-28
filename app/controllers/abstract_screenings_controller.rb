@@ -15,7 +15,7 @@ class AbstractScreeningsController < ApplicationController
     authorize(@abstract_screening)
     if @abstract_screening.save
       flash[:notice] = 'Screening was successfully created'
-      redirect_to project_abstract_screenings_path(@project)
+      redirect_to(project_abstract_screenings_path(@project), status: 303)
     else
       flash[:now] = @abstract_screening.errors.full_messages.join(',')
       render :new
@@ -62,23 +62,34 @@ class AbstractScreeningsController < ApplicationController
 
   def export_screening_data
     authorize(@project, policy_class: AbstractScreeningPolicy)
-    respond_to do |format|
-      format.xlsx do
-        response.headers['Content-Disposition'] =
-          "attachment; filename=\"screening_data_export_of_project_id_#{@project.id}.xlsx\""
-      end
-    end
+    ScreeningDataExportJob.set(wait: 5.second).perform_later(current_user.email, @project.id)
+    Event.create(
+      sent: current_user.email,
+      action: 'Export Screening Data',
+      resource: @project.class.to_s,
+      resource_id: @project.id,
+      notes: ''
+    )
+    redirect_back(
+      fallback_location: project_path(@project),
+      notice: 'Your export is being processed.  You will be notified via email when it is completed.',
+      status: 303
+    )
   end
 
   def destroy
-    @abstract_screening = AbstractScreening.find(params[:id])
-    authorize(@abstract_screening)
-    if @abstract_screening.destroy
-      flash[:success] = 'The abstract screening was deleted.'
-    else
-      flash[:error] = 'The abstract screening could not be deleted.'
+    respond_to do |format|
+      format.html do
+        @abstract_screening = AbstractScreening.find(params[:id])
+        authorize(@abstract_screening)
+        if @abstract_screening.destroy
+          flash[:success] = 'The abstract screening was deleted.'
+        else
+          flash[:error] = 'The abstract screening could not be deleted.'
+        end
+        redirect_to(project_abstract_screenings_path(@abstract_screening.project))
+      end
     end
-    redirect_to project_abstract_screenings_path(@abstract_screening.project)
   end
 
   def edit
@@ -110,7 +121,7 @@ class AbstractScreeningsController < ApplicationController
               elsif params[:asr_id]
                 AbstractScreeningResult.find_by(id: params[:asr_id])
               else
-                AbstractScreeningService.find_or_create_asr(@abstract_screening, current_user)
+                AbstractScreeningService.find_or_create_unprivileged_asr(@abstract_screening, current_user)
               end
 
         return render json: { asr_id: nil } if asr && asr.user != current_user
@@ -124,7 +135,7 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def show
-    @abstract_screening = AbstractScreening.find(params[:id])
+    @abstract_screening = AbstractScreening.includes(abstract_screening_results: :user).find(params[:id])
     @project = @abstract_screening.project
     authorize(@abstract_screening)
     @projects_user = ProjectsUser.find_by(user: current_user, project: @project)
@@ -159,7 +170,7 @@ class AbstractScreeningsController < ApplicationController
     authorize(@abstract_screening)
     if @abstract_screening.update(abstract_screening_params)
       flash[:notice] = 'Screening was successfully updated'
-      redirect_to project_abstract_screenings_path(@project)
+      redirect_to(project_abstract_screenings_path(@project), status: 303)
     else
       flash[:now] = @abstract_screening.errors.full_messages.join(',')
       render :edit

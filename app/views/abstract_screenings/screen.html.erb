@@ -21,7 +21,7 @@
   >
     <a
       href="<%= abstract_screening_path(params[:abstract_screening_id]) %>"
-      class="cursor-pointer z-[5] absolute top-4 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+      class="cursor-pointer z-[5] absolute top-4 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-black hover:no-underline hover:text-black"
     >
       <span class="sr-only">Close menu</span>
       <!-- Heroicon name: outline/x -->
@@ -29,7 +29,7 @@
     </a>
     <button
       type="button"
-      :class="desktop ? 'hidden' : 'cursor-pointer z-[5] absolute top-14 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500'"
+      :class="desktop ? 'hidden' : 'cursor-pointer z-[5] absolute top-14 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-black'"
       @click="word_weight_menu = !word_weight_menu"
     >
       <span class="sr-only">Word weights</span>
@@ -37,9 +37,12 @@
     </button>
     <button
       @click="historyPanel = true"
-      class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+      class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-black"
     >
-      Past Labels
+      Your Labels (<span
+        x-text="cps.filter(cp => cp.label !== null).filter(cp => cp.privileged == false).length"
+      ></span
+      >)
     </button>
     <div class="h-24 mr-44 overflow-y-auto flex items-center">
       <div
@@ -93,14 +96,30 @@
           x-text="citation.journal_meta_info"
         ></div>
         <hr />
-        <div x-cloak x-show="show_all_labels" class="px-8 leading-5 text-xs">
+
+        <button 
+          x-show="resolutionMode"
+          style="width: 200px;"
+          class="text-center mb-2 inline-flex items-center justify-center rounded-md border border-transparent bg-purple-900 opacity-80 px-4 py-2 text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
+          x-on:click="toggleLabelsVisibility()"
+        >See Labels</button>
+
+        <div x-cloak x-show="resolutionMode && show_all_labels" class="px-8 leading-5 text-xs">
           <h5 class="text-sm font-bold">All Labels</h5>
-          <template x-for="label in all_labels">
+          <div class="flex">
+            <div class="w-1/6 border">timestamp</div>
+            <div class="w-1/6 border">username</div>
+            <div class="w-1/6 border">label</div>
+            <div class="w-1/6 border">tags</div>
+            <div class="w-1/6 border">reason(s)</div>
+            <div class="w-1/6 border">notes</div>
+          </div>
+          <template x-for="label in all_labels.filter(item => !item.privileged)">
             <div class="flex">
-              <div class="w-1/4 border" x-text="label.updated_at"></div>
-              <div class="w-1/4 border" x-text="label.user_handle"></div>
+              <div class="w-1/6 border" x-text="label.updated_at"></div>
+              <div class="w-1/6 border" x-text="label.user_handle"></div>
               <div
-                class="w-1/4 border"
+                class="w-1/6 border"
                 :class="{
                   '!bg-green-300': label.label == 1,
                   '!bg-red-300': label.label == -1,
@@ -108,10 +127,9 @@
                 }"
                 x-text="{ null: 'Unlabeled', '-1': 'Rejected', 0: 'Maybe', 1: 'Accepted' }[label.label]"
               ></div>
-              <div
-                class="w-1/4 border"
-                x-text="{ true: 'Privileged', false: 'Unprivileged' }[label.privileged]"
-              ></div>
+              <div class="w-1/6 border" x-text="label.tags"></div>
+              <div class="w-1/6 border" x-text="label.reasons"></div>
+              <div class="w-1/6 border" x-text="label.notes"></div>
             </div>
           </template>
         </div>
@@ -280,9 +298,7 @@
       resolutionMode:
         new URL(window.location.href).searchParams.get("resolution_mode") ==
         "true",
-      show_all_labels:
-        new URL(window.location.href).searchParams.get("show_all_labels") ==
-        "true",
+      show_all_labels: false,
 
       init() {
         const url = new URL(window.location.href);
@@ -299,6 +315,13 @@
             that.desktop = false;
           }
         }
+
+        fetch('/profile/get_labels_visibility')
+          .then(response => response.json())
+          .then(data => {
+            this.show_all_labels = data.show_all_labels;
+          });
+
         handleDeviceChange(smallDevice);
       },
 
@@ -570,13 +593,20 @@
         }
       },
 
-      paste_textarea_keywords_and_phrases() {
+      async paste_textarea_keywords_and_phrases() {
         this.textarea_keywords_and_phrases = Object.keys(this.word_weights)
           .sort()
           .map((word) => {
             return word + " " + this.word_weights[word].weight;
           })
           .join("\n");
+        try {
+          await navigator.clipboard.writeText(
+            this.textarea_keywords_and_phrases
+          );
+        } catch (err) {
+          alert("Your browser doesn't allow copying into your clipboard.");
+        }
       },
 
       processWeights(sourceKey, destinationKey) {
@@ -671,6 +701,17 @@
         this.confirmationModalLabel = label;
         this.confirmationModalText = this.confirmationModalTexts[label];
         this.confirmationModal = true;
+      },
+
+      toggleLabelsVisibility() {
+        this.show_all_labels = !this.show_all_labels;
+
+        fetch(`/profile/toggle_labels_visibility?show_all_labels=${this.show_all_labels}`, {
+          method: 'POST',
+          headers: {
+            'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content
+          }
+        });
       },
 
       async sendWw(word, weight, id, destroy) {

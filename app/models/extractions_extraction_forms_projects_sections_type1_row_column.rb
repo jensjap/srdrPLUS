@@ -7,10 +7,13 @@
 #  timepoint_name_id                                           :integer
 #  created_at                                                  :datetime         not null
 #  updated_at                                                  :datetime         not null
+#  pos                                                         :integer          default(999999)
 #
 
 # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1RowColumn. This is meant to be Outcome Timepoint.
 class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationRecord
+  default_scope { order(:pos, :id) }
+
   after_commit :ensure_timepoints_across_populations, on: %i[create update]
   after_commit :set_extraction_stale, on: %i[create update destroy]
 
@@ -90,9 +93,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
   end
 
   def remove_wac
-    if try(:comparable_element)
-      wac = try(:comparable_element).comparates.first.comparate_group.comparison
-      wac.destroy
-    end
+    return unless try(:comparable_element)
+
+    wac = try(:comparable_element).comparates.first.comparate_group.comparison
+    wac.destroy
   end
 end

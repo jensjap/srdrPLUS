@@ -66042,10 +66042,31 @@ function __guardMethod__(obj, methodName, transform) {
         },
         "stateDuration": 0,
         "stateSaveCallback": function(settings, data) {
-          return localStorage.setItem('DataTables-' + tableKey, JSON.stringify(data));
+          var obj;
+          return fetch('/profile/storage', {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']").content
+            },
+            body: JSON.stringify({
+              storage: (
+                obj = {},
+                obj["DataTables-" + tableKey] = data,
+                obj
+              )
+            })
+          });
         },
-        "stateLoadCallback": function(settings) {
-          return JSON.parse(localStorage.getItem('DataTables-' + tableKey));
+        "stateLoadCallback": function(settings, cb) {
+          fetch('/profile/storage').then(function(response) {
+            return response.json().then(function(data) {
+              return cb(data["DataTables-" + tableKey]);
+            });
+          });
+          return void 0;
         }
       });
       if ($('body.citations.index').length === 0) {
@@ -66084,7 +66105,7 @@ function __guardMethod__(obj, methodName, transform) {
             endnote_type_id = $("#dropzone-div input#endnote-file-type-id").val();
             pubmed_type_id = $("#dropzone-div input#pubmed-file-type-id").val();
             json_type_id = $("#dropzone-div input#json-file-type-id").val();
-            file_extension = file.name.split('.').pop();
+            file_extension = file.name.split('.').pop().toLowerCase();
             switch (false) {
               case file_extension !== 'ris':
                 file_type_id = ris_type_id;
@@ -66102,9 +66123,14 @@ function __guardMethod__(obj, methodName, transform) {
                 file_type_id = json_type_id;
                 file_type_name = "JSON File";
                 break;
-              default:
+              case file_extension !== 'txt':
                 file_type_id = pubmed_type_id;
                 file_type_name = "PubMed ID List";
+                break;
+              default:
+                toastr.error("ERROR: Unknown file extension. Unable to process.");
+                wrapperThis.removeFile(file);
+                return;
             }
             if (!confirm("This looks like a " + file_type_name + ". Do you wish to continue?")) {
               wrapperThis.removeFile(file);
@@ -66790,10 +66816,31 @@ function __guardMethod__(obj, methodName, transform) {
         },
         "stateDuration": 0,
         "stateSaveCallback": function(settings, data) {
-          return localStorage.setItem('DataTables-' + tableKey, JSON.stringify(data));
+          var obj;
+          return fetch('/profile/storage', {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']").content
+            },
+            body: JSON.stringify({
+              storage: (
+                obj = {},
+                obj["DataTables-" + tableKey] = data,
+                obj
+              )
+            })
+          });
         },
-        "stateLoadCallback": function(settings) {
-          return JSON.parse(localStorage.getItem('DataTables-' + tableKey));
+        "stateLoadCallback": function(settings, cb) {
+          fetch('/profile/storage').then(function(response) {
+            return response.json().then(function(data) {
+              return cb(data["DataTables-" + tableKey]);
+            });
+          });
+          return void 0;
         }
       });
       dt.draw();
@@ -69169,26 +69216,6 @@ const attachOrderable = (orderable) => {
     },
     onStart: (e) => {
       savedState = $(e.item).parent(".orderable-list").sortable("toArray");
-    },
-    store: {
-      /**
-       * Get the order of elements. Called once during initialization.
-       * @param   {Sortable}  sortable
-       * @returns {Array}
-       */
-      get: function (sortable) {
-        var order = localStorage.getItem(sortable.options.group.name);
-        return order ? order.split("|") : [];
-      },
-
-      /**
-       * Save the order of elements. Called onEnd (when the item is dropped).
-       * @param {Sortable}  sortable
-       */
-      set: function (sortable) {
-        var order = sortable.toArray();
-        localStorage.setItem(sortable.options.group.name, order.join("|"));
-      },
     },
   });
 

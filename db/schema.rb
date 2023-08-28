@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_05_155314) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_23_071254) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -666,6 +666,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_05_155314) do
     t.integer "timepoint_name_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "pos", default: 999999
     t.index ["extractions_extraction_forms_projects_sections_type1_row_id", "timepoint_name_id"], name: "index_eefpst1rc_on_eefpst1r_id_tn_id"
     t.index ["timepoint_name_id"], name: "index_eefpst1rc_on_tn_id"
   end
@@ -1040,7 +1041,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_05_155314) do
     t.index ["ml_model_id"], name: "fk_rails_6c1d59597a"
   end
 
-  create_table "model_performances", charset: "utf8mb3", force: :cascade do |t|
+  create_table "model_performances", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "ml_model_id"
     t.string "label"
     t.float "score"
@@ -1164,6 +1165,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_05_155314) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "projects_paginate_per"
+    t.boolean "conflict_resolution_label_visibility", default: false
+    t.text "storage"
     t.index ["organization_id"], name: "index_profiles_on_organization_id"
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
     t.index ["username"], name: "index_profiles_on_username", unique: true
@@ -1987,6 +1990,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_05_155314) do
     t.index ["timepoint_id"], name: "index_tps_comparisons_rssms_on_timepoint_id"
   end
 
+  create_table "training_data_infos", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "category"
+    t.integer "count"
+    t.bigint "ml_model_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ml_model_id"], name: "index_training_data_infos_on_ml_model_id"
+  end
+
   create_table "type1_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
@@ -2227,6 +2239,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_05_155314) do
   add_foreign_key "tps_arms_rssms", "result_statistic_sections_measures"
   add_foreign_key "tps_comparisons_rssms", "comparisons"
   add_foreign_key "tps_comparisons_rssms", "result_statistic_sections_measures"
+  add_foreign_key "training_data_infos", "ml_models"
   add_foreign_key "users", "user_types"
   add_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures"
 end

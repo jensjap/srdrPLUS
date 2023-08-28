@@ -10,6 +10,8 @@
 #  consensus_type_id :integer
 #  pilot_flag        :boolean
 #  screening_status  :string(255)      default("asu")
+#  refman            :text(65535)
+#  other_reference   :text(65535)
 #
 
 class CitationsProject < ApplicationRecord

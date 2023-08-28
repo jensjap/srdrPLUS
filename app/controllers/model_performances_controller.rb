@@ -17,6 +17,10 @@ class ModelPerformancesController < ApplicationController
           v.map(&:score)
         end
 
+        training_data_infos = ml_model.training_data_infos.map do |info|
+          { category: info.category, count: info.count }
+        end
+
         {
           timestamp: ml_model.timestamp,
           performances: performances,
@@ -24,7 +28,8 @@ class ModelPerformancesController < ApplicationController
           precision: ml_model.precision,
           recall: ml_model.recall,
           f1_score: ml_model.f1_score,
-          accuracy_score: ml_model.accuracy_score
+          accuracy_score: ml_model.accuracy_score,
+          training_data: training_data_infos
         }
       end
 
@@ -48,13 +53,18 @@ class ModelPerformancesController < ApplicationController
         v.map(&:score)
       end
 
+      training_data_infos = @ml_model.training_data_infos.map do |info|
+        { category: info.category, count: info.count }
+      end
+
       render json: {
         performances:,
         confusion_matrix: @ml_model.confusion_matrix,
         precision: @ml_model.precision,
         recall: @ml_model.recall,
         f1_score: @ml_model.f1_score,
-        accuracy_score: @ml_model.accuracy_score
+        accuracy_score: @ml_model.accuracy_score,
+        training_data: training_data_infos
       }
     end
   end
@@ -111,6 +121,10 @@ class ModelPerformancesController < ApplicationController
       f1_score = 0.5
       accuracy_score = 0.5
 
+      training_data_infos = ['0', '1'].map do |category|
+        { category: category, count: rand(100..200) }
+      end
+
       {
         timestamp:,
         performances:,
@@ -118,7 +132,8 @@ class ModelPerformancesController < ApplicationController
         precision:,
         recall:,
         f1_score:,
-        accuracy_score:
+        accuracy_score:,
+        training_data: training_data_infos
       }
     end
 

@@ -105,10 +105,6 @@ class ProjectPolicy < ApplicationPolicy
     project_leader?
   end
 
-  def export_to_gdrive?
-    project_auditor?
-  end
-
   def export?
     project_auditor? || @record.public?
   end

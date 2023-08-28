@@ -48,8 +48,6 @@ gem 'foundation-icons-sass-rails' # Use Zurb Foundation as Front-End Framework
 gem 'foundation-rails' # Use Zurb Foundation as Front-End Framework
 gem 'fuzzy_match' # Fuzzy Match
 gem 'gon' # Access ruby data in JavaScript.
-gem 'google-api-client' # Access Google sheets programmatically
-gem 'googleauth'
 gem 'httparty' # Simple calls to external API.
 gem 'jbuilder'
 gem 'jquery-datatables' # For making sortable searchable tables
@@ -59,8 +57,6 @@ gem 'mysql2' # Use mysql as the database for Active Record
 gem 'net-ftp'
 gem 'net-smtp', require: false
 gem 'nokogiri'
-gem 'omniauth'
-gem 'omniauth-google-oauth2'
 gem 'passenger'
 gem 'puma' # Use Puma as the app server
 gem 'pundit' # authorizations.

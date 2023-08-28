@@ -33,7 +33,12 @@ class RobotScreenService
 
     if response_hash['success']
       timestamp = response_hash['timestamp']
-      @project.ml_models.create(timestamp: timestamp)
+      data_0_count = data.count { |item| item['label'] == '0' }
+      data_1_count = data.count { |item| item['label'] == '1' }
+
+      ml_model = @project.ml_models.create(timestamp: timestamp)
+      ml_model.training_data_infos.create(category: '0', count: data_0_count)
+      ml_model.training_data_infos.create(category: '1', count: data_1_count)
       "Training complete (model timestamp: #{timestamp})"
     else
       "Failed (message: #{response_hash['message']})"
@@ -73,11 +78,13 @@ class RobotScreenService
 
     train_url = "#{@url}/train/#{@method}/#{@project_id}"
     train_response_hash = send_post_request(train_url, { labeled_data: train_data })
-  
+
     return "Failed (message: #{train_response_hash['message']})" unless train_response_hash['success']
-  
+
     timestamp = train_response_hash['timestamp']
     ml_model = @project.ml_models.create(timestamp: timestamp)
+    ml_model.training_data_infos.create(category: '0', count: train_size_0)
+    ml_model.training_data_infos.create(category: '1', count: train_size_1)
 
     predict_url = "#{@url}/predict/#{@method}/#{@project_id}"
     predict_response_hash = send_post_request(predict_url, { input_citations: predict_data, timestamp: timestamp })
@@ -85,7 +92,7 @@ class RobotScreenService
     predictions = predict_response_hash['predictions']
 
     human_labels = predict_data.map { |data| data['label'] }
-  
+
     human_labels.zip(predictions).each do |label, prediction|
       ml_model.model_performances.create(label: label, score: prediction)
     end

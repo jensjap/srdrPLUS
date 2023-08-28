@@ -12,12 +12,24 @@ class PredictionsController < ApplicationController
       '0.8-0.9' => 90,
       '0.9-1.0' => 100
     }
+    empty_data = {
+      '0.0-0.1' => 0,
+      '0.1-0.2' => 0,
+      '0.2-0.3' => 0,
+      '0.3-0.4' => 0,
+      '0.4-0.5' => 0,
+      '0.5-0.6' => 0,
+      '0.6-0.7' => 0,
+      '0.7-0.8' => 0,
+      '0.8-0.9' => 0,
+      '0.9-1.0' => 0
+    }
     scores_intervals = if MachineLearningDataSupplyingService.stub_ml_data?
                          stubbed_data
                        else
                          real_data = MachineLearningDataSupplyingService
                                      .get_unlabeled_predictions_with_intervals(params[:id])
-                         real_data.blank? ? stubbed_data : real_data
+                         real_data.blank? ? empty_data : real_data
                        end
 
     render json: scores_intervals
