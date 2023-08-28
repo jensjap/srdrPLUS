@@ -12,7 +12,5 @@ json.fsr @project.citations_projects.where(screening_status: CitationsProject::F
 json.ene @project.citations_projects.where(screening_status: CitationsProject::E_NEED_EXTRACTION).count
 json.eip eip.count
 json.er @project.citations_projects.where(screening_status: CitationsProject::E_REJECTED).count
-json.eic eip.filter { |cp|
-  cp.extractions.any?(&:consolidated)
-}.count
+json.eic(eip.count { |cp| cp.extractions.any?(&:consolidated) })
 json.ec @project.citations_projects.where(screening_status: CitationsProject::E_COMPLETE).count
