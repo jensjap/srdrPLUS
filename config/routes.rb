@@ -239,8 +239,7 @@ Rails.application.routes.draw do
       post 'create_full_text_screening_extraction_form'
     end
 
-    resources :citations do
-    end
+    resources :citations, only: %i[new create update edit show index]
 
     resources :extractions do
       collection do

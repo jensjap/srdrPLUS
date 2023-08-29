@@ -1,6 +1,6 @@
 class CitationsController < ApplicationController
   before_action :set_project, only: %i[index]
-  before_action :set_citation, only: %i[show edit update destroy]
+  before_action :set_citation, only: %i[show edit update]
 
   before_action :skip_policy_scope
   before_action :skip_authorization
@@ -47,15 +47,6 @@ class CitationsController < ApplicationController
   def edit
     authorize_access
     @citation.build_journal unless @citation.journal.present?
-  end
-
-  def destroy
-    authorize_access
-    @citation.destroy
-    respond_to do |format|
-      format.html { redirect_to citations_url, notice: t('removed') }
-      format.json { head :no_content }
-    end
   end
 
   def show
