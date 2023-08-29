@@ -114,7 +114,10 @@ class AbstractScreeningResultsController < ApplicationController
           updated_at: label.updated_at,
           label: label.label,
           user_handle: label.user.handle,
-          privileged: label.privileged
+          privileged: label.privileged,
+          tags: label.tags.map { |tag| tag['name'] }.join(', '),
+          reasons: label.reasons.map { |reasons| reasons['name'] }.join(', '),
+          notes: label.notes
         }
       end
   end

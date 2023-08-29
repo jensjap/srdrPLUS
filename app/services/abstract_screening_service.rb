@@ -47,6 +47,10 @@ class AbstractScreeningService
   end
 
   def self.find_citation_id(abstract_screening, user)
+    #!!! TODO: consider the following scenario:
+    #          unfinished_asr exists, but before it is finished
+    #          citations_project.screening_status changes via
+    #          some other mechanism.
     unfinished_asr = find_unfinished_asr(abstract_screening, user)
     return unfinished_asr.citation.id if unfinished_asr
 
@@ -66,19 +70,30 @@ class AbstractScreeningService
     end
   end
 
-  def self.find_or_create_asr(abstract_screening, user)
+  def self.find_or_create_unprivileged_asr(abstract_screening, user)
     citation_id = find_citation_id(abstract_screening, user)
     return nil if citation_id.nil?
 
+    # Explicitly looking for 'privileged: false' ASR here.
+    # Without it we could have found an unfinished_asr.citation.id and then
+    # find a finished ASR which is 'privileged: true'.
+    # This happens when users resolve conflicts faster than they screen
+    # their own citations (very common in Pilot rounds).
     cp = CitationsProject.find_by(project: abstract_screening.project, citation_id:)
-    AbstractScreeningResult.find_or_create_by!(abstract_screening:, user:, citations_project: cp)
+    AbstractScreeningResult.find_or_create_by!(
+      abstract_screening:,
+      user:,
+      citations_project: cp,
+      privileged: false
+    )
   end
 
   def self.find_unfinished_asr(abstract_screening, user)
     AbstractScreeningResult.find_by(
       abstract_screening:,
       user:,
-      label: nil
+      label: nil,
+      privileged: false
     )
   end
 
@@ -202,6 +217,7 @@ class AbstractScreeningService
     abstract_screening
       .abstract_screening_results
       .includes(citations_project: :citation)
+      .where(privileged: false)
       .where
       .not(user:)
       .map(&:citation)
@@ -212,6 +228,7 @@ class AbstractScreeningService
     abstract_screening
       .abstract_screening_results
       .includes(citations_project: :citation)
+      .where(privileged: false)
       .where(user:)
       .map(&:citation)
       .map(&:id)
@@ -259,7 +276,7 @@ class AbstractScreeningService
     return false unless AbstractScreening::NON_PERPETUAL.include?(abstract_screening.abstract_screening_type)
 
     if abstract_screening.abstract_screening_type == AbstractScreening::PILOT &&
-       (abstract_screening.abstract_screening_results.where(user:).count < abstract_screening.no_of_citations)
+       (abstract_screening.abstract_screening_results.where(user:, privileged: false).count < abstract_screening.no_of_citations)
       return false
     end
 

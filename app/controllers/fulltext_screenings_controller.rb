@@ -61,7 +61,7 @@ class FulltextScreeningsController < ApplicationController
 
         return render json: { fsr_id: nil } if fsr && fsr.user != current_user
 
-        fsr ||= FulltextScreeningService.find_or_create_fsr(fs, current_user)
+        fsr ||= FulltextScreeningService.find_or_create_unprivileged_fsr(fs, current_user)
         render json: { fsr_id: fsr&.id }
       end
       format.html do

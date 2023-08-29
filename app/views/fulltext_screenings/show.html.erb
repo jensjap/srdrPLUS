@@ -98,7 +98,7 @@
               <div><%= user.handle %></div>
               <div>
                 <!-- prettier-ignore -->
-                (<%= FulltextScreeningResult.where(user:, fulltext_screening: @fulltext_screening).where("label IS NOT NULL").count %>)
+                (<%= FulltextScreeningResult.where(user:, fulltext_screening: @fulltext_screening, privileged: false).where("label IS NOT NULL").count %>)
               </div>
             </div>
             <% end %>
