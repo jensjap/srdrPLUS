@@ -205,7 +205,7 @@ class CitationsProject < ApplicationRecord
          eefps.status.name == 'Completed'
        end
       update(screening_status: E_COMPLETE)
-    elsif extractions.present? && extractions.unconsolidated.all? do |extraction|
+    elsif extractions.present? && extractions.all? do |extraction|
             extraction.extractions_extraction_forms_projects_sections.present? && extraction.extractions_extraction_forms_projects_sections.all? do |eefps|
               eefps.status.name == 'Completed'
             end
