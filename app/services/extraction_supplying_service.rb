@@ -1,16 +1,13 @@
 class ExtractionSupplyingService
 
   def find_by_project_id(id)
-    extractions = Project.find(id).extractions
-    extraction_bundles = []
-    for extraction in extractions do
-      extraction_bundles.append(find_by_extraction_id(extraction.id))
-    end
+    project = Project.includes(:extractions).find(id)
+    extraction_bundles = project.extractions.map { |extraction| find_by_extraction_id(extraction.id) }
 
     link_info = [
       {
         'relation' => 'tag',
-        'url' => 'api/v3/projects/' + id.to_s + '/extractions'
+        'url' => "api/v3/projects/#{id}/extractions"
       },
       {
         'relation' => 'service-doc',
@@ -21,27 +18,18 @@ class ExtractionSupplyingService
   end
 
   def find_by_extraction_id(id)
-    extraction = Extraction.find(id)
-    fhir_extraction_sections = []
+    extraction = Extraction.includes(:extraction_forms_projects_sections => { :extraction_forms_project => :extraction_forms_projects_sections }).find(id)
 
-    efpss = extraction.extraction_forms_projects_sections.first.extraction_forms_project.extraction_forms_projects_sections
-    extraction_sections = []
-    for efps in efpss do
-      eefpss = efps.extractions_extraction_forms_projects_sections
-      for eefps in eefpss do
-        if eefps.extraction_id == id.to_i
-          extraction_sections.append(eefps)
-        end
-      end
+    extraction_sections = extraction.extraction_forms_projects_sections.first.extraction_forms_project.extraction_forms_projects_sections.flat_map do |efps|
+      efps.extractions_extraction_forms_projects_sections.select { |eefps| eefps.extraction_id == id.to_i }
     end
-    for extraction_section in extraction_sections do
-      fhir_extraction_sections.append(create_fhir_obj(extraction_section))
-    end
+
+    fhir_extraction_sections = extraction_sections.map { |extraction_section| create_fhir_obj(extraction_section) }
 
     link_info = [
       {
         'relation' => 'tag',
-        'url' => 'api/v3/extractions/' + id.to_s
+        'url' => "api/v3/extractions/#{id}"
       },
       {
         'relation' => 'service-doc',
@@ -120,39 +108,8 @@ class ExtractionSupplyingService
       eefpsqrcf_grouped_by_type1 = raw.extractions_extraction_forms_projects_sections_question_row_column_fields.group_by { |item| item["extractions_extraction_forms_projects_sections_type1_id"] }
       eefpsqrcf_grouped_by_type1.each do |eefps_type1_id, eefpsqrcfs|
 
-        all_blank = eefpsqrcf_grouped_by_type1.keys.all?(&:blank?)
-        if eefps_type1_id.blank? && !all_blank
-          next
-        end
-
-        type1_id = all_blank ? 'none' : ExtractionsExtractionFormsProjectsSectionsType1.find(eefps_type1_id).type1.id.to_s
-
-        eefps = {
-          'status' => status,
-          'id' => "4-#{raw.id}-type1id-#{type1_id}",
-          'text' => form.section_label,
-          'identifier' => [{
-            'type' => {
-              'text' => 'SRDR+ Object Identifier'
-            },
-            'system' => 'https://srdrplus.ahrq.gov/',
-            'value' => "ExtractionsExtractionFormsProjectsSection/#{raw.id}"
-          }],
-          'contained' => questions,
-          'questionnaire' => "##{questions.id}",
-          'subject' => {},
-          'item' => []
-        }
-
-        unless all_blank
-          type1 = ExtractionsExtractionFormsProjectsSectionsType1.find(eefps_type1_id).type1
-          type1_display = "#{type1.name} (#{type1.description})"
-          eefps['subject'] = {
-            'reference' => "Type1/#{type1_id}",
-            'type' => 'EvidenceVariable',
-            'display' => type1_display
-          }
-        end
+        eefps = create_eefps(form, raw, status, eefps_type1_id, eefpsqrcf_grouped_by_type1, questions)
+        next if eefps.nil?
 
         restriction_symbol = ''
         for eefpsqrcf in eefpsqrcfs do
@@ -234,23 +191,31 @@ class ExtractionSupplyingService
             matches = value.scan(/\D*(\d+)\D*/)
             for match in matches do
               checkbox_id = match[0].to_i
-              name = ans_form.find(checkbox_id)['name']
+
+              begin
+                checkbox = ans_form.find(checkbox_id)
+                name = checkbox['name']
+              rescue ActiveRecord::RecordNotFound
+                next
+              end
+
               item['answer'] = {
                 'valueString' => name
               }
 
               if followups.has_key?(checkbox_id)
-                followup_item = {}
-                followup_item['linkId'] = item['linkId'] + '-' + followups[checkbox_id]['id'].to_s
-                followup_item['answer'] = {
-                  'valueString' => followups[checkbox_id]['name']
+                followup_item = {
+                  'linkId' => "#{item['linkId']}-#{followups[checkbox_id]['id']}",
+                  'answer' => {
+                    'valueString' => followups[checkbox_id]['name']
+                  }
                 }
                 item['item'] = followup_item
               else
                 item['item'] = []
               end
 
-              eefps['item'].append(item.dup)
+              eefps['item'] << item.dup
             end
           elsif type == 6
             name = ans_form.find(value)['name']
@@ -919,5 +884,41 @@ class ExtractionSupplyingService
     end
 
     evidence
+  end
+
+  def create_eefps(form, raw, status, eefps_type1_id, eefpsqrcf_grouped_by_type1, questions)
+    all_blank = eefpsqrcf_grouped_by_type1.keys.all?(&:blank?)
+    return nil if eefps_type1_id.blank? && !all_blank
+
+    type1_id = all_blank ? 'none' : ExtractionsExtractionFormsProjectsSectionsType1.find(eefps_type1_id).type1.id.to_s
+
+    eefps = {
+      'status' => status,
+      'id' => "4-#{raw.id}-type1id-#{type1_id}",
+      'text' => form.section_label,
+      'identifier' => [{
+        'type' => {
+          'text' => 'SRDR+ Object Identifier'
+        },
+        'system' => 'https://srdrplus.ahrq.gov/',
+        'value' => "ExtractionsExtractionFormsProjectsSection/#{raw.id}"
+      }],
+      'contained' => questions,
+      'questionnaire' => "##{questions.id}",
+      'subject' => {},
+      'item' => []
+    }
+
+    unless all_blank
+      type1 = ExtractionsExtractionFormsProjectsSectionsType1.find(eefps_type1_id).type1
+      type1_display = "#{type1.name} (#{type1.description})"
+      eefps['subject'] = {
+        'reference' => "Type1/#{type1_id}",
+        'type' => 'EvidenceVariable',
+        'display' => type1_display
+      }
+    end
+
+    eefps
   end
 end
