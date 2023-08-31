@@ -67302,7 +67302,9 @@ function __guardMethod__(obj, methodName, transform) {
       templateResult: formatTimepoint,
       templateSelection: formatTimepointSelection
     }, $(".dropdown_with_writein").select2({
-      tags: true
+      tags: true,
+      multiple: true,
+      maximumSelectionLength: 1
     }));
   };
 

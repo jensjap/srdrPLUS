@@ -58,5 +58,7 @@ documentCode = ->
     templateSelection: formatTimepointSelection
 
     $(".dropdown_with_writein").select2({
-      tags: true
+      tags: true,
+      multiple: true,
+      maximumSelectionLength: 1,
     });
