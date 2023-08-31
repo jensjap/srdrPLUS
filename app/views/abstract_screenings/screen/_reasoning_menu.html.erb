@@ -160,14 +160,14 @@
               <div class="flex">
                 <input
                   class="!m-0 h-4 cursor-pointer"
-                  :id="`reason-${reason.id}`"
+                  :id="`predefinedreason-${reason.id}`"
                   type="checkbox"
                   :value="reason.selected"
                   @change="reason.selected = !reason.selected; updateAsr('reasons_and_tags')"
                 />
                 <label
                   class="border-b px-2 grow cursor-pointer text-xs"
-                  :for="`reason-${reason.id}`"
+                  :for="`predefinedreason-${reason.id}`"
                   x-text="reason.name"
                 ></label>
               </div>
@@ -179,9 +179,9 @@
               <div class="flex">
                 <input
                   class="!m-0 h-4 cursor-pointer"
-                  :id="`reason-${reason.id}`"
+                  :id="`customreason-${reason.id}`"
                   type="checkbox"
-                  :value="reason.selected"
+                  :value="customreason.selected"
                   @change="reason.selected = !reason.selected; updateAsr('reasons_and_tags')"
                 />
                 <label
@@ -294,14 +294,14 @@
               <div class="flex">
                 <input
                   class="!m-0 h-4 cursor-pointer"
-                  :id="`tag-${tag.id}`"
+                  :id="`predefinedtag-${tag.id}`"
                   type="checkbox"
                   :value="tag.selected"
                   @change="tag.selected = !tag.selected; updateAsr('reasons_and_tags')"
                 />
                 <label
                   class="border-b px-2 grow cursor-pointer text-xs"
-                  :for="`tag-${tag.id}`"
+                  :for="`predefinedtag-${tag.id}`"
                   x-text="tag.name"
                 ></label>
               </div>
@@ -310,14 +310,14 @@
               <div class="flex">
                 <input
                   class="!m-0 h-4 cursor-pointer"
-                  :id="`tag-${tag.id}`"
+                  :id="`customtag-${tag.id}`"
                   type="checkbox"
                   :value="tag.selected"
                   @change="tag.selected = !tag.selected; updateAsr('reasons_and_tags')"
                 />
                 <label
                   class="border-b px-2 grow cursor-pointer text-xs"
-                  :for="`tag-${tag.id}`"
+                  :for="`customtag-${tag.id}`"
                   x-text="tag.name"
                 ></label>
                 <div class="flex">
