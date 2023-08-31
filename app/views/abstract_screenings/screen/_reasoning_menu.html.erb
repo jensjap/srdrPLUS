@@ -192,7 +192,7 @@
                     ></label>
                     <div class="flex">
                       <select
-                        class="w-8 text-xs h-4 py-0 px-1 mr-2 inline"
+                        class="w-8 text-xs h-4 py-0 px-1 inline"
                         @change="const dragId = asr['custom_reasons'][index].id;
                           const dropId = asr['custom_reasons'][$el.value - 1].id;
                           const dragPos = asr['custom_reasons'][index].pos;
@@ -218,7 +218,7 @@
                         viewBox="0 0 24 24"
                         stroke-width="1"
                         stroke="currentColor"
-                        class="w-4 h-4 cursor-pointer inline"
+                        class="w-4 h-4 ml-3 mr-2 cursor-pointer"
                         @click="addReasonModal.on = true; addReasonModal.type = 'custom_reasons'; addReasonModal.action = 'Update'; newCustomValue = reason.name; updateCustomId = reason.id"
                       >
                         <path
@@ -233,7 +233,7 @@
                         viewBox="0 0 24 24"
                         stroke-width="1"
                         stroke="darkred"
-                        class="w-4 h-4 cursor-pointer inline"
+                        class="w-4 h-4 cursor-pointer"
                         @click="deleteCustomValue('custom_reasons', index)"
                       >
                         <path
