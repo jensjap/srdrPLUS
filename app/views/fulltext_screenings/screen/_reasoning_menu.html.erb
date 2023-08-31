@@ -478,7 +478,7 @@
                   <div
                     class="cursor-pointer bg-srdrpurple flex justify-center items-center"
                     @click="fsr.label = 0; if (satisfiesReasoning()) { updateFsr('label') } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
-                    :class="(fsr.label == 0 || fsr.label == null)? '' : 'saturate-[0.1]'"
+                    :class="(fsr.label == 0 || fsr.label == null) ? '' : 'saturate-[0.1]'"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -499,7 +499,7 @@
                 <div
                   class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
                   @click="fsr.label = 1; if (satisfiesReasoning()) { updateFsr('label') } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
-                  :class="(fsr.label == 1 || fsr.label == null)? '' : 'saturate-[0.1]'"
+                  :class="(fsr.label == 1 || fsr.label == null) ? '' : 'saturate-[0.1]'"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
