@@ -2,13 +2,19 @@ class FulltextScreeningResultsController < ApplicationController
   def update
     respond_to do |format|
       format.json do
-        @fulltext_screening_result = FulltextScreeningResult.find(params[:id])
-        handle_reasons_and_tags
-        @fulltext_screening_result.update(fsr_params)
-        @screened_cps = FulltextScreeningResult.where(user: current_user,
-                                                      fulltext_screening: @fulltext_screening_result.fulltext_screening)
-        prepare_json_data
-        render :show
+        @fulltext_screening_result = FulltextScreeningResult
+                                     .includes(citations_project: :citation)
+                                     .find(params[:id])
+        authorize(@fulltext_screening_result)
+        case params[:submissionType]
+        when 'label'
+          @fulltext_screening_result.update(fsr_params)
+        when 'reasons_and_tags'
+          handle_reasons_and_tags
+        when 'notes'
+          @fulltext_screening_result.update_column(:notes, params[:fsr][:notes])
+        end
+        render json: @fulltext_screening_result
       end
     end
   end
@@ -16,9 +22,14 @@ class FulltextScreeningResultsController < ApplicationController
   def show
     respond_to do |format|
       format.json do
-        @fulltext_screening_result = FulltextScreeningResult.find(params[:id])
-        @screened_cps = FulltextScreeningResult.where(user: current_user,
-                                                      fulltext_screening: @fulltext_screening_result.fulltext_screening)
+        @fulltext_screening_result = FulltextScreeningResult
+                                     .includes(citations_project: :citation)
+                                     .find(params[:id])
+        authorize(@fulltext_screening_result)
+        @screened_cps = FulltextScreeningResult
+                        .includes(citations_project: :citation)
+                        .where(user: current_user,
+                               fulltext_screening: @fulltext_screening_result.fulltext_screening)
         prepare_json_data
       end
     end

@@ -212,8 +212,7 @@
       init() {
         const url = new URL(window.location.href);
         const fsr_id = url.searchParams.get("fsr_id");
-        const before_fsr_id = url.searchParams.get("before_fsr_id");
-        this.getFsrId(fsr_id, before_fsr_id);
+        this.getFsrId(fsr_id);
 
         const smallDevice = window.matchMedia("(min-width: 1024px)");
         smallDevice.addListener(handleDeviceChange);
@@ -430,15 +429,12 @@
         this.confirmationModalLabel = label;
         this.confirmationModalText = this.confirmationModalTexts[label];
         this.confirmationModal = true;
-        setTimeout(() => (this.confirmationModal = false), 1000);
       },
 
-      async getFsrId(fsrId, beforeFsrId) {
+      async getFsrId(fsrId) {
         let url = "";
         if (fsrId) {
           url = `/fulltext_screenings/<%= params[:fulltext_screening_id] %>/screen?fsr_id=${fsrId}`;
-        } else if (beforeFsrId) {
-          url = `/fulltext_screenings/<%= params[:fulltext_screening_id] %>/screen?before_fsr_id=${beforeFsrId}`;
         } else {
           url = `/fulltext_screenings/<%= params[:fulltext_screening_id] %>/screen`;
         }
@@ -459,19 +455,19 @@
         this.getFsr();
       },
 
-      async updateFsr(getNewFsrId) {
-        await this.fetchFsr("PATCH");
-        if (getNewFsrId) {
-          await this.getFsrId();
+      async updateFsr(submissionType) {
+        if (submissionType === "label") {
           this.showConfirmation(this.fsr.label);
         }
+        await this.fetchFsr("PATCH", submissionType);
+        this.confirmationModal = false;
       },
 
       async getFsr() {
         this.fetchFsr("GET");
       },
 
-      async fetchFsr(method) {
+      async fetchFsr(method, submissionType) {
         baseUrl = window.location.href.split("?")[0];
         window.history.pushState("", "", baseUrl);
         const headers = {
@@ -488,6 +484,7 @@
         if (method == "PATCH") {
           headers.body = JSON.stringify({
             fsr: this.fsr,
+            submissionType,
           });
         }
         const response = await fetch(
@@ -496,12 +493,15 @@
         );
         const data = await response.json();
 
+        if (submissionType === "label") {
+          return this.getFsrId();
+        }
         if (method == "GET") {
           this.fsr = data.fsr;
           this.citation = data.citation;
           this.options = data.options;
+          this.cps = data.cps;
         }
-        this.cps = data.cps;
       },
     }));
   });

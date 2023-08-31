@@ -55,13 +55,14 @@ class FulltextScreeningsController < ApplicationController
     authorize(fs)
     respond_to do |format|
       format.json do
-        fsr =
-          FulltextScreeningService.before_fsr_id(fs, params[:before_fsr_id], current_user) ||
-          FulltextScreeningResult.find_by(id: params[:fsr_id])
+        fsr = if params[:fsr_id]
+                FulltextScreeningResult.find_by(id: params[:fsr_id])
+              else
+                FulltextScreeningService.find_or_create_unprivileged_fsr(fs, current_user)
+              end
 
         return render json: { fsr_id: nil } if fsr && fsr.user != current_user
 
-        fsr ||= FulltextScreeningService.find_or_create_unprivileged_fsr(fs, current_user)
         render json: { fsr_id: fsr&.id }
       end
       format.html do
