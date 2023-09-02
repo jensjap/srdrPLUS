@@ -192,14 +192,24 @@ class CitationsProject < ApplicationRecord
   end
 
   def evaluate_screening_status
+    consolidated_extraction = Extraction.includes(extractions_extraction_forms_projects_sections: :status).where(
+      citations_project: self, consolidated: true
+    ).first
     extractions = Extraction
                   .includes(extractions_extraction_forms_projects_sections: :status)
                   .where(citations_project: self)
-    if extractions.present? && extractions.unconsolidated.all? do |extraction|
-         extraction.extractions_extraction_forms_projects_sections.present? && extraction.extractions_extraction_forms_projects_sections.all? do |eefps|
-           eefps.status.name == 'Completed'
-         end
+
+    if consolidated_extraction &&
+       consolidated_extraction.extractions_extraction_forms_projects_sections.present? &&
+       consolidated_extraction.extractions_extraction_forms_projects_sections.all? do |eefps|
+         eefps.status.name == 'Completed'
        end
+      update(screening_status: E_COMPLETE)
+    elsif extractions.present? && extractions.all? do |extraction|
+            extraction.extractions_extraction_forms_projects_sections.present? && extraction.extractions_extraction_forms_projects_sections.all? do |eefps|
+              eefps.status.name == 'Completed'
+            end
+          end
       update(screening_status: E_COMPLETE)
     elsif extractions.present?
       update(screening_status: E_IN_PROGRESS)
