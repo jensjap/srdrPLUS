@@ -11,7 +11,8 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def create
-    @abstract_screening = @project.abstract_screenings.new(abstract_screening_params)
+    @abstract_screening =
+      @project.abstract_screenings.new(abstract_screening_params)
     authorize(@abstract_screening)
     if @abstract_screening.save
       flash[:notice] = 'Screening was successfully created'

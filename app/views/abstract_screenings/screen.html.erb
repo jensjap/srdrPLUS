@@ -97,14 +97,20 @@
         ></div>
         <hr />
 
-        <button 
+        <button
           x-show="resolutionMode"
-          style="width: 200px;"
+          style="width: 200px"
           class="text-center mb-2 inline-flex items-center justify-center rounded-md border border-transparent bg-purple-900 opacity-80 px-4 py-2 text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
           x-on:click="toggleLabelsVisibility()"
-        >See Labels</button>
+        >
+          See Labels
+        </button>
 
-        <div x-cloak x-show="resolutionMode && show_all_labels" class="px-8 leading-5 text-xs">
+        <div
+          x-cloak
+          x-show="resolutionMode && show_all_labels"
+          class="px-8 leading-5 text-xs"
+        >
           <h5 class="text-sm font-bold">All Labels</h5>
           <div class="flex">
             <div class="w-1/6 border">timestamp</div>
@@ -114,7 +120,9 @@
             <div class="w-1/6 border">reason(s)</div>
             <div class="w-1/6 border">notes</div>
           </div>
-          <template x-for="label in all_labels.filter(item => !item.privileged)">
+          <template
+            x-for="label in all_labels.filter(item => !item.privileged)"
+          >
             <div class="flex">
               <div class="w-1/6 border" x-text="label.updated_at"></div>
               <div class="w-1/6 border" x-text="label.user_handle"></div>
@@ -165,7 +173,7 @@
             <div
               class="cursor-pointer border-b-4 bg-srdrpurple flex justify-center items-center"
               @click="asr.label = 0; if (requireReasoning()) { reasoningMenu = true } else { updateAsr('label') }"
-              :class="(asr.label == 0 || asr.label == null)? '' : 'saturate-[0.1]'"
+              :class="(asr.label == 0 || asr.label == null) ? '' : 'saturate-[0.1]'"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -204,7 +212,7 @@
         <div
           class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
           @click="asr.label = 1; if (requireReasoning()) { reasoningMenu = true } else { updateAsr('label') }"
-          :class="(asr.label == 1 || asr.label == null)? '' : 'saturate-[0.1]'"
+          :class="(asr.label == 1 || asr.label == null) ? '' : 'saturate-[0.1]'"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -316,9 +324,9 @@
           }
         }
 
-        fetch('/profile/get_labels_visibility')
-          .then(response => response.json())
-          .then(data => {
+        fetch("/profile/get_labels_visibility")
+          .then((response) => response.json())
+          .then((data) => {
             this.show_all_labels = data.show_all_labels;
           });
 
@@ -706,12 +714,16 @@
       toggleLabelsVisibility() {
         this.show_all_labels = !this.show_all_labels;
 
-        fetch(`/profile/toggle_labels_visibility?show_all_labels=${this.show_all_labels}`, {
-          method: 'POST',
-          headers: {
-            'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content
+        fetch(
+          `/profile/toggle_labels_visibility?show_all_labels=${this.show_all_labels}`,
+          {
+            method: "POST",
+            headers: {
+              "X-CSRF-Token": document.querySelector("meta[name='csrf-token']")
+                .content,
+            },
           }
-        });
+        );
       },
 
       async sendWw(word, weight, id, destroy) {

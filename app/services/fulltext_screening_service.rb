@@ -108,17 +108,4 @@ class FulltextScreeningService
       .fulltext_screening_results
       .count >= fulltext_screening.no_of_citations
   end
-
-  def self.before_fsr_id(fulltext_screening, fsr_id, user)
-    return nil if fulltext_screening.blank? || fsr_id.blank? || user.blank?
-
-    FulltextScreeningResult
-      .where(
-        fulltext_screening:,
-        user:
-      )
-      .where(
-        'updated_at < ?', FulltextScreeningResult.find_by(id: fsr_id).updated_at
-      ).order(:updated_at).last
-  end
 end
