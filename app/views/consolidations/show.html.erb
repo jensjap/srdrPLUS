@@ -143,6 +143,11 @@
       new_tp_description_unit: "",
       comparable_group_1: [],
       comparable_group_2: [],
+      master_template: null,
+      dimensions_lookup: {},
+      results_lookup: {},
+      rss_lookup: {},
+      extraction_ids: [],
       comparables: [],
       current_rss_id: null,
       current_population_name_id: null,
@@ -1004,19 +1009,6 @@
       },
 
       async fetch_efps() {
-        this.efps_sections = [];
-        this.mh = null;
-        this.master_template = null;
-        this.dimensions_lookup = null;
-        this.results_lookup = null;
-        this.rss_lookup = null;
-        this.comparables = [];
-        this.comparable_group_1 = [];
-        this.comparable_group_2 = [];
-        this.extraction_ids = [];
-        this.suggestions = [];
-        this.result_statistic_section_type_id = null;
-
         const response = await fetch(location.href, {
           method: "GET",
           headers: {
