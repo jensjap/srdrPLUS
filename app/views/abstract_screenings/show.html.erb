@@ -147,6 +147,7 @@
             </div>
           </div>
         </div>
+        <!-- prettier-ignore -->
         <% if AbstractScreeningService.screening_dashboard_user?(current_user) %>
           <%= render 'charts', project: @project %>
         <% end %>
