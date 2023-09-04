@@ -458,7 +458,7 @@
               <div class="grid grid-cols-3 h-full">
                 <div
                   class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
-                  @click="asr.label = -1; if (satisfiesReasoning()) { updateAsr('label') } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+                  @click="handleLabelButtonClick(-1)"
                   :class="(asr.label == -1 || asr.label == null) ? '' : 'saturate-[0.1]'"
                 >
                   <svg
@@ -478,7 +478,7 @@
                   <template x-if="!resolutionMode">
                     <div
                       class="cursor-pointer bg-srdrpurple flex justify-center items-center"
-                      @click="asr.label = 0; if (satisfiesReasoning()) { updateAsr('label') } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+                      @click="handleLabelButtonClick(0)"
                       :class="(asr.label == 0 || asr.label == null) ? '' : 'saturate-[0.1]'"
                     >
                       <svg
@@ -507,7 +507,7 @@
                 </div>
                 <div
                   class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
-                  @click="asr.label = 1; if (satisfiesReasoning()) { updateAsr('label') } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+                  @click="handleLabelButtonClick(1)"
                   :class="(asr.label == 1 || asr.label == null) ? '' : 'saturate-[0.1]'"
                 >
                   <svg
