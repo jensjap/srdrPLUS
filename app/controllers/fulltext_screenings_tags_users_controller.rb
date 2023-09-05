@@ -18,7 +18,6 @@ class FulltextScreeningsTagsUsersController < ApplicationController
         fulltext_screenings_tags_user = FulltextScreeningsTagsUser.find_or_create_by!(
           id: params[:id], user: current_user
         )
-        fulltext_screenings_tags_user.update!(pos: params[:pos]) if params[:pos]
         if name
           tag = Tag.find_or_create_by!(name:)
           fsrts =
