@@ -466,7 +466,6 @@
 
       async updateCustomValue(type, values) {
         const id = values.id;
-        const pos = values.pos;
         const newCustomValue = values.newCustomValue || false;
         let url;
         if (type == "custom_reasons") {
@@ -478,7 +477,6 @@
           method: "PATCH",
           headers,
           body: JSON.stringify({
-            pos,
             newCustomValue,
           }),
         });
@@ -486,6 +484,27 @@
         await this.getAsr();
         this.addReasonModal.on = false;
         this.newCustomValue = "";
+      },
+
+      async updateOrderings(dragPos, dropPos, orderableKey, table) {
+        const temp = this.asr[orderableKey][dropPos];
+        this.asr[orderableKey][dropPos] = this.asr[orderableKey][dragPos];
+        this.asr[orderableKey][dragPos] = temp;
+        const tempOrderableElements = this.asr[orderableKey];
+        this.asr[orderableKey] = [];
+        this.$nextTick(() => {
+          this.asr[orderableKey] = tempOrderableElements;
+          const orderings = {};
+          tempOrderableElements.forEach(
+            (oe, index) => (orderings[index] = { id: oe.id, table })
+          );
+          fetch("/api/v1/orderings/update_positions", {
+            method: "PATCH",
+            headers,
+            body: JSON.stringify({ orderings }),
+          });
+          this.asr[orderableKey].forEach((el, index) => (el.pos = index + 1));
+        });
       },
 
       async deleteCustomValue(type, index) {
