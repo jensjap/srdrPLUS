@@ -234,6 +234,12 @@
 
 <script>
   document.addEventListener("alpine:init", () => {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+    };
     Alpine.data("screenStore", () => ({
       desktop: false,
       weighingScreen: false,
@@ -447,13 +453,7 @@
         }
         const response = await fetch(url, {
           method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           body: JSON.stringify({
             name: this.newCustomValue.trim(),
           }),
@@ -476,13 +476,7 @@
         }
         const response = await fetch(url, {
           method: "PATCH",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           body: JSON.stringify({
             pos,
             newCustomValue,
@@ -509,13 +503,7 @@
           }
           const response = await fetch(url, {
             method: "DELETE",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
+            headers,
             body: JSON.stringify({
               id,
               destroyExistingValues: true,
@@ -718,10 +706,7 @@
           `/profile/toggle_labels_visibility?show_all_labels=${this.show_all_labels}`,
           {
             method: "POST",
-            headers: {
-              "X-CSRF-Token": document.querySelector("meta[name='csrf-token']")
-                .content,
-            },
+            headers,
           }
         );
       },
@@ -731,13 +716,7 @@
           "/abstract_screenings/<%= params[:abstract_screening_id] %>/update_word_weight",
           {
             method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
+            headers,
             body: JSON.stringify({
               word,
               weight,
@@ -763,10 +742,7 @@
         }
         const response = await fetch(url, {
           method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
+          headers,
         });
         const data = await response.json();
 
@@ -797,19 +773,13 @@
           baseUrl += "?resolution_mode=true";
         }
         window.history.pushState("", "", baseUrl);
-        const headers = {
+        const customHeaders = {
           method,
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
         };
 
         if (method == "PATCH") {
-          headers.body = JSON.stringify({
+          customHeaders.body = JSON.stringify({
             asr: this.asr,
             submissionType,
           });
@@ -818,7 +788,7 @@
         if (this.resolutionMode) {
           url += "?resolution_mode=true";
         }
-        const response = await fetch(url, headers);
+        const response = await fetch(url, customHeaders);
         const data = await response.json();
 
         if (submissionType === "label") {
