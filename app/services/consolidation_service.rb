@@ -61,8 +61,10 @@ class ConsolidationService
                 comparate.comparable_element.comparable.type1.id
               end.join('/')
               master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id][:comparisons][consolidated_id] ||= {
-                name: comparison.comparates.map do |comparate|
-                  comparate.comparable_element.comparable.type1.name
+                name: comparison.comparate_groups.map do |cg|
+                  cg.comparates.map do |comparate|
+                    comparate.comparable_element.comparable.type1.name
+                  end.join('; ')
                 end.join(' vs ')
               }
               dimensions_lookup[eefps.extraction.id][:outcomes][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:comparisons][consolidated_id] =
@@ -212,9 +214,11 @@ class ConsolidationService
                 comparate.comparable_element.comparable.timepoint_name.id
               end.join('/')
               master_template[eefpst1.type1_type.id][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:timepoints][consolidated_id] ||= {
-                name: comparison.comparates.map do |comparate|
-                        comparate.comparable_element.comparable.timepoint_name.name
-                      end.join(' vs '),
+                name: comparison.comparate_groups.map do |cg|
+                  cg.comparates.map do |comparate|
+                    comparate.comparable_element.comparable.timepoint_name.name
+                  end.join('; ')
+                end.join(' vs '),
                 unit: ''
               }
               dimensions_lookup[eefps.extraction_id][:timepoint_comparison] ||= {}
@@ -450,8 +454,10 @@ class ConsolidationService
                 name: if comparison.is_anova
                         'All Arms (ANOVA)'
                       else
-                        comparison.comparates.map do |comparate|
-                          comparate.comparable_element.comparable.type1.name
+                        comparison.comparate_groups.map do |cg|
+                          cg.comparates.map do |comparate|
+                            comparate.comparable_element.comparable.type1.name
+                          end.join('; ')
                         end.join(' vs ')
                       end,
                 description: ''
