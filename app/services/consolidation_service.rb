@@ -695,16 +695,23 @@ class ConsolidationService
         eefps_id = eefpst1[:extractions_extraction_forms_projects_section_id]
         populations = eefpst1[:populations]
         timepoints = eefpst1[:timepoints]
-
         already_exists = current_section_eefpst1s.any? do |current_section_eefpst1|
-          current_section_eefpst1[:type1_id] == type1_id &&
-            current_section_eefpst1[:type1_type_id] == type1_type_id
+          if eefps.extraction_forms_projects_section.section.name != 'Outcomes'
+            current_section_eefpst1[:type1_id] == type1_id
+          else
+            current_section_eefpst1[:type1_id] == type1_id &&
+              current_section_eefpst1[:type1_type_id] == type1_type_id
+          end
         end
         if already_exists
           current_section_eefpst1s.each do |current_section_eefpst1|
-            unless current_section_eefpst1[:type1_id] == type1_id &&
-                   current_section_eefpst1[:type1_type_id] == type1_type_id
-              next
+            if eefps.extraction_forms_projects_section.section.name != 'Outcomes'
+              next unless current_section_eefpst1[:type1_id] == type1_id
+            else
+              unless current_section_eefpst1[:type1_id] == type1_id &&
+                     current_section_eefpst1[:type1_type_id] == type1_type_id
+                next
+              end
             end
 
             current_section_eefpst1[:eefpst1_lookups][eefps_id] =
