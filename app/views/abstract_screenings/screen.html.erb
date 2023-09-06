@@ -36,13 +36,16 @@
       Terms & Phrases
     </button>
     <button
-      @click="historyPanel = true"
+      @click="historyPanel = !historyPanel"
+      class="absolute top-0 left-0 bg-gray-100 p-2 rounded-r-md z-9 text-xs flex flex-col items-center"
+    >
+      &gt;
+    </button>
+    <button
+      @click="getAsrId()"
       class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-black"
     >
-      Your Labels (<span
-        x-text="cps.filter(cp => cp.label !== null).filter(cp => cp.privileged == false).length"
-      ></span
-      >)
+      Continue Screening
     </button>
     <div class="h-24 mr-44 overflow-y-auto flex items-center">
       <div
@@ -152,7 +155,7 @@
       <div class="grid grid-cols-3 h-full">
         <div
           class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
-          @click="asr.label = -1; if (requireReasoning()) { reasoningMenu = true } else { updateAsr('label') }"
+          @click="handleLabelButtonClick(-1)"
           :class="(asr.label == -1 || asr.label == null) ? '' : 'saturate-[0.1]'"
         >
           <svg
@@ -172,8 +175,8 @@
           <template x-if="!resolutionMode">
             <div
               class="cursor-pointer border-b-4 bg-srdrpurple flex justify-center items-center"
-              @click="asr.label = 0; if (requireReasoning()) { reasoningMenu = true } else { updateAsr('label') }"
-              :class="(asr.label == 0 || asr.label == null) ? '' : 'saturate-[0.1]'"
+              @click="handleLabelButtonClick(0)"
+              :class="(asr.label == 0 || asr.label == null)? '' : 'saturate-[0.1]'"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -211,8 +214,8 @@
         </div>
         <div
           class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
-          @click="asr.label = 1; if (requireReasoning()) { reasoningMenu = true } else { updateAsr('label') }"
-          :class="(asr.label == 1 || asr.label == null) ? '' : 'saturate-[0.1]'"
+          @click="handleLabelButtonClick(1)"
+          :class="(asr.label == 1 || asr.label == null)? '' : 'saturate-[0.1]'"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -779,11 +782,11 @@
         this.getAsr();
       },
 
-      async updateAsr(submissionType) {
+      async updateAsr(submissionType, originalLabel) {
         if (submissionType === "label") {
           this.showConfirmation(this.asr.label);
         }
-        await this.fetchAsr("PATCH", submissionType);
+        await this.fetchAsr("PATCH", submissionType, originalLabel);
         this.confirmationModal = false;
       },
 
@@ -791,7 +794,7 @@
         this.fetchAsr("GET");
       },
 
-      async fetchAsr(method, submissionType) {
+      async fetchAsr(method, submissionType, originalLabel = null) {
         baseUrl = window.location.href.split("?")[0];
         if (this.resolutionMode) {
           baseUrl += "?resolution_mode=true";
@@ -821,7 +824,7 @@
         const response = await fetch(url, headers);
         const data = await response.json();
 
-        if (submissionType === "label") {
+        if (submissionType === "label" && originalLabel === null) {
           return this.getAsrId();
         }
         if (method === "GET") {
@@ -833,6 +836,24 @@
           this.cps = data.cps;
           this.processWeights("title", "processedTitle");
           this.processWeights("abstract", "processedAbstract");
+        }
+      },
+
+      handleLabelButtonClick(newLabel) {
+        const originalLabel = this.asr.label;
+        this.asr.label = newLabel;
+
+        if (this.satisfiesReasoning()) {
+          this.updateAsr('label', originalLabel);
+        } else {
+          toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 });
+          this.asr.label = originalLabel;
+        }
+
+        if (this.requireReasoning()) {
+          this.reasoningMenu = true;
+        } else {
+          this.updateAsr('label', originalLabel);
         }
       },
     }));
