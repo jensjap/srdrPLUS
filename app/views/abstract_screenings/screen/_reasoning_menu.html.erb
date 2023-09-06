@@ -181,12 +181,12 @@
                   class="!m-0 h-4 cursor-pointer"
                   :id="`customreason-${reason.id}`"
                   type="checkbox"
-                  :value="customreason.selected"
+                  :value="reason.selected"
                   @change="reason.selected = !reason.selected; updateAsr('reasons_and_tags')"
                 />
                 <label
                   class="border-b px-2 grow cursor-pointer text-xs"
-                  :for="`reason-${reason.id}`"
+                  :for="`customreason-${reason.id}`"
                   x-text="reason.name"
                 ></label>
                 <div class="flex">
