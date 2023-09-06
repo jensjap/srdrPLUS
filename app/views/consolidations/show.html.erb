@@ -901,8 +901,10 @@
           this.fetch_efps();
           this.$refs.new_eefpst1_name.value = "";
           this.$refs.new_eefpst1_description.value = "";
-          this.$refs.new_eefpst1_units.value = "";
-          this.$refs.new_eefpst1_type.value = 1;
+          if (this.isOutcome()) {
+            this.$refs.new_eefpst1_units.value = "";
+            this.$refs.new_eefpst1_type.value = 1;
+          }
           this.populations = [
             {
               name: "All Participants",
