@@ -146,6 +146,12 @@
 
 <script>
   document.addEventListener("alpine:init", () => {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+    };
     Alpine.data("screenStore", () => ({
       desktop: false,
       reasoningMenu: false,
@@ -337,13 +343,7 @@
         }
         const response = await fetch(url, {
           method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           body: JSON.stringify({
             name: this.newCustomValue.trim(),
           }),
@@ -356,7 +356,6 @@
 
       async updateCustomValue(type, values) {
         const id = values.id;
-        const pos = values.pos;
         const newCustomValue = values.newCustomValue || false;
         let url;
         if (type == "custom_reasons") {
@@ -366,15 +365,8 @@
         }
         const response = await fetch(url, {
           method: "PATCH",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           body: JSON.stringify({
-            pos,
             newCustomValue,
           }),
         });
@@ -382,6 +374,27 @@
         await this.getFsr();
         this.addReasonModal.on = false;
         this.newCustomValue = "";
+      },
+
+      async updateOrderings(dragPos, dropPos, orderableKey, table) {
+        const temp = this.fsr[orderableKey][dropPos];
+        this.fsr[orderableKey][dropPos] = this.fsr[orderableKey][dragPos];
+        this.fsr[orderableKey][dragPos] = temp;
+        const tempOrderableElements = this.fsr[orderableKey];
+        this.fsr[orderableKey] = [];
+        this.$nextTick(() => {
+          this.fsr[orderableKey] = tempOrderableElements;
+          const orderings = {};
+          tempOrderableElements.forEach(
+            (oe, index) => (orderings[index] = { id: oe.id, table })
+          );
+          fetch("/api/v1/orderings/update_positions", {
+            method: "PATCH",
+            headers,
+            body: JSON.stringify({ orderings }),
+          });
+          this.fsr[orderableKey].forEach((el, index) => (el.pos = index + 1));
+        });
       },
 
       async deleteCustomValue(type, index) {
@@ -399,13 +412,7 @@
           }
           const response = await fetch(url, {
             method: "DELETE",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
+            headers,
             body: JSON.stringify({
               id,
               destroyExistingValues: true,
@@ -440,10 +447,7 @@
         }
         const response = await fetch(url, {
           method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
+          headers,
         });
         const data = await response.json();
 
@@ -470,26 +474,20 @@
       async fetchFsr(method, submissionType) {
         baseUrl = window.location.href.split("?")[0];
         window.history.pushState("", "", baseUrl);
-        const headers = {
+        const customHeaders = {
           method,
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
         };
 
         if (method == "PATCH") {
-          headers.body = JSON.stringify({
+          customHeaders.body = JSON.stringify({
             fsr: this.fsr,
             submissionType,
           });
         }
         const response = await fetch(
           `/fulltext_screening_results/${this.fsr.id}`,
-          headers
+          customHeaders
         );
         const data = await response.json();
 

@@ -170,6 +170,25 @@
                   :for="`predefinedreason-${reason.id}`"
                   x-text="reason.name"
                 ></label>
+                <div class="flex">
+                  <select
+                    class="w-8 text-xs h-4 py-0 px-1 inline"
+                    @change="updateOrderings(index, $el.value - 1, 'predefined_reasons', 'abstract_screenings_reasons')"
+                  >
+                    <template
+                      x-for="(rreason, iindex) in asr.predefined_reasons"
+                      :key="rreason.id"
+                    >
+                      <option
+                        :value="iindex + 1"
+                        x-text="iindex + 1"
+                        :selected="iindex === index"
+                      ></option>
+                    </template>
+                  </select>
+                  <div class="w-4 h-4 ml-3 mr-2"></div>
+                  <div class="w-4 h-4"></div>
+                </div>
               </div>
             </template>
             <template
@@ -192,13 +211,7 @@
                 <div class="flex">
                   <select
                     class="w-8 text-xs h-4 py-0 px-1 inline"
-                    @change="const dragId = asr['custom_reasons'][index].id;
-                        const dropId = asr['custom_reasons'][$el.value - 1].id;
-                        const dragPos = asr['custom_reasons'][index].pos;
-                        const dropPos = $el.value - 1;
-                        asr.custom_reasons = [];
-                        updateCustomValue('custom_reasons', { id: dragId, pos: dropPos });
-                        updateCustomValue('custom_reasons', { id: dropId, pos: dragPos });"
+                    @change="updateOrderings(index, $el.value - 1, 'custom_reasons', 'abstract_screenings_reasons_users')"
                   >
                     <template
                       x-for="(rreason, iindex) in asr.custom_reasons"
@@ -207,7 +220,7 @@
                       <option
                         :value="iindex + 1"
                         x-text="iindex + 1"
-                        :selected="iindex  === index"
+                        :selected="iindex === index"
                       ></option>
                     </template>
                   </select>
@@ -304,6 +317,25 @@
                   :for="`predefinedtag-${tag.id}`"
                   x-text="tag.name"
                 ></label>
+                <div class="flex">
+                  <select
+                    class="w-8 text-xs h-4 py-0 px-1 inline"
+                    @change="updateOrderings(index, $el.value - 1, 'predefined_tags', 'abstract_screenings_tags')"
+                  >
+                    <template
+                      x-for="(ttag, iindex) in asr.predefined_tags"
+                      :key="ttag.id"
+                    >
+                      <option
+                        :value="iindex + 1"
+                        x-text="iindex + 1"
+                        :selected="iindex === index"
+                      ></option>
+                    </template>
+                  </select>
+                  <div class="w-4 h-4 ml-3 mr-2"></div>
+                  <div class="w-4 h-4"></div>
+                </div>
               </div>
             </template>
             <template x-for="(tag, index) in asr.custom_tags" :key="tag.id">
@@ -323,22 +355,16 @@
                 <div class="flex">
                   <select
                     class="w-8 text-xs h-4 py-0 px-1 inline"
-                    @change="const dragId = asr['custom_tags'][index].id;
-                      const dropId = asr['custom_tags'][$el.value - 1].id;
-                      const dragPos = asr['custom_tags'][index].pos;
-                      const dropPos = $el.value - 1;
-                      asr.custom_tags = [];
-                      updateCustomValue('custom_tags', { id: dragId, pos: dropPos });
-                      updateCustomValue('custom_tags', { id: dropId, pos: dragPos });"
+                    @change="updateOrderings(index, $el.value - 1, 'custom_tags', 'abstract_screenings_tags_users')"
                   >
                     <template
-                      x-for="(rtag, iindex) in asr.custom_tags"
-                      :key="rtag.id"
+                      x-for="(ttag, iindex) in asr.custom_tags"
+                      :key="ttag.id"
                     >
                       <option
                         :value="iindex + 1"
                         x-text="iindex + 1"
-                        :selected="iindex  === index"
+                        :selected="iindex === index"
                       ></option>
                     </template>
                   </select>

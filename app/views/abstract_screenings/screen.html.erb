@@ -237,6 +237,12 @@
 
 <script>
   document.addEventListener("alpine:init", () => {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+    };
     Alpine.data("screenStore", () => ({
       desktop: false,
       weighingScreen: false,
@@ -450,13 +456,7 @@
         }
         const response = await fetch(url, {
           method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           body: JSON.stringify({
             name: this.newCustomValue.trim(),
           }),
@@ -469,7 +469,6 @@
 
       async updateCustomValue(type, values) {
         const id = values.id;
-        const pos = values.pos;
         const newCustomValue = values.newCustomValue || false;
         let url;
         if (type == "custom_reasons") {
@@ -479,15 +478,8 @@
         }
         const response = await fetch(url, {
           method: "PATCH",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           body: JSON.stringify({
-            pos,
             newCustomValue,
           }),
         });
@@ -495,6 +487,27 @@
         await this.getAsr();
         this.addReasonModal.on = false;
         this.newCustomValue = "";
+      },
+
+      async updateOrderings(dragPos, dropPos, orderableKey, table) {
+        const temp = this.asr[orderableKey][dropPos];
+        this.asr[orderableKey][dropPos] = this.asr[orderableKey][dragPos];
+        this.asr[orderableKey][dragPos] = temp;
+        const tempOrderableElements = this.asr[orderableKey];
+        this.asr[orderableKey] = [];
+        this.$nextTick(() => {
+          this.asr[orderableKey] = tempOrderableElements;
+          const orderings = {};
+          tempOrderableElements.forEach(
+            (oe, index) => (orderings[index] = { id: oe.id, table })
+          );
+          fetch("/api/v1/orderings/update_positions", {
+            method: "PATCH",
+            headers,
+            body: JSON.stringify({ orderings }),
+          });
+          this.asr[orderableKey].forEach((el, index) => (el.pos = index + 1));
+        });
       },
 
       async deleteCustomValue(type, index) {
@@ -512,13 +525,7 @@
           }
           const response = await fetch(url, {
             method: "DELETE",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
+            headers,
             body: JSON.stringify({
               id,
               destroyExistingValues: true,
@@ -721,10 +728,7 @@
           `/profile/toggle_labels_visibility?show_all_labels=${this.show_all_labels}`,
           {
             method: "POST",
-            headers: {
-              "X-CSRF-Token": document.querySelector("meta[name='csrf-token']")
-                .content,
-            },
+            headers,
           }
         );
       },
@@ -734,13 +738,7 @@
           "/abstract_screenings/<%= params[:abstract_screening_id] %>/update_word_weight",
           {
             method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
+            headers,
             body: JSON.stringify({
               word,
               weight,
@@ -766,10 +764,7 @@
         }
         const response = await fetch(url, {
           method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
+          headers,
         });
         const data = await response.json();
 
@@ -800,19 +795,13 @@
           baseUrl += "?resolution_mode=true";
         }
         window.history.pushState("", "", baseUrl);
-        const headers = {
+        const customHeaders = {
           method,
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
         };
 
         if (method == "PATCH") {
-          headers.body = JSON.stringify({
+          customHeaders.body = JSON.stringify({
             asr: this.asr,
             submissionType,
           });
@@ -821,7 +810,7 @@
         if (this.resolutionMode) {
           url += "?resolution_mode=true";
         }
-        const response = await fetch(url, headers);
+        const response = await fetch(url, customHeaders);
         const data = await response.json();
 
         if (submissionType === "label" && originalLabel === null) {
