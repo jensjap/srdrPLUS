@@ -41,7 +41,10 @@ class ConsolidationService
         }
 
         eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
-          comparables[eefpst1r.population_name.id] ||= arms if eefps.extraction.consolidated
+          if eefps.extraction.consolidated
+            comparables_key = "#{eefpst1.type1_id}-#{eefpst1r.population_name_id}"
+            comparables[comparables_key] ||= arms
+          end
           master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id] ||= {
             name: eefpst1r.population_name.name,
             description: eefpst1r.population_name.description,
@@ -55,7 +58,7 @@ class ConsolidationService
           }
 
           eefpst1r.result_statistic_sections.each do |rss|
-            rss_lookup["#{eefps.extraction.id}-#{eefpst1r.population_name.id}"] = rss.id
+            rss_lookup["#{eefps.extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}"] = rss.id
             rss.comparisons.each do |comparison|
               consolidated_id = comparison.comparates.map do |comparate|
                 comparate.comparable_element.comparable.type1.id
@@ -230,7 +233,8 @@ class ConsolidationService
           eefpst1r.result_statistic_sections.each do |rss|
             next unless rss.result_statistic_section_type_id == result_statistic_section_type_id
 
-            rss_lookup["#{eefps.extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}"] = rss.id
+            rss_lookup["#{eefps.extraction.id}-#{eefpst1.type1_type.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}"] =
+              rss.id
             rss.result_statistic_sections_measures.each do |rssm|
               master_template[eefpst1.type1_type.id][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:measures][rssm.measure.id] ||= {
                 name: rssm.measure.name
@@ -429,9 +433,10 @@ class ConsolidationService
             if eefps.extraction.consolidated
               eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
                 eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
-                  comparables[eefpst1r.population_name.id] ||= []
-                  comparables[eefpst1r.population_name.id] << { name: eefpst1rc.timepoint_name.name, comparable_id: eefpst1rc.id,
-                                                                comparable_type: eefpst1rc.class.to_s }
+                  comparables_key = "#{eefpst1.type1_type_id}-#{eefpst1.type1_id}-#{eefpst1r.population_name_id}"
+                  comparables[comparables_key] ||= []
+                  comparables[comparables_key] << { name: eefpst1rc.timepoint_name.name, comparable_id: eefpst1rc.id,
+                                                    comparable_type: eefpst1rc.class.to_s }
                 end
               end
             end
@@ -474,12 +479,13 @@ class ConsolidationService
               end
 
               second_eefps.extractions_extraction_forms_projects_sections_type1s.each do |second_eefpst1|
-                comparables[eefpst1r.population_name.id] ||= []
+                comparables_key = "#{eefpst1.type1_type_id}-#{eefpst1.type1_id}-#{eefpst1r.population_name_id}"
+                comparables[comparables_key] ||= []
                 comparable = { name: second_eefpst1.type1.name, comparable_id: second_eefpst1.id,
                                comparable_type: second_eefpst1.class.to_s }
-                next if comparables[eefpst1r.population_name.id].include?(comparable)
+                next if comparables[comparables_key].include?(comparable)
 
-                comparables[eefpst1r.population_name.id] << comparable
+                comparables[comparables_key] << comparable
               end
             end
           end

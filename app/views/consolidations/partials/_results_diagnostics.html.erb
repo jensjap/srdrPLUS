@@ -24,8 +24,8 @@
                   >
                     <span
                       class="text-xs cursor-pointer text-srdrpurple"
-                      @click="current_rss_id = rss_lookup[`${extraction_ids[extraction_ids.length - 1].id}-${population_id}`];
-                      current_population_name_id = population_id;"
+                      @click="current_rss_id = rss_lookup[`${extraction_ids[extraction_ids.length - 1].id}-${diagnosis_id}-${population_id}`];
+                      comparables_key = `${diagnosis_id}-${population_id}`;"
                       >(Add Comparison)</span
                     >
                   </template>
