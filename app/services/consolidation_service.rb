@@ -167,9 +167,8 @@ class ConsolidationService
       dimensions_lookup[extraction.id] = {
         type1_type_type1: {},
         population: {},
-        arm_comparison: {},
         timepoint_comparison: {},
-        measure: {}
+        rss: {}
       }
     end
 
@@ -205,7 +204,6 @@ class ConsolidationService
                 name: eefpst1rc.timepoint_name.name,
                 unit: eefpst1rc.timepoint_name.unit
               }
-              dimensions_lookup[eefps.extraction_id][:timepoint_comparison] ||= {}
               dimensions_lookup[eefps.extraction_id][:timepoint_comparison][eefpst1r.population_name.id] ||= { timepoint_comparison: {} }
               dimensions_lookup[eefps.extraction_id][:timepoint_comparison][eefpst1r.population_name.id][:timepoint_comparison][eefpst1rc.timepoint_name.id] =
                 true
@@ -224,7 +222,6 @@ class ConsolidationService
                 end.join(' vs '),
                 unit: ''
               }
-              dimensions_lookup[eefps.extraction_id][:timepoint_comparison] ||= {}
               dimensions_lookup[eefps.extraction_id][:timepoint_comparison][eefpst1r.population_name.id] ||= { timepoint_comparison: {} }
               dimensions_lookup[eefps.extraction_id][:timepoint_comparison][eefpst1r.population_name.id][:timepoint_comparison][consolidated_id] =
                 true
@@ -239,7 +236,6 @@ class ConsolidationService
               master_template[eefpst1.type1_type.id][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:measures][rssm.measure.id] ||= {
                 name: rssm.measure.name
               }
-              dimensions_lookup[eefps.extraction_id][:rss] ||= {}
               dimensions_lookup[eefps.extraction_id][:rss][rss.id] ||= { measure: {} }
               dimensions_lookup[eefps.extraction_id][:rss][rss.id][:measure][rssm.measure.id] = true
               population = rss.population
@@ -422,7 +418,6 @@ class ConsolidationService
                     name: eefpst1.type1.name,
                     description: eefpst1.type1.description
                   }
-                  dimensions_lookup[eefps.extraction_id][:population] ||= {}
                   dimensions_lookup[eefps.extraction_id][:population][population_name_id] ||= { arm_comparison: {} }
                   dimensions_lookup[eefps.extraction_id][:population][population_name_id][:arm_comparison][eefpst1.type1.id] =
                     true
@@ -467,7 +462,6 @@ class ConsolidationService
                       end,
                 description: ''
               }
-              dimensions_lookup[eefps.extraction_id][:population] ||= {}
               dimensions_lookup[eefps.extraction_id][:population][eefpst1r.population_name_id] ||= { arm_comparison: {} }
               dimensions_lookup[eefps.extraction_id][:population][eefpst1r.population_name_id][:arm_comparison][consolidated_id] =
                 true
