@@ -154,4 +154,8 @@ class AbstractScreening < ApplicationRecord
   rescue StandardError => e
     Sentry.capture_exception(e)
   end
+
+  def screening_type
+    abstract_screening_type
+  end
 end

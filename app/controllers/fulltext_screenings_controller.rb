@@ -58,7 +58,7 @@ class FulltextScreeningsController < ApplicationController
         fsr = if params[:fsr_id]
                 FulltextScreeningResult.find_by(id: params[:fsr_id])
               else
-                FulltextScreeningService.find_or_create_unprivileged_fsr(fs, current_user)
+                FulltextScreeningService.find_or_create_unprivileged_sr(fs, current_user)
               end
 
         return render json: { fsr_id: nil } if fsr && fsr.user != current_user
