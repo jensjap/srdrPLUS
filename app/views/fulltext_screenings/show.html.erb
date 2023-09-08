@@ -20,7 +20,7 @@
             border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium
             text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none
             focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full
-            hover:no-underline hover:text-white") %>
+            hover:no-underline hover:text-white focus:no-underline focus:text-white") %>
             <% else %>
             <button
               class="text-center mb-2 cursor-not-allowed saturate-[0.25] w-full inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
@@ -35,7 +35,7 @@
             border border-transparent bg-gray-700 px-4 py-2 text-sm font-medium
             text-white shadow-sm hover:bg-gray-500 focus:outline-none focus:ring-2
             focus:ring-indigo-500 focus:ring-offset-2 w-full hover:no-underline
-            hover:text-white") %>
+            hover:text-white focus:no-underline focus:text-white") %>
           </div>
         </div>
         <div class="flex flex-wrap lg:flex-nowrap gap-4">
@@ -620,7 +620,7 @@
                           :href="`/fulltext_screenings/${result.fulltext_screening_id}/screen?fsr_id=${result.id}`"
                           x-cloak
                           x-show="result.user_id == <%= current_user.id %>"
-                          class="hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-1 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+                          class="focus:no-underline focus:text-white hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-1 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
                           >Screen Again</a
                         >
                       </td>
