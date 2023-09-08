@@ -276,7 +276,7 @@
           this.resetComparisonsExit();
           this.fetch_efps();
         } else {
-          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+          toastr.error((await response.json()).error, null, { timeOut: 2000 });
         }
       },
 
