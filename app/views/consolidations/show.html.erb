@@ -148,12 +148,24 @@
       results_lookup: {},
       rss_lookup: {},
       extraction_ids: [],
-      comparables: [],
+      comparables: {},
       current_rss_id: null,
-      current_population_name_id: null,
+      comparables_key: null,
 
       init() {
         this.fetch_efps();
+      },
+
+      resetComparisonsExit() {
+        this.comparables[this.comparables_key] = [
+          ...this.comparables[this.comparables_key],
+          ...this.comparable_group_1,
+          ...this.comparable_group_2,
+        ];
+        this.comparable_group_1 = [];
+        this.comparable_group_2 = [];
+        this.current_rss_id = null;
+        this.comparables_key = null;
       },
 
       async addComparison(rss_id) {
@@ -261,11 +273,10 @@
 
         if (response.status >= 200 && response.status < 300) {
           toastr.success("Created successfully!", null, { timeOut: 1000 });
-          this.current_rss_id = null;
-          this.current_population_name_id = null;
+          this.resetComparisonsExit();
           this.fetch_efps();
         } else {
-          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+          toastr.error((await response.json()).error, null, { timeOut: 2000 });
         }
       },
 
@@ -901,8 +912,10 @@
           this.fetch_efps();
           this.$refs.new_eefpst1_name.value = "";
           this.$refs.new_eefpst1_description.value = "";
-          this.$refs.new_eefpst1_units.value = "";
-          this.$refs.new_eefpst1_type.value = 1;
+          if (this.isOutcome()) {
+            this.$refs.new_eefpst1_units.value = "";
+            this.$refs.new_eefpst1_type.value = 1;
+          }
           this.populations = [
             {
               name: "All Participants",
