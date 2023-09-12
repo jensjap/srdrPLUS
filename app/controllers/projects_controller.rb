@@ -169,13 +169,19 @@ class ProjectsController < ApplicationController
         resource_id: @project.id,
         notes: export_type_name_params
       )
-      flash[:success] =
-        "Export request submitted for project '#{@project.name}'. You will be notified by email of its completion."
-    else
-      flash[:error] = 'You are not authorized to export this project.'
-    end
 
-    redirect_to(request.referer, status: 303)
+      redirect_back(
+        fallback_location: project_path(@project),
+        notice: "Export request submitted for project '#{@project.name}'. You will be notified by email of its completion.",
+        status: 303
+      )
+    else
+      redirect_back(
+        fallback_location: project_path(@project),
+        flash: { error: 'You are not authorized to export this project.' },
+        status: 303
+      )
+    end
   end
 
   def export_assignments_and_mappings
@@ -364,7 +370,8 @@ class ProjectsController < ApplicationController
     )
     flash[:success] = 'Success.'
 
-    redirect_to(edit_project_path(@project, anchor: 'panel-citation-screening-extraction-form'), notice: t('success'), status: 303)
+    redirect_to(edit_project_path(@project, anchor: 'panel-citation-screening-extraction-form'), notice: t('success'),
+                                                                                                 status: 303)
   end
 
   def create_full_text_screening_extraction_form

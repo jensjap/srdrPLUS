@@ -8,18 +8,14 @@
     <br />
 
     <input
-      checked=""
       class="export-type-radio"
       id="xlsx-legacy-radio-<%= @project.id.to_s %>"
       name="export-type-<%= @project.id.to_s %>"
-      type="radio"
+      type="hidden"
       value="<%= export_project_path(@project, export_type_name: '.xlsx legacy') %>"
     />
-    <label for="xlsx-legacy-radio-<%= @project.id.to_s %>">
-      Microsoft Excel - legacy format (.xlsx)
-    </label>
     <!-- prettier-ignore -->
-    <%= link_to "Export Extraction Data", export_project_path(@project, export_type_name: '.xlsx legacy'), method: :post, class: "button expanded start-export-button" %>
+    <%= link_to "Export Extraction Data", export_project_path(@project, export_type_name: '.xlsx legacy'), method: :post, class: "button start-export-button" %>
 
     <br />
     <hr />
@@ -28,6 +24,6 @@
     <%= link_to "Export Screening Data in XLSX",
           "#{project_export_screening_data_path(@project)}",
           method: :post,
-          class: 'button expanded start-citation-labels-export-button' %>
+          class: 'button start-citation-labels-export-button' %>
   </div>
 </div>
