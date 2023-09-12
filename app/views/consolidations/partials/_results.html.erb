@@ -15,7 +15,7 @@
             <div class="ml-4">
               <h3
                 class="text-base font-medium border-b-2"
-                x-text="master_template[type1_type_id][type1_id].name"
+                x-text="`${master_template[type1_type_id][type1_id].name} (${master_template[type1_type_id][type1_id].description})`"
               ></h3>
               <template
                 x-for="population_name_id in Object.keys(master_template[type1_type_id][type1_id].populations)"
