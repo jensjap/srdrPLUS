@@ -28,13 +28,13 @@ gem 'apipie-rails' # Api documentation.
 gem 'autoprefixer-rails' # Use Zurb Foundation as Front-End Framework
 gem 'awesome_print'
 gem 'aws-sdk-s3', require: false # Access to AWS S3 Cloud Storage.
-gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt'
 gem 'bio' # bioruby for pubmed queries.
 gem 'bootsnap' # New for Rails 5.2.
 gem 'caxlsx' # Spreadsheet generation.
 gem 'caxlsx_rails' # Spreadsheet generation.
 gem 'cocoon'
-gem 'coffee-rails', '~> 4.2' # Use CoffeeScript for .coffee assets and views
+gem 'coffee-rails' # Use CoffeeScript for .coffee assets and views
 gem 'country_select'
 gem 'devise'
 gem 'dotenv-rails'
@@ -80,7 +80,7 @@ gem 'sidekiq-cron' # Allows periodic background jobs
 gem 'simple_form'
 gem 'slim-rails'
 gem 'sortable-rails' # List reordering, Drag & Drop.
-gem 'tailwindcss-rails', '~> 2.0'
+gem 'tailwindcss-rails'
 gem 'toastr_rails'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby] # Windows does not include zoneinfo files
 gem 'uglifier', '>= 1.3.0' # Use Uglifier as compressor for JavaScript assets
