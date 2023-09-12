@@ -14,9 +14,20 @@ document.addEventListener 'DOMContentLoaded', ->
         data.search.search = ""
       "stateDuration": 0,
       "stateSaveCallback": (settings, data) ->
-        localStorage.setItem('DataTables-' + tableKey, JSON.stringify(data))
-      "stateLoadCallback": (settings) ->
-        return JSON.parse(localStorage.getItem('DataTables-'+ tableKey))
+        fetch('/profile/storage', {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            body: JSON.stringify({ storage: { "DataTables-#{tableKey}": data } })
+          })
+      "stateLoadCallback": (settings, cb) ->
+        fetch('/profile/storage').then((response) -> response.json().then((data) -> cb(data["DataTables-#{tableKey}"])))
+        return undefined
     })
 
 ######### CITATION MANAGEMENT
@@ -56,7 +67,7 @@ document.addEventListener 'DOMContentLoaded', ->
           pubmed_type_id = $( "#dropzone-div input#pubmed-file-type-id" ).val()
           json_type_id = $( "#dropzone-div input#json-file-type-id" ).val()
 
-          file_extension = file.name.split('.').pop()
+          file_extension = file.name.split('.').pop().toLowerCase()
           switch
             when file_extension == 'ris'
               file_type_id = ris_type_id
@@ -70,12 +81,16 @@ document.addEventListener 'DOMContentLoaded', ->
             when file_extension == 'json'
               file_type_id = json_type_id
               file_type_name = "JSON File"
-            else
+            when file_extension == 'txt'
               file_type_id = pubmed_type_id
               file_type_name = "PubMed ID List"
+            else
+              toastr.error("ERROR: Unknown file extension. Unable to process.")
+              wrapperThis.removeFile(file)
+              return
 
           if not confirm("This looks like a " + file_type_name + ". Do you wish to continue?")
-            wrapperThis.removeFile(file);
+            wrapperThis.removeFile(file)
 
           formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val())
           formData.append("projects_user_id", $("#dropzone-div").find("#import_projects_user_id").val())
@@ -100,7 +115,7 @@ document.addEventListener 'DOMContentLoaded', ->
     list_options = { valueNames: [ 'citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
 
     ## Method to pull citation info from PUBMED as XML
-    fetch_from_pubmed = ( pmid ) ->
+    fetch_from_pubmed = (pmid, insertedItem) ->
       $.ajax 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi',
         type: 'GET'
         dataType: 'xml'
@@ -155,17 +170,17 @@ document.addEventListener 'DOMContentLoaded', ->
             journal: journal,
             authors: authors.join(', ')
           }
-          populate_citation_fields citation_hash
+          populate_citation_fields(citation_hash, insertedItem)
 
-    populate_citation_fields = ( citation ) ->
-      $( '.citation-fields' ).find( '.citation-name input' ).val citation[ 'name' ]
-      $( '.citation-fields' ).find( '.citation-authors textarea' ).val citation[ 'authors' ]
-      $( '.citation-fields' ).find( '.citation-abstract textarea' ).val citation[ 'abstract' ]
-      $( '.citation-fields' ).find( '.journal-name input' ).val citation[ 'journal' ][ 'name' ]
-      $( '.citation-fields' ).find( '.journal-volume input' ).val citation[ 'journal' ][ 'vol' ]
-      $( '.citation-fields' ).find( '.journal-issue input' ).val citation[ 'journal' ][ 'issue' ]
-      $( '.citation-fields' ).find( '.journal-year input' ).val citation[ 'journal' ][ 'year' ]
-      $( '.citation-fields' ).find( '.project_citations_pmid input' ).val citation[ 'pmid' ]
+    populate_citation_fields = (citation, insertedItem) ->
+      $(insertedItem).find('.citation-name input').val citation['name']
+      $(insertedItem).find('.citation-authors textarea').val citation['authors']
+      $(insertedItem).find('.citation-abstract textarea').val citation['abstract']
+      $(insertedItem).find('.journal-name input').val citation['journal']['name']
+      $(insertedItem).find('.journal-volume input').val citation['journal']['vol']
+      $(insertedItem).find('.journal-issue input').val citation['journal']['issue']
+      $(insertedItem).find('.journal-year input').val citation['journal']['year']
+      $(insertedItem).find('input.input-citation-pmid').val citation['pmid']
 
       for keyword in citation[ 'keywords' ]
         keywordselect = $('.KEYWORDS select')
@@ -238,18 +253,18 @@ document.addEventListener 'DOMContentLoaded', ->
               q: params.term
               page: params.page || 1
 
-        $( insertedItem ).find( '#is-pmid' ).on 'click', () ->
-          ## clean up the citation fields
-          $( insertedItem ).find('.KEYWORDS select').val(null).trigger('change')
-          $( insertedItem ).find('.citation-name input').val(null)
-          $( insertedItem ).find('.citation-abstract textarea').val(null)
-          $( insertedItem ).find('.journal-name input').val(null)
-          $( insertedItem ).find('.journal-volume input').val(null)
-          $( insertedItem ).find('.journal-issue input').val(null)
-          $( insertedItem ).find('.journal-year input').val(null)
-
-          ## fetch citations using value in "Accession Number"
-          fetch_from_pubmed $( '.project_citations_accession_number input' ).val()
+        $(insertedItem).find('.is-pmid').on 'click', () ->
+          # clean up the citation fields.
+          $(insertedItem).find('.KEYWORDS select').val(null).trigger('change')
+          $(insertedItem).find('.citation-name input').val(null)
+          $(insertedItem).find('.citation-abstract textarea').val(null)
+          $(insertedItem).find('.journal-name input').val(null)
+          $(insertedItem).find('.journal-volume input').val(null)
+          $(insertedItem).find('.journal-issue input').val(null)
+          $(insertedItem).find('.journal-year input').val(null)
+          # Fetch citations using value in "Accession Number".
+          pmid_lookup_value = $(insertedItem).find('input.accession-number-lookup-field').val()
+          fetch_from_pubmed(pmid_lookup_value, insertedItem)
 
         $( insertedItem ).find( '.citation-select' ).select2
           minimumInputLength: 0

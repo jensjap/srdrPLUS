@@ -3,10 +3,9 @@
 one:
   result_statistic_section_type: one
   population: one
-  deleted_at:
+#  deleted_at:
 
 two:
   result_statistic_section_type: two
   population: two
-  deleted_at:
-
+#  deleted_at:

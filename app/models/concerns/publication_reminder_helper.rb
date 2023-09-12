@@ -13,16 +13,15 @@ module PublicationReminderHelper
               # A PublicationReminder record exists, therefore we send 2nd reminder
               # Send 2nd reminder email if reminder.active=true
               # and set active=false.
-              PublicationReminderMailer.second_reminder(user.id, project.id).deliver_now
+              PublicationReminderMailer.second_reminder(user.id, project.id).deliver_now if reminder.active
               reminder.update(active: false)
 
             else
               # No PublicationReminder exists, therefore we create PublicationReminder,
               # send 1st reminder email and set active=true
-              reminder = PublicationReminder.create(user:, project:)
+              PublicationReminder.create(user:, project:, active: true)
               # Send 1st reminder email
               PublicationReminderMailer.first_reminder(user.id, project.id).deliver_now
-              reminder.update(active: true)
 
             end
           end
@@ -37,11 +36,13 @@ module PublicationReminderHelper
     # 2. Neither the Project nor the youngest Extraction has been edited in the last 6 months
     def projects_of_concern
       Extraction
-        .select('project_id')
-        .group('project_id')
-        .having('count(*) > ?', 4)
+        .select('project_id').group('project_id').having('count(*) > ?', 4)
         .map { |group| Project.find(group.project_id) }
-        .select { |project| project.extractions.none? { |extraction| extraction.updated_at > 6.months.ago } }
+        .select do |project|
+          project.extractions.all? do |extraction|
+            extraction.updated_at < 6.months.ago
+          end && !project.public? && project.updated_at < 6.months.ago
+        end
     end
   end
 end

@@ -3,10 +3,11 @@ class PublicDataController < ApplicationController
   skip_before_action :authenticate_user!
 
   def show
-    if @project && @project.public?
+    if @project&.public?
       render @template
     else
-      return render :file => "#{Rails.root}/public/404", :layout => false, :status => :not_found
+      path_error_page = Rails.public_path.join('404.html')
+      send_file path_error_page, disposition: 'inline', content_type: 'text/html'
     end
   end
 

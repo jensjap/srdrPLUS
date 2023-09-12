@@ -89,7 +89,6 @@ class HealthMonitorService
     # LabelType,
     # LabelsReason,
     Measure,
-    Measurement,
     MeshDescriptor,
     MeshDescriptorsProject,
     Message,

@@ -258,7 +258,6 @@ class ImportJobs::JsonImportJob::ProjectImporter
     c = Citation.create!({ citation_type: CitationType.first,
                            name: chash['name'],
                            abstract: chash['abstract'],
-                           refman: chash['refman'],
                            pmid: chash['pmid'],
                            authors: chash['authors']&.values&.join(', '),
                            journal: j })

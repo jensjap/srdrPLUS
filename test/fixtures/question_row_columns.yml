@@ -3,12 +3,11 @@
 one:
   question_row: one
   name: MyString
-  question_row_column_type: one
-  deleted_at:
+  question_row_column_type_id: 5
+#  deleted_at:
 
 two:
   question_row: two
   name: MyString
-  question_row_column_type: two
-  deleted_at:
-
+  question_row_column_type_id: 5
+#  deleted_at:

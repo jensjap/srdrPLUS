@@ -4,13 +4,12 @@ one:
   question_row_column: one
   question_row_column_option: one
   name: MyString
-  deleted_at:
-  active: true
+#  deleted_at:
+#  active: true
 
 two:
   question_row_column: two
   question_row_column_option: two
   name: MyString
-  deleted_at:
-  active: true
-
+#  deleted_at:
+#  active: true

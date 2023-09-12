@@ -1,11 +1,12 @@
 class ExtractionFormsProjectsSectionSupplyingService
 
   def find_by_extraction_forms_project_id(id)
-    efpss = ExtractionFormsProject.find(id).extraction_forms_projects_sections
+    efp = ExtractionFormsProject.find(id)
+    efpss = efp.extraction_forms_projects_sections.map { |efps| find_by_extraction_forms_projects_section_id(efps.id) }
     link_info = [
       {
         'relation' => 'tag',
-        'url' => 'api/v3/extraction_forms_projects/' + id.to_s + '/extraction_forms_projects_sections'
+        'url' => "api/v3/extraction_forms_projects/#{id}/extraction_forms_projects_sections"
       },
       {
         'relation' => 'service-doc',
@@ -16,7 +17,17 @@ class ExtractionFormsProjectsSectionSupplyingService
   end
 
   def find_by_extraction_forms_projects_section_id(id)
-    efps = ExtractionFormsProjectsSection.find(id)
+    efps = ExtractionFormsProjectsSection.includes(
+      questions: [{
+        question_rows: [{
+          question_row_columns: [{
+            question_row_columns_question_row_column_options: [
+              :followup_field, :dependencies
+            ]
+          }]
+        }]
+      }]
+    ).find(id)
     efps_in_fhir = create_fhir_obj(efps)
     return efps_in_fhir if efps_in_fhir.blank?
     return efps_in_fhir.validate unless efps_in_fhir.valid?
@@ -26,15 +37,14 @@ class ExtractionFormsProjectsSectionSupplyingService
 
   private
 
-  def create_bundle(objs, type, link_info)
+  def create_bundle(fhir_objs, type, link_info=nil)
     bundle = {
       'type' => type,
       'link' => link_info,
       'entry' => []
     }
 
-    for obj in objs do
-      fhir_obj = create_fhir_obj(obj)
+    for fhir_obj in fhir_objs do
       bundle['entry'].append({ 'resource' => fhir_obj }) if fhir_obj and fhir_obj.valid?
     end
 
@@ -45,19 +55,19 @@ class ExtractionFormsProjectsSectionSupplyingService
     if raw.extraction_forms_projects_section_type_id == 2
       efps = {
         'status' => 'active',
-        'id' => '3' + '-' + raw.id.to_s,
+        'id' => "3-#{raw.id}",
         'title' => raw.section_label,
         'identifier' => [{
           'type' => {
             'text' => 'SRDR+ Object Identifier'
           },
           'system' => 'https://srdrplus.ahrq.gov/',
-          'value' => 'ExtractionFormsProjectsSection/' + raw.id.to_s
+          'value' => "ExtractionFormsProjectsSection/#{raw.id}"
         }],
         'item' => []
       }
       for question in raw.questions do
-        question_linkid = question.pos.to_s + '-' + question.id.to_s
+        question_linkid = "#{question.pos}-#{question.id}"
         question_item = {
           'linkId' => question_linkid,
           'text' => question.name,
@@ -67,7 +77,7 @@ class ExtractionFormsProjectsSectionSupplyingService
         }
 
         for row in question.question_rows do
-          question_row_linkid = question_linkid + '-' + row.id.to_s
+          question_row_linkid = "#{question_linkid}-#{row.id}"
           row_item = {
             'linkId' => question_row_linkid,
             'text' => row.name,
@@ -77,7 +87,7 @@ class ExtractionFormsProjectsSectionSupplyingService
           }
           for row_column in row.question_row_columns do
             options = row_column.question_row_columns_question_row_column_options
-            question_row_column_linkid = question_row_linkid + '-' + row_column.id.to_s
+            question_row_column_linkid = "#{question_row_linkid}-#{row_column.id}"
             item = {
               'linkId' => question_row_column_linkid,
               'text' => row_column.name
@@ -217,7 +227,7 @@ class ExtractionFormsProjectsSectionSupplyingService
   )
     old_followup_item = item['item']
     followup_item = {
-      'linkId' => linkid + '-' + followup_field_id,
+      'linkId' => "#{linkid}-#{followup_field_id}",
       'type' => 'text',
       'answerOption' => 'valueString',
       'enableWhen' => {

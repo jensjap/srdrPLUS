@@ -34,8 +34,7 @@ class ImportJobs::DistillerCsvImportJob::DistillerImporter
   end
 
   def import_extraction(row, efps, q_piece_arr)
-    c_arr = Citation.where(refman: row[0])
-    cp = CitationsProject.where(project: @project, citation: c_arr).first
+    cp = CitationsProject.where(project: @project, refman: row[0]).first
 
     return false if cp.nil?
 

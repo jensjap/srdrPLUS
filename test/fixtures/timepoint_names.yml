@@ -3,10 +3,9 @@
 one:
   name: Baseline
   unit: ''
-  deleted_at:
+#  deleted_at:
 
 two:
   name: 1
   unit: week
-  deleted_at:
-
+#  deleted_at:

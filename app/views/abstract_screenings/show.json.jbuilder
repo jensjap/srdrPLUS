@@ -8,6 +8,7 @@ json.results @abstract_screening_results do |abstract_screening_result|
   json.user                     abstract_screening_result['user']
   json.user_id                  abstract_screening_result['user_id']
   json.label                    abstract_screening_result['label']
+  json.privileged               abstract_screening_result['privileged']
   json.reasons                  abstract_screening_result['reasons']
   json.tags                     abstract_screening_result['tags']
   json.notes                    abstract_screening_result['notes']

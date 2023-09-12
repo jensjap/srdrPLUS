@@ -44,7 +44,7 @@ class SdKeyQuestionsController < ApplicationController
       SdPicod.where(id: sd_picodts_ids).destroy_all
       @sd_key_question.destroy
     end
-    redirect_to edit_sd_meta_datum_path(sd_meta_datum) + '?panel_number=3'
+    redirect_to(edit_sd_meta_datum_path(sd_meta_datum) + '?panel_number=3', status: 303)
   end
 
   def fuzzy_match

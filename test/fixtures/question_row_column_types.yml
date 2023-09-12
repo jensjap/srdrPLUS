@@ -2,9 +2,10 @@
 
 one:
   name: text
-  deleted_at:
+  id: 5
+#  deleted_at:
 
 two:
   name: numeric
-  deleted_at:
-
+  id: 1
+#  deleted_at:

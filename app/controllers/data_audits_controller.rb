@@ -4,11 +4,13 @@ class DataAuditsController < ApplicationController
   before_action :set_data_audit, only: [:update]
 
   def index
-    project_ids = params[:query]
+    if params[:query]
+      project_ids = params[:query]
                     .split(',')
                     .map(&:strip)
                     .map(&:to_i)
-                    .delete_if { |x| x.eql?(0) } if params[:query]
+                    .delete_if { |x| x.eql?(0) }
+    end
     @projects = Project.where(id: project_ids)
     @projects.each do |project|
       project.build_data_audit unless project.data_audit
@@ -38,33 +40,34 @@ class DataAuditsController < ApplicationController
   end
 
   private
-    def check_admin
-      unless current_user.admin?
-        flash[:error] = "You are not authorized to perform this action."
-        redirect_to '/'
-      end
-    end
 
-    def set_project
-      @project = Project.find(params[:project_id])
-    end
+  def check_admin
+    return if current_user.admin?
 
-    def set_data_audit
-      @data_audit = DataAudit.find(params[:id])
-    end
+    flash[:error] = 'You are not authorized to perform this action.'
+    redirect_to('/', status: 303)
+  end
 
-    def data_audit_params
-      params
-        .require(:data_audit)
-        .permit(
-          :epc_source,
-          :epc_name,
-          :non_epc_name,
-          :capture_method,
-          :pct_extractions_with_unstructured_data,
-          :distiller_w_results,
-          :single_multiple_w_consolidation,
-          :notes
-        )
-    end
+  def set_project
+    @project = Project.find(params[:project_id])
+  end
+
+  def set_data_audit
+    @data_audit = DataAudit.find(params[:id])
+  end
+
+  def data_audit_params
+    params
+      .require(:data_audit)
+      .permit(
+        :epc_source,
+        :epc_name,
+        :non_epc_name,
+        :capture_method,
+        :pct_extractions_with_unstructured_data,
+        :distiller_w_results,
+        :single_multiple_w_consolidation,
+        :notes
+      )
+  end
 end

@@ -3,12 +3,11 @@
 one:
   dispatchable: one (Message)
   user: one
-  deleted_at:
-  active: true
+#  deleted_at:
+#  active: true
 
 two:
   dispatchable: two (Message)
   user: two
-  deleted_at:
-  active: true
-
+#  deleted_at:
+#  active: true

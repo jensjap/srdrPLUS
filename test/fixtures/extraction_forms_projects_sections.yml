@@ -2,31 +2,30 @@
 
 one:
   extraction_forms_project: one
-  extraction_forms_projects_section_type: one
+  extraction_forms_projects_section_type_id: 2
   section: one
-  active: true
+#  active: true
 
 two:
   extraction_forms_project: one
   extraction_forms_projects_section_type: two
   section: two
-  active: true
+#  active: true
 
 three:
   extraction_forms_project: one
   extraction_forms_projects_section_type: three
   section: three
-  active: true
+#  active: true
 
 four:
   extraction_forms_project: one
   extraction_forms_projects_section_type: four
   section: four
-  active: true
+#  active: true
 
 five:
   extraction_forms_project: one
   extraction_forms_projects_section_type: one
   section: five
-  active: true
-
+#  active: true

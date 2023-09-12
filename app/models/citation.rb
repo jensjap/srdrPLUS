@@ -37,6 +37,7 @@ class Citation < ApplicationRecord
 
   accepts_nested_attributes_for :keywords, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :journal, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :citations_projects, reject_if: :all_blank
 
   # Redundant?
   def abstract_utf8
@@ -52,7 +53,6 @@ class Citation < ApplicationRecord
   def accession_number_alts
     (pmid.present? && pmid) ||
       (registry_number.present? && registry_number) ||
-      (refman.present? && refman) ||
       (accession_number.present? && accession_number) ||
       (doi.present? && doi) ||
       (other.present? && other)

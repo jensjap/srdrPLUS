@@ -3,12 +3,11 @@
 one:
   quality_dimension_question: one
   quality_dimension_option: one
-  deleted_at:
-  active: true
+#  deleted_at:
+#  active: true
 
 two:
   quality_dimension_question: two
   quality_dimension_option: two
-  deleted_at:
-  active: true
-
+#  deleted_at:
+#  active: true

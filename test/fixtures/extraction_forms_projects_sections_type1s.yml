@@ -3,10 +3,9 @@
 one:
   extraction_forms_projects_section: one
   type1: one
-  active: true
+#  active: true
 
 two:
   extraction_forms_projects_section: two
   type1: two
-  active: true
-
+#  active: true

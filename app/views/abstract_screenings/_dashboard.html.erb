@@ -9,9 +9,8 @@
     </div>
     <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
       <%= link_to('Export Screening Data in XLSX',
-      "#{project_export_screening_data_path(@project)}.xlsx",
-      method: :post,
-      class: "inline-flex items-center justify-center rounded-md border
+      "#{project_export_screening_data_path(@project)}", method: :post, class:
+      "inline-flex items-center justify-center rounded-md border
       border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium !text-white
       shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2
       focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
@@ -20,7 +19,10 @@
   </div>
   <dl class="mt-5 grid grid-cols-1 gap-3 lg:grid-cols-3">
     <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
-      <dt class="text-sm font-medium text-gray-500 truncate">I. Abstract Screening</dt>
+      <dt class="text-sm font-medium text-gray-500 truncate">
+        I. Abstract Screening
+        <span x-text="`(${$store.dashboard.getAbstractScreeningTotal()})`"></span>
+      </dt>
       <dd class="mt-1 font-semibold text-gray-900">
         <div>
           <span
@@ -71,7 +73,10 @@
     </div>
 
     <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
-      <dt class="text-sm font-medium text-gray-500 truncate">II. Full-text Screening</dt>
+      <dt class="text-sm font-medium text-gray-500 truncate">
+        II. Full-text Screening
+        <span x-text="`(${$store.dashboard.getFullTextScreeningTotal()})`"></span>
+      </dt>
       <dd class="mt-1 font-semibold text-gray-900">
         <div>
           <span
@@ -124,7 +129,8 @@
 
     <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
       <dt class="text-sm font-medium text-gray-500 truncate">
-        III. Full-text Extraction
+        III. Extractions
+        <span x-text="`(${$store.dashboard.getFullTextExtractionTotal()})`"></span>
       </dt>
       <dd class="mt-1 font-semibold text-gray-900">
         <div>
@@ -149,8 +155,13 @@
               ..
             </span>
             <span class="text-xs font-extralight text-gray-500"
-              >in progress </span
-            ><span class="text-xs font-extralight bg-slate-200 p-1"> eip</span>
+              >in progress
+            </span>
+            <span
+              class="text-xs font-extralight text-gray-500"
+              x-text="`(${$store.dashboard.kpis.eic} consolidating)`"
+            ></span>
+            <span class="text-xs font-extralight bg-slate-200 p-1"> eip</span>
           </div>
           <div>
             <span
@@ -227,6 +238,25 @@
           },
         });
         this.kpis = await response.json();
+      },
+
+      getAbstractScreeningTotal() {
+        return (parseInt(this.kpis.asu) || 0) +
+              (parseInt(this.kpis.asps) || 0) +
+              (parseInt(this.kpis.asic) || 0) +
+              (parseInt(this.kpis.asr) || 0);
+      },
+      getFullTextScreeningTotal() {
+        return (parseInt(this.kpis.fsu) || 0) +
+              (parseInt(this.kpis.fsps) || 0) +
+              (parseInt(this.kpis.fsic) || 0) +
+              (parseInt(this.kpis.fsr) || 0);
+      },
+      getFullTextExtractionTotal() {
+        return (parseInt(this.kpis.ene) || 0) +
+              (parseInt(this.kpis.eip) || 0) +
+              (parseInt(this.kpis.er) || 0) +
+              (parseInt(this.kpis.ec) || 0);
       },
     });
   });

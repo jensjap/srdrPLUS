@@ -19,7 +19,8 @@
             = type1_form.input :name, label: 'Domain',
               collection: @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.type1s_suggested_by_project_leads.map(&:type1).map(&:name) + [type1_form.object.try(:name)],
               input_html: { class: 'dropdown_with_writein' },
-              selected: type1_form.object.try(:name)
+              selected: type1_form.object.try(:name),
+              required: true
 
             = type1_form.input :description, label: 'Specific measurement (i.e., tool/definition/specific outcome)'
         = f.input :units
@@ -29,7 +30,8 @@
             = type1_form.input :name,
               collection: @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.type1s_suggested_by_project_leads.map(&:type1).map(&:name) + [type1_form.object.try(:name)],
               input_html: { class: 'dropdown_with_writein' },
-              selected: type1_form.object.try(:name)
+              selected: type1_form.object.try(:name),
+              required: true
 
             = type1_form.input :description
 

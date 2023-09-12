@@ -28,7 +28,7 @@ json.pagination do
   json.order_by     @order_by
   json.sort         @sort
 end
-users = @project.users.sort_by { |user| user.handle.downcase }
+users = @project.users.includes(:profile).sort_by { |user| user.handle.downcase }
 json.users users do |user|
   json.id user.id
   json.handle user.handle

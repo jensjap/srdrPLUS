@@ -75,7 +75,7 @@ class SdMetaDataController < ApplicationController
       flash[:alert] = "Error deleting Sd Meta Datum ID: #{sd_meta_datum.id}"
     end
 
-    redirect_to project_sd_meta_data_path(project)
+    redirect_to(project_sd_meta_data_path(project), status: 303)
   end
 
   def create
@@ -88,7 +88,7 @@ class SdMetaDataController < ApplicationController
     @sd_meta_datum.create_fuzzy_matches
     flash[:notice] =
       "Succesfully created Sd Meta Datum ID: #{@sd_meta_datum.id} for Project ID: #{@sd_meta_datum.project_id}"
-    redirect_to edit_sd_meta_datum_path(@sd_meta_datum.id)
+    redirect_to(edit_sd_meta_datum_path(@sd_meta_datum.id), status: 303)
   end
 
   def edit

@@ -6,6 +6,7 @@ class SimpleImportJob < ApplicationJob
     'Citation ID',
     'Citation Name',
     'RefMan',
+    'other_reference',
     'PMID',
     'Authors',
     'Publication Date',
@@ -13,13 +14,13 @@ class SimpleImportJob < ApplicationJob
   ]
 
   TYPE2_SHEET_NAMES = {
-    'Design Details' => { column_offset: 11, arms_by_rows: false },
-    'Arm Details' => { column_offset: 13, arms_by_rows: true },
-    'Sample Characteristics' => { column_offset: 13, arms_by_rows: true },
-    'Risk of Bias Assessment' => { column_offset: 11, arms_by_rows: false },
-    'Risk of Bias - RCTs' => { column_offset: 11, arms_by_rows: false },
-    'Risk of Bias - NRCSs' => { column_offset: 11, arms_by_rows: false },
-    'Risk of Bias - SGSs' => { column_offset: 11, arms_by_rows: false }
+    'Design Details' => { column_offset: 12, arms_by_rows: false },
+    'Arm Details' => { column_offset: 14, arms_by_rows: true },
+    'Sample Characteristics' => { column_offset: 14, arms_by_rows: true },
+    'Risk of Bias Assessment' => { column_offset: 12, arms_by_rows: false },
+    'Risk of Bias - RCTs' => { column_offset: 12, arms_by_rows: false },
+    'Risk of Bias - NRCSs' => { column_offset: 12, arms_by_rows: false },
+    'Risk of Bias - SGSs' => { column_offset: 12, arms_by_rows: false }
   }
 
   RESULTS_SHEET_NAMES = [
@@ -33,7 +34,7 @@ class SimpleImportJob < ApplicationJob
 
   attr_reader :xlsx, :sheet_names
 
-  # Bool destructive, default: true.
+  # Bool destructive, default: false.
   # By default we want to override any data that is being imported.
   # This allows removal of data, i.e. if there's data in the database
   # and the spreadsheet has an empty cell. In some special cases we do
@@ -477,10 +478,15 @@ class SimpleImportJob < ApplicationJob
   end
 
   def find_or_create_eefpsqrcf_by_eefps_and_qrcf_and_arm_name(eefps, qrcf, arm_name, arm_description)
-    type1 = Type1.find_by(name: arm_name, description: arm_description)
+    type1 = if arm_description.blank?
+              Type1
+                .where('name=? AND (description IS NULL OR description=?)', arm_name, arm_description)
+                .first
+            else
+              Type1.find_by!(name: arm_name, description: arm_description)
+            end
     eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1
-              .find_by(type1:, extractions_extraction_forms_projects_section: eefps.link_to_type1)
-
+              .find_by!(type1:, extractions_extraction_forms_projects_section: eefps.link_to_type1)
     ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by!(
       extractions_extraction_forms_projects_section: eefps,
       question_row_column_field: qrcf,

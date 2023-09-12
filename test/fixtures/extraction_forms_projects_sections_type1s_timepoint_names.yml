@@ -3,12 +3,11 @@
 one:
   extraction_forms_projects_sections_type1: one
   timepoint_name: one
-  deleted_at:
-  active: true
+#  deleted_at:
+#  active: true
 
 two:
   extraction_forms_projects_sections_type1: two
   timepoint_name: two
-  deleted_at:
-  active: true
-
+#  deleted_at:
+#  active: true

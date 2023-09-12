@@ -1,34 +1,22 @@
 class AbstractScreeningResultsController < ApplicationController
+  after_action :verify_authorized
+
   def update
     respond_to do |format|
       format.json do
         @abstract_screening_result = AbstractScreeningResult
                                      .includes(citations_project: :citation)
                                      .find(params[:id])
+        authorize(@abstract_screening_result)
         case params[:submissionType]
         when 'label'
           @abstract_screening_result.update(asr_params)
-          @abstract_screening_result =
-            AbstractScreeningService.find_or_create_asr(
-              @abstract_screening_result.abstract_screening, current_user
-            )
-          prepare_json_data
-          @screened_cps =
-            AbstractScreeningResult
-            .includes(citations_project: :citation)
-            .where(user: current_user,
-                   abstract_screening: @abstract_screening_result.abstract_screening)
-          render :show
         when 'reasons_and_tags'
-          @screened_cps = []
           handle_reasons_and_tags
-          prepare_json_data
-          render :show
         when 'notes'
-          @abstract_screening_result.update(notes: params[:asr][:notes])
-          @screened_cps = []
-          render json: {}
+          @abstract_screening_result.update_column(:notes, params[:asr][:notes])
         end
+        render json: @abstract_screening_result
       end
     end
   end
@@ -37,13 +25,33 @@ class AbstractScreeningResultsController < ApplicationController
     respond_to do |format|
       format.json do
         @abstract_screening_result = AbstractScreeningResult
+                                     .includes(:user, citations_project: :citation)
+                                     .find(params[:id])
+        authorize(@abstract_screening_result)
+        if params[:resolution_mode] == 'true'
+          @screened_cps = AbstractScreeningResult
+                          .includes(citations_project: :citation)
+                          .where(abstract_screening: @abstract_screening_result.abstract_screening, privileged: true)
+        else
+          @screened_cps = AbstractScreeningResult
+                          .includes(citations_project: :citation)
+                          .where(user: current_user, abstract_screening: @abstract_screening_result.abstract_screening, privileged: false)
+        end
+        prepare_json_data
+      end
+    end
+  end
+
+  def destroy
+    respond_to do |format|
+      format.json do
+        @abstract_screening_result = AbstractScreeningResult
                                      .includes(citations_project: :citation)
                                      .find(params[:id])
-        @screened_cps = AbstractScreeningResult
-                        .includes(citations_project: :citation)
-                        .where(user: current_user,
-                               abstract_screening: @abstract_screening_result.abstract_screening)
-        prepare_json_data
+        authorize(@abstract_screening_result)
+        @abstract_screening_result.destroy
+
+        render json: @abstract_screening_result
       end
     end
   end
@@ -104,6 +112,19 @@ class AbstractScreeningResultsController < ApplicationController
       custom_tag[:selected] = true if @abstract_screening_result.tags.any? { |tag| tag.id == custom_tag[:tag_id] }
       custom_tag
     end
+
+    @all_labels =
+      @abstract_screening_result.citations_project.abstract_screening_results.order(updated_at: :desc).map do |label|
+        {
+          updated_at: label.updated_at,
+          label: label.label,
+          user_handle: label.user.handle,
+          privileged: label.privileged,
+          tags: label.tags.map { |tag| tag['name'] }.join(', '),
+          reasons: label.reasons.map { |reasons| reasons['name'] }.join(', '),
+          notes: label.notes
+        }
+      end
   end
 
   def asr_params

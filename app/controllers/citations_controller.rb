@@ -1,6 +1,6 @@
 class CitationsController < ApplicationController
   before_action :set_project, only: %i[index]
-  before_action :set_citation, only: %i[show edit update destroy]
+  before_action :set_citation, only: %i[show edit update]
 
   before_action :skip_policy_scope
   before_action :skip_authorization
@@ -49,15 +49,6 @@ class CitationsController < ApplicationController
     @citation.build_journal unless @citation.journal.present?
   end
 
-  def destroy
-    authorize_access
-    @citation.destroy
-    respond_to do |format|
-      format.html { redirect_to citations_url, notice: t('removed') }
-      format.json { head :no_content }
-    end
-  end
-
   def show
     render 'show'
   end
@@ -66,10 +57,11 @@ class CitationsController < ApplicationController
     @nav_buttons.push('citation_pool', 'my_projects')
     @citations = @project
                  .citations
-                 .select(:id, :refman, :name, :pmid, :registry_number, :accession_number, :doi, :other, :authors)
+                 .select(:id, :name, :pmid, :registry_number, :accession_number, :doi, :other, :authors)
                  .order(:id)
     @citations_projects_dict = @project.citations_projects.map { |cp| [cp.citation_id, cp] }.to_h
     @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
+    @project.citations.build
   end
 
   private
@@ -85,17 +77,31 @@ class CitationsController < ApplicationController
   end
 
   def citation_params
-    params.require(:citation)
-          .permit(:accession_number, :authors, :name, :citation_type_id, :pmid, :registry_number, :refman, :doi, :other, :abstract, :page_number_start, :page_number_end, :_destroy,
-                  citations_attributes: %i[id name _destroy],
-                  journal_attributes: %i[id name publication_date issue volume _destroy],
-                  keywords_attributes: %i[id name _destroy])
+    params
+      .require(:citation)
+      .permit(
+        :accession_number,
+        :authors,
+        :name,
+        :citation_type_id,
+        :pmid,
+        :registry_number,
+        :doi,
+        :abstract,
+        :page_number_start,
+        :page_number_end,
+        :_destroy,
+        citations_attributes: %i[id name _destroy],
+        citations_projects_attributes: %i[id refman other_reference],
+        journal_attributes: %i[id name publication_date issue volume _destroy],
+        keywords_attributes: %i[id name _destroy]
+      )
   end
 
   def authorize_access
-    if (current_user.projects & @citation.projects).empty?
-      flash[:error] = 'You are not authorized to update this citation'
-      redirect_to(request.referrer || root_path)
-    end
+    return unless (current_user.projects & @citation.projects).empty?
+
+    flash[:error] = 'You are not authorized to update this citation'
+    redirect_to((request.referrer || root_path), status: 303)
   end
 end

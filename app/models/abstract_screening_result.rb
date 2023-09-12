@@ -10,6 +10,7 @@
 #  notes                 :text(65535)
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
+#  privileged            :boolean          default(FALSE)
 #
 class AbstractScreeningResult < ApplicationRecord
   searchkick
@@ -30,12 +31,14 @@ class AbstractScreeningResult < ApplicationRecord
   after_save :evaluate_screening_qualifications
 
   def evaluate_screening_qualifications
-    if citations_project
+    return if privileged && label.nil?
+
+    if privileged || (citations_project
        .screening_qualifications
        .where.not(user: nil)
        .where("qualification_type LIKE 'as-%'")
        .blank? &&
-       citations_project_sufficiently_labeled?
+       citations_project_sufficiently_labeled?)
       case label
       when 1
         citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::AS_REJECTED).destroy_all
@@ -82,6 +85,7 @@ class AbstractScreeningResult < ApplicationRecord
       user: user.handle,
       user_id:,
       label:,
+      privileged:,
       reasons: reasons.map(&:name).join(', '),
       tags: tags.map(&:name).join(', '),
       notes:,

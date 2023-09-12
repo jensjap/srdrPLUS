@@ -28,11 +28,11 @@
     br
     h5 System Numbers
     = f.input :pmid, label: 'Pubmed ID'
-    = f.input :refman, label: 'Reference Manager ID'
+    = f.simple_fields_for :citations_projects, CitationsProject.find_by(citation: @citation, project: @project) do |sff_cp|
+      = sff_cp.input :refman, label: 'Reference Manager ID'
+      = sff_cp.input :other_reference, label: 'Other Reference ID'
     = f.input :registry_number, label: 'Registry Number'
     = f.input :doi, label: 'DOI'
-    = f.input :other, label: 'Other'
-
 
     .row.m-10
       .form-actions

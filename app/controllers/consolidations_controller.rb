@@ -5,7 +5,10 @@ class ConsolidationsController < ApplicationController
     cookies[:consolidation_beta] = true if params[:consolidation_beta_opt_in]
     cookies.delete(:consolidation_beta) if params[:consolidation_beta_opt_out]
 
-    return redirect_to "/projects/#{@project.id}/extractions/comparison_tool" unless cookies[:consolidation_beta]
+    unless cookies[:consolidation_beta]
+      return redirect_to("/projects/#{@project.id}/extractions/comparison_tool",
+                         status: 303)
+    end
 
     authorize(@project, policy_class: ConsolidationPolicy)
     @nav_buttons.push('comparison_tool', 'my_projects')

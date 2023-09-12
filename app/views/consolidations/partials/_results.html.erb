@@ -15,7 +15,7 @@
             <div class="ml-4">
               <h3
                 class="text-base font-medium border-b-2"
-                x-text="master_template[type1_type_id][type1_id].name"
+                x-text="`${master_template[type1_type_id][type1_id].name} (${master_template[type1_type_id][type1_id].description})`"
               ></h3>
               <template
                 x-for="population_name_id in Object.keys(master_template[type1_type_id][type1_id].populations)"
@@ -26,12 +26,12 @@
                       x-text="master_template[type1_type_id][type1_id].populations[population_name_id].name"
                     ></span>
                     <template
-                      x-if="rss_lookup[`${extraction_ids[extraction_ids.length - 1].id}-${type1_id}-${population_name_id}`] && (result_statistic_section_type_id > 1 && result_statistic_section_type_id < 4)"
+                      x-if="rss_lookup[`${extraction_ids[extraction_ids.length - 1].id}-${type1_type_id}-${type1_id}-${population_name_id}`] && (result_statistic_section_type_id > 1 && result_statistic_section_type_id < 4)"
                     >
                       <span
                         class="ml-1 font-bold text-xs text-srdrpurple cursor-pointer"
-                        @click="current_rss_id = rss_lookup[`${extraction_ids[extraction_ids.length - 1].id}-${type1_id}-${population_name_id}`];
-                        current_population_name_id = population_name_id;"
+                        @click="current_rss_id = rss_lookup[`${extraction_ids[extraction_ids.length - 1].id}-${type1_type_id}-${type1_id}-${population_name_id}`];
+                        comparables_key = `${type1_type_id}-${type1_id}-${population_name_id}`;"
                         >(Add Comparisons)</span
                       >
                     </template>
@@ -92,7 +92,7 @@
                                         :title="`Extraction ID: ${extraction.id} by ${extraction.user}`"
                                       >
                                         <template
-                                          x-if="extraction_ids.length !== extraction_id_index + 1 || (extraction_ids.length === extraction_id_index + 1 && createPlaceholderMessage(extraction.id, type1_type_id, type1_id, population_name_id, arm_id, timepoint_name_id, measure_id, rss_lookup[`${extraction.id}-${type1_id}-${population_name_id}`]) !== 'no measure')"
+                                          x-if="extraction_ids.length !== extraction_id_index + 1 || (extraction_ids.length === extraction_id_index + 1 && createPlaceholderMessage(extraction.id, type1_type_id, type1_id, population_name_id, arm_id, timepoint_name_id, measure_id, rss_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}`]) !== 'no measure')"
                                         >
                                           <div>
                                             <input
@@ -102,16 +102,16 @@
                                               type="text"
                                               size="4"
                                               :value="results_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}-${arm_id}-${timepoint_name_id}-${measure_id}`]?.record_value"
-                                              :placeholder="createPlaceholderMessage(extraction.id, type1_type_id, type1_id, population_name_id, arm_id, timepoint_name_id, measure_id, rss_lookup[`${extraction.id}-${type1_id}-${population_name_id}`])"
+                                              :placeholder="createPlaceholderMessage(extraction.id, type1_type_id, type1_id, population_name_id, arm_id, timepoint_name_id, measure_id, rss_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}`])"
                                             />
                                           </div>
                                         </template>
                                         <template
-                                          x-if="extraction_ids.length === extraction_id_index + 1 && createPlaceholderMessage(extraction.id, type1_type_id, type1_id, population_name_id, arm_id, timepoint_name_id, measure_id, rss_lookup[`${extraction.id}-${type1_id}-${population_name_id}`]) === 'no measure'"
+                                          x-if="extraction_ids.length === extraction_id_index + 1 && createPlaceholderMessage(extraction.id, type1_type_id, type1_id, population_name_id, arm_id, timepoint_name_id, measure_id, rss_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}`]) === 'no measure'"
                                         >
                                           <div
                                             class="bg-srdrpurple text-white rounded-md text-center cursor-pointer text-xs"
-                                            @click="createRssm(rss_lookup[`${extraction.id}-${type1_id}-${population_name_id}`], measure_id)"
+                                            @click="createRssm(rss_lookup[`${extraction.id}-${type1_type_id}-${type1_id}-${population_name_id}`], measure_id)"
                                           >
                                             Add
                                           </div>

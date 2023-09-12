@@ -36,7 +36,11 @@ services:
         echo "All done!";
       '
     healthcheck:
-      test: ["CMD-SHELL", "[ -f config/certs/elasticsearch/elasticsearch.crt ]"]
+      test:
+        [
+          "CMD-SHELL",
+          "[ -f config/certs/elasticsearch/elasticsearch.crt ]"
+        ]
       interval: 1s
       timeout: 5s
       retries: 120

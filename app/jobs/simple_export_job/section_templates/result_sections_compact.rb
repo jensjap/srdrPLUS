@@ -17,7 +17,7 @@ module SimpleExportJob::SectionTemplates::ResultSectionsCompact
         ws_net  = @package.workbook.add_worksheet(name: 'NET Differences')
 
         # Start printing rows to the sheets. First the basic headers:
-        # ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'PMID']
+        # ['Extraction ID', 'Username', 'Citation ID', 'Citation Name', 'RefMan', 'other_reference', 'PMID']
         ws_desc_header = ws_desc.add_row(sheet_info.header_info + ['Outcome', 'Outcome Description', 'Outcome Type',
                                                                    'Population', 'Digest', 'Timepoint', 'Timepoint Unit', 'Arm', 'Arm Description', 'Measure', 'Value'])
         ws_bac_header  = ws_bac.add_row(sheet_info.header_info +  ['Outcome', 'Outcome Description', 'Outcome Type',
@@ -43,6 +43,7 @@ module SimpleExportJob::SectionTemplates::ResultSectionsCompact
             new_row << extraction[:extraction_info][:citation_id]
             new_row << extraction[:extraction_info][:citation_name]
             new_row << extraction[:extraction_info][:refman]
+            new_row << extraction[:extraction_info][:other_reference]
             new_row << extraction[:extraction_info][:pmid]
             new_row << extraction[:extraction_info][:authors]
             new_row << extraction[:extraction_info][:publication_date]
@@ -119,6 +120,7 @@ module SimpleExportJob::SectionTemplates::ResultSectionsCompact
       + extraction[:extraction_info][:citation_id].to_s\
       + extraction[:extraction_info][:citation_name].to_s\
       + extraction[:extraction_info][:refman].to_s\
+      + extraction[:extraction_info][:other_reference].to_s\
       + extraction[:extraction_info][:pmid].to_s\
       + extraction[:extraction_info][:authors].to_s\
       + extraction[:extraction_info][:publication_date].to_s\

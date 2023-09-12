@@ -3,12 +3,11 @@
 one:
   key_questions_project: one
   question: one
-  deleted_at:
-  active: true
+#  deleted_at:
+#  active: true
 
 two:
   key_questions_project: two
   question: two
-  deleted_at:
-  active: true
-
+#  deleted_at:
+#  active: true

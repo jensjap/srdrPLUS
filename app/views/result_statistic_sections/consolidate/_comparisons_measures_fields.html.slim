@@ -1,6 +1,0 @@
-.nested-fields
-  - if f.object.measurement.nil?()
-    - f.object.build_measurement()
-  /= label_tag f.object.measure.name
-  = f.simple_fields_for :measurement do |m|
-    = m.input :value, label: false

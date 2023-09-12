@@ -4,13 +4,12 @@ one:
   timepoint: one
   comparison: one
   result_statistic_sections_measure: one
-  deleted_at:
-  active: false
+#  deleted_at:
+#  active: false
 
 two:
   timepoint: two
   comparison: two
   result_statistic_sections_measure: two
-  deleted_at:
-  active: false
-
+#  deleted_at:
+#  active: false

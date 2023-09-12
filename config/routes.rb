@@ -44,7 +44,6 @@ Rails.application.routes.draw do
   devise_for :admins
   devise_for :users, controllers: {
     confirmations: 'users/confirmations',
-    omniauth_callbacks: 'users/omniauth_callbacks',
     passwords: 'users/passwords',
     registrations: 'users/registrations',
     sessions: 'users/sessions',
@@ -116,11 +115,18 @@ Rails.application.routes.draw do
         resources :citations, only: %i[index show]
         resources :key_questions, only: %i[index show]
         resources :extractions, only: %i[index show]
+        resources :sd_meta_data, only: %i[index show]
       end
       resources :extraction_forms_projects, shallow: true, only: [] do
         resources :extraction_forms_projects_sections, only: %i[index show]
       end
     end # END namespace :v3 do
+
+    namespace :v4 do
+      resources :projects, shallow: true, only: [:show] do
+        resources :extractions, only: %i[index]
+      end
+    end # END namespace :v4 do
   end # END namespace :api do
 
   resources :comparisons
@@ -196,7 +202,7 @@ Rails.application.routes.draw do
     resources :fulltext_screenings_reasons_users
   end
 
-  resources :abstract_screening_results, only: %i[show update]
+  resources :abstract_screening_results, only: %i[show update destroy]
   resources :fulltext_screening_results, only: %i[show update]
 
   resources :result_statistic_sections_measures, only: %i[create]
@@ -233,8 +239,7 @@ Rails.application.routes.draw do
       post 'create_full_text_screening_extraction_form'
     end
 
-    resources :citations do
-    end
+    resources :citations, only: %i[new create update edit show index]
 
     resources :extractions do
       collection do
@@ -323,7 +328,6 @@ Rails.application.routes.draw do
     member do
       post 'export'
       post 'export_citation_labels'
-      post 'export_to_gdrive'
       get  'export_assignments_and_mappings'
       post 'import_assignments_and_mappings'
       post 'simple_import'
@@ -345,11 +349,20 @@ Rails.application.routes.draw do
   get 'resources' => 'static_pages#resources'
   get 'published_projects' => 'static_pages#published_projects'
 
-  resource :profile, only: %i[show edit update]
+  resource :profile, only: %i[show edit update] do
+    get 'storage' => 'profiles#read_storage'
+    post 'storage' => 'profiles#set_storage'
+  end
+
   resources :degrees, only: [:index]
   resources :organizations, only: [:index]
   resources :sections, only: [:index]
   resources :imports, only: [:create]
+
+  resource :profile, only: %i[show edit update] do
+    post 'toggle_labels_visibility', on: :member
+    get 'get_labels_visibility', on: :member
+  end
 
   resources :screening_forms, only: [] do
     resources :sf_questions, shallow: true
@@ -377,4 +390,10 @@ Rails.application.routes.draw do
 
   resources :screening_qualifications, only: %i[create]
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+
+  get '/model_performances/by_project/:project_id', to: 'model_performances#show_by_project'
+  get '/model_performances/by_timestamp/:timestamp', to: 'model_performances#show_by_timestamp'
+  get '/model_performances/timestamps/:project_id', to: 'model_performances#show_timestamps'
+
+  get 'projects/:id/unlabeled_predictions', to: 'predictions#get_unlabeled_with_intervals'
 end

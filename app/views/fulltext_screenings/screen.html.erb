@@ -29,13 +29,16 @@
       @click="historyPanel = true"
       class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
     >
-      Past Labels
+      Your Labels (<span
+        x-text="cps.filter(cp => cp.label !== null).filter(cp => cp.privileged == false).length"
+      ></span
+      >)
     </button>
-    <div class="mr-36">
+    <div class="h-24 mr-44 overflow-y-auto flex items-center">
       <div class="horizontal-scroll-wrapper">
         <div class="flex items-center">
           <h1
-            class="px-8 text-base font-bold leading-none overflow-y-auto"
+            class="px-8 text-base font-bold leading-none"
             x-text="citation.title"
           ></h1>
         </div>
@@ -48,7 +51,7 @@
   >
     <div class="vertical-scroll-wrapper">
       <div class="vertical-scroll-wrapper-item">
-        <div class="px-8 leading-none" x-text="citation.abstract"></div>
+        <div class="px-8 leading-5" x-text="citation.abstract"></div>
         <hr />
         <div
           class="px-8 break-all leading-none"
@@ -90,7 +93,7 @@
           <div
             class="cursor-pointer border-b-4 bg-srdrpurple flex justify-center items-center"
             @click="fsr.label = 0; if (requireReasoning()) { reasoningMenu = true } else { updateFsr(true) }"
-            :class="(fsr.label == 0 || fsr.label == null)? '' : 'saturate-[0.1]'"
+            :class="(fsr.label == 0 || fsr.label == null) ? '' : 'saturate-[0.1]'"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -121,7 +124,7 @@
         <div
           class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
           @click="fsr.label = 1; if (requireReasoning()) { reasoningMenu = true } else { updateFsr(true) }"
-          :class="(fsr.label == 1 || fsr.label == null)? '' : 'saturate-[0.1]'"
+          :class="(fsr.label == 1 || fsr.label == null) ? '' : 'saturate-[0.1]'"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -143,6 +146,12 @@
 
 <script>
   document.addEventListener("alpine:init", () => {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+    };
     Alpine.data("screenStore", () => ({
       desktop: false,
       reasoningMenu: false,
@@ -209,8 +218,7 @@
       init() {
         const url = new URL(window.location.href);
         const fsr_id = url.searchParams.get("fsr_id");
-        const before_fsr_id = url.searchParams.get("before_fsr_id");
-        this.getFsrId(fsr_id, before_fsr_id);
+        this.getFsrId(fsr_id);
 
         const smallDevice = window.matchMedia("(min-width: 1024px)");
         smallDevice.addListener(handleDeviceChange);
@@ -288,15 +296,6 @@
         return satisfactory;
       },
 
-      turnOffAllReasons() {
-        for (var i = 0; i < this.fsr.predefined_reasons.length; i++) {
-          this.fsr.predefined_reasons[i].selected = false;
-        }
-        for (var i = 0; i < this.fsr.custom_reasons.length; i++) {
-          this.fsr.custom_reasons[i].selected = false;
-        }
-      },
-
       invalidCustomValue() {
         if (this.newCustomValue == "") {
           toastr.error("This field cannot be empty.");
@@ -344,13 +343,7 @@
         }
         const response = await fetch(url, {
           method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           body: JSON.stringify({
             name: this.newCustomValue.trim(),
           }),
@@ -363,7 +356,6 @@
 
       async updateCustomValue(type, values) {
         const id = values.id;
-        const pos = values.pos;
         const newCustomValue = values.newCustomValue || false;
         let url;
         if (type == "custom_reasons") {
@@ -373,15 +365,8 @@
         }
         const response = await fetch(url, {
           method: "PATCH",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           body: JSON.stringify({
-            pos,
             newCustomValue,
           }),
         });
@@ -389,6 +374,27 @@
         await this.getFsr();
         this.addReasonModal.on = false;
         this.newCustomValue = "";
+      },
+
+      async updateOrderings(dragPos, dropPos, orderableKey, table) {
+        const temp = this.fsr[orderableKey][dropPos];
+        this.fsr[orderableKey][dropPos] = this.fsr[orderableKey][dragPos];
+        this.fsr[orderableKey][dragPos] = temp;
+        const tempOrderableElements = this.fsr[orderableKey];
+        this.fsr[orderableKey] = [];
+        this.$nextTick(() => {
+          this.fsr[orderableKey] = tempOrderableElements;
+          const orderings = {};
+          tempOrderableElements.forEach(
+            (oe, index) => (orderings[index] = { id: oe.id, table })
+          );
+          fetch("/api/v1/orderings/update_positions", {
+            method: "PATCH",
+            headers,
+            body: JSON.stringify({ orderings }),
+          });
+          this.fsr[orderableKey].forEach((el, index) => (el.pos = index + 1));
+        });
       },
 
       async deleteCustomValue(type, index) {
@@ -406,13 +412,7 @@
           }
           const response = await fetch(url, {
             method: "DELETE",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
+            headers,
             body: JSON.stringify({
               id,
               destroyExistingValues: true,
@@ -436,24 +436,18 @@
         this.confirmationModalLabel = label;
         this.confirmationModalText = this.confirmationModalTexts[label];
         this.confirmationModal = true;
-        setTimeout(() => (this.confirmationModal = false), 1000);
       },
 
-      async getFsrId(fsrId, beforeFsrId) {
+      async getFsrId(fsrId) {
         let url = "";
         if (fsrId) {
           url = `/fulltext_screenings/<%= params[:fulltext_screening_id] %>/screen?fsr_id=${fsrId}`;
-        } else if (beforeFsrId) {
-          url = `/fulltext_screenings/<%= params[:fulltext_screening_id] %>/screen?before_fsr_id=${beforeFsrId}`;
         } else {
           url = `/fulltext_screenings/<%= params[:fulltext_screening_id] %>/screen`;
         }
         const response = await fetch(url, {
           method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
+          headers,
         });
         const data = await response.json();
 
@@ -465,49 +459,47 @@
         this.getFsr();
       },
 
-      async updateFsr(getNewFsrId) {
-        await this.fetchFsr("PATCH");
-        if (getNewFsrId) {
-          await this.getFsrId();
+      async updateFsr(submissionType) {
+        if (submissionType === "label") {
           this.showConfirmation(this.fsr.label);
         }
+        await this.fetchFsr("PATCH", submissionType);
+        this.confirmationModal = false;
       },
 
       async getFsr() {
         this.fetchFsr("GET");
       },
 
-      async fetchFsr(method) {
+      async fetchFsr(method, submissionType) {
         baseUrl = window.location.href.split("?")[0];
         window.history.pushState("", "", baseUrl);
-        const headers = {
+        const customHeaders = {
           method,
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
         };
 
         if (method == "PATCH") {
-          headers.body = JSON.stringify({
+          customHeaders.body = JSON.stringify({
             fsr: this.fsr,
+            submissionType,
           });
         }
         const response = await fetch(
           `/fulltext_screening_results/${this.fsr.id}`,
-          headers
+          customHeaders
         );
         const data = await response.json();
 
+        if (submissionType === "label") {
+          return this.getFsrId();
+        }
         if (method == "GET") {
           this.fsr = data.fsr;
           this.citation = data.citation;
           this.options = data.options;
+          this.cps = data.cps;
         }
-        this.cps = data.cps;
       },
     }));
   });

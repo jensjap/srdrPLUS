@@ -3,10 +3,9 @@
 one:
   name: MyString1
   description: MyText1
-  deleted_at:
+#  deleted_at:
 
 two:
   name: MyString2
   description: MyText2
-  deleted_at:
-
+#  deleted_at:

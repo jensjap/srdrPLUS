@@ -9,6 +9,7 @@ module Api
         extraction_forms_projects_sections
         extraction_forms_projects_sections_type1s
         extractions_extraction_forms_projects_sections_type1s
+        extractions_extraction_forms_projects_sections_type1_row_columns
         fulltext_screenings_reasons
         fulltext_screenings_reasons_users
         fulltext_screenings_tags
@@ -82,8 +83,7 @@ module Api
         params
           .permit(:drop_conflicting_dependencies,
                   lsof_orderings_to_remove_dependencies: %i[id table],
-                  orderings: %i[id position table]
-          )
+                  orderings: %i[id position table])
       end
     end
   end

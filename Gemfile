@@ -48,8 +48,6 @@ gem 'foundation-icons-sass-rails' # Use Zurb Foundation as Front-End Framework
 gem 'foundation-rails' # Use Zurb Foundation as Front-End Framework
 gem 'fuzzy_match' # Fuzzy Match
 gem 'gon' # Access ruby data in JavaScript.
-gem 'google-api-client' # Access Google sheets programmatically
-gem 'googleauth'
 gem 'httparty' # Simple calls to external API.
 gem 'jbuilder'
 gem 'jquery-datatables' # For making sortable searchable tables
@@ -58,8 +56,7 @@ gem 'kaminari' # Pagination.
 gem 'mysql2' # Use mysql as the database for Active Record
 gem 'net-ftp'
 gem 'net-smtp', require: false
-gem 'omniauth'
-gem 'omniauth-google-oauth2'
+gem 'nokogiri'
 gem 'passenger'
 gem 'puma' # Use Puma as the app server
 gem 'pundit' # authorizations.
@@ -67,7 +64,7 @@ gem 'rack-attack' # Limit request rates
 gem 'rack-cors' # CORS.
 gem 'rails', '~> 7.0.3'
 gem 'redis', '4.7.1'
-gem 'ref_parsers', '~> 0.2.0' # for parsing ris files.
+gem 'ref_parsers', '~> 0.2.0', github: 'jensjap/ref_parsers' # for parsing ris files.
 gem 'remotipart', github: 'mshibuya/remotipart'
 gem 'responders' # Help DRY up code.
 gem 'roo', '~> 2.9.0'

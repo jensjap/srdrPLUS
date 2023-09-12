@@ -43,7 +43,8 @@ class ResultStatisticSectionsController < ApplicationController
 
   def add_comparison
     respond_to do |format|
-      if temp_result_statistic_section.update(result_statistic_section_params)
+      temp_rss = temp_result_statistic_section
+      if temp_rss.update(result_statistic_section_params)
         format.html do
           redirect_to edit_result_statistic_section_path(@result_statistic_section),
                       notice: t('success')
@@ -55,7 +56,9 @@ class ResultStatisticSectionsController < ApplicationController
           flash[:alert] = 'Invalid comparison'
           render :edit
         end
-        format.json { render json: @result_statistic_section.errors, status: :unprocessable_entity }
+        format.json do
+          render json: { error: temp_rss.errors.full_messages.join(' ') }, status: :unprocessable_entity
+        end
         format.js { flash.now[:notice] = 'Invalid comparison' }
       end
     end
@@ -167,8 +170,7 @@ class ResultStatisticSectionsController < ApplicationController
     #
     #        measure_ids: [],
     #        comparisons_attributes: [ :id, :_destroy, :result_statistic_section_id,
-    #          comparisons_measures_attributes: [ :id, :_destroy, :comparison_id, :measure_id ,
-    #          measurement_attributes: [ :id, :_destroy, :comparisons_measure_id, :value ] ],
+    #          comparisons_measures_attributes: [ :id, :_destroy, :comparison_id, :measure_id ],
     #        comparate_groups_attributes: [ :id, :_destroy, :comparison_id,
     #        comparates_attributes: [ :id, :_destroy, :comparate_group_id, :comparable_element_id,
     #        comparable_element_attributes: [ :id, :_destroy, :comparable_type, :comparable_id, :_destroy ] ] ] ] )

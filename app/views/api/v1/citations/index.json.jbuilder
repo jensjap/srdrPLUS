@@ -9,7 +9,7 @@ json.results do
     json.name citation.name
     json.abstract citation.abstract_utf8
     json.pmid citation.pmid
-    json.refman citation.refman
+    json.refman @citation_project_dict[citation.id].refman
     if citation.journal.present?
       json.journal do
         json.publication_date citation.journal.publication_date

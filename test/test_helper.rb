@@ -9,9 +9,11 @@ if ENV['RAILS_ENV'] == 'test'
 end
 
 ENV['RAILS_ENV'] ||= 'test'
+
 require File.expand_path('../config/environment', __dir__)
+
 require 'rails/test_help'
-require 'seed_data_helper'
+require 'test_data_helper'
 
 # reindex models
 Project.reindex
@@ -28,6 +30,9 @@ class ActiveSupport::TestCase
   fixtures :all
 
   setup do
+    # This is run during each setup. Keep this light.
+    extend TestData
+
     # Set current_user for suggestable after_create callback.
     # We do this via User.current=()
     # We need to set this because in model tests before_action in
@@ -35,8 +40,6 @@ class ActiveSupport::TestCase
     # controller tests, then the User.current may not be set to the
     # correct/current user.
     User.current = User.first
-
-    extend SeedData
   end
 
   # Add more helper methods to be used by all tests here...

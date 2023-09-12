@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_23_071254) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -28,6 +28,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "privileged", default: false
     t.index ["abstract_screening_id"], name: "index_abstract_screening_results_on_abstract_screening_id"
     t.index ["citations_project_id"], name: "asr_on_cp"
     t.index ["user_id"], name: "asr_on_u"
@@ -312,6 +313,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
     t.integer "consensus_type_id"
     t.boolean "pilot_flag"
     t.string "screening_status", default: "asu"
+    t.text "refman"
+    t.text "other_reference"
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id"
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id"
     t.index ["project_id"], name: "index_citations_projects_on_project_id"
@@ -663,6 +666,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
     t.integer "timepoint_name_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "pos", default: 999999
     t.index ["extractions_extraction_forms_projects_sections_type1_row_id", "timepoint_name_id"], name: "index_eefpst1rc_on_eefpst1r_id_tn_id"
     t.index ["timepoint_name_id"], name: "index_eefpst1rc_on_tn_id"
   end
@@ -677,7 +681,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
   end
 
   create_table "extractions_extraction_forms_projects_sections_type1s", id: :integer, charset: "utf8mb3", force: :cascade do |t|
-    t.integer "type1_type_id"
+    t.integer "type1_type_id", default: 1
     t.integer "extractions_extraction_forms_projects_section_id"
     t.integer "type1_id"
     t.string "units"
@@ -727,6 +731,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "privileged", default: false
     t.index ["citations_project_id"], name: "fsr_on_cp"
     t.index ["fulltext_screening_id"], name: "index_fulltext_screening_results_on_fulltext_screening_id"
     t.index ["user_id"], name: "fsr_on_u"
@@ -970,14 +975,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
     t.index ["reason_id"], name: "index_labels_reasons_on_reason_id"
   end
 
-  create_table "measurements", id: :integer, charset: "utf8mb3", force: :cascade do |t|
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "value"
-    t.integer "comparisons_measure_id"
-    t.index ["comparisons_measure_id"], name: "index_measurements_on_comparisons_measure_id"
-  end
-
   create_table "measures", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
@@ -1020,13 +1017,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
     t.index ["message_type_id"], name: "index_messages_on_message_type_id"
   end
 
-  create_table "ml_models", charset: "utf8mb3", force: :cascade do |t|
+  create_table "ml_models", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "timestamp", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "ml_models_projects", charset: "utf8mb3", force: :cascade do |t|
+  create_table "ml_models_projects", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "ml_model_id", null: false
     t.integer "project_id", null: false
     t.datetime "created_at", null: false
@@ -1034,7 +1031,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
     t.index ["ml_model_id", "project_id"], name: "index_ml_models_projects_on_ml_model_id_and_project_id", unique: true
   end
 
-  create_table "ml_predictions", charset: "utf8mb3", force: :cascade do |t|
+  create_table "ml_predictions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "citations_project_id", null: false
     t.bigint "ml_model_id", null: false
     t.float "score", null: false
@@ -1042,6 +1039,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
     t.datetime "updated_at", null: false
     t.index ["citations_project_id"], name: "fk_rails_c7d0d53a87"
     t.index ["ml_model_id"], name: "fk_rails_6c1d59597a"
+  end
+
+  create_table "model_performances", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "ml_model_id"
+    t.string "label"
+    t.float "score"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ml_model_id"], name: "index_model_performances_on_ml_model_id"
   end
 
   create_table "notes", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -1159,6 +1165,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "projects_paginate_per"
+    t.boolean "conflict_resolution_label_visibility", default: false
+    t.text "storage"
     t.index ["organization_id"], name: "index_profiles_on_organization_id"
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
     t.index ["username"], name: "index_profiles_on_username", unique: true
@@ -1176,6 +1184,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.text "authors_of_report"
+    t.boolean "auto_train", default: false
   end
 
   create_table "projects_users", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -1981,6 +1990,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
     t.index ["timepoint_id"], name: "index_tps_comparisons_rssms_on_timepoint_id"
   end
 
+  create_table "training_data_infos", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "category"
+    t.integer "count"
+    t.bigint "ml_model_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ml_model_id"], name: "index_training_data_infos_on_ml_model_id"
+  end
+
   create_table "type1_types", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
@@ -2136,11 +2154,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
   add_foreign_key "labels_reasons", "labels"
   add_foreign_key "labels_reasons", "projects_users_roles"
   add_foreign_key "labels_reasons", "reasons"
-  add_foreign_key "measurements", "comparisons_measures"
   add_foreign_key "message_types", "frequencies"
   add_foreign_key "messages", "message_types"
   add_foreign_key "ml_predictions", "citations_projects"
   add_foreign_key "ml_predictions", "ml_models"
+  add_foreign_key "model_performances", "ml_models"
   add_foreign_key "notes", "projects_users_roles"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
@@ -2221,6 +2239,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_101930) do
   add_foreign_key "tps_arms_rssms", "result_statistic_sections_measures"
   add_foreign_key "tps_comparisons_rssms", "comparisons"
   add_foreign_key "tps_comparisons_rssms", "result_statistic_sections_measures"
+  add_foreign_key "training_data_infos", "ml_models"
   add_foreign_key "users", "user_types"
   add_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures"
 end

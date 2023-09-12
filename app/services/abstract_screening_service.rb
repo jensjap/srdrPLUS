@@ -2,10 +2,55 @@ class AbstractScreeningService
   def self.as_user?(user)
     return false if user.nil?
 
-    (ENV['SRDRPLUS_AS_USERS'].nil? ? [] : JSON.parse(ENV['SRDRPLUS_AS_USERS'])).include?(user.id)
+    (ENV['SRDRPLUS_AS_USERS'].nil? ? [] : JSON.parse(ENV['SRDRPLUS_AS_USERS']))
+      .include?(user.id)
+  end
+
+  def self.screening_dashboard_user?(user)
+    return false if user.nil?
+
+    (ENV['SRDRPLUS_SCREENING_DASHBOARD_USERS'].nil? ? [] : JSON.parse(ENV['SRDRPLUS_SCREENING_DASHBOARD_USERS']))
+      .include?(user.id)
+  end
+
+  def self.find_asr_id_to_be_resolved(abstract_screening, user, create_record = true)
+    unfinished_privileged_asr =
+      abstract_screening
+      .abstract_screening_results
+      .includes(:citations_project)
+      .where(
+        user:,
+        privileged: true,
+        label: nil,
+        citations_project: { screening_status: CitationsProject::AS_IN_CONFLICT }
+      )
+      .first
+    return unfinished_privileged_asr if unfinished_privileged_asr
+
+    citations_project =
+      CitationsProject
+      .left_joins(:abstract_screening_results)
+      .where(
+        project: abstract_screening.project,
+        screening_status: CitationsProject::AS_IN_CONFLICT
+      )
+      .where.not(abstract_screening_results: { privileged: true })
+      .first
+
+    return nil unless citations_project
+
+    if create_record
+      AbstractScreeningResult.create!(user:, abstract_screening:, citations_project:, privileged: true)
+    else
+      true
+    end
   end
 
   def self.find_citation_id(abstract_screening, user)
+    #!!! TODO: consider the following scenario:
+    #          unfinished_asr exists, but before it is finished
+    #          citations_project.screening_status changes via
+    #          some other mechanism.
     unfinished_asr = find_unfinished_asr(abstract_screening, user)
     return unfinished_asr.citation.id if unfinished_asr
 
@@ -25,19 +70,30 @@ class AbstractScreeningService
     end
   end
 
-  def self.find_or_create_asr(abstract_screening, user)
+  def self.find_or_create_unprivileged_asr(abstract_screening, user)
     citation_id = find_citation_id(abstract_screening, user)
     return nil if citation_id.nil?
 
+    # Explicitly looking for 'privileged: false' ASR here.
+    # Without it we could have found an unfinished_asr.citation.id and then
+    # find a finished ASR which is 'privileged: true'.
+    # This happens when users resolve conflicts faster than they screen
+    # their own citations (very common in Pilot rounds).
     cp = CitationsProject.find_by(project: abstract_screening.project, citation_id:)
-    AbstractScreeningResult.find_or_create_by!(abstract_screening:, user:, citations_project: cp)
+    AbstractScreeningResult.find_or_create_by!(
+      abstract_screening:,
+      user:,
+      citations_project: cp,
+      privileged: false
+    )
   end
 
   def self.find_unfinished_asr(abstract_screening, user)
     AbstractScreeningResult.find_by(
       abstract_screening:,
       user:,
-      label: nil
+      label: nil,
+      privileged: false
     )
   end
 
@@ -54,9 +110,16 @@ class AbstractScreeningService
     end
   end
 
-  def self.get_next_singles_citation_id(abstract_screening)
+  def self.get_next_singles_citation_id(abstract_screening, x = 0)
     project_screened_citation_ids = project_screened_citation_ids(abstract_screening.project)
-
+    non_asu_citation_ids =
+      CitationsProject
+      .where(project: abstract_screening.project)
+      .where.not(
+        screening_status: CitationsProject::AS_UNSCREENED
+      )
+      .map(&:citation_id)
+    ineligible_citation_ids = (project_screened_citation_ids + non_asu_citation_ids).uniq
     preferred_citation = abstract_screening
                          .project
                          .citations
@@ -67,20 +130,37 @@ class AbstractScreeningService
                                      mp1.citations_project_id = mp2.citations_project_id
                                      AND
                                      mp1.created_at < mp2.created_at
-                                   )'
-                               )
+                                   )')
                          .where('mp2.id IS NULL')
-                         .where.not(id: project_screened_citation_ids)
-                         .where('mp1.score BETWEEN ? AND ?', 0.3, 0.7)
+                         .where.not(id: ineligible_citation_ids)
+                         .where('mp1.score BETWEEN ? AND ?',  0.5 - x, 0.5 + x)
                          .sample
 
     return preferred_citation.id if preferred_citation.present?
+
+    highest_score_citation = abstract_screening
+                             .project
+                             .citations
+                             .joins('INNER JOIN citations_projects AS cp2 ON cp2.citation_id = citations.id')
+                             .joins('INNER JOIN ml_predictions AS mp3 ON mp3.citations_project_id = cp2.id')
+                             .joins('LEFT JOIN ml_predictions AS mp4 ON
+                                        (
+                                          mp3.citations_project_id = mp4.citations_project_id
+                                          AND
+                                          mp3.created_at < mp4.created_at
+                                        )')
+                             .where('mp4.id IS NULL')
+                             .where.not(id: ineligible_citation_ids)
+                             .order('mp3.score DESC')
+                             .first
+
+    return highest_score_citation.id if highest_score_citation.present?
 
     random_citation = abstract_screening
                       .project
                       .citations
                       .joins('INNER JOIN citations_projects AS cp2 ON cp2.citation_id = citations.id')
-                      .where.not(id: project_screened_citation_ids)
+                      .where.not(id: ineligible_citation_ids)
                       .sample
 
     random_citation&.id
@@ -98,7 +178,7 @@ class AbstractScreeningService
   end
 
   def self.get_next_expert_needed_citation_id(abstract_screening, user)
-    if abstract_screening.project.projects_users.find { |as| as.user_id==user.id }.is_expert
+    if abstract_screening.project.projects_users.find { |as| as.user_id == user.id }.is_expert
       get_next_doubles_citation_id(abstract_screening, user)
     else
       unscreened_citation_ids_by_experts = expert_screened_citation_ids(abstract_screening)
@@ -112,7 +192,7 @@ class AbstractScreeningService
   end
 
   def self.get_next_only_expert_novice_mixed_citation_id(abstract_screening, user)
-    if abstract_screening.project.projects_users.find { |as| as.user_id==user.id }.is_expert
+    if abstract_screening.project.projects_users.find { |as| as.user_id == user.id }.is_expert
       unscreened_citation_ids_by_novices =
         novice_screened_citation_ids(abstract_screening)
       citation_id = unscreened_citation_ids_by_novices.sample
@@ -137,6 +217,7 @@ class AbstractScreeningService
     abstract_screening
       .abstract_screening_results
       .includes(citations_project: :citation)
+      .where(privileged: false)
       .where
       .not(user:)
       .map(&:citation)
@@ -147,6 +228,7 @@ class AbstractScreeningService
     abstract_screening
       .abstract_screening_results
       .includes(citations_project: :citation)
+      .where(privileged: false)
       .where(user:)
       .map(&:citation)
       .map(&:id)
@@ -157,10 +239,14 @@ class AbstractScreeningService
       .abstract_screening_results
       .joins(:citations_project)
       .group(:citations_project_id)
-      .having("count(*)=1")
+      .having('count(*)=1')
       .includes(citations_project: :citation,
                 user: { projects_users: :project })
-      .select { |asr| asr.user.projects_users.any? { |pu| pu.is_expert && pu.project == asr.abstract_screening.project } }
+      .select do |asr|
+      asr.user.projects_users.any? do |pu|
+        pu.is_expert && pu.project == asr.abstract_screening.project
+      end
+    end
       .map(&:citation)
       .map(&:id)
   end
@@ -170,10 +256,14 @@ class AbstractScreeningService
       .abstract_screening_results
       .joins(:citations_project)
       .group(:citations_project_id)
-      .having("count(*)=1")
+      .having('count(*)=1')
       .includes(citations_project: :citation,
                 user: { projects_users: :project })
-      .select { |asr| asr.user.projects_users.any? { |pu| !pu.is_expert && pu.project == asr.abstract_screening.project } }
+      .select do |asr|
+      asr.user.projects_users.any? do |pu|
+        !pu.is_expert && pu.project == asr.abstract_screening.project
+      end
+    end
       .map(&:citation)
       .map(&:id)
   end
@@ -186,25 +276,12 @@ class AbstractScreeningService
     return false unless AbstractScreening::NON_PERPETUAL.include?(abstract_screening.abstract_screening_type)
 
     if abstract_screening.abstract_screening_type == AbstractScreening::PILOT &&
-       (abstract_screening.abstract_screening_results.where(user:).count < abstract_screening.no_of_citations)
+       (abstract_screening.abstract_screening_results.where(user:, privileged: false).count < abstract_screening.no_of_citations)
       return false
     end
 
     abstract_screening
       .abstract_screening_results
       .count >= abstract_screening.no_of_citations
-  end
-
-  def self.before_asr_id(abstract_screening, asr_id, user)
-    return nil if abstract_screening.blank? || asr_id.blank? || user.blank?
-
-    AbstractScreeningResult
-      .where(
-        abstract_screening:,
-        user:
-      )
-      .where(
-        'updated_at < ?', AbstractScreeningResult.find_by(id: asr_id).updated_at
-      ).order(:updated_at).last
   end
 end
