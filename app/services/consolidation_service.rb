@@ -66,7 +66,7 @@ class ConsolidationService
               master_template[eefpst1.type1.id][:populations][eefpst1r.population_name.id][:comparisons][consolidated_id] ||= {
                 name: comparison.comparate_groups.map do |cg|
                   cg.comparates.map do |comparate|
-                    comparate.comparable_element.comparable.type1.name
+                    "#{comparate.comparable_element.comparable.type1.name} (#{comparate.comparable_element.comparable.type1.description})"
                   end.join('; ')
                 end.join(' vs ')
               }
@@ -217,7 +217,7 @@ class ConsolidationService
               master_template[eefpst1.type1_type.id][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:timepoints][consolidated_id] ||= {
                 name: comparison.comparate_groups.map do |cg|
                   cg.comparates.map do |comparate|
-                    comparate.comparable_element.comparable.timepoint_name.name
+                    "#{comparate.comparable_element.comparable.timepoint_name.name} (#{comparate.comparable_element.comparable.timepoint_name.unit})"
                   end.join('; ')
                 end.join(' vs '),
                 unit: ''
@@ -456,7 +456,7 @@ class ConsolidationService
                       else
                         comparison.comparate_groups.map do |cg|
                           cg.comparates.map do |comparate|
-                            comparate.comparable_element.comparable.type1.name
+                            "#{comparate.comparable_element.comparable.type1.name} (#{comparate.comparable_element.comparable.type1.description})"
                           end.join('; ')
                         end.join(' vs ')
                       end,
