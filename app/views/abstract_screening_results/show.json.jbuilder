@@ -1,7 +1,8 @@
 json.word_weights WordWeight.word_weights_object(current_user, @abstract_screening)
 json.asr do
   json.id @abstract_screening_result.id
-  json.user_id = @abstract_screening_result.user_id
+  json.user_id @abstract_screening_result.user_id
+  json.username @abstract_screening_result.user.profile.username
   json.label @abstract_screening_result.label
   json.predefined_reasons @predefined_reasons
   json.predefined_tags @predefined_tags
