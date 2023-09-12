@@ -20,7 +20,7 @@
             border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium
             text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none
             focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full
-            hover:no-underline hover:text-white") %>
+            hover:no-underline hover:text-white focus:no-underline focus:text-white") %>
             <% else %>
             <button
               class="text-center mb-2 cursor-not-allowed w-full inline-flex items-center justify-center rounded-md border border-transparent bg-purple-900 opacity-80 px-4 py-2 text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
@@ -39,7 +39,7 @@
               bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm
               hover:bg-srdrpurple-light focus:outline-none focus:ring-2
               focus:ring-indigo-500 focus:ring-offset-2 w-full
-              hover:no-underline hover:text-white") do %>
+              hover:no-underline hover:text-white focus:no-underline focus:text-white") do %>
               <div>Resolve Conflicts</div>
               <% end %>
             </div>
@@ -58,7 +58,7 @@
             border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium
             text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none
             focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full
-            hover:no-underline hover:text-white") %>
+            hover:no-underline hover:text-white focus:no-underline focus:text-white") %>
           </div>
         </div>
         <div class="flex flex-wrap lg:flex-nowrap gap-4">
@@ -694,14 +694,6 @@
                     class="hover:no-underline focus:no-underline hover:text-white focus:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple hover:bg-srdrpurple-light px-4 py-1 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
                     >Screen Again</a
                   >
-                  <button
-                    x-cloak
-                    x-show="result.privileged && <%= @projects_user.project_leader? %>"
-                    class="cursor-pointer hover:no-underline hover:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-red-800 hover:bg-red-700 px-4 py-1 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
-                    @click="if (confirm(`Are you sure you want to delete this screening result for: '${result.name}'`)) { deleteAsr(result.id) }"
-                  >
-                    Remove
-                  </button>
                 </td>
               </tr>
             </template>

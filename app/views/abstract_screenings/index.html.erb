@@ -14,7 +14,7 @@
       bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm
       hover:bg-srdrpurple-light focus:outline-none focus:ring-2
       focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
-      hover:text-white") %>
+      hover:text-white focus:no-underline focus:text-white") %>
     </div>
   </div>
   <div class="px-4 sm:px-6 lg:px-8">
@@ -150,7 +150,7 @@
                     <% if AbstractScreeningService.find_citation_id(as, current_user) %>
                       <%= link_to('Continue Screening',
                         abstract_screening_screen_path(as),
-                        class: "w-full items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 my-1 text-center text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white")
+                        class: "focus:no-underline focus:text-white w-full items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 my-1 text-center text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white")
                       %>
                     <% else %>
                     <button
@@ -171,7 +171,7 @@
                       bg-srdrpurple px-4 py-2 my-1 text-center text-sm
                       font-medium text-white shadow-sm hover:bg-srdrpurple-light
                       focus:outline-none focus:ring-2 focus:ring-indigo-500
-                      focus:ring-offset-2 hover:no-underline hover:text-white") do %>
+                      focus:ring-offset-2 hover:no-underline hover:text-white focus:no-underline focus:text-white") do %>
                       <div>Resolve Conflicts</div>
                       <% end %>
                     </div>
@@ -192,7 +192,7 @@
                       text-center text-sm font-medium text-white shadow-sm
                       hover:bg-srdrpurple-light focus:outline-none focus:ring-2
                       focus:ring-indigo-500 focus:ring-offset-2
-                      hover:no-underline hover:text-white") %>
+                      hover:no-underline hover:text-white focus:no-underline focus:text-white") %>
                     <!-- prettier-ignore -->
                     <% if @project.leaders.include?(current_user) %>
                     <%= link_to('Edit', edit_abstract_screening_path(as),
@@ -201,7 +201,7 @@
                       py-2 my-1 text-center text-sm font-medium text-white
                       shadow-sm hover:bg-srdrpurple-light focus:outline-none
                       focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
-                      hover:no-underline hover:text-white") %>
+                      hover:no-underline hover:text-white focus:no-underline focus:text-white") %>
                     <% end %>
                   </td>
                 </tr>
