@@ -1,6 +1,7 @@
 json.fsr do
   json.id @fulltext_screening_result.id
   json.user_id = @fulltext_screening_result.user_id
+  json.username @abstract_screening_result.user.profile.username
   json.label @fulltext_screening_result.label
   json.predefined_reasons @predefined_reasons
   json.predefined_tags @predefined_tags

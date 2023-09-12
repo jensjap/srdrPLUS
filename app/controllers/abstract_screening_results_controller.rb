@@ -25,7 +25,7 @@ class AbstractScreeningResultsController < ApplicationController
     respond_to do |format|
       format.json do
         @abstract_screening_result = AbstractScreeningResult
-                                     .includes(citations_project: :citation)
+                                     .includes(:user, citations_project: :citation)
                                      .find(params[:id])
         authorize(@abstract_screening_result)
         if params[:resolution_mode] == 'true'
