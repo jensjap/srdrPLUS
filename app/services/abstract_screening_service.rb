@@ -1,20 +1,4 @@
-require_relative 'base_screening_service'
-
 class AbstractScreeningService < BaseScreeningService
-  def self.as_user?(user)
-    return false if user.nil?
-
-    (ENV['SRDRPLUS_AS_USERS'].nil? ? [] : JSON.parse(ENV['SRDRPLUS_AS_USERS']))
-      .include?(user.id)
-  end
-
-  def self.screening_dashboard_user?(user)
-    return false if user.nil?
-
-    (ENV['SRDRPLUS_SCREENING_DASHBOARD_USERS'].nil? ? [] : JSON.parse(ENV['SRDRPLUS_SCREENING_DASHBOARD_USERS']))
-      .include?(user.id)
-  end
-
   def self.find_asr_id_to_be_resolved(abstract_screening, user, create_record = true)
     unfinished_privileged_asr =
       abstract_screening

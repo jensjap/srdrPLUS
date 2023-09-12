@@ -334,7 +334,7 @@
             :class="citation_pool && 'bg-srdr-primary !text-white'"
             >Citations</a
           >
-          <% if AbstractScreeningService.as_user?(current_user) %>
+          <% if BaseScreeningService.screening_user?(current_user) %>
           <a
             href="<%= project_citation_lifecycle_management_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
@@ -354,7 +354,7 @@
             :class="abstract_screening && 'bg-srdr-primary !text-white'"
             >Abstract Screening</a
           >
-          <% if AbstractScreeningService.as_user?(current_user) %>
+          <% if BaseScreeningService.screening_user?(current_user) %>
           <a
             href="<%= project_fulltext_screenings_path(project) %>"
             class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"

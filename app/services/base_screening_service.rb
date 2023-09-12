@@ -1,4 +1,18 @@
 class BaseScreeningService
+  def self.screening_user?(user)
+    return false if user.nil?
+
+    (ENV['SRDRPLUS_AS_USERS'].nil? ? [] : JSON.parse(ENV['SRDRPLUS_AS_USERS']))
+      .include?(user.id)
+  end
+
+  def self.screening_dashboard_user?(user)
+    return false if user.nil?
+
+    (ENV['SRDRPLUS_SCREENING_DASHBOARD_USERS'].nil? ? [] : JSON.parse(ENV['SRDRPLUS_SCREENING_DASHBOARD_USERS']))
+      .include?(user.id)
+  end
+
   def self.find_citation_id(screening, user)
     service_name = self.name
     model, relation_name = determine_sr_model_and_relation(service_name)
@@ -9,24 +23,24 @@ class BaseScreeningService
 
     case screening.screening_type
     when :pilot
-        get_next_pilot_citation_id(screening, user)
+      get_next_pilot_citation_id(screening, user)
     when :single_perpetual, :n_size_single
-        get_next_singles_citation_id(screening)
+      get_next_singles_citation_id(screening)
     when :double_perpetual, :n_size_double
-        get_next_doubles_citation_id(screening, user)
+      get_next_doubles_citation_id(screening, user)
     when :expert_needed_perpetual, :n_size_expert_needed
-        get_next_expert_needed_citation_id(screening, user)
+      get_next_expert_needed_citation_id(screening, user)
     when :only_expert_novice_mixed_perpetual, :n_size_only_expert_novice_mixed
-        get_next_only_expert_novice_mixed_citation_id(screening, user)
+      get_next_only_expert_novice_mixed_citation_id(screening, user)
     end
   end
 
   def self.determine_sr_model_and_relation(service_name)
     case service_name
     when 'AbstractScreeningService'
-      return [AbstractScreeningResult, :abstract_screening]
+      [AbstractScreeningResult, :abstract_screening]
     when 'FulltextScreeningService'
-      return [FulltextScreeningResult, :fulltext_screening]
+      [FulltextScreeningResult, :fulltext_screening]
     else
       raise "Unknown service name: #{service_name}"
     end
@@ -35,7 +49,7 @@ class BaseScreeningService
   def self.find_unfinished_sr(screening, user, model, relation_name)
     model.find_by(
       "#{relation_name}": screening,
-      user: user,
+      user:,
       label: nil,
       privileged: false
     )
@@ -48,10 +62,10 @@ class BaseScreeningService
     citation_id = find_citation_id(screening, user)
     return nil if citation_id.nil?
 
-    cp = CitationsProject.find_by(project: screening.project, citation_id: citation_id)
+    cp = CitationsProject.find_by(project: screening.project, citation_id:)
     model.find_or_create_by!(
       "#{relation_name}": screening,
-      user: user,
+      user:,
       citations_project: cp,
       privileged: false
     )

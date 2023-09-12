@@ -73,7 +73,7 @@
       <!-- prettier-ignore -->
       <%= link_to "SR-360", project_sd_meta_data_path(project), title: 'SR-360' %>
     </div>
-    <% if AbstractScreeningService.as_user?(current_user) %>
+    <% if BaseScreeningService.screening_user?(current_user) %>
       <div class="break-words">
         <!-- prettier-ignore -->
         <%= link_to "Abstract Screening", project_abstract_screenings_path(project), title: 'Abstract Screening' %>
