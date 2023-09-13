@@ -140,6 +140,10 @@ class FulltextScreening < ApplicationRecord
     reqs
   end
 
+  def screening_type
+    fulltext_screening_type
+  end
+
   private
 
   def convert_to_fsru(reason)
@@ -155,7 +159,4 @@ class FulltextScreening < ApplicationRecord
     Sentry.capture_exception(e)
   end
 
-  def screening_type
-    fulltext_screening_type
-  end
 end
