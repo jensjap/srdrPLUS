@@ -35,19 +35,36 @@
       <span class="sr-only">Word weights</span>
       Terms & Phrases
     </button>
-    <button
-      @click="historyPanel = !historyPanel"
-      class="absolute top-0 left-0 bg-gray-100 p-2 rounded-r-md z-9 text-xs flex flex-col items-center"
+    <div
+      class="absolute top-0 bottom-0 left-0 p-1 z-[9] flex justify-center items-center"
     >
-      &gt;
-    </button>
+      <button
+        @click="historyPanel = !historyPanel"
+        class="rounded-full z-[9] border-gray-400 border-solid border bg-gray-100 p-1 cursor-pointer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="gray"
+          class="w-4 h-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M8.25 4.5l7.5 7.5-7.5 7.5"
+          />
+        </svg>
+      </button>
+    </div>
     <button
       @click="getAsrId()"
       class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-black"
     >
       Continue Screening
     </button>
-    <div class="h-24 mr-44 overflow-y-auto flex items-center">
+    <div class="h-24 mr-56 overflow-y-auto flex items-center">
       <div
         class="horizontal-scroll-wrapper"
         @mouseup="checkSelection()"
