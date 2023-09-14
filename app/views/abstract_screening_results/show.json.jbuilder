@@ -42,5 +42,5 @@ cps = @screened_cps.reverse.map do |asr|
   }
 end
 json.cps cps
-
 json.all_labels @all_labels
+json.asr_in_asic_count AbstractScreeningService.asr_in_asic_count(@abstract_screening)

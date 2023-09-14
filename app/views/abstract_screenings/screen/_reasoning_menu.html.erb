@@ -530,9 +530,8 @@
                   <template x-if="resolutionMode">
                     <div
                       class="cursor-not-allowed bg-gray-900 text-xs text-center font-bold flex justify-center items-center"
-                    >
-                      Maybe not Available in Resolution Mode
-                    </div>
+                      x-text="`Conflicts left: ${asr_in_asic_count}`"
+                    ></div>
                   </template>
                 </div>
                 <div
