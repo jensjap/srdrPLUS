@@ -37,9 +37,12 @@
     </button>
     <button
       @click="historyPanel = !historyPanel"
-      class="absolute top-0 left-0 bg-gray-100 p-2 rounded-r-md z-9 text-xs flex flex-col items-center"
+      class="absolute top-0 left-0 bg-gray-100 p-1 rounded-r-md z-9 text-xs flex flex-row items-center"
     >
-      &gt;
+      <span style='font-size: medium;'>Your Labels</span>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
+      </svg>
     </button>
     <button
       @click="getAsrId()"
@@ -102,11 +105,22 @@
 
         <button
           x-show="resolutionMode"
-          style="width: 200px"
-          class="text-center mb-2 inline-flex items-center justify-center rounded-md border border-transparent bg-purple-900 opacity-80 px-4 py-2 text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
+          style="width: 150px"
+          class="ml-6 text-center mb-2 inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-1 py-2 text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
           x-on:click="toggleLabelsVisibility()"
         >
-          See Labels
+          <span>See Labels&nbsp;&nbsp;</span>
+          <template x-if="show_all_labels">
+            <svg class="h-6 w-6">
+              <path fill="white" d="M12 4.5C7 4.5 2.73 7.61 1 12a17.3 17.3 0 0022 0C21.27 7.61 17 4.5 12 4.5zm0 13c-5 0-9.27-3.11-11-7.5a16.3 16.3 0 0122 0c-1.73 4.39-6 7.5-11 7.5zm0-11c1.93 0 3.5 1.57 3.5 3.5S13.93 13.5 12 13.5 8.5 11.93 8.5 10 10.07 6.5 12 6.5z"/>
+            </svg>
+          </template>
+          <template x-if="!show_all_labels">
+            <svg class="h-6 w-6">
+             <path fill="white" d="M12 4.5C7 4.5 2.73 7.61 1 12a17.3 17.3 0 0022 0C21.27 7.61 17 4.5 12 4.5zm0 13c-5 0-9.27-3.11-11-7.5a16.3 16.3 0 0122 0c-1.73 4.39-6 7.5-11 7.5zm0-11c1.93 0 3.5 1.57 3.5 3.5S13.93 13.5 12 13.5 8.5 11.93 8.5 10 10.07 6.5 12 6.5zm0 4.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5z"/>
+             <line x1="1" y1="1" x2="23" y2="23" stroke="white" stroke-width="2"/>
+            </svg>
+          </template>
         </button>
 
         <div
