@@ -100,11 +100,12 @@ class BaseScreeningService
 
     relation = "#{relation_name}_results".to_sym
     screening_type_method = "#{relation_name}_type".to_sym
-    non_perpetual_const = "#{service_name}::NON_PERPETUAL".constantize
+    model_name = service_name.sub('Service', '')
+    non_perpetual_const = "#{model_name}::NON_PERPETUAL".constantize
 
     return false unless non_perpetual_const.include?(screening.send(screening_type_method))
 
-    if screening.send(screening_type_method) == "#{service_name}::PILOT".constantize
+    if screening.send(screening_type_method) == "#{model_name}::PILOT".constantize
       return false if screening.send(relation)
                              .where(user: user, privileged: false)
                              .count < screening.no_of_citations
