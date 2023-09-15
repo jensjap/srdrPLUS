@@ -37,6 +37,9 @@ class ScreeningDataExportJob < ApplicationJob
           'fulltext screening status',
           'extraction status',
           'sub status',
+          'publication',
+          'doi',
+          'keywords',
           'consensus label',
           'consensus user name'
         ]
@@ -86,7 +89,10 @@ class ScreeningDataExportJob < ApplicationJob
             cp['abstract_qualification'],
             cp['fulltext_qualification'],
             cp['extraction_qualification'],
-            cp['screening_status']
+            cp['screening_status'],
+            cp['publication'],
+            cp['doi'],
+            cp['keywords']
           ]
           cp_id = cp.id.to_i
           columns << (mh.dig(cp_id, :consensus_label) || '')
@@ -187,6 +193,9 @@ class ScreeningDataExportJob < ApplicationJob
       wb.add_worksheet(name: "abstract screening id #{as.id}") do |sheet|
         headers = [
           'srdr citation id',
+          'publication',
+          'doi',
+          'keywords',
           'abstract screening type',
           'user',
           'label',
@@ -209,8 +218,20 @@ class ScreeningDataExportJob < ApplicationJob
           headers.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
         )
         as.abstract_screening_results.includes(:tags, :reasons, :citations_project, user: :profile).each do |asr|
+          publication = ''
+          doi = ''
+          keywords = ''
+          CitationsProject.search(where: { citation_id: asr.citations_project.citation_id }, load: false).each do |cp|
+            publication = cp['publication']
+            doi = cp['doi']
+            keywords = cp['keywords']
+          end
+
           row = [
             asr.citations_project.citation_id,
+            publication,
+            doi,
+            keywords,
             asr.abstract_screening.abstract_screening_type,
             asr.user.handle,
             asr.label,
@@ -273,6 +294,9 @@ class ScreeningDataExportJob < ApplicationJob
       wb.add_worksheet(name: "fulltext screening id #{fs.id}") do |sheet|
         headers = [
           'srdr citation id',
+          'publication',
+          'doi',
+          'keywords',
           'fulltext screening type',
           'user',
           'label',
@@ -295,8 +319,20 @@ class ScreeningDataExportJob < ApplicationJob
           headers.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
         )
         fs.fulltext_screening_results.includes(:tags, :reasons, :citations_project, user: :profile).each do |fsr|
+          publication = ''
+          doi = ''
+          keywords = ''
+          CitationsProject.search(where: { citation_id: fsr.citations_project.citation_id }, load: false).each do |cp|
+            publication = cp['publication']
+            doi = cp['doi']
+            keywords = cp['keywords']
+          end
+
           row = [
             fsr.citations_project.citation_id,
+            publication,
+            doi,
+            keywords,
             fsr.fulltext_screening.fulltext_screening_type,
             fsr.user.handle,
             fsr.label,
