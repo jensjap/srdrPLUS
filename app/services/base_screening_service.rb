@@ -22,15 +22,15 @@ class BaseScreeningService
     return nil if at_or_over_limit?(screening, user)
 
     case screening.screening_type
-    when :pilot
+    when screening.class.const_get('PILOT')
       get_next_pilot_citation_id(screening, user)
-    when :single_perpetual, :n_size_single
+    when screening.class.const_get('SINGLE_PERPETUAL'), screening.class.const_get('N_SIZE_SINGLE')
       get_next_singles_citation_id(screening)
-    when :double_perpetual, :n_size_double
+    when screening.class.const_get('DOUBLE_PERPETUAL'), screening.class.const_get('N_SIZE_DOUBLE')
       get_next_doubles_citation_id(screening, user)
-    when :expert_needed_perpetual, :n_size_expert_needed
+    when screening.class.const_get('EXPERT_NEEDED_PERPETUAL'), screening.class.const_get('N_SIZE_EXPERT_NEEDED')
       get_next_expert_needed_citation_id(screening, user)
-    when :only_expert_novice_mixed_perpetual, :n_size_only_expert_novice_mixed
+    when screening.class.const_get('ONLY_EXPERT_NOVICE_MIXED_PERPETUAL'), screening.class.const_get('N_SIZE_ONLY_EXPERT_NOVICE_MIXED')
       get_next_only_expert_novice_mixed_citation_id(screening, user)
     end
   end
