@@ -58,7 +58,7 @@
         <span class="flex-grow flex flex-col">
           <span class="text-sm font-medium text-gray-900">Exclusive Users</span>
           <span class="text-sm text-gray-500" id="availability-description"
-            >Only these users may participate in this screening
+            >Limit screening participants to a pre-defined list of users
           </span>
         </span>
       </div>
@@ -76,91 +76,6 @@
     <div class="grid grid-rows lg:grid-cols-4 gap-8 gap-x-12 mt-4">
       <div
         class="flex items-center justify-between cursor-pointer"
-        @click="fulltext_screening.all_tag = !fulltext_screening.all_tag; fulltext_screening.yes_tag = fulltext_screening.all_tag; fulltext_screening.no_tag = fulltext_screening.all_tag; fulltext_screening.maybe_tag = fulltext_screening.all_tag"
-      >
-        <input
-          type="checkbox"
-          :value="fulltext_screening.all_tag"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >All Labels Require Tags</span
-          >
-          <span class="text-sm text-gray-500" id="availability-description"
-            >Screeners must always add a Tag
-          </span>
-        </span>
-      </div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="fulltext_screening.yes_tag = !fulltext_screening.yes_tag; fulltext_screening.all_tag = (fulltext_screening.yes_tag && fulltext_screening.no_tag && fulltext_screening.maybe_tag)"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="fulltext_screening[yes_tag_required]"
-        />
-        <input
-          type="checkbox"
-          name="fulltext_screening[yes_tag_required]"
-          :value="fulltext_screening.yes_tag"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900">Yes Labels</span>
-          <span class="text-sm text-gray-500" id="availability-description"
-            >Require Tags</span
-          >
-        </span>
-      </div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="fulltext_screening.no_tag = !fulltext_screening.no_tag; fulltext_screening.all_tag = (fulltext_screening.yes_tag && fulltext_screening.no_tag && fulltext_screening.maybe_tag)"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="fulltext_screening[no_tag_required]"
-        />
-        <input
-          type="checkbox"
-          name="fulltext_screening[no_tag_required]"
-          :value="fulltext_screening.no_tag"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900">No Labels</span>
-          <span class="text-sm text-gray-500" id="availability-description"
-            >Require Tags</span
-          >
-        </span>
-      </div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="fulltext_screening.maybe_tag = !fulltext_screening.maybe_tag; fulltext_screening.all_tag = (fulltext_screening.yes_tag && fulltext_screening.no_tag && fulltext_screening.maybe_tag)"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="fulltext_screening[maybe_tag_required]"
-        />
-        <input
-          type="checkbox"
-          name="fulltext_screening[maybe_tag_required]"
-          :value="fulltext_screening.maybe_tag"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900">Maybe Labels</span>
-          <span class="text-sm text-gray-500" id="availability-description"
-            >Require Tags</span
-          >
-        </span>
-      </div>
-
-      <div
-        class="flex items-center justify-between cursor-pointer"
         @click="fulltext_screening.all_reason = !fulltext_screening.all_reason; fulltext_screening.yes_reason = fulltext_screening.all_reason; fulltext_screening.no_reason = fulltext_screening.all_reason; fulltext_screening.maybe_reason = fulltext_screening.all_reason"
       >
         <input
@@ -170,13 +85,15 @@
         />
         <span class="flex-grow flex flex-col">
           <span class="text-sm font-medium text-gray-900"
-            >All Labels Require Reasons</span
+            >Reason required: All</span
           >
           <span class="text-sm text-gray-500" id="availability-description"
-            >Screeners must always add a Reason
+            >Require the user to provide a Reason for labeling 'Reject' or
+            'Maybe'
           </span>
         </span>
       </div>
+      <div class="flex items-center justify-between cursor-pointer"></div>
       <div
         class="flex items-center justify-between cursor-pointer"
         @click="fulltext_screening.no_reason = !fulltext_screening.no_reason; fulltext_screening.all_reason = (fulltext_screening.no_reason && fulltext_screening.maybe_reason)"
@@ -193,9 +110,11 @@
           class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         />
         <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900">No Labels</span>
+          <span class="text-sm font-medium text-gray-900"
+            >Reason required: 'Reject'</span
+          >
           <span class="text-sm text-gray-500" id="availability-description"
-            >Require Reasons</span
+            >Require the user to provide a Reason for labeling 'Reject'</span
           >
         </span>
       </div>
@@ -215,13 +134,106 @@
           class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         />
         <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900">Maybe Labels</span>
+          <span class="text-sm font-medium text-gray-900"
+            >Reason required: 'Maybe'</span
+          >
           <span class="text-sm text-gray-500" id="availability-description"
-            >Require Reasons</span
+            >Required the user to provide a Reason when labeling 'Maybe'</span
           >
         </span>
       </div>
-      <div class="flex items-center justify-between cursor-pointer"></div>
+
+      <div
+        class="flex items-center justify-between cursor-pointer"
+        @click="fulltext_screening.all_tag = !fulltext_screening.all_tag; fulltext_screening.yes_tag = fulltext_screening.all_tag; fulltext_screening.no_tag = fulltext_screening.all_tag; fulltext_screening.maybe_tag = fulltext_screening.all_tag"
+      >
+        <input
+          type="checkbox"
+          :value="fulltext_screening.all_tag"
+          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900"
+            >Tag required: All</span
+          >
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Require the user to provide a tag when labeling 'Include',
+            'Reject', or 'Maybe'
+          </span>
+        </span>
+      </div>
+      <div
+        class="flex items-center justify-between cursor-pointer"
+        @click="fulltext_screening.yes_tag = !fulltext_screening.yes_tag; fulltext_screening.all_tag = (fulltext_screening.yes_tag && fulltext_screening.no_tag && fulltext_screening.maybe_tag)"
+      >
+        <input
+          type="hidden"
+          value="false"
+          name="fulltext_screening[yes_tag_required]"
+        />
+        <input
+          type="checkbox"
+          name="fulltext_screening[yes_tag_required]"
+          :value="fulltext_screening.yes_tag"
+          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900"
+            >Tag required: 'Include'
+          </span>
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Require the user provide a tag when labeling 'Include'</span
+          >
+        </span>
+      </div>
+      <div
+        class="flex items-center justify-between cursor-pointer"
+        @click="fulltext_screening.no_tag = !fulltext_screening.no_tag; fulltext_screening.all_tag = (fulltext_screening.yes_tag && fulltext_screening.no_tag && fulltext_screening.maybe_tag)"
+      >
+        <input
+          type="hidden"
+          value="false"
+          name="fulltext_screening[no_tag_required]"
+        />
+        <input
+          type="checkbox"
+          name="fulltext_screening[no_tag_required]"
+          :value="fulltext_screening.no_tag"
+          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900"
+            >Tag required: 'Reject'</span
+          >
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Require the user provide a tag when labeling 'Reject'</span
+          >
+        </span>
+      </div>
+      <div
+        class="flex items-center justify-between cursor-pointer"
+        @click="fulltext_screening.maybe_tag = !fulltext_screening.maybe_tag; fulltext_screening.all_tag = (fulltext_screening.yes_tag && fulltext_screening.no_tag && fulltext_screening.maybe_tag)"
+      >
+        <input
+          type="hidden"
+          value="false"
+          name="fulltext_screening[maybe_tag_required]"
+        />
+        <input
+          type="checkbox"
+          name="fulltext_screening[maybe_tag_required]"
+          :value="fulltext_screening.maybe_tag"
+          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        />
+        <span class="flex-grow flex flex-col">
+          <span class="text-sm font-medium text-gray-900"
+            >Tag required: 'Maybe'</span
+          >
+          <span class="text-sm text-gray-500" id="availability-description"
+            >Require the user provide a tag when labeling 'Maybe'</span
+          >
+        </span>
+      </div>
 
       <div
         class="flex items-center justify-between cursor-pointer"
@@ -234,10 +246,11 @@
         />
         <span class="flex-grow flex flex-col">
           <span class="text-sm font-medium text-gray-900"
-            >All Labels Require Notes</span
+            >Notes required: All</span
           >
           <span class="text-sm text-gray-500" id="availability-description"
-            >Screeners must always add a Note
+            >Require the user provide notes when labeling 'Include', 'Reject',
+            or 'Maybe'
           </span>
         </span>
       </div>
@@ -257,9 +270,11 @@
           class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         />
         <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900">Yes Labels</span>
+          <span class="text-sm font-medium text-gray-900"
+            >Notes required: 'Include'
+          </span>
           <span class="text-sm text-gray-500" id="availability-description"
-            >Require Notes</span
+            >Require the user provide notes when labeling 'Include'</span
           >
         </span>
       </div>
@@ -279,10 +294,12 @@
           class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         />
         <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900">No Labels</span>
+          <span class="text-sm font-medium text-gray-900"
+            >Notes required: 'Reject'
+          </span>
           <span class="text-sm text-gray-500" id="availability-description"
-            >Require Notes</span
-          >
+            >Require the user provide notes when labeling 'Reject'
+          </span>
         </span>
       </div>
       <div
@@ -301,59 +318,12 @@
           class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         />
         <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900">Maybe Labels</span>
-          <span class="text-sm text-gray-500" id="availability-description"
-            >Require Notes</span
-          >
-        </span>
-      </div>
-
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="fulltext_screening.only_predefined_reasons = !fulltext_screening.only_predefined_reasons"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="fulltext_screening[only_predefined_reasons]"
-        />
-        <input
-          type="checkbox"
-          name="fulltext_screening[only_predefined_reasons]"
-          :value="fulltext_screening.only_predefined_reasons"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
           <span class="text-sm font-medium text-gray-900"
-            >Exclusive reasons</span
-          >
+            >Notes required: 'Maybe'
+          </span>
           <span class="text-sm text-gray-500" id="availability-description"
-            >Limit reasons to only the given list (prevent user from providing
-            other reasons)</span
-          >
-        </span>
-      </div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="fulltext_screening.only_predefined_tags = !fulltext_screening.only_predefined_tags"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="fulltext_screening[only_predefined_tags]"
-        />
-        <input
-          type="checkbox"
-          name="fulltext_screening[only_predefined_tags]"
-          :value="fulltext_screening.only_predefined_tags"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900">Exclusive tags</span>
-          <span class="text-sm text-gray-500" id="availability-description"
-            >Limit tags to only the given list (prevent user from providing
-            other tags)</span
-          >
+            >Require the user provide notes when labeling 'Maybe'
+          </span>
         </span>
       </div>
       <div
@@ -406,22 +376,6 @@
       </div>
     </div>
 
-    <div
-      class="mt-8"
-      x-data="{ pns: 'fulltext_screening', cns: 'reason_ids', customInput: true, open: false }"
-    >
-      <div>Selected Reasons</div>
-      <%= render 'components/multi_select' %>
-    </div>
-
-    <div
-      class="mt-8"
-      x-data="{ pns: 'fulltext_screening', cns: 'tag_ids', customInput: true, open: false }"
-    >
-      <div>Selected Tags</div>
-      <%= render 'components/multi_select' %>
-    </div>
-
     <!-- prettier-ignore -->
     <%= f.button :submit, params[:action] == 'new' ? 'Create Fulltext Screening' : 'Update Fulltext Screening', class: '!my-8' %>
     <% end %>
@@ -450,8 +404,6 @@
         yes_note: false,
         no_note: false,
         maybe_note: false,
-        only_predefined_reasons: false,
-        only_predefined_tags: false,
         hide_author: false,
         hide_journal: false,
         user_ids: {

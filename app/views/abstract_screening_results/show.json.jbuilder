@@ -30,8 +30,6 @@ json.options do
   json.yes_note_required @abstract_screening.yes_note_required
   json.no_note_required @abstract_screening.no_note_required
   json.maybe_note_required @abstract_screening.maybe_note_required
-  json.only_predefined_reasons @abstract_screening.only_predefined_reasons
-  json.only_predefined_tags @abstract_screening.only_predefined_tags
 end
 cps = @screened_cps.reverse.map do |asr|
   {

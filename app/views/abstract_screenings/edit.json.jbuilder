@@ -22,8 +22,6 @@ json.abstract_screening do
   json.yes_note @abstract_screening.yes_note_required
   json.no_note @abstract_screening.no_note_required
   json.maybe_note @abstract_screening.maybe_note_required
-  json.only_predefined_reasons @abstract_screening.only_predefined_reasons
-  json.only_predefined_tags @abstract_screening.only_predefined_tags
   json.hide_author @abstract_screening.hide_author
   json.hide_journal @abstract_screening.hide_journal
   json.user_ids do

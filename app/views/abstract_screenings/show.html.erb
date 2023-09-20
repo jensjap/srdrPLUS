@@ -33,6 +33,7 @@
             <!-- prettier-ignore -->
             <% if AbstractScreeningService.find_asr_id_to_be_resolved(@abstract_screening, current_user, false) %>
             <div class="w-full flex space-x-2">
+              <!-- prettier-ignore -->
               <%= link_to(abstract_screening_screen_path(@abstract_screening,
               resolution_mode: true), class: "text-center mb-2 cursor-pointer
               items-center justify-center rounded-md border border-transparent
@@ -81,14 +82,6 @@
             <div class="flex justify-between">
               <div>Exclusive users:</div>
               <div><%= @abstract_screening.exclusive_users %></div>
-            </div>
-            <div class="flex justify-between">
-              <div>Only predefined reasons:</div>
-              <div><%= @abstract_screening.only_predefined_reasons %></div>
-            </div>
-            <div class="flex justify-between">
-              <div>Only predefined tags:</div>
-              <div><%= @abstract_screening.only_predefined_tags %></div>
             </div>
             <div class="flex justify-between">
               <div>Hide author:</div>
