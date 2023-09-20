@@ -3,4 +3,7 @@ class ProjectsReason < ApplicationRecord
 
   belongs_to :project
   belongs_to :reason
+
+  ABSTRACT = 'abstract'.freeze
+  FULLTEXT = 'fulltext'.freeze
 end
