@@ -37,6 +37,8 @@ module Api
         sf_options
         sf_questions
         sf_rows
+        projects_reasons
+        projects_tags
       ].freeze
 
       DEPENDABLES = %w[

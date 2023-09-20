@@ -19,4 +19,17 @@ class ProjectsReason < ApplicationRecord
 
   ABSTRACT = 'abstract'.freeze
   FULLTEXT = 'fulltext'.freeze
+
+  def self.reasons_object(project, screening_type)
+    projects_reasons = ProjectsReason.where(project:, screening_type:).includes(:reason)
+    projects_reasons.map do |projects_reason|
+      {
+        id: projects_reason.id,
+        reason_id: projects_reason.reason_id,
+        name: projects_reason.reason.name,
+        pos: projects_reason.pos,
+        selected: false
+      }
+    end
+  end
 end

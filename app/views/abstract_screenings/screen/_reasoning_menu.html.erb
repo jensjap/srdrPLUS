@@ -177,7 +177,7 @@
                 <div class="flex">
                   <select
                     class="w-8 text-xs h-4 py-0 px-1 inline"
-                    @change="updateOrderings(index, $el.value - 1, 'custom_reasons', 'abstract_screenings_reasons_users')"
+                    @change="updateOrderings(index, $el.value - 1, 'custom_reasons', 'projects_reasons')"
                   >
                     <template
                       x-for="(rreason, iindex) in asr.custom_reasons"
@@ -285,7 +285,7 @@
                 <div class="flex">
                   <select
                     class="w-8 text-xs h-4 py-0 px-1 inline"
-                    @change="updateOrderings(index, $el.value - 1, 'custom_tags', 'abstract_screenings_tags_users')"
+                    @change="updateOrderings(index, $el.value - 1, 'custom_tags', 'projects_tags')"
                   >
                     <template
                       x-for="(ttag, iindex) in asr.custom_tags"

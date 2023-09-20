@@ -350,6 +350,7 @@
         new URL(window.location.href).searchParams.get("resolution_mode") ==
         "true",
       show_all_labels: false,
+      project_id: null,
 
       init() {
         const url = new URL(window.location.href);
@@ -471,11 +472,9 @@
       async createCustomValue() {
         let url;
         if (this.addReasonModal.type == "custom_reasons") {
-          url =
-            "/abstract_screenings/<%= params[:abstract_screening_id] %>/abstract_screenings_reasons_users";
+          url = `/projects/${this.project_id}/projects_reasons`;
         } else if (this.addReasonModal.type == "custom_tags") {
-          url =
-            "/abstract_screenings/<%= params[:abstract_screening_id] %>/abstract_screenings_tags_users";
+          url = `/projects/${this.project_id}/projects_tags`;
         }
         const response = await fetch(url, {
           method: "POST",
@@ -495,9 +494,9 @@
         const newCustomValue = values.newCustomValue || false;
         let url;
         if (type == "custom_reasons") {
-          url = `/abstract_screenings_reasons_users/${id}`;
+          url = `/projects_reasons/${id}`;
         } else if (type == "custom_tags") {
-          url = `/abstract_screenings_tags_users/${id}`;
+          url = `/projects_tags/${id}`;
         }
         const response = await fetch(url, {
           method: "PATCH",
@@ -542,17 +541,13 @@
         ) {
           let url;
           if (type == "custom_reasons") {
-            url = `/abstract_screenings_reasons_users/${id}`;
+            url = `/projects_reasons/${id}`;
           } else if (type == "custom_tags") {
-            url = `/abstract_screenings_tags_users/${id}`;
+            url = `/projects_tags/${id}`;
           }
           const response = await fetch(url, {
             method: "DELETE",
             headers,
-            body: JSON.stringify({
-              id,
-              destroyExistingValues: true,
-            }),
           });
           await response.json();
           await this.getAsr();
@@ -848,6 +843,7 @@
           this.cps = data.cps;
           this.processWeights("title", "processedTitle");
           this.processWeights("abstract", "processedAbstract");
+          this.project_id = data.project_id;
         }
       },
 

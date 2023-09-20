@@ -82,7 +82,7 @@ class AbstractScreeningResultsController < ApplicationController
 
   def prepare_json_data
     @abstract_screening = @abstract_screening_result.abstract_screening
-    @custom_reasons = AbstractScreeningsReasonsUser.custom_reasons_object(@abstract_screening, current_user)
+    @custom_reasons = ProjectsReason.reasons_object(@abstract_screening.project, ProjectsReason::ABSTRACT)
     @custom_tags = AbstractScreeningsTagsUser.custom_tags_object(@abstract_screening, current_user)
 
     @custom_reasons.map! do |custom_reason|

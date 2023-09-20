@@ -40,3 +40,5 @@ end
 json.cps cps
 
 json.all_labels @all_labels
+
+json.project_id @abstract_screening_result.project.id
