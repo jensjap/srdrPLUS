@@ -190,8 +190,6 @@
       fsr: {
         id: null,
         label: null,
-        predefined_reasons: [],
-        predefined_tags: [],
         custom_reasons: [],
         custom_tags: [],
         notes: "",
@@ -249,15 +247,11 @@
       },
 
       hasSomeReason() {
-        return this.fsr.predefined_reasons
-          .concat(this.fsr.custom_reasons)
-          .some((v) => v.selected);
+        return this.fsr.custom_reasons.some((v) => v.selected);
       },
 
       hasSomeTag() {
-        return this.fsr.predefined_tags
-          .concat(this.fsr.custom_tags)
-          .some((v) => v.selected);
+        return this.fsr.custom_tags.some((v) => v.selected);
       },
 
       hasSomeNote() {
@@ -302,13 +296,9 @@
 
         if (
           this.addReasonModal.type == "custom_reasons" &&
-          (this.fsr["custom_reasons"].some(
+          this.fsr["custom_reasons"].some(
             (custom_reason) => custom_reason.name == this.newCustomValue
-          ) ||
-            this.fsr["predefined_reasons"].some(
-              (predefined_reason) =>
-                predefined_reason.name == this.newCustomValue
-            ))
+          )
         ) {
           toastr.error("This value has already been taken.");
           return true;
@@ -316,12 +306,9 @@
 
         if (
           this.addReasonModal.type == "custom_tags" &&
-          (this.fsr["custom_tags"].some(
+          this.fsr["custom_tags"].some(
             (custom_tag) => custom_tag.name == this.newCustomValue
-          ) ||
-            this.fsr["predefined_tags"].some(
-              (predefined_tag) => predefined_tag.name == this.newCustomValue
-            ))
+          )
         ) {
           toastr.error("This value has already been taken.");
           return true;

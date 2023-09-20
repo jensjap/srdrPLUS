@@ -119,26 +119,6 @@
             </div>
             <% end %>
           </div>
-          <div class="text-xs w-full text-gray-700 p-2">
-            <div class="text-center border-b-2 border-gray-200">
-              Predefined Reasons
-            </div>
-            <% @abstract_screening.reasons.map(&:name).each do |reason| %>
-            <!-- prettier-ignore -->
-            - <%= reason %><br />
-            <% end %>
-          </div>
-          <div class="text-xs w-full text-gray-700 p-2">
-            <div class="text-center border-b-2 border-gray-200">
-              Predefined Tags
-            </div>
-            <div>
-              <% @abstract_screening.tags.map(&:name).each do |tag| %>
-              <!-- prettier-ignore -->
-              - <%= tag %><br />
-              <% end %>
-            </div>
-          </div>
         </div>
         <!-- prettier-ignore -->
         <% if BaseScreeningService.screening_dashboard_user?(current_user) %>

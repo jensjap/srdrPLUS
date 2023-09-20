@@ -158,44 +158,6 @@
             </div>
             <hr class="m-0 mb-2" />
             <template
-              x-for="(reason, index) in fsr.predefined_reasons"
-              :key="reason.id"
-            >
-              <div class="flex">
-                <input
-                  class="!m-0 h-4 cursor-pointer"
-                  :id="`predefinedreason-${reason.id}`"
-                  type="checkbox"
-                  :value="reason.selected"
-                  @change="reason.selected = !reason.selected; updateFsr('reasons_and_tags')"
-                />
-                <label
-                  class="border-b px-2 grow cursor-pointer text-xs"
-                  :for="`predefinedreason-${reason.id}`"
-                  x-text="reason.name"
-                ></label>
-                <div class="flex">
-                  <select
-                    class="w-8 text-xs h-4 py-0 px-1 inline"
-                    @change="updateOrderings(index, $el.value - 1, 'predefined_reasons', 'fulltext_screenings_reasons')"
-                  >
-                    <template
-                      x-for="(rreason, iindex) in fsr.predefined_reasons"
-                      :key="rreason.id"
-                    >
-                      <option
-                        :value="iindex + 1"
-                        x-text="iindex + 1"
-                        :selected="iindex === index"
-                      ></option>
-                    </template>
-                  </select>
-                  <div class="w-4 h-4 ml-3 mr-2"></div>
-                  <div class="w-4 h-4"></div>
-                </div>
-              </div>
-            </template>
-            <template
               x-for="(reason, index) in fsr.custom_reasons"
               :key="reason.id"
             >
@@ -306,41 +268,6 @@
               </div>
             </div>
             <hr class="m-0 mb-2" />
-            <template x-for="(tag, index) in fsr.predefined_tags" :key="tag.id">
-              <div class="flex">
-                <input
-                  class="!m-0 h-4 cursor-pointer"
-                  :id="`predefinedtag-${tag.id}`"
-                  type="checkbox"
-                  :value="tag.selected"
-                  @change="tag.selected = !tag.selected; updateFsr('reasons_and_tags')"
-                />
-                <label
-                  class="border-b px-2 grow cursor-pointer text-xs"
-                  :for="`predefinedtag-${tag.id}`"
-                  x-text="tag.name"
-                ></label>
-                <div class="flex">
-                  <select
-                    class="w-8 text-xs h-4 py-0 px-1 inline"
-                    @change="updateOrderings(index, $el.value - 1, 'predefined_tags', 'fulltext_screenings_tags')"
-                  >
-                    <template
-                      x-for="(ttag, iindex) in fsr.predefined_tags"
-                      :key="ttag.id"
-                    >
-                      <option
-                        :value="iindex + 1"
-                        x-text="iindex + 1"
-                        :selected="iindex === index"
-                      ></option>
-                    </template>
-                  </select>
-                  <div class="w-4 h-4 ml-3 mr-2"></div>
-                  <div class="w-4 h-4"></div>
-                </div>
-              </div>
-            </template>
             <template x-for="(tag, index) in fsr.custom_tags" :key="tag.id">
               <div class="flex">
                 <input
@@ -413,7 +340,6 @@
                 stroke="currentColor"
                 class="w-4 h-4 cursor-pointer"
                 @click="addReasonModal = { on: true, type: 'custom_tags', action: 'Create' }"
-                x-show="!options.only_predefined_tags"
               >
                 <path
                   stroke-linecap="round"

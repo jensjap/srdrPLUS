@@ -38,7 +38,7 @@ class FulltextScreeningResultsController < ApplicationController
   private
 
   def handle_reasons_and_tags
-    reasons_and_tags_params['predefined_reasons'].concat(reasons_and_tags_params['custom_reasons']).each do |reason_object|
+    reasons_and_tags_params['custom_reasons'].each do |reason_object|
       if reason_object[:selected]
         FulltextScreeningResultsReason.find_or_create_by(reason_id: reason_object[:reason_id],
                                                          fulltext_screening_result: @fulltext_screening_result)
@@ -48,7 +48,7 @@ class FulltextScreeningResultsController < ApplicationController
       end
     end
 
-    reasons_and_tags_params['predefined_tags'].concat(reasons_and_tags_params['custom_tags']).each do |tag_object|
+    reasons_and_tags_params['custom_tags'].each do |tag_object|
       if tag_object[:selected]
         FulltextScreeningResultsTag.find_or_create_by(tag_id: tag_object[:tag_id],
                                                       fulltext_screening_result: @fulltext_screening_result)
@@ -61,30 +61,14 @@ class FulltextScreeningResultsController < ApplicationController
 
   def prepare_json_data
     @fulltext_screening = @fulltext_screening_result.fulltext_screening
-    @predefined_reasons = @fulltext_screening.reasons_object
-    @predefined_tags = @fulltext_screening.tags_object
     @custom_reasons = FulltextScreeningsReasonsUser.custom_reasons_object(@fulltext_screening, current_user)
     @custom_tags = FulltextScreeningsTagsUser.custom_tags_object(@fulltext_screening, current_user)
-
-    @predefined_reasons.map! do |predefined_reason|
-      predefined_reason[:selected] = true if @fulltext_screening_result.reasons.any? do |reason|
-                                               reason.id == predefined_reason[:reason_id]
-                                             end
-      predefined_reason
-    end
 
     @custom_reasons.map! do |custom_reason|
       custom_reason[:selected] = true if @fulltext_screening_result.reasons.any? do |reason|
                                            reason.id == custom_reason[:reason_id]
                                          end
       custom_reason
-    end
-
-    @predefined_tags.map! do |predefined_tag|
-      predefined_tag[:selected] = true if @fulltext_screening_result.tags.any? do |tag|
-                                            tag.id == predefined_tag[:tag_id]
-                                          end
-      predefined_tag
     end
 
     @custom_tags.map! do |custom_tag|
@@ -104,8 +88,6 @@ class FulltextScreeningResultsController < ApplicationController
 
   def reasons_and_tags_params
     params.require(:fsr).permit(
-      predefined_reasons: %i[id reason_id name pos selected],
-      predefined_tags: %i[id tag_id name pos selected],
       custom_reasons: %i[id reason_id name pos selected],
       custom_tags: %i[id tag_id name pos selected]
     )

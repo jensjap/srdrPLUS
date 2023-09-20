@@ -49,18 +49,6 @@
                   </th>
                   <th
                     scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    Predefined Reasons
-                  </th>
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
-                  >
-                    Predefined Tags
-                  </th>
-                  <th
-                    scope="col"
                     class="relative py-3.5 pl-3 pr-4 sm:pr-6 lg:pr-8"
                   >
                     <span class="sr-only">Actions</span>
@@ -120,18 +108,6 @@
                     <% users.uniq.each do |user| %>
                     <!-- prettier-ignore -->
                     <div><%= user.handle %> (<%= FulltextScreeningResult.where(user:, fulltext_screening: fs, privileged: false).where("label IS NOT NULL").count %>)</div>
-                    <% end %>
-                  </td>
-                  <td class="px-3 text-sm text-gray-500">
-                    <% fs.reasons.map(&:name).each do |reason| %>
-                    <!-- prettier-ignore -->
-                    - <%= reason %><br />
-                    <% end %>
-                  </td>
-                  <td class="px-3 text-sm text-gray-500">
-                    <% fs.tags.map(&:name).each do |tag| %>
-                    <!-- prettier-ignore -->
-                    - <%= tag %><br />
                     <% end %>
                   </td>
 

@@ -321,8 +321,6 @@
       asr: {
         id: null,
         label: null,
-        predefined_reasons: [],
-        predefined_tags: [],
         custom_reasons: [],
         custom_tags: [],
         notes: "",
@@ -400,15 +398,11 @@
       },
 
       hasSomeReason() {
-        return this.asr.predefined_reasons
-          .concat(this.asr.custom_reasons)
-          .some((v) => v.selected);
+        return this.asr.custom_reasons.some((v) => v.selected);
       },
 
       hasSomeTag() {
-        return this.asr.predefined_tags
-          .concat(this.asr.custom_tags)
-          .some((v) => v.selected);
+        return this.asr.custom_tags.some((v) => v.selected);
       },
 
       hasSomeNote() {
@@ -453,13 +447,9 @@
 
         if (
           this.addReasonModal.type == "custom_reasons" &&
-          (this.asr["custom_reasons"].some(
+          this.asr["custom_reasons"].some(
             (custom_reason) => custom_reason.name == this.newCustomValue
-          ) ||
-            this.asr["predefined_reasons"].some(
-              (predefined_reason) =>
-                predefined_reason.name == this.newCustomValue
-            ))
+          )
         ) {
           toastr.error("This value has already been taken.");
           return true;
@@ -467,12 +457,9 @@
 
         if (
           this.addReasonModal.type == "custom_tags" &&
-          (this.asr["custom_tags"].some(
+          this.asr["custom_tags"].some(
             (custom_tag) => custom_tag.name == this.newCustomValue
-          ) ||
-            this.asr["predefined_tags"].some(
-              (predefined_tag) => predefined_tag.name == this.newCustomValue
-            ))
+          )
         ) {
           toastr.error("This value has already been taken.");
           return true;

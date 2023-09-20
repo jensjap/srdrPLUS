@@ -4,8 +4,6 @@ json.asr do
   json.user_id @abstract_screening_result.user_id
   json.username @abstract_screening_result.user.profile.username
   json.label @abstract_screening_result.label
-  json.predefined_reasons @predefined_reasons
-  json.predefined_tags @predefined_tags
   json.custom_reasons @custom_reasons
   json.custom_tags @custom_tags
   json.notes @abstract_screening_result.notes || ''
