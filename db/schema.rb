@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_19_113925) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_20_022520) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -68,8 +68,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_113925) do
     t.boolean "yes_note_required", default: false, null: false
     t.boolean "no_note_required", default: false, null: false
     t.boolean "maybe_note_required", default: false, null: false
-    t.boolean "only_predefined_reasons", default: false, null: false
-    t.boolean "only_predefined_tags", default: false, null: false
     t.boolean "hide_author", default: false, null: false
     t.boolean "hide_journal", default: false, null: false
     t.datetime "created_at", null: false
@@ -771,8 +769,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_113925) do
     t.boolean "yes_note_required", default: false, null: false
     t.boolean "no_note_required", default: false, null: false
     t.boolean "maybe_note_required", default: false, null: false
-    t.boolean "only_predefined_reasons", default: false, null: false
-    t.boolean "only_predefined_tags", default: false, null: false
     t.boolean "hide_author", default: false, null: false
     t.boolean "hide_journal", default: false, null: false
     t.datetime "created_at", null: false
