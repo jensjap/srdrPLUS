@@ -19,4 +19,20 @@ class ProjectsTag < ApplicationRecord
 
   ABSTRACT = 'abstract'.freeze
   FULLTEXT = 'fulltext'.freeze
+
+  def self.tags_object(project, screening_type)
+    ProjectsTag
+      .where(project:, screening_type:)
+      .includes(:tag)
+      .map do |projects_tag|
+      {
+        id: projects_tag.id,
+        tag_id: projects_tag.tag_id,
+        name: projects_tag.tag.name,
+        pos: projects_tag.pos,
+        selected: false,
+        selected_id: nil
+      }
+    end
+  end
 end

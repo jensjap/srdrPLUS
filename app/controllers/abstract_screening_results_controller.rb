@@ -80,9 +80,7 @@ class AbstractScreeningResultsController < ApplicationController
     end
   end
 
-  def prepare_json_data
-    @abstract_screening = @abstract_screening_result.abstract_screening
-
+  def prepare_custom_reasons
     @custom_reasons = ProjectsReason.reasons_object(@abstract_screening.project, ProjectsReason::ABSTRACT)
     selected_reasons_hash = {}
     @abstract_screening_result.abstract_screening_results_reasons.includes(:reason).each do |asrr|
@@ -112,12 +110,45 @@ class AbstractScreeningResultsController < ApplicationController
         selected_id: asrr_hash[:selected_id]
       }
     end
+  end
 
-    @custom_tags = AbstractScreeningsTagsUser.custom_tags_object(@abstract_screening, current_user)
+  def prepare_custom_tags
+    @custom_tags = ProjectsTag.tags_object(@abstract_screening.project, ProjectsTag::ABSTRACT)
+    selected_tags_hash = {}
+    @abstract_screening_result.abstract_screening_results_tags.includes(:tag).each do |asrt|
+      selected_tags_hash[asrt.tag_id] = {
+        selected_id: asrt.id,
+        name: asrt.tag.name,
+        included: false
+      }
+    end
     @custom_tags.map! do |custom_tag|
-      custom_tag[:selected] = true if @abstract_screening_result.tags.any? { |tag| tag.id == custom_tag[:tag_id] }
+      if (asrt = selected_tags_hash[custom_tag[:tag_id]])
+        custom_tag[:selected] = true
+        custom_tag[:selected_id] = asrt[:selected_id]
+        selected_tags_hash[custom_tag[:tag_id]][:included] = true
+      end
       custom_tag
     end
+    selected_tags_hash.each do |tag_id, asrt_hash|
+      next if asrt_hash[:included]
+
+      @custom_tags << {
+        id: nil,
+        tag_id:,
+        name: asrt_hash[:name],
+        pos: nil,
+        selected: true,
+        selected_id: asrt_hash[:selected_id]
+      }
+    end
+  end
+
+  def prepare_json_data
+    @abstract_screening = @abstract_screening_result.abstract_screening
+
+    prepare_custom_reasons
+    prepare_custom_tags
 
     @all_labels =
       @abstract_screening_result.citations_project.abstract_screening_results.order(updated_at: :desc).map do |label|

@@ -204,6 +204,7 @@ Rails.application.routes.draw do
 
   resources :abstract_screening_results, only: %i[show update destroy], shallow: true do
     resources :abstract_screening_results_reasons, only: %i[create destroy]
+    resources :abstract_screening_results_tags, only: %i[create destroy]
   end
   resources :fulltext_screening_results, only: %i[show update]
 
@@ -212,6 +213,7 @@ Rails.application.routes.draw do
   resources :data_audits, only: %i[index update]
   resources :projects, concerns: :paginatable, shallow: true do
     resources :projects_reasons, only: %i[create update destroy]
+    resources :projects_tags, only: %i[create update destroy]
 
     resources :consolidations
 
