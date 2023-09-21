@@ -122,16 +122,15 @@ class ScreeningDataExportJob < ApplicationJob
           'yes labels require notes',
           'no labels require notes',
           'maybe labels require notes',
-          'exclusive reasons',
-          'exclusive tags',
           'hide author information',
           'hide journal information',
-          'selected reasons',
-          'selected tags'
+          'reasons',
+          'tags'
         ].map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
       )
 
-      project.abstract_screenings.includes(:reasons, :tags, users: :profile).each do |as|
+      project.abstract_screenings.includes({ users: :profile,
+                                             project: { projects_tags: :tag, projects_reasons: :reason } }).each do |as|
         sheet.add_row(
           [
             'abstract',
@@ -149,12 +148,12 @@ class ScreeningDataExportJob < ApplicationJob
             as.maybe_note_required,
             as.hide_author,
             as.hide_journal,
-            as.reasons.map(&:name),
-            as.tags.map(&:name)
+            as.project.reasons.map(&:name),
+            as.project.tags.map(&:name)
           ].map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
         )
       end
-      project.fulltext_screenings.includes(:reasons, :tags, users: :profile).each do |fs|
+      project.fulltext_screenings.includes(users: :profile).each do |fs|
         sheet.add_row(
           [
             'fulltext',
@@ -172,8 +171,8 @@ class ScreeningDataExportJob < ApplicationJob
             fs.maybe_note_required,
             fs.hide_author,
             fs.hide_journal,
-            fs.reasons.map(&:name),
-            fs.tags.map(&:name)
+            fs.project.reasons.map(&:name),
+            fs.project.tags.map(&:name)
           ].map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
         )
       end
