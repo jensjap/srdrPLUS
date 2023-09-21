@@ -82,16 +82,38 @@ class AbstractScreeningResultsController < ApplicationController
 
   def prepare_json_data
     @abstract_screening = @abstract_screening_result.abstract_screening
-    @custom_reasons = ProjectsReason.reasons_object(@abstract_screening.project, ProjectsReason::ABSTRACT)
-    @custom_tags = AbstractScreeningsTagsUser.custom_tags_object(@abstract_screening, current_user)
 
+    @custom_reasons = ProjectsReason.reasons_object(@abstract_screening.project, ProjectsReason::ABSTRACT)
+    selected_reasons_hash = {}
+    @abstract_screening_result.abstract_screening_results_reasons.includes(:reason).each do |asrr|
+      selected_reasons_hash[asrr.reason_id] = {
+        selected_id: asrr.id,
+        name: asrr.reason.name,
+        included: false
+      }
+    end
     @custom_reasons.map! do |custom_reason|
-      custom_reason[:selected] = true if @abstract_screening_result.reasons.any? do |reason|
-                                           reason.id == custom_reason[:reason_id]
-                                         end
+      if (asrr = selected_reasons_hash[custom_reason[:reason_id]])
+        custom_reason[:selected] = true
+        custom_reason[:selected_id] = asrr[:selected_id]
+        selected_reasons_hash[custom_reason[:reason_id]][:included] = true
+      end
       custom_reason
     end
+    selected_reasons_hash.each do |reason_id, asrr_hash|
+      next if asrr_hash[:included]
 
+      @custom_reasons << {
+        id: nil,
+        reason_id:,
+        name: asrr_hash[:name],
+        pos: nil,
+        selected: true,
+        selected_id: asrr_hash[:selected_id]
+      }
+    end
+
+    @custom_tags = AbstractScreeningsTagsUser.custom_tags_object(@abstract_screening, current_user)
     @custom_tags.map! do |custom_tag|
       custom_tag[:selected] = true if @abstract_screening_result.tags.any? { |tag| tag.id == custom_tag[:tag_id] }
       custom_tag

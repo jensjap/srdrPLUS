@@ -449,7 +449,8 @@
         if (
           this.addReasonModal.type == "custom_reasons" &&
           this.asr["custom_reasons"].some(
-            (custom_reason) => custom_reason.name == this.newCustomValue
+            (custom_reason) =>
+              custom_reason.name == this.newCustomValue && !!custom_reason.id
           )
         ) {
           toastr.error("This value has already been taken.");
@@ -459,7 +460,8 @@
         if (
           this.addReasonModal.type == "custom_tags" &&
           this.asr["custom_tags"].some(
-            (custom_tag) => custom_tag.name == this.newCustomValue
+            (custom_tag) =>
+              custom_tag.name == this.newCustomValue && !!custom_tag.id
           )
         ) {
           toastr.error("This value has already been taken.");
@@ -769,6 +771,32 @@
         this.word_weights = data;
         this.processWeights("title", "processedTitle");
         this.processWeights("abstract", "processedAbstract");
+      },
+
+      async updateReasonsSelection(reason) {
+        reason.selected = !reason.selected;
+        if (reason.selected) {
+          await fetch(
+            `/abstract_screening_results/${this.asr.id}/abstract_screening_results_reasons`,
+            {
+              method: "POST",
+              headers,
+              body: JSON.stringify({
+                reason_id: reason.reason_id,
+              }),
+            }
+          );
+          this.getAsr();
+        } else {
+          await fetch(
+            `/abstract_screening_results_reasons/${reason.selected_id}`,
+            {
+              method: "DELETE",
+              headers,
+            }
+          );
+          reason.selected_id = null;
+        }
       },
 
       async getAsrId(asrId) {
