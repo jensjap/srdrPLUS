@@ -7,6 +7,10 @@ class AbstractScreeningResultPolicy < ApplicationPolicy
     @record.user == @user
   end
 
+  def create?
+    @record.user == @user
+  end
+
   def destroy?
     project_leader? && @record.user == @user
   end
