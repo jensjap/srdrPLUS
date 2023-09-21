@@ -11,8 +11,6 @@ class AbstractScreeningResultsController < ApplicationController
         case params[:submissionType]
         when 'label'
           @abstract_screening_result.update(asr_params)
-        when 'reasons_and_tags'
-          handle_reasons_and_tags
         when 'notes'
           @abstract_screening_result.update_column(:notes, params[:asr][:notes])
         end
@@ -57,28 +55,6 @@ class AbstractScreeningResultsController < ApplicationController
   end
 
   private
-
-  def handle_reasons_and_tags
-    reasons_and_tags_params['custom_reasons'].each do |reason_object|
-      if reason_object[:selected]
-        AbstractScreeningResultsReason.find_or_create_by(reason_id: reason_object[:reason_id],
-                                                         abstract_screening_result: @abstract_screening_result)
-      else
-        AbstractScreeningResultsReason.where(reason_id: reason_object[:reason_id],
-                                             abstract_screening_result: @abstract_screening_result).destroy_all
-      end
-    end
-
-    reasons_and_tags_params['custom_tags'].each do |tag_object|
-      if tag_object[:selected]
-        AbstractScreeningResultsTag.find_or_create_by(tag_id: tag_object[:tag_id],
-                                                      abstract_screening_result: @abstract_screening_result)
-      else
-        AbstractScreeningResultsTag.where(tag_id: tag_object[:tag_id],
-                                          abstract_screening_result: @abstract_screening_result).destroy_all
-      end
-    end
-  end
 
   def prepare_custom_reasons
     @custom_reasons = ProjectsReason.reasons_object(@abstract_screening.project, ProjectsReason::ABSTRACT)
@@ -171,12 +147,5 @@ class AbstractScreeningResultsController < ApplicationController
         :label,
         :notes
       )
-  end
-
-  def reasons_and_tags_params
-    params.require(:asr).permit(
-      custom_reasons: %i[id reason_id name pos selected],
-      custom_tags: %i[id tag_id name pos selected]
-    )
   end
 end

@@ -88,32 +88,6 @@ class AbstractScreening < ApplicationRecord
     ALL_SCREENINGS.include?(abstract_screening_type)
   end
 
-  def reasons_object
-    abstract_screenings_reasons = AbstractScreeningsReason.where(abstract_screening: self).includes(:reason)
-    abstract_screenings_reasons.map do |abstract_screenings_reason|
-      {
-        id: abstract_screenings_reason.id,
-        reason_id: abstract_screenings_reason.reason_id,
-        name: abstract_screenings_reason.reason.name,
-        pos: abstract_screenings_reason.pos,
-        selected: false
-      }
-    end
-  end
-
-  def tags_object
-    abstract_screenings_tags = AbstractScreeningsTag.where(abstract_screening: self).includes(:tag)
-    abstract_screenings_tags.map do |abstract_screenings_tag|
-      {
-        id: abstract_screenings_tag.id,
-        tag_id: abstract_screenings_tag.tag_id,
-        name: abstract_screenings_tag.tag.name,
-        pos: abstract_screenings_tag.pos,
-        selected: false
-      }
-    end
-  end
-
   def tag_options
     reqs = []
     reqs << 'Yes' if yes_tag_required
@@ -156,5 +130,4 @@ class AbstractScreening < ApplicationRecord
   rescue StandardError => e
     Sentry.capture_exception(e)
   end
-
 end
