@@ -1,5 +1,6 @@
 class ProjectsReasonsController < ApplicationController
   def create
+    authorize(Project.find(params[:project_id]), policy_class: ProjectsReasonPolicy)
     reason = Reason.find_or_create_by(name: params[:name])
     projects_reason = ProjectsReason.find_or_create_by(project_id: params[:project_id], reason:,
                                                        screening_type: ProjectsReason::ABSTRACT)
@@ -8,6 +9,7 @@ class ProjectsReasonsController < ApplicationController
 
   def update
     projects_reason = ProjectsReason.find(params[:id])
+    authorize(projects_reason.project, policy_class: ProjectsReasonPolicy)
     updated_reason = Reason.find_or_create_by!(name: params[:newCustomValue])
     AbstractScreeningResultsReason
       .where(
@@ -28,6 +30,7 @@ class ProjectsReasonsController < ApplicationController
 
   def destroy
     projects_reason = ProjectsReason.find(params[:id])
+    authorize(projects_reason.project, policy_class: ProjectsReasonPolicy)
     projects_reason.destroy
     render json: projects_reason, status: 200
   end

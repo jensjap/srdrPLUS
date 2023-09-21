@@ -1,5 +1,6 @@
 class ProjectsTagsController < ApplicationController
   def create
+    authorize(Project.find(params[:project_id]), policy_class: ProjectsTagPolicy)
     tag = Tag.find_or_create_by(name: params[:name])
     projects_tag = ProjectsTag.find_or_create_by(project_id: params[:project_id], tag:,
                                                  screening_type: ProjectsTag::ABSTRACT)
@@ -8,6 +9,7 @@ class ProjectsTagsController < ApplicationController
 
   def update
     projects_tag = ProjectsTag.find(params[:id])
+    authorize(projects_tag.project, policy_class: ProjectsTagPolicy)
     updated_tag = Tag.find_or_create_by!(name: params[:newCustomValue])
     AbstractScreeningResultsTag
       .where(
@@ -28,6 +30,7 @@ class ProjectsTagsController < ApplicationController
 
   def destroy
     projects_tag = ProjectsTag.find(params[:id])
+    authorize(projects_tag.project, policy_class: ProjectsTagPolicy)
     projects_tag.destroy
     render json: projects_tag, status: 200
   end
