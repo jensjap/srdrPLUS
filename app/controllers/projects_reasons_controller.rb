@@ -1,4 +1,8 @@
 class ProjectsReasonsController < ApplicationController
+  def index
+    render json: ProjectsReason.reasons_object(Project.find(params[:project_id]), params[:screening_type]), status: 200
+  end
+
   def create
     authorize(Project.find(params[:project_id]), policy_class: ProjectsReasonPolicy)
     reason = Reason.find_or_create_by(name: params[:name])

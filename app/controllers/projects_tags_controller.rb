@@ -1,4 +1,8 @@
 class ProjectsTagsController < ApplicationController
+  def index
+    render json: ProjectsTag.tags_object(Project.find(params[:project_id]), params[:screening_type]), status: 200
+  end
+
   def create
     authorize(Project.find(params[:project_id]), policy_class: ProjectsTagPolicy)
     tag = Tag.find_or_create_by(name: params[:name])

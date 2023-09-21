@@ -212,8 +212,8 @@ Rails.application.routes.draw do
 
   resources :data_audits, only: %i[index update]
   resources :projects, concerns: :paginatable, shallow: true do
-    resources :projects_reasons, only: %i[create update destroy]
-    resources :projects_tags, only: %i[create update destroy]
+    resources :projects_reasons, only: %i[index create update destroy]
+    resources :projects_tags, only: %i[index create update destroy]
 
     resources :consolidations
 
