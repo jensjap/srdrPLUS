@@ -234,9 +234,8 @@
           <template x-if="resolutionMode">
             <div
               class="cursor-not-allowed bg-gray-900 text-xs text-center font-bold flex justify-center items-center"
-            >
-              Maybe not Available in Resolution Mode
-            </div>
+              x-text="`Conflicts left: ${asr_in_asic_count}`"
+            ></div>
           </template>
           <div
             class="cursor-pointer border-t-2 bg-gray-500 flex justify-center items-center"
@@ -329,6 +328,7 @@
         notes: "",
       },
       all_labels: [],
+      asr_in_asic_count: null,
       cps: [],
       word_weights: {},
       wordWeight: "",
@@ -860,6 +860,7 @@
           this.options = data.options;
           this.word_weights = data.word_weights;
           this.cps = data.cps;
+          this.asr_in_asic_count = data.asr_in_asic_count;
           this.processWeights("title", "processedTitle");
           this.processWeights("abstract", "processedAbstract");
         }

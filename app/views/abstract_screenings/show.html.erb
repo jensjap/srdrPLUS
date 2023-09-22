@@ -33,6 +33,7 @@
             <!-- prettier-ignore -->
             <% if AbstractScreeningService.find_asr_id_to_be_resolved(@abstract_screening, current_user, false) %>
             <div class="w-full flex space-x-2">
+              <!-- prettier-ignore -->
               <%= link_to(abstract_screening_screen_path(@abstract_screening,
               resolution_mode: true), class: "text-center mb-2 cursor-pointer
               items-center justify-center rounded-md border border-transparent
@@ -40,7 +41,7 @@
               hover:bg-srdrpurple-light focus:outline-none focus:ring-2
               focus:ring-indigo-500 focus:ring-offset-2 w-full
               hover:no-underline hover:text-white focus:no-underline focus:text-white") do %>
-              <div>Resolve Conflicts</div>
+                Resolve Conflicts (<%= AbstractScreeningService.asr_in_asic_count(@abstract_screening) %>)
               <% end %>
             </div>
             <% else %>

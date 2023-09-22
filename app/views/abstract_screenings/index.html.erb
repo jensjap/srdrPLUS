@@ -172,7 +172,7 @@
                       font-medium text-white shadow-sm hover:bg-srdrpurple-light
                       focus:outline-none focus:ring-2 focus:ring-indigo-500
                       focus:ring-offset-2 hover:no-underline hover:text-white focus:no-underline focus:text-white") do %>
-                      <div>Resolve Conflicts</div>
+                        Resolve Conflicts (<%= AbstractScreeningService.asr_in_asic_count(as) %>)
                       <% end %>
                     </div>
                     <% else %>
