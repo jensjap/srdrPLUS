@@ -34,6 +34,7 @@ class FulltextScreeningService < BaseScreeningService
 
   def self.get_next_singles_citation_id(fulltext_screening)
     project_screened_citation_ids = project_screened_citation_ids(fulltext_screening.project)
+    puts project_screened_citation_ids
     CitationsProject
       .joins(:screening_qualifications)
       .where(screening_qualifications: { qualification_type: ScreeningQualification::AS_ACCEPTED })
