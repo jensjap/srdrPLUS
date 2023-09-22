@@ -150,7 +150,7 @@
                       font-medium text-white shadow-sm hover:bg-srdrpurple-light
                       focus:outline-none focus:ring-2 focus:ring-indigo-500
                       focus:ring-offset-2 hover:no-underline hover:text-white focus:no-underline focus:text-white") do %>
-                      <div>Resolve Conflicts</div>
+                        Resolve Conflicts (<%= AbstractScreeningService.asr_in_asic_count(as) %>)
                       <% end %>
                     </div>
                     <% else %>
@@ -173,7 +173,7 @@
                       hover:no-underline hover:text-white focus:no-underline focus:text-white") %>
                     <!-- prettier-ignore -->
                     <% if @project.leaders.include?(current_user) %>
-                    <%= link_to('Edit', edit_abstract_screening_path(as),
+                    <%= link_to('Settings', edit_abstract_screening_path(as),
                       class: "w-full items-center justify-center
                       rounded-md border border-transparent bg-srdrpurple px-4
                       py-2 my-1 text-center text-sm font-medium text-white

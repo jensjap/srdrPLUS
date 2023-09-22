@@ -1,4 +1,15 @@
 class AbstractScreeningService < BaseScreeningService
+  def self.asr_in_asic_count(abstract_screening)
+    CitationsProject
+      .left_joins(:abstract_screening_results)
+      .where(
+        project: abstract_screening.project,
+        screening_status: CitationsProject::AS_IN_CONFLICT
+      )
+      .uniq
+      .count
+  end
+
   def self.find_asr_id_to_be_resolved(abstract_screening, user, create_record = true)
     unfinished_privileged_asr =
       abstract_screening
@@ -55,7 +66,7 @@ class AbstractScreeningService < BaseScreeningService
                                    )')
                          .where('mp2.id IS NULL')
                          .where.not(id: ineligible_citation_ids)
-                         .where('mp1.score BETWEEN ? AND ?',  0.5 - x, 0.5 + x)
+                         .where('mp1.score BETWEEN ? AND ?', 0.5 - x, 0.5 + x)
                          .sample
 
     return preferred_citation.id if preferred_citation.present?

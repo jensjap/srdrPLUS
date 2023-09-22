@@ -9,7 +9,7 @@
           <div class="ml-4 mt-4">
             <h3
               class="text-sm font-bold border-b-2 border-black"
-              x-text="`Diagnosis: ${master_template[diagnosis_id].name}`"
+              x-text="`Diagnosis: ${master_template[diagnosis_id].name} (${master_template[diagnosis_id].description})`"
             ></h3>
             <template
               x-for="population_id in Object.keys(master_template[diagnosis_id].populations)"
@@ -17,7 +17,7 @@
               <div class="ml-4 mt-4">
                 <h3 class="text-sm font-bold border-b-2 border-srdrpurple">
                   <span
-                    x-text="`Population: ${master_template[diagnosis_id].populations[population_id].name}`"
+                    x-text="`Population: ${master_template[diagnosis_id].populations[population_id].name} (${master_template[diagnosis_id].populations[population_id].description})`"
                   ></span>
                   <template
                     x-if="dimensions_lookup[extraction_ids[extraction_ids.length - 1].id]?.outcomes[diagnosis_id] && dimensions_lookup[extraction_ids[extraction_ids.length - 1].id]?.outcomes[diagnosis_id]?.populations[population_id]"
@@ -44,7 +44,7 @@
                       <div class="overflow-x-auto overflow-y-hidden ml-4 mt-4">
                         <h4
                           class="text-sm font-bold border-b-2 border-purple-400"
-                          x-text="`Timepoint: ${master_template[diagnosis_id].populations[population_id].timepoints[timepoint_id].name}`"
+                          x-text="`Timepoint: ${master_template[diagnosis_id].populations[population_id].timepoints[timepoint_id].name} (${master_template[diagnosis_id].populations[population_id].timepoints[timepoint_id].unit})`"
                         ></h4>
                         <div class="grid grid-cols-2 gap-4">
                           <template x-for="rss_type_id in 4">
