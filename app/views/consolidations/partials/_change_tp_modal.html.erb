@@ -69,8 +69,14 @@
     </div>
   </div>
   <div>
-    <input x-model="new_tp_name" new_tp_name type="text" />
+    <input
+      x-model="new_tp_name"
+      new_tp_name
+      type="text"
+      :placeholder="`${change_type} Name`"
+    />
     <textarea
+      placeholder="Description/Unit"
       x-model="new_tp_description_unit"
       class="!resize-none"
       rows="3"

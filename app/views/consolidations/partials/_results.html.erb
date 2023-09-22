@@ -23,7 +23,7 @@
                 <div class="overflow-x-auto overflow-y-hidden ml-4">
                   <h4 class="text-sm font-medium">
                     <span
-                      x-text="master_template[type1_type_id][type1_id].populations[population_name_id].name"
+                      x-text="`${master_template[type1_type_id][type1_id].populations[population_name_id].name} (${master_template[type1_type_id][type1_id].populations[population_name_id].description})`"
                     ></span>
                     <template
                       x-if="rss_lookup[`${extraction_ids[extraction_ids.length - 1].id}-${type1_type_id}-${type1_id}-${population_name_id}`] && (result_statistic_section_type_id > 1 && result_statistic_section_type_id < 4)"
@@ -46,8 +46,16 @@
                         >
                           <th
                             class="text-center whitespace-nowrap truncate"
-                            x-text="master_template[type1_type_id][type1_id].populations[population_name_id].arms[arm_id].name"
-                            :title="master_template[type1_type_id][type1_id].populations[population_name_id].arms[arm_id].name"
+                            x-text="if (result_statistic_section_type_id === 2 || result_statistic_section_type_id === 4) {
+                              return master_template[type1_type_id][type1_id].populations[population_name_id].arms[arm_id].name
+                            } else {
+                              return `${master_template[type1_type_id][type1_id].populations[population_name_id].arms[arm_id].name} (${master_template[type1_type_id][type1_id].populations[population_name_id].arms[arm_id].description})`
+                            }"
+                            :title="if (result_statistic_section_type_id === 2 || result_statistic_section_type_id === 4) {
+                              return master_template[type1_type_id][type1_id].populations[population_name_id].arms[arm_id].name
+                            } else {
+                              return `${master_template[type1_type_id][type1_id].populations[population_name_id].arms[arm_id].name} (${master_template[type1_type_id][type1_id].populations[population_name_id].arms[arm_id].description})`
+                            }"
                           ></th>
                         </template>
                       </tr>
@@ -59,7 +67,16 @@
                         <tr>
                           <td
                             class="whitespace-nowrap"
-                            x-text="master_template[type1_type_id][type1_id].populations[population_name_id].timepoints[timepoint_name_id].name"
+                            x-text="if (result_statistic_section_type_id === 3 || result_statistic_section_type_id === 4) {
+                              return master_template[type1_type_id][type1_id].populations[population_name_id].timepoints[timepoint_name_id].name
+                            } else {
+                              return `${master_template[type1_type_id][type1_id].populations[population_name_id].timepoints[timepoint_name_id].name} (${master_template[type1_type_id][type1_id].populations[population_name_id].timepoints[timepoint_name_id].unit})`
+                            }"
+                            :title="if (result_statistic_section_type_id === 3 || result_statistic_section_type_id === 4) {
+                              return master_template[type1_type_id][type1_id].populations[population_name_id].timepoints[timepoint_name_id].name
+                            } else {
+                              return `${master_template[type1_type_id][type1_id].populations[population_name_id].timepoints[timepoint_name_id].name} (${master_template[type1_type_id][type1_id].populations[population_name_id].timepoints[timepoint_name_id].unit})`
+                            }"
                           ></td>
                           <td>
                             <table>
