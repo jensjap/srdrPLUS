@@ -1,4 +1,7 @@
-<div class="p-4 lg:p-8">
+<div class="p-4 lg:p-8" x-data="fulltext_screenings_index">
+  <!-- prettier-ignore -->
+  <%= render 'abstract_screenings/reasons_and_tags_modal' %>
+  <%= render 'abstract_screenings/screen/add_reasoning' %>
   <div class="sm:flex sm:items-center">
     <div class="sm:flex-auto">
       <h1 class="text-xl font-bold">Fulltext Screenings</h1>
@@ -7,7 +10,7 @@
         citations
       </p>
     </div>
-    <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+    <div class="mt-4 flex flex-col space-y-2">
       <%= link_to('Create New Screening',
       new_project_fulltext_screening_path(@project), class: "inline-flex
       items-center justify-center rounded-md border border-transparent
@@ -15,6 +18,12 @@
       hover:bg-srdrpurple-light focus:outline-none focus:ring-2
       focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
       hover:text-white focus:no-underline focus:text-white") %>
+      <button
+        class="cursor-pointer rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white focus:no-underline focus:text-white"
+        @click="reasons_tags_modal = true"
+      >
+        Configure Reasons and Tags
+      </button>
     </div>
   </div>
   <div class="px-4 sm:px-6 lg:px-8">
@@ -161,3 +170,172 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+    };
+    Alpine.data("fulltext_screenings_index", () => ({
+      reasons_tags_modal: false,
+      addReasonModal: { on: false, type: "", action: "" },
+      newCustomValue: "",
+      updateCustomId: null,
+      custom_reasons: [],
+      custom_tags: [],
+      project_id: null,
+
+      async init() {
+        this.project_id = <%= @project.id %>;
+        this.fetchReasons();
+        this.fetchTags();
+      },
+
+      async fetchReasons() {
+        const response = await fetch(
+          `/projects/${this.project_id}/projects_reasons?screening_type=fulltext`,
+          {
+            method: "GET",
+            headers,
+          }
+        );
+        const data = await response.json();
+        this.custom_reasons = data;
+      },
+
+      async fetchTags() {
+        const response = await fetch(
+          "/projects/<%= @project.id %>/projects_tags?screening_type=fulltext",
+          {
+            method: "GET",
+            headers,
+          }
+        );
+        const data = await response.json();
+        this.custom_tags = data;
+      },
+
+      invalidCustomValue() {
+        if (this.newCustomValue == "") {
+          toastr.error("This field cannot be empty.");
+          return true;
+        }
+
+        if (
+          this.addReasonModal.type == "custom_reasons" &&
+          this["custom_reasons"].some(
+            (custom_reason) =>
+              custom_reason.name == this.newCustomValue && !!custom_reason.id
+          )
+        ) {
+          toastr.error("This value has already been taken.");
+          return true;
+        }
+
+        if (
+          this.addReasonModal.type == "custom_tags" &&
+          this["custom_tags"].some(
+            (custom_tag) =>
+              custom_tag.name == this.newCustomValue && !!custom_tag.id
+          )
+        ) {
+          toastr.error("This value has already been taken.");
+          return true;
+        }
+
+        return false;
+      },
+
+      async createCustomValue() {
+        let url;
+        if (this.addReasonModal.type == "custom_reasons") {
+          url = `/projects/${this.project_id}/projects_reasons?screening_type=fulltext`;
+        } else if (this.addReasonModal.type == "custom_tags") {
+          url = `/projects/${this.project_id}/projects_tags?screening_type=fulltext`;
+        }
+        const response = await fetch(url, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            name: this.newCustomValue.trim(),
+          }),
+        });
+        await response.json();
+        await this.fetchReasons();
+        await this.fetchTags();
+        this.addReasonModal.on = false;
+        this.newCustomValue = "";
+      },
+
+      async updateCustomValue(type, values) {
+        const id = values.id;
+        const newCustomValue = values.newCustomValue || false;
+        let url;
+        if (type == "custom_reasons") {
+          url = `/projects_reasons/${id}`;
+        } else if (type == "custom_tags") {
+          url = `/projects_tags/${id}`;
+        }
+        const response = await fetch(url, {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify({
+            newCustomValue,
+          }),
+        });
+        await response.json();
+        await this.fetchReasons();
+        await this.fetchTags();
+        this.addReasonModal.on = false;
+        this.newCustomValue = "";
+      },
+
+      async updateOrderings(dragPos, dropPos, orderableKey, table) {
+        const temp = this[orderableKey][dropPos];
+        this[orderableKey][dropPos] = this[orderableKey][dragPos];
+        this[orderableKey][dragPos] = temp;
+        const tempOrderableElements = this[orderableKey];
+        this[orderableKey] = [];
+        this.$nextTick(() => {
+          this[orderableKey] = tempOrderableElements;
+          const orderings = {};
+          tempOrderableElements.forEach(
+            (oe, index) => (orderings[index] = { id: oe.id, table })
+          );
+          fetch("/api/v1/orderings/update_positions", {
+            method: "PATCH",
+            headers,
+            body: JSON.stringify({ orderings }),
+          });
+          this[orderableKey].forEach((el, index) => (el.pos = index + 1));
+        });
+      },
+
+      async deleteCustomValue(type, index) {
+        const id = this[type][index].id;
+        if (
+          confirm(
+            `Would you like to delete "${this[type][index].name}" as a custom choice?`
+          )
+        ) {
+          let url;
+          if (type == "custom_reasons") {
+            url = `/projects_reasons/${id}`;
+          } else if (type == "custom_tags") {
+            url = `/projects_tags/${id}`;
+          }
+          const response = await fetch(url, {
+            method: "DELETE",
+            headers,
+          });
+          await response.json();
+          await this.fetchReasons();
+          await this.fetchTags();
+        }
+      },
+    }));
+  });
+</script>

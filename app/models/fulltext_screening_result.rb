@@ -30,6 +30,21 @@ class FulltextScreeningResult < ApplicationRecord
 
   after_save :evaluate_screening_qualifications
 
+  def reasons_object
+    FulltextScreeningResultsReason
+      .where(fulltext_screening_results: self)
+      .includes(:reason)
+      .map do |fulltext_screening_results_reason|
+      {
+        id: fulltext_screening_results_reason.id,
+        reason_id: fulltext_screening_results_reason.reason_id,
+        name: fulltext_screening_results_reason.reason.name,
+        pos: 99_999,
+        selected: true
+      }
+    end
+  end
+
   def evaluate_screening_qualifications
     if citations_project
        .screening_qualifications

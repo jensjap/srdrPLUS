@@ -9,8 +9,6 @@ class FulltextScreeningResultsController < ApplicationController
         case params[:submissionType]
         when 'label'
           @fulltext_screening_result.update(fsr_params)
-        when 'reasons_and_tags'
-          handle_reasons_and_tags
         when 'notes'
           @fulltext_screening_result.update_column(:notes, params[:fsr][:notes])
         end
@@ -37,44 +35,88 @@ class FulltextScreeningResultsController < ApplicationController
 
   private
 
-  def handle_reasons_and_tags
-    reasons_and_tags_params['custom_reasons'].each do |reason_object|
-      if reason_object[:selected]
-        FulltextScreeningResultsReason.find_or_create_by(reason_id: reason_object[:reason_id],
-                                                         fulltext_screening_result: @fulltext_screening_result)
-      else
-        FulltextScreeningResultsReason.where(reason_id: reason_object[:reason_id],
-                                             fulltext_screening_result: @fulltext_screening_result).destroy_all
-      end
+  def prepare_custom_reasons
+    @custom_reasons = ProjectsReason.reasons_object(@fulltext_screening.project, ProjectsReason::FULLTEXT)
+    selected_reasons_hash = {}
+    @fulltext_screening_result.fulltext_screening_results_reasons.includes(:reason).each do |fsrr|
+      selected_reasons_hash[fsrr.reason_id] = {
+        selected_id: fsrr.id,
+        name: fsrr.reason.name,
+        included: false
+      }
     end
-
-    reasons_and_tags_params['custom_tags'].each do |tag_object|
-      if tag_object[:selected]
-        FulltextScreeningResultsTag.find_or_create_by(tag_id: tag_object[:tag_id],
-                                                      fulltext_screening_result: @fulltext_screening_result)
-      else
-        FulltextScreeningResultsTag.where(tag_id: tag_object[:tag_id],
-                                          fulltext_screening_result: @fulltext_screening_result).destroy_all
+    @custom_reasons.map! do |custom_reason|
+      if (fsrr = selected_reasons_hash[custom_reason[:reason_id]])
+        custom_reason[:selected] = true
+        custom_reason[:selected_id] = fsrr[:selected_id]
+        selected_reasons_hash[custom_reason[:reason_id]][:included] = true
       end
+      custom_reason
+    end
+    selected_reasons_hash.each do |reason_id, fsrr_hash|
+      next if fsrr_hash[:included]
+
+      @custom_reasons << {
+        id: nil,
+        reason_id:,
+        name: fsrr_hash[:name],
+        pos: nil,
+        selected: true,
+        selected_id: fsrr_hash[:selected_id]
+      }
+    end
+  end
+
+  def prepare_custom_tags
+    @custom_tags = ProjectsTag.tags_object(@fulltext_screening.project, ProjectsTag::FULLTEXT)
+    selected_tags_hash = {}
+    @fulltext_screening_result.fulltext_screening_results_tags.includes(:tag).each do |fsrt|
+      selected_tags_hash[fsrt.tag_id] = {
+        selected_id: fsrt.id,
+        name: fsrt.tag.name,
+        included: false
+      }
+    end
+    @custom_tags.map! do |custom_tag|
+      if (fsrt = selected_tags_hash[custom_tag[:tag_id]])
+        custom_tag[:selected] = true
+        custom_tag[:selected_id] = fsrt[:selected_id]
+        selected_tags_hash[custom_tag[:tag_id]][:included] = true
+      end
+      custom_tag
+    end
+    selected_tags_hash.each do |tag_id, fsrt_hash|
+      next if fsrt_hash[:included]
+
+      @custom_tags << {
+        id: nil,
+        tag_id:,
+        name: fsrt_hash[:name],
+        pos: nil,
+        selected: true,
+        selected_id: fsrt_hash[:selected_id]
+      }
     end
   end
 
   def prepare_json_data
     @fulltext_screening = @fulltext_screening_result.fulltext_screening
-    @custom_reasons = FulltextScreeningsReasonsUser.custom_reasons_object(@fulltext_screening, current_user)
-    @custom_tags = FulltextScreeningsTagsUser.custom_tags_object(@fulltext_screening, current_user)
 
-    @custom_reasons.map! do |custom_reason|
-      custom_reason[:selected] = true if @fulltext_screening_result.reasons.any? do |reason|
-                                           reason.id == custom_reason[:reason_id]
-                                         end
-      custom_reason
-    end
+    prepare_custom_reasons
+    prepare_custom_tags
 
-    @custom_tags.map! do |custom_tag|
-      custom_tag[:selected] = true if @fulltext_screening_result.tags.any? { |tag| tag.id == custom_tag[:tag_id] }
-      custom_tag
-    end
+    @all_labels =
+      @fulltext_screening_result.citations_project.fulltext_screening_results.order(updated_at: :desc).map do |label|
+        {
+          updated_at: label.updated_at,
+          label: label.label,
+          user_handle: label.user.handle,
+          privileged: label.privileged,
+          tags: label.tags.map { |tag| tag['name'] }.join(', '),
+          reasons: label.reasons.map { |reasons| reasons['name'] }.join(', '),
+          notes: label.notes
+        }
+      end
   end
 
   def fsr_params
@@ -84,12 +126,5 @@ class FulltextScreeningResultsController < ApplicationController
         :label,
         :notes
       )
-  end
-
-  def reasons_and_tags_params
-    params.require(:fsr).permit(
-      custom_reasons: %i[id reason_id name pos selected],
-      custom_tags: %i[id tag_id name pos selected]
-    )
   end
 end

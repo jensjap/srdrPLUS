@@ -12,6 +12,8 @@ class FulltextScreeningResultsReason < ApplicationRecord
   belongs_to :fulltext_screening_result
   belongs_to :reason
 
+  delegate :project, to: :fulltext_screening_result
+
   after_commit :reindex_fsr
 
   private

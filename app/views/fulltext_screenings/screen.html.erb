@@ -206,10 +206,11 @@
       newCustomValue: "",
       updateCustomId: null,
       disable_textarea_keywords_and_phrases: false,
-      dragIndex: null,
-      dragType: null,
-      dropIndex: null,
-      dropType: null,
+      resolutionMode:
+        new URL(window.location.href).searchParams.get("resolution_mode") ==
+        "true",
+      show_all_labels: false,
+      project_id: null,
 
       init() {
         const url = new URL(window.location.href);
@@ -297,7 +298,8 @@
         if (
           this.addReasonModal.type == "custom_reasons" &&
           this.fsr["custom_reasons"].some(
-            (custom_reason) => custom_reason.name == this.newCustomValue
+            (custom_reason) =>
+              custom_reason.name == this.newCustomValue && !!custom_reason.id
           )
         ) {
           toastr.error("This value has already been taken.");
@@ -307,7 +309,8 @@
         if (
           this.addReasonModal.type == "custom_tags" &&
           this.fsr["custom_tags"].some(
-            (custom_tag) => custom_tag.name == this.newCustomValue
+            (custom_tag) =>
+              custom_tag.name == this.newCustomValue && !!custom_tag.id
           )
         ) {
           toastr.error("This value has already been taken.");
@@ -320,11 +323,9 @@
       async createCustomValue() {
         let url;
         if (this.addReasonModal.type == "custom_reasons") {
-          url =
-            "/fulltext_screenings/<%= params[:fulltext_screening_id] %>/fulltext_screenings_reasons_users";
+          url = `/projects/${this.project_id}/projects_reasons?screening_type=fulltext`;
         } else if (this.addReasonModal.type == "custom_tags") {
-          url =
-            "/fulltext_screenings/<%= params[:fulltext_screening_id] %>/fulltext_screenings_tags_users";
+          url = `/projects/${this.project_id}/projects_tags?screening_type=fulltext`;
         }
         const response = await fetch(url, {
           method: "POST",
@@ -344,9 +345,9 @@
         const newCustomValue = values.newCustomValue || false;
         let url;
         if (type == "custom_reasons") {
-          url = `/fulltext_screenings_reasons_users/${id}`;
+          url = `/projects_reasons/${id}`;
         } else if (type == "custom_tags") {
-          url = `/fulltext_screenings_tags_users/${id}`;
+          url = `/projects_tags/${id}`;
         }
         const response = await fetch(url, {
           method: "PATCH",
@@ -391,9 +392,9 @@
         ) {
           let url;
           if (type == "custom_reasons") {
-            url = `/fulltext_screenings_reasons_users/${id}`;
+            url = `/projects_reasons/${id}`;
           } else if (type == "custom_tags") {
-            url = `/fulltext_screenings_tags_users/${id}`;
+            url = `/projects_tags/${id}`;
           }
           const response = await fetch(url, {
             method: "DELETE",
@@ -421,6 +422,55 @@
         this.confirmationModalLabel = label;
         this.confirmationModalText = this.confirmationModalTexts[label];
         this.confirmationModal = true;
+      },
+
+      async updateReasonsSelection(reason) {
+        reason.selected = !reason.selected;
+        if (reason.selected) {
+          await fetch(
+            `/fulltext_screening_results/${this.fsr.id}/fulltext_screening_results_reasons`,
+            {
+              method: "POST",
+              headers,
+              body: JSON.stringify({
+                reason_id: reason.reason_id,
+              }),
+            }
+          );
+          this.getFsr();
+        } else {
+          await fetch(
+            `/fulltext_screening_results_reasons/${reason.selected_id}`,
+            {
+              method: "DELETE",
+              headers,
+            }
+          );
+          reason.selected_id = null;
+        }
+      },
+
+      async updateTagsSelection(tag) {
+        tag.selected = !tag.selected;
+        if (tag.selected) {
+          await fetch(
+            `/fulltext_screening_results/${this.fsr.id}/fulltext_screening_results_tags`,
+            {
+              method: "POST",
+              headers,
+              body: JSON.stringify({
+                tag_id: tag.tag_id,
+              }),
+            }
+          );
+          this.getFsr();
+        } else {
+          await fetch(`/fulltext_screening_results_tags/${tag.selected_id}`, {
+            method: "DELETE",
+            headers,
+          });
+          tag.selected_id = null;
+        }
       },
 
       async getFsrId(fsrId) {
@@ -484,6 +534,7 @@
           this.citation = data.citation;
           this.options = data.options;
           this.cps = data.cps;
+          this.project_id = data.project_id;
         }
       },
     }));

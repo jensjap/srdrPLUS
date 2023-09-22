@@ -88,32 +88,6 @@ class FulltextScreening < ApplicationRecord
     ALL_SCREENINGS.include?(fulltext_screening_type)
   end
 
-  def reasons_object
-    fulltext_screenings_reasons = FulltextScreeningsReason.where(fulltext_screening: self).includes(:reason)
-    fulltext_screenings_reasons.map do |fulltext_screenings_reason|
-      {
-        id: fulltext_screenings_reason.id,
-        reason_id: fulltext_screenings_reason.reason_id,
-        name: fulltext_screenings_reason.reason.name,
-        pos: fulltext_screenings_reason.pos,
-        selected: false
-      }
-    end
-  end
-
-  def tags_object
-    fulltext_screenings_tags = FulltextScreeningsTag.where(fulltext_screening: self).includes(:tag)
-    fulltext_screenings_tags.map do |fulltext_screenings_tag|
-      {
-        id: fulltext_screenings_tag.id,
-        tag_id: fulltext_screenings_tag.tag_id,
-        name: fulltext_screenings_tag.tag.name,
-        pos: fulltext_screenings_tag.pos,
-        selected: false
-      }
-    end
-  end
-
   def tag_options
     reqs = []
     reqs << 'Yes' if yes_tag_required
@@ -156,5 +130,4 @@ class FulltextScreening < ApplicationRecord
   rescue StandardError => e
     Sentry.capture_exception(e)
   end
-
 end

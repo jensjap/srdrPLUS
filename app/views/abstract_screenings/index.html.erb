@@ -274,9 +274,9 @@
       async createCustomValue() {
         let url;
         if (this.addReasonModal.type == "custom_reasons") {
-          url = `/projects/${this.project_id}/projects_reasons`;
+          url = `/projects/${this.project_id}/projects_reasons?screening_type=abstract`;
         } else if (this.addReasonModal.type == "custom_tags") {
-          url = `/projects/${this.project_id}/projects_tags`;
+          url = `/projects/${this.project_id}/projects_tags?screening_type=abstract`;
         }
         const response = await fetch(url, {
           method: "POST",

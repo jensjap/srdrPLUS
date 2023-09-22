@@ -167,7 +167,7 @@
                   :id="`customreason-${reason.id}`"
                   type="checkbox"
                   :value="reason.selected"
-                  @change="reason.selected = !reason.selected; updateFsr('reasons_and_tags')"
+                  @change="updateReasonsSelection(reason)"
                 />
                 <label
                   class="border-b px-2 grow cursor-pointer text-xs"
@@ -178,6 +178,7 @@
                   <select
                     class="w-8 text-xs h-4 py-0 px-1 inline"
                     @change="updateOrderings(index, $el.value - 1, 'custom_reasons', 'projects_reasons')"
+                    x-show="!!reason.id"
                   >
                     <template
                       x-for="(rreason, iindex) in fsr.custom_reasons"
@@ -198,6 +199,7 @@
                     stroke="currentColor"
                     class="w-4 h-4 ml-3 mr-2 cursor-pointer"
                     @click="addReasonModal.on = true; addReasonModal.type = 'custom_reasons'; addReasonModal.action = 'Update'; newCustomValue = reason.name; updateCustomId = reason.id"
+                    x-show="!!reason.id"
                   >
                     <path
                       stroke-linecap="round"
@@ -213,6 +215,7 @@
                     stroke="darkred"
                     class="w-4 h-4 cursor-pointer"
                     @click="deleteCustomValue('custom_reasons', index)"
+                    x-show="!!reason.id"
                   >
                     <path
                       stroke-linecap="round"
@@ -275,7 +278,7 @@
                   :id="`customtag-${tag.id}`"
                   type="checkbox"
                   :value="tag.selected"
-                  @change="tag.selected = !tag.selected; updateFsr('reasons_and_tags')"
+                  @change="updateTagsSelection(tag)"
                 />
                 <label
                   class="border-b px-2 grow cursor-pointer text-xs"
@@ -286,6 +289,7 @@
                   <select
                     class="w-8 text-xs h-4 py-0 px-1 inline"
                     @change="updateOrderings(index, $el.value - 1, 'custom_tags', 'projects_tags')"
+                    x-show="!!tag.id"
                   >
                     <template
                       x-for="(rtag, iindex) in fsr.custom_tags"
@@ -306,6 +310,7 @@
                     stroke="currentColor"
                     class="w-4 h-4 ml-3 mr-2 cursor-pointer"
                     @click="addReasonModal.on = true; addReasonModal.type = 'custom_tags'; addReasonModal.action = 'Update'; newCustomValue = tag.name; updateCustomId = tag.id"
+                    x-show="!!tag.id"
                   >
                     <path
                       stroke-linecap="round"
@@ -321,6 +326,7 @@
                     stroke="darkred"
                     class="w-4 h-4 cursor-pointer"
                     @click="deleteCustomValue('custom_tags', index)"
+                    x-show="!!tag.id"
                   >
                     <path
                       stroke-linecap="round"

@@ -206,7 +206,10 @@ Rails.application.routes.draw do
     resources :abstract_screening_results_reasons, only: %i[create destroy]
     resources :abstract_screening_results_tags, only: %i[create destroy]
   end
-  resources :fulltext_screening_results, only: %i[show update]
+  resources :fulltext_screening_results, only: %i[show update], shallow: true do
+    resources :fulltext_screening_results_reasons, only: %i[create destroy]
+    resources :fulltext_screening_results_tags, only: %i[create destroy]
+  end
 
   resources :result_statistic_sections_measures, only: %i[create]
 

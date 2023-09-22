@@ -1,7 +1,7 @@
 json.fsr do
   json.id @fulltext_screening_result.id
   json.user_id = @fulltext_screening_result.user_id
-  json.username @abstract_screening_result.user.profile.username
+  json.username @fulltext_screening_result.user.profile.username
   json.label @fulltext_screening_result.label
   json.custom_reasons @custom_reasons
   json.custom_tags @custom_tags
@@ -38,3 +38,7 @@ cps = @screened_cps.reverse.map do |fsr|
   }
 end
 json.cps cps
+
+json.all_labels @all_labels
+
+json.project_id @fulltext_screening_result.project.id

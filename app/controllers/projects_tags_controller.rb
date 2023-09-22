@@ -7,7 +7,7 @@ class ProjectsTagsController < ApplicationController
     authorize(Project.find(params[:project_id]), policy_class: ProjectsTagPolicy)
     tag = Tag.find_or_create_by(name: params[:name])
     projects_tag = ProjectsTag.find_or_create_by(project_id: params[:project_id], tag:,
-                                                 screening_type: ProjectsTag::ABSTRACT)
+                                                 screening_type: params[:screening_type])
     render json: projects_tag, status: 200
   end
 
