@@ -37,7 +37,7 @@
     </button>
     <button
       @click="historyPanel = !historyPanel"
-      class="absolute top-0 left-0 bg-gray-100 p-1 rounded-r-md z-9 text-xs flex flex-row items-center"
+      class="absolute top-0 left-0 bg-gray-100 p-1 rounded-full z-9 text-xs flex flex-row items-center"
     >
       <span style='font-size: medium;'>Your Labels</span>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-5">
@@ -50,7 +50,7 @@
     >
       Continue Screening
     </button>
-    <div class="h-24 mr-44 overflow-y-auto flex items-center">
+    <div class="h-24 mr-56 overflow-y-auto flex items-center">
       <div
         class="horizontal-scroll-wrapper"
         @mouseup="checkSelection()"
@@ -105,22 +105,45 @@
 
         <button
           x-show="resolutionMode"
-          style="width: 150px"
-          class="ml-6 text-center mb-2 inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple px-1 py-2 text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
+          class="text-center inline-flex items-center justify-center rounded-md border border-transparent bg-purple-900 px-2 py-1 mx-8 mb-4 text-xs font-medium text-white shadow-sm hover:no-underline hover:text-white cursor-pointer"
           x-on:click="toggleLabelsVisibility()"
         >
-          <span>See Labels&nbsp;&nbsp;</span>
-          <template x-if="show_all_labels">
-            <svg class="h-6 w-6">
-              <path fill="white" d="M12 4.5C7 4.5 2.73 7.61 1 12a17.3 17.3 0 0022 0C21.27 7.61 17 4.5 12 4.5zm0 13c-5 0-9.27-3.11-11-7.5a16.3 16.3 0 0122 0c-1.73 4.39-6 7.5-11 7.5zm0-11c1.93 0 3.5 1.57 3.5 3.5S13.93 13.5 12 13.5 8.5 11.93 8.5 10 10.07 6.5 12 6.5z"/>
-            </svg>
-          </template>
-          <template x-if="!show_all_labels">
-            <svg class="h-6 w-6">
-             <path fill="white" d="M12 4.5C7 4.5 2.73 7.61 1 12a17.3 17.3 0 0022 0C21.27 7.61 17 4.5 12 4.5zm0 13c-5 0-9.27-3.11-11-7.5a16.3 16.3 0 0122 0c-1.73 4.39-6 7.5-11 7.5zm0-11c1.93 0 3.5 1.57 3.5 3.5S13.93 13.5 12 13.5 8.5 11.93 8.5 10 10.07 6.5 12 6.5zm0 4.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5z"/>
-             <line x1="1" y1="1" x2="23" y2="23" stroke="white" stroke-width="2"/>
-            </svg>
-          </template>
+          All Labels &nbsp;
+          <svg
+            x-show="show_all_labels"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-5 h-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+            />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+          <svg
+            x-show="!show_all_labels"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-5 h-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"
+            />
+          </svg>
         </button>
 
         <div
@@ -847,16 +870,20 @@
         this.asr.label = newLabel;
 
         if (this.satisfiesReasoning()) {
-          this.updateAsr('label', originalLabel);
+          this.updateAsr("label", originalLabel);
         } else {
-          toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 });
+          toastr.warning(
+            "This label requires additional information.  Please see 'Required for labels'.",
+            "",
+            { timeOut: 2000 }
+          );
           this.asr.label = originalLabel;
         }
 
         if (this.requireReasoning()) {
           this.reasoningMenu = true;
         } else {
-          this.updateAsr('label', originalLabel);
+          this.updateAsr("label", originalLabel);
         }
       },
     }));
