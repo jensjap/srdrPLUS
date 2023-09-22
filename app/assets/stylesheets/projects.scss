@@ -2,7 +2,7 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-@import 'settings';
+@import "settings";
 
 #project-tabs li a.disabled {
   cursor: not-allowed;
@@ -23,7 +23,7 @@ mark {
 
 .project-filter {
   .input-group-button button {
-    margin-right: 5px
+    margin-right: 5px;
   }
 
   .search-field {
@@ -84,12 +84,12 @@ mark {
     font-style: italic;
   }
 
-//  li.accordion-item {
-//    a,
-//    a:visited {
-//      color: gray;
-//    }
-//  }
+  //  li.accordion-item {
+  //    a,
+  //    a:visited {
+  //      color: gray;
+  //    }
+  //  }
 
   a.accordion-title {
     text-decoration: none;
@@ -103,7 +103,6 @@ mark {
 
   li.accordion-item.is-active {
     a.accordion-title {
-
       font-weight: bold;
       color: $primary-color;
       small {
@@ -142,12 +141,11 @@ div.pagination-centered {
 
 // Colored triangles on the project index page.
 ul {
-
   li {
     position: relative;
 
     &.publishing-approved:before {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       left: 0;
@@ -157,7 +155,7 @@ ul {
     }
 
     &.publishing-requested:before {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       left: 0;
@@ -173,10 +171,10 @@ ul {
   ul {
     margin-top: 0rem;
     li:nth-of-type(even) {
-      background-color: darken( $white, 5% );
+      background-color: darken($white, 5%);
       a.citation-label {
         &:hover {
-          background-color: darken( $white, 15% );
+          background-color: darken($white, 15%);
         }
       }
     }
@@ -187,11 +185,12 @@ ul {
       font-size: 0.7rem;
       line-height: 0.9rem;
       color: #5b5b5b;
-      .citation-title, .citation-authors {
+      .citation-title,
+      .citation-authors {
         width: calc(100% - 35px);
       }
 
-      .citation-title{
+      .citation-title {
         //margin-bottom: 0.8rem;
         overflow: hidden;
         //font-size: 15px;
@@ -199,7 +198,7 @@ ul {
         //color: #5b5b5b;
       }
 
-      .citation-authors{
+      .citation-authors {
         font-style: italic;
         overflow: hidden;
         //font-size: 13px;
@@ -212,7 +211,7 @@ ul {
         //font-size: 13px;
         //color: #666666;
         //font-weight: bold;
-       }
+      }
     }
 
     .citation-journal {
@@ -243,7 +242,6 @@ ul {
       //font-style: italic;
       //color: #666666;
       //margin-bottom: 1rem;
-
     }
 
     .citation-abstract {
@@ -253,34 +251,36 @@ ul {
 
     margin-bottom: 0px;
     &:hover {
-      background-color: darken( $white, 10% );
+      background-color: darken($white, 10%);
     }
 
     &.is-active {
-      background-color: #F7F3F9 !important;
+      background-color: #f7f3f9 !important;
       a.citation-label {
-        color: darken( $primary-color, 10% ) !important;
+        color: darken($primary-color, 10%) !important;
         height: auto;
         overflow: auto;
         white-space: normal;
         border-bottom: 0px;
         &:hover {
-          background-color: #E5DEE8 !important;
+          background-color: #e5dee8 !important;
         }
-        .citation-numbers, .citation-authors {
+        .citation-numbers,
+        .citation-authors {
           margin-bottom: 0.5rem;
         }
-        .citation-authors, .citation-title {
+        .citation-authors,
+        .citation-title {
           margin-top: 0.5rem;
         }
-        .citation-authors, .citation-title {
+        .citation-authors,
+        .citation-title {
           margin-top: 0.5rem;
         }
-
       }
       .accordion-content {
         border-top: 0px;
-        background-color: #F7F3F9;
+        background-color: #f7f3f9;
       }
     }
   }
@@ -293,7 +293,6 @@ ul {
   display: flex;
 
   #sort-button {
-    #width: 4.5rem;
     margin-right: 0.25rem;
   }
 
@@ -313,7 +312,9 @@ ul {
     }
   }
 
-  #search-box input, #sort-button, #sort-select {
+  #search-box input,
+  #sort-button,
+  #sort-select {
     height: 2rem;
   }
 }
@@ -346,7 +347,6 @@ a.citation-label {
 //  align-items: center;
 //}
 
-
 .remove-button {
   font-size: 1rem;
   color: $dark-gray;
@@ -377,7 +377,7 @@ a.citation-label {
 
 .added-item {
   border: solid 1px #666666;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   border-radius: 5px;
   margin-bottom: 5px;
   display: flex;
@@ -516,5 +516,5 @@ a.citation-label {
 // END Colored triangles on the project index page.
 
 input:checked ~ .switch-hidden {
-  background: #016BAB;
+  background: #016bab;
 }
