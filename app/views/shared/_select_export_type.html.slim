@@ -4,38 +4,19 @@
 
   fieldset.export-type-selection
     legend[style='font-size: x-large;']
-      | Export SRDR+ Data. Select type:
-
+      | Export SRDR+ Data
     br
-
+    br
     div style='border: 1px; border-radius: 3px;'
-      /p Long format: Data export is structured in such a way that extractions can span multiple rows.
-      /p Wide format: Data export is structured in such a way that a single row represents a single extraction.
-      p Legacy format: A hybrid between long and wide format. Follows the traditional SRDR export structure.
-
-    br
-
-    /input[class='export-type-radio' type='radio' name="export-type-#{project.id.to_s}" value="#{export_project_path(project, export_type_name: '.xlsx long')}" id="xlsx-long-radio-#{project.id.to_s}"]
-    /label for="xlsx-long-radio-#{project.id.to_s}"
-      | Microsoft Excel - long format (.xlsx)
-
-    /br
-
-    /input[class='export-type-radio' type='radio' name="export-type-#{project.id.to_s}" value="#{export_project_path(project, export_type_name: '.xlsx wide')}" id="xlsx-wide-radio-#{project.id.to_s}"]
-    /label for="xlsx-wide-radio-#{project.id.to_s}"
-      | Microsoft Excel - wide format (.xlsx)
-
-    /br
-
+      p Export SRDR+ Extraction Data:
     input[class='export-type-radio' type='hidden' name="export-type-#{project.id.to_s}" value="#{export_project_path(project, export_type_name: '.xlsx legacy')}" id="xlsx-legacy-radio-#{project.id.to_s}"]
 
-    = link_to "Export Project Data", export_project_path(project, export_type_name: '.xlsx'), method: :post, class: "button expanded start-export-button"
+    = link_to "Export Project Data", export_project_path(project, export_type_name: '.xlsx legacy'), method: :post, class: "button expanded start-export-button"
 
     br
     hr
 
-    fieldset
-      legend[style='font-size: large;']
-        |Export Citation Screening Labels:
+    div style='border: 1px; border-radius: 3px;'
+      p Export Citation Screening Labels:
 
     = link_to "Export Project Citation Labels", "#{project_export_screening_data_path(project)}.xlsx", method: :post, class: 'button expanded start-citation-labels-export-button'

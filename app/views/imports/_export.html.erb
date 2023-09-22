@@ -1,12 +1,6 @@
 <div class="p-4 lg:p-8">
-  <h1 class="text-lg font-bold">Export Data</h1>
   <div class="export-type-selection">
-    <p class="text-base font-thin">
-      Legacy format: A hybrid between long and wide format. Follows the
-      traditional SRDR export structure.
-    </p>
-    <br />
-
+    <p>Export Extraction Data in XLSX format.</p>
     <input
       class="export-type-radio"
       id="xlsx-legacy-radio-<%= @project.id.to_s %>"
@@ -15,13 +9,16 @@
       value="<%= export_project_path(@project, export_type_name: '.xlsx legacy') %>"
     />
     <!-- prettier-ignore -->
-    <%= link_to "Export Extraction Data", export_project_path(@project, export_type_name: '.xlsx legacy'), method: :post, class: "button start-export-button" %>
+    <%= link_to "Export Extraction Data",
+          export_project_path(@project, export_type_name: '.xlsx legacy'),
+          method: :post,
+          class: "button start-export-button" %>
 
-    <br />
     <hr />
-    <p>Export Project Screening Labels:</p>
+
+    <p>Export Screening Labels in XLSX format:</p>
     <!-- prettier-ignore -->
-    <%= link_to "Export Screening Data in XLSX",
+    <%= link_to "Export Screening Data",
           "#{project_export_screening_data_path(@project)}",
           method: :post,
           class: 'button start-citation-labels-export-button' %>
