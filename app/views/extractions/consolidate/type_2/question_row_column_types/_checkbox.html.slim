@@ -12,6 +12,8 @@
   - if not record
     - record = Record.find_or_create_by(recordable: eefps_qrcf)
 
+  / Edgecase: user changes question type from text to checkbox. We need to clear record.name, otherwise JSON.parse throws exception.
+  - begin; JSON.parse(record.name); rescue JSON::ParserError; record.update(name: '')
   = simple_form_for(record, namespace: "record_#{record.id.to_s}", remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.error_notification
 
