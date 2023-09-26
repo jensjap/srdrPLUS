@@ -41,4 +41,40 @@ module ScreeningModule
     N_SIZE_ONLY_EXPERT_NOVICE_MIXED
   ].freeze
   ALL_SCREENINGS = [PILOT].freeze
+
+  def single_screening?
+    SINGLE_SCREENINGS.include?(screening_type)
+  end
+
+  def double_screening?
+    DOUBLE_SCREENINGS.include?(screening_type)
+  end
+
+  def all_screenings?
+    ALL_SCREENINGS.include?(screening_type)
+  end
+
+  def tag_options
+    reqs = []
+    reqs << 'Yes' if yes_tag_required
+    reqs << 'No' if no_tag_required
+    reqs << 'Maybe' if maybe_tag_required
+    reqs
+  end
+
+  def reason_options
+    reqs = []
+    reqs << 'Yes' if yes_reason_required
+    reqs << 'No' if no_reason_required
+    reqs << 'Maybe' if maybe_reason_required
+    reqs
+  end
+
+  def note_options
+    reqs = []
+    reqs << 'Yes' if yes_note_required
+    reqs << 'No' if no_note_required
+    reqs << 'Maybe' if maybe_note_required
+    reqs
+  end
 end
