@@ -70,7 +70,7 @@ class FulltextScreening < ApplicationRecord
   has_many :users, through: :fulltext_screenings_users
 
   has_many :fulltext_screenings_reasons
-  has_many :reasons, through: :fulltext_screenings_reasons, after_remove: :convert_to_fsru
+  has_many :reasons, through: :fulltext_screenings_reasons
   has_many :fulltext_screenings_tags
   has_many :tags, through: :fulltext_screenings_tags
 
@@ -114,20 +114,5 @@ class FulltextScreening < ApplicationRecord
 
   def screening_type
     fulltext_screening_type
-  end
-
-  private
-
-  def convert_to_fsru(reason)
-    reason_id = reason.id
-    FulltextScreeningResultsReason
-      .includes(:fulltext_screening_result)
-      .where(fulltext_screening_results:, reason_id:).each do |fsrr|
-      fulltext_screening_id = fsrr.fulltext_screening_result.fulltext_screening_id
-      user_id = fsrr.fulltext_screening_result.user_id
-      FulltextScreeningsReasonsUser.find_or_create_by(fulltext_screening_id:, reason_id:, user_id:)
-    end
-  rescue StandardError => e
-    Sentry.capture_exception(e)
   end
 end

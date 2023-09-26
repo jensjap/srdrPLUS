@@ -70,7 +70,7 @@ class AbstractScreening < ApplicationRecord
   has_many :users, through: :abstract_screenings_users
 
   has_many :abstract_screenings_reasons
-  has_many :reasons, through: :abstract_screenings_reasons, after_remove: :convert_to_asru
+  has_many :reasons, through: :abstract_screenings_reasons
   has_many :abstract_screenings_tags
   has_many :tags, through: :abstract_screenings_tags
 
@@ -114,20 +114,5 @@ class AbstractScreening < ApplicationRecord
 
   def screening_type
     abstract_screening_type
-  end
-
-  private
-
-  def convert_to_asru(reason)
-    reason_id = reason.id
-    AbstractScreeningResultsReason
-      .includes(:abstract_screening_result)
-      .where(abstract_screening_results:, reason_id:).each do |asrr|
-      abstract_screening_id = asrr.abstract_screening_result.abstract_screening_id
-      user_id = asrr.abstract_screening_result.user_id
-      AbstractScreeningsReasonsUser.find_or_create_by(abstract_screening_id:, reason_id:, user_id:)
-    end
-  rescue StandardError => e
-    Sentry.capture_exception(e)
   end
 end
