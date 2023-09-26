@@ -26,13 +26,24 @@
       Exit
     </a>
     <button
-      @click="historyPanel = true"
-      class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+      @click="historyPanel = !historyPanel"
+      class="absolute top-0 left-0 bg-gray-100 p-1 rounded-full z-[9] text-xs flex flex-row items-center"
     >
-      Your Labels (<span
-        x-text="cps.filter(cp => cp.label !== null).filter(cp => cp.privileged == false).length"
-      ></span
-      >)
+      <span style="font-size: medium">Your Labels</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-6 h-5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5"
+        />
+      </svg>
     </button>
     <div class="h-24 mr-44 overflow-y-auto flex items-center">
       <div class="horizontal-scroll-wrapper">
