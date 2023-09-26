@@ -36,7 +36,7 @@ class FulltextScreeningService < BaseScreeningService
     project_screened_citation_ids = project_screened_citation_ids(fulltext_screening.project)
     CitationsProject
       .joins(:screening_qualifications)
-      .where(screening_qualifications: { qualification_type: ScreeningQualification::FS_ACCEPTED })
+      .where(screening_qualifications: { qualification_type: ScreeningQualification::AS_ACCEPTED })
       .where(project: fulltext_screening.project)
       .where.not(citation_id: project_screened_citation_ids)
       .sample&.citation_id
