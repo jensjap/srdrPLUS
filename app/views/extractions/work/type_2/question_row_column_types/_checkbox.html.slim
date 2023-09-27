@@ -47,6 +47,13 @@
     - else
       - options << [opt.name, opt.id, { 'data-prereq': "prereq-#{ opt.class }-#{ opt.id }" }]
 
+  / Edgecase: If form is changed after data is recorded, we catch exception and notify.
+  - begin
+    - JSON.parse(record.name) if record.name.present?
+  - rescue JSON::ParserError
+    - Sentry.capture_exception(exception) if Rails.env.production?
+    - record.update(name: '')
+
   = simple_form_for(record, remote: true, namespace: "record_#{record.id.to_s}", html: { data: { 'abide': '', 'live-validate': true, prereq: "prereq-#{ qrc.class }-#{ qrc.id }" } }) do |f|
     = f.error_notification
     = f.input :name, label: false, as: :check_boxes,
@@ -57,6 +64,3 @@
     div id="record-id-#{ record.id.to_s }" class='record-info' style='opacity: 0;' = 'Saved!'
 
   = render 'extractions/shared/type_2/followup_fields', followups: followups
-
-    /.form-actions
-      = f.button :submit, 'Save'
