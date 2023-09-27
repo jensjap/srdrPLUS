@@ -1,0 +1,1062 @@
+/* // Place all the styles related to the sd_meta_data controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/ */
+/* line 6, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form *, body.sd_meta_data .grid-form *:before, body.sd_meta_data .grid-form *:after {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* line 7, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form input[type="text"], body.sd_meta_data .grid-form input[type="email"], body.sd_meta_data .grid-form input[type="number"], body.sd_meta_data .grid-form input[type="password"], body.sd_meta_data .grid-form input[type="search"], body.sd_meta_data .grid-form input[type="tel"], body.sd_meta_data .grid-form input[type="url"], body.sd_meta_data .grid-form input[type="color"], body.sd_meta_data .grid-form input[type="date"], body.sd_meta_data .grid-form input[type="datetime"], body.sd_meta_data .grid-form input[type="datetime-local"], body.sd_meta_data .grid-form input[type="month"], body.sd_meta_data .grid-form input[type="time"], body.sd_meta_data .grid-form input[type="week"], body.sd_meta_data .grid-form textarea, body.sd_meta_data .grid-form select {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  font-size: small;
+}
+
+/* line 8, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form input[type="text"], body.sd_meta_data .grid-form input[type="email"], body.sd_meta_data .grid-form input[type="number"], body.sd_meta_data .grid-form input[type="password"], body.sd_meta_data .grid-form input[type="search"], body.sd_meta_data .grid-form input[type="tel"], body.sd_meta_data .grid-form input[type="url"], body.sd_meta_data .grid-form input[type="color"], body.sd_meta_data .grid-form input[type="date"], body.sd_meta_data .grid-form input[type="datetime"], body.sd_meta_data .grid-form input[type="datetime-local"], body.sd_meta_data .grid-form input[type="month"], body.sd_meta_data .grid-form input[type="time"], body.sd_meta_data .grid-form input[type="week"], body.sd_meta_data .grid-form textarea {
+  font-size: small;
+}
+
+/* line 9, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form input[type="text"]::-webkit-input-placeholder, body.sd_meta_data .grid-form input[type="email"]::-webkit-input-placeholder, body.sd_meta_data .grid-form input[type="number"]::-webkit-input-placeholder, body.sd_meta_data .grid-form input[type="password"]::-webkit-input-placeholder, body.sd_meta_data .grid-form input[type="search"]::-webkit-input-placeholder, body.sd_meta_data .grid-form input[type="tel"]::-webkit-input-placeholder, body.sd_meta_data .grid-form input[type="url"]::-webkit-input-placeholder, body.sd_meta_data .grid-form input[type="color"]::-webkit-input-placeholder, body.sd_meta_data .grid-form input[type="date"]::-webkit-input-placeholder, body.sd_meta_data .grid-form input[type="datetime"]::-webkit-input-placeholder, body.sd_meta_data .grid-form input[type="datetime-local"]::-webkit-input-placeholder, body.sd_meta_data .grid-form input[type="month"]::-webkit-input-placeholder, body.sd_meta_data .grid-form input[type="time"]::-webkit-input-placeholder, body.sd_meta_data .grid-form input[type="week"]::-webkit-input-placeholder, body.sd_meta_data .grid-form textarea::-webkit-input-placeholder {
+  font-weight: 100;
+  color: #595959;
+  font-size: small;
+}
+
+/* line 10, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form input[type="text"]:-moz-placeholder, body.sd_meta_data .grid-form input[type="email"]:-moz-placeholder, body.sd_meta_data .grid-form input[type="number"]:-moz-placeholder, body.sd_meta_data .grid-form input[type="password"]:-moz-placeholder, body.sd_meta_data .grid-form input[type="search"]:-moz-placeholder, body.sd_meta_data .grid-form input[type="tel"]:-moz-placeholder, body.sd_meta_data .grid-form input[type="url"]:-moz-placeholder, body.sd_meta_data .grid-form input[type="color"]:-moz-placeholder, body.sd_meta_data .grid-form input[type="date"]:-moz-placeholder, body.sd_meta_data .grid-form input[type="datetime"]:-moz-placeholder, body.sd_meta_data .grid-form input[type="datetime-local"]:-moz-placeholder, body.sd_meta_data .grid-form input[type="month"]:-moz-placeholder, body.sd_meta_data .grid-form input[type="time"]:-moz-placeholder, body.sd_meta_data .grid-form input[type="week"]:-moz-placeholder, body.sd_meta_data .grid-form textarea:-moz-placeholder {
+  font-weight: 100;
+  color: #595959;
+  font-size: small;
+}
+
+/* line 11, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form input[type="text"]:focus, body.sd_meta_data .grid-form input[type="email"]:focus, body.sd_meta_data .grid-form input[type="number"]:focus, body.sd_meta_data .grid-form input[type="password"]:focus, body.sd_meta_data .grid-form input[type="search"]:focus, body.sd_meta_data .grid-form input[type="tel"]:focus, body.sd_meta_data .grid-form input[type="url"]:focus, body.sd_meta_data .grid-form input[type="color"]:focus, body.sd_meta_data .grid-form input[type="date"]:focus, body.sd_meta_data .grid-form input[type="datetime"]:focus, body.sd_meta_data .grid-form input[type="datetime-local"]:focus, body.sd_meta_data .grid-form input[type="month"]:focus, body.sd_meta_data .grid-form input[type="time"]:focus, body.sd_meta_data .grid-form input[type="week"]:focus, body.sd_meta_data .grid-form textarea:focus {
+  outline: none;
+  font-size: small;
+}
+
+/* line 12, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* line 13, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form fieldset legend {
+  border: none;
+  border-bottom: 4px solid #404040;
+  color: #404040;
+  font-size: 18px;
+  font-weight: bold;
+  padding-bottom: 5px;
+  position: static;
+  width: 100%;
+}
+
+/* line 14, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form fieldset fieldset legend {
+  border-bottom: 2px solid #404040;
+  font-weight: normal;
+}
+
+/* line 15, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form fieldset fieldset fieldset legend {
+  border-bottom: 1px solid #404040;
+  font-weight: normal;
+  font-size: 15px;
+}
+
+/* line 16, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span] {
+  width: 100%;
+  zoom: 1;
+}
+
+/* line 17, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span]:before, body.sd_meta_data .grid-form [data-row-span]:after {
+  content: "";
+  display: table;
+}
+
+/* line 18, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span]:after {
+  clear: both;
+}
+
+@media only screen and (min-width: 0) and (max-width: 700px) {
+  /* line 19, app/assets/stylesheets/sd_meta_data.scss */
+  body.sd_meta_data .grid-form [data-row-span] {
+    border-bottom: none;
+  }
+}
+
+/* line 20, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span] [data-field-span] {
+  padding: 8px;
+  float: left;
+}
+
+@media only screen and (min-width: 0) and (max-width: 700px) {
+  /* line 21, app/assets/stylesheets/sd_meta_data.scss */
+  body.sd_meta_data .grid-form [data-row-span] [data-field-span] {
+    width: 100% !important;
+  }
+}
+
+@media only screen and (min-width: 700px) {
+  /* line 22, app/assets/stylesheets/sd_meta_data.scss */
+  body.sd_meta_data .grid-form [data-row-span] [data-field-span] {
+    display: block;
+  }
+}
+
+/* line 23, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span] [data-field-span] label:first-child {
+  font-weight: bold;
+  margin-top: 0;
+  font-weight: bold;
+  font-size: 12px;
+  color: #333;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* line 24, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span] [data-field-span] label:first-child:hover {
+  cursor: text;
+}
+
+/* line 26, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-item:hover {
+  background: rgba(153, 123, 177, 0.2);
+  border-radius: 0.1rem;
+  cursor: text;
+}
+
+/* line 27, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span] .focus[data-field-span] {
+  background: #fffad4;
+}
+
+/* line 28, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span] .focus[data-field-span] label {
+  color: #262626;
+}
+
+@media print {
+  /* line 29, app/assets/stylesheets/sd_meta_data.scss */
+  body.sd_meta_data .grid-form [data-row-span] {
+    display: table;
+    height: 56px;
+    page-break-inside: avoid;
+  }
+  /* line 30, app/assets/stylesheets/sd_meta_data.scss */
+  body.sd_meta_data .grid-form [data-row-span] [data-field-span] {
+    display: table-cell;
+    float: none;
+  }
+  /* line 31, app/assets/stylesheets/sd_meta_data.scss */
+  body.sd_meta_data .grid-form [data-row-span] .focus[data-field-span], body.sd_meta_data .grid-form [data-row-span] [data-field-span]:hover {
+    background: none;
+  }
+  /* line 32, app/assets/stylesheets/sd_meta_data.scss */
+  body.sd_meta_data .grid-form [data-row-span] [data-field-span] label:first-child {
+    letter-spacing: 0;
+  }
+}
+
+/* line 33, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="1"] > [data-field-span="1"] {
+  width: 100%;
+}
+
+/* line 34, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="2"] > [data-field-span="1"] {
+  width: 50%;
+}
+
+/* line 35, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="2"] > [data-field-span="2"] {
+  width: 100%;
+}
+
+/* line 36, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="3"] > [data-field-span="1"] {
+  width: 33.33333%;
+}
+
+/* line 37, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="3"] > [data-field-span="2"] {
+  width: 66.66667%;
+}
+
+/* line 38, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="3"] > [data-field-span="3"] {
+  width: 100%;
+}
+
+/* line 39, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="4"] > [data-field-span="1"] {
+  width: 25%;
+}
+
+/* line 40, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="4"] > [data-field-span="2"] {
+  width: 50%;
+}
+
+/* line 41, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="4"] > [data-field-span="3"] {
+  width: 75%;
+}
+
+/* line 42, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="4"] > [data-field-span="4"] {
+  width: 100%;
+}
+
+/* line 43, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="5"] > [data-field-span="1"] {
+  width: 20%;
+}
+
+/* line 44, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="5"] > [data-field-span="2"] {
+  width: 40%;
+}
+
+/* line 45, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="5"] > [data-field-span="3"] {
+  width: 60%;
+}
+
+/* line 46, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="5"] > [data-field-span="4"] {
+  width: 80%;
+}
+
+/* line 47, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="5"] > [data-field-span="5"] {
+  width: 100%;
+}
+
+/* line 48, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="6"] > [data-field-span="1"] {
+  width: 16.66667%;
+}
+
+/* line 49, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="6"] > [data-field-span="2"] {
+  width: 33.33333%;
+}
+
+/* line 50, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="6"] > [data-field-span="3"] {
+  width: 50%;
+}
+
+/* line 51, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="6"] > [data-field-span="4"] {
+  width: 66.66667%;
+}
+
+/* line 52, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="6"] > [data-field-span="5"] {
+  width: 83.33333%;
+}
+
+/* line 53, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="6"] > [data-field-span="6"] {
+  width: 100%;
+}
+
+/* line 54, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="7"] > [data-field-span="1"] {
+  width: 14.28571%;
+}
+
+/* line 55, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="7"] > [data-field-span="2"] {
+  width: 28.57143%;
+}
+
+/* line 56, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="7"] > [data-field-span="3"] {
+  width: 42.85714%;
+}
+
+/* line 57, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="7"] > [data-field-span="4"] {
+  width: 57.14286%;
+}
+
+/* line 58, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="7"] > [data-field-span="5"] {
+  width: 71.42857%;
+}
+
+/* line 59, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="7"] > [data-field-span="6"] {
+  width: 85.71429%;
+}
+
+/* line 60, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="7"] > [data-field-span="7"] {
+  width: 100%;
+}
+
+/* line 61, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="8"] > [data-field-span="1"] {
+  width: 12.5%;
+}
+
+/* line 62, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="8"] > [data-field-span="2"] {
+  width: 25%;
+}
+
+/* line 63, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="8"] > [data-field-span="3"] {
+  width: 37.5%;
+}
+
+/* line 64, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="8"] > [data-field-span="4"] {
+  width: 50%;
+}
+
+/* line 65, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="8"] > [data-field-span="5"] {
+  width: 62.5%;
+}
+
+/* line 66, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="8"] > [data-field-span="6"] {
+  width: 75%;
+}
+
+/* line 67, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="8"] > [data-field-span="7"] {
+  width: 87.5%;
+}
+
+/* line 68, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="8"] > [data-field-span="8"] {
+  width: 100%;
+}
+
+/* line 69, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="9"] > [data-field-span="1"] {
+  width: 11.11111%;
+}
+
+/* line 70, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="9"] > [data-field-span="2"] {
+  width: 22.22222%;
+}
+
+/* line 71, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="9"] > [data-field-span="3"] {
+  width: 33.33333%;
+}
+
+/* line 72, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="9"] > [data-field-span="4"] {
+  width: 44.44444%;
+}
+
+/* line 73, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="9"] > [data-field-span="5"] {
+  width: 55.55556%;
+}
+
+/* line 74, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="9"] > [data-field-span="6"] {
+  width: 66.66667%;
+}
+
+/* line 75, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="9"] > [data-field-span="7"] {
+  width: 77.77778%;
+}
+
+/* line 76, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="9"] > [data-field-span="8"] {
+  width: 88.88889%;
+}
+
+/* line 77, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="9"] > [data-field-span="9"] {
+  width: 100%;
+}
+
+/* line 78, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="10"] > [data-field-span="1"] {
+  width: 10%;
+}
+
+/* line 79, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="10"] > [data-field-span="2"] {
+  width: 20%;
+}
+
+/* line 80, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="10"] > [data-field-span="3"] {
+  width: 30%;
+}
+
+/* line 81, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="10"] > [data-field-span="4"] {
+  width: 40%;
+}
+
+/* line 82, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="10"] > [data-field-span="5"] {
+  width: 50%;
+}
+
+/* line 83, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="10"] > [data-field-span="6"] {
+  width: 60%;
+}
+
+/* line 84, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="10"] > [data-field-span="7"] {
+  width: 70%;
+}
+
+/* line 85, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="10"] > [data-field-span="8"] {
+  width: 80%;
+}
+
+/* line 86, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="10"] > [data-field-span="9"] {
+  width: 90%;
+}
+
+/* line 87, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="10"] > [data-field-span="10"] {
+  width: 100%;
+}
+
+/* line 88, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="11"] > [data-field-span="1"] {
+  width: 9.09091%;
+}
+
+/* line 89, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="11"] > [data-field-span="2"] {
+  width: 18.18182%;
+}
+
+/* line 90, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="11"] > [data-field-span="3"] {
+  width: 27.27273%;
+}
+
+/* line 91, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="11"] > [data-field-span="4"] {
+  width: 36.36364%;
+}
+
+/* line 92, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="11"] > [data-field-span="5"] {
+  width: 45.45455%;
+}
+
+/* line 93, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="11"] > [data-field-span="6"] {
+  width: 54.54545%;
+}
+
+/* line 94, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="11"] > [data-field-span="7"] {
+  width: 63.63636%;
+}
+
+/* line 95, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="11"] > [data-field-span="8"] {
+  width: 72.72727%;
+}
+
+/* line 96, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="11"] > [data-field-span="9"] {
+  width: 81.81818%;
+}
+
+/* line 97, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="11"] > [data-field-span="10"] {
+  width: 90.90909%;
+}
+
+/* line 98, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="11"] > [data-field-span="11"] {
+  width: 100%;
+}
+
+/* line 99, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="12"] > [data-field-span="1"] {
+  width: 8.33333%;
+}
+
+/* line 100, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="12"] > [data-field-span="2"] {
+  width: 16.66667%;
+}
+
+/* line 101, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="12"] > [data-field-span="3"] {
+  width: 25%;
+}
+
+/* line 102, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="12"] > [data-field-span="4"] {
+  width: 33.33333%;
+}
+
+/* line 103, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="12"] > [data-field-span="5"] {
+  width: 41.66667%;
+}
+
+/* line 104, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="12"] > [data-field-span="6"] {
+  width: 50%;
+}
+
+/* line 105, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="12"] > [data-field-span="7"] {
+  width: 58.33333%;
+}
+
+/* line 106, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="12"] > [data-field-span="8"] {
+  width: 66.66667%;
+}
+
+/* line 107, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="12"] > [data-field-span="9"] {
+  width: 75%;
+}
+
+/* line 108, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="12"] > [data-field-span="10"] {
+  width: 83.33333%;
+}
+
+/* line 109, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="12"] > [data-field-span="11"] {
+  width: 91.66667%;
+}
+
+/* line 110, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .grid-form [data-row-span="12"] > [data-field-span="12"] {
+  width: 100%;
+}
+
+/* line 112, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .tabs-title > a {
+  color: black;
+  font-weight: bold;
+}
+
+/* line 117, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .draggable {
+  border-color: black;
+  border-style: solid;
+  border-width: thin;
+  background-color: white;
+  margin: 10px 10px 40px 10px;
+  padding: 10px;
+}
+
+/* line 126, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .droppable {
+  height: auto;
+  background-color: aliceblue;
+  margin: 10px;
+  padding: 10px;
+  border-style: solid;
+  border-width: thin;
+}
+
+/* line 136, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .disableselect {
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Chrome/Safari/Opera */
+  /* Konqueror */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge*/
+  user-select: none;
+  /* Non-prefixed version, currently not supported by any browser */
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+/* line 150, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .legend-box {
+  float: left;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border-style: solid;
+  border-width: thin;
+  float: left;
+}
+
+/* line 160, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .green-box {
+  background-color: lightgreen;
+}
+
+/* line 164, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .alice-box {
+  background-color: aliceblue;
+}
+
+/* line 168, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .mapping-controls {
+  margin: 0 10px;
+}
+
+/* line 172, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .bg-light-grey {
+  background-color: #dcdcf1;
+}
+
+/* line 175, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .bg-light-grey:hover {
+  background-color: #D9D9EC !important;
+}
+
+/* line 180, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data li.tabs-title > a:visited {
+  color: inherit;
+}
+
+/* line 185, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .tabs-panel legend {
+  width: auto !important;
+}
+
+/* line 190, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .check-container, body.sd_meta_data .warning-container {
+  display: inline;
+}
+
+/* line 194, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .select2-selection__placeholder {
+  color: black !important;
+}
+
+/* line 199, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .select2-search__field {
+  padding: 0 !important;
+}
+
+/* line 203, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-kq-mapping-container {
+  border: none !important;
+}
+
+/* line 208, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-kq-mapping-legend-container {
+  border: none !important;
+}
+
+/* line 212, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .no-border {
+  border: none !important;
+}
+
+/* line 216, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .report-kq {
+  border: 1px solid #d6e5f3;
+  margin-bottom: 1rem !important;
+}
+
+/* line 221, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .srdr-kq {
+  position: relative;
+  margin: 1rem 1rem 2rem 1rem;
+  padding-left: 1.3rem;
+  border: none;
+  border-radius: 2rem;
+  background-color: #493163;
+  color: white;
+}
+
+/* line 222, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .srdr-kq:before {
+  border-radius: 2rem;
+}
+
+/* line 234, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .clamp-span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+/* line 242, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .srdr-kq-target {
+  margin: 1rem 8px 8px 8px;
+  padding: 11px;
+  border-radius: 2rem;
+  border: 2px dashed #78658c;
+  color: #78658c;
+}
+
+/* line 243, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .srdr-kq-target .srdr-kq {
+  width: 100%;
+  margin: 0.3rem;
+}
+
+/* line 255, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-inner {
+  margin: 0.8rem 1.2rem 1.8rem 1.2rem;
+  background-color: #f3eff3;
+  border-radius: 0.1rem;
+  padding: 0.3rem;
+  border: solid 1px #e4dee4;
+}
+
+/* line 256, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-inner .sd-inner {
+  background: #997bb133;
+  border: solid 1px #d0c9d0;
+}
+
+/* line 260, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-inner .sd-inner:hover {
+  background: #997bb155;
+}
+
+/* line 272, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-show-inner {
+  margin: 1.2rem 1.2rem 1.2rem 1.2rem;
+  padding: 0.6rem 0.6rem 0.6rem 0.6rem;
+  -webkit-box-shadow: 0.1rem 0.1rem 0.5rem #adadad;
+          box-shadow: 0.1rem 0.1rem 0.5rem #adadad;
+}
+
+/* line 278, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-show-image {
+  margin: .5rem;
+}
+
+/* line 283, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-item input:not([type="file"]), body.sd_meta_data .sd-item textarea, body.sd_meta_data .sd-inner input:not([type="file"]), body.sd_meta_data .sd-inner textarea {
+  background-color: #ffffffb5;
+}
+
+/* line 304, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .journal-article-url-list .nested-fields,
+body.sd_meta_data .other-item-list .nested-fields,
+body.sd_meta_data .analytic-framework-list .nested-fields,
+body.sd_meta_data .key-question-list .nested-fields,
+body.sd_meta_data .picod-list .nested-fields,
+body.sd_meta_data .search-strategy-list .nested-fields,
+body.sd_meta_data .grey-literature-list .nested-fields,
+body.sd_meta_data .prisma-list .nested-fields,
+body.sd_meta_data .result-list .nested-fields,
+body.sd_meta_data .comparison-outcome-by-population-subgroup-list .nested-fields,
+body.sd_meta_data .comparison-outcome-by-intervention-subgroup-list .nested-fields,
+body.sd_meta_data .evidence-table-list .nested-fields,
+body.sd_meta_data .pairwise-meta-analytic-result-list .nested-fields,
+body.sd_meta_data .network-meta-analysis-result-list .nested-fields,
+body.sd_meta_data .meta-regression-analysis-result-list .nested-fields {
+  margin-bottom: 0;
+}
+
+/* line 309, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .text-right .remove_fields {
+  color: #c10e0e;
+  font-weight: bolder;
+  font-size: 105%;
+}
+
+/* line 315, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .collapse-button {
+  color: #4b83b5;
+  font-weight: bolder;
+  font-size: 105%;
+}
+
+/* line 316, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .collapse-button div {
+  margin: 0.5rem 0 0 0;
+}
+
+/* line 323, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .add-item-link {
+  margin: 0 1.2rem 0 1.2rem;
+  color: #8f20a2;
+  font-weight: bolder;
+  font-size: 105%;
+}
+
+/* line 330, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data input, body.sd_meta_data textarea {
+  padding: 0 0.2rem 0 0.2rem !important;
+}
+
+/* line 334, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .mapping-kq-title {
+  color: grey;
+  border-top: 1px solid #e6e6e6;
+  border-bottom: 1px solid #e6e6e6;
+  border-left: none !important;
+  border-right: none !important;
+  background: -webkit-repeating-linear-gradient(135deg, #F2F2F2, #f2f2f2 10px, #F8F8F8 10px, #F8F8F8 20px);
+  background: repeating-linear-gradient(-45deg, #F2F2F2, #f2f2f2 10px, #F8F8F8 10px, #F8F8F8 20px);
+}
+
+/* line 340, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .mapping-kq-title a {
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+}
+
+/* line 354, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .tabs-title a:hover {
+  text-decoration: none;
+  background: #c4c4c430;
+}
+
+/* line 358, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .tabs-title a {
+  padding-left: 0.7rem;
+  padding-right: 0.7rem;
+}
+
+/* line 364, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-image {
+  height: auto;
+  max-width: 100%;
+}
+
+/* line 369, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .invalid-url::after {
+  color: red;
+  content: "Please enter a valid URL" !important;
+}
+
+/* line 374, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .infoDiv {
+  width: 50%;
+}
+
+/* line 378, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .srdr-kq .hover-message {
+  font-size: 130%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-transition: opacity 140ms;
+  transition: opacity 140ms;
+  border-radius: 2rem;
+  opacity: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* line 392, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .srdr-kq:hover .hover-message {
+  background-color: #2e7c80;
+  opacity: 1;
+}
+
+/* line 397, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data #status-check-modal {
+  text-align: center;
+  font-size: larger;
+}
+
+/* line 401, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data #status-check-modal #status-check-modal-buttons {
+  margin: 1rem;
+}
+
+/* line 402, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data #status-check-modal #status-check-modal-buttons .confirm {
+  background-color: #30c769;
+}
+
+/* line 405, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data #status-check-modal #status-check-modal-buttons .button {
+  margin: 0 1rem 0 1rem;
+}
+
+/* line 412, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .kq-mapped {
+  background-color: #38969a;
+}
+
+/* line 416, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .empty-input, body.sd_meta_data .empty-associations {
+  border: solid 2px #ff5e00 !important;
+  background-color: #faeee6 !important;
+}
+
+/* line 420, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .empty-kq.srdr-kq, body.sd_meta_data .empty-kq.report-kq {
+  position: relative;
+  border: solid 2px #ff5e00 !important;
+}
+
+/* line 422, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .empty-kq.srdr-kq:before, body.sd_meta_data .empty-kq.report-kq:before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  opacity: 0.25;
+  top: 0;
+  left: 0;
+  background-color: #fa6400 !important;
+}
+
+/* line 436, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .nested-fields {
+  margin-bottom: 0.1rem;
+}
+
+/* line 440, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .hoverable-figure {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  position: relative;
+}
+
+/* line 445, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .hoverable-figure .hover-message {
+  color: white;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+/* line 450, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .hoverable-figure .hover-message a {
+  color: white;
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: darkslateblue;
+}
+
+/* line 457, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .hover-message:hover a {
+  color: lavender;
+  -webkit-text-stroke-color: maroon;
+}
+
+/* line 462, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-kq-prompt {
+  font-size: 120%;
+}
+
+/* line 466, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-kq-destroy-picods-button {
+  background-color: #cc4b37;
+  margin: 1rem 0.5rem 0 0;
+}
+
+/* line 469, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-kq-destroy-picods-button a {
+  color: white !important;
+  text-decoration: none !important;
+}
+
+/* line 475, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-kq-only-kq-button {
+  background-color: #ffae00;
+  margin: 1rem 0.5rem 0 0.5rem;
+}
+
+/* line 478, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-kq-only-kq-button a {
+  color: white !important;
+  text-decoration: none !important;
+}
+
+/* line 484, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-kq-go-back-button {
+  margin: 1rem 0 1rem 0.5rem;
+}
+
+/* line 488, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data input[type="radio"] {
+  display: table-cell;
+}
+
+/* line 492, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data #report-upload {
+  margin-bottom: 0;
+}
+
+/* line 496, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-meta-data-index-delete {
+  font-weight: bold;
+  color: #cc4b37 !important;
+}
+
+/* line 501, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-meta-data-index-query {
+  margin-left: 1rem;
+  background-color: #e49013;
+}
+
+/* line 504, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-meta-data-index-query a {
+  color: white !important;
+}
+
+/* line 509, app/assets/stylesheets/sd_meta_data.scss */
+body.sd_meta_data .sd-meta-data-index-edit {
+  font-weight: bold;
+}
+
+/* line 514, app/assets/stylesheets/sd_meta_data.scss */
+.sd-meta-data-index-request-publish {
+  line-height: inherit;
+  color: #4C0D7D;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* line 520, app/assets/stylesheets/sd_meta_data.scss */
+.sd-meta-data-index-request-publish:hover {
+  color: #410b6c;
+  text-decoration: underline;
+}

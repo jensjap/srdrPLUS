@@ -1,0 +1,14 @@
+/* line 5, app/assets/stylesheets/result_statistic_sections.scss */
+.add-comparison {
+  font-weight: bold;
+}
+
+/* line 10, app/assets/stylesheets/result_statistic_sections.scss */
+table.consolidated-data-table tr {
+  height: 2em;
+}
+
+/* line 16, app/assets/stylesheets/result_statistic_sections.scss */
+form.dirty input, form.dirty textarea {
+  background-color: lightyellow !important;
+}

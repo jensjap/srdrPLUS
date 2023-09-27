@@ -1,0 +1,118 @@
+.horizontal-scroll-wrapper {
+  position: relative;
+}
+
+.horizontal-scroll-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2rem;
+  height: 100%;
+  background: -webkit-gradient(
+    linear,
+    left top, right top,
+    from(rgb(209 213 219 / var(--tw-bg-opacity))),
+    to(transparent)
+  );
+  background: -webkit-linear-gradient(
+    left,
+    rgb(209 213 219 / var(--tw-bg-opacity)),
+    transparent
+  );
+  background: linear-gradient(
+    90deg,
+    rgb(209 213 219 / var(--tw-bg-opacity)),
+    transparent
+  );
+}
+
+.horizontal-scroll-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2rem;
+  height: 100%;
+  background: -webkit-gradient(
+    linear,
+    left top, right top,
+    from(rgba(0, 0, 0, 0.001)),
+    to(rgb(209 213 219 / var(--tw-bg-opacity)))
+  );
+  background: -webkit-linear-gradient(
+    left,
+    rgba(0, 0, 0, 0.001),
+    rgb(209 213 219 / var(--tw-bg-opacity))
+  );
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.001),
+    rgb(209 213 219 / var(--tw-bg-opacity))
+  ); /* transparent keyword is broken in Safari */
+}
+.horizontal-scroll-wrapper-item {
+  background: rgb(209 213 219 / var(--tw-bg-opacity));
+  width: 100%;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+/* separate */
+.vertical-scroll-wrapper {
+  position: relative;
+  height: 100%;
+}
+.vertical-scroll-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 25px;
+  background: -webkit-gradient(
+    linear,
+    left top, left bottom,
+    from(rgb(243, 244, 246)),
+    to(rgba(255, 255, 255, 0.001))
+  );
+  background: -webkit-linear-gradient(
+    rgb(243, 244, 246),
+    rgba(255, 255, 255, 0.001)
+  );
+  background: linear-gradient(
+    rgb(243, 244, 246),
+    rgba(255, 255, 255, 0.001)
+  ); /* transparent keyword is broken in Safari */
+}
+.vertical-scroll-wrapper::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 25px;
+  background: -webkit-gradient(
+    linear,
+    left top, left bottom,
+    from(rgba(255, 255, 255, 0.001)),
+    to(rgb(243, 244, 246))
+  );
+  background: -webkit-linear-gradient(
+    rgba(255, 255, 255, 0.001),
+    rgb(243, 244, 246)
+  );
+  background: linear-gradient(
+    rgba(255, 255, 255, 0.001),
+    rgb(243, 244, 246)
+  ); /* transparent keyword is broken in Safari */
+}
+.vertical-scroll-wrapper-item {
+  overflow-y: scroll;
+  background: rgb(243, 244, 246);
+  width: 100%;
+  height: 100%;
+  padding: 25px 0;
+  line-height: 1.2;
+  /* text-align: center; */
+}
+
+/* separator */
