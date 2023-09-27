@@ -236,8 +236,8 @@ class ScreeningDataExportJob < ApplicationJob
                   when SfCell::NUMERIC
                     sfars.each do |sfar|
                       cell += "\n"
-                      cell += sfar.equality if sf_cell.with_equality
-                      cell += sfar.value
+                      cell += sfar.equality.to_s if sf_cell.with_equality
+                      cell += sfar.value.to_s
                     end
                   when SfCell::CHECKBOX, SfCell::DROPDOWN, SfCell::RADIO
                     sfos.each do |sfo|
