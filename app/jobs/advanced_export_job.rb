@@ -25,7 +25,16 @@ class AdvancedExportJob < ApplicationJob
                     key_questions_project: :key_question
                   }
                 },
-                extractions_extraction_forms_projects_sections_type1s: :type1
+                extractions_extraction_forms_projects_sections_type1s: [
+                  :type1,
+                  {
+                    extractions_extraction_forms_projects_sections_type1_rows:
+                    [
+                      :population_name,
+                      { extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name }
+                    ]
+                  }
+                ]
               }
             }]
           }
@@ -98,8 +107,6 @@ class AdvancedExportJob < ApplicationJob
   end
 
   def add_type1_sections
-    type1_efpss_lookup = {}
-    global_type1s_lookup = {}
     @type1_efpss.each do |efps|
       section_name = efps.section.name
       type1s = []
@@ -107,6 +114,11 @@ class AdvancedExportJob < ApplicationJob
       extractions = []
       extractions_lookups = {}
       units_lookup = {}
+      population_names = []
+      population_names_lookups = {}
+      timepoint_names = []
+      timepoint_names_lookups = {}
+
       eefpss = efps.extractions_extraction_forms_projects_sections
       eefpss.each do |eefps|
         extractions << eefps.extraction unless extractions.include?(eefps.extraction)
@@ -120,6 +132,23 @@ class AdvancedExportJob < ApplicationJob
           units_lookup["#{eefps.extraction.id}-#{type1.id}"] = eefpst1.units
           extractions_lookups[eefps.extraction.id] ||= {}
           extractions_lookups[eefps.extraction.id][type1.id] = true
+
+          eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+            population_name = eefpst1r.population_name
+            population_names << population_name unless population_names.include?(population_name)
+            population_names_lookups[population_name.id] ||= {
+              name: population_name.name,
+              description: population_name.description
+            }
+            eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+              timepoint_name = eefpst1rc.timepoint_name
+              timepoint_names << timepoint_name unless timepoint_names.include?(timepoint_name)
+              timepoint_names_lookups[timepoint_name.id] ||= {
+                name: timepoint_name.name,
+                unit: timepoint_name.unit
+              }
+            end
+          end
         end
       end
       @package.workbook.add_worksheet(name: section_name) do |sheet|
@@ -128,7 +157,18 @@ class AdvancedExportJob < ApplicationJob
           header_multiplier = section_name == 'Outcomes' ? 3 : 2
           headers += (["#{efps.section.name} ID: #{type1.id}"] * header_multiplier)
         end
+        if section_name == 'Outcomes'
+          population_names.each do |population_name|
+            headers << "Population ID: #{population_name.id}"
+            headers << "Population ID: #{population_name.id}"
+          end
+          timepoint_names.each do |timepoint_name|
+            headers << "Timepoint ID: #{timepoint_name.id}"
+            headers << "Timepoint ID: #{timepoint_name.id}"
+          end
+        end
         sheet.add_row(headers)
+
         extractions.each do |extraction|
           row = [
             extraction.id,
@@ -153,6 +193,16 @@ class AdvancedExportJob < ApplicationJob
               row << units_lookup["#{extraction.id}-#{type1.id}"] if section_name == 'Outcomes'
             else
               row += [nil, nil, nil]
+            end
+          end
+          if section_name == 'Outcomes'
+            population_names.each do |population_name|
+              row << population_name.name
+              row << population_name.description
+            end
+            timepoint_names.each do |timepoint_name|
+              row << timepoint_name.name
+              row << timepoint_name.unit
             end
           end
           sheet.add_row(row)
