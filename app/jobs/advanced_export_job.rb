@@ -17,7 +17,31 @@ class AdvancedExportJob < ApplicationJob
           projects_users: { user: :profile, project: :extractions },
           extraction_forms_projects: {
             extraction_forms_projects_sections: [:section, {
+              questions: {
+                question_rows: {
+                  question_row_columns: :question_row_column_fields
+                }
+              },
               extractions_extraction_forms_projects_sections: {
+                link_to_type1: {
+                  extraction: {
+                    citations_project: { citation: :journal },
+                    user: :profile,
+                    extractions_key_questions_projects_selections: {
+                      key_questions_project: :key_question
+                    }
+                  },
+                  extractions_extraction_forms_projects_sections_type1s: [
+                    :type1,
+                    {
+                      extractions_extraction_forms_projects_sections_type1_rows:
+                      [
+                        :population_name,
+                        { extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name }
+                      ]
+                    }
+                  ]
+                },
                 extraction: {
                   citations_project: { citation: :journal },
                   user: :profile,
@@ -52,9 +76,9 @@ class AdvancedExportJob < ApplicationJob
 
       @efp = @project.extraction_forms_projects.first
       efpss = @efp.extraction_forms_projects_sections
-      @type1_efpss = efpss.select { |section| section.extraction_forms_projects_section_type_id == 1 }
-      @type2_efpss = efpss.select { |section| section.extraction_forms_projects_section_type_id == 2 }
-      @result_efpss = efpss.select { |section| section.extraction_forms_projects_section_type_id == 3 }
+      @type1_efpss = efpss.select { |efps| efps.extraction_forms_projects_section_type_id == 1 }
+      @type2_efpss = efpss.select { |efps| efps.extraction_forms_projects_section_type_id == 2 }
+      @result_efpss = efpss.select { |efps| efps.extraction_forms_projects_section_type_id == 3 }
       @extractions = @project.extractions
 
       filename = generate_xlsx_and_filename
@@ -69,9 +93,9 @@ class AdvancedExportJob < ApplicationJob
   end
 
   def generate_xlsx_and_filename
-    add_project_information_section
-    add_type1_sections
-    # add_type2_sections
+    # add_project_information_section
+    # add_type1_sections
+    add_type2_sections
     # add_results
     'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_advanced.xlsx'
   end
@@ -222,7 +246,123 @@ class AdvancedExportJob < ApplicationJob
     end
   end
 
-  def add_type2_sections; end
+  def add_type2_sections
+    @type2_efpss.each do |efps|
+      section_name = efps.section.name
+      type1s = []
+      type1s_lookups = {}
+      extractions = []
+      extractions_lookups = {}
+      units_lookup = {}
+      population_names = []
+      population_names_lookups = {}
+      timepoint_names = []
+      timepoint_names_lookups = {}
+
+      linked_eefpss = efps.extractions_extraction_forms_projects_sections.map(&:link_to_type1).compact
+      linked_eefpss.each do |eefps|
+        extraction = eefps.extraction
+        eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+          type1 = eefpst1.type1
+          type1s << type1 unless type1s.include?(type1)
+          type1s_lookups[type1.id] ||= {
+            name: type1.name,
+            description: type1.description
+          }
+          units_lookup["#{extraction.id}-#{type1.id}"] = eefpst1.units
+          extractions_lookups[extraction.id] ||= { type1s: {}, population_names: {}, timepoint_names: {} }
+          extractions_lookups[extraction.id][:type1s][type1.id] = true
+
+          eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+            population_name = eefpst1r.population_name
+            population_names << population_name unless population_names.include?(population_name)
+            population_names_lookups[population_name.id] ||= {
+              name: population_name.name,
+              description: population_name.description
+            }
+            extractions_lookups[extraction.id][:population_names][population_name.id] = true
+            eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+              timepoint_name = eefpst1rc.timepoint_name
+              timepoint_names << timepoint_name unless timepoint_names.include?(timepoint_name)
+              timepoint_names_lookups[timepoint_name.id] ||= {
+                name: timepoint_name.name,
+                unit: timepoint_name.unit
+              }
+              extractions_lookups[extraction.id][:timepoint_names][timepoint_name.id] = true
+            end
+          end
+        end
+      end
+
+      eefpss = efps.extractions_extraction_forms_projects_sections
+      eefpss.each do |eefps|
+        extraction = eefps.extraction
+        extractions << extraction unless extractions.include?(extraction)
+      end
+
+      questions = []
+      questions_lookups = {}
+      question_rows = []
+      question_rows_lookups = {}
+      question_row_columns = []
+      question_row_columns_lookups = {}
+      question_row_column_fields = []
+      question_row_column_fields_lookups = {}
+
+      efps.questions.each do |question|
+        questions << question unless questions.include?(question)
+        questions_lookups[question.id] ||= {
+          name: question.name,
+          description: question.description
+        }
+        question.question_rows.each do |question_row|
+          question_rows << question_row unless question_rows.include?(question_row)
+          question_rows_lookups[question_row.id] ||= {
+            name: question_row.name
+          }
+          question_row.question_row_columns.each do |question_row_column|
+            question_row_columns << question_row_column unless question_row_columns.include?(question_row_column)
+            question_row_columns_lookups[question_row_column.id] ||= {
+              name: question_row_column.name
+            }
+            question_row_column.question_row_column_fields.each do |question_row_column_field|
+              unless question_row_column_fields.include?(question_row_column_field)
+                question_row_column_fields << question_row_column_field
+              end
+              question_row_column_fields_lookups[question_row_column_field.id] ||= {
+                name: question_row_column_field.name
+              }
+            end
+          end
+        end
+      end
+
+      @package.workbook.add_worksheet(name: section_name) do |sheet|
+        headers = default_headers
+        sheet.add_row(headers)
+
+        extractions.each do |extraction|
+          row = [
+            extraction.id,
+            extraction.consolidated,
+            extraction.user.profile.username,
+            extraction.citations_project.citation.id,
+            extraction.citations_project.citation.name,
+            extraction.citations_project.citation.refman,
+            extraction.citations_project.citation.other,
+            extraction.citations_project.citation.pmid,
+            extraction.citations_project.citation.authors,
+            extraction.citations_project.citation.year,
+            extraction.extractions_key_questions_projects_selections.map do |ekqps|
+              ekqps.key_questions_project.key_question.name
+            end.join("\x0D\x0A")
+          ]
+
+          sheet.add_row(row)
+        end
+      end
+    end
+  end
 
   def add_results; end
 end
