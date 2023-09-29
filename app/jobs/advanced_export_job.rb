@@ -121,7 +121,8 @@ class AdvancedExportJob < ApplicationJob
 
       eefpss = efps.extractions_extraction_forms_projects_sections
       eefpss.each do |eefps|
-        extractions << eefps.extraction unless extractions.include?(eefps.extraction)
+        extraction = eefps.extraction
+        extractions << extraction unless extractions.include?(extraction)
         eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
           type1 = eefpst1.type1
           type1s << type1 unless type1s.include?(type1)
@@ -129,9 +130,9 @@ class AdvancedExportJob < ApplicationJob
             name: type1.name,
             description: type1.description
           }
-          units_lookup["#{eefps.extraction.id}-#{type1.id}"] = eefpst1.units
-          extractions_lookups[eefps.extraction.id] ||= {}
-          extractions_lookups[eefps.extraction.id][type1.id] = true
+          units_lookup["#{extraction.id}-#{type1.id}"] = eefpst1.units
+          extractions_lookups[extraction.id] ||= { type1s: {}, population_names: {}, timepoint_names: {} }
+          extractions_lookups[extraction.id][:type1s][type1.id] = true
 
           eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
             population_name = eefpst1r.population_name
@@ -140,6 +141,7 @@ class AdvancedExportJob < ApplicationJob
               name: population_name.name,
               description: population_name.description
             }
+            extractions_lookups[extraction.id][:population_names][population_name.id] = true
             eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
               timepoint_name = eefpst1rc.timepoint_name
               timepoint_names << timepoint_name unless timepoint_names.include?(timepoint_name)
@@ -147,6 +149,7 @@ class AdvancedExportJob < ApplicationJob
                 name: timepoint_name.name,
                 unit: timepoint_name.unit
               }
+              extractions_lookups[extraction.id][:timepoint_names][timepoint_name.id] = true
             end
           end
         end
@@ -187,7 +190,7 @@ class AdvancedExportJob < ApplicationJob
           ]
           type1s.each do |type1|
             type_hash = type1s_lookups[type1.id]
-            if extractions_lookups.try(:[], extraction.id).try(:[], type1.id)
+            if extractions_lookups.try(:[], extraction.id).try(:[], :type1s).try(:[], type1.id)
               row << type_hash[:name]
               row << type_hash[:description]
               row << units_lookup["#{extraction.id}-#{type1.id}"] if section_name == 'Outcomes'
@@ -197,12 +200,20 @@ class AdvancedExportJob < ApplicationJob
           end
           if section_name == 'Outcomes'
             population_names.each do |population_name|
-              row << population_name.name
-              row << population_name.description
+              if extractions_lookups.try(:[], extraction.id).try(:[], :population_names).try(:[], population_name.id)
+                row << population_name.name
+                row << population_name.description
+              else
+                row += [nil, nil]
+              end
             end
             timepoint_names.each do |timepoint_name|
-              row << timepoint_name.name
-              row << timepoint_name.unit
+              if extractions_lookups.try(:[], extraction.id).try(:[], :timepoint_names).try(:[], timepoint_name.id)
+                row << timepoint_name.name
+                row << timepoint_name.unit
+              else
+                row += [nil, nil]
+              end
             end
           end
           sheet.add_row(row)
