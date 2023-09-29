@@ -15,7 +15,7 @@
   / Edgecase: If form is changed after data is recorded, we catch exception and notify.
   - begin
     - JSON.parse(record.name) if record.name.present?
-  - rescue JSON::ParserError
+  - rescue JSON::ParserError => exception
     - Sentry.capture_exception(exception) if Rails.env.production?
     - record.update(name: '')
 
