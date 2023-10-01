@@ -30,6 +30,21 @@ class AbstractScreeningResult < ApplicationRecord
 
   after_save :evaluate_screening_qualifications
 
+  def reasons_object
+    AbstractScreeningResultsReason
+      .where(abstract_screening_results: self)
+      .includes(:reason)
+      .map do |abstract_screening_results_reason|
+      {
+        id: abstract_screening_results_reason.id,
+        reason_id: abstract_screening_results_reason.reason_id,
+        name: abstract_screening_results_reason.reason.name,
+        pos: 99_999,
+        selected: true
+      }
+    end
+  end
+
   def evaluate_screening_qualifications
     return if privileged && label.nil?
 

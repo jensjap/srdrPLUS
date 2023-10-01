@@ -26,13 +26,24 @@
       Exit
     </a>
     <button
-      @click="historyPanel = true"
-      class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+      @click="historyPanel = !historyPanel"
+      class="absolute top-0 left-0 bg-gray-100 p-1 rounded-full z-[9] text-xs flex flex-row items-center cursor-pointer"
     >
-      Your Labels (<span
-        x-text="cps.filter(cp => cp.label !== null).filter(cp => cp.privileged == false).length"
-      ></span
-      >)
+      <span style="font-size: medium">Your Labels</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-6 h-5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5"
+        />
+      </svg>
     </button>
     <div class="h-24 mr-44 overflow-y-auto flex items-center">
       <div class="horizontal-scroll-wrapper">
@@ -186,14 +197,10 @@
         yes_note_required: null,
         no_note_required: null,
         maybe_note_required: null,
-        only_predefined_reasons: null,
-        only_predefined_tags: null,
       },
       fsr: {
         id: null,
         label: null,
-        predefined_reasons: [],
-        predefined_tags: [],
         custom_reasons: [],
         custom_tags: [],
         notes: "",
@@ -210,10 +217,11 @@
       newCustomValue: "",
       updateCustomId: null,
       disable_textarea_keywords_and_phrases: false,
-      dragIndex: null,
-      dragType: null,
-      dropIndex: null,
-      dropType: null,
+      resolutionMode:
+        new URL(window.location.href).searchParams.get("resolution_mode") ==
+        "true",
+      show_all_labels: false,
+      project_id: null,
 
       init() {
         const url = new URL(window.location.href);
@@ -251,15 +259,11 @@
       },
 
       hasSomeReason() {
-        return this.fsr.predefined_reasons
-          .concat(this.fsr.custom_reasons)
-          .some((v) => v.selected);
+        return this.fsr.custom_reasons.some((v) => v.selected);
       },
 
       hasSomeTag() {
-        return this.fsr.predefined_tags
-          .concat(this.fsr.custom_tags)
-          .some((v) => v.selected);
+        return this.fsr.custom_tags.some((v) => v.selected);
       },
 
       hasSomeNote() {
@@ -304,13 +308,10 @@
 
         if (
           this.addReasonModal.type == "custom_reasons" &&
-          (this.fsr["custom_reasons"].some(
-            (custom_reason) => custom_reason.name == this.newCustomValue
-          ) ||
-            this.fsr["predefined_reasons"].some(
-              (predefined_reason) =>
-                predefined_reason.name == this.newCustomValue
-            ))
+          this.fsr["custom_reasons"].some(
+            (custom_reason) =>
+              custom_reason.name == this.newCustomValue && !!custom_reason.id
+          )
         ) {
           toastr.error("This value has already been taken.");
           return true;
@@ -318,12 +319,10 @@
 
         if (
           this.addReasonModal.type == "custom_tags" &&
-          (this.fsr["custom_tags"].some(
-            (custom_tag) => custom_tag.name == this.newCustomValue
-          ) ||
-            this.fsr["predefined_tags"].some(
-              (predefined_tag) => predefined_tag.name == this.newCustomValue
-            ))
+          this.fsr["custom_tags"].some(
+            (custom_tag) =>
+              custom_tag.name == this.newCustomValue && !!custom_tag.id
+          )
         ) {
           toastr.error("This value has already been taken.");
           return true;
@@ -335,11 +334,9 @@
       async createCustomValue() {
         let url;
         if (this.addReasonModal.type == "custom_reasons") {
-          url =
-            "/fulltext_screenings/<%= params[:fulltext_screening_id] %>/fulltext_screenings_reasons_users";
+          url = `/projects/${this.project_id}/projects_reasons?screening_type=fulltext`;
         } else if (this.addReasonModal.type == "custom_tags") {
-          url =
-            "/fulltext_screenings/<%= params[:fulltext_screening_id] %>/fulltext_screenings_tags_users";
+          url = `/projects/${this.project_id}/projects_tags?screening_type=fulltext`;
         }
         const response = await fetch(url, {
           method: "POST",
@@ -359,9 +356,9 @@
         const newCustomValue = values.newCustomValue || false;
         let url;
         if (type == "custom_reasons") {
-          url = `/fulltext_screenings_reasons_users/${id}`;
+          url = `/projects_reasons/${id}`;
         } else if (type == "custom_tags") {
-          url = `/fulltext_screenings_tags_users/${id}`;
+          url = `/projects_tags/${id}`;
         }
         const response = await fetch(url, {
           method: "PATCH",
@@ -406,9 +403,9 @@
         ) {
           let url;
           if (type == "custom_reasons") {
-            url = `/fulltext_screenings_reasons_users/${id}`;
+            url = `/projects_reasons/${id}`;
           } else if (type == "custom_tags") {
-            url = `/fulltext_screenings_tags_users/${id}`;
+            url = `/projects_tags/${id}`;
           }
           const response = await fetch(url, {
             method: "DELETE",
@@ -436,6 +433,55 @@
         this.confirmationModalLabel = label;
         this.confirmationModalText = this.confirmationModalTexts[label];
         this.confirmationModal = true;
+      },
+
+      async updateReasonsSelection(reason) {
+        reason.selected = !reason.selected;
+        if (reason.selected) {
+          await fetch(
+            `/fulltext_screening_results/${this.fsr.id}/fulltext_screening_results_reasons`,
+            {
+              method: "POST",
+              headers,
+              body: JSON.stringify({
+                reason_id: reason.reason_id,
+              }),
+            }
+          );
+          this.getFsr();
+        } else {
+          await fetch(
+            `/fulltext_screening_results_reasons/${reason.selected_id}`,
+            {
+              method: "DELETE",
+              headers,
+            }
+          );
+          reason.selected_id = null;
+        }
+      },
+
+      async updateTagsSelection(tag) {
+        tag.selected = !tag.selected;
+        if (tag.selected) {
+          await fetch(
+            `/fulltext_screening_results/${this.fsr.id}/fulltext_screening_results_tags`,
+            {
+              method: "POST",
+              headers,
+              body: JSON.stringify({
+                tag_id: tag.tag_id,
+              }),
+            }
+          );
+          this.getFsr();
+        } else {
+          await fetch(`/fulltext_screening_results_tags/${tag.selected_id}`, {
+            method: "DELETE",
+            headers,
+          });
+          tag.selected_id = null;
+        }
       },
 
       async getFsrId(fsrId) {
@@ -499,6 +545,7 @@
           this.citation = data.citation;
           this.options = data.options;
           this.cps = data.cps;
+          this.project_id = data.project_id;
         }
       },
     }));

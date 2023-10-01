@@ -37,11 +37,22 @@
     </button>
     <button
       @click="historyPanel = !historyPanel"
-      class="absolute top-0 left-0 bg-gray-100 p-1 rounded-full z-9 text-xs flex flex-row items-center"
+      class="absolute top-0 left-0 bg-gray-100 p-1 rounded-full z-[9] text-xs flex flex-row items-center cursor-pointer"
     >
-      <span style='font-size: medium;'>Your Labels</span>
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5" />
+      <span style="font-size: medium">Your Labels</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-6 h-5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5"
+        />
       </svg>
     </button>
     <button
@@ -315,14 +326,10 @@
         yes_note_required: null,
         no_note_required: null,
         maybe_note_required: null,
-        only_predefined_reasons: null,
-        only_predefined_tags: null,
       },
       asr: {
         id: null,
         label: null,
-        predefined_reasons: [],
-        predefined_tags: [],
         custom_reasons: [],
         custom_tags: [],
         notes: "",
@@ -345,14 +352,11 @@
       processedTitle: [],
       processedAbstract: "",
       disable_textarea_keywords_and_phrases: false,
-      dragIndex: null,
-      dragType: null,
-      dropIndex: null,
-      dropType: null,
       resolutionMode:
         new URL(window.location.href).searchParams.get("resolution_mode") ==
         "true",
       show_all_labels: false,
+      project_id: null,
 
       init() {
         const url = new URL(window.location.href);
@@ -401,15 +405,11 @@
       },
 
       hasSomeReason() {
-        return this.asr.predefined_reasons
-          .concat(this.asr.custom_reasons)
-          .some((v) => v.selected);
+        return this.asr.custom_reasons.some((v) => v.selected);
       },
 
       hasSomeTag() {
-        return this.asr.predefined_tags
-          .concat(this.asr.custom_tags)
-          .some((v) => v.selected);
+        return this.asr.custom_tags.some((v) => v.selected);
       },
 
       hasSomeNote() {
@@ -454,13 +454,10 @@
 
         if (
           this.addReasonModal.type == "custom_reasons" &&
-          (this.asr["custom_reasons"].some(
-            (custom_reason) => custom_reason.name == this.newCustomValue
-          ) ||
-            this.asr["predefined_reasons"].some(
-              (predefined_reason) =>
-                predefined_reason.name == this.newCustomValue
-            ))
+          this.asr["custom_reasons"].some(
+            (custom_reason) =>
+              custom_reason.name == this.newCustomValue && !!custom_reason.id
+          )
         ) {
           toastr.error("This value has already been taken.");
           return true;
@@ -468,12 +465,10 @@
 
         if (
           this.addReasonModal.type == "custom_tags" &&
-          (this.asr["custom_tags"].some(
-            (custom_tag) => custom_tag.name == this.newCustomValue
-          ) ||
-            this.asr["predefined_tags"].some(
-              (predefined_tag) => predefined_tag.name == this.newCustomValue
-            ))
+          this.asr["custom_tags"].some(
+            (custom_tag) =>
+              custom_tag.name == this.newCustomValue && !!custom_tag.id
+          )
         ) {
           toastr.error("This value has already been taken.");
           return true;
@@ -485,11 +480,9 @@
       async createCustomValue() {
         let url;
         if (this.addReasonModal.type == "custom_reasons") {
-          url =
-            "/abstract_screenings/<%= params[:abstract_screening_id] %>/abstract_screenings_reasons_users";
+          url = `/projects/${this.project_id}/projects_reasons?screening_type=abstract`;
         } else if (this.addReasonModal.type == "custom_tags") {
-          url =
-            "/abstract_screenings/<%= params[:abstract_screening_id] %>/abstract_screenings_tags_users";
+          url = `/projects/${this.project_id}/projects_tags?screening_type=abstract`;
         }
         const response = await fetch(url, {
           method: "POST",
@@ -509,9 +502,9 @@
         const newCustomValue = values.newCustomValue || false;
         let url;
         if (type == "custom_reasons") {
-          url = `/abstract_screenings_reasons_users/${id}`;
+          url = `/projects_reasons/${id}`;
         } else if (type == "custom_tags") {
-          url = `/abstract_screenings_tags_users/${id}`;
+          url = `/projects_tags/${id}`;
         }
         const response = await fetch(url, {
           method: "PATCH",
@@ -556,17 +549,13 @@
         ) {
           let url;
           if (type == "custom_reasons") {
-            url = `/abstract_screenings_reasons_users/${id}`;
+            url = `/projects_reasons/${id}`;
           } else if (type == "custom_tags") {
-            url = `/abstract_screenings_tags_users/${id}`;
+            url = `/projects_tags/${id}`;
           }
           const response = await fetch(url, {
             method: "DELETE",
             headers,
-            body: JSON.stringify({
-              id,
-              destroyExistingValues: true,
-            }),
           });
           await response.json();
           await this.getAsr();
@@ -790,6 +779,55 @@
         this.processWeights("abstract", "processedAbstract");
       },
 
+      async updateReasonsSelection(reason) {
+        reason.selected = !reason.selected;
+        if (reason.selected) {
+          await fetch(
+            `/abstract_screening_results/${this.asr.id}/abstract_screening_results_reasons`,
+            {
+              method: "POST",
+              headers,
+              body: JSON.stringify({
+                reason_id: reason.reason_id,
+              }),
+            }
+          );
+          this.getAsr();
+        } else {
+          await fetch(
+            `/abstract_screening_results_reasons/${reason.selected_id}`,
+            {
+              method: "DELETE",
+              headers,
+            }
+          );
+          reason.selected_id = null;
+        }
+      },
+
+      async updateTagsSelection(tag) {
+        tag.selected = !tag.selected;
+        if (tag.selected) {
+          await fetch(
+            `/abstract_screening_results/${this.asr.id}/abstract_screening_results_tags`,
+            {
+              method: "POST",
+              headers,
+              body: JSON.stringify({
+                tag_id: tag.tag_id,
+              }),
+            }
+          );
+          this.getAsr();
+        } else {
+          await fetch(`/abstract_screening_results_tags/${tag.selected_id}`, {
+            method: "DELETE",
+            headers,
+          });
+          tag.selected_id = null;
+        }
+      },
+
       async getAsrId(asrId) {
         let url = "";
         if (asrId) {
@@ -863,6 +901,7 @@
           this.asr_in_asic_count = data.asr_in_asic_count;
           this.processWeights("title", "processedTitle");
           this.processWeights("abstract", "processedAbstract");
+          this.project_id = data.project_id;
         }
       },
 

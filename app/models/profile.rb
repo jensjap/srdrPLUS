@@ -2,18 +2,20 @@
 #
 # Table name: profiles
 #
-#  id                    :integer          not null, primary key
-#  user_id               :integer
-#  organization_id       :integer
-#  time_zone             :string(255)      default("UTC")
-#  username              :string(255)
-#  first_name            :string(255)
-#  middle_name           :string(255)
-#  last_name             :string(255)
-#  advanced_mode         :boolean          default(FALSE)
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
-#  projects_paginate_per :integer
+#  id                                   :integer          not null, primary key
+#  user_id                              :integer
+#  organization_id                      :integer
+#  time_zone                            :string(255)      default("UTC")
+#  username                             :string(255)
+#  first_name                           :string(255)
+#  middle_name                          :string(255)
+#  last_name                            :string(255)
+#  advanced_mode                        :boolean          default(FALSE)
+#  created_at                           :datetime         not null
+#  updated_at                           :datetime         not null
+#  projects_paginate_per                :integer
+#  storage                              :text(65535)
+#  conflict_resolution_label_visibility :boolean          default(FALSE)
 #
 
 class Profile < ApplicationRecord
