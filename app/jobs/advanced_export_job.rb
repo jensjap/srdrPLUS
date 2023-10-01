@@ -38,7 +38,8 @@ class AdvancedExportJob < ApplicationJob
                       [
                         :population_name,
                         { extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name }
-                      ]
+                      ],
+                      extractions_extraction_forms_projects_sections_question_row_column_fields: :records
                     }
                   ]
                 },
@@ -249,46 +250,21 @@ class AdvancedExportJob < ApplicationJob
   def add_type2_sections
     @type2_efpss.each do |efps|
       section_name = efps.section.name
-      type1s = []
-      type1s_lookups = {}
+      linked_section = efps.extraction_forms_projects_section_id.present?
+      linked_section_name = efps.link_to_type1.try(:section).try(:name)
       extractions = []
       extractions_lookups = {}
-      units_lookup = {}
-      population_names = []
-      population_names_lookups = {}
-      timepoint_names = []
-      timepoint_names_lookups = {}
 
-      linked_eefpss = efps.extractions_extraction_forms_projects_sections.map(&:link_to_type1).compact
-      linked_eefpss.each do |eefps|
-        extraction = eefps.extraction
-        eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-          type1 = eefpst1.type1
-          type1s << type1 unless type1s.include?(type1)
-          type1s_lookups[type1.id] ||= {
-            name: type1.name,
-            description: type1.description
-          }
-          units_lookup["#{extraction.id}-#{type1.id}"] = eefpst1.units
-          extractions_lookups[extraction.id] ||= { type1s: {}, population_names: {}, timepoint_names: {} }
-          extractions_lookups[extraction.id][:type1s][type1.id] = true
-
-          eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
-            population_name = eefpst1r.population_name
-            population_names << population_name unless population_names.include?(population_name)
-            population_names_lookups[population_name.id] ||= {
-              name: population_name.name,
-              description: population_name.description
-            }
-            extractions_lookups[extraction.id][:population_names][population_name.id] = true
-            eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
-              timepoint_name = eefpst1rc.timepoint_name
-              timepoint_names << timepoint_name unless timepoint_names.include?(timepoint_name)
-              timepoint_names_lookups[timepoint_name.id] ||= {
-                name: timepoint_name.name,
-                unit: timepoint_name.unit
-              }
-              extractions_lookups[extraction.id][:timepoint_names][timepoint_name.id] = true
+      if linked_section
+        linked_eefpss = efps.extractions_extraction_forms_projects_sections.map(&:link_to_type1).compact
+        linked_eefpss.each do |eefps|
+          extraction = eefps.extraction
+          extractions_lookups[extraction.id] ||= { type1s: [] }
+          eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+            type1 = eefpst1.type1
+            extractions_lookups[extraction.id][:type1s] << type1
+            eefpst1.extractions_extraction_forms_projects_sections_question_row_column_fields.each do |eefpsqrcf|
+              eefpsqrcf.records.first
             end
           end
         end
