@@ -202,13 +202,22 @@ Rails.application.routes.draw do
     resources :fulltext_screenings_reasons_users
   end
 
-  resources :abstract_screening_results, only: %i[show update destroy]
-  resources :fulltext_screening_results, only: %i[show update]
+  resources :abstract_screening_results, only: %i[show update destroy], shallow: true do
+    resources :abstract_screening_results_reasons, only: %i[create destroy]
+    resources :abstract_screening_results_tags, only: %i[create destroy]
+  end
+  resources :fulltext_screening_results, only: %i[show update], shallow: true do
+    resources :fulltext_screening_results_reasons, only: %i[create destroy]
+    resources :fulltext_screening_results_tags, only: %i[create destroy]
+  end
 
   resources :result_statistic_sections_measures, only: %i[create]
 
   resources :data_audits, only: %i[index update]
   resources :projects, concerns: :paginatable, shallow: true do
+    resources :projects_reasons, only: %i[index create update destroy]
+    resources :projects_tags, only: %i[index create update destroy]
+
     resources :consolidations
 
     get 'citation_lifecycle_management', to: 'abstract_screenings#citation_lifecycle_management'
