@@ -339,6 +339,13 @@ class AdvancedExportJob < ApplicationJob
 
       @package.workbook.add_worksheet(name: section_name) do |sheet|
         headers = default_headers
+        questions.each do |question|
+          question.question_rows.each do |question_row|
+            question_row.question_row_columns.each do |question_row_column|
+              headers << "[Question ID: #{question.id}][Field ID: #{question_row.id}x#{question_row_column.id}]"
+            end
+          end
+        end
         sheet.add_row(headers)
 
         extractions.each do |extraction|
