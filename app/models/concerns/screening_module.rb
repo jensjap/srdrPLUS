@@ -10,7 +10,7 @@ module ScreeningModule
   N_SIZE_EXPERT_NEEDED = 'n-size-expert-needed'.freeze
   N_SIZE_ONLY_EXPERT_NOVICE_MIXED = 'n-size-only-expert-novice-mixed'.freeze
   PILOT = 'pilot'.freeze
-  FULLTEXTSCREENINGTYPES = {
+  SCREENINGTYPES = {
     SINGLE_PERPETUAL => 'Perpetual (Single)',
     DOUBLE_PERPETUAL => 'Perpetual (Double)',
     EXPERT_NEEDED_PERPETUAL => 'Perpetual (Expert Needed)',

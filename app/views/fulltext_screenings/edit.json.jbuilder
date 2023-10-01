@@ -3,10 +3,10 @@ json.fulltext_screening do
     json.selection(
       {
         key: @fulltext_screening.fulltext_screening_type,
-        value: FulltextScreening::FULLTEXTSCREENINGTYPES[@fulltext_screening.fulltext_screening_type]
+        value: FulltextScreening::SCREENINGTYPES[@fulltext_screening.fulltext_screening_type]
       }
     )
-    json.options(FulltextScreening::FULLTEXTSCREENINGTYPES.map { |key, value| { key:, value: } })
+    json.options(FulltextScreening::SCREENINGTYPES.map { |key, value| { key:, value: } })
   end
   json.all_tag @fulltext_screening.yes_tag_required && @fulltext_screening.no_tag_required && @fulltext_screening.maybe_tag_required
   json.all_reason @fulltext_screening.no_reason_required && @fulltext_screening.maybe_reason_required

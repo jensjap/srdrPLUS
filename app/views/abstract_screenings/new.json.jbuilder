@@ -3,10 +3,10 @@ json.abstract_screening do
     json.selection(
       {
         key: @abstract_screening.abstract_screening_type,
-        value: AbstractScreening::ABSTRACTSCREENINGTYPES[@abstract_screening.abstract_screening_type]
+        value: AbstractScreening::SCREENINGTYPES[@abstract_screening.abstract_screening_type]
       }
     )
-    json.options(AbstractScreening::ABSTRACTSCREENINGTYPES.map { |key, value| { key:, value: } })
+    json.options(AbstractScreening::SCREENINGTYPES.map { |key, value| { key:, value: } })
   end
   json.all_tag @abstract_screening.yes_tag_required && @abstract_screening.no_tag_required && @abstract_screening.maybe_tag_required
   json.all_reason @abstract_screening.no_reason_required && @abstract_screening.maybe_reason_required

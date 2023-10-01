@@ -1161,8 +1161,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_022520) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "projects_paginate_per"
-    t.text "storage"
     t.boolean "conflict_resolution_label_visibility", default: false
+    t.text "storage"
     t.index ["organization_id"], name: "index_profiles_on_organization_id"
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
     t.index ["username"], name: "index_profiles_on_username", unique: true
@@ -1183,7 +1183,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_022520) do
     t.boolean "auto_train", default: false
   end
 
-  create_table "projects_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "projects_reasons", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "project_id", null: false
     t.bigint "reason_id", null: false
     t.string "screening_type", null: false
@@ -1197,7 +1197,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_022520) do
     t.index ["reason_id"], name: "index_projects_reasons_on_reason_id"
   end
 
-  create_table "projects_tags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "projects_tags", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "project_id", null: false
     t.bigint "tag_id", null: false
     t.string "screening_type", null: false
@@ -1375,7 +1375,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_022520) do
   end
 
   create_table "reasons", id: :integer, charset: "utf8mb3", force: :cascade do |t|
-    t.string "name", limit: 1000, collation: "utf8mb4_bin"
+    t.string "name", limit: 1000
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "label_type_id"
