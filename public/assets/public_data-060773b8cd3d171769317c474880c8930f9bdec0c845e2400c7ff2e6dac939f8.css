@@ -1,0 +1,5 @@
+/* line 7, app/assets/stylesheets/public_data.scss */
+body.public_data.show .overlay-parent {
+  margin: 0;
+  padding: 0;
+}

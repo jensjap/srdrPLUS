@@ -1,0 +1,25 @@
+/* line 5, app/assets/stylesheets/projects_users.scss */
+#user-role-checkboxes > div {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: space-around;
+      -ms-flex-pack: distribute;
+          justify-content: space-around;
+}
+
+/* line 12, app/assets/stylesheets/projects_users.scss */
+#member-roles-table td {
+  padding: 20px;
+}
+
+/* line 16, app/assets/stylesheets/projects_users.scss */
+#member-roles-table th,
+#member-roles-table td {
+  border: 1px solid black;
+}

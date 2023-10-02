@@ -1,0 +1,31 @@
+/* line 5, app/assets/stylesheets/extraction_forms_projects_sections.scss */
+div[class*=' prereq-'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* line 10, app/assets/stylesheets/extraction_forms_projects_sections.scss */
+div[class*=' prereq-'] * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  -ms-user-select: none;
+      user-select: none;
+  pointer-events: none;
+}
+
+/* line 20, app/assets/stylesheets/extraction_forms_projects_sections.scss */
+div[class*=' off-prereq-'] {
+  opacity: initial;
+  cursor: initial;
+}
+
+/* line 25, app/assets/stylesheets/extraction_forms_projects_sections.scss */
+div[class*=' off-prereq-'] * {
+  -webkit-user-select: initial;
+  -moz-user-select: initial;
+  -o-user-select: initial;
+  -ms-user-select: initial;
+      user-select: initial;
+  pointer-events: initial;
+}
