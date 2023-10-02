@@ -64,8 +64,8 @@ class ScreeningDataExportJob < ApplicationJob
           when 'FS'
             project.fulltext_screening_results.includes(:tags, :reasons, user: :profile)
           end
-        screening_results.each do |asr|
-          mh[asr.citations_project_id] ||= {
+        screening_results.each do |sr|
+          mh[sr.citations_project_id] ||= {
             user_labels: {},
             user_reasons: {},
             notes: [],
@@ -73,10 +73,17 @@ class ScreeningDataExportJob < ApplicationJob
             consensus_label: nil,
             consensus_user: nil
           }
-          mh[asr.citations_project_id][:user_labels][asr.user_id] = asr.label
-          mh[asr.citations_project_id][:tags] += asr.tags.map(&:name)
-          mh[asr.citations_project_id][:user_reasons][asr.user_id] = asr.reasons.map(&:name).join('; ')
-          mh[asr.citations_project_id][:notes] << "#{asr.user.handle}: \"#{asr.notes}\"" unless asr.notes.blank?
+          if sr.privileged
+            if !sr.label.blank?
+              mh[sr.citations_project_id][:consensus_label] = sr.label
+              mh[sr.citations_project_id][:consensus_user] = sr.user.handle
+            end
+          else
+            mh[sr.citations_project_id][:user_labels][sr.user_id] = sr.label
+            mh[sr.citations_project_id][:tags] += sr.tags.map(&:name)
+            mh[sr.citations_project_id][:user_reasons][sr.user_id] = sr.reasons.map(&:name).join('; ')
+            mh[sr.citations_project_id][:notes] << "#{sr.user.handle}: \"#{sr.notes}\"" unless sr.notes.blank?
+          end
         end
 
         CitationsProject.search(where: { project_id: project.id }, load: false).each do |cp|
@@ -196,7 +203,8 @@ class ScreeningDataExportJob < ApplicationJob
           'label',
           'reasons',
           'tags',
-          'notes'
+          'notes',
+          'privileged'
         ]
         asf = ScreeningForm.find_or_create_by(project:, form_type: 'abstract')
         asf.sf_questions.each_with_index do |sf_question, q_index|
@@ -232,7 +240,8 @@ class ScreeningDataExportJob < ApplicationJob
             asr.label,
             asr.reasons.map(&:name),
             asr.tags.map(&:name),
-            asr.notes
+            asr.notes,
+            asr.privileged
           ]
 
           asf.sf_questions.each_with_index do |sf_question, _q_index|
@@ -297,7 +306,8 @@ class ScreeningDataExportJob < ApplicationJob
           'label',
           'reasons',
           'tags',
-          'notes'
+          'notes',
+          'privileged'
         ]
         fsf = ScreeningForm.find_or_create_by(project:, form_type: 'fulltext')
         fsf.sf_questions.each_with_index do |sf_question, q_index|
@@ -333,7 +343,8 @@ class ScreeningDataExportJob < ApplicationJob
             fsr.label,
             fsr.reasons.map(&:name),
             fsr.tags.map(&:name),
-            fsr.notes
+            fsr.notes,
+            fsr.privileged
           ]
 
           fsf.sf_questions.each_with_index do |sf_question, _q_index|
