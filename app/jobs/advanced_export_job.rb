@@ -24,6 +24,27 @@ class AdvancedExportJob < ApplicationJob
                 }
               },
               extractions_extraction_forms_projects_sections: {
+                extractions_extraction_forms_projects_sections_question_row_column_fields: [
+                  :records,
+                  {
+                    question_row_column_field: {
+                      question_row_column: [
+                        :question_row_column_type,
+                        :question_row_columns_question_row_column_options,
+                        {
+                          question_row: :question
+                        }
+                      ]
+                    }
+                  }
+                ],
+                extraction: {
+                  citations_project: { citation: :journal },
+                  user: :profile,
+                  extractions_key_questions_projects_selections: {
+                    key_questions_project: :key_question
+                  }
+                },
                 link_to_type1: {
                   extraction: {
                     citations_project: { citation: :journal },
@@ -95,6 +116,9 @@ class AdvancedExportJob < ApplicationJob
       @linked_type2_efpss = efpss.select do |efps|
         efps.extraction_forms_projects_section_type_id == 2 && efps.link_to_type1.present?
       end
+      @unlinked_type2_efpss = efpss.select do |efps|
+        efps.extraction_forms_projects_section_type_id == 2 && efps.link_to_type1.blank?
+      end
       @result_efpss = efpss.select { |efps| efps.extraction_forms_projects_section_type_id == 3 }
       @extractions = @project.extractions
 
@@ -110,9 +134,10 @@ class AdvancedExportJob < ApplicationJob
   end
 
   def generate_xlsx_and_filename
-    # add_project_information_section
-    # add_type1_sections
+    add_project_information_section
+    add_type1_sections
     add_linked_type2_sections
+    add_unlinked_type2_sections
     # add_results
     'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_advanced.xlsx'
   end
@@ -360,6 +385,92 @@ class AdvancedExportJob < ApplicationJob
             end
             sheet.add_row(row)
           end
+        end
+      end
+    end
+  end
+
+  def add_unlinked_type2_sections
+    @unlinked_type2_efpss.each do |efps|
+      section_name = efps.section.name
+      extractions = []
+      records_lookups = {}
+
+      efps.extractions_extraction_forms_projects_sections.each do |eefps|
+        extraction = eefps.extraction
+        eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.each do |eefpsqrcf|
+          qrcf = eefpsqrcf.question_row_column_field
+          qrc = qrcf.question_row_column
+          qrcqrcos = qrc.question_row_columns_question_row_column_options
+          qrct = qrc.question_row_column_type
+          qr = qrc.question_row
+          q = qr.question
+          record = eefpsqrcf.records.first
+          begin
+            name = case qrct.name
+                   when QuestionRowColumnType::CHECKBOX, QuestionRowColumnType::SELECT2_MULTI
+                     (record.name.blank? ? [''] : JSON.parse(record.name)).select(&:present?).map do |string_id|
+                       qrcqrcos.find(string_id).name
+                     end.join("\x0D\x0A")
+                   when QuestionRowColumnType::DROPDOWN, QuestionRowColumnType::RADIO, QuestionRowColumnType::SELECT2_SINGLE
+                     record.name.blank? ? '' : qrcqrcos.find(record.name).name
+                   else
+                     record.name
+                   end
+          rescue JSON::ParserError, TypeError
+            raise 'record value does not match qrct'
+          end
+          records_lookups["#{extraction.id}-#{q.id}-#{qr.id}-#{qrc.id}-#{qrcf.id}"] = name
+        end
+      end
+
+      eefpss = efps.extractions_extraction_forms_projects_sections
+      eefpss.each do |eefps|
+        extraction = eefps.extraction
+        extractions << extraction unless extractions.include?(extraction)
+      end
+
+      questions = efps.questions
+      @package.workbook.add_worksheet(name: section_name) do |sheet|
+        headers = default_headers
+        questions.each do |q|
+          q.question_rows.each do |qr|
+            qr.question_row_columns.each do |qrc|
+              headers << "[Question ID: #{q.id}][Field ID: #{qr.id}x#{qrc.id}]"
+            end
+          end
+        end
+        sheet.add_row(headers)
+
+        extractions.each do |extraction|
+          row = [
+            extraction.id,
+            extraction.consolidated,
+            extraction.user.profile.username,
+            extraction.citations_project.citation.id,
+            extraction.citations_project.citation.name,
+            extraction.citations_project.citation.refman,
+            extraction.citations_project.citation.other,
+            extraction.citations_project.citation.pmid,
+            extraction.citations_project.citation.authors,
+            extraction.citations_project.citation.year,
+            extraction.extractions_key_questions_projects_selections.map do |ekqps|
+              ekqps.key_questions_project.key_question.name
+            end.join("\x0D\x0A")
+          ]
+          questions.each do |q|
+            q.question_rows.each do |qr|
+              qr.question_row_columns.each do |qrc|
+                qrc_records = []
+                qrc.question_row_column_fields.each do |qrcf|
+                  record = records_lookups["#{extraction.id}-#{q.id}-#{qr.id}-#{qrc.id}-#{qrcf.id}"]
+                  qrc_records << record
+                end
+                row << qrc_records.join("\x0D\x0A")
+              end
+            end
+          end
+          sheet.add_row(row)
         end
       end
     end
