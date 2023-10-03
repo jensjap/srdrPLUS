@@ -17,6 +17,7 @@ class AdvancedExportJob < ApplicationJob
           projects_users: { user: :profile, project: :extractions },
           extraction_forms_projects: {
             extraction_forms_projects_sections: [:section, {
+              link_to_type1: :section,
               questions: {
                 question_rows: {
                   question_row_columns: :question_row_column_fields
@@ -39,7 +40,20 @@ class AdvancedExportJob < ApplicationJob
                         :population_name,
                         { extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name }
                       ],
-                      extractions_extraction_forms_projects_sections_question_row_column_fields: :records
+                      extractions_extraction_forms_projects_sections_question_row_column_fields: [
+                        :records,
+                        {
+                          question_row_column_field: {
+                            question_row_column: [
+                              :question_row_column_type,
+                              :question_row_columns_question_row_column_options,
+                              {
+                                question_row: :question
+                              }
+                            ]
+                          }
+                        }
+                      ]
                     }
                   ]
                 },
@@ -78,7 +92,9 @@ class AdvancedExportJob < ApplicationJob
       @efp = @project.extraction_forms_projects.first
       efpss = @efp.extraction_forms_projects_sections
       @type1_efpss = efpss.select { |efps| efps.extraction_forms_projects_section_type_id == 1 }
-      @type2_efpss = efpss.select { |efps| efps.extraction_forms_projects_section_type_id == 2 }
+      @linked_type2_efpss = efpss.select do |efps|
+        efps.extraction_forms_projects_section_type_id == 2 && efps.link_to_type1.present?
+      end
       @result_efpss = efpss.select { |efps| efps.extraction_forms_projects_section_type_id == 3 }
       @extractions = @project.extractions
 
@@ -96,7 +112,7 @@ class AdvancedExportJob < ApplicationJob
   def generate_xlsx_and_filename
     # add_project_information_section
     # add_type1_sections
-    add_type2_sections
+    add_linked_type2_sections
     # add_results
     'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_advanced.xlsx'
   end
@@ -247,25 +263,46 @@ class AdvancedExportJob < ApplicationJob
     end
   end
 
-  def add_type2_sections
-    @type2_efpss.each do |efps|
+  def add_linked_type2_sections
+    @linked_type2_efpss.each do |efps|
       section_name = efps.section.name
-      linked_section = efps.extraction_forms_projects_section_id.present?
       linked_section_name = efps.link_to_type1.try(:section).try(:name)
       extractions = []
       extractions_lookups = {}
+      records_lookups = {}
 
-      if linked_section
-        linked_eefpss = efps.extractions_extraction_forms_projects_sections.map(&:link_to_type1).compact
-        linked_eefpss.each do |eefps|
-          extraction = eefps.extraction
-          extractions_lookups[extraction.id] ||= { type1s: [] }
-          eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-            type1 = eefpst1.type1
-            extractions_lookups[extraction.id][:type1s] << type1
-            eefpst1.extractions_extraction_forms_projects_sections_question_row_column_fields.each do |eefpsqrcf|
-              eefpsqrcf.records.first
+      linked_eefpss = efps.extractions_extraction_forms_projects_sections.map(&:link_to_type1)
+      raise 'must be linked, inconsistent data' if linked_eefpss.any?(&:nil?)
+
+      linked_eefpss.each do |eefps|
+        extraction = eefps.extraction
+        extractions_lookups[extraction.id] ||= { type1s: [] }
+        eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+          type1 = eefpst1.type1
+          extractions_lookups[extraction.id][:type1s] << type1
+          eefpst1.extractions_extraction_forms_projects_sections_question_row_column_fields.each do |eefpsqrcf|
+            qrcf = eefpsqrcf.question_row_column_field
+            qrc = qrcf.question_row_column
+            qrcqrcos = qrc.question_row_columns_question_row_column_options
+            qrct = qrc.question_row_column_type
+            qr = qrc.question_row
+            q = qr.question
+            record = eefpsqrcf.records.first
+            begin
+              name = case qrct.name
+                     when QuestionRowColumnType::CHECKBOX, QuestionRowColumnType::SELECT2_MULTI
+                       (record.name.blank? ? [''] : JSON.parse(record.name)).select(&:present?).map do |string_id|
+                         qrcqrcos.find(string_id).name
+                       end.join("\x0D\x0A")
+                     when QuestionRowColumnType::DROPDOWN, QuestionRowColumnType::RADIO, QuestionRowColumnType::SELECT2_SINGLE
+                       record.name.blank? ? '' : qrcqrcos.find(record.name).name
+                     else
+                       record.name
+                     end
+            rescue JSON::ParserError, TypeError
+              raise 'record value does not match qrct'
             end
+            records_lookups["#{extraction.id}-#{type1.id}-#{q.id}-#{qr.id}-#{qrc.id}-#{qrcf.id}"] = name
           end
         end
       end
@@ -276,72 +313,53 @@ class AdvancedExportJob < ApplicationJob
         extractions << extraction unless extractions.include?(extraction)
       end
 
-      questions = []
-      questions_lookups = {}
-      question_rows = []
-      question_rows_lookups = {}
-      question_row_columns = []
-      question_row_columns_lookups = {}
-      question_row_column_fields = []
-      question_row_column_fields_lookups = {}
-
-      efps.questions.each do |question|
-        questions << question unless questions.include?(question)
-        questions_lookups[question.id] ||= {
-          name: question.name,
-          description: question.description
-        }
-        question.question_rows.each do |question_row|
-          question_rows << question_row unless question_rows.include?(question_row)
-          question_rows_lookups[question_row.id] ||= {
-            name: question_row.name
-          }
-          question_row.question_row_columns.each do |question_row_column|
-            question_row_columns << question_row_column unless question_row_columns.include?(question_row_column)
-            question_row_columns_lookups[question_row_column.id] ||= {
-              name: question_row_column.name
-            }
-            question_row_column.question_row_column_fields.each do |question_row_column_field|
-              unless question_row_column_fields.include?(question_row_column_field)
-                question_row_column_fields << question_row_column_field
-              end
-              question_row_column_fields_lookups[question_row_column_field.id] ||= {
-                name: question_row_column_field.name
-              }
-            end
-          end
-        end
-      end
-
+      questions = efps.questions
       @package.workbook.add_worksheet(name: section_name) do |sheet|
         headers = default_headers
-        questions.each do |question|
-          question.question_rows.each do |question_row|
-            question_row.question_row_columns.each do |question_row_column|
-              headers << "[Question ID: #{question.id}][Field ID: #{question_row.id}x#{question_row_column.id}]"
+        headers << linked_section_name
+        headers << linked_section_name
+        questions.each do |q|
+          q.question_rows.each do |qr|
+            qr.question_row_columns.each do |qrc|
+              headers << "[Question ID: #{q.id}][Field ID: #{qr.id}x#{qrc.id}]"
             end
           end
         end
         sheet.add_row(headers)
 
         extractions.each do |extraction|
-          row = [
-            extraction.id,
-            extraction.consolidated,
-            extraction.user.profile.username,
-            extraction.citations_project.citation.id,
-            extraction.citations_project.citation.name,
-            extraction.citations_project.citation.refman,
-            extraction.citations_project.citation.other,
-            extraction.citations_project.citation.pmid,
-            extraction.citations_project.citation.authors,
-            extraction.citations_project.citation.year,
-            extraction.extractions_key_questions_projects_selections.map do |ekqps|
-              ekqps.key_questions_project.key_question.name
-            end.join("\x0D\x0A")
-          ]
-
-          sheet.add_row(row)
+          extractions_lookups[extraction.id][:type1s].each do |type1|
+            row = [
+              extraction.id,
+              extraction.consolidated,
+              extraction.user.profile.username,
+              extraction.citations_project.citation.id,
+              extraction.citations_project.citation.name,
+              extraction.citations_project.citation.refman,
+              extraction.citations_project.citation.other,
+              extraction.citations_project.citation.pmid,
+              extraction.citations_project.citation.authors,
+              extraction.citations_project.citation.year,
+              extraction.extractions_key_questions_projects_selections.map do |ekqps|
+                ekqps.key_questions_project.key_question.name
+              end.join("\x0D\x0A")
+            ]
+            row << type1.name
+            row << type1.description
+            questions.each do |q|
+              q.question_rows.each do |qr|
+                qr.question_row_columns.each do |qrc|
+                  qrc_records = []
+                  qrc.question_row_column_fields.each do |qrcf|
+                    record = records_lookups["#{extraction.id}-#{type1.id}-#{q.id}-#{qr.id}-#{qrc.id}-#{qrcf.id}"]
+                    qrc_records << record
+                  end
+                  row << qrc_records.join("\x0D\x0A")
+                end
+              end
+            end
+            sheet.add_row(row)
+          end
         end
       end
     end
