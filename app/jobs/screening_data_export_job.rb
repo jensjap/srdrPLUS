@@ -37,6 +37,9 @@ class ScreeningDataExportJob < ApplicationJob
           'fulltext screening status',
           'extraction status',
           'sub status',
+          'publication',
+          'doi',
+          'keywords',
           'consensus label',
           'consensus user name'
         ]
@@ -86,7 +89,10 @@ class ScreeningDataExportJob < ApplicationJob
             cp['abstract_qualification'],
             cp['fulltext_qualification'],
             cp['extraction_qualification'],
-            cp['screening_status']
+            cp['screening_status'],
+            cp['publication'],
+            cp['doi'],
+            cp['keywords']
           ]
           cp_id = cp.id.to_i
           columns << (mh.dig(cp_id, :consensus_label) || '')
@@ -122,16 +128,15 @@ class ScreeningDataExportJob < ApplicationJob
           'yes labels require notes',
           'no labels require notes',
           'maybe labels require notes',
-          'exclusive reasons',
-          'exclusive tags',
           'hide author information',
           'hide journal information',
-          'selected reasons',
-          'selected tags'
+          'reasons',
+          'tags'
         ].map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
       )
 
-      project.abstract_screenings.includes(:reasons, :tags, users: :profile).each do |as|
+      project.abstract_screenings.includes({ users: :profile,
+                                             project: { projects_tags: :tag, projects_reasons: :reason } }).each do |as|
         sheet.add_row(
           [
             'abstract',
@@ -147,16 +152,14 @@ class ScreeningDataExportJob < ApplicationJob
             as.yes_note_required,
             as.no_note_required,
             as.maybe_note_required,
-            as.only_predefined_reasons,
-            as.only_predefined_tags,
             as.hide_author,
             as.hide_journal,
-            as.reasons.map(&:name),
-            as.tags.map(&:name)
+            as.project.reasons.map(&:name),
+            as.project.tags.map(&:name)
           ].map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
         )
       end
-      project.fulltext_screenings.includes(:reasons, :tags, users: :profile).each do |fs|
+      project.fulltext_screenings.includes(users: :profile).each do |fs|
         sheet.add_row(
           [
             'fulltext',
@@ -172,12 +175,10 @@ class ScreeningDataExportJob < ApplicationJob
             fs.yes_note_required,
             fs.no_note_required,
             fs.maybe_note_required,
-            fs.only_predefined_reasons,
-            fs.only_predefined_tags,
             fs.hide_author,
             fs.hide_journal,
-            fs.reasons.map(&:name),
-            fs.tags.map(&:name)
+            fs.project.reasons.map(&:name),
+            fs.project.tags.map(&:name)
           ].map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
         )
       end
@@ -187,6 +188,9 @@ class ScreeningDataExportJob < ApplicationJob
       wb.add_worksheet(name: "abstract screening id #{as.id}") do |sheet|
         headers = [
           'srdr citation id',
+          'publication',
+          'doi',
+          'keywords',
           'abstract screening type',
           'user',
           'label',
@@ -209,8 +213,20 @@ class ScreeningDataExportJob < ApplicationJob
           headers.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
         )
         as.abstract_screening_results.includes(:tags, :reasons, :citations_project, user: :profile).each do |asr|
+          publication = ''
+          doi = ''
+          keywords = ''
+          CitationsProject.search(where: { citation_id: asr.citations_project.citation_id }, load: false).each do |cp|
+            publication = cp['publication']
+            doi = cp['doi']
+            keywords = cp['keywords']
+          end
+
           row = [
             asr.citations_project.citation_id,
+            publication,
+            doi,
+            keywords,
             asr.abstract_screening.abstract_screening_type,
             asr.user.handle,
             asr.label,
@@ -236,8 +252,8 @@ class ScreeningDataExportJob < ApplicationJob
                   when SfCell::NUMERIC
                     sfars.each do |sfar|
                       cell += "\n"
-                      cell += sfar.equality if sf_cell.with_equality
-                      cell += sfar.value
+                      cell += sfar.equality.to_s if sf_cell.with_equality
+                      cell += sfar.value.to_s
                     end
                   when SfCell::CHECKBOX, SfCell::DROPDOWN, SfCell::RADIO
                     sfos.each do |sfo|
@@ -273,6 +289,9 @@ class ScreeningDataExportJob < ApplicationJob
       wb.add_worksheet(name: "fulltext screening id #{fs.id}") do |sheet|
         headers = [
           'srdr citation id',
+          'publication',
+          'doi',
+          'keywords',
           'fulltext screening type',
           'user',
           'label',
@@ -295,8 +314,20 @@ class ScreeningDataExportJob < ApplicationJob
           headers.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
         )
         fs.fulltext_screening_results.includes(:tags, :reasons, :citations_project, user: :profile).each do |fsr|
+          publication = ''
+          doi = ''
+          keywords = ''
+          CitationsProject.search(where: { citation_id: fsr.citations_project.citation_id }, load: false).each do |cp|
+            publication = cp['publication']
+            doi = cp['doi']
+            keywords = cp['keywords']
+          end
+
           row = [
             fsr.citations_project.citation_id,
+            publication,
+            doi,
+            keywords,
             fsr.fulltext_screening.fulltext_screening_type,
             fsr.user.handle,
             fsr.label,

@@ -16,17 +16,4 @@ class FulltextScreeningsReasonsUser < ApplicationRecord
   belongs_to :fulltext_screening
   belongs_to :reason
   belongs_to :user
-
-  def self.custom_reasons_object(fulltext_screening, user)
-    fsrus = FulltextScreeningsReasonsUser.where(fulltext_screening:, user:).includes(:reason)
-    fsrus.map do |fsru|
-      {
-        id: fsru.id,
-        reason_id: fsru.reason_id,
-        name: fsru.reason.name,
-        pos: fsru.pos,
-        selected: false
-      }
-    end
-  end
 end

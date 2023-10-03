@@ -1,0 +1,238 @@
+@charset "UTF-8";
+/* line 5, app/assets/stylesheets/extraction_forms_projects.scss */
+ul#vertical-tabs > li > div {
+  margin: 2.5em 1em;
+}
+
+/* line 9, app/assets/stylesheets/extraction_forms_projects.scss */
+ul.extraction-form-controls {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* line 15, app/assets/stylesheets/extraction_forms_projects.scss */
+ul.extraction-form-controls li {
+  float: left;
+  padding: 5px;
+}
+
+/* line 21, app/assets/stylesheets/extraction_forms_projects.scss */
+ul#dependencies {
+  list-style: none;
+  margin: 0;
+}
+
+/* line 26, app/assets/stylesheets/extraction_forms_projects.scss */
+.ef-preview-container {
+  position: relative;
+  height: 95% !important;
+  width: 90% !important;
+}
+
+/* line 32, app/assets/stylesheets/extraction_forms_projects.scss */
+.utilities {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  height: 100%;
+}
+
+/* line 38, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-question-list {
+  width: 100%;
+}
+
+/* line 40, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-question-list col:first-child {
+  width: 1%;
+}
+
+/* line 43, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-question-list col:nth-child(2) {
+  width: 3%;
+}
+
+/* line 47, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-question-list td:first-child, table#efp-question-list th:first-child, table#efp-question-list td:nth-child(2), table#efp-question-list th:nth-child(2) {
+  min-width: 10px;
+}
+
+/* line 50, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-question-list td:nth-child(2) {
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* line 54, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-question-list thead {
+  background-color: transparent;
+  border: none;
+}
+
+/* line 57, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-question-list thead tr:hover {
+  background-color: transparent;
+}
+
+/* line 62, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-question-list thead tr th {
+  border: none;
+  background-color: transparent;
+}
+
+/* line 68, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-question-list tbody {
+  background-color: transparent;
+  border: none;
+}
+
+/* line 71, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-question-list tbody tr {
+  background-color: #f6f6fd;
+  border: none;
+}
+
+/* line 75, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-question-list tbody tr td {
+  border-right: solid 1px #e2e2e2;
+}
+
+/* line 79, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-question-list tbody tr td:first-child {
+  background-color: white;
+  border-left: none;
+  border-top: none;
+  border-bottom: none;
+  border-right: solid 1px grey;
+}
+
+/* line 85, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-question-list tbody tr td:first-child .grippy {
+  content: '....';
+  width: 10px;
+  height: 25px;
+  line-height: 5px;
+  cursor: -webkit-grab;
+  cursor: grab;
+  margin-right: 12px;
+  font-size: 20px;
+  font-family: sans-serif;
+  letter-spacing: 1px;
+  color: grey;
+}
+
+/* line 97, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-question-list tbody tr td:first-child .grippy::after {
+  content: '·· ·· ·· ·· ··';
+}
+
+/* line 102, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-question-list tbody tr td:last-child {
+  border-right: solid 1px grey;
+}
+
+/* line 107, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-question-list tbody tr:hover {
+  background-color: lavender;
+}
+
+/* line 113, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-type1-list {
+  width: 100%;
+}
+
+/* line 115, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-type1-list col:first-child {
+  width: 1%;
+}
+
+/* line 118, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-type1-list col:last-child {
+  width: 1%;
+}
+
+/* line 121, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-type1-list td:first-child, table#efp-type1-list th:first-child {
+  min-width: 10px;
+}
+
+/* line 124, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-type1-list thead {
+  background-color: transparent;
+  border: none;
+}
+
+/* line 127, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-type1-list thead tr:hover {
+  background-color: transparent;
+}
+
+/* line 132, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-type1-list thead tr th {
+  border: none;
+  background-color: transparent;
+}
+
+/* line 138, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-type1-list tbody {
+  background-color: transparent;
+  border: none;
+}
+
+/* line 141, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-type1-list tbody tr {
+  background-color: #f6f6fd;
+  border: none;
+}
+
+/* line 145, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-type1-list tbody tr td {
+  border-right: solid 1px #e2e2e2;
+}
+
+/* line 149, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-type1-list tbody tr td:first-child {
+  background-color: white;
+  border-left: none;
+  border-top: none;
+  border-bottom: none;
+  border-right: solid 1px grey;
+}
+
+/* line 155, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-type1-list tbody tr td:first-child .grippy {
+  content: '....';
+  width: 10px;
+  height: 25px;
+  line-height: 5px;
+  cursor: -webkit-grab;
+  cursor: grab;
+  margin-right: 12px;
+  font-size: 20px;
+  font-family: sans-serif;
+  letter-spacing: 1px;
+  color: grey;
+}
+
+/* line 167, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-type1-list tbody tr td:first-child .grippy::after {
+  content: '·· ·· ·· ·· ··';
+}
+
+/* line 172, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-type1-list tbody tr td:last-child {
+  border-right: solid 1px grey;
+}
+
+/* line 177, app/assets/stylesheets/extraction_forms_projects.scss */
+table#efp-type1-list tbody tr:hover {
+  background-color: lavender;
+}

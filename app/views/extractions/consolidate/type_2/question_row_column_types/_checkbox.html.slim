@@ -12,9 +12,15 @@
   - if not record
     - record = Record.find_or_create_by(recordable: eefps_qrcf)
 
+  / Edgecase: If form is changed after data is recorded, we catch exception and notify.
+  - begin
+    - JSON.parse(record.name) if record.name.present?
+  - rescue JSON::ParserError => exception
+    - Sentry.capture_exception(exception) if Rails.env.production?
+    - record.update(name: '')
+
   = simple_form_for(record, namespace: "record_#{record.id.to_s}", remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.error_notification
-
     - options = qrc. \
       question_row_columns_question_row_column_options. \
       where(question_row_column_option_id: 1). \

@@ -12,6 +12,8 @@ class AbstractScreeningResultsTag < ApplicationRecord
   belongs_to :abstract_screening_result
   belongs_to :tag
 
+  delegate :project, to: :abstract_screening_result
+
   after_commit :reindex_asr
 
   private

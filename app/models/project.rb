@@ -49,6 +49,11 @@ class Project < ApplicationRecord
   has_many :fulltext_screening_results, through: :fulltext_screenings
   has_one :screening_form, dependent: :destroy, inverse_of: :project
 
+  has_many :projects_tags, dependent: :destroy
+  has_many :tags, through: :projects_tags
+  has_many :projects_reasons, dependent: :destroy
+  has_many :reasons, through: :projects_reasons
+
   has_one :data_audit, dependent: :destroy
   has_one :publishing, as: :publishable, dependent: :destroy
   # NOTE
@@ -294,10 +299,10 @@ class Project < ApplicationRecord
     citations_that_have_multiple_entries = citations.joins("INNER JOIN (#{sub_query.to_sql}) as t1").distinct
 
     # Group citations and dedupe each group.
-    cthme_groups = citations_that_have_multiple_entries.group_b y { |i|
-                                                                  [i.citation_type_id, i.name, i.refman, i.pmid,
-                                                                   i.abstract]
-                                                                }
+    cthme_groups = citations_that_have_multiple_entries.group_by do |i|
+      [i.citation_type_id, i.name, i.refman, i.pmid,
+       i.abstract]
+    end
     cthme_groups.each do |cthme_group|
       master_citation = cthme_group[1][0]
       cthme_group[1][1..-1].each do |cit|

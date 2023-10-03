@@ -4,8 +4,6 @@ json.asr do
   json.user_id @abstract_screening_result.user_id
   json.username @abstract_screening_result.user.profile.username
   json.label @abstract_screening_result.label
-  json.predefined_reasons @predefined_reasons
-  json.predefined_tags @predefined_tags
   json.custom_reasons @custom_reasons
   json.custom_tags @custom_tags
   json.notes @abstract_screening_result.notes || ''
@@ -30,8 +28,6 @@ json.options do
   json.yes_note_required @abstract_screening.yes_note_required
   json.no_note_required @abstract_screening.no_note_required
   json.maybe_note_required @abstract_screening.maybe_note_required
-  json.only_predefined_reasons @abstract_screening.only_predefined_reasons
-  json.only_predefined_tags @abstract_screening.only_predefined_tags
 end
 cps = @screened_cps.reverse.map do |asr|
   {
@@ -43,4 +39,5 @@ cps = @screened_cps.reverse.map do |asr|
 end
 json.cps cps
 json.all_labels @all_labels
+json.project_id @abstract_screening_result.project.id
 json.asr_in_asic_count AbstractScreeningService.asr_in_asic_count(@abstract_screening)

@@ -36,8 +36,8 @@
             x-text="`${addReasonModal.action} ${addReasonModal.type == 'custom_reasons' ? 'Reason' : 'Tag' }`"
           ></h1>
           <input
+            id="modal-add-reasoning-input"
             x-trap="addReasonModal.on"
-            x-ref="newCustomValueInput"
             x-model="newCustomValue"
             placeholder="Enter here.."
             class="!h-10 !p-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"

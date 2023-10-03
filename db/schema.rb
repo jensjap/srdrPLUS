@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_23_071254) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_20_022520) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -68,8 +68,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_23_071254) do
     t.boolean "yes_note_required", default: false, null: false
     t.boolean "no_note_required", default: false, null: false
     t.boolean "maybe_note_required", default: false, null: false
-    t.boolean "only_predefined_reasons", default: false, null: false
-    t.boolean "only_predefined_tags", default: false, null: false
     t.boolean "hide_author", default: false, null: false
     t.boolean "hide_journal", default: false, null: false
     t.datetime "created_at", null: false
@@ -771,8 +769,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_23_071254) do
     t.boolean "yes_note_required", default: false, null: false
     t.boolean "no_note_required", default: false, null: false
     t.boolean "maybe_note_required", default: false, null: false
-    t.boolean "only_predefined_reasons", default: false, null: false
-    t.boolean "only_predefined_tags", default: false, null: false
     t.boolean "hide_author", default: false, null: false
     t.boolean "hide_journal", default: false, null: false
     t.datetime "created_at", null: false
@@ -1185,6 +1181,34 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_23_071254) do
     t.datetime "updated_at", precision: nil, null: false
     t.text "authors_of_report"
     t.boolean "auto_train", default: false
+  end
+
+  create_table "projects_reasons", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "reason_id", null: false
+    t.string "screening_type", null: false
+    t.integer "pos", default: 999999
+    t.integer "integer", default: 999999
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pos"], name: "index_projects_reasons_on_pos"
+    t.index ["project_id", "reason_id", "screening_type"], name: "p_r_st_on_pr", unique: true
+    t.index ["project_id"], name: "index_projects_reasons_on_project_id"
+    t.index ["reason_id"], name: "index_projects_reasons_on_reason_id"
+  end
+
+  create_table "projects_tags", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "tag_id", null: false
+    t.string "screening_type", null: false
+    t.integer "pos", default: 999999
+    t.integer "integer", default: 999999
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["pos"], name: "index_projects_tags_on_pos"
+    t.index ["project_id", "tag_id", "screening_type"], name: "index_projects_tags_on_project_id_and_tag_id_and_screening_type", unique: true
+    t.index ["project_id"], name: "index_projects_tags_on_project_id"
+    t.index ["tag_id"], name: "index_projects_tags_on_tag_id"
   end
 
   create_table "projects_users", id: :integer, charset: "utf8mb3", force: :cascade do |t|
