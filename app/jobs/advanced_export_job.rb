@@ -32,7 +32,16 @@ class AdvancedExportJob < ApplicationJob
                         :question_row_column_type,
                         :question_row_columns_question_row_column_options,
                         {
-                          question_row: :question
+                          question_row: :question,
+                          question_row_columns_question_row_column_options: {
+                            followup_field: {
+                              extractions_extraction_forms_projects_sections_followup_fields: %i[
+                                extractions_extraction_forms_projects_sections_type1
+                                extractions_extraction_forms_projects_section
+                                records
+                              ]
+                            }
+                          }
                         }
                       ]
                     }
@@ -67,9 +76,17 @@ class AdvancedExportJob < ApplicationJob
                           question_row_column_field: {
                             question_row_column: [
                               :question_row_column_type,
-                              :question_row_columns_question_row_column_options,
                               {
-                                question_row: :question
+                                question_row: :question,
+                                question_row_columns_question_row_column_options: {
+                                  followup_field: {
+                                    extractions_extraction_forms_projects_sections_followup_fields: %i[
+                                      extractions_extraction_forms_projects_sections_type1
+                                      extractions_extraction_forms_projects_section
+                                      records
+                                    ]
+                                  }
+                                }
                               }
                             ]
                           }
@@ -131,7 +148,7 @@ class AdvancedExportJob < ApplicationJob
     add_type1_sections
     add_linked_type2_sections
     add_unlinked_type2_sections
-    # add_results
+    add_results
     'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_advanced.xlsx'
   end
 
@@ -289,10 +306,10 @@ class AdvancedExportJob < ApplicationJob
       extractions_lookups = {}
       records_lookups = {}
 
-      linked_eefpss = efps.extractions_extraction_forms_projects_sections.map(&:link_to_type1)
+      linked_eefpss = efps.extractions_extraction_forms_projects_sections.map { |eefps| [eefps.link_to_type1, eefps] }
       raise 'must be linked, inconsistent data' if linked_eefpss.any?(&:nil?)
 
-      linked_eefpss.each do |eefps|
+      linked_eefpss.each do |eefps, child_eefps|
         extraction = eefps.extraction
         extractions_lookups[extraction.id] ||= { type1s: [] }
         eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
@@ -311,13 +328,26 @@ class AdvancedExportJob < ApplicationJob
                        name = record.name.blank? ? [''] : JSON.parse(record.name)
                        name = [name] unless name.instance_of?(Array)
                        name.select(&:present?).map do |string_id|
-                         qrcqrcos.find(string_id).name
+                         qrcqrco = qrcqrcos.find(string_id)
+                         if qrcqrco.followup_field.nil?
+                           qrcqrco.name.to_s
+                         else
+                           eefpsff =
+                             qrcqrco
+                             .followup_field
+                             &.extractions_extraction_forms_projects_sections_followup_fields
+                             &.find do |candidate_eefpsff|
+                               candidate_eefpsff.extractions_extraction_forms_projects_sections_type1 == eefpst1 &&
+                                 candidate_eefpsff.extractions_extraction_forms_projects_section == child_eefps
+                             end
+                           "#{qrcqrco.name} [Follow Up: #{eefpsff&.records&.first&.name}]"
+                         end
                        end.join("\x0D\x0A")
                      rescue JSON::ParserError, TypeError
                        raise 'record value does not match qrct'
                      end
                    else
-                     record.name
+                     record.name.to_s
                    end
             records_lookups["#{extraction.id}-#{type1.id}-#{q.id}-#{qr.id}-#{qrc.id}-#{qrcf.id}"] = name
           end
@@ -403,13 +433,26 @@ class AdvancedExportJob < ApplicationJob
                      name = record.name.blank? ? [''] : JSON.parse(record.name)
                      name = [name] unless name.instance_of?(Array)
                      name.select(&:present?).map do |string_id|
-                       qrcqrcos.find(string_id).name
+                       qrcqrco = qrcqrcos.find(string_id)
+                       if qrcqrco.followup_field.nil?
+                         qrcqrco.name.to_s
+                       else
+                         eefpsff =
+                           qrcqrco
+                           .followup_field
+                           &.extractions_extraction_forms_projects_sections_followup_fields
+                           &.find do |candidate_eefpsff|
+                             candidate_eefpsff.extractions_extraction_forms_projects_sections_type1.nil? &&
+                               candidate_eefpsff.extractions_extraction_forms_projects_section == eefps
+                           end
+                         "#{qrcqrco.name} [Follow Up: #{eefpsff&.records&.first&.name}]"
+                       end
                      end.join("\x0D\x0A")
                    rescue JSON::ParserError, TypeError
                      raise 'record value does not match qrct'
                    end
                  else
-                   record.name
+                   record.name.to_s
                  end
           records_lookups["#{extraction.id}-#{q.id}-#{qr.id}-#{qrc.id}-#{qrcf.id}"] = name
         end
