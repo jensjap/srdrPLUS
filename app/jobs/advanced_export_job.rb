@@ -101,7 +101,15 @@ class AdvancedExportJob < ApplicationJob
                     extractions_extraction_forms_projects_sections_type1_rows:
                     [
                       :population_name,
-                      { extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name }
+                      {
+                        extractions_extraction_forms_projects_sections_type1_row_columns: :timepoint_name,
+                        result_statistic_sections: [
+                          :result_statistic_section_type,
+                          {
+                            result_statistic_sections_measures: :measure
+                          }
+                        ]
+                      }
                     ]
                   }
                 ]
@@ -129,7 +137,12 @@ class AdvancedExportJob < ApplicationJob
       @unlinked_type2_efpss = efpss.select do |efps|
         efps.extraction_forms_projects_section_type_id == 2 && efps.link_to_type1.blank?
       end
-      @result_efpss = efpss.select { |efps| efps.extraction_forms_projects_section_type_id == 3 }
+      @outcomes_efps = efpss.find do |efps|
+        efps.extraction_forms_projects_section_type_id == 1 && efps.section.name == 'Outcomes'
+      end
+      @arms_efps = efpss.find do |efps|
+        efps.extraction_forms_projects_section_type_id == 1 && efps.section.name == 'Arms'
+      end
       @extractions = @project.extractions
 
       filename = generate_xlsx_and_filename
@@ -144,10 +157,10 @@ class AdvancedExportJob < ApplicationJob
   end
 
   def generate_xlsx_and_filename
-    add_project_information_section
-    add_type1_sections
-    add_linked_type2_sections
-    add_unlinked_type2_sections
+    # add_project_information_section
+    # add_type1_sections
+    # add_linked_type2_sections
+    # add_unlinked_type2_sections
     add_results
     'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_advanced.xlsx'
   end
@@ -510,5 +523,47 @@ class AdvancedExportJob < ApplicationJob
     end
   end
 
-  def add_results; end
+  def add_results
+    extractions_lookups = {}
+    @arms_efps.extractions_extraction_forms_projects_sections.each do |eefps|
+      extraction = eefps.extraction
+      extractions_lookups[extraction.id] ||= {
+        outcomes: {},
+        arms: {}
+      }
+      eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+        extractions_lookups[extraction.id][:arms][eefpst1.type1.id] = eefpst1
+      end
+    end
+    @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
+      extraction = eefps.extraction
+      extractions_lookups[extraction.id] ||= {
+        outcomes: {},
+        arms: {}
+      }
+      eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+        extractions_lookups[extraction.id][:outcomes][eefpst1.type1.id] ||= {
+          record: eefpst1,
+          populations: {}
+        }
+        eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+          extractions_lookups[extraction.id][:outcomes][eefpst1.type1.id][:populations][eefpst1r.population_name.id] ||= {
+            record: eefpst1r,
+            timepoints: {}
+          }
+          eefpst1r.result_statistic_sections.each do |rss|
+            rss.result_statistic_section_type
+            rss.result_statistic_sections_measures.each do |rssm|
+              rssm.measure
+            end
+          end
+          eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+            extractions_lookups[extraction.id][:outcomes][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:timepoints][eefpst1rc.timepoint_name.id] ||= {
+              record: eefpst1rc
+            }
+          end
+        end
+      end
+    end
+  end
 end
