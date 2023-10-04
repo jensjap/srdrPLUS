@@ -1,7 +1,7 @@
 class FulltextScreeningsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
-  before_action :set_project, only: %i[index new create]
+  before_action :set_project, only: %i[index new create work_selection]
   before_action :set_fulltext_screening, only: %i[screen]
   after_action :verify_authorized
 
@@ -48,6 +48,10 @@ class FulltextScreeningsController < ApplicationController
       .order(id: :desc)
       .page(params[:page])
       .per(5)
+  end
+
+  def work_selection
+    authorize(@project, policy_class: AbstractScreeningPolicy)
   end
 
   def screen

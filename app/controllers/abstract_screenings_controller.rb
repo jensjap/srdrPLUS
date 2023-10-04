@@ -1,7 +1,7 @@
 class AbstractScreeningsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: %i[update_word_weight kpis]
 
-  before_action :set_project, only: %i[index new create citation_lifecycle_management export_screening_data kpis]
+  before_action :set_project, only: %i[index new create citation_lifecycle_management export_screening_data kpis work_selection]
   before_action :set_abstract_screening, only: %i[update_word_weight screen resolve]
   after_action :verify_authorized
 
@@ -107,6 +107,10 @@ class AbstractScreeningsController < ApplicationController
       .order(id: :desc)
       .page(params[:page])
       .per(5)
+  end
+
+  def work_selection
+    authorize(@project, policy_class: AbstractScreeningPolicy)
   end
 
   def kpis

@@ -74,14 +74,27 @@
       <%= link_to "SR-360", project_sd_meta_data_path(project), title: 'SR-360' %>
     </div>
     <% if BaseScreeningService.screening_user?(current_user) %>
-      <div class="break-words">
-        <!-- prettier-ignore -->
-        <%= link_to "Abstract Screening", project_abstract_screenings_path(project), title: 'Abstract Screening' %>
-      </div>
-      <div class="break-words">
-        <!-- prettier-ignore -->
-        <%= link_to "Full-text Screening", project_fulltext_screenings_path(project), title: 'Full-text Screening' %>
-      </div>
+      <% projects_user = ProjectsUser.find_by(project_id: project.id, user_id: current_user.id) %>
+      <% if projects_user&.project_contributor? && !projects_user&.project_leader? && !projects_user&.project_consolidator? %>
+        <div class="break-words">
+          <!-- prettier-ignore -->
+          <%= link_to "Abstract Screening", work_selection_project_abstract_screenings_path(project), title: 'Abstract Screening' %>
+        </div>
+        <div class="break-words">
+          <!-- prettier-ignore -->
+          <%= link_to "Full-text Screening", work_selection_project_fulltext_screenings_path(project), title: 'Full-text Screening' %>
+        </div>
+      <% end %>
+      <% if projects_user&.project_leader? || projects_user&.project_consolidator? %>
+        <div class="break-words">
+          <!-- prettier-ignore -->
+          <%= link_to "Abstract Screening", project_abstract_screenings_path(project), title: 'Abstract Screening' %>
+        </div>
+        <div class="break-words">
+          <!-- prettier-ignore -->
+          <%= link_to "Full-text Screening", project_fulltext_screenings_path(project), title: 'Full-text Screening' %>
+        </div>
+      <% end %>
     <% end %>
   </div>
   <!-- prettier-ignore -->
