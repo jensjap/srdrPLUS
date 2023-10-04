@@ -313,20 +313,19 @@ class AdvancedExportJob < ApplicationJob
             qr = qrc.question_row
             q = qr.question
             record = eefpsqrcf.records.first
-            begin
-              name = case qrct.name
-                     when QuestionRowColumnType::CHECKBOX, QuestionRowColumnType::SELECT2_MULTI
-                       (record.name.blank? ? [''] : JSON.parse(record.name)).select(&:present?).map do |string_id|
+            name = if QuestionRowColumnType::OPTION_SELECTION_TYPES.include?(qrct.name)
+                     begin
+                       name = record.name.blank? ? [''] : JSON.parse(record.name)
+                       name = [name] unless name.instance_of?(Array)
+                       name.select(&:present?).map do |string_id|
                          qrcqrcos.find(string_id).name
                        end.join("\x0D\x0A")
-                     when QuestionRowColumnType::DROPDOWN, QuestionRowColumnType::RADIO, QuestionRowColumnType::SELECT2_SINGLE
-                       record.name.blank? ? '' : qrcqrcos.find(record.name).name
-                     else
-                       record.name
+                     rescue JSON::ParserError, TypeError
+                       raise 'record value does not match qrct'
                      end
-            rescue JSON::ParserError, TypeError
-              raise 'record value does not match qrct'
-            end
+                   else
+                     record.name
+                   end
             records_lookups["#{extraction.id}-#{type1.id}-#{q.id}-#{qr.id}-#{qrc.id}-#{qrcf.id}"] = name
           end
         end
@@ -406,20 +405,19 @@ class AdvancedExportJob < ApplicationJob
           qr = qrc.question_row
           q = qr.question
           record = eefpsqrcf.records.first
-          begin
-            name = case qrct.name
-                   when QuestionRowColumnType::CHECKBOX, QuestionRowColumnType::SELECT2_MULTI
-                     (record.name.blank? ? [''] : JSON.parse(record.name)).select(&:present?).map do |string_id|
+          name = if QuestionRowColumnType::OPTION_SELECTION_TYPES.include?(qrct.name)
+                   begin
+                     name = record.name.blank? ? [''] : JSON.parse(record.name)
+                     name = [name] unless name.instance_of?(Array)
+                     name.select(&:present?).map do |string_id|
                        qrcqrcos.find(string_id).name
                      end.join("\x0D\x0A")
-                   when QuestionRowColumnType::DROPDOWN, QuestionRowColumnType::RADIO, QuestionRowColumnType::SELECT2_SINGLE
-                     record.name.blank? ? '' : qrcqrcos.find(record.name).name
-                   else
-                     record.name
+                   rescue JSON::ParserError, TypeError
+                     raise 'record value does not match qrct'
                    end
-          rescue JSON::ParserError, TypeError
-            raise 'record value does not match qrct'
-          end
+                 else
+                   record.name
+                 end
           records_lookups["#{extraction.id}-#{q.id}-#{qr.id}-#{qrc.id}-#{qrcf.id}"] = name
         end
       end
