@@ -78,13 +78,6 @@ class AdvancedExportJob < ApplicationJob
                     }
                   ]
                 },
-                extraction: {
-                  citations_project: { citation: :journal },
-                  user: :profile,
-                  extractions_key_questions_projects_selections: {
-                    key_questions_project: :key_question
-                  }
-                },
                 extractions_extraction_forms_projects_sections_type1s: [
                   :type1,
                   {
