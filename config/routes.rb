@@ -225,10 +225,17 @@ Rails.application.routes.draw do
     post 'export_screening_data', to: 'abstract_screenings#export_screening_data'
 
     resources :abstract_screenings do
+      collection do
+        get 'work_selection', to: 'abstract_screenings#work_selection'
+      end
       get 'screen', to: 'abstract_screenings#screen'
       post 'update_word_weight', to: 'abstract_screenings#update_word_weight'
     end
+
     resources :fulltext_screenings do
+      collection do
+        get 'work_selection', to: 'fulltext_screenings#work_selection'
+      end
       get 'screen', to: 'fulltext_screenings#screen'
     end
 
@@ -405,4 +412,6 @@ Rails.application.routes.draw do
   get '/model_performances/timestamps/:project_id', to: 'model_performances#show_timestamps'
 
   get 'projects/:id/unlabeled_predictions', to: 'predictions#get_unlabeled_with_intervals'
+
+  get 'check_role/:screenings_type/:project_id', to: 'role_check#check_role', as: 'check_role'
 end
