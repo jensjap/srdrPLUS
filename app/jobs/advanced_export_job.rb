@@ -106,7 +106,14 @@ class AdvancedExportJob < ApplicationJob
                         result_statistic_sections: [
                           :result_statistic_section_type,
                           {
-                            result_statistic_sections_measures: :measure,
+                            result_statistic_sections_measures: [
+                              :measure,
+                              { tps_arms_rssms: [
+                                :extractions_extraction_forms_projects_sections_type1,
+                                :records,
+                                { timepoint: :timepoint_name }
+                              ] }
+                            ],
                             comparisons_result_statistic_sections: {
                               comparison: {
                                 comparate_groups: {
@@ -564,12 +571,12 @@ class AdvancedExportJob < ApplicationJob
                 records_lookups["#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{tps_arms_rssm.timepoint.timepoint_name.id}-#{tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id}-#{rssm.measure.name}"] =
                   record.name
               end
-              rssm.tps_comparisons_rssms.each do |tps_comparisons_rssm|
-              end
-              rssm.comparisons_arms_rssms.each do |comparisons_arms_rssm|
-              end
-              rssm.wacs_bacs_rssms.each do |wacs_bacs_rssm|
-              end
+              # rssm.tps_comparisons_rssms.each do |tps_comparisons_rssm|
+              # end
+              # rssm.comparisons_arms_rssms.each do |comparisons_arms_rssm|
+              # end
+              # rssm.wacs_bacs_rssms.each do |wacs_bacs_rssm|
+              # end
             end
 
             rss.comparisons_result_statistic_sections.each do |comparisons_result_statistic_section|
