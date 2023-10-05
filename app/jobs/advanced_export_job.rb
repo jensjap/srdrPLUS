@@ -107,12 +107,28 @@ class AdvancedExportJob < ApplicationJob
                           :result_statistic_section_type,
                           {
                             result_statistic_sections_measures: [
-                              :measure,
-                              { tps_arms_rssms: [
-                                :extractions_extraction_forms_projects_sections_type1,
-                                :records,
-                                { timepoint: :timepoint_name }
-                              ] }
+                              :measure, {
+                                tps_arms_rssms: [
+                                  :records,
+                                  :extractions_extraction_forms_projects_sections_type1,
+                                  { timepoint: :timepoint_name }
+                                ],
+                                tps_comparisons_rssms: [
+                                  :records,
+                                  :comparison,
+                                  { timepoint: :timepoint_name }
+                                ],
+                                comparisons_arms_rssms: %i[
+                                  records
+                                  comparison
+                                  extractions_extraction_forms_projects_sections_type1
+                                ],
+                                wacs_bacs_rssms: %i[
+                                  records
+                                  wac
+                                  bac
+                                ]
+                              }
                             ],
                             comparisons_result_statistic_sections: {
                               comparison: {
@@ -493,6 +509,10 @@ class AdvancedExportJob < ApplicationJob
   # TODO: 1
   # measures are not unique in the db.
   # need to deduplicate the table and update its children
+
+  # TODO: 2
+  # cleanup any tps_arms_rssm that are linked to non-existing eefpst1rc
+  # TpsArmsRssm.left_joins(:timepoint).where(extractions_extraction_forms_projects_sections_type1_row_columns: { id: nil }).count
   def add_results
     q11_measures = []
     q12_measures = []
@@ -563,20 +583,42 @@ class AdvancedExportJob < ApplicationJob
               end
               # "#{extraction.id}-#{eefpst1.type1.id}-#{type1.id}-#{rssm.measure.name}"
               rssm.tps_arms_rssms.each do |tps_arms_rssm|
-                # TODO: 2 cleanup any tps_arms_rssm that are linked to non-existing eefpst1rc
-                next if tps_arms_rssm.timepoint.nil?
+                # TODO: 2
+                next if (timepoint = tps_arms_rssm.timepoint).nil?
 
                 record = tps_arms_rssm.records.first
                 # See TODO 1
-                records_lookups["#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{tps_arms_rssm.timepoint.timepoint_name.id}-#{tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id}-#{rssm.measure.name}"] =
+                records_lookups["tps_arms_rssm-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{timepoint.timepoint_name.id}-#{tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id}-#{rssm.measure.name}"] =
                   record.name
               end
-              # rssm.tps_comparisons_rssms.each do |tps_comparisons_rssm|
-              # end
-              # rssm.comparisons_arms_rssms.each do |comparisons_arms_rssm|
-              # end
-              # rssm.wacs_bacs_rssms.each do |wacs_bacs_rssm|
-              # end
+              rssm.tps_comparisons_rssms.each do |tps_comparisons_rssm|
+                # TODO: 2
+                next if (timepoint = tps_comparisons_rssm.timepoint).nil?
+                next if (comparison = tps_comparisons_rssm.comparison).nil?
+
+                record = tps_comparisons_rssm.records.first
+
+                # See TODO 1
+                records_lookups["tps_comparisons_rssms-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{timepoint.timepoint_name.id}-#{tps_comparisons_rssm.comparison.id}-#{rssm.measure.name}"] =
+                  record.name
+              end
+              rssm.comparisons_arms_rssms.each do |comparisons_arms_rssm|
+                next if (comparison = comparisons_arms_rssm.comparison).nil?
+
+                record = comparisons_arms_rssm.records.first
+                # See TODO 1
+                records_lookups["comparisons_arms_rssm-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{comparison.id}-#{comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id}-#{rssm.measure.name}"] =
+                  record.name
+              end
+              rssm.wacs_bacs_rssms.each do |wacs_bacs_rssm|
+                next if (wac = wacs_bacs_rssm.wac).nil?
+                next if (bac = wacs_bacs_rssm.bac).nil?
+
+                record = wacs_bacs_rssm.records.first
+                # See TODO 1
+                records_lookups["wacs_bacs_rssm-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{wac.id}-#{bac.id}-#{rssm.measure.name}"] =
+                  record.name
+              end
             end
 
             rss.comparisons_result_statistic_sections.each do |comparisons_result_statistic_section|
@@ -629,7 +671,7 @@ class AdvancedExportJob < ApplicationJob
                 row += [type1.name, type1.description]
                 q12_measures.each do |measure|
                   # See TODO 1
-                  record_name = records_lookups["#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{eefpst1rc.timepoint_name.id}-#{type1.id}-#{measure.name}"]
+                  record_name = records_lookups["tps_arms_rssm-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{eefpst1rc.timepoint_name.id}-#{type1.id}-#{measure.name}"]
                   row << record_name
                 end
               end
