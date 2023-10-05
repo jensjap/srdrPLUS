@@ -106,7 +106,14 @@ class AdvancedExportJob < ApplicationJob
                         result_statistic_sections: [
                           :result_statistic_section_type,
                           {
-                            result_statistic_sections_measures: :measure
+                            result_statistic_sections_measures: :measure,
+                            comparisons_result_statistic_sections: {
+                              comparison: {
+                                comparate_groups: {
+                                  comparates: :comparable_element
+                                }
+                              }
+                            }
                           }
                         ]
                       }
@@ -262,21 +269,7 @@ class AdvancedExportJob < ApplicationJob
         sheet.add_row(headers)
 
         extractions.each do |extraction|
-          row = [
-            extraction.id,
-            extraction.consolidated,
-            extraction.user.profile.username,
-            extraction.citations_project.citation.id,
-            extraction.citations_project.citation.name,
-            extraction.citations_project.citation.refman,
-            extraction.citations_project.citation.other,
-            extraction.citations_project.citation.pmid,
-            extraction.citations_project.citation.authors,
-            extraction.citations_project.citation.year,
-            extraction.extractions_key_questions_projects_selections.map do |ekqps|
-              ekqps.key_questions_project.key_question.name
-            end.join("\x0D\x0A")
-          ]
+          row = extract_default_row_columns(extraction)
           type1s.each do |type1|
             type_hash = type1s_lookups[type1.id]
             if extractions_lookups.try(:[], extraction.id).try(:[], :type1s).try(:[], type1.id)
@@ -389,21 +382,7 @@ class AdvancedExportJob < ApplicationJob
 
         extractions.each do |extraction|
           extractions_lookups[extraction.id][:type1s].each do |type1|
-            row = [
-              extraction.id,
-              extraction.consolidated,
-              extraction.user.profile.username,
-              extraction.citations_project.citation.id,
-              extraction.citations_project.citation.name,
-              extraction.citations_project.citation.refman,
-              extraction.citations_project.citation.other,
-              extraction.citations_project.citation.pmid,
-              extraction.citations_project.citation.authors,
-              extraction.citations_project.citation.year,
-              extraction.extractions_key_questions_projects_selections.map do |ekqps|
-                ekqps.key_questions_project.key_question.name
-              end.join("\x0D\x0A")
-            ]
+            row = extract_default_row_columns(extraction)
             row << type1.name
             row << type1.description
             questions.each do |q|
@@ -490,21 +469,7 @@ class AdvancedExportJob < ApplicationJob
         sheet.add_row(headers)
 
         extractions.each do |extraction|
-          row = [
-            extraction.id,
-            extraction.consolidated,
-            extraction.user.profile.username,
-            extraction.citations_project.citation.id,
-            extraction.citations_project.citation.name,
-            extraction.citations_project.citation.refman,
-            extraction.citations_project.citation.other,
-            extraction.citations_project.citation.pmid,
-            extraction.citations_project.citation.authors,
-            extraction.citations_project.citation.year,
-            extraction.extractions_key_questions_projects_selections.map do |ekqps|
-              ekqps.key_questions_project.key_question.name
-            end.join("\x0D\x0A")
-          ]
+          row = extract_default_row_columns(extraction)
           questions.each do |q|
             q.question_rows.each do |qr|
               qr.question_row_columns.each do |qrc|
@@ -523,7 +488,18 @@ class AdvancedExportJob < ApplicationJob
     end
   end
 
+  # TODO: 1 !!!!
+  # measures are not unique in the db. need to deduplicate the table and update its children
   def add_results
+    q11_measures = []
+    q12_measures = []
+    q21_measures = []
+    q22_measures = []
+    q3_measures = []
+    q4_measures = []
+    arms_lookups = {}
+    max_no_of_arms = 0
+
     extractions_lookups = {}
     @arms_efps.extractions_extraction_forms_projects_sections.each do |eefps|
       extraction = eefps.extraction
@@ -533,6 +509,8 @@ class AdvancedExportJob < ApplicationJob
       }
       eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
         extractions_lookups[extraction.id][:arms][eefpst1.type1.id] = eefpst1
+        arms_lookups[extraction.id] ||= []
+        arms_lookups[extraction.id] << eefpst1.type1 unless arms_lookups[extraction.id].include?(eefpst1.type1)
       end
     end
     @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
@@ -552,9 +530,41 @@ class AdvancedExportJob < ApplicationJob
             timepoints: {}
           }
           eefpst1r.result_statistic_sections.each do |rss|
-            rss.result_statistic_section_type
+            next if rss.result_statistic_section_type_id > 4
+
             rss.result_statistic_sections_measures.each do |rssm|
-              rssm.measure
+              case rss.result_statistic_section_type_id
+              when 1
+                if eefpst1.type1_type_id == 1
+                  # See TODO 1 above method opening
+                  q11_measures << rssm.measure unless q11_measures.any? { |measure| measure.name == rssm.measure.name }
+                elsif eefpst1.type1_type_id == 2
+                  # See TODO 1 above method opening
+                  q12_measures << rssm.measure unless q12_measures.any? { |measure| measure.name == rssm.measure.name }
+                end
+              when 2
+                if eefpst1.type1_type_id == 1
+                  # See TODO 1 above method opening
+                  q21_measures << rssm.measure unless q21_measures.any? { |measure| measure.name == rssm.measure.name }
+                elsif eefpst1.type1_type_id == 2
+                  # See TODO 1 above method opening
+                  q22_measures << rssm.measure unless q22_measures.any? { |measure| measure.name == rssm.measure.name }
+                end
+              when 3
+                # See TODO 1 above method opening
+                q3_measures << rssm.measure unless q3_measures.any? { |measure| measure.name == rssm.measure.name }
+              when 4
+                # See TODO 1 above method opening
+                q4_measures << rssm.measure unless q4_measures.any? { |measure| measure.name == rssm.measure.name }
+              end
+            end
+
+            rss.comparisons_result_statistic_sections.each do |comparisons_result_statistic_section|
+              comparisons_result_statistic_section.comparison.comparate_groups.each do |comparate_group|
+                comparate_group.comparates.each do |comparate|
+                  comparate.comparable_element
+                end
+              end
             end
           end
           eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
@@ -564,6 +574,77 @@ class AdvancedExportJob < ApplicationJob
           end
         end
       end
+    end
+    max_no_of_arms = arms_lookups.values.max_by(&:length)&.length || 0
+    @package.workbook.add_worksheet(name: 'Continuous - Desc. Statistics') do |sheet|
+      headers = default_headers
+      headers += %w[Outcome Description Type Population Description Digest Timepoint Unit]
+      max_no_of_arms.times do |max_no_of_arms_index|
+        headers += ["Arm Name #{max_no_of_arms_index + 1}", "Arm Description #{max_no_of_arms_index + 1}"]
+        q11_measures.each do |measure|
+          headers << measure.name
+        end
+      end
+      sheet.add_row(headers)
+
+      @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
+        extraction = eefps.extraction
+        eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+          next if eefpst1.type1_type_id != 1
+
+          eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+            eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+              row = extract_default_row_columns(extraction)
+              row += [
+                eefpst1.type1.name,
+                eefpst1.type1.description,
+                print_type1_type(eefpst1.type1_type_id),
+                eefpst1r.population_name.name,
+                eefpst1r.population_name.description,
+                'Digest',
+                eefpst1rc.timepoint_name.name,
+                eefpst1rc.timepoint_name.unit
+              ]
+              arms_lookups[extraction.id].each do |type1|
+                row += [type1.name, type1.description]
+                q11_measures.each do |measure|
+                  row << measure.name
+                end
+              end
+              sheet.add_row(row)
+            end
+          end
+        end
+      end
+    end
+  end
+
+  private
+
+  def extract_default_row_columns(extraction)
+    [
+      extraction.id,
+      extraction.consolidated,
+      extraction.user.profile.username,
+      extraction.citations_project.citation.id,
+      extraction.citations_project.citation.name,
+      extraction.citations_project.citation.refman,
+      extraction.citations_project.citation.other,
+      extraction.citations_project.citation.pmid,
+      extraction.citations_project.citation.authors,
+      extraction.citations_project.citation.year,
+      extraction.extractions_key_questions_projects_selections.map do |ekqps|
+        ekqps.key_questions_project.key_question.name
+      end.join("\x0D\x0A")
+    ]
+  end
+
+  def print_type1_type(type1_type_id)
+    case type1_type_id
+    when 1
+      'Categorical'
+    when 2
+      'Continuous'
     end
   end
 end
