@@ -13,87 +13,64 @@ class MachineLearningDataSupplyingService
 
   def self.get_labeled_abstract(project_id)
     project = Project.find(project_id)
-    project_data = []
 
-    for asr in project.abstract_screening_results
-                      .includes(citations_project: :citation) do
-      label_data = {
-        'ti' => '',
-        'abs' => '',
-        'label' => ''
-      }
+    project_data = project.abstract_screening_results
+                          .includes(citations_project: :citation)
+                          .map do |asr|
       citation = asr.citation
+      next if citation.name.blank? || citation.abstract.blank? || asr.label.nil?
 
-      ti = citation.name.gsub('"', "'")
-      if ti.nil? || ti.empty?
-        next
-      else
-        label_data['ti'] = ti
-      end
+      label_data = {
+        'ti' => citation.name.gsub('"', "'"),
+        'abs' => citation.abstract.gsub('"', "'"),
+        'label' => asr.label == 1 ? '1' : (asr.label == -1 ? '0' : next)
+      }
+    end.compact
 
-      abs = citation.abstract.gsub('"', "'")
-      if abs.nil? || abs.empty?
-        next
-      else
-        label_data['abs'] = abs
-      end
-
-      label = asr.label
-      if label.nil?
-        next
-      else
-        if label == 1
-          label_data['label'] = '1'
-        elsif label == -1
-          label_data['label'] = '0'
-        else
-          next
-        end
-      end
-
-      project_data.append(label_data)
-    end
-
-    unique_project_data = project_data.uniq { |hash| hash['ti'] }
-    return unique_project_data
+    project_data.uniq { |hash| hash['ti'] }
   end
 
   def self.get_unlabel_abstract(project_id)
     project = Project.find(project_id)
-    project_data = []
 
-    for citation in project.citations do
-      label_data = {
+    project_data = project.citations
+                          .includes(:citations_projects)
+                          .reject do |citation|
+      citation.name.blank? || citation.abstract.blank? ||
+      CitationsProject.find_by(citation_id: citation.id, project_id: project_id)
+                       .abstract_screening_results.present?
+    end.map do |citation|
+      {
         'citation_id' => citation.id,
-        'ti' => '',
-        'abs' => '',
+        'ti' => citation.name.gsub('"', "'"),
+        'abs' => citation.abstract.gsub('"', "'")
       }
-
-      ti = citation.name.gsub('"', "'")
-      if ti.nil? || ti.empty?
-        next
-      else
-        label_data['ti'] = ti
-      end
-
-      abs = citation.abstract.gsub('"', "'")
-      if abs.nil? || abs.empty?
-        next
-      else
-        label_data['abs'] = abs
-      end
-
-      citations_project = CitationsProject.find_by(citation_id: citation.id, project_id: project_id)
-      asr = citations_project.abstract_screening_results
-      if asr.blank?
-        project_data.append(label_data)
-      else
-        next
-      end
-
     end
 
-    return project_data
+    project_data
+  end
+
+  def self.get_labeled_abstract_since_last_train(project_id)
+    last_train_time = MlModelsProject.where(project_id: project_id).order(created_at: :desc).first&.created_at
+    return get_labeled_abstract(project_id) unless last_train_time
+
+    project = Project.find(project_id)
+
+    project_data = project.abstract_screening_results
+                          .where('abstract_screening_results.created_at > ? OR abstract_screening_results.updated_at > ?', last_train_time, last_train_time)
+                          .includes(citations_project: :citation)
+                          .map do |asr|
+      citation = asr.citation
+      next if citation.name.blank? || citation.abstract.blank? || asr.label.nil?
+
+      {
+        'ti' => citation.name.gsub('"', "'"),
+        'abs' => citation.abstract.gsub('"', "'"),
+        'label' => asr.label == 1 ? '1' : (asr.label == -1 ? '0' : next)
+      }
+    end.compact
+
+    project_data.uniq { |hash| hash['ti'] }
   end
 
   def self.get_unlabeled_predictions_with_intervals(project_id)
