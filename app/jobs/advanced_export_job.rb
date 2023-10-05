@@ -158,11 +158,6 @@ class AdvancedExportJob < ApplicationJob
     nil
   end
 
-  def default_headers
-    ['Extraction ID', 'Consolidated', 'Username', 'Citation ID', 'Citation Name', 'RefMan',
-     'other_reference', 'PMID', 'Authors', 'Publication Date', 'Key Questions']
-  end
-
   def generate_xlsx_and_filename
     # add_project_information_section
     # add_type1_sections
@@ -620,6 +615,11 @@ class AdvancedExportJob < ApplicationJob
   end
 
   private
+
+  def default_headers
+    ['Extraction ID', 'Consolidated', 'Username', 'Citation ID', 'Citation Name', 'RefMan',
+     'other_reference', 'PMID', 'Authors', 'Publication Date', 'Key Questions']
+  end
 
   def extract_default_row_columns(extraction)
     [
