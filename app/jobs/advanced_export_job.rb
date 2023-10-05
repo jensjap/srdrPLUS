@@ -483,8 +483,9 @@ class AdvancedExportJob < ApplicationJob
     end
   end
 
-  # TODO: 1 !!!!
-  # measures are not unique in the db. need to deduplicate the table and update its children
+  # TODO: 1
+  # measures are not unique in the db.
+  # need to deduplicate the table and update its children
   def add_results
     q11_measures = []
     q12_measures = []
@@ -494,6 +495,7 @@ class AdvancedExportJob < ApplicationJob
     q4_measures = []
     arms_lookups = {}
     max_no_of_arms = 0
+    records_lookups = {}
 
     extractions_lookups = {}
     @arms_efps.extractions_extraction_forms_projects_sections.each do |eefps|
@@ -531,26 +533,42 @@ class AdvancedExportJob < ApplicationJob
               case rss.result_statistic_section_type_id
               when 1
                 if eefpst1.type1_type_id == 1
-                  # See TODO 1 above method opening
+                  # See TODO 1
                   q11_measures << rssm.measure unless q11_measures.any? { |measure| measure.name == rssm.measure.name }
                 elsif eefpst1.type1_type_id == 2
-                  # See TODO 1 above method opening
+                  # See TODO 1
                   q12_measures << rssm.measure unless q12_measures.any? { |measure| measure.name == rssm.measure.name }
                 end
               when 2
                 if eefpst1.type1_type_id == 1
-                  # See TODO 1 above method opening
+                  # See TODO 1
                   q21_measures << rssm.measure unless q21_measures.any? { |measure| measure.name == rssm.measure.name }
                 elsif eefpst1.type1_type_id == 2
-                  # See TODO 1 above method opening
+                  # See TODO 1
                   q22_measures << rssm.measure unless q22_measures.any? { |measure| measure.name == rssm.measure.name }
                 end
               when 3
-                # See TODO 1 above method opening
+                # See TODO 1
                 q3_measures << rssm.measure unless q3_measures.any? { |measure| measure.name == rssm.measure.name }
               when 4
-                # See TODO 1 above method opening
+                # See TODO 1
                 q4_measures << rssm.measure unless q4_measures.any? { |measure| measure.name == rssm.measure.name }
+              end
+              # "#{extraction.id}-#{eefpst1.type1.id}-#{type1.id}-#{rssm.measure.name}"
+              rssm.tps_arms_rssms.each do |tps_arms_rssm|
+                # TODO: 2 cleanup any tps_arms_rssm that are linked to non-existing eefpst1rc
+                next if tps_arms_rssm.timepoint.nil?
+
+                record = tps_arms_rssm.records.first
+                # See TODO 1
+                records_lookups["#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{tps_arms_rssm.timepoint.timepoint_name.id}-#{tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id}-#{rssm.measure.name}"] =
+                  record.name
+              end
+              rssm.tps_comparisons_rssms.each do |tps_comparisons_rssm|
+              end
+              rssm.comparisons_arms_rssms.each do |comparisons_arms_rssm|
+              end
+              rssm.wacs_bacs_rssms.each do |wacs_bacs_rssm|
               end
             end
 
@@ -603,7 +621,9 @@ class AdvancedExportJob < ApplicationJob
               arms_lookups[extraction.id].each do |type1|
                 row += [type1.name, type1.description]
                 q11_measures.each do |measure|
-                  row << measure.name
+                  # See TODO 1
+                  record_name = records_lookups["#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{eefpst1rc.timepoint_name.id}-#{type1.id}-#{measure.name}"]
+                  row << record_name
                 end
               end
               sheet.add_row(row)
