@@ -603,7 +603,7 @@ class AdvancedExportJob < ApplicationJob
       @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
         extraction = eefps.extraction
         eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-          next if eefpst1.type1_type_id != 1
+          next if eefpst1.type1_type_id != 2
 
           eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
             eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
@@ -620,7 +620,7 @@ class AdvancedExportJob < ApplicationJob
               ]
               arms_lookups[extraction.id].each do |type1|
                 row += [type1.name, type1.description]
-                q11_measures.each do |measure|
+                q12_measures.each do |measure|
                   # See TODO 1
                   record_name = records_lookups["#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{eefpst1rc.timepoint_name.id}-#{type1.id}-#{measure.name}"]
                   row << record_name
