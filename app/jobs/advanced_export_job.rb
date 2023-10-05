@@ -638,6 +638,7 @@ class AdvancedExportJob < ApplicationJob
           end
         end
       end
+      sheet.column_widths(*([12] * sheet.rows.first.cells.length))
     end
   end
 
