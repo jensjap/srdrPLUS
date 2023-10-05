@@ -94,13 +94,15 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
         # In some cases opt_ids is a string with a single number, in other cases
         # we get something of the form "[\"\", \"118479\"]"
         # We clean the string when needed and convert to an Array.
-        cleaned_opt_ids = if opt_ids =~ /"/
-                            opt_ids[2..-3].split('", "') - ['']
+        begin
+          cleaned_opt_ids = JSON.parse(opt_ids)
+          cleaned_opt_ids = [cleaned_opt_ids] unless cleaned_opt_ids.is_a?(Array)
+        rescue JSON::ParserError => e
+          cleaned_opt_ids = []
+          Sentry.capture_exception(exception) if Rails.env.production?
+          debugger if Rails.env.development?
+        end
 
-                          else
-                            opt_ids.scan(/\d+/)
-
-                          end
         cleaned_opt_ids.each do |opt_id|
           # opt_id can be nil here for questions that have not been answered.
           # Protect by casting to zero and check.
@@ -132,8 +134,10 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 
             text_arr << tmp_value + tmp_ff_value
           rescue Exception => e
-            # !!! This can happen when records are created and then the answer options are deleted or question type changes altogether.
-            #    Need to decide what to do here.
+            # !!! This can happen when records are created and then the answer options
+            # !   are deleted or question type changes altogether.
+            Sentry.capture_exception(e) if Rails.env.production?
+            debugger if Rails.env.development?
             next
           end
           # if qrcqrco.present? and not opt_id.to_i.zero?
