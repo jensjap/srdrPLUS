@@ -758,7 +758,7 @@ class AdvancedExportJob < ApplicationJob
     all_measures = measures_lookups[3]
     @package.workbook.add_worksheet(name: 'WAC Comparisons') do |sheet|
       headers = default_headers
-      headers += %w[Outcome Description Type Population Description Digest 'WAC Comparator']
+      headers += ['Outcome', 'Description', 'Type', 'Population', 'Description', 'Digest', 'WAC Comparator']
       max_no_of_arms.times do |max_no_of_arms_index|
         headers += ["Arm Name #{max_no_of_arms_index + 1}", "Arm Description #{max_no_of_arms_index + 1}"]
         all_measures.each do |measure|
