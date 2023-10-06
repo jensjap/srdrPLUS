@@ -526,35 +526,17 @@ class AdvancedExportJob < ApplicationJob
     max_no_of_arms = 0
     records_lookups = {}
 
-    extractions_lookups = {}
     @arms_efps.extractions_extraction_forms_projects_sections.each do |eefps|
       extraction = eefps.extraction
-      extractions_lookups[extraction.id] ||= {
-        outcomes: {},
-        arms: {}
-      }
       eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-        extractions_lookups[extraction.id][:arms][eefpst1.type1.id] = eefpst1
         arms_lookups[extraction.id] ||= []
         arms_lookups[extraction.id] << eefpst1.type1 unless arms_lookups[extraction.id].include?(eefpst1.type1)
       end
     end
     @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
       extraction = eefps.extraction
-      extractions_lookups[extraction.id] ||= {
-        outcomes: {},
-        arms: {}
-      }
       eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-        extractions_lookups[extraction.id][:outcomes][eefpst1.type1.id] ||= {
-          record: eefpst1,
-          populations: {}
-        }
         eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
-          extractions_lookups[extraction.id][:outcomes][eefpst1.type1.id][:populations][eefpst1r.population_name.id] ||= {
-            record: eefpst1r,
-            timepoints: {}
-          }
           eefpst1r.result_statistic_sections.each do |rss|
             next if rss.result_statistic_section_type_id > 4
 
@@ -579,9 +561,10 @@ class AdvancedExportJob < ApplicationJob
               end
               rssm.tps_arms_rssms.each do |tps_arms_rssm|
                 next if (timepoint = tps_arms_rssm.timepoint).nil?
+                next if (eefpst1 = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1).nil?
 
                 record = tps_arms_rssm.records.first
-                records_lookups["tps_arms_rssm-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{timepoint.timepoint_name.id}-#{tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id}-#{rssm.measure.name}"] =
+                records_lookups["tps_arms_rssm-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{timepoint.timepoint_name.id}-#{eefpst1.type1_id}-#{rssm.measure.name}"] =
                   record.name
               end
               rssm.tps_comparisons_rssms.each do |tps_comparisons_rssm|
@@ -590,14 +573,15 @@ class AdvancedExportJob < ApplicationJob
 
                 record = tps_comparisons_rssm.records.first
 
-                records_lookups["tps_comparisons_rssms-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{timepoint.timepoint_name.id}-#{tps_comparisons_rssm.comparison.id}-#{rssm.measure.name}"] =
+                records_lookups["tps_comparisons_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{timepoint.timepoint_name.id}-#{comparison.id}-#{rssm.measure.name}"] =
                   record.name
               end
               rssm.comparisons_arms_rssms.each do |comparisons_arms_rssm|
                 next if (comparison = comparisons_arms_rssm.comparison).nil?
+                next if (eefpst1 = comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1).nil?
 
                 record = comparisons_arms_rssm.records.first
-                records_lookups["comparisons_arms_rssm-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{comparison.id}-#{comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id}-#{rssm.measure.name}"] =
+                records_lookups["comparisons_arms_rssm-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{comparison.id}-#{eefpst1.type1_id}-#{rssm.measure.name}"] =
                   record.name
               end
               rssm.wacs_bacs_rssms.each do |wacs_bacs_rssm|
@@ -605,7 +589,7 @@ class AdvancedExportJob < ApplicationJob
                 next if (bac = wacs_bacs_rssm.bac).nil?
 
                 record = wacs_bacs_rssm.records.first
-                records_lookups["wacs_bacs_rssm-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{wac.id}-#{bac.id}-#{rssm.measure.name}"] =
+                records_lookups["wacs_bacs_rssm-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{wac.id}-#{bac.id}-#{rssm.measure.name}"] =
                   record.name
               end
             end
@@ -618,57 +602,54 @@ class AdvancedExportJob < ApplicationJob
               end
             end
           end
-          eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
-            extractions_lookups[extraction.id][:outcomes][eefpst1.type1.id][:populations][eefpst1r.population_name.id][:timepoints][eefpst1rc.timepoint_name.id] ||= {
-              record: eefpst1rc
-            }
-          end
         end
       end
     end
     max_no_of_arms = arms_lookups.values.max_by(&:length)&.length || 0
-    @package.workbook.add_worksheet(name: 'Continuous - Desc. Statistics') do |sheet|
-      headers = default_headers
-      headers += %w[Outcome Description Type Population Description Digest Timepoint Unit]
-      max_no_of_arms.times do |max_no_of_arms_index|
-        headers += ["Arm Name #{max_no_of_arms_index + 1}", "Arm Description #{max_no_of_arms_index + 1}"]
-        q11_measures.each do |measure|
-          headers << measure.name
+    [['Categorical - Desc. Statistics', 1], ['Continuous - Desc. Statistics', 2]].each do |sheet_name, type1_type_id|
+      @package.workbook.add_worksheet(name: sheet_name) do |sheet|
+        headers = default_headers
+        headers += %w[Outcome Description Type Population Description Digest Timepoint Unit]
+        max_no_of_arms.times do |max_no_of_arms_index|
+          headers += ["Arm Name #{max_no_of_arms_index + 1}", "Arm Description #{max_no_of_arms_index + 1}"]
+          q11_measures.each do |measure|
+            headers << measure.name
+          end
         end
-      end
-      sheet.add_row(headers)
+        sheet.add_row(headers)
 
-      @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
-        extraction = eefps.extraction
-        eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-          next if eefpst1.type1_type_id != 2
+        @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
+          extraction = eefps.extraction
+          eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+            next if eefpst1.type1_type_id != type1_type_id
 
-          eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
-            eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
-              row = extract_default_row_columns(extraction)
-              row += [
-                eefpst1.type1.name,
-                eefpst1.type1.description,
-                print_type1_type(eefpst1.type1_type_id),
-                eefpst1r.population_name.name,
-                eefpst1r.population_name.description,
-                'Digest',
-                eefpst1rc.timepoint_name.name,
-                eefpst1rc.timepoint_name.unit
-              ]
-              arms_lookups[extraction.id].each do |type1|
-                row += [type1.name, type1.description]
-                q12_measures.each do |measure|
-                  record_name = records_lookups["tps_arms_rssm-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{eefpst1rc.timepoint_name.id}-#{type1.id}-#{measure.name}"]
-                  row << record_name
+            eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+              eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+                row = extract_default_row_columns(extraction)
+                row += [
+                  eefpst1.type1.name,
+                  eefpst1.type1.description,
+                  print_type1_type(eefpst1.type1_type_id),
+                  eefpst1r.population_name.name,
+                  eefpst1r.population_name.description,
+                  '#',
+                  eefpst1rc.timepoint_name.name,
+                  eefpst1rc.timepoint_name.unit
+                ]
+                arms_lookups[extraction.id].each do |type1|
+                  row += [type1.name, type1.description]
+                  q12_measures.each do |measure|
+                    record_name = records_lookups["tps_arms_rssm-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{eefpst1rc.timepoint_name.id}-#{type1.id}-#{measure.name}"]
+                    row << record_name
+                  end
                 end
+                sheet.add_row(row)
               end
-              sheet.add_row(row)
             end
           end
         end
+        sheet.column_widths(*([12] * sheet.rows.first.cells.length))
       end
-      sheet.column_widths(*([12] * sheet.rows.first.cells.length))
     end
   end
 
