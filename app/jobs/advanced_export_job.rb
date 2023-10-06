@@ -115,18 +115,56 @@ class AdvancedExportJob < ApplicationJob
                                 ],
                                 tps_comparisons_rssms: [
                                   :records,
-                                  :comparison,
-                                  { timepoint: :timepoint_name }
+                                  {
+                                    timepoint: :timepoint_name,
+                                    comparison: {
+                                      comparate_groups: {
+                                        comparates: {
+                                          comparable_element: {
+                                            comparable: :type1
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
                                 ],
-                                comparisons_arms_rssms: %i[
-                                  records
-                                  comparison
-                                  extractions_extraction_forms_projects_sections_type1
+                                comparisons_arms_rssms: [
+                                  :records,
+                                  :extractions_extraction_forms_projects_sections_type1,
+                                  {
+                                    comparison: {
+                                      comparate_groups: {
+                                        comparates: {
+                                          comparable_element: {
+                                            comparable: :timepoint_name
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
                                 ],
-                                wacs_bacs_rssms: %i[
-                                  records
-                                  wac
-                                  bac
+                                wacs_bacs_rssms: [
+                                  :records,
+                                  {
+                                    wac: {
+                                      comparate_groups: {
+                                        comparates: {
+                                          comparable_element: {
+                                            comparable: :timepoint_name
+                                          }
+                                        }
+                                      }
+                                    },
+                                    bac: {
+                                      comparate_groups: {
+                                        comparates: {
+                                          comparable_element: {
+                                            comparable: :type1
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
                                 ]
                               }
                             ],
