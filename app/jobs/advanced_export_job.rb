@@ -727,8 +727,8 @@ class AdvancedExportJob < ApplicationJob
                 ]
 
                 bac_comparisons[rss.id].each do |comparison|
-                  g1, g2 = comparison.comparate_groups.map do |comparison|
-                    comparison.comparates.map do |comparate|
+                  g1, g2 = comparison.comparate_groups.map do |comparate_group|
+                    comparate_group.comparates.map do |comparate|
                       comparate.comparable_element.comparable.type1.name
                     end.join(', ')
                   end
@@ -787,8 +787,8 @@ class AdvancedExportJob < ApplicationJob
             ]
 
             wac_comparisons[rss.id].each do |comparison|
-              g1, g2 = comparison.comparate_groups.map do |comparison|
-                comparison.comparates.map do |comparate|
+              g1, g2 = comparison.comparate_groups.map do |comparate_group|
+                comparate_group.comparates.map do |comparate|
                   comparate.comparable_element.comparable.timepoint_name.name
                 end.join(', ')
               end
@@ -797,6 +797,76 @@ class AdvancedExportJob < ApplicationJob
                 row += [type1.name, type1.description]
                 all_measures.each do |measure|
                   record_name = records_lookups["comparisons_arms_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{comparison.id}-#{type1.id}-#{measure.name}"]
+                  row << record_name
+                end
+              end
+            end
+
+            sheet.add_row(row)
+          end
+        end
+      end
+      sheet.column_widths(*([12] * sheet.rows.first.cells.length))
+    end
+
+    # Quadrant 4
+    bac_comparisons = comparisons_lookups[2][1].merge(comparisons_lookups[2][2])
+    wac_comparisons = comparisons_lookups[3][1].merge(comparisons_lookups[3][2])
+    max_no_of_comparisons = bac_comparisons.values.max_by(&:length)&.length || 0
+    all_measures = measures_lookups[4]
+    @package.workbook.add_worksheet(name: 'NET Differences') do |sheet|
+      headers = default_headers
+      headers += ['Outcome', 'Description', 'Type', 'Population', 'Description', 'Digest', 'WAC Comparator']
+      max_no_of_comparisons.times do |max_no_of_comparisons_index|
+        headers << "Comparison Name #{max_no_of_comparisons_index + 1}"
+        all_measures.each do |measure|
+          headers << measure.name
+        end
+      end
+      sheet.add_row(headers)
+
+      @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
+        extraction = eefps.extraction
+        eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+          eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+            rss2 = eefpst1r.result_statistic_sections.find do |result_statistic_section|
+              result_statistic_section.result_statistic_section_type_id == 2
+            end
+            rss3 = eefpst1r.result_statistic_sections.find do |result_statistic_section|
+              result_statistic_section.result_statistic_section_type_id == 3
+            end
+            next if rss2.nil? || rss3.nil? || bac_comparisons[rss2.id].blank? || wac_comparisons[rss3.id].blank?
+
+            row = extract_default_row_columns(extraction)
+            row += [
+              eefpst1.type1.name,
+              eefpst1.type1.description,
+              print_type1_type(eefpst1.type1_type_id),
+              eefpst1r.population_name.name,
+              eefpst1r.population_name.description,
+              '#'
+            ]
+
+            wac_comparisons[rss3.id].each do |wac_comparison|
+              g1, g2 = wac_comparison.comparate_groups.map do |comparate_group|
+                comparate_group.comparates.map do |comparate|
+                  comparate.comparable_element.comparable.timepoint_name.name
+                end.join(', ')
+              end
+              row << "[ID: #{wac_comparison.id}] [#{g1}] vs. [#{g2}]"
+              bac_comparisons[rss2.id].each do |bac_comparison|
+                g1, g2 = bac_comparison.comparate_groups.map do |comparate_group|
+                  comparate_group.comparates.map do |comparate|
+                    comparate.comparable_element.comparable.type1.name
+                  end.join(', ')
+                end
+                row << if bac_comparison.is_anova
+                         "[ID: #{bac_comparison.id}] ANOVA Comparison"
+                       else
+                         "[ID: #{bac_comparison.id}] [#{g1}] vs. [#{g2}]"
+                       end
+                all_measures.each do |measure|
+                  record_name = records_lookups["wacs_bacs_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{wac_comparison.id}-#{bac_comparison.id}-#{measure.name}"]
                   row << record_name
                 end
               end
