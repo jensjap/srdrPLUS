@@ -516,14 +516,14 @@ class AdvancedExportJob < ApplicationJob
   # TpsArmsRssm.left_joins(:timepoint).where(extractions_extraction_forms_projects_sections_type1_row_columns: { id: nil }).count
   # remove next if (timepoint = tps_comparisons_rssm.timepoint).nil?
   def add_results
-    q11_measures = []
-    q12_measures = []
-    q21_measures = []
-    q22_measures = []
-    q3_measures = []
-    q4_measures = []
+    measures_lookups = {
+      1 => { 1 => [], 2 => [] },
+      2 => { 1 => [], 2 => [] },
+      3 => [],
+      4 => []
+    }
     arms_lookups = {}
-    max_no_of_arms = 0
+    comparisons_lookups = {}
     records_lookups = {}
 
     @arms_efps.extractions_extraction_forms_projects_sections.each do |eefps|
@@ -536,35 +536,28 @@ class AdvancedExportJob < ApplicationJob
     @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
       extraction = eefps.extraction
       eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+        type1_type_id = eefpst1.type1_type_id
         eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
           eefpst1r.result_statistic_sections.each do |rss|
-            next if rss.result_statistic_section_type_id > 4
+            next if (rsst_id = rss.result_statistic_section_type_id) > 4
 
             rss.result_statistic_sections_measures.each do |rssm|
-              case rss.result_statistic_section_type_id
-              when 1
-                if eefpst1.type1_type_id == 1
-                  q11_measures << rssm.measure unless q11_measures.any? { |measure| measure.name == rssm.measure.name }
-                elsif eefpst1.type1_type_id == 2
-                  q12_measures << rssm.measure unless q12_measures.any? { |measure| measure.name == rssm.measure.name }
-                end
-              when 2
-                if eefpst1.type1_type_id == 1
-                  q21_measures << rssm.measure unless q21_measures.any? { |measure| measure.name == rssm.measure.name }
-                elsif eefpst1.type1_type_id == 2
-                  q22_measures << rssm.measure unless q22_measures.any? { |measure| measure.name == rssm.measure.name }
-                end
-              when 3
-                q3_measures << rssm.measure unless q3_measures.any? { |measure| measure.name == rssm.measure.name }
-              when 4
-                q4_measures << rssm.measure unless q4_measures.any? { |measure| measure.name == rssm.measure.name }
+              case rsst_id
+              when 1, 2
+                measures_lookups[rsst_id][type1_type_id] << rssm.measure unless measures_lookups[rsst_id][type1_type_id].any? do |measure|
+                                                                                  measure.name == rssm.measure.name
+                                                                                end
+              when 3, 4
+                measures_lookups[rsst_id] << rssm.measure unless measures_lookups[rsst_id].any? do |measure|
+                                                                   measure.name == rssm.measure.name
+                                                                 end
               end
               rssm.tps_arms_rssms.each do |tps_arms_rssm|
                 next if (timepoint = tps_arms_rssm.timepoint).nil?
-                next if (eefpst1 = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1).nil?
+                next if (arm_eefpst1 = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1).nil?
 
                 record = tps_arms_rssm.records.first
-                records_lookups["tps_arms_rssm-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{timepoint.timepoint_name.id}-#{eefpst1.type1_id}-#{rssm.measure.name}"] =
+                records_lookups["tps_arms_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{timepoint.timepoint_name.id}-#{arm_eefpst1.type1_id}-#{rssm.measure.name}"] =
                   record.name
               end
               rssm.tps_comparisons_rssms.each do |tps_comparisons_rssm|
@@ -578,10 +571,10 @@ class AdvancedExportJob < ApplicationJob
               end
               rssm.comparisons_arms_rssms.each do |comparisons_arms_rssm|
                 next if (comparison = comparisons_arms_rssm.comparison).nil?
-                next if (eefpst1 = comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1).nil?
+                next if (arm_eefpst1 = comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1).nil?
 
                 record = comparisons_arms_rssm.records.first
-                records_lookups["comparisons_arms_rssm-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{comparison.id}-#{eefpst1.type1_id}-#{rssm.measure.name}"] =
+                records_lookups["comparisons_arms_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{comparison.id}-#{arm_eefpst1.type1_id}-#{rssm.measure.name}"] =
                   record.name
               end
               rssm.wacs_bacs_rssms.each do |wacs_bacs_rssm|
@@ -589,30 +582,34 @@ class AdvancedExportJob < ApplicationJob
                 next if (bac = wacs_bacs_rssm.bac).nil?
 
                 record = wacs_bacs_rssm.records.first
-                records_lookups["wacs_bacs_rssm-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{wac.id}-#{bac.id}-#{rssm.measure.name}"] =
+                records_lookups["wacs_bacs_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{wac.id}-#{bac.id}-#{rssm.measure.name}"] =
                   record.name
               end
             end
 
-            rss.comparisons_result_statistic_sections.each do |comparisons_result_statistic_section|
-              comparisons_result_statistic_section.comparison.comparate_groups.each do |comparate_group|
-                comparate_group.comparates.each do |comparate|
-                  comparate.comparable_element
-                end
+            comparisons_lookups[rsst_id] ||= {}
+            comparisons_lookups[rsst_id][type1_type_id] ||= {}
+            comparisons_lookups[rsst_id][type1_type_id][rss.id] ||= []
+            rss.comparisons_result_statistic_sections.each do |crss|
+              unless comparisons_lookups[rsst_id][type1_type_id][rss.id].include?(crss.comparison)
+                comparisons_lookups[rsst_id][type1_type_id][rss.id] << crss.comparison
               end
             end
           end
         end
       end
     end
-    max_no_of_arms = arms_lookups.values.max_by(&:length)&.length || 0
+
+    # Quadrant 1
     [['Categorical - Desc. Statistics', 1], ['Continuous - Desc. Statistics', 2]].each do |sheet_name, type1_type_id|
+      max_no_of_arms = arms_lookups.values.max_by(&:length)&.length || 0
+      all_measures = measures_lookups[1][type1_type_id]
       @package.workbook.add_worksheet(name: sheet_name) do |sheet|
         headers = default_headers
         headers += %w[Outcome Description Type Population Description Digest Timepoint Unit]
         max_no_of_arms.times do |max_no_of_arms_index|
           headers += ["Arm Name #{max_no_of_arms_index + 1}", "Arm Description #{max_no_of_arms_index + 1}"]
-          q11_measures.each do |measure|
+          all_measures.each do |measure|
             headers << measure.name
           end
         end
@@ -629,7 +626,7 @@ class AdvancedExportJob < ApplicationJob
                 row += [
                   eefpst1.type1.name,
                   eefpst1.type1.description,
-                  print_type1_type(eefpst1.type1_type_id),
+                  print_type1_type(type1_type_id),
                   eefpst1r.population_name.name,
                   eefpst1r.population_name.description,
                   '#',
@@ -638,11 +635,77 @@ class AdvancedExportJob < ApplicationJob
                 ]
                 arms_lookups[extraction.id].each do |type1|
                   row += [type1.name, type1.description]
-                  q12_measures.each do |measure|
-                    record_name = records_lookups["tps_arms_rssm-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{eefpst1rc.timepoint_name.id}-#{type1.id}-#{measure.name}"]
+                  all_measures.each do |measure|
+                    record_name = records_lookups["tps_arms_rssms-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{eefpst1rc.timepoint_name.id}-#{type1.id}-#{measure.name}"]
                     row << record_name
                   end
                 end
+                sheet.add_row(row)
+              end
+            end
+          end
+        end
+        sheet.column_widths(*([12] * sheet.rows.first.cells.length))
+      end
+    end
+
+    # Quadrant 2
+    [['Categorical - BAC Comparisons', 1], ['Continuous - BAC Comparisons', 2]].each do |sheet_name, type1_type_id|
+      bac_comparisons = comparisons_lookups[2][type1_type_id]
+      max_no_of_comparisons = bac_comparisons.values.max_by(&:length)&.length || 0
+      all_measures = measures_lookups[2][type1_type_id]
+      @package.workbook.add_worksheet(name: sheet_name) do |sheet|
+        headers = default_headers
+        headers += %w[Outcome Description Type Population Description Digest Timepoint Unit]
+        max_no_of_comparisons.times do |max_no_of_comparisons_index|
+          headers << "Comparison Name #{max_no_of_comparisons_index + 1}"
+          all_measures.each do |measure|
+            headers << measure.name
+          end
+        end
+        sheet.add_row(headers)
+
+        @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
+          extraction = eefps.extraction
+          eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+            next if eefpst1.type1_type_id != type1_type_id
+
+            eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+              eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+                rss = eefpst1r.result_statistic_sections.find do |result_statistic_section|
+                  result_statistic_section.result_statistic_section_type_id == 2
+                end
+                next if rss.nil? || bac_comparisons[rss.id].blank?
+
+                row = extract_default_row_columns(extraction)
+                row += [
+                  eefpst1.type1.name,
+                  eefpst1.type1.description,
+                  print_type1_type(type1_type_id),
+                  eefpst1r.population_name.name,
+                  eefpst1r.population_name.description,
+                  '#',
+                  eefpst1rc.timepoint_name.name,
+                  eefpst1rc.timepoint_name.unit
+                ]
+
+                bac_comparisons[rss.id].each do |comparison|
+                  g1, g2 = comparison.comparate_groups.map do |c|
+                    c.comparates.map do |cpte|
+                      cpte.comparable_element.comparable.type1.name
+                    end.join(', ')
+                  end
+                  row << if comparison.is_anova
+                           "[ID: #{comparison.id}] ANOVA Comparison"
+                         else
+                           "[ID: #{comparison.id}] [#{g1}] vs. [#{g2}]"
+                         end
+                  all_measures.each do |measure|
+                    record_name = records_lookups["tps_comparisons_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{eefpst1rc.timepoint_name.id}-#{comparison.id}-#{measure.name}"]
+                    row << record_name
+                  end
+                end
+
                 sheet.add_row(row)
               end
             end
