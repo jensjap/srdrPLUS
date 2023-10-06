@@ -509,10 +509,12 @@ class AdvancedExportJob < ApplicationJob
   # TODO: 1
   # measures are not unique in the db.
   # need to deduplicate the table and update its children
+  # remove .any? { |measure| measure.name == rssm.measure.name }
 
   # TODO: 2
   # cleanup any tps_arms_rssm that are linked to non-existing eefpst1rc
   # TpsArmsRssm.left_joins(:timepoint).where(extractions_extraction_forms_projects_sections_type1_row_columns: { id: nil }).count
+  # remove next if (timepoint = tps_comparisons_rssm.timepoint).nil?
   def add_results
     q11_measures = []
     q12_measures = []
@@ -560,45 +562,34 @@ class AdvancedExportJob < ApplicationJob
               case rss.result_statistic_section_type_id
               when 1
                 if eefpst1.type1_type_id == 1
-                  # See TODO 1
                   q11_measures << rssm.measure unless q11_measures.any? { |measure| measure.name == rssm.measure.name }
                 elsif eefpst1.type1_type_id == 2
-                  # See TODO 1
                   q12_measures << rssm.measure unless q12_measures.any? { |measure| measure.name == rssm.measure.name }
                 end
               when 2
                 if eefpst1.type1_type_id == 1
-                  # See TODO 1
                   q21_measures << rssm.measure unless q21_measures.any? { |measure| measure.name == rssm.measure.name }
                 elsif eefpst1.type1_type_id == 2
-                  # See TODO 1
                   q22_measures << rssm.measure unless q22_measures.any? { |measure| measure.name == rssm.measure.name }
                 end
               when 3
-                # See TODO 1
                 q3_measures << rssm.measure unless q3_measures.any? { |measure| measure.name == rssm.measure.name }
               when 4
-                # See TODO 1
                 q4_measures << rssm.measure unless q4_measures.any? { |measure| measure.name == rssm.measure.name }
               end
-              # "#{extraction.id}-#{eefpst1.type1.id}-#{type1.id}-#{rssm.measure.name}"
               rssm.tps_arms_rssms.each do |tps_arms_rssm|
-                # TODO: 2
                 next if (timepoint = tps_arms_rssm.timepoint).nil?
 
                 record = tps_arms_rssm.records.first
-                # See TODO 1
                 records_lookups["tps_arms_rssm-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{timepoint.timepoint_name.id}-#{tps_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id}-#{rssm.measure.name}"] =
                   record.name
               end
               rssm.tps_comparisons_rssms.each do |tps_comparisons_rssm|
-                # TODO: 2
                 next if (timepoint = tps_comparisons_rssm.timepoint).nil?
                 next if (comparison = tps_comparisons_rssm.comparison).nil?
 
                 record = tps_comparisons_rssm.records.first
 
-                # See TODO 1
                 records_lookups["tps_comparisons_rssms-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{timepoint.timepoint_name.id}-#{tps_comparisons_rssm.comparison.id}-#{rssm.measure.name}"] =
                   record.name
               end
@@ -606,7 +597,6 @@ class AdvancedExportJob < ApplicationJob
                 next if (comparison = comparisons_arms_rssm.comparison).nil?
 
                 record = comparisons_arms_rssm.records.first
-                # See TODO 1
                 records_lookups["comparisons_arms_rssm-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{comparison.id}-#{comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1.type1_id}-#{rssm.measure.name}"] =
                   record.name
               end
@@ -615,7 +605,6 @@ class AdvancedExportJob < ApplicationJob
                 next if (bac = wacs_bacs_rssm.bac).nil?
 
                 record = wacs_bacs_rssm.records.first
-                # See TODO 1
                 records_lookups["wacs_bacs_rssm-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{wac.id}-#{bac.id}-#{rssm.measure.name}"] =
                   record.name
               end
@@ -670,7 +659,6 @@ class AdvancedExportJob < ApplicationJob
               arms_lookups[extraction.id].each do |type1|
                 row += [type1.name, type1.description]
                 q12_measures.each do |measure|
-                  # See TODO 1
                   record_name = records_lookups["tps_arms_rssm-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{eefpst1rc.timepoint_name.id}-#{type1.id}-#{measure.name}"]
                   row << record_name
                 end
