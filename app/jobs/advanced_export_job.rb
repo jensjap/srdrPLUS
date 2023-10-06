@@ -625,8 +625,7 @@ class AdvancedExportJob < ApplicationJob
               end
             end
 
-            comparisons_lookups[rsst_id] ||= {}
-            comparisons_lookups[rsst_id][type1_type_id] ||= {}
+            comparisons_lookups[rsst_id] ||= { 1 => {}, 2 => {} }
             comparisons_lookups[rsst_id][type1_type_id][rss.id] ||= []
             rss.comparisons_result_statistic_sections.each do |crss|
               unless comparisons_lookups[rsst_id][type1_type_id][rss.id].include?(crss.comparison)
@@ -728,9 +727,9 @@ class AdvancedExportJob < ApplicationJob
                 ]
 
                 bac_comparisons[rss.id].each do |comparison|
-                  g1, g2 = comparison.comparate_groups.map do |c|
-                    c.comparates.map do |cpte|
-                      cpte.comparable_element.comparable.type1.name
+                  g1, g2 = comparison.comparate_groups.map do |comparison|
+                    comparison.comparates.map do |comparate|
+                      comparate.comparable_element.comparable.type1.name
                     end.join(', ')
                   end
                   row << if comparison.is_anova
@@ -751,6 +750,63 @@ class AdvancedExportJob < ApplicationJob
         end
         sheet.column_widths(*([12] * sheet.rows.first.cells.length))
       end
+    end
+
+    # Quadrant 3
+    wac_comparisons = comparisons_lookups[3][1].merge(comparisons_lookups[3][2])
+    max_no_of_arms = arms_lookups.values.max_by(&:length)&.length || 0
+    all_measures = measures_lookups[3]
+    @package.workbook.add_worksheet(name: 'WAC Comparisons') do |sheet|
+      headers = default_headers
+      headers += %w[Outcome Description Type Population Description Digest 'WAC Comparator']
+      max_no_of_arms.times do |max_no_of_arms_index|
+        headers += ["Arm Name #{max_no_of_arms_index + 1}", "Arm Description #{max_no_of_arms_index + 1}"]
+        all_measures.each do |measure|
+          headers << measure.name
+        end
+      end
+      sheet.add_row(headers)
+
+      @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
+        extraction = eefps.extraction
+        eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+          eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+            rss = eefpst1r.result_statistic_sections.find do |result_statistic_section|
+              result_statistic_section.result_statistic_section_type_id == 3
+            end
+            next if rss.nil? || wac_comparisons[rss.id].blank?
+
+            row = extract_default_row_columns(extraction)
+            row += [
+              eefpst1.type1.name,
+              eefpst1.type1.description,
+              print_type1_type(eefpst1.type1_type_id),
+              eefpst1r.population_name.name,
+              eefpst1r.population_name.description,
+              '#'
+            ]
+
+            wac_comparisons[rss.id].each do |comparison|
+              g1, g2 = comparison.comparate_groups.map do |comparison|
+                comparison.comparates.map do |comparate|
+                  comparate.comparable_element.comparable.timepoint_name.name
+                end.join(', ')
+              end
+              row << "[ID: #{comparison.id}] [#{g1}] vs. [#{g2}]"
+              arms_lookups[extraction.id].each do |type1|
+                row += [type1.name, type1.description]
+                all_measures.each do |measure|
+                  record_name = records_lookups["comparisons_arms_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{comparison.id}-#{type1.id}-#{measure.name}"]
+                  row << record_name
+                end
+              end
+            end
+
+            sheet.add_row(row)
+          end
+        end
+      end
+      sheet.column_widths(*([12] * sheet.rows.first.cells.length))
     end
   end
 
