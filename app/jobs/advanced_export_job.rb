@@ -368,7 +368,7 @@ class AdvancedExportJob < ApplicationJob
       linked_section_name = efps.link_to_type1.try(:section).try(:name)
       extractions = []
       extractions_lookups = {}
-      records_lookups = {}
+      records_lookups = Hash.new([false, ''])
 
       linked_eefpss = efps.extractions_extraction_forms_projects_sections.map { |eefps| [eefps.link_to_type1, eefps] }
       raise 'must be linked, inconsistent data' if linked_eefpss.any?(&:nil?)
@@ -598,7 +598,7 @@ class AdvancedExportJob < ApplicationJob
 
                 record = tps_arms_rssm.records.first
                 records_lookups["tps_arms_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{timepoint.timepoint_name.id}-#{arm_eefpst1.type1_id}-#{rssm.measure.name}"] =
-                  record.name
+                  [true, record.name]
               end
               rssm.tps_comparisons_rssms.each do |tps_comparisons_rssm|
                 next if (timepoint = tps_comparisons_rssm.timepoint).nil?
@@ -607,7 +607,7 @@ class AdvancedExportJob < ApplicationJob
                 record = tps_comparisons_rssm.records.first
 
                 records_lookups["tps_comparisons_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{timepoint.timepoint_name.id}-#{comparison.id}-#{rssm.measure.name}"] =
-                  record.name
+                  [true, record.name]
               end
               rssm.comparisons_arms_rssms.each do |comparisons_arms_rssm|
                 next if (comparison = comparisons_arms_rssm.comparison).nil?
@@ -615,7 +615,7 @@ class AdvancedExportJob < ApplicationJob
 
                 record = comparisons_arms_rssm.records.first
                 records_lookups["comparisons_arms_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{comparison.id}-#{arm_eefpst1.type1_id}-#{rssm.measure.name}"] =
-                  record.name
+                  [true, record.name]
               end
               rssm.wacs_bacs_rssms.each do |wacs_bacs_rssm|
                 next if (wac = wacs_bacs_rssm.wac).nil?
@@ -623,7 +623,7 @@ class AdvancedExportJob < ApplicationJob
 
                 record = wacs_bacs_rssm.records.first
                 records_lookups["wacs_bacs_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{wac.id}-#{bac.id}-#{rssm.measure.name}"] =
-                  record.name
+                  [true, record.name]
               end
             end
 
@@ -674,14 +674,17 @@ class AdvancedExportJob < ApplicationJob
                   eefpst1rc.timepoint_name.name,
                   eefpst1rc.timepoint_name.unit
                 ]
-                arms_lookups[extraction.id].each do |type1|
+                row_style = [nil] * row.length
+                arms_lookups[extraction.id].each_with_index do |type1, type1_index|
                   row += [type1.name, type1.description]
+                  row_style += [@styles[type1_index % 4]] * 2
                   all_measures.each do |measure|
-                    record_name = records_lookups["tps_arms_rssms-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{eefpst1rc.timepoint_name.id}-#{type1.id}-#{measure.name}"]
+                    exists, record_name = records_lookups["tps_arms_rssms-#{extraction.id}-#{eefpst1.type1.id}-#{eefpst1r.population_name.id}-#{eefpst1rc.timepoint_name.id}-#{type1.id}-#{measure.name}"]
                     row << record_name
+                    row_style << (exists ? @styles[type1_index % 4] : nil)
                   end
                 end
-                sheet.add_row(row)
+                sheet.add_row(row, style: row_style)
               end
             end
           end
@@ -733,8 +736,9 @@ class AdvancedExportJob < ApplicationJob
                   eefpst1rc.timepoint_name.name,
                   eefpst1rc.timepoint_name.unit
                 ]
+                row_style = [nil] * row.length
 
-                bac_comparisons[rss.id].each do |comparison|
+                bac_comparisons[rss.id].each_with_index do |comparison, comparison_index|
                   g1, g2 = comparison.comparate_groups.map do |comparate_group|
                     comparate_group.comparates.map do |comparate|
                       comparate.comparable_element.comparable.type1.name
@@ -745,13 +749,15 @@ class AdvancedExportJob < ApplicationJob
                          else
                            "[ID: #{comparison.id}] [#{g1}] vs. [#{g2}]"
                          end
+                  row_style << @styles[comparison_index % 4]
                   all_measures.each do |measure|
-                    record_name = records_lookups["tps_comparisons_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{eefpst1rc.timepoint_name.id}-#{comparison.id}-#{measure.name}"]
+                    exists, record_name = records_lookups["tps_comparisons_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{eefpst1rc.timepoint_name.id}-#{comparison.id}-#{measure.name}"]
                     row << record_name
+                    row_style << (exists ? @styles[comparison_index % 4] : nil)
                   end
                 end
 
-                sheet.add_row(row)
+                sheet.add_row(row, style: row_style)
               end
             end
           end
@@ -806,7 +812,9 @@ class AdvancedExportJob < ApplicationJob
               arms_lookups[extraction.id].each do |type1|
                 row += [type1.name, type1.description]
                 all_measures.each do |measure|
-                  record_name = records_lookups["comparisons_arms_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{comparison.id}-#{type1.id}-#{measure.name}"]
+                  exists, record_name = records_lookups["comparisons_arms_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{comparison.id}-#{type1.id}-#{measure.name}"] || [
+                    false, ''
+                  ]
                   row << record_name
                 end
               end
@@ -878,7 +886,9 @@ class AdvancedExportJob < ApplicationJob
                          "[ID: #{bac_comparison.id}] [#{g1}] vs. [#{g2}]"
                        end
                 all_measures.each do |measure|
-                  record_name = records_lookups["wacs_bacs_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{wac_comparison.id}-#{bac_comparison.id}-#{measure.name}"]
+                  exists, record_name = records_lookups["wacs_bacs_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{wac_comparison.id}-#{bac_comparison.id}-#{measure.name}"] || [
+                    false, ''
+                  ]
                   row << record_name
                 end
               end
