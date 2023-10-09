@@ -801,6 +801,7 @@ class AdvancedExportJob < ApplicationJob
               eefpst1r.population_name.description,
               '#'
             ]
+            row_style = [nil] * (row.length + 1)
 
             wac_comparisons[rss.id].each do |comparison|
               g1, g2 = comparison.comparate_groups.map do |comparate_group|
@@ -809,18 +810,18 @@ class AdvancedExportJob < ApplicationJob
                 end.join(', ')
               end
               row << "[ID: #{comparison.id}] [#{g1}] vs. [#{g2}]"
-              arms_lookups[extraction.id].each do |type1|
+              arms_lookups[extraction.id].each_with_index do |type1, type1_index|
                 row += [type1.name, type1.description]
+                row_style += [@styles[type1_index % 4]] * 2
                 all_measures.each do |measure|
-                  exists, record_name = records_lookups["comparisons_arms_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{comparison.id}-#{type1.id}-#{measure.name}"] || [
-                    false, ''
-                  ]
+                  exists, record_name = records_lookups["comparisons_arms_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{comparison.id}-#{type1.id}-#{measure.name}"]
                   row << record_name
+                  row_style << (exists ? @styles[type1_index % 4] : nil)
                 end
               end
             end
 
-            sheet.add_row(row)
+            sheet.add_row(row, style: row_style)
           end
         end
       end
@@ -857,24 +858,25 @@ class AdvancedExportJob < ApplicationJob
             end
             next if rss2.nil? || rss3.nil? || bac_comparisons[rss2.id].blank? || wac_comparisons[rss3.id].blank?
 
-            row = extract_default_row_columns(extraction)
-            row += [
-              eefpst1.type1.name,
-              eefpst1.type1.description,
-              print_type1_type(eefpst1.type1_type_id),
-              eefpst1r.population_name.name,
-              eefpst1r.population_name.description,
-              '#'
-            ]
-
             wac_comparisons[rss3.id].each do |wac_comparison|
+              row = extract_default_row_columns(extraction)
+              row += [
+                eefpst1.type1.name,
+                eefpst1.type1.description,
+                print_type1_type(eefpst1.type1_type_id),
+                eefpst1r.population_name.name,
+                eefpst1r.population_name.description,
+                '#'
+              ]
+              row_style = [nil] * (row.length + 1)
+
               g1, g2 = wac_comparison.comparate_groups.map do |comparate_group|
                 comparate_group.comparates.map do |comparate|
                   comparate.comparable_element.comparable.timepoint_name.name
                 end.join(', ')
               end
               row << "[ID: #{wac_comparison.id}] [#{g1}] vs. [#{g2}]"
-              bac_comparisons[rss2.id].each do |bac_comparison|
+              bac_comparisons[rss2.id].each_with_index do |bac_comparison, bac_comparison_index|
                 g1, g2 = bac_comparison.comparate_groups.map do |comparate_group|
                   comparate_group.comparates.map do |comparate|
                     comparate.comparable_element.comparable.type1.name
@@ -885,16 +887,16 @@ class AdvancedExportJob < ApplicationJob
                        else
                          "[ID: #{bac_comparison.id}] [#{g1}] vs. [#{g2}]"
                        end
+                row_style << @styles[bac_comparison_index % 4]
                 all_measures.each do |measure|
-                  exists, record_name = records_lookups["wacs_bacs_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{wac_comparison.id}-#{bac_comparison.id}-#{measure.name}"] || [
-                    false, ''
-                  ]
+                  exists, record_name = records_lookups["wacs_bacs_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{wac_comparison.id}-#{bac_comparison.id}-#{measure.name}"]
                   row << record_name
+                  row_style << (exists ? @styles[bac_comparison_index % 4] : nil)
                 end
               end
-            end
 
-            sheet.add_row(row)
+              sheet.add_row(row, style: row_style)
+            end
           end
         end
       end
