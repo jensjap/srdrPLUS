@@ -28,6 +28,7 @@ class AdvancedExportJob < ApplicationJob
                 extractions_extraction_forms_projects_sections_question_row_column_fields: [
                   :records,
                   {
+                    extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options: :question_row_columns_question_row_column_option,
                     question_row_column_field: {
                       question_row_column: [
                         :question_row_column_type,
@@ -74,6 +75,7 @@ class AdvancedExportJob < ApplicationJob
                       extractions_extraction_forms_projects_sections_question_row_column_fields: [
                         :records,
                         {
+                          extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options: :question_row_columns_question_row_column_option,
                           question_row_column_field: {
                             question_row_column: [
                               :question_row_column_type,
@@ -387,7 +389,11 @@ class AdvancedExportJob < ApplicationJob
             qr = qrc.question_row
             q = qr.question
             record = eefpsqrcf.records.first
-            name = if QuestionRowColumnType::OPTION_SELECTION_TYPES.include?(qrct.name)
+            name = if qrct.name == QuestionRowColumnType::SELECT2_MULTI
+                     eefpsqrcf.extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options.map do |eefpsqrcfqrcqrco|
+                       eefpsqrcfqrcqrco.qrcqrco.name
+                     end.join("\x0D\x0A")
+                   elsif QuestionRowColumnType::OPTION_SELECTION_TYPES.include?(qrct.name)
                      begin
                        name = record.name.blank? ? [''] : JSON.parse(record.name)
                        name = [name] unless name.instance_of?(Array)
@@ -478,7 +484,11 @@ class AdvancedExportJob < ApplicationJob
           qr = qrc.question_row
           q = qr.question
           record = eefpsqrcf.records.first
-          name = if QuestionRowColumnType::OPTION_SELECTION_TYPES.include?(qrct.name)
+          name = if qrct.name == QuestionRowColumnType::SELECT2_MULTI
+                   eefpsqrcf.extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options.map do |eefpsqrcfqrcqrco|
+                     eefpsqrcfqrcqrco.qrcqrco.name
+                   end.join("\x0D\x0A")
+                 elsif QuestionRowColumnType::OPTION_SELECTION_TYPES.include?(qrct.name)
                    begin
                      name = record.name.blank? ? [''] : JSON.parse(record.name)
                      name = [name] unless name.instance_of?(Array)
