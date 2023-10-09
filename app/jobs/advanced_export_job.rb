@@ -222,10 +222,10 @@ class AdvancedExportJob < ApplicationJob
   end
 
   def generate_xlsx_and_filename
-    # add_project_information_section
-    # add_type1_sections
-    # add_linked_type2_sections
-    # add_unlinked_type2_sections
+    add_project_information_section
+    add_type1_sections
+    add_linked_type2_sections
+    add_unlinked_type2_sections
     add_results
     'tmp/simple_exports/project_' + @project.id.to_s + '_' + Time.now.strftime('%s') + '_advanced.xlsx'
   end
