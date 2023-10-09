@@ -555,6 +555,10 @@ class AdvancedExportJob < ApplicationJob
   # cleanup any tps_arms_rssm that are linked to non-existing eefpst1rc
   # TpsArmsRssm.left_joins(:timepoint).where(extractions_extraction_forms_projects_sections_type1_row_columns: { id: nil }).count
   # remove next if (timepoint = tps_comparisons_rssm.timepoint).nil?
+
+  # TODO: 3
+  # some outcomes are missing type1_type_id eefpst1.type1_type_id
+
   def add_results
     measures_lookups = {
       1 => { 1 => [], 2 => [] },
@@ -577,7 +581,7 @@ class AdvancedExportJob < ApplicationJob
     @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
       extraction = eefps.extraction
       eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-        type1_type_id = eefpst1.type1_type_id
+        type1_type_id = eefpst1.type1_type_id || 1
         eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
           eefpst1r.result_statistic_sections.each do |rss|
             next if (rsst_id = rss.result_statistic_section_type_id) > 4
@@ -610,34 +614,29 @@ class AdvancedExportJob < ApplicationJob
                 next if (timepoint = tps_arms_rssm.timepoint).nil?
                 next if (arm_eefpst1 = tps_arms_rssm.extractions_extraction_forms_projects_sections_type1).nil?
 
-                record = tps_arms_rssm.records.first
                 records_lookups["tps_arms_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{timepoint.timepoint_name.id}-#{arm_eefpst1.type1_id}-#{rssm.measure.name}"] =
-                  [true, record.name]
+                  [true, tps_arms_rssm.records.first&.name.to_s]
               end
               rssm.tps_comparisons_rssms.each do |tps_comparisons_rssm|
                 next if (timepoint = tps_comparisons_rssm.timepoint).nil?
                 next if (comparison = tps_comparisons_rssm.comparison).nil?
 
-                record = tps_comparisons_rssm.records.first
-
                 records_lookups["tps_comparisons_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{timepoint.timepoint_name.id}-#{comparison.id}-#{rssm.measure.name}"] =
-                  [true, record.name]
+                  [true, tps_comparisons_rssm.records.first&.name.to_s]
               end
               rssm.comparisons_arms_rssms.each do |comparisons_arms_rssm|
                 next if (comparison = comparisons_arms_rssm.comparison).nil?
                 next if (arm_eefpst1 = comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1).nil?
 
-                record = comparisons_arms_rssm.records.first
                 records_lookups["comparisons_arms_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{comparison.id}-#{arm_eefpst1.type1_id}-#{rssm.measure.name}"] =
-                  [true, record.name]
+                  [true, comparisons_arms_rssm.records.first&.name.to_s]
               end
               rssm.wacs_bacs_rssms.each do |wacs_bacs_rssm|
                 next if (wac = wacs_bacs_rssm.wac).nil?
                 next if (bac = wacs_bacs_rssm.bac).nil?
 
-                record = wacs_bacs_rssm.records.first
                 records_lookups["wacs_bacs_rssms-#{extraction.id}-#{eefpst1.type1_id}-#{eefpst1r.population_name.id}-#{wac.id}-#{bac.id}-#{rssm.measure.name}"] =
-                  [true, record.name]
+                  [true, wacs_bacs_rssm.records.first&.name.to_s]
               end
             end
 
@@ -673,7 +672,7 @@ class AdvancedExportJob < ApplicationJob
         @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
           extraction = eefps.extraction
           eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
-            next if eefpst1.type1_type_id != type1_type_id
+            next if eefpst1.type1_type_id != type1_type_id || arms_lookups[extraction.id].blank?
 
             eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
               eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
@@ -804,7 +803,7 @@ class AdvancedExportJob < ApplicationJob
             rss = eefpst1r.result_statistic_sections.find do |result_statistic_section|
               result_statistic_section.result_statistic_section_type_id == 3
             end
-            next if rss.nil? || wac_comparisons[rss.id].blank?
+            next if rss.nil? || wac_comparisons[rss.id].blank? || arms_lookups[extraction.id].blank?
 
             row = extract_default_row_columns(extraction)
             row += [
