@@ -564,6 +564,7 @@ class AdvancedExportJob < ApplicationJob
     }
     arms_lookups = {}
     comparisons_lookups = {}
+    q4_comparisons_no_lookups = {}
     records_lookups = {}
 
     @arms_efps.extractions_extraction_forms_projects_sections.each do |eefps|
@@ -580,6 +581,19 @@ class AdvancedExportJob < ApplicationJob
         eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
           eefpst1r.result_statistic_sections.each do |rss|
             next if (rsst_id = rss.result_statistic_section_type_id) > 4
+
+            q4_comparisons_no_lookups[eefpst1.id] ||= {
+              no_of_bacs: 0,
+              no_of_wacs: 0
+            }
+            if rss.result_statistic_section_type_id == 2
+              q4_comparisons_no_lookups[eefpst1.id][:no_of_bacs] =
+                rss.comparisons_result_statistic_sections.length
+            end
+            if rss.result_statistic_section_type_id == 3
+              q4_comparisons_no_lookups[eefpst1.id][:no_of_wacs] =
+                rss.comparisons_result_statistic_sections.length
+            end
 
             rss.result_statistic_sections_measures.each do |rssm|
               case rsst_id
@@ -831,7 +845,11 @@ class AdvancedExportJob < ApplicationJob
     # Quadrant 4
     bac_comparisons = comparisons_lookups[2][1].merge(comparisons_lookups[2][2])
     wac_comparisons = comparisons_lookups[3][1].merge(comparisons_lookups[3][2])
-    max_no_of_comparisons = bac_comparisons.values.max_by(&:length)&.length || 0
+    max_no_of_comparisons = q4_comparisons_no_lookups.keys.map do |key|
+      no_of_bacs = q4_comparisons_no_lookups[key][:no_of_bacs]
+      no_of_wacs = q4_comparisons_no_lookups[key][:no_of_wacs]
+      no_of_wacs.zero? ? 0 : no_of_bacs
+    end.max
     all_measures = measures_lookups[4]
     @package.workbook.add_worksheet(name: 'NET Differences') do |sheet|
       headers = default_headers
