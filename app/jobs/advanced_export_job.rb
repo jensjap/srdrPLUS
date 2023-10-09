@@ -370,7 +370,7 @@ class AdvancedExportJob < ApplicationJob
       linked_section_name = efps.link_to_type1.try(:section).try(:name)
       extractions = []
       extractions_lookups = {}
-      records_lookups = Hash.new([false, ''])
+      records_lookups = {}
 
       linked_eefpss = efps.extractions_extraction_forms_projects_sections.map { |eefps| [eefps.link_to_type1, eefps] }
       raise 'must be linked, inconsistent data' if linked_eefpss.any?(&:nil?)
@@ -391,7 +391,7 @@ class AdvancedExportJob < ApplicationJob
             record = eefpsqrcf.records.first
             name = if qrct.name == QuestionRowColumnType::SELECT2_MULTI
                      eefpsqrcf.extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options.map do |eefpsqrcfqrcqrco|
-                       eefpsqrcfqrcqrco.qrcqrco.name
+                       eefpsqrcfqrcqrco.question_row_columns_question_row_column_option.name
                      end.join("\x0D\x0A")
                    elsif QuestionRowColumnType::OPTION_SELECTION_TYPES.include?(qrct.name)
                      begin
@@ -452,12 +452,16 @@ class AdvancedExportJob < ApplicationJob
             questions.each do |q|
               q.question_rows.each do |qr|
                 qr.question_row_columns.each do |qrc|
-                  qrc_records = []
-                  qrc.question_row_column_fields.each do |qrcf|
-                    record = records_lookups["#{extraction.id}-#{type1.id}-#{q.id}-#{qr.id}-#{qrc.id}-#{qrcf.id}"]
-                    qrc_records << record
+                  qrct = qrc.question_row_column_type
+                  if qrct.name == QuestionRowColumnType::NUMERIC
+                    qrc_records = []
+                    qrc.question_row_column_fields[0..1].each do |qrcf|
+                      qrc_records << records_lookups["#{extraction.id}-#{type1.id}-#{q.id}-#{qr.id}-#{qrc.id}-#{qrcf.id}"]
+                    end
+                    row << qrc_records.join(' ')
+                  else
+                    row << records_lookups["#{extraction.id}-#{type1.id}-#{q.id}-#{qr.id}-#{qrc.id}-#{qrc.question_row_column_fields.first.id}"]
                   end
-                  row << qrc_records.join("\x0D\x0A")
                 end
               end
             end
@@ -486,7 +490,7 @@ class AdvancedExportJob < ApplicationJob
           record = eefpsqrcf.records.first
           name = if qrct.name == QuestionRowColumnType::SELECT2_MULTI
                    eefpsqrcf.extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options.map do |eefpsqrcfqrcqrco|
-                     eefpsqrcfqrcqrco.qrcqrco.name
+                     eefpsqrcfqrcqrco.question_row_columns_question_row_column_option.name
                    end.join("\x0D\x0A")
                  elsif QuestionRowColumnType::OPTION_SELECTION_TYPES.include?(qrct.name)
                    begin
@@ -541,12 +545,16 @@ class AdvancedExportJob < ApplicationJob
           questions.each do |q|
             q.question_rows.each do |qr|
               qr.question_row_columns.each do |qrc|
-                qrc_records = []
-                qrc.question_row_column_fields.each do |qrcf|
-                  record = records_lookups["#{extraction.id}-#{q.id}-#{qr.id}-#{qrc.id}-#{qrcf.id}"]
-                  qrc_records << record
+                qrct = qrc.question_row_column_type
+                if qrct.name == QuestionRowColumnType::NUMERIC
+                  qrc_records = []
+                  qrc.question_row_column_fields[0..1].each do |qrcf|
+                    qrc_records << records_lookups["#{extraction.id}-#{q.id}-#{qr.id}-#{qrc.id}-#{qrcf.id}"]
+                  end
+                  row << qrc_records.join(' ')
+                else
+                  row << records_lookups["#{extraction.id}-#{q.id}-#{qr.id}-#{qrc.id}-#{qrc.question_row_column_fields.first.id}"]
                 end
-                row << qrc_records.join("\x0D\x0A")
               end
             end
           end
@@ -555,6 +563,10 @@ class AdvancedExportJob < ApplicationJob
       end
     end
   end
+
+  # NOTE: 1
+  # a qrc should have at most 2 qrcfs (in the case of numeric fields to allow for equality) but many qrc have more
+  # eefpsqrcf are directly linked to eefps without any intermediary qrc
 
   # TODO: 1
   # measures are not unique in the db.
@@ -570,6 +582,8 @@ class AdvancedExportJob < ApplicationJob
   # some outcomes are missing type1_type_id eefpst1.type1_type_id
 
   def add_results
+    return unless @arms_efps.present? && @outcomes_efps.present?
+
     measures_lookups = {
       1 => { 1 => [], 2 => [] },
       2 => { 1 => [], 2 => [] },
@@ -579,7 +593,7 @@ class AdvancedExportJob < ApplicationJob
     arms_lookups = {}
     comparisons_lookups = {}
     q4_comparisons_no_lookups = {}
-    records_lookups = {}
+    records_lookups = Hash.new([false, ''])
 
     @arms_efps.extractions_extraction_forms_projects_sections.each do |eefps|
       extraction = eefps.extraction
