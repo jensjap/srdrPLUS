@@ -1,7 +1,8 @@
 class AdvancedExportJob < ApplicationJob
   require 'axlsx'
-
   queue_as :default
+
+  COLORS = %w[44D800 FF8C00 7F00FF FF3800 A7FC00 AF0DD3 FF2B67 FFEB00 00FFCE FF1DCE].freeze
 
   rescue_from(StandardError) do |exception|
     Sentry.capture_exception(exception) if Rails.env.production?
@@ -195,6 +196,7 @@ class AdvancedExportJob < ApplicationJob
         font_name: 'Calibri (Body)', alignment: { wrap_text: true }
       )
       @wrap = @package.workbook.styles.add_style(alignment: { wrap_text: true })
+      @styles = []
 
       @efp = @project.extraction_forms_projects.first
       efpss = @efp.extraction_forms_projects_sections
@@ -644,13 +646,16 @@ class AdvancedExportJob < ApplicationJob
       @package.workbook.add_worksheet(name: sheet_name) do |sheet|
         headers = default_headers
         headers += %w[Outcome Description Type Population Description Digest Timepoint Unit]
+        generate_x_styles(max_no_of_arms)
+        styles = [nil] * headers.length
         max_no_of_arms.times do |max_no_of_arms_index|
           headers += ["Arm Name #{max_no_of_arms_index + 1}", "Arm Description #{max_no_of_arms_index + 1}"]
           all_measures.each do |measure|
             headers << measure.name
           end
         end
-        sheet.add_row(headers)
+        max_no_of_arms.times { |header_index| styles += ([@styles[header_index]] * (all_measures.length + 2)) }
+        sheet.add_row(headers, style: styles)
 
         @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
           extraction = eefps.extraction
@@ -694,13 +699,16 @@ class AdvancedExportJob < ApplicationJob
       @package.workbook.add_worksheet(name: sheet_name) do |sheet|
         headers = default_headers
         headers += %w[Outcome Description Type Population Description Digest Timepoint Unit]
+        generate_x_styles(max_no_of_comparisons)
+        styles = [nil] * headers.length
         max_no_of_comparisons.times do |max_no_of_comparisons_index|
           headers << "Comparison Name #{max_no_of_comparisons_index + 1}"
           all_measures.each do |measure|
             headers << measure.name
           end
         end
-        sheet.add_row(headers)
+        max_no_of_comparisons.times { |header_index| styles += ([@styles[header_index]] * (all_measures.length + 1)) }
+        sheet.add_row(headers, style: styles)
 
         @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
           extraction = eefps.extraction
@@ -759,13 +767,16 @@ class AdvancedExportJob < ApplicationJob
     @package.workbook.add_worksheet(name: 'WAC Comparisons') do |sheet|
       headers = default_headers
       headers += ['Outcome', 'Description', 'Type', 'Population', 'Description', 'Digest', 'WAC Comparator']
+      generate_x_styles(max_no_of_arms)
+      styles = [nil] * headers.length
       max_no_of_arms.times do |max_no_of_arms_index|
         headers += ["Arm Name #{max_no_of_arms_index + 1}", "Arm Description #{max_no_of_arms_index + 1}"]
         all_measures.each do |measure|
           headers << measure.name
         end
       end
-      sheet.add_row(headers)
+      max_no_of_arms.times { |header_index| styles += ([@styles[header_index]] * (all_measures.length + 2)) }
+      sheet.add_row(headers, style: styles)
 
       @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
         extraction = eefps.extraction
@@ -817,13 +828,16 @@ class AdvancedExportJob < ApplicationJob
     @package.workbook.add_worksheet(name: 'NET Differences') do |sheet|
       headers = default_headers
       headers += ['Outcome', 'Description', 'Type', 'Population', 'Description', 'Digest', 'WAC Comparator']
+      generate_x_styles(max_no_of_comparisons)
+      styles = [nil] * headers.length
       max_no_of_comparisons.times do |max_no_of_comparisons_index|
         headers << "Comparison Name #{max_no_of_comparisons_index + 1}"
         all_measures.each do |measure|
           headers << measure.name
         end
       end
-      sheet.add_row(headers)
+      max_no_of_comparisons.times { |header_index| styles += ([@styles[header_index]] * (all_measures.length + 1)) }
+      sheet.add_row(headers, style: styles)
 
       @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
         extraction = eefps.extraction
@@ -911,6 +925,14 @@ class AdvancedExportJob < ApplicationJob
       'Categorical'
     when 2
       'Continuous'
+    end
+  end
+
+  def generate_x_styles(max)
+    index = @styles.length
+    until @styles.length >= max
+      @styles << @package.workbook.styles.add_style(bg_color: COLORS[index % COLORS.length])
+      index += 1
     end
   end
 end
