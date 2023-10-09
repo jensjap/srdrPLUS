@@ -21,7 +21,7 @@ class AdvancedExportJob < ApplicationJob
               link_to_type1: :section,
               questions: {
                 question_rows: {
-                  question_row_columns: :question_row_column_fields
+                  question_row_columns: %i[question_row_column_fields question_row_column_type]
                 }
               },
               extractions_extraction_forms_projects_sections: {
