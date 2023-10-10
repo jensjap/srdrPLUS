@@ -262,6 +262,8 @@ class AdvancedExportJob < ApplicationJob
           ]
         )
       end
+
+      sheet.column_widths(*([12] * 6))
     end
   end
 
