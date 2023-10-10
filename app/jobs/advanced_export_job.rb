@@ -361,6 +361,8 @@ class AdvancedExportJob < ApplicationJob
           end
           sheet.add_row(row)
         end
+
+        sheet.column_widths(*([12] * sheet.rows.first.cells.length))
       end
     end
   end
@@ -488,6 +490,8 @@ class AdvancedExportJob < ApplicationJob
             sheet.add_row(row)
           end
         end
+
+        sheet.column_widths(*([12] * sheet.rows.first.cells.length))
       end
     end
   end
@@ -599,6 +603,8 @@ class AdvancedExportJob < ApplicationJob
           end
           sheet.add_row(row)
         end
+
+        sheet.column_widths(*([12] * sheet.rows.first.cells.length))
       end
     end
   end
