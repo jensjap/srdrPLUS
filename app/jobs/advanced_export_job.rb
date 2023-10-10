@@ -394,6 +394,8 @@ class AdvancedExportJob < ApplicationJob
             qr = qrc.question_row
             q = qr.question
             record = eefpsqrcf.records.first
+            next if record.nil?
+
             name = if qrct.name == QuestionRowColumnType::SELECT2_MULTI
                      eefpsqrcf.extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options.map do |eefpsqrcfqrcqrco|
                        eefpsqrcfqrcqrco.question_row_columns_question_row_column_option.name
@@ -516,6 +518,8 @@ class AdvancedExportJob < ApplicationJob
           qr = qrc.question_row
           q = qr.question
           record = eefpsqrcf.records.first
+          next if record.nil?
+
           name = if qrct.name == QuestionRowColumnType::SELECT2_MULTI
                    eefpsqrcf.extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options.map do |eefpsqrcfqrcqrco|
                      eefpsqrcfqrcqrco.question_row_columns_question_row_column_option.name
