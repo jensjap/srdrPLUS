@@ -436,8 +436,8 @@ class AdvancedExportJob < ApplicationJob
       questions = efps.questions
       @package.workbook.add_worksheet(name: section_name) do |sheet|
         headers = default_headers
-        headers << linked_section_name
-        headers << linked_section_name
+        headers << "#{linked_section_name} Name"
+        headers << "#{linked_section_name} #{linked_section_name == 'Outcomes' ? 'Unit' : 'Description'}"
         row = sheet.add_row(headers)
         questions.each do |q|
           q.question_rows.each do |qr|
