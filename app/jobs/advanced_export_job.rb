@@ -3,6 +3,15 @@ class AdvancedExportJob < ApplicationJob
   queue_as :default
 
   COLORS = %w[FFBABA FFF3BA C5B7F1 B3F6B3].freeze
+  RESERVED_WORKSHEET_NAMES = [
+    'Project Information',
+    'Continuous - Desc. Statistics',
+    'Categorical - Desc. Statistics',
+    'Continuous - BAC Comparisons',
+    'Categorical - BAC Comparisons',
+    'WAC Comparisons',
+    'NET Differences'
+  ].freeze
 
   rescue_from(StandardError) do |exception|
     Sentry.capture_exception(exception) if Rails.env.production?
@@ -315,7 +324,7 @@ class AdvancedExportJob < ApplicationJob
           end
         end
       end
-      @package.workbook.add_worksheet(name: section_name) do |sheet|
+      @package.workbook.add_worksheet(name: ensure_unique_sheet_name(section_name)) do |sheet|
         headers = default_headers
         type1s.each do |type1|
           header_multiplier = section_name == 'Outcomes' ? 3 : 2
@@ -442,7 +451,7 @@ class AdvancedExportJob < ApplicationJob
       end
 
       questions = efps.questions
-      @package.workbook.add_worksheet(name: section_name) do |sheet|
+      @package.workbook.add_worksheet(name: ensure_unique_sheet_name(section_name)) do |sheet|
         headers = default_headers
         headers << "#{linked_section_name} Name"
         headers << "#{linked_section_name} #{linked_section_name == 'Outcomes' ? 'Unit' : 'Description'}"
@@ -565,7 +574,7 @@ class AdvancedExportJob < ApplicationJob
       end
 
       questions = efps.questions
-      @package.workbook.add_worksheet(name: section_name) do |sheet|
+      @package.workbook.add_worksheet(name: ensure_unique_sheet_name(section_name)) do |sheet|
         headers = default_headers
         row = sheet.add_row(headers)
         questions.each do |q|
@@ -1047,5 +1056,17 @@ class AdvancedExportJob < ApplicationJob
       host + Rails.application.routes.url_helpers.rails_blob_path(exported_item.file, only_path: true)
     exported_item.save!
     exported_item
+  end
+
+  def ensure_unique_sheet_name(name)
+    counter = 0
+    candidate_name = name[0..28]
+    while (@package.workbook.worksheets.any? do |worksheet|
+             worksheet.name == candidate_name
+           end) || RESERVED_WORKSHEET_NAMES.include?(candidate_name)
+      counter += 1
+      candidate_name = "#{name}_#{counter}"
+    end
+    candidate_name
   end
 end
