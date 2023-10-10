@@ -21,7 +21,8 @@ class AdvancedExportJob < ApplicationJob
               link_to_type1: :section,
               questions: {
                 question_rows: {
-                  question_row_columns: %i[question_row_column_fields question_row_column_type]
+                  question_row_columns: %i[question_row_column_fields question_row_column_type
+                                           question_row_columns_question_row_column_options]
                 }
               },
               extractions_extraction_forms_projects_sections: {
@@ -435,14 +436,33 @@ class AdvancedExportJob < ApplicationJob
         headers = default_headers
         headers << linked_section_name
         headers << linked_section_name
+        row = sheet.add_row(headers)
         questions.each do |q|
           q.question_rows.each do |qr|
             qr.question_row_columns.each do |qrc|
-              headers << "[Question ID: #{q.id}][Field ID: #{qr.id}x#{qrc.id}]"
+              title  = ''
+              title += q.name
+              title += " - #{qr.name}" if qr.name.present?
+              title += " - #{qrc.name}" if qrc.name.present?
+              qrcoqrcos = qrc.question_row_columns_question_row_column_options.select do |qrcqrco|
+                qrcqrco.question_row_column_option_id == 1
+              end
+              comment  = '.'
+              comment += "\rDescription: \"#{q.description}\"" if q.description.present?
+              if QuestionRowColumnType::OPTION_SELECTION_TYPES.include?(qrc.question_row_column_type.name)
+                comment += "\rAnswer choices:"
+                qrcoqrcos.each do |qrcoqrco|
+                  comment += "\r    [Option ID: #{qrcoqrco.id}] #{qrcoqrco.name}"
+                end
+              end
+
+              cell = row.add_cell("#{title}\r[Question ID: #{q.id}][Field ID: #{qr.id}x#{qrc.id}]")
+              if q.description.present? || qrcoqrcos.present?
+                sheet.add_comment(ref: cell, author: 'Export AI', text: comment, visible: false)
+              end
             end
           end
         end
-        sheet.add_row(headers)
 
         extractions.each do |extraction|
           extractions_lookups[extraction.id][:type1s].each do |type1|
@@ -531,14 +551,33 @@ class AdvancedExportJob < ApplicationJob
       questions = efps.questions
       @package.workbook.add_worksheet(name: section_name) do |sheet|
         headers = default_headers
+        row = sheet.add_row(headers)
         questions.each do |q|
           q.question_rows.each do |qr|
             qr.question_row_columns.each do |qrc|
-              headers << "[Question ID: #{q.id}][Field ID: #{qr.id}x#{qrc.id}]"
+              title  = ''
+              title += q.name
+              title += " - #{qr.name}" if qr.name.present?
+              title += " - #{qrc.name}" if qrc.name.present?
+              qrcoqrcos = qrc.question_row_columns_question_row_column_options.select do |qrcqrco|
+                qrcqrco.question_row_column_option_id == 1
+              end
+              comment  = '.'
+              comment += "\rDescription: \"#{q.description}\"" if q.description.present?
+              if QuestionRowColumnType::OPTION_SELECTION_TYPES.include?(qrc.question_row_column_type.name)
+                comment += "\rAnswer choices:"
+                qrcoqrcos.each do |qrcoqrco|
+                  comment += "\r    [Option ID: #{qrcoqrco.id}] #{qrcoqrco.name}"
+                end
+              end
+
+              cell = row.add_cell("#{title}\r[Question ID: #{q.id}][Field ID: #{qr.id}x#{qrc.id}]")
+              if q.description.present? || qrcoqrcos.present?
+                sheet.add_comment(ref: cell, author: 'Export AI', text: comment, visible: false)
+              end
             end
           end
         end
-        sheet.add_row(headers)
 
         extractions.each do |extraction|
           row = extract_default_row_columns(extraction)
