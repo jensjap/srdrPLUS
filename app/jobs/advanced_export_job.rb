@@ -2,6 +2,7 @@ class AdvancedExportJob < ApplicationJob
   require 'axlsx'
   queue_as :default
 
+  WORKSHEET_NAME_FORBIDDEN_CHARS = '[]*/\?:'.chars.freeze
   COLORS = %w[FFBABA FFF3BA C5B7F1 B3F6B3].freeze
   RESERVED_WORKSHEET_NAMES = [
     'Project Information',
@@ -389,7 +390,9 @@ class AdvancedExportJob < ApplicationJob
       records_lookups = {}
 
       linked_eefpss = efps.extractions_extraction_forms_projects_sections.map { |eefps| [eefps.link_to_type1, eefps] }
-      raise 'must be linked, inconsistent data' if linked_eefpss.any?(&:nil?)
+      raise 'must be linked, inconsistent data' if linked_eefpss.any? do |link_to_type1, eefps|
+                                                     link_to_type1.nil? || eefps.nil?
+                                                   end
 
       linked_eefpss.each do |eefps, child_eefps|
         extraction = eefps.extraction
@@ -433,8 +436,9 @@ class AdvancedExportJob < ApplicationJob
                            "#{qrcqrco.name} [Follow Up: #{eefpsff&.records&.first&.name}]"
                          end
                        end.join("\x0D\x0A")
-                     rescue JSON::ParserError, TypeError
-                       raise 'record value does not match qrct'
+                     rescue JSON::ParserError, TypeError => e
+                       Sentry.capture_exception(e) if Rails.env.production?
+                       ''
                      end
                    else
                      record.name.to_s
@@ -557,8 +561,9 @@ class AdvancedExportJob < ApplicationJob
                          "#{qrcqrco.name} [Follow Up: #{eefpsff&.records&.first&.name}]"
                        end
                      end.join("\x0D\x0A")
-                   rescue JSON::ParserError, TypeError
-                     raise 'record value does not match qrct'
+                   rescue JSON::ParserError, TypeError => e
+                     Sentry.capture_exception(e) if Rails.env.production?
+                     ''
                    end
                  else
                    record.name.to_s
@@ -570,6 +575,8 @@ class AdvancedExportJob < ApplicationJob
       eefpss = efps.extractions_extraction_forms_projects_sections
       eefpss.each do |eefps|
         extraction = eefps.extraction
+        raise 'inconsistent data' if extraction.nil?
+
         extractions << extraction unless extractions.include?(extraction)
       end
 
@@ -634,6 +641,9 @@ class AdvancedExportJob < ApplicationJob
   # a qrc should have at most 2 qrcfs (in the case of numeric fields to allow for equality) but many qrc have more
   # eefpsqrcf are directly linked to eefps without any intermediary qrc
 
+  # NOTE: 2
+  # some section names attempt to inject javascript and contain characters incompatible with excel sheet names
+
   # TODO: 1
   # measures are not unique in the db.
   # need to deduplicate the table and update its children
@@ -646,6 +656,18 @@ class AdvancedExportJob < ApplicationJob
 
   # TODO: 3
   # some outcomes are missing type1_type_id eefpst1.type1_type_id
+
+  # TODO: 4
+  # remove unknown type1_type_id
+
+  # TODO: 5
+  # a significant number of users lack profiles
+
+  # TODO: 5
+  # many corrupted record json that do not match the qrctype
+
+  # TODO: 6
+  # some eefps do not have an extraction
 
   def add_results
     return unless @arms_efps.present? && @outcomes_efps.present?
@@ -677,6 +699,8 @@ class AdvancedExportJob < ApplicationJob
       extraction = eefps.extraction
       eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
         type1_type_id = eefpst1.type1_type_id || 1
+        raise 'inconsistent data' if type1_type_id > 2
+
         eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
           eefpst1r.result_statistic_sections.each do |rss|
             next if (rsst_id = rss.result_statistic_section_type_id) > 4
@@ -913,6 +937,8 @@ class AdvancedExportJob < ApplicationJob
             wac_comparisons[rss.id].each do |comparison|
               g1, g2 = comparison.comparate_groups.map do |comparate_group|
                 comparate_group.comparates.map do |comparate|
+                  raise 'inconsistent data' if comparate.comparable_element.comparable.nil?
+
                   comparate.comparable_element.comparable.timepoint_name.name
                 end.join(', ')
               end
@@ -1026,7 +1052,7 @@ class AdvancedExportJob < ApplicationJob
     [
       extraction.id,
       extraction.consolidated,
-      extraction.user.profile.username,
+      extraction.user&.profile&.username || '*missing profile username*',
       extraction.citations_project.citation.id,
       extraction.citations_project.citation.name,
       extraction.citations_project.citation.refman,
@@ -1064,7 +1090,11 @@ class AdvancedExportJob < ApplicationJob
 
   def ensure_unique_sheet_name(name)
     counter = 0
-    candidate_name = name[0..28]
+    candidate_name = name
+    WORKSHEET_NAME_FORBIDDEN_CHARS.each do |c|
+      candidate_name.delete!(c)
+    end
+    candidate_name = candidate_name[0..28]
     while (@package.workbook.worksheets.any? do |worksheet|
              worksheet.name == candidate_name
            end) || RESERVED_WORKSHEET_NAMES.include?(candidate_name)
