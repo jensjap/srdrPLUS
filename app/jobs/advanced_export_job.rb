@@ -657,7 +657,12 @@ class AdvancedExportJob < ApplicationJob
       4 => []
     }
     arms_lookups = {}
-    comparisons_lookups = {}
+    comparisons_lookups = {
+      1 => { 1 => {}, 2 => {} },
+      2 => { 1 => {}, 2 => {} },
+      3 => { 1 => {}, 2 => {} },
+      4 => { 1 => {}, 2 => {} }
+    }
     q4_comparisons_no_lookups = {}
     records_lookups = Hash.new([false, ''])
 
@@ -730,7 +735,6 @@ class AdvancedExportJob < ApplicationJob
               end
             end
 
-            comparisons_lookups[rsst_id] ||= { 1 => {}, 2 => {} }
             comparisons_lookups[rsst_id][type1_type_id][rss.id] ||= []
             rss.comparisons_result_statistic_sections.each do |crss|
               unless comparisons_lookups[rsst_id][type1_type_id][rss.id].include?(crss.comparison)
@@ -799,7 +803,7 @@ class AdvancedExportJob < ApplicationJob
     # Quadrant 2
     [['Categorical - BAC Comparisons', 1], ['Continuous - BAC Comparisons', 2]].each do |sheet_name, type1_type_id|
       bac_comparisons = comparisons_lookups[2][type1_type_id]
-      max_no_of_comparisons = bac_comparisons.values.max_by(&:length)&.length || 0
+      max_no_of_comparisons = bac_comparisons&.values&.max_by(&:length)&.length || 0
       all_measures = measures_lookups[2][type1_type_id]
       @package.workbook.add_worksheet(name: sheet_name) do |sheet|
         headers = default_headers
@@ -938,7 +942,7 @@ class AdvancedExportJob < ApplicationJob
       no_of_bacs = q4_comparisons_no_lookups[key][:no_of_bacs]
       no_of_wacs = q4_comparisons_no_lookups[key][:no_of_wacs]
       no_of_wacs.zero? ? 0 : no_of_bacs
-    end.max
+    end.max || 0
     all_measures = measures_lookups[4]
     @package.workbook.add_worksheet(name: 'NET Differences') do |sheet|
       headers = default_headers
