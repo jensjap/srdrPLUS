@@ -190,7 +190,6 @@ class AdvancedExportJob < ApplicationJob
           }
         )
         .find(args.second)
-      @export_type = args.third
       @package = package
       @package.use_shared_strings = true
       @package.use_autowidth = true
@@ -220,6 +219,9 @@ class AdvancedExportJob < ApplicationJob
 
       filename = generate_xlsx_and_filename
       raise 'Unable to serialize' unless @package.serialize(filename)
+
+      exported_item = create_email_export(filename)
+      ExportMailer.notify_simple_export_completion(exported_item.id).deliver_later
     end
     nil
   end
@@ -1022,5 +1024,18 @@ class AdvancedExportJob < ApplicationJob
     when 2
       'Continuous'
     end
+  end
+
+  def create_email_export(filename)
+    export_type = ExportType.find_by(name: '.xlsx')
+    exported_item = ExportedItem.create!(project: @project, user_email: @user_email, export_type:)
+    exported_item.file.attach(io: File.open(filename), filename:)
+    raise 'Cannot attach exported file' unless exported_item.file.attached?
+
+    host = Rails.env.development? ? 'http://localhost:3000' : Rails.application.routes.default_url_options[:host]
+    exported_item.external_url =
+      host + Rails.application.routes.url_helpers.rails_blob_path(exported_item.file, only_path: true)
+    exported_item.save!
+    exported_item
   end
 end
