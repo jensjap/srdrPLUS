@@ -433,7 +433,7 @@ class AdvancedExportJob < ApplicationJob
                                candidate_eefpsff.extractions_extraction_forms_projects_sections_type1 == eefpst1 &&
                                  candidate_eefpsff.extractions_extraction_forms_projects_section == child_eefps
                              end
-                           "#{qrcqrco.name} [Follow Up: #{eefpsff&.records&.first&.name}]"
+                           "#{qrcqrco.name}[Follow-up: #{eefpsff&.records&.first&.name}]"
                          end
                        end.join("\x0D\x0A")
                      rescue JSON::ParserError, TypeError => e
@@ -558,7 +558,7 @@ class AdvancedExportJob < ApplicationJob
                              candidate_eefpsff.extractions_extraction_forms_projects_sections_type1.nil? &&
                                candidate_eefpsff.extractions_extraction_forms_projects_section == eefps
                            end
-                         "#{qrcqrco.name} [Follow Up: #{eefpsff&.records&.first&.name}]"
+                         "#{qrcqrco.name}[Follow-up: #{eefpsff&.records&.first&.name}]"
                        end
                      end.join("\x0D\x0A")
                    rescue JSON::ParserError, TypeError => e
