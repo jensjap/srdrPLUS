@@ -696,7 +696,7 @@ class SimpleImportJob < ApplicationJob
                           .match(/(?<=\[Follow-up: )(.*)(?=\])/)
                           .try(:captures)
                           .try(:first)
-                          .try { |captures| captures.split(',').map(&:dup) } || []
+                          .try { |captures| [captures].map(&:dup) } || []
         create_followup_fields(only_ff_answers, eefpsqrcf, qrcqrco) if !only_ff_answers.empty? && qrcqrco.present?
       else
         @errors << {
