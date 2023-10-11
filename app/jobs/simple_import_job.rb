@@ -467,7 +467,11 @@ class SimpleImportJob < ApplicationJob
 
   def find_qrcf_by_qrc_id(qrc_id)
     qrc = QuestionRowColumn.find(qrc_id)
-    qrc.question_row_column_fields.first
+    if qrc.question_row_column_type.name == QuestionRowColumnType::NUMERIC
+      qrc.question_row_column_fields.second
+    else
+      qrc.question_row_column_fields.first
+    end
   end
 
   def find_or_create_eefpsqrcf_by_eefps_and_qrcf(eefps, qrcf)
