@@ -419,7 +419,7 @@ class AdvancedExportJob < ApplicationJob
                        name = record.name.blank? ? [''] : JSON.parse(record.name)
                        name = [name] unless name.instance_of?(Array)
                        name.select(&:present?).map do |string_id|
-                         qrcqrco = qrcqrcos.find { |qrc_qrco| qrc_qrco.id.to_s == string_id }
+                         qrcqrco = qrcqrcos.find { |qrc_qrco| qrc_qrco.id.to_s == string_id.to_s }
                          if qrcqrco.nil?
                            ''
                          elsif qrcqrco.followup_field.nil?
@@ -544,7 +544,7 @@ class AdvancedExportJob < ApplicationJob
                      name = record.name.blank? ? [''] : JSON.parse(record.name)
                      name = [name] unless name.instance_of?(Array)
                      name.select(&:present?).map do |string_id|
-                       qrcqrco = qrcqrcos.find { |qrc_qrco| qrc_qrco.id.to_s == string_id }
+                       qrcqrco = qrcqrcos.find { |qrc_qrco| qrc_qrco.id.to_s == string_id.to_s.to_s }
                        if qrcqrco.nil?
                          ''
                        elsif qrcqrco.followup_field.nil?
