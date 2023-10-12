@@ -648,54 +648,6 @@
     categorical: false
     continuous: available
 -
-  name: "# of participants recruited"
-  provider_names: ~
-  result_statistic_section_types:
-    - "Diagnostic Test Descriptive Statistics"
-  type1_types:
-    categorical: default
-    continuous: default
--
-  name: "# not receiving Index test"
-  provider_names: ~
-  result_statistic_section_types:
-    - "Diagnostic Test Descriptive Statistics"
-  type1_types:
-    categorical: default
-    continuous: default
--
-  name: "# not receiving Reference test"
-  provider_names: ~
-  result_statistic_section_types:
-    - "Diagnostic Test Descriptive Statistics"
-  type1_types:
-    categorical: default
-    continuous: default
--
-  name: "% of participants recruited"
-  provider_names: ~
-  result_statistic_section_types:
-    - "Diagnostic Test Descriptive Statistics"
-  type1_types:
-    categorical: default
-    continuous: default
--
-  name: "% not receiving Index test"
-  provider_names: ~
-  result_statistic_section_types:
-    - "Diagnostic Test Descriptive Statistics"
-  type1_types:
-    categorical: default
-    continuous: default
--
-  name: "% not receiving Reference test"
-  provider_names: ~
-  result_statistic_section_types:
-    - "Diagnostic Test Descriptive Statistics"
-  type1_types:
-    categorical: default
-    continuous: default
--
   name: "p value"
   provider_names: ~
   result_statistic_section_types:
@@ -709,263 +661,301 @@
   result_statistic_section_types:
     - "Diagnostic Test Descriptive Statistics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "# not receiving index test"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Descriptive Statistics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "# not receiving reference test"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Descriptive Statistics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "% of participants recruited"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Descriptive Statistics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "% not receiving index test"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Descriptive Statistics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "% not receiving reference test"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Descriptive Statistics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Sensitivity (%)"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test -placeholder for AUC and Q*-"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Sensitivity 95% LCI"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test -placeholder for AUC and Q*-"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Sensitivity 95% HCI"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test -placeholder for AUC and Q*-"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Specificity (%)"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test -placeholder for AUC and Q*-"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Specificity 95% LCI"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test -placeholder for AUC and Q*-"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Specificity 95% HCI"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test -placeholder for AUC and Q*-"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "ROC - AUC"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test -placeholder for AUC and Q*-"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "ROC (AUC) +/- SD"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test -placeholder for AUC and Q*-"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "ROC (AUC) P-Value "
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test -placeholder for AUC and Q*-"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Test (+), Disease (+)"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test 2x2 Table"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Test (+), Disease (-)"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test 2x2 Table"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Test (+), Total"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test 2x2 Table"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Test (-), Disease (+)"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test 2x2 Table"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Test (-), Disease (-)"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test 2x2 Table"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Test (-), Total"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test 2x2 Table"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Total, Disease (+)"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test 2x2 Table"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Total, Disease (-)"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test 2x2 Table"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Total, Total"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test 2x2 Table"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Hazard Ratio (HR)"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Test Accuracy Metrics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Risk Ratio (RR)"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Test Accuracy Metrics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Odds Ratio (OR)"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Test Accuracy Metrics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Univariate (Y/N)"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Test Accuracy Metrics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "95% LCI"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Test Accuracy Metrics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "95% HCI"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Test Accuracy Metrics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "P-Value"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Test Accuracy Metrics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Adj. Hazard Ratio (HR)"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Test Accuracy Metrics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Adj. Risk Ratio (RR)"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Test Accuracy Metrics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Adj. Odds Ratio (OR)"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Test Accuracy Metrics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Adj. 95% LCI"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Test Accuracy Metrics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Adj. 95% HCI"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Test Accuracy Metrics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "Adj. P-Value"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Test Accuracy Metrics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
 -
   name: "If multivariate model, list covariates in model"
   provider_names: ~
   result_statistic_section_types:
     - "Diagnostic Test Test Accuracy Metrics"
   type1_types:
-    nil: default
+    categorical: default
+    continuous: default
