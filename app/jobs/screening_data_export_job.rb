@@ -1,5 +1,7 @@
 class ScreeningDataExportJob < ApplicationJob
   def perform(user_email, project_id)
+    export_user = User.find_by(email: user_email)
+    @desired_time_zone = export_user.profile.time_zone
     exported_item = ExportedItem.create!(project_id:, user_email:, export_type: ExportType.find_by(name: '.xlsx'))
     filename = 'tmp/screening_data_export_project_' + project_id.to_s + '_' + Time.now.strftime('%s') + '.xlsx'
     p = build_xlsx(project_id)
@@ -28,20 +30,20 @@ class ScreeningDataExportJob < ApplicationJob
     %w[AS FS].each do |screening_type|
       wb.add_worksheet(name: "#{screening_type} data by citations") do |sheet|
         headers = [
-          'srdr citation id',
-          'accession no',
-          'authors',
-          'title',
-          'pub date',
-          'abstract screening status',
-          'fulltext screening status',
-          'extraction status',
-          'sub status',
-          'publication',
-          'doi',
-          'keywords',
-          'consensus label',
-          'consensus user name'
+          'Srdr Citation ID',
+          'Accession No',
+          'Authors',
+          'Title',
+          'Pub Date',
+          'Abstract Screening Status',
+          'Fulltext Screening Status',
+          'Extraction Status',
+          'Sub Status',
+          'Publication',
+          'Doi',
+          'Keywords',
+          'Date First Screened',
+          'Consensus Label'
         ]
         users.each do |user|
           headers << "\"#{user[1]}\" Label"
@@ -71,7 +73,8 @@ class ScreeningDataExportJob < ApplicationJob
             notes: [],
             tags: [],
             consensus_label: nil,
-            consensus_user: nil
+            consensus_user: nil,
+            sr_label_dates: []
           }
           if sr.privileged
             if !sr.label.blank?
@@ -83,6 +86,7 @@ class ScreeningDataExportJob < ApplicationJob
             mh[sr.citations_project_id][:tags] += sr.tags.map(&:name)
             mh[sr.citations_project_id][:user_reasons][sr.user_id] = sr.reasons.map(&:name).join('; ')
             mh[sr.citations_project_id][:notes] << "#{sr.user.handle}: \"#{sr.notes}\"" unless sr.notes.blank?
+            mh[sr.citations_project_id][:sr_label_dates] << sr.created_at
           end
         end
 
@@ -102,8 +106,9 @@ class ScreeningDataExportJob < ApplicationJob
             cp['keywords']
           ]
           cp_id = cp.id.to_i
+          first_screened_date = mh.dig(cp_id, :sr_label_dates)&.min
+          columns << (first_screened_date.present? ? first_screened_date.in_time_zone(@desired_time_zone) : '')
           columns << (mh.dig(cp_id, :consensus_label) || '')
-          columns << (mh.dig(cp_id, :consensus_user) || '')
           users.each do |user|
             columns << (mh.dig(cp_id, :user_labels, user[0]) || '')
           end
