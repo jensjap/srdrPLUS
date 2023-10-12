@@ -634,6 +634,13 @@ class SimpleImportJob < ApplicationJob
                    else
                      find_or_create_eefpsqrcf_by_eefps_and_qrcf(eefps, qrcf2)
                    end
+      if answer1.present?
+        qrcf
+          .question_row_column
+          .question_row_columns_question_row_column_options
+          .where(question_row_column_option_id: 4)
+          .update(name: '1')
+      end
       update_record_type_1_2(eefpsqrcf, answer1)
       update_record_type_1_2(eefpsqrcf2, answer2)
     when 5 # checkbox
