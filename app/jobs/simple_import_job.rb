@@ -467,11 +467,7 @@ class SimpleImportJob < ApplicationJob
 
   def find_qrcf_by_qrc_id(qrc_id)
     qrc = QuestionRowColumn.find(qrc_id)
-    if qrc.question_row_column_type.name == QuestionRowColumnType::NUMERIC
-      qrc.question_row_column_fields.second
-    else
-      qrc.question_row_column_fields.first
-    end
+    [qrc.question_row_column_fields.first, qrc.question_row_column_fields.second]
   end
 
   def find_or_create_eefpsqrcf_by_eefps_and_qrcf(eefps, qrcf)
@@ -620,7 +616,7 @@ class SimpleImportJob < ApplicationJob
 
   def update_type2_section_record(extraction_id, sheet_name, qrc_id, answer, arms_by_rows, arm_name, arm_description)
     eefps = find_eefps_by_sheet_name_and_extraction_id(extraction_id, sheet_name)
-    qrcf = find_qrcf_by_qrc_id(qrc_id)
+    qrcf, qrcf2 = find_qrcf_by_qrc_id(qrc_id)
     eefpsqrcf = if arms_by_rows
                   find_or_create_eefpsqrcf_by_eefps_and_qrcf_and_arm_name(eefps, qrcf, arm_name, arm_description)
                 else
@@ -628,8 +624,18 @@ class SimpleImportJob < ApplicationJob
                 end
 
     case eefpsqrcf.question_row_column_field.question_row_column.question_row_column_type_id
-    when 1, 2 # text, numeric
+    when 1 # text
       update_record_type_1_2(eefpsqrcf, answer)
+    when 2 # numeric
+      answer1 = answer.match(/(^[~<>≤≥]?)/).captures.first
+      answer2 = answer.match(/(?:[~<>≤≥]?)(-?\d*\.?\d*)/).captures.first
+      eefpsqrcf2 = if arms_by_rows
+                     find_or_create_eefpsqrcf_by_eefps_and_qrcf_and_arm_name(eefps, qrcf2, arm_name, arm_description)
+                   else
+                     find_or_create_eefpsqrcf_by_eefps_and_qrcf(eefps, qrcf2)
+                   end
+      update_record_type_1_2(eefpsqrcf, answer1)
+      update_record_type_1_2(eefpsqrcf2, answer2)
     when 5 # checkbox
       update_record_type_5(eefpsqrcf, answer)
     when 6, 7, 8 # dropdown, radio, select2_single
