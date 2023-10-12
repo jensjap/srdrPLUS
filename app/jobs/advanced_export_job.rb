@@ -699,7 +699,12 @@ class AdvancedExportJob < ApplicationJob
       extraction = eefps.extraction
       eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
         type1_type_id = eefpst1.type1_type_id || 1
-        raise 'inconsistent data' if type1_type_id > 2
+        begin
+          raise 'inconsistent data' if type1_type_id > 2
+        rescue JSON::ParserError, TypeError => e
+          Sentry.capture_exception(e) if Rails.env.production?
+          next
+        end
 
         eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
           eefpst1r.result_statistic_sections.each do |rss|
