@@ -112,6 +112,9 @@ Rails.application.routes.draw do
 
     namespace :v3 do
       resources :projects, shallow: true, only: [:show] do
+        member do
+          get 'process_and_email'
+        end
         resources :citations, only: %i[index show]
         resources :key_questions, only: %i[index show]
         resources :extractions, only: %i[index show]
