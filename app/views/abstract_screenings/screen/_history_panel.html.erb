@@ -40,7 +40,10 @@
                   class="text-lg font-medium text-gray-900"
                   id="slide-over-title"
                 >
-                  Your Labels (<span
+                  <span
+                    x-text="resolutionMode ? 'Resolved Conflicts' : 'Your Labels'"
+                  ></span>
+                  (<span
                     x-text="cps.filter(cp => cp.label !== null).filter(cp => cp.privileged == false).length"
                   ></span
                   >)
@@ -104,7 +107,7 @@
                         class="w-1/12 overflow-hidden whitespace-nowrap overflow-ellipsis"
                         x-text="cp.authors"
                       ></div>
-                      <div x-text="cp.label"></div>
+                      <div x-text="cp.label ? cp.label : 'Unlabeled'"></div>
                     </div>
                   </template>
                 </div>

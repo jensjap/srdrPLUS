@@ -26,15 +26,13 @@ class AbstractScreeningResultsController < ApplicationController
                                      .includes(:user, citations_project: :citation)
                                      .find(params[:id])
         authorize(@abstract_screening_result)
-        if params[:resolution_mode] == 'true'
-          @screened_cps = AbstractScreeningResult
-                          .includes(citations_project: :citation)
-                          .where(abstract_screening: @abstract_screening_result.abstract_screening, privileged: true)
-        else
-          @screened_cps = AbstractScreeningResult
-                          .includes(citations_project: :citation)
-                          .where(user: current_user, abstract_screening: @abstract_screening_result.abstract_screening, privileged: false)
-        end
+        @screened_cps = AbstractScreeningResult
+                        .includes(citations_project: :citation)
+                        .where(
+                          user: current_user,
+                          abstract_screening: @abstract_screening_result.abstract_screening,
+                          privileged: params[:resolution_mode] == 'true'
+                        )
         prepare_json_data
       end
     end

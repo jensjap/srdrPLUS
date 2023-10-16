@@ -39,7 +39,10 @@
       @click="historyPanel = !historyPanel"
       class="absolute top-0 left-0 bg-gray-100 p-1 rounded-full z-[9] text-xs flex flex-row items-center cursor-pointer"
     >
-      <span style="font-size: medium">Your Labels</span>
+      <span
+        style="font-size: medium"
+        x-text="resolutionMode ? 'Resolved Conflicts' : 'Your Labels'"
+      ></span>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
