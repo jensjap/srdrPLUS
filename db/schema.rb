@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_20_022520) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_14_000000) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1037,7 +1037,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_022520) do
     t.index ["ml_model_id"], name: "fk_rails_6c1d59597a"
   end
 
-  create_table "model_performances", charset: "utf8", force: :cascade do |t|
+  create_table "model_performances", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "ml_model_id"
     t.string "label"
     t.float "score"
@@ -1183,7 +1183,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_022520) do
     t.boolean "auto_train", default: false
   end
 
-  create_table "projects_reasons", charset: "utf8", force: :cascade do |t|
+  create_table "projects_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "project_id", null: false
     t.bigint "reason_id", null: false
     t.string "screening_type", null: false
@@ -1197,7 +1197,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_022520) do
     t.index ["reason_id"], name: "index_projects_reasons_on_reason_id"
   end
 
-  create_table "projects_tags", charset: "utf8", force: :cascade do |t|
+  create_table "projects_tags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "project_id", null: false
     t.bigint "tag_id", null: false
     t.string "screening_type", null: false
@@ -1375,7 +1375,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_022520) do
   end
 
   create_table "reasons", id: :integer, charset: "utf8", force: :cascade do |t|
-    t.string "name", limit: 1000
+    t.string "name", limit: 1000, collation: "utf8mb4_bin"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "label_type_id"
@@ -1946,7 +1946,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_022520) do
   end
 
   create_table "tags", id: :integer, charset: "utf8", force: :cascade do |t|
-    t.string "name"
+    t.string "name", collation: "utf8mb4_bin"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
   end
@@ -2014,7 +2014,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_022520) do
     t.index ["timepoint_id"], name: "index_tps_comparisons_rssms_on_timepoint_id"
   end
 
-  create_table "training_data_infos", charset: "utf8", force: :cascade do |t|
+  create_table "training_data_infos", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "category"
     t.integer "count"
     t.bigint "ml_model_id", null: false

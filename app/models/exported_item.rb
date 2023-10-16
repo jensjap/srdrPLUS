@@ -16,4 +16,8 @@ class ExportedItem < ApplicationRecord
   belongs_to :project
 
   has_one_attached :file
+
+  def download_url
+    Rails.application.routes.url_helpers.rails_blob_url(self.file, host: Rails.application.routes.default_url_options[:host])
+  end
 end
