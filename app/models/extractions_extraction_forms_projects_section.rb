@@ -98,9 +98,9 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
           cleaned_opt_ids = JSON.parse(opt_ids)
           cleaned_opt_ids = [cleaned_opt_ids] unless cleaned_opt_ids.is_a?(Array)
         rescue JSON::ParserError => e
+          Sentry.capture_exception(e) if Rails.env.production?
+          Rails.logger.info(e)
           cleaned_opt_ids = []
-          Sentry.capture_exception(exception) if Rails.env.production?
-          debugger if Rails.env.development?
         end
 
         cleaned_opt_ids.each do |opt_id|
@@ -108,7 +108,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
           # Protect by casting to zero and check.
 
           qrcqrco = qrc.question_row_columns_question_row_column_options.find_by(id: opt_id.to_i)
-          next unless qrcqrco.present? and !opt_id.to_i.zero?
+          next unless qrcqrco.present? && !opt_id.to_i.zero?
 
           begin
             tmp_value = ''
@@ -137,11 +137,10 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
             # !!! This can happen when records are created and then the answer options
             # !   are deleted or question type changes altogether.
             Sentry.capture_exception(e) if Rails.env.production?
-            debugger if Rails.env.development?
+            Rails.logger.info(e)
             next
           end
-          # if qrcqrco.present? and not opt_id.to_i.zero?
-        end # (opt_ids[2..-3].split('", "')-[""]).each do |opt_id|
+        end # cleaned_opt_ids.each do |opt_id|
       end # Record.where(recordable: recordables).pluck(:name).each do |opt_ids|
       text_arr.join("\x0D\x0A")
 
@@ -155,7 +154,10 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
         tmp_value = qrc.question_row_columns_question_row_column_options.find(opt_id.to_i).name unless opt_id.to_i.zero?
       rescue Exception => e
         # !!! This can happen when records are created and then the answer options are deleted or question type changes altogether.
-        #    Need to decide what to do here.
+        # !   Need to decide what to do here.
+        Sentry.capture_exception(e) if Rails.env.production?
+        Rails.logger.info(e)
+        tmp_value = ''
       end
 
       # Check for followup_field and append if present.
@@ -176,11 +178,15 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption
         .includes(:question_row_columns_question_row_column_option)
         .where(extractions_extraction_forms_projects_sections_question_row_column_field: recordables).each do |eefpsqrcfqrcqrco|
-        text_arr << eefpsqrcfqrcqrco.question_row_columns_question_row_column_option.name
-      rescue Exception => e
-        # !!! This can happen when records are created and then the answer options are deleted or question type changes altogether.
-        #    Need to decide what to do here.
-        next
+        begin
+          text_arr << eefpsqrcfqrcqrco.question_row_columns_question_row_column_option.name
+        rescue Exception => e
+          # !!! This can happen when records are created and then the answer options are deleted or question type changes altogether.
+          # !   Need to decide what to do here.
+          Sentry.capture_exception(e) if Rails.env.production?
+          Rails.logger.info(e)
+          next
+        end
       end
       text_arr.join("\x0D\x0A")
 

@@ -54,6 +54,10 @@ class Profile < ApplicationRecord
     super
   end
 
+  def converted_time(utc_time)
+    utc_time.in_time_zone(time_zone) if utc_time.present?
+  end
+
   private
 
   def validate_username
