@@ -28,7 +28,7 @@ class AbstractScreeningResult < ApplicationRecord
   delegate :project, to: :abstract_screening
   delegate :citation, to: :citations_project
 
-  after_save :evaluate_screening_qualifications
+  after_commit :evaluate_screening_qualifications
 
   def reasons_object
     AbstractScreeningResultsReason
@@ -48,7 +48,10 @@ class AbstractScreeningResult < ApplicationRecord
   def evaluate_screening_qualifications
     return if privileged && label.nil?
 
-    if privileged || (citations_project
+    if destroyed?
+      citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::AS_ACCEPTED).destroy_all
+      citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::AS_REJECTED).destroy_all
+    elsif privileged || (citations_project
        .screening_qualifications
        .where.not(user: nil)
        .where("qualification_type LIKE 'as-%'")
@@ -71,11 +74,19 @@ class AbstractScreeningResult < ApplicationRecord
     return true if abstract_screening.single_screening?
 
     if abstract_screening.exclusive_users
-      relevant_asrs = AbstractScreeningResult.where(abstract_screening:, citations_project:,
-                                                    user: abstract_screening.users)
+      relevant_asrs = AbstractScreeningResult.where(
+        privileged: false,
+        abstract_screening:,
+        citations_project:,
+        user: abstract_screening.users
+      )
       required_asrs_pilot_count = abstract_screening.abstract_screenings_users.count
     else
-      relevant_asrs = AbstractScreeningResult.where(abstract_screening:, citations_project:)
+      relevant_asrs = AbstractScreeningResult.where(
+        privileged: false,
+        abstract_screening:,
+        citations_project:
+      )
       required_asrs_pilot_count = abstract_screening.project.projects_users.count
     end
     return false unless relevant_asrs.all? { |asr| asr.label == 1 } || relevant_asrs.all? { |asr| asr.label == -1 }

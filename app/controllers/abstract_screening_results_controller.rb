@@ -8,11 +8,16 @@ class AbstractScreeningResultsController < ApplicationController
                                      .includes(citations_project: :citation)
                                      .find(params[:id])
         authorize(@abstract_screening_result)
+
         case params[:submissionType]
         when 'label'
           @abstract_screening_result.update(asr_params)
         when 'notes'
           @abstract_screening_result.update_column(:notes, params[:asr][:notes])
+        end
+
+        if @abstract_screening_result.privileged && @abstract_screening_result.user != current_user
+          @abstract_screening_result.update(user: current_user)
         end
         render json: @abstract_screening_result
       end
