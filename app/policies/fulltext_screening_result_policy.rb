@@ -4,7 +4,7 @@ class FulltextScreeningResultPolicy < ApplicationPolicy
   end
 
   def update?
-    @record.user == @user
+    @record.user || (record.privileged && project_consolidator?)
   end
 
   def create?
