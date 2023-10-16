@@ -334,6 +334,7 @@
             :class="citation_pool && 'bg-srdr-primary !text-white'"
             >Citations</a
           >
+          <% projects_user = ProjectsUser.find_by(project_id: project.id, user_id: current_user.id) %>
           <% if BaseScreeningService.screening_user?(current_user) %>
           <a
             href="<%= project_citation_lifecycle_management_path(project) %>"
@@ -348,19 +349,37 @@
             :class="screening_forms && 'bg-srdr-primary !text-white'"
             >Screening Form Builder</a
           >
-          <a
-            href="<%= project_abstract_screenings_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="abstract_screening && 'bg-srdr-primary !text-white'"
+          <% if projects_user&.project_leader? || projects_user&.project_consolidator? %>
+            <a
+              href="<%= project_abstract_screenings_path(project) %>"
+              class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+              :class="abstract_screening && 'bg-srdr-primary !text-white'"
             >Abstract Screening</a
-          >
-          <% if BaseScreeningService.screening_user?(current_user) %>
-          <a
-            href="<%= project_fulltext_screenings_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="fulltext_screening && 'bg-srdr-primary !text-white'"
-            >Full-Text Screening</a
-          >
+            >
+            <% if BaseScreeningService.screening_user?(current_user) %>
+              <a
+                href="<%= project_fulltext_screenings_path(project) %>"
+                class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+                :class="fulltext_screening && 'bg-srdr-primary !text-white'"
+              >Full-Text Screening</a
+              >
+            <% end %>
+          <% end %>
+          <% if projects_user&.project_contributor? && !projects_user&.project_leader? && !projects_user&.project_consolidator? %>
+            <a
+              href="<%= work_selection_project_abstract_screenings_path(project) %>"
+              class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+              :class="abstract_screening && 'bg-srdr-primary !text-white'"
+            >Abstract Screening</a
+            >
+            <% if BaseScreeningService.screening_user?(current_user) %>
+              <a
+                href="<%= work_selection_project_fulltext_screenings_path(project) %>"
+                class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
+                :class="fulltext_screening && 'bg-srdr-primary !text-white'"
+              >Full-Text Screening</a
+              >
+            <% end %>
           <% end %>
           <a
             href="<%= build_extraction_forms_project_path(project.extraction_forms_projects.first, 'panel-tab': project.extraction_forms_projects.first.default_section_id) %>"
