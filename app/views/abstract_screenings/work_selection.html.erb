@@ -5,7 +5,7 @@
     <% next_non_pilot_screening = AbstractScreeningService.find_next_non_pilot_screening(@project, current_user) %>
 
     <% if next_pilot_screening %>
-      <%= link_to("Screen Pilot Round (#{next_pilot_screening.screening_type})",
+      <%= link_to("Screen Pilot Round",
           abstract_screening_screen_path(next_pilot_screening),
           class: "w-full items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 my-1 text-center text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white")
       %>
@@ -16,7 +16,7 @@
     <% end %>
 
     <% if next_non_pilot_screening %>
-      <%= link_to("Screen Non-Pilot Round (#{next_non_pilot_screening.screening_type})",
+      <%= link_to("Screen Next Task<br>(#{next_non_pilot_screening.screening_type.capitalize})".html_safe,
           abstract_screening_screen_path(next_non_pilot_screening),
           class: "w-full items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 my-1 text-center text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white")
       %>
