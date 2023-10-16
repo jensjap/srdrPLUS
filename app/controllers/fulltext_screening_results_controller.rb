@@ -26,8 +26,11 @@ class FulltextScreeningResultsController < ApplicationController
         authorize(@fulltext_screening_result)
         @screened_cps = FulltextScreeningResult
                         .includes(citations_project: :citation)
-                        .where(user: current_user,
-                               fulltext_screening: @fulltext_screening_result.fulltext_screening)
+                        .where(
+                          fulltext_screening: @fulltext_screening_result.fulltext_screening,
+                          privileged: params[:resolution_mode] == 'true'
+                        )
+        @screened_cps = @screened_cps.where(user: current_user) unless params[:resolution_mode] == 'true'
         prepare_json_data
       end
     end

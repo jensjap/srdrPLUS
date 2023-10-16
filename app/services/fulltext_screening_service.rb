@@ -5,7 +5,6 @@ class FulltextScreeningService < BaseScreeningService
       .fulltext_screening_results
       .includes(:citations_project)
       .where(
-        user:,
         privileged: true,
         label: nil,
         citations_project: { screening_status: CitationsProject::FS_IN_CONFLICT }

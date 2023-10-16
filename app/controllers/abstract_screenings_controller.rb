@@ -125,7 +125,10 @@ class AbstractScreeningsController < ApplicationController
                 AbstractScreeningService.find_or_create_unprivileged_sr(@abstract_screening, current_user)
               end
 
-        return render json: { asr_id: nil } if asr && asr.user != current_user
+        return render json: { asr_id: nil } unless asr && asr.user == current_user ||
+                                                   (asr.privileged && ProjectsUser.find_by(
+                                                     project: asr.project, user: current_user
+                                                   ).project_consolidator?)
 
         render json: { asr_id: asr&.id }
       end
