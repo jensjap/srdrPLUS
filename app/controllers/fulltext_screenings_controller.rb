@@ -61,10 +61,10 @@ class FulltextScreeningsController < ApplicationController
                 FulltextScreeningService.find_or_create_unprivileged_sr(fs, current_user)
               end
 
-        return render json: { fsr_id: nil } unless fsr && fsr.user == current_user ||
+        return render json: { fsr_id: nil } unless fsr && (fsr.user == current_user ||
                                                    (fsr.privileged && ProjectsUser.find_by(
                                                      project: fsr.project, user: current_user
-                                                   ).project_consolidator?)
+                                                   ).project_consolidator?))
 
         render json: { fsr_id: fsr&.id }
       end
