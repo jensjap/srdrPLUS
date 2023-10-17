@@ -151,7 +151,7 @@
           <tr>
             <th
               scope="col"
-              class="cursor-pointer py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              class="cursor-pointer py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 align-top sm:pl-6"
               @click="changeOrderBy('accession_number_alts')"
             >
               <div class="flex justify-between">
@@ -193,10 +193,13 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500"
+                >"accession_number_alts:keyword"</span
+              >
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('author_map_string')"
             >
               <div class="flex justify-between">
@@ -238,10 +241,13 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500"
+                >"author_map_string:keyword"</span
+              >
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('name')"
             >
               <div class="flex justify-between">
@@ -283,14 +289,15 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500">"name:keyword"</span>
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('year')"
             >
               <div class="flex justify-between">
-                Publication Date
+                Pub Date
                 <template
                   x-if="pagination.sort == 'asc' && pagination.order_by == 'year'"
                 >
@@ -328,10 +335,11 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500">"year:keyword"</span>
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('user')"
             >
               <div class="flex justify-between">
@@ -373,10 +381,11 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500">"participant:keyword"</span>
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('label')"
             >
               <div class="flex justify-between">
@@ -418,10 +427,11 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500">"label:keyword"</span>
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('privileged')"
             >
               <div class="flex justify-between">
@@ -463,10 +473,11 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500">"privileged:keyword"</span>
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('reasons')"
             >
               <div class="flex justify-between">
@@ -508,10 +519,11 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500">"reasons:keyword"</span>
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('tags')"
             >
               <div class="flex justify-between">
@@ -553,10 +565,11 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500">"tags:keyword"</span>
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('notes')"
             >
               <div class="flex justify-between">
@@ -597,6 +610,7 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500">"notes:keyword"</span>
             </th>
             <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
               <span class="sr-only">Edit</span>

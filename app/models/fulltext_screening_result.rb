@@ -111,6 +111,7 @@ class FulltextScreeningResult < ApplicationRecord
       user: user.handle,
       user_id:,
       label:,
+      privileged:,
       reasons: reasons.map(&:name).join(', '),
       tags: tags.map(&:name).join(', '),
       notes:,
