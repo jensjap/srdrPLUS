@@ -157,7 +157,7 @@ class AbstractScreeningsController < ApplicationController
         per_page = 15
         order = @order_by.present? ? { @order_by => @sort } : { 'name' => 'desc' }
         where = { abstract_screening_id: @abstract_screening.id }
-        where[:user_id] = current_user.id unless ProjectPolicy.new(current_user, @project).project_leader?
+        where[:user_id] = current_user.id unless ProjectPolicy.new(current_user, @project).project_consolidator?
         @abstract_screening_results =
           AbstractScreeningResult
           .search(@query,

@@ -92,7 +92,7 @@ class FulltextScreeningsController < ApplicationController
         per_page = 15
         order = @order_by.present? ? { @order_by => @sort } : { 'name' => 'desc' }
         where = { fulltext_screening_id: @fulltext_screening.id }
-        where[:user_id] = current_user.id unless ProjectPolicy.new(current_user, @project).project_leader?
+        where[:user_id] = current_user.id unless ProjectPolicy.new(current_user, @project).project_consolidator?
         @fulltext_screening_results =
           FulltextScreeningResult
           .search(@query,
