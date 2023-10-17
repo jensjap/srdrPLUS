@@ -1,3 +1,4 @@
+<%= content_for(:title, 'SRDR+ Abstract Screening') %>
 <div
   class="overflow-hidden"
   x-data="screenStore"
@@ -17,7 +18,8 @@
     <%= render 'abstract_screenings/screen/word_weight_menu' %>
   </div>
   <div
-    class="mx-auto lg:mx-0 lg:w-2/3 h-24 absolute inset-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
+    class="mx-auto lg:mx-0 lg:w-2/3 h-24 absolute inset-0 overflow-y-hidden flex flex-col justify-center"
+    :class="resolutionMode ? 'bg-purple-100' : 'bg-gray-300'"
   >
     <a
       href="<%= abstract_screening_path(params[:abstract_screening_id]) %>"
@@ -37,19 +39,17 @@
     </button>
     <button
       @click="historyPanel = !historyPanel"
-      class="absolute top-0 left-0 bg-gray-100 p-1 rounded-full z-[9] text-xs flex flex-row items-center cursor-pointer"
+      class="absolute top-0 left-0 bg-gray-100 p-1 px-2 text-xs rounded-full z-[9] flex flex-row items-center cursor-pointer"
+      :class="resolutionMode ? 'bg-srdrpurple text-white' : ''"
     >
-      <span
-        style="font-size: medium"
-        x-text="resolutionMode ? 'Resolved Conflicts' : 'Your Labels'"
-      ></span>
+      <span x-text="resolutionMode ? 'Resolved Labels' : 'Your Labels'"></span>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
-        stroke-width="1.5"
+        stroke-width="1"
         stroke="currentColor"
-        class="w-6 h-5"
+        class="w-3 h-3"
       >
         <path
           stroke-linecap="round"
@@ -65,11 +65,7 @@
       Continue Screening
     </button>
     <div class="h-24 mr-56 overflow-y-auto flex items-center">
-      <div
-        class="horizontal-scroll-wrapper"
-        @mouseup="checkSelection()"
-        @touchend="checkSelection()"
-      >
+      <div @mouseup="checkSelection()" @touchend="checkSelection()">
         <div class="flex items-center">
           <h1 class="px-8 text-base font-bold leading-none">
             <template x-for="word in processedTitle">
