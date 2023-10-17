@@ -12,6 +12,7 @@ class FulltextScreeningResultsController < ApplicationController
           @fulltext_screening_result.update(fsr_params)
         when 'notes'
           @fulltext_screening_result.update_column(:notes, params[:fsr][:notes])
+          @fulltext_screening_result.reindex
         end
 
         if @fulltext_screening_result.privileged && @fulltext_screening_result.user != current_user

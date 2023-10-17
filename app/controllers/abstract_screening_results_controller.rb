@@ -14,6 +14,7 @@ class AbstractScreeningResultsController < ApplicationController
           @abstract_screening_result.update(asr_params)
         when 'notes'
           @abstract_screening_result.update_column(:notes, params[:asr][:notes])
+          @abstract_screening_result.reindex
         end
 
         if @abstract_screening_result.privileged && @abstract_screening_result.user != current_user
