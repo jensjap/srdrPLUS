@@ -98,6 +98,7 @@ class CitationsProject < ApplicationRecord
         asr_obj = {}
         asr_obj[:user] = asr.user.handle
         asr_obj[:label] = asr.label
+        asr_obj[:privileged] = asr.privileged
         asr_obj[:reasons] = asr.reasons.map(&:name).join(', ')
         asr_obj[:tags] = asr.tags.map(&:name).join(', ')
         asr_obj[:notes] = asr.notes
@@ -112,6 +113,7 @@ class CitationsProject < ApplicationRecord
         fsr_obj = {}
         fsr_obj[:user] = fsr.user.handle
         fsr_obj[:label] = fsr.label
+        fsr_obj[:privileged] = fsr.privileged
         fsr_obj[:reasons] = fsr.reasons.map(&:name).join(', ')
         fsr_obj[:tags] = fsr.tags.map(&:name).join(', ')
         fsr_obj[:notes] = fsr.notes
