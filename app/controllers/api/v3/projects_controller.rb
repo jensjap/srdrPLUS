@@ -1,5 +1,5 @@
 class Api::V3::ProjectsController < Api::V3::BaseController
-  before_action :set_project, only: [:show]
+  before_action :set_project, only: [:show, :process_and_email]
 
   def show
     authorize(@project)
@@ -12,6 +12,12 @@ class Api::V3::ProjectsController < Api::V3::BaseController
       format.xml { render xml: @project_bundle }
       format.all { render text: 'Only HTML, JSON and XML are currently supported', status: 406 }
     end
+  end
+
+  def process_and_email
+    authorize(@project)
+    ProcessAndEmailFhirJob.perform_later(@project.id, current_user.email)
+    render 'process_and_email'
   end
 
   private

@@ -35,6 +35,83 @@ class BaseScreeningService
     end
   end
 
+  def self.find_next_pilot_screening(project, user)
+    screenings = get_screenings(project)
+
+    pilot_screenings = screenings.select do |screening|
+      screening.screening_type == screening.class.const_get('PILOT')
+    end
+
+    exclusive_screenings = select_exclusive_user_screening(pilot_screenings, user)
+    sorted_exclusive_screenings = exclusive_screenings.sort_by { |s| -s.created_at.to_i }
+
+    sorted_exclusive_screenings.each do |screening|
+      result = find_citation_id(screening, user)
+      return screening if result != nil
+    end
+
+    remaining_screenings = pilot_screenings - exclusive_screenings
+    sorted_remaining_screenings = remaining_screenings.sort_by { |s| -s.created_at.to_i }
+
+    sorted_remaining_screenings.each do |screening|
+      result = find_citation_id(screening, user)
+      return screening if result != nil
+    end
+
+    nil
+  end
+
+  def self.find_next_non_pilot_screening(project, user)
+    screenings = get_screenings(project)
+
+    non_pilot_screenings = screenings.select do |screening|
+      screening.screening_type != screening.class.const_get('PILOT')
+    end
+
+    exclusive_screenings = select_exclusive_user_screening(non_pilot_screenings, user)
+    sorted_exclusive_screenings = exclusive_screenings.sort_by { |s| -s.created_at.to_i }
+
+    sorted_exclusive_screenings.each do |screening|
+      result = find_citation_id(screening, user)
+      return screening if result != nil
+    end
+
+    remaining_screenings = non_pilot_screenings - exclusive_screenings
+    single_screenings = remaining_screenings.select { |s| s.single_screening? }
+    double_screenings = remaining_screenings.select { |s| s.double_screening? }
+
+    sorted_double_screenings = double_screenings.sort_by { |s| -s.created_at.to_i }
+    sorted_single_screenings = single_screenings.sort_by { |s| -s.created_at.to_i }
+
+    sorted_double_screenings.each do |screening|
+      result = find_citation_id(screening, user)
+      return screening if result != nil
+    end
+
+    sorted_single_screenings.each do |screening|
+      result = find_citation_id(screening, user)
+      return screening if result != nil
+    end
+
+    nil
+  end
+
+  def self.select_exclusive_user_screening(screenings, user)
+    exclusive_screenings = screenings.select { |item| item.exclusive_users == true }
+    exclusive_screenings_for_specific_user = exclusive_screenings.select do |screening|
+      screening.users.any? { |u| u.id == user.id }
+    end
+    exclusive_screenings_for_specific_user
+  end
+
+  def self.get_screenings(project)
+    service_name = self.name
+    _, relation_name = determine_sr_model_and_relation(service_name)
+    relation = "#{relation_name}s".to_sym
+    screenings = project.send(relation)
+    screenings
+  end
+
   def self.determine_sr_model_and_relation(service_name)
     case service_name
     when 'AbstractScreeningService'

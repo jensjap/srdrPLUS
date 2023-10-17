@@ -113,6 +113,10 @@ class ProjectPolicy < ApplicationPolicy
     project_auditor? || @record.public?
   end
 
+  def process_and_email?
+    project_leader?
+  end
+
   def export_assignments_and_mappings?
     project_leader?
   end

@@ -30,7 +30,11 @@ class AbstractScreeningPolicy < ApplicationPolicy
   end
 
   def index?
-    part_of_project?
+    part_of_project? && (project_consolidator? || project_leader?)
+  end
+
+  def work_selection?
+    part_of_project? && project_contributor? && !project_consolidator? && !project_leader?
   end
 
   def kpis?

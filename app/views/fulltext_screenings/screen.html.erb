@@ -502,8 +502,14 @@
 
         this.fsr.id = data.fsr_id;
         if (this.fsr.id == null) {
-          window.location.href =
-            "/fulltext_screenings/<%= params[:fulltext_screening_id] %>?screening_finished=true";
+          const screeningsType = 'fulltext';
+          const checkRoleResponse = await fetch(`/check_role/${screeningsType}/${this.project_id}`);
+          const { check_condition, redirect_url } = await checkRoleResponse.json();
+          if (check_condition) {
+            window.location.href = redirect_url;
+          } else {
+            window.location.href = `/${screeningsType}_screenings/<%= params[:fulltext_screening_id] %>?screening_finished=true`;
+          }
         }
         this.getFsr();
       },

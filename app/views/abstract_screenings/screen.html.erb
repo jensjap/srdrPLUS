@@ -845,9 +845,14 @@
 
         this.asr.id = data.asr_id;
         if (this.asr.id == null) {
-          window.location.href =
-            "/abstract_screenings/<%= params[:abstract_screening_id] %>?screening_finished=true";
-          return;
+          const screeningsType = 'abstract';
+          const checkRoleResponse = await fetch(`/check_role/${screeningsType}/${this.project_id}`);
+          const { check_condition, redirect_url } = await checkRoleResponse.json();
+          if (check_condition) {
+            window.location.href = redirect_url;
+          } else {
+            window.location.href = `/${screeningsType}_screenings/<%= params[:abstract_screening_id] %>?screening_finished=true`;
+          }
         }
         this.getAsr();
       },
