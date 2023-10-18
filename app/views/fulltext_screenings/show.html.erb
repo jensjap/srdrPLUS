@@ -105,6 +105,7 @@
         class="!p-4 text-center"
         placeholder="To start searching, press '/'"
         type="search"
+        :class="query.length === 0 ? '' : '!bg-purple-100'"
       />
       <div
         x-show="query != ''"
@@ -676,7 +677,7 @@
   document.addEventListener("alpine:init", () => {
     Alpine.data("fulltext_screening_results", () => ({
       results: null,
-      query: "",
+      query: "<%= params[:query] %>",
       base_url: "/fulltext_screenings/<%= params[:id] %>",
       pagination: {
         base_url: this.base_url,
@@ -684,7 +685,7 @@
         current_page: "",
         next_page: "",
         total_pages: "",
-        query: null,
+        query: "<%= params[:query] %>",
         order_by: null,
         sort: null,
       },
