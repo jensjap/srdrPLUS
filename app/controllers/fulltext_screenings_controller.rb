@@ -97,7 +97,7 @@ class FulltextScreeningsController < ApplicationController
         order = @order_by.present? ? { @order_by => @sort } : { 'name' => 'desc' }
         where_hash = { fulltext_screening_id: @fulltext_screening.id }
         where_hash[:user_id] = current_user.id unless ProjectPolicy.new(current_user, @project).project_consolidator?
-        fields = %w[accession_number_alts author_map_string name year participant label privileged reasons tags notes]
+        fields = %w[accession_number_alts author_map_string name year user label privileged reasons tags notes]
         fields.each do |field|
           next if @query.match(/(#{field}:(-?[\w\d]+))/).nil?
 

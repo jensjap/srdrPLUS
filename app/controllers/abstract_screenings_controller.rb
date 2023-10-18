@@ -1,7 +1,8 @@
 class AbstractScreeningsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: %i[update_word_weight kpis]
 
-  before_action :set_project, only: %i[index new create citation_lifecycle_management export_screening_data kpis work_selection]
+  before_action :set_project,
+                only: %i[index new create citation_lifecycle_management export_screening_data kpis work_selection]
   before_action :set_abstract_screening, only: %i[update_word_weight screen resolve]
   after_action :verify_authorized
 
@@ -162,7 +163,7 @@ class AbstractScreeningsController < ApplicationController
         order = @order_by.present? ? { @order_by => @sort } : { 'name' => 'desc' }
         where_hash = { abstract_screening_id: @abstract_screening.id }
         where_hash[:user_id] = current_user.id unless ProjectPolicy.new(current_user, @project).project_consolidator?
-        fields = %w[accession_number_alts author_map_string name year participant label privileged reasons tags notes]
+        fields = %w[accession_number_alts author_map_string name year user label privileged reasons tags notes]
         fields.each do |field|
           next if @query.match(/(#{field}:(-?[\w\d]+))/).nil?
 
