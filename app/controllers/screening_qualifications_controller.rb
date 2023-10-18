@@ -13,6 +13,8 @@ class ScreeningQualificationsController < ApplicationController
             existing_sqs = citations_project.screening_qualifications.where(qualification_type:)
             if existing_sqs.present?
               existing_sqs.destroy_all
+              citations_project.abstract_screening_results.each(&:evaluate_screening_qualifications)
+              citations_project.fulltext_screening_results.each(&:evaluate_screening_qualifications)
             else
               if (opposite_qualification = ScreeningQualification.opposite_qualification(qualification_type))
                 citations_project.screening_qualifications.where(qualification_type: opposite_qualification).destroy_all
