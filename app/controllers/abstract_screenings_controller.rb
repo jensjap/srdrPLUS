@@ -66,7 +66,7 @@ class AbstractScreeningsController < ApplicationController
     ScreeningDataExportJob.set(wait: 5.second).perform_later(current_user.email, @project.id)
     Event.create(
       sent: current_user.email,
-      action: 'Export Screening Data',
+      action: 'Export Screening Labels',
       resource: @project.class.to_s,
       resource_id: @project.id,
       notes: ''
