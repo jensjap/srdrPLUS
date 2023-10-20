@@ -20,6 +20,7 @@
     class="mx-auto lg:mx-0 lg:w-2/3 h-24 absolute inset-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
   >
     <a
+      id="dynamic-link"
       href="<%= abstract_screening_path(params[:abstract_screening_id]) %>"
       class="cursor-pointer z-[5] absolute top-4 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-black hover:no-underline hover:text-black"
     >
@@ -845,9 +846,7 @@
 
         this.asr.id = data.asr_id;
         if (this.asr.id == null) {
-          const screeningsType = 'abstract';
-          const checkRoleResponse = await fetch(`/check_role/${screeningsType}/${this.project_id}`);
-          const { check_condition, redirect_url } = await checkRoleResponse.json();
+          const { check_condition, redirect_url } = await this.checkRole();
           if (check_condition) {
             window.location.href = redirect_url;
           } else {
@@ -908,6 +907,22 @@
           this.processWeights("abstract", "processedAbstract");
           this.project_id = data.project_id;
         }
+        this.updateLink();
+      },
+
+      async updateLink() {
+        const { check_condition, redirect_url } = await this.checkRole();
+        const linkElement = document.getElementById("dynamic-link");
+        if (check_condition) {
+          linkElement.setAttribute("href", redirect_url);
+        }
+      },
+
+      async checkRole() {
+        const screeningsType = 'abstract';
+        const checkRoleResponse = await fetch(`/check_role/${screeningsType}/${this.project_id}`);
+        const { check_condition, redirect_url } = await checkRoleResponse.json();
+        return { check_condition, redirect_url };
       },
 
       handleLabelButtonClick(newLabel) {

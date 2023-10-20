@@ -18,6 +18,7 @@
     class="mx-auto lg:mx-0 lg:w-2/3 h-24 absolute inset-0 overflow-y-hidden bg-gray-300 flex flex-col justify-center"
   >
     <a
+      id="dynamic-link"
       href="<%= fulltext_screening_path(params[:fulltext_screening_id]) %>"
       class="cursor-pointer z-[5] absolute top-4 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
     >
@@ -499,9 +500,7 @@
 
         this.fsr.id = data.fsr_id;
         if (this.fsr.id == null) {
-          const screeningsType = 'fulltext';
-          const checkRoleResponse = await fetch(`/check_role/${screeningsType}/${this.project_id}`);
-          const { check_condition, redirect_url } = await checkRoleResponse.json();
+          const { check_condition, redirect_url } = await this.checkRole();
           if (check_condition) {
             window.location.href = redirect_url;
           } else {
@@ -553,6 +552,22 @@
           this.cps = data.cps;
           this.project_id = data.project_id;
         }
+        this.updateLink();
+      },
+
+      async updateLink() {
+        const { check_condition, redirect_url } = await this.checkRole();
+        const linkElement = document.getElementById("dynamic-link");
+        if (check_condition) {
+          linkElement.setAttribute("href", redirect_url);
+        }
+      },
+
+      async checkRole() {
+        const screeningsType = 'fulltext';
+        const checkRoleResponse = await fetch(`/check_role/${screeningsType}/${this.project_id}`);
+        const { check_condition, redirect_url } = await checkRoleResponse.json();
+        return { check_condition, redirect_url };
       },
     }));
   });
