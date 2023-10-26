@@ -65,7 +65,10 @@ class FulltextScreeningsController < ApplicationController
                 FulltextScreeningService.find_or_create_unprivileged_sr(fs, current_user)
               end
 
-        return render json: { fsr_id: nil } if fsr && fsr.user != current_user
+        return render json: { fsr_id: nil } unless fsr && (fsr.user == current_user ||
+                                                   (fsr.privileged && ProjectsUser.find_by(
+                                                     project: fsr.project, user: current_user
+                                                   ).project_consolidator?))
 
         render json: { fsr_id: fsr&.id }
       end
@@ -92,12 +95,29 @@ class FulltextScreeningsController < ApplicationController
         @page = params[:page].present? ? params[:page].to_i : 1
         per_page = 15
         order = @order_by.present? ? { @order_by => @sort } : { 'name' => 'desc' }
-        where = { fulltext_screening_id: @fulltext_screening.id }
-        where[:user_id] = current_user.id unless ProjectPolicy.new(current_user, @project).project_leader?
+        where_hash = { fulltext_screening_id: @fulltext_screening.id }
+        where_hash[:user_id] = current_user.id unless ProjectPolicy.new(current_user, @project).project_consolidator?
+        fields = %w[accession_number_alts author_map_string name year user label privileged reasons tags notes]
+        fields.each do |field|
+          next if @query.match(/(#{field}:(-?[\w\d]+))/).nil?
+
+          query, keyword = @query.match(/(#{field}:(-?[\w\d]+))/).captures
+          where_hash[field] =
+            case field
+            when 'privileged'
+              keyword == 'true'
+            when 'label'
+              keyword == 'null' ? nil : keyword
+            else
+              { ilike: "%#{keyword}%" }
+            end
+          @query.slice!(query)
+        end
+        @query = @query.present? ? @query : '*'
         @fulltext_screening_results =
           FulltextScreeningResult
           .search(@query,
-                  where:,
+                  where: where_hash,
                   limit: per_page, offset: per_page * (@page - 1), order:, load: false)
         @total_pages = (@fulltext_screening_results.total_count / per_page) + 1
       end

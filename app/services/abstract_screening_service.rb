@@ -16,7 +16,6 @@ class AbstractScreeningService < BaseScreeningService
       .abstract_screening_results
       .includes(:citations_project)
       .where(
-        user:,
         privileged: true,
         label: nil,
         citations_project: { screening_status: CitationsProject::AS_IN_CONFLICT }
@@ -35,11 +34,12 @@ class AbstractScreeningService < BaseScreeningService
       .first
 
     return nil unless citations_project
+    return true unless create_record
 
-    if create_record
-      AbstractScreeningResult.create!(user:, abstract_screening:, citations_project:, privileged: true)
+    if (as = AbstractScreeningResult.find_by(abstract_screening:, citations_project:, privileged: true))
+      as
     else
-      true
+      AbstractScreeningResult.find_or_create_by!(user:, abstract_screening:, citations_project:, privileged: true)
     end
   end
 

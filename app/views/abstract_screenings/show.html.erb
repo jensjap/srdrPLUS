@@ -46,9 +46,10 @@
             </div>
             <% else %>
             <button
-              class="text-center mb-2 cursor-not-allowed w-full inline-flex items-center justify-center rounded-md border border-transparent bg-purple-900 opacity-80 px-4 py-2 text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
+              class="text-center mb-2 cursor-pointer w-full inline-flex items-center justify-center rounded-md border border-transparent bg-purple-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
+              @click="query = 'privileged:true'"
             >
-              Nothing to Resolve
+              Nothing to Resolve - View Resolutions
             </button>
             <% end %>
             <!-- prettier-ignore -->
@@ -132,9 +133,8 @@
         @keyup.slash.window="$focus.focus($el)"
         class="!p-4 text-center"
         placeholder="To start searching, press '/'"
-        onfocus="this.placeholder = ''"
-        onblur="this.placeholder = 'To start searching, press \'/\''"
         type="search"
+        :class="query.length === 0 ? '' : '!bg-purple-100'"
       />
       <div
         x-show="query != ''"
@@ -153,7 +153,7 @@
           <tr>
             <th
               scope="col"
-              class="cursor-pointer py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              class="cursor-pointer py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 align-top sm:pl-6"
               @click="changeOrderBy('accession_number_alts')"
             >
               <div class="flex justify-between">
@@ -195,10 +195,13 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500"
+                >"accession_number_alts:keyword"</span
+              >
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('author_map_string')"
             >
               <div class="flex justify-between">
@@ -240,10 +243,13 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500"
+                >"author_map_string:keyword"</span
+              >
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('name')"
             >
               <div class="flex justify-between">
@@ -285,14 +291,15 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500">"name:keyword"</span>
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('year')"
             >
               <div class="flex justify-between">
-                Publication Date
+                Pub Date
                 <template
                   x-if="pagination.sort == 'asc' && pagination.order_by == 'year'"
                 >
@@ -330,10 +337,11 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500">"year:keyword"</span>
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('user')"
             >
               <div class="flex justify-between">
@@ -375,10 +383,11 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500">"user:keyword"</span>
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('label')"
             >
               <div class="flex justify-between">
@@ -420,10 +429,11 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500">"label:keyword"</span>
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('privileged')"
             >
               <div class="flex justify-between">
@@ -465,10 +475,11 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500">"privileged:keyword"</span>
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('reasons')"
             >
               <div class="flex justify-between">
@@ -510,10 +521,11 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500">"reasons:keyword"</span>
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('tags')"
             >
               <div class="flex justify-between">
@@ -555,10 +567,11 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500">"tags:keyword"</span>
             </th>
             <th
               scope="col"
-              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
               @click="changeOrderBy('notes')"
             >
               <div class="flex justify-between">
@@ -599,6 +612,7 @@
                   </svg>
                 </template>
               </div>
+              <span class="text-xs text-gray-500">"notes:keyword"</span>
             </th>
             <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
               <span class="sr-only">Edit</span>
@@ -663,7 +677,7 @@
                   <a
                     :href="`/abstract_screenings/${result.abstract_screening_id}/screen?asr_id=${result.id}${result.privileged ? '&resolution_mode=true' : ''}`"
                     x-cloak
-                    x-show="result.user_id == <%= current_user.id %>"
+                    x-show="result.user_id == <%= current_user.id %> || result.privileged"
                     class="hover:no-underline focus:no-underline hover:text-white focus:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple hover:bg-srdrpurple-light px-4 py-1 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
                     >Screen Again</a
                   >
@@ -682,7 +696,7 @@
   document.addEventListener("alpine:init", () => {
     Alpine.data("abstract_screening_results", () => ({
       results: null,
-      query: "",
+      query: "<%= params[:query] %>",
       base_url: "/abstract_screenings/<%= params[:id] %>",
       pagination: {
         base_url: this.base_url,
@@ -690,7 +704,7 @@
         current_page: "",
         next_page: "",
         total_pages: "",
-        query: null,
+        query: "<%= params[:query] %>",
         order_by: null,
         sort: null,
       },

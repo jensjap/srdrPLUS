@@ -16,8 +16,6 @@
             @keyup.slash.window="$focus.focus($el)"
             class="!p-4 text-center"
             placeholder="To start searching, press '/'"
-            onfocus="this.placeholder = ''"
-            onblur="this.placeholder = 'To start searching, press \'/\''"
             type="search"
           />
           <div
@@ -641,6 +639,17 @@
               }),
             }
           );
+          if (response.status == 403) {
+            toastr.error("Sorry, you are not authorized", null, {
+              timeOut: 1000,
+            });
+            this.showLoading = false;
+          } else if (response.status < 200 || response.status >= 300) {
+            toastr.error("Sorry, an error occurred", null, {
+              timeOut: 1000,
+            });
+            this.showLoading = false;
+          }
           const data = await response.json();
           if (data.success.citation_names.length > 0) {
             toastr.success(
@@ -683,6 +692,17 @@
             ),
           }),
         });
+        if (response.status == 403) {
+          toastr.error("Sorry, you are not authorized", null, {
+            timeOut: 1000,
+          });
+          this.showLoading = false;
+        } else if (response.status < 200 || response.status >= 300) {
+          toastr.error("Sorry, an error occurred", null, {
+            timeOut: 1000,
+          });
+          this.showLoading = false;
+        }
         const data = await response.json();
         data.forEach((screeningStatus) => {
           this.selected.forEach((selection) => {
