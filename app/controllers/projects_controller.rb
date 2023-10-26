@@ -160,8 +160,15 @@ class ProjectsController < ApplicationController
     authenticate_user! unless current_user || email = helpers.valid_email(params[:email])
 
     if @project.public? || authorize(@project)
-      SimpleExportJob.set(wait: 1.minute).perform_later(current_user ? current_user.email : email, @project.id,
-                                                        export_type_name_params)
+      if @project.extraction_forms_projects.first.extraction_forms_project_type_id != 1
+        SimpleExportJob.set(wait: 1.minute).perform_later(
+          current_user ? current_user.email : email, @project.id, export_type_name_params
+        )
+      else
+        AdvancedExportJob.set(wait: 1.minute).perform_later(
+          current_user ? current_user.email : email, @project.id
+        )
+      end
       Event.create(
         sent: current_user ? current_user.email : email,
         action: 'Export',
