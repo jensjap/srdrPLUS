@@ -224,7 +224,8 @@ class CitationsProject < ApplicationRecord
       update(screening_status: FS_REJECTED)
     elsif screening_qualifications.where(qualification_type: ScreeningQualification::FS_ACCEPTED).present?
       update(screening_status: E_NEED_EXTRACTION)
-    elsif fulltext_screening_results.where(label: -1).present? && fulltext_screening_results.where(label: 1).present?
+    elsif (fulltext_screening_results.where(label: -1).present? && fulltext_screening_results.where(label: 1).present?) ||
+          fulltext_screening_results.where(label: 0).present?
       update(screening_status: FS_IN_CONFLICT)
     elsif fulltext_screening_results.present?
       update(screening_status: FS_PARTIALLY_SCREENED)
@@ -232,7 +233,8 @@ class CitationsProject < ApplicationRecord
       update(screening_status: AS_REJECTED)
     elsif screening_qualifications.where(qualification_type: ScreeningQualification::AS_ACCEPTED).present?
       update(screening_status: FS_UNSCREENED)
-    elsif abstract_screening_results.where(label: -1).present? && abstract_screening_results.where(label: 1).present?
+    elsif (abstract_screening_results.where(label: -1).present? && abstract_screening_results.where(label: 1).present?) ||
+          abstract_screening_results.where(label: 0).present?
       update(screening_status: AS_IN_CONFLICT)
     elsif abstract_screening_results.present?
       update(screening_status: AS_PARTIALLY_SCREENED)
