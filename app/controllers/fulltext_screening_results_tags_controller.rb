@@ -1,7 +1,7 @@
 class FulltextScreeningResultsTagsController < ApplicationController
   def create
     fulltext_screening_result = FulltextScreeningResult.find(params[:fulltext_screening_result_id])
-    authorize(fulltext_screening_result)
+    authorize(fulltext_screening_result, :update?)
 
     tag = Tag.find_or_create_by(id: params[:tag_id])
     fulltext_screening_results_tag =

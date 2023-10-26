@@ -1,7 +1,7 @@
 class FulltextScreeningResultsReasonsController < ApplicationController
   def create
     fulltext_screening_result = FulltextScreeningResult.find(params[:fulltext_screening_result_id])
-    authorize(fulltext_screening_result)
+    authorize(fulltext_screening_result, :update?)
 
     reason = Reason.find_or_create_by(id: params[:reason_id])
     fulltext_screening_results_reason =

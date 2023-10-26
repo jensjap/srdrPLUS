@@ -1,7 +1,7 @@
 class AbstractScreeningResultsTagsController < ApplicationController
   def create
     abstract_screening_result = AbstractScreeningResult.find(params[:abstract_screening_result_id])
-    authorize(abstract_screening_result)
+    authorize(abstract_screening_result, :update?)
 
     tag = Tag.find_or_create_by(id: params[:tag_id])
     abstract_screening_results_tag =
