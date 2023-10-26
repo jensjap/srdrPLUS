@@ -23,11 +23,43 @@ class MachineLearningDataSupplyingService
       label_data = {
         'ti' => citation.name.gsub('"', "'"),
         'abs' => citation.abstract.gsub('"', "'"),
-        'label' => asr.label == 1 ? '1' : (asr.label == -1 ? '0' : next)
+        'label' => asr.label == 1 ? '1' : (asr.label == -1 ? '0' : next),
+        'privileged' => asr.privileged
       }
     end.compact
 
-    project_data.uniq { |hash| hash['ti'] }
+    filtered_data = {}
+    unique_data = []
+
+    project_data.each do |data|
+      key = [data['ti'], data['abs']]
+      if filtered_data.key?(key)
+        filtered_data[key] << data
+      else
+        filtered_data[key] = [data]
+      end
+    end
+
+    final_data = []
+
+    filtered_data.each do |key, values|
+      if values.size > 1
+        privileged_data = values.find { |v| v['privileged'] }
+        if privileged_data
+          final_data << privileged_data.except('privileged')
+        else
+          same_label_data = values.group_by { |v| v['label'] }
+                                  .select { |k, v| v.size > 1 }
+                                  .values
+                                  .flatten
+          final_data << (same_label_data.any? ? same_label_data.first.except('privileged') : nil)
+        end
+      else
+        final_data << values.first.except('privileged')
+      end
+    end
+
+    final_data.compact
   end
 
   def self.get_unlabel_abstract(project_id)
