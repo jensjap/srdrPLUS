@@ -1,6 +1,6 @@
 class FulltextScreeningService < BaseScreeningService
   def self.find_fsr_id_to_be_resolved(fulltext_screening, user, create_record = true)
-    unfinished_privileged_fsr =
+    unfinished_privileged_fsrs =
       fulltext_screening
       .fulltext_screening_results
       .includes(:citations_project)
@@ -9,25 +9,34 @@ class FulltextScreeningService < BaseScreeningService
         label: nil,
         citations_project: { screening_status: CitationsProject::FS_IN_CONFLICT }
       )
-      .first
+    if fulltext_screening.project.exclude_personal_conflicts
+      unfinished_privileged_fsrs = unfinished_privileged_fsrs.where.not(user:)
+    end
+    unfinished_privileged_fsr = unfinished_privileged_fsrs.first
     return unfinished_privileged_fsr if unfinished_privileged_fsr
 
-    citations_project =
+    citations_projects =
       CitationsProject
-      .left_joins(:fulltext_screening_results)
       .where(
         project: fulltext_screening.project,
         screening_status: CitationsProject::FS_IN_CONFLICT
       )
-      .where.not(fulltext_screening_results: { privileged: true })
-      .first
+    if fulltext_screening.project.exclude_personal_conflicts
+      citations_projects = citations_projects.includes(:fulltext_screening_results).filter do |cp|
+        cp.fulltext_screening_results.none? do |fsr|
+          fsr.user == user
+        end
+      end
+    end
+    citations_project = citations_projects.first
 
     return nil unless citations_project
+    return true unless create_record
 
-    if create_record
-      FulltextScreeningResult.create!(user:, fulltext_screening:, citations_project:, privileged: true)
+    if (fsr = FulltextScreeningResult.find_by(fulltext_screening:, citations_project:, privileged: true))
+      fsr
     else
-      true
+      FulltextScreeningResult.find_or_create_by!(user:, fulltext_screening:, citations_project:, privileged: true)
     end
   end
 

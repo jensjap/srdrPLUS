@@ -11,6 +11,7 @@ class ProjectPolicy < ApplicationPolicy
     :doi,
     :funding_source,
     :auto_train,
+    :exclude_personal_conflicts,
     {
       mesh_descriptor_ids: []
     },

@@ -11,7 +11,7 @@ class AbstractScreeningService < BaseScreeningService
   end
 
   def self.find_asr_id_to_be_resolved(abstract_screening, user, create_record = true)
-    unfinished_privileged_asr =
+    unfinished_privileged_asrs =
       abstract_screening
       .abstract_screening_results
       .includes(:citations_project)
@@ -20,24 +20,32 @@ class AbstractScreeningService < BaseScreeningService
         label: nil,
         citations_project: { screening_status: CitationsProject::AS_IN_CONFLICT }
       )
-      .first
+    if abstract_screening.project.exclude_personal_conflicts
+      unfinished_privileged_asrs = unfinished_privileged_asrs.where.not(user:)
+    end
+    unfinished_privileged_asr = unfinished_privileged_asrs.first
     return unfinished_privileged_asr if unfinished_privileged_asr
 
-    citations_project =
+    citations_projects =
       CitationsProject
-      .left_joins(:abstract_screening_results)
       .where(
         project: abstract_screening.project,
         screening_status: CitationsProject::AS_IN_CONFLICT
       )
-      .where.not(abstract_screening_results: { privileged: true })
-      .first
+    if abstract_screening.project.exclude_personal_conflicts
+      citations_projects = citations_projects.includes(:abstract_screening_results).filter do |cp|
+        cp.abstract_screening_results.none? do |asr|
+          asr.user == user
+        end
+      end
+    end
+    citations_project = citations_projects.first
 
     return nil unless citations_project
     return true unless create_record
 
-    if (as = AbstractScreeningResult.find_by(abstract_screening:, citations_project:, privileged: true))
-      as
+    if (asr = AbstractScreeningResult.find_by(abstract_screening:, citations_project:, privileged: true))
+      asr
     else
       AbstractScreeningResult.find_or_create_by!(user:, abstract_screening:, citations_project:, privileged: true)
     end
