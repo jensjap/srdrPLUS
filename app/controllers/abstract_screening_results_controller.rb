@@ -8,11 +8,17 @@ class AbstractScreeningResultsController < ApplicationController
                                      .includes(citations_project: :citation)
                                      .find(params[:id])
         authorize(@abstract_screening_result)
+
         case params[:submissionType]
         when 'label'
           @abstract_screening_result.update(asr_params)
         when 'notes'
           @abstract_screening_result.update_column(:notes, params[:asr][:notes])
+          @abstract_screening_result.reindex
+        end
+
+        if @abstract_screening_result.privileged && @abstract_screening_result.user != current_user
+          @abstract_screening_result.update(user: current_user)
         end
         render json: @abstract_screening_result
       end
@@ -26,15 +32,13 @@ class AbstractScreeningResultsController < ApplicationController
                                      .includes(:user, citations_project: :citation)
                                      .find(params[:id])
         authorize(@abstract_screening_result)
-        if params[:resolution_mode] == 'true'
-          @screened_cps = AbstractScreeningResult
-                          .includes(citations_project: :citation)
-                          .where(abstract_screening: @abstract_screening_result.abstract_screening, privileged: true)
-        else
-          @screened_cps = AbstractScreeningResult
-                          .includes(citations_project: :citation)
-                          .where(user: current_user, abstract_screening: @abstract_screening_result.abstract_screening, privileged: false)
-        end
+        @screened_cps = AbstractScreeningResult
+                        .includes(citations_project: :citation)
+                        .where(
+                          abstract_screening: @abstract_screening_result.abstract_screening,
+                          privileged: params[:resolution_mode] == 'true'
+                        )
+        @screened_cps = @screened_cps.where(user: current_user) unless params[:resolution_mode] == 'true'
         prepare_json_data
       end
     end

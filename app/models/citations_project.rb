@@ -98,6 +98,7 @@ class CitationsProject < ApplicationRecord
         asr_obj = {}
         asr_obj[:user] = asr.user.handle
         asr_obj[:label] = asr.label
+        asr_obj[:privileged] = asr.privileged
         asr_obj[:reasons] = asr.reasons.map(&:name).join(', ')
         asr_obj[:tags] = asr.tags.map(&:name).join(', ')
         asr_obj[:notes] = asr.notes
@@ -112,6 +113,7 @@ class CitationsProject < ApplicationRecord
         fsr_obj = {}
         fsr_obj[:user] = fsr.user.handle
         fsr_obj[:label] = fsr.label
+        fsr_obj[:privileged] = fsr.privileged
         fsr_obj[:reasons] = fsr.reasons.map(&:name).join(', ')
         fsr_obj[:tags] = fsr.tags.map(&:name).join(', ')
         fsr_obj[:notes] = fsr.notes
@@ -149,7 +151,7 @@ class CitationsProject < ApplicationRecord
 
   def abstract_qualification
     as_qualification = screening_qualifications.find { |sq| sq.qualification_type[0..1] == 'as' }
-    return '-----' unless as_qualification
+    return '.....' unless as_qualification
 
     manually_qualified_by = as_qualification.user&.handle
 
@@ -166,7 +168,7 @@ class CitationsProject < ApplicationRecord
 
   def fulltext_qualification
     fs_qualification = screening_qualifications.find { |sq| sq.qualification_type[0..1] == 'fs' }
-    return '-----' unless fs_qualification
+    return '.....' unless fs_qualification
 
     manually_qualified_by = fs_qualification.user&.handle
 
@@ -183,7 +185,7 @@ class CitationsProject < ApplicationRecord
 
   def extraction_qualification
     e_qualification = screening_qualifications.find { |sq| sq.qualification_type[0..1] == 'e-' }
-    return '-----' unless e_qualification
+    return '.....' unless e_qualification
 
     manually_qualified_by = e_qualification.user&.handle
 
@@ -222,7 +224,8 @@ class CitationsProject < ApplicationRecord
       update(screening_status: FS_REJECTED)
     elsif screening_qualifications.where(qualification_type: ScreeningQualification::FS_ACCEPTED).present?
       update(screening_status: E_NEED_EXTRACTION)
-    elsif fulltext_screening_results.where(label: -1).present? && fulltext_screening_results.where(label: 1).present?
+    elsif (fulltext_screening_results.where(label: -1).present? && fulltext_screening_results.where(label: 1).present?) ||
+          fulltext_screening_results.where(label: 0).present?
       update(screening_status: FS_IN_CONFLICT)
     elsif fulltext_screening_results.present?
       update(screening_status: FS_PARTIALLY_SCREENED)
@@ -230,7 +233,8 @@ class CitationsProject < ApplicationRecord
       update(screening_status: AS_REJECTED)
     elsif screening_qualifications.where(qualification_type: ScreeningQualification::AS_ACCEPTED).present?
       update(screening_status: FS_UNSCREENED)
-    elsif abstract_screening_results.where(label: -1).present? && abstract_screening_results.where(label: 1).present?
+    elsif (abstract_screening_results.where(label: -1).present? && abstract_screening_results.where(label: 1).present?) ||
+          abstract_screening_results.where(label: 0).present?
       update(screening_status: AS_IN_CONFLICT)
     elsif abstract_screening_results.present?
       update(screening_status: AS_PARTIALLY_SCREENED)
