@@ -107,10 +107,27 @@ class ScreeningDataExportJob < ApplicationJob
             cp['doi'],
             cp['keywords']
           ]
+          screening_status =
+            case screening_type
+            when 'AS'
+              cp['abstract_qualification']
+            when 'FS'
+              cp['fulltext_qualification']
+            end
           cp_id = cp.id.to_i
           first_screened_date = mh.dig(cp_id, :sr_label_dates)&.min
-          columns << (first_screened_date.present? ? first_screened_date.in_time_zone(@desired_time_zone) : '')
-          columns << (mh.dig(cp_id, :consensus_label) || '')
+          columns << (
+            if first_screened_date.present?
+              first_screened_date.in_time_zone(@desired_time_zone)
+            else
+              ''
+            end
+          )
+          columns << _calculate_consensus_column_value(
+            mh.dig(cp_id, :consensus_label),
+            mh.dig(cp_id, :user_labels),
+            screening_status
+          )
           users.each do |user|
             columns << (mh.dig(cp_id, :user_labels, user[0]) || '')
           end
@@ -409,5 +426,72 @@ class ScreeningDataExportJob < ApplicationJob
     end
 
     p
+  end
+
+  private
+
+  # Consensus label key:
+  #   x -> unresolved conflict
+  #   o -> incomplete
+  #   1 -> accepted
+  #  -1 -> rejected
+
+  #  System prioritizes in the following order:
+  #  1. Screening Qualifications
+  #  2. [A,F]SR (where privileged: true) also known as Consensus Label
+  #  3. [A,F]SR (where privileged: false) also known as Labels
+  #
+  #  { :user_id => :label }
+  def _calculate_consensus_column_value(consensus_label, user_labels, screening_qualification)
+    dict_screening_qualification = { 'Passed' => 1, 'Rejected' => -1 }
+    labels = user_labels&.values
+
+    # If no labels exist at all then we return 'o' unless manual pro/de-motion occurred.
+    # If there was a manual pro/de-motion then we use it instead to populate consensus
+    # label column.
+    if labels.blank?
+      if dict_screening_qualification.keys.include?(screening_qualification)
+        return dict_screening_qualification[screening_qualification]
+      else
+        return 'o'
+      end
+    end
+
+    # If consensus label exists that is not 'x', then we return it to populate consensus
+    # label column.
+    return consensus_label if consensus_label.present? && !consensus_label.eql?('x')
+
+    # Screening Qualification exists.
+    if dict_screening_qualification.keys.include?(screening_qualification)
+      # The system considers this citation to be done with the current
+      # phase (i.e. 'AS', 'FS', 'Extraction'). This means that 'o' incomplete
+      # is not an option.
+      if labels.size.eql?(1)
+        labels[0]
+      elsif labels.uniq.length.eql?(1)
+        labels[0]
+      else
+        'x'
+      end
+
+    # No Screening Qualification exists.
+    else
+      # Since no Screening Qualification exists, the presence of a single label must
+      # mean that we are waiting for a second opinion. Thus screening is incomplete.
+      if labels.size.eql?(1)
+        'o'
+      elsif labels.uniq.length.eql?(1)
+        labels[0]
+      elsif labels.any?(&:blank?)
+        'o'
+      else
+        'x'
+      end
+    end
+
+  rescue StandardError => e
+    Sentry.capture_exception(e) if Rails.env.production?
+    '?'
+
   end
 end

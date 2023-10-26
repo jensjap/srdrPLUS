@@ -28,7 +28,7 @@ class FulltextScreeningResult < ApplicationRecord
   delegate :project, to: :fulltext_screening
   delegate :citation, to: :citations_project
 
-  after_save :evaluate_screening_qualifications
+  after_commit :evaluate_screening_qualifications
 
   def reasons_object
     FulltextScreeningResultsReason
@@ -46,12 +46,17 @@ class FulltextScreeningResult < ApplicationRecord
   end
 
   def evaluate_screening_qualifications
-    if citations_project
+    return if privileged && label.nil?
+
+    if destroyed?
+      citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::FS_ACCEPTED).destroy_all
+      citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::FS_REJECTED).destroy_all
+    elsif privileged || (citations_project
        .screening_qualifications
        .where.not(user: nil)
        .where("qualification_type LIKE 'fs-%'")
        .blank? &&
-       citations_project_sufficiently_labeled?
+       citations_project_sufficiently_labeled?)
       case label
       when 1
         citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::FS_REJECTED).destroy_all
@@ -69,11 +74,19 @@ class FulltextScreeningResult < ApplicationRecord
     return true if fulltext_screening.single_screening?
 
     if fulltext_screening.exclusive_users
-      relevant_fsrs = FulltextScreeningResult.where(fulltext_screening:, citations_project:,
-                                                    user: fulltext_screening.users)
+      relevant_fsrs = FulltextScreeningResult.where(
+        privileged: false,
+        fulltext_screening:,
+        citations_project:,
+        user: fulltext_screening.users
+      )
       required_fsrs_pilot_count = fulltext_screening.fulltext_screenings_users.count
     else
-      relevant_fsrs = FulltextScreeningResult.where(fulltext_screening:, citations_project:)
+      relevant_fsrs = FulltextScreeningResult.where(
+        privileged: false,
+        fulltext_screening:,
+        citations_project:
+      )
       required_fsrs_pilot_count = fulltext_screening.project.projects_users.count
     end
     return false unless relevant_fsrs.all? { |fsr| fsr.label == 1 } || relevant_fsrs.all? { |fsr| fsr.label == -1 }
@@ -98,6 +111,7 @@ class FulltextScreeningResult < ApplicationRecord
       user: user.handle,
       user_id:,
       label:,
+      privileged:,
       reasons: reasons.map(&:name).join(', '),
       tags: tags.map(&:name).join(', '),
       notes:,

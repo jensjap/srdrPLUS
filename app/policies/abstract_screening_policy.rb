@@ -46,8 +46,7 @@ class AbstractScreeningPolicy < ApplicationPolicy
   end
 
   def screen?
-    # Always allow to screen as per request.
-    true
+    project_contributor?
   end
 
   def show?

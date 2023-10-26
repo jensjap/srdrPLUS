@@ -8,6 +8,7 @@ json.results @fulltext_screening_results do |fulltext_screening_result|
   json.user                     fulltext_screening_result['user']
   json.user_id                  fulltext_screening_result['user_id']
   json.label                    fulltext_screening_result['label']
+  json.privileged               fulltext_screening_result['privileged']
   json.reasons                  fulltext_screening_result['reasons']
   json.tags                     fulltext_screening_result['tags']
   json.notes                    fulltext_screening_result['notes']
