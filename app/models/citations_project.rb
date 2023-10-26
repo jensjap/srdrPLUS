@@ -149,7 +149,7 @@ class CitationsProject < ApplicationRecord
 
   def abstract_qualification
     as_qualification = screening_qualifications.find { |sq| sq.qualification_type[0..1] == 'as' }
-    return '-----' unless as_qualification
+    return '.....' unless as_qualification
 
     manually_qualified_by = as_qualification.user&.handle
 
@@ -166,7 +166,7 @@ class CitationsProject < ApplicationRecord
 
   def fulltext_qualification
     fs_qualification = screening_qualifications.find { |sq| sq.qualification_type[0..1] == 'fs' }
-    return '-----' unless fs_qualification
+    return '.....' unless fs_qualification
 
     manually_qualified_by = fs_qualification.user&.handle
 
@@ -183,7 +183,7 @@ class CitationsProject < ApplicationRecord
 
   def extraction_qualification
     e_qualification = screening_qualifications.find { |sq| sq.qualification_type[0..1] == 'e-' }
-    return '-----' unless e_qualification
+    return '.....' unless e_qualification
 
     manually_qualified_by = e_qualification.user&.handle
 
