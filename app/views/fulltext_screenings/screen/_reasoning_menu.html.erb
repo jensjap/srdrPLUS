@@ -419,7 +419,7 @@
               <div class="grid grid-cols-3 h-full">
                 <div
                   class="cursor-pointer border-r-8 bg-red-500 flex justify-center items-center rounded-tl-2xl"
-                  @click="fsr.label = -1; if (satisfiesReasoning()) { updateFsr('label') } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+                  @click="handleLabelButtonClick(-1)"
                   :class="(fsr.label == -1 || fsr.label == null) ? '' : 'saturate-[0.1]'"
                 >
                   <svg
@@ -438,7 +438,7 @@
                 <div :class="desktop ? 'grid grid-rows-1' : 'grid grid-rows-2'">
                   <div
                     class="cursor-pointer bg-srdrpurple flex justify-center items-center"
-                    @click="fsr.label = 0; if (satisfiesReasoning()) { updateFsr('label') } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+                    @click="handleLabelButtonClick(0)"
                     :class="(fsr.label == 0 || fsr.label == null) ? '' : 'saturate-[0.1]'"
                   >
                     <svg
@@ -459,7 +459,7 @@
                 </div>
                 <div
                   class="cursor-pointer border-l-8 bg-green-500 flex justify-center items-center rounded-tr-2xl"
-                  @click="fsr.label = 1; if (satisfiesReasoning()) { updateFsr('label') } else { toastr.warning('This label requires additional information.  Please see \'Required for labels\'.', '', { timeOut: 2000 }) }"
+                  @click="handleLabelButtonClick(1)"
                   :class="(fsr.label == 1 || fsr.label == null) ? '' : 'saturate-[0.1]'"
                 >
                   <svg
