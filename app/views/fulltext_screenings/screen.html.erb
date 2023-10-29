@@ -509,7 +509,9 @@
 
         this.fsr.id = data.fsr_id;
         if (this.fsr.id == null) {
-          const { check_condition, redirect_url } = await this.checkRole();
+          const screeningsType = 'fulltext';
+          const checkRoleResponse = await fetch(`/check_role/${screeningsType}/${this.project_id}`);
+          const { check_condition, redirect_url } = await checkRoleResponse.json();
           if (check_condition) {
             window.location.href = redirect_url;
           } else {
