@@ -20,6 +20,7 @@ class AbstractScreeningService < BaseScreeningService
         label: nil,
         citations_project: { screening_status: CitationsProject::AS_IN_CONFLICT }
       )
+      .order(id: :ASC)
     if abstract_screening.project.exclude_personal_conflicts
       unfinished_privileged_asrs = unfinished_privileged_asrs.where.not(user:)
     end
@@ -28,10 +29,12 @@ class AbstractScreeningService < BaseScreeningService
 
     citations_projects =
       CitationsProject
+      .left_joins(:abstract_screening_results)
       .where(
         project: abstract_screening.project,
         screening_status: CitationsProject::AS_IN_CONFLICT
       )
+      .order('abstract_screening_results.id ASC')
     if abstract_screening.project.exclude_personal_conflicts
       citations_projects = citations_projects.includes(:abstract_screening_results).filter do |cp|
         cp.abstract_screening_results.none? do |asr|
