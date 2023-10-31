@@ -155,7 +155,7 @@ class AbstractScreeningsController < ApplicationController
         flash.now[:notice] = 'There are no citations left to screen' if params[:screening_finished]
       end
       format.json do
-        @query = params[:query].present? ? params[:query] : '*'
+        @query = params[:query].to_s
         @order_by = params[:order_by]
         @sort = params[:sort].present? ? params[:sort] : nil
         @page = params[:page].present? ? params[:page].to_i : 1
@@ -179,10 +179,9 @@ class AbstractScreeningsController < ApplicationController
             end
           @query.slice!(query)
         end
-        @query = @query.present? ? @query : '*'
         @abstract_screening_results =
           AbstractScreeningResult
-          .search(@query,
+          .search(@query.present? ? @query : '*',
                   where: where_hash,
                   limit: per_page, offset: per_page * (@page - 1), order:, load: false)
         @total_pages = (@abstract_screening_results.total_count / per_page) + 1

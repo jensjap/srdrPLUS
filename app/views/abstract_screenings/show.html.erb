@@ -47,7 +47,7 @@
             <% else %>
             <button
               class="text-center mb-2 cursor-pointer w-full inline-flex items-center justify-center rounded-md border border-transparent bg-purple-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
-              @click="query = 'privileged:true'"
+              @click="query = 'privileged:true'; fetch_results()"
             >
               Nothing to Resolve - View Resolutions
             </button>
@@ -129,7 +129,8 @@
     </div>
     <div class="relative my-4">
       <input
-        x-model.debounce.500ms="query"
+        x-model="query"
+        @input.debounce.500ms="fetch_results()"
         @keyup.slash.window="$focus.focus($el)"
         class="!p-4 text-center"
         placeholder="To start searching, press '/'"
@@ -139,7 +140,7 @@
       <div
         x-show="query != ''"
         x-cloak
-        @click="query = ''"
+        @click="query = ''; fetch_results();"
         class="cursor-pointer absolute top-2 right-2"
       >
         Clear Results (X)
@@ -697,6 +698,7 @@
     Alpine.data("abstract_screening_results", () => ({
       results: null,
       query: "<%= params[:query] %>",
+      old_query: null,
       base_url: "/abstract_screenings/<%= params[:id] %>",
       pagination: {
         base_url: this.base_url,
@@ -704,20 +706,12 @@
         current_page: "",
         next_page: "",
         total_pages: "",
-        query: "<%= params[:query] %>",
         order_by: null,
         sort: null,
       },
 
       init() {
         this.fetch_results();
-        this.$watch("query", (value, oldValue) => {
-          this.pagination.current_page = 1;
-          this.pagination.query = value;
-          this.pagination.order_by = null;
-          this.pagination.sort = null;
-          this.fetch_results();
-        });
       },
 
       changeOrderBy(order_by) {
@@ -745,8 +739,8 @@
       query_url() {
         let url = this.base_url;
         let params = [];
-        if (this.pagination.query) {
-          params.push("query=" + escape(this.pagination.query));
+        if (this.query) {
+          params.push("query=" + escape(this.query));
         }
         if (this.pagination.order_by) {
           params.push("order_by=" + this.pagination.order_by);
@@ -759,6 +753,11 @@
       },
 
       async fetch_results() {
+        if (this.query != this.old_query) {
+          this.pagination.current_page = 1;
+          this.pagination.order_by = null;
+          this.pagination.sort = null;
+        }
         const response = await fetch(this.query_url(), {
           method: "GET",
           headers: {
@@ -769,6 +768,7 @@
         const data = await response.json();
         this.results = data.results;
         this.pagination = data.pagination;
+        this.old_query = this.query;
       },
 
       async deleteAsr(asr_id) {
