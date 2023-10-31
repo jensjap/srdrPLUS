@@ -219,6 +219,7 @@ class ScreeningDataExportJob < ApplicationJob
       wb.add_worksheet(name: "abstract screening id #{as.id}") do |sheet|
         headers = [
           'srdr citation id',
+          'accession number',
           'publication',
           'doi',
           'keywords',
@@ -257,6 +258,7 @@ class ScreeningDataExportJob < ApplicationJob
 
           row = [
             asr.citations_project.citation_id,
+            asr.citations_project.citation.accession_number_alts,
             publication,
             doi,
             keywords,
@@ -324,6 +326,7 @@ class ScreeningDataExportJob < ApplicationJob
       wb.add_worksheet(name: "fulltext screening id #{fs.id}") do |sheet|
         headers = [
           'srdr citation id',
+          'accession number',
           'publication',
           'doi',
           'keywords',
@@ -362,6 +365,7 @@ class ScreeningDataExportJob < ApplicationJob
 
           row = [
             fsr.citations_project.citation_id,
+            fsr.citations_project.citation.accession_number_alts,
             publication,
             doi,
             keywords,
