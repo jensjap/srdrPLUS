@@ -162,6 +162,10 @@ class ProjectPolicy < ApplicationPolicy
     project_leader?
   end
 
+  def machine_learning_results?
+    project_leader?
+  end
+
   def permitted_attributes
     if project_leader?
       FULL_PARAMS

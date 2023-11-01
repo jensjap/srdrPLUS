@@ -353,6 +353,8 @@ Rails.application.routes.draw do
     end
 
     resources :imports, only: %i[index new show]
+
+    get 'machine_learning_results', on: :member
   end
 
   post 'imports/:id/start', to: 'imports#start'

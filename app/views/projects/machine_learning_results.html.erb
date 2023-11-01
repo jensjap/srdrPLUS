@@ -1,0 +1,69 @@
+<script src="/echarts.min.js"></script>
+
+<div x-data="{ threshold: 0.5 }" class="bg-gray-100 p-8">
+  <h1 class="text-3xl font-bold mb-4">Machine Learning Results</h1>
+
+  <p class="text-xl mb-2">Latest Model Time: <span class="font-semibold"><%= @latest_model_time %></span></p>
+
+  <p class="text-xl mb-4">Highest Score: <span class="font-semibold"><%= @scores.max %></span></p>
+
+  <div class="flex items-center mb-4">
+    <label for="threshold" class="text-xl mr-4">Enter threshold:</label>
+    <input id="threshold" x-model="threshold" type="float" placeholder="Enter threshold" class="w-1/6 p-2 rounded border shadow" />
+  </div>
+
+  <p class="text-xl">
+    <span>Percentage of scores below the threshold:</span>
+    <span x-html="`${percentage_below_threshold(<%= @scores.to_json %>, threshold).toFixed(2)}%`"></span>
+  </p>
+
+  <!-- 畫長條圖 -->
+  <div id="barChart" style="width: 600px;height:400px;"></div>
+
+</div>
+
+<script>
+  // 原有的函數
+  function percentage_below_threshold(scores, threshold) {
+    const below = scores.filter(score => score < threshold).length;
+    return (below / scores.length) * 100;
+  }
+
+  // 新增的函數：計算每個區間的數量
+  function calculateBins(scores) {
+    const bins = new Array(10).fill(0);
+    scores.forEach(score => {
+      const index = Math.min(Math.floor(score * 10), 9);
+      bins[index]++;
+    });
+    return bins;
+  }
+
+  // 初始化 ECharts 實例
+  const myChart = echarts.init(document.getElementById('barChart'));
+
+  // 從後端獲取 @scores，然後進行數據分箱
+  const scores = <%= @scores.to_json %>;
+  const data = calculateBins(scores);
+
+  // 配置 ECharts 長條圖
+  const option = {
+    title: {
+      text: 'Score Distribution'
+    },
+    xAxis: {
+      type: 'category',
+      data: ['0-0.1', '0.1-0.2', '0.2-0.3', '0.3-0.4', '0.4-0.5', '0.5-0.6', '0.6-0.7', '0.7-0.8', '0.8-0.9', '0.9-1']
+    },
+    yAxis: {
+      type: 'value'
+    },
+    series: [{
+      data: data,
+      type: 'bar'
+    }]
+  };
+
+  // 使用配置項渲染長條圖
+  myChart.setOption(option);
+</script>

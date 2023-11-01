@@ -6,7 +6,7 @@ class ProjectsController < ApplicationController
     export_assignments_and_mappings import_assignments_and_mappings simple_import
     import_csv import_pubmed import_endnote import_ris
     confirm_deletion dedupe_citations create_citation_screening_extraction_form
-    create_full_text_screening_extraction_form
+    create_full_text_screening_extraction_form machine_learning_results
   ]
 
   before_action :skip_authorization, only: %i[
@@ -388,6 +388,12 @@ class ProjectsController < ApplicationController
       extraction_form: ExtractionForm.find_or_create_by(name: 'ef3')
     )
     flash[:success] = 'Success.'
+  end
+
+  def machine_learning_results
+    authorize(@project)
+    @scores = MachineLearningStatisticService.get_unscreened_prediction_scores(@project.id)
+    @latest_model_time = MachineLearningStatisticService.latest_model_time(@project.id)
   end
 
   private
