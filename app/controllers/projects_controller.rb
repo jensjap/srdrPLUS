@@ -393,6 +393,7 @@ class ProjectsController < ApplicationController
   def machine_learning_results
     authorize(@project)
     @scores = MachineLearningStatisticService.get_unscreened_prediction_scores(@project.id)
+    @labels_with_scores = MachineLearningStatisticService.get_labels_with_scores(@project.id)
     @latest_model_time = MachineLearningStatisticService.latest_model_time(@project.id)
   end
 
