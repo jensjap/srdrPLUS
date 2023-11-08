@@ -25,8 +25,8 @@
       </div>
 
       <p class="text-xl">
-        <span>Percentage of scores below the threshold:</span>
-        <span x-html="`${percentage_below_threshold(<%= @scores.to_json %>, threshold).toFixed(2)}%`"></span>
+        <span>Number of citations above the threshold:</span>
+        <span x-text="scores_above_threshold(<%= @scores.to_json %>, threshold)"></span>
       </p>
     </div>
     <div class="flex-1 p-8 bg-gray-200">
@@ -63,6 +63,10 @@
       });
     });
     return { TP, FP, TN, FN };
+  }
+
+  function scores_above_threshold(scores, threshold) {
+    return scores.filter(score => score >= threshold).length;
   }
 
   const barChart = echarts.init(document.getElementById('barChart'));
