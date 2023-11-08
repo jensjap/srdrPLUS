@@ -395,6 +395,7 @@ class ProjectsController < ApplicationController
     @scores = MachineLearningStatisticService.get_unscreened_prediction_scores(@project.id)
     @labels_with_scores = MachineLearningStatisticService.get_labels_with_scores(@project.id)
     @latest_model_time = MachineLearningStatisticService.latest_model_time(@project.id)
+    @rejection_counter = AbstractScreeningService.count_recent_consecutive_rejects(@project)
   end
 
   private
