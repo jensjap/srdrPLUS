@@ -11,9 +11,7 @@ class ScreeningDataExportJob < ApplicationJob
 
     raise 'Cannot attach exported file' unless exported_item.file.attached?
 
-    exported_item.external_url = Rails.application.routes.default_url_options[:host] + Rails.application.routes.url_helpers.rails_blob_path(
-      exported_item.file, only_path: true
-    )
+    exported_item.external_url = exported_item.download_url
     exported_item.save!
 
     ExportMailer.notify_screening_data_export_completion(exported_item.id).deliver_later
