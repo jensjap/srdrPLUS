@@ -106,4 +106,62 @@ class AbstractScreeningService < BaseScreeningService
 
     random_citation&.id
   end
+
+  def self.count_recent_consecutive_rejects(project)
+    last_reject_streak = 0
+    previous_result_rejected = true
+
+    grouped_results = project.abstract_screenings
+                             .includes(:abstract_screening_results)
+                             .flat_map do |screening|
+                               screening.abstract_screening_results.group_by do |result|
+                                 [result.citations_project_id, screening]
+                               end
+                             end
+
+    filtered_grouped_results = grouped_results.reject { |group| group.empty? }
+
+    sorted_results = filtered_grouped_results.flat_map do |group|
+      group.map do |(citation_project_id, screening), results|
+        next if results.nil? || results.empty?
+        earliest_result = results.min_by(&:created_at)
+        [earliest_result, screening]
+      end
+    end.compact.sort_by { |result, _| result.created_at }.reverse
+
+    sorted_results.each do |result, screening|
+      next if result.label.nil?
+
+      screening_type = if screening.single_screening?
+                         :single_screening
+                       elsif screening.double_screening?
+                         :double_screening
+                       elsif screening.all_screenings?
+                         :all_screenings
+                       end
+
+      is_rejected = case screening_type
+                    when :single_screening
+                      result.label == -1
+                    when :double_screening, :all_screenings
+                      results_with_same_citation_project_id = screening.abstract_screening_results.select { |r| r.citations_project_id == result.citations_project_id }
+                      results_with_same_citation_project_id.all? { |r| r.label == -1 }
+                    else
+                      false
+                    end
+
+      if is_rejected
+        if previous_result_rejected
+          last_reject_streak += 1
+        else
+          last_reject_streak = 1
+          previous_result_rejected = true
+        end
+      else
+        break
+      end
+    end
+
+    last_reject_streak
+  end
 end
