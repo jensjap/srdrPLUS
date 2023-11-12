@@ -10,9 +10,6 @@ class FulltextScreeningService < BaseScreeningService
         citations_project: { screening_status: CitationsProject::FS_IN_CONFLICT }
       )
       .order(id: :ASC)
-    if fulltext_screening.project.exclude_personal_conflicts
-      unfinished_privileged_fsrs = unfinished_privileged_fsrs.where.not(user:)
-    end
     unfinished_privileged_fsr = unfinished_privileged_fsrs.first
     return unfinished_privileged_fsr if unfinished_privileged_fsr
 

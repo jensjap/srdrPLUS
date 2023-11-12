@@ -21,9 +21,6 @@ class AbstractScreeningService < BaseScreeningService
         citations_project: { screening_status: CitationsProject::AS_IN_CONFLICT }
       )
       .order(id: :ASC)
-    if abstract_screening.project.exclude_personal_conflicts
-      unfinished_privileged_asrs = unfinished_privileged_asrs.where.not(user:)
-    end
     unfinished_privileged_asr = unfinished_privileged_asrs.first
     return unfinished_privileged_asr if unfinished_privileged_asr
 
