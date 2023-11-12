@@ -9,18 +9,18 @@ class FulltextScreeningService < BaseScreeningService
         label: nil,
         citations_project: { screening_status: CitationsProject::FS_IN_CONFLICT }
       )
-    # if fulltext_screening.project.exclude_personal_conflicts
-    #   unfinished_privileged_fsrs = unfinished_privileged_fsrs.where.not(user:)
-    # end
+      .order(id: :ASC)
     unfinished_privileged_fsr = unfinished_privileged_fsrs.first
     return unfinished_privileged_fsr if unfinished_privileged_fsr
 
     citations_projects =
       CitationsProject
+      .left_joins(:fulltext_screening_results)
       .where(
         project: fulltext_screening.project,
         screening_status: CitationsProject::FS_IN_CONFLICT
       )
+      .order('fulltext_screening_results.id ASC')
     if fulltext_screening.project.exclude_personal_conflicts
       citations_projects = citations_projects.includes(:fulltext_screening_results).filter do |cp|
         cp.fulltext_screening_results.none? do |fsr|
