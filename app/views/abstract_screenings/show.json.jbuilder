@@ -19,7 +19,6 @@ json.pagination do
   json.current_page @page
   json.next_page    @page >= @total_pages ? @page : @page + 1
   json.total_pages  @total_pages
-  json.query        @query
   json.order_by     @order_by
   json.sort         @sort
 end
