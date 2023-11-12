@@ -18,6 +18,19 @@ class ExportedItem < ApplicationRecord
   has_one_attached :file
 
   def download_url
-    Rails.application.routes.url_helpers.rails_blob_url(self.file, host: Rails.application.routes.default_url_options[:host])
+    case file.service.class.name
+    when 'ActiveStorage::Service::DiskService'
+      Rails.application.routes.url_helpers.rails_blob_url(
+        file,
+        host: Rails.application.routes.default_url_options[:host]
+      )
+
+    when 'ActiveStorage::Service::S3Service'
+      file.service.bucket.object(file.key).presigned_url(:get, expires_in: 1.week.in_seconds)
+
+    else
+      'Unknown ActiveStorage::Service'
+
+    end
   end
 end
