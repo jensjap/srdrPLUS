@@ -1086,9 +1086,7 @@ class AdvancedExportJob < ApplicationJob
     exported_item.file.attach(io: File.open(filename), filename:)
     raise 'Cannot attach exported file' unless exported_item.file.attached?
 
-    host = Rails.env.development? ? 'http://localhost:3000' : Rails.application.routes.default_url_options[:host]
-    exported_item.external_url =
-      host + Rails.application.routes.url_helpers.rails_blob_path(exported_item.file, only_path: true)
+    exported_item.external_url = exported_item.download_url
     exported_item.save!
     exported_item
   end
