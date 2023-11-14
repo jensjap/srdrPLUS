@@ -343,7 +343,7 @@ class Project < ApplicationRecord
   end
 
   def recent_exported_items
-    exported_items.where('created_at >= ?', 1.week.ago)
+    exported_items.where('created_at >= ?', 1.week.ago).order(created_at: :desc)
   end
 
   private
