@@ -44,6 +44,7 @@ class Project < ApplicationRecord
   after_create :create_default_member
 
   has_many :extractions, dependent: :destroy, inverse_of: :project
+  has_many :exported_items, dependent: :destroy
   has_many :abstract_screenings, dependent: :destroy, inverse_of: :project
   has_many :abstract_screening_results, through: :abstract_screenings
   has_many :fulltext_screenings, dependent: :destroy, inverse_of: :project
@@ -339,6 +340,10 @@ class Project < ApplicationRecord
     return 0 if extractions.count.eql?(0)
 
     ((extractions.count.to_f - no_extractions_with_data) / extractions.count * 100).round(1).to_s + '%'
+  end
+
+  def recent_exported_items
+    exported_items.where('created_at >= ?', 1.week.ago)
   end
 
   private
