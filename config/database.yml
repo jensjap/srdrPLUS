@@ -16,7 +16,6 @@ default: &default
   host: <%= ENV['SRDRPLUS_DATABASE_HOST'] %>
   username: <%= ENV['SRDRPLUS_DATABASE_USERNAME'] %>
   password: <%= ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
-  reconnect: true
   variables:
     sql_mode: TRADITIONAL
 
