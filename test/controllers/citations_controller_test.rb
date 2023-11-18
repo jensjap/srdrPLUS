@@ -7,8 +7,6 @@ class CitationsControllerTest < ActionDispatch::IntegrationTest
     @journal = journals(:one)
     @keyword_1 = keywords(:one)
     @keyword_2 = keywords(:two)
-    @author_1 = authors(:one)
-    @author_2 = authors(:two)
   end
 
   test "should get update" do
@@ -16,9 +14,8 @@ class CitationsControllerTest < ActionDispatch::IntegrationTest
         { citation: { name: @citation.name,
                       citation_type_id: @citation.citation_type_id,
                       pmid: @citation.pmid,
+                      authors: 'JinJenz, Bowerick Wowbagger, Grunthos the Flatulent, Slartibartfast, Hillman Hunter',
                       journal_attributes: { name: @journal.name },
-                      authors_attributes: { '0': { name: @author_1.name },
-                                            '1': { name: @author_2.name } },
                       keywords_attributes: { '0': { name: @keyword_1.name },
                                              '1': { name: @keyword_2.name } } } }
     assert_redirected_to edit_citation_url(@citation)

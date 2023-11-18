@@ -14,7 +14,7 @@ class Degree < ApplicationRecord
 
   after_create :record_suggestor
 
-  # before_destroy :raise_error
+  before_destroy :raise_error
 
   has_one :suggestion, as: :suggestable, dependent: :destroy
 

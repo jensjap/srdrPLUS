@@ -58,13 +58,19 @@ class ProfileTest < ActiveSupport::TestCase
   test 'submitting malformed organization_id tokens should raise' do
     params = { organization_id: 'loyloyloy' }
     assert_not_nil @profile_one.organization
-    proc { @profile_one.update(params) }.must_raise ActiveRecord::InvalidForeignKey
+    assert_raises(ActiveRecord::InvalidForeignKey) do
+      @profile_one.update(params)
+    end
+    # proc { @profile_one.update(params) }.must_raise ActiveRecord::InvalidForeignKey
   end
 
   test 'submitting malformed organization_id tokens (0 string) should raise' do
     params = { organization_id: '0' }
     assert_not_nil @profile_one.organization
-    proc { @profile_one.update(params) }.must_raise ActiveRecord::InvalidForeignKey
+    assert_raises(ActiveRecord::InvalidForeignKey) do
+      @profile_one.update(params)
+    end
+    # proc { @profile_one.update(params) }.must_raise ActiveRecord::InvalidForeignKey
   end
 
   test 'username should not have spaces' do

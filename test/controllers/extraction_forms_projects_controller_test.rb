@@ -7,7 +7,7 @@ class ExtractionFormsProjectsControllerTest < ActionDispatch::IntegrationTest
 
   test "should get edit" do
     get edit_extraction_forms_project_url(ExtractionFormsProject.first)
-    assert_response :success
+    assert_response 303
   end
 
 end

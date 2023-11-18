@@ -96,7 +96,7 @@ class ExtractionSupplyingService
           question = Question.find(question_id)
           type = question_row_column.question_row_column_type.id
 
-          value = eefpsqrcf.records[0]['name']
+          value = eefpsqrcf.records.present? ? eefpsqrcf.records[0]['name'] : ''
           value = nil if value.is_a?(String) && value.empty?
           next if value.nil? && type != 9
 

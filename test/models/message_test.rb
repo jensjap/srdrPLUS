@@ -26,7 +26,7 @@ class MessageTest < ActiveSupport::TestCase
   end
 
   test 'active message (last dispatche is stale) should return' do
-    User.current.dispatches.each { |d| d.update(created_at: 8.day.ago.to_s(:db)) }
+    User.current.dispatches.each { |d| d.update(created_at: 8.day.ago.to_formatted_s(:db)) }
     refute_nil @message.check_message
   end
 

@@ -1,3 +1,4 @@
+json.message 'Success'
 json.total_count @organizations.count
 json.incomplete_results false
 json.items do
