@@ -1,5 +1,5 @@
 class FulltextScreeningService < BaseScreeningService
-  def self.find_fsr_id_to_be_resolved(fulltext_screening, user, create_record = true)
+  def self.find_fsr_to_be_resolved(fulltext_screening, user, create_record = true)
     unfinished_privileged_fsrs =
       fulltext_screening
       .fulltext_screening_results
