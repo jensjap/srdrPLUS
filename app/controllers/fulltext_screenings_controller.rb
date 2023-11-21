@@ -60,7 +60,7 @@ class FulltextScreeningsController < ApplicationController
     respond_to do |format|
       format.json do
         fsr = if params[:resolution_mode]
-                FulltextScreeningResult.find_fsr_to_be_resolved(@fulltext_screening, current_user)
+                FulltextScreeningService.find_fsr_to_be_resolved(@fulltext_screening, current_user)
               elsif params[:fsr_id]
                 FulltextScreeningResult.find_by(id: params[:fsr_id])
               else
