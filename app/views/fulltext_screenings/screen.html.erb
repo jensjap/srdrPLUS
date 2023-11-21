@@ -339,6 +339,13 @@
             that.desktop = false;
           }
         }
+
+        fetch("/profile/get_labels_visibility")
+          .then((response) => response.json())
+          .then((data) => {
+            this.show_all_labels = data.show_all_labels;
+          });
+
         handleDeviceChange(smallDevice);
       },
 
@@ -536,6 +543,18 @@
         this.confirmationModal = true;
       },
 
+      toggleLabelsVisibility() {
+        this.show_all_labels = !this.show_all_labels;
+
+        fetch(
+          `/profile/toggle_labels_visibility?show_all_labels=${this.show_all_labels}`,
+          {
+            method: "POST",
+            headers,
+          }
+        );
+      },
+
       async updateReasonsSelection(reason) {
         reason.selected = !reason.selected;
         if (reason.selected) {
@@ -658,6 +677,7 @@
         }
         if (method == "GET") {
           this.fsr = data.fsr;
+          this.all_labels = data.all_labels;
           this.citation = data.citation;
           this.options = data.options;
           this.cps = data.cps;
