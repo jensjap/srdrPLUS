@@ -11,7 +11,7 @@
               A list of all results for citations that have been labeled.
             </p>
           </div>
-          <div class="flex-col items-end">
+          <div class="flex-col items-end md:w-96">
             <!-- prettier-ignore -->
             <% if FulltextScreeningService.find_citation_id(@fulltext_screening, current_user) %>
             <%= link_to('Continue Screening',
@@ -29,13 +29,38 @@
             </button>
             <% end %>
             <!-- prettier-ignore -->
+            <% if @projects_user.project_consolidator? %>
+            <!-- prettier-ignore -->
+            <% if FulltextScreeningService.find_fsr_to_be_resolved(@fulltext_screening, current_user, false) %>
+            <div class="w-full flex space-x-2">
+              <!-- prettier-ignore -->
+              <%= link_to(fulltext_screening_screen_path(@fulltext_screening,
+              resolution_mode: true), class: "text-center mb-2 cursor-pointer
+              items-center justify-center rounded-md border border-transparent
+              bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm
+              hover:bg-srdrpurple-light focus:outline-none focus:ring-2
+              focus:ring-indigo-500 focus:ring-offset-2 w-full
+              hover:no-underline hover:text-white focus:no-underline focus:text-white") do %>
+                Resolve Conflicts (<%= FulltextScreeningService.fsr_in_fsic_count(@fulltext_screening) %>)
+              <% end %>
+            </div>
+            <% else %>
+            <button
+              class="text-center mb-2 cursor-pointer w-full inline-flex items-center justify-center rounded-md border border-transparent bg-purple-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
+              @click="query = 'privileged:true'; fetch_results()"
+            >
+              Nothing to Resolve - View Resolutions
+            </button>
+            <% end %>
+            <!-- prettier-ignore -->
+            <% end %>
             <%= link_to('Back to Fulltext Screenings',
-            project_fulltext_screenings_path(@fulltext_screening.project), class:
-            "text-center cursor-pointer inline-flex items-center justify-center rounded-md
-            border border-transparent bg-gray-700 px-4 py-2 text-sm font-medium
-            text-white shadow-sm hover:bg-gray-500 focus:outline-none focus:ring-2
-            focus:ring-indigo-500 focus:ring-offset-2 w-full hover:no-underline
-            hover:text-white focus:no-underline focus:text-white") %>
+            project_fulltext_screenings_path(@fulltext_screening.project), class: "text-center mb-2
+            cursor-pointer inline-flex items-center justify-center rounded-md border
+            border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium
+            text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none
+            focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full
+            hover:no-underline hover:text-white focus:no-underline focus:text-white") %>
           </div>
         </div>
         <div class="flex flex-wrap lg:flex-nowrap gap-4">

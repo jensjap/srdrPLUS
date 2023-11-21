@@ -84,6 +84,7 @@ class FulltextScreeningsController < ApplicationController
     @fulltext_screening = FulltextScreening.find(params[:id])
     @project = @fulltext_screening.project
     authorize(@fulltext_screening)
+    @projects_user = ProjectsUser.find_by(user: current_user, project: @project)
     @nav_buttons.push('fulltext_screening', 'my_projects')
 
     respond_to do |format|
