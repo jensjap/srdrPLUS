@@ -25,6 +25,7 @@
       >
         Configure Reasons and Tags
       </button>
+      <!-- prettier-ignore -->
       <% if @project.leaders.include?(current_user) %>
       <%= link_to('Machine Learning Results',
       machine_learning_results_project_path(@project), class: "inline-flex
@@ -149,7 +150,7 @@
                     <!-- prettier-ignore -->
                     <% if ProjectsUser.find_by(user: current_user, project: @project).project_leader? || ProjectsUser.find_by(user: current_user, project: @project).project_consolidator? %>
                     <!-- prettier-ignore -->
-                    <% if AbstractScreeningService.find_asr_id_to_be_resolved(as, current_user, false) %>
+                    <% if AbstractScreeningService.find_asr_to_be_resolved(as, current_user, false) %>
                     <div class="w-full flex space-x-2">
                       <!-- prettier-ignore -->
                       <%= link_to(abstract_screening_screen_path(as,

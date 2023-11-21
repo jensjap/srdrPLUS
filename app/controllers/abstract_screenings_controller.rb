@@ -123,7 +123,7 @@ class AbstractScreeningsController < ApplicationController
     respond_to do |format|
       format.json do
         asr = if params[:resolution_mode]
-                AbstractScreeningService.find_asr_id_to_be_resolved(@abstract_screening, current_user)
+                AbstractScreeningService.find_asr_to_be_resolved(@abstract_screening, current_user)
               elsif params[:asr_id]
                 AbstractScreeningResult.find_by(id: params[:asr_id])
               else
