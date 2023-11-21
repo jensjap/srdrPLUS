@@ -121,37 +121,62 @@
                   </td>
 
                   <td class="flex flex-col items-center">
+                    <!-- prettier-ignore -->
                     <% if @project.leaders.include?(current_user) ||
                     !fs.exclusive_users || fs.users.include?(current_user) %>
-                    <!-- prettier-ignore -->
                     <% if FulltextScreeningService.find_citation_id(fs, current_user) %>
-                    <%= link_to('Continue Screening',
-                    fulltext_screening_screen_path(fs), class: "w-48 inline-flex
-                    items-center justify-center rounded-md border
-                    border-transparent bg-srdrpurple px-4 py-2 my-1 text-center
-                    text-sm font-medium text-white shadow-sm
-                    hover:bg-srdrpurple-light focus:outline-none focus:ring-2
-                    focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline
-                    hover:text-white focus:no-underline focus:text-white") %>
+                      <%= link_to('Continue Screening',
+                        fulltext_screening_screen_path(fs),
+                        class: "focus:no-underline focus:text-white w-full items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 my-1 text-center text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white")
+                      %>
                     <% else %>
                     <button
-                      class="w-48 inline-flex mb-2 cursor-not-allowed saturate-[0.25] items-center justify-center rounded-md border border-transparent bg-srdrpurple px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-srdrpurple-light focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:no-underline hover:text-white"
+                      class="w-full cursor-not-allowed items-center justify-center rounded-md border border-transparent bg-purple-900 opacity-80 px-4 py-2 my-1 text-center text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
                     >
-                      Nothing Left to Screen</button
-                    ><% end %>
+                      Nothing Left to Screen
+                    </button>
+                    <% end %>
                     <!-- prettier-ignore -->
+                    <% if (pu = ProjectsUser.find_by(user: current_user, project: @project)) && (pu.project_leader? || pu.project_consolidator?) %>
+                    <% if FulltextScreeningService.find_fsr_to_be_resolved(fs, current_user, false) %>
+                    <div class="w-full flex space-x-2">
+                      <!-- prettier-ignore -->
+                      <%= link_to(fulltext_screening_screen_path(fs,
+                      resolution_mode: true), class: "w-full items-center
+                      justify-center rounded-md border border-transparent
+                      bg-srdrpurple px-4 py-2 my-1 text-center text-sm
+                      font-medium text-white shadow-sm hover:bg-srdrpurple-light
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500
+                      focus:ring-offset-2 hover:no-underline hover:text-white focus:no-underline focus:text-white") do %>
+                        Resolve Conflicts (<%= FulltextScreeningService.fsr_in_fsic_count(fs) %>)
+                      <% end %>
+                    </div>
+                    <% else %>
+                    <div class="w-full flex space-x-2">
+                      <!-- prettier-ignore -->
+                      <%= link_to(fulltext_screening_path(fs, query: 'privileged:true'), class: "w-full items-center
+                      justify-center rounded-md border border-transparent
+                      bg-srdrpurple px-4 py-2 my-1 text-center text-sm
+                      font-medium text-white shadow-sm hover:bg-srdrpurple-light
+                      focus:outline-none focus:ring-2 focus:ring-indigo-500
+                      focus:ring-offset-2 hover:no-underline hover:text-white focus:no-underline focus:text-white") do %>
+                        Nothing to Resolve - View Resolutions
+                      <% end %>
+                    </div>
+                    <!-- prettier-ignore -->
+                    <% end %>
+                    <% end %>
                     <%= link_to('Show Results',
-                      fulltext_screening_path(fs), class: "w-48 inline-flex
+                      fulltext_screening_path(fs), class: "w-full
                       items-center justify-center rounded-md border
                       border-transparent bg-srdrpurple px-4 py-2 my-1
                       text-center text-sm font-medium text-white shadow-sm
                       hover:bg-srdrpurple-light focus:outline-none focus:ring-2
                       focus:ring-indigo-500 focus:ring-offset-2
                       hover:no-underline hover:text-white focus:no-underline focus:text-white") %>
-                    <!-- prettier-ignore -->
                     <% if @project.leaders.include?(current_user) %>
                     <%= link_to('Settings', edit_fulltext_screening_path(fs),
-                      class: "w-48 inline-flex items-center justify-center
+                      class: "w-full items-center justify-center
                       rounded-md border border-transparent bg-srdrpurple px-4
                       py-2 my-1 text-center text-sm font-medium text-white
                       shadow-sm hover:bg-srdrpurple-light focus:outline-none
