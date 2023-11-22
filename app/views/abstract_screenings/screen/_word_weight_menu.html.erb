@@ -57,9 +57,29 @@
           </svg>
         </button>
 
-        <div :class="desktop ? '' : 'fixed inset-5 overflow-y-scroll'">
+        <div :class="desktop ? '' : 'fixed inset-5 top-16 overflow-y-scroll'">
           <div class="mb-4">
-            <h1 class="text-xl flex items-center">Terms and Phrases</h1>
+            <div class="flex justify-between items-center">
+              <h1 class="text-xl flex items-center">Terms and Phrases</h1>
+              <button
+                type="button"
+                class="ml-2 group relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                role="switch"
+                @click="terms_and_phrases_settings = !terms_and_phrases_settings"
+              >
+                <span
+                  class="pointer-events-none absolute h-full w-full rounded-md bg-white"
+                ></span>
+                <span
+                  class="pointer-events-none absolute mx-auto h-4 w-9 rounded-full transition-colors duration-200 ease-in-out"
+                  :class="terms_and_phrases_settings ? 'bg-indigo-600' : 'bg-gray-200'"
+                ></span>
+                <span
+                  class="pointer-events-none absolute left-0 inline-block h-5 w-5 transform rounded-full border border-gray-200 bg-white shadow ring-0 transition-transform duration-200 ease-in-out"
+                  :class="terms_and_phrases_settings ? 'translate-x-5' : 'translate-x-0'"
+                ></span>
+              </button>
+            </div>
             <hr class="m-0" />
           </div>
           <template x-if="Object.keys(word_weights).length == 0">
