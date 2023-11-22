@@ -25,6 +25,7 @@ class Extraction < ApplicationRecord
   after_create :create_default_arms
   after_create :create_default_status
   after_save :evaluate_screening_status_citations_project
+  after_destroy :evaluate_screening_status_citations_project
 
   # create checksums without delay after create and update, since extractions/index would be incorrect.
   after_create do |extraction|
