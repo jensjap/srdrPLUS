@@ -100,8 +100,8 @@
                   </div>
                   <template x-for="cp in cps">
                     <div
-                      class="cursor-pointer flex space-x-1 border-b"
-                      :class="cp.fsr_id == fsr.id ? 'bg-yellow-100' : ''"
+                      class="cursor-pointer flex space-x-1 border-b hover:text-gray-600"
+                      :class="cp.fsr_id == fsr.id ? 'bg-yellow-100' : 'text-gray-400'"
                       @click="await getFsrId(cp.fsr_id); historyPanel = false;"
                     >
                       <div
