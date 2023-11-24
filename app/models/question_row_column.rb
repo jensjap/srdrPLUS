@@ -50,6 +50,16 @@ class QuestionRowColumn < ApplicationRecord
       ).name
   end
 
+  def extracted_data?
+    question_row_column_fields.any? do |qrcf|
+      qrcf.extractions_extraction_forms_projects_sections_question_row_column_fields.any? do |eefpsqrcf|
+        eefpsqrcf.records.any? do |record|
+          record.name.present?
+        end
+      end
+    end
+  end
+
   private
 
   def create_default_question_row_column_options

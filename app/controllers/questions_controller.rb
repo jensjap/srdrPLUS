@@ -19,7 +19,6 @@ class QuestionsController < ApplicationController
   # GET /extraction_forms_projects_sections/1/questions/edit
   def edit
     @project = @question.project
-    @extractions = @project.extractions
     render layout: !(params[:partial] == 'true')
   end
 

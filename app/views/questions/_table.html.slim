@@ -35,8 +35,8 @@
                                                                       include_blank: false,
                                                                       collection: QuestionRowColumnType::DEFAULT_QRC_TYPES,
                                                                       wrapper: 'horizontal_form',
-                                                                      disabled: @extractions.present?,
-                                                                      input_html: { title: @extractions.present? ? "Changing question types is not allowed when extraction(s) exist." : "" }
+                                                                      disabled: qrc_f.object.extracted_data?,
+                                                                      input_html: { title: qrc_f.object.extracted_data? ? "Extracted data detected! Modifying question type is not allowed when extracted data for this question exist. Please create a new question instead and transfer data or delete the question if it is no longer needed. WARNING: All associated data will be removed when the question is deleted." : "" }
 
 
                 = qrc_f.simple_fields_for(:question_row_columns_question_row_column_options) do |qrcqrco_f|
