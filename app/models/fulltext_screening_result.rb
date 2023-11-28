@@ -46,17 +46,21 @@ class FulltextScreeningResult < ApplicationRecord
   end
 
   def evaluate_screening_qualifications
-    return if privileged && label.nil?
+    manual_sqs = citations_project
+                 .screening_qualifications
+                 .where("qualification_type LIKE 'fs-%'")
+                 .where.not(user: nil)
 
-    if destroyed?
-      citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::FS_ACCEPTED).destroy_all
-      citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::FS_REJECTED).destroy_all
-    elsif privileged || (citations_project
-       .screening_qualifications
-       .where.not(user: nil)
-       .where("qualification_type LIKE 'fs-%'")
-       .blank? &&
-       citations_project_sufficiently_labeled?)
+    if manual_sqs.present? || (!privileged && citations_project.fulltext_screening_results.any?(&:privileged))
+      # evaluate screening status anyway
+    elsif destroyed?
+      citations_project.screening_qualifications.where("qualification_type LIKE 'fs-%'").where(user: nil).destroy_all
+      citations_project.fulltext_screening_results.each do |fsr|
+        next if fsr.id == id
+
+        fsr.evaluate_screening_qualifications
+      end
+    elsif privileged || citations_project_sufficiently_labeled?
       case label
       when 1
         citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::FS_REJECTED).destroy_all
@@ -65,6 +69,8 @@ class FulltextScreeningResult < ApplicationRecord
         citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::FS_ACCEPTED).destroy_all
         citations_project.screening_qualifications.find_or_create_by!(qualification_type: ScreeningQualification::FS_REJECTED)
       end
+    elsif label.try(:zero?) && citations_project.fulltext_screening_results.none?(&:privileged)
+      citations_project.screening_qualifications.where("qualification_type LIKE 'fs-%'").destroy_all
     end
 
     citations_project.evaluate_screening_status
@@ -91,13 +97,8 @@ class FulltextScreeningResult < ApplicationRecord
     end
     return false unless relevant_fsrs.all? { |fsr| fsr.label == 1 } || relevant_fsrs.all? { |fsr| fsr.label == -1 }
 
-    if fulltext_screening.double_screening? && relevant_fsrs.count == 2
-      true
-    elsif fulltext_screening.all_screenings? && relevant_fsrs.count == required_fsrs_pilot_count
-      true
-    else
-      false
-    end
+    (fulltext_screening.double_screening? && relevant_fsrs.count == 2) ||
+      (fulltext_screening.all_screenings? && relevant_fsrs.count == required_fsrs_pilot_count)
   end
 
   def search_data
