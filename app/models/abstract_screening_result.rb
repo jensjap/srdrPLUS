@@ -46,17 +46,21 @@ class AbstractScreeningResult < ApplicationRecord
   end
 
   def evaluate_screening_qualifications
-    return if privileged && label.nil?
+    manual_sqs = citations_project
+                 .screening_qualifications
+                 .where("qualification_type LIKE 'as-%'")
+                 .where.not(user: nil)
 
-    if destroyed?
-      citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::AS_ACCEPTED).destroy_all
-      citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::AS_REJECTED).destroy_all
-    elsif privileged || (citations_project
-       .screening_qualifications
-       .where.not(user: nil)
-       .where("qualification_type LIKE 'as-%'")
-       .blank? &&
-       citations_project_sufficiently_labeled?)
+    if manual_sqs.present? || (!privileged && citations_project.abstract_screening_results.any?(&:privileged))
+      # evaluate screening status anyway
+    elsif destroyed?
+      citations_project.screening_qualifications.where("qualification_type LIKE 'as-%'").where(user: nil).destroy_all
+      citations_project.abstract_screening_results.each do |asr|
+        next if asr.id == id
+
+        asr.evaluate_screening_qualifications
+      end
+    elsif privileged || citations_project_sufficiently_labeled?
       case label
       when 1
         citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::AS_REJECTED).destroy_all
@@ -65,6 +69,8 @@ class AbstractScreeningResult < ApplicationRecord
         citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::AS_ACCEPTED).destroy_all
         citations_project.screening_qualifications.find_or_create_by!(qualification_type: ScreeningQualification::AS_REJECTED)
       end
+    elsif label.try(:zero?) && citations_project.abstract_screening_results.none?(&:privileged)
+      citations_project.screening_qualifications.where("qualification_type LIKE 'as-%'").destroy_all
     end
 
     citations_project.evaluate_screening_status
@@ -91,13 +97,8 @@ class AbstractScreeningResult < ApplicationRecord
     end
     return false unless relevant_asrs.all? { |asr| asr.label == 1 } || relevant_asrs.all? { |asr| asr.label == -1 }
 
-    if abstract_screening.double_screening? && relevant_asrs.count == 2
-      true
-    elsif abstract_screening.all_screenings? && relevant_asrs.count == required_asrs_pilot_count
-      true
-    else
-      false
-    end
+    (abstract_screening.double_screening? && relevant_asrs.count == 2) ||
+      (abstract_screening.all_screenings? && relevant_asrs.count == required_asrs_pilot_count)
   end
 
   def search_data
