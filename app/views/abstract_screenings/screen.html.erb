@@ -612,7 +612,9 @@
 
       async process_textarea_keywords_and_phrases() {
         this.disable_textarea_keywords_and_phrases = true;
-        const lines = this.textarea_keywords_and_phrases.split("\n");
+        const lines = this.textarea_keywords_and_phrases
+          .split("\n")
+          .map((line) => line.trim());
         const unprocessable = [];
         for (const line of lines) {
           const lineParts = line.split(" ");
@@ -846,9 +848,12 @@
 
         this.asr.id = data.asr_id;
         if (this.asr.id == null) {
-          const screeningsType = 'abstract';
-          const checkRoleResponse = await fetch(`/check_role/${screeningsType}/${this.project_id}`);
-          const { check_condition, redirect_url } = await checkRoleResponse.json();
+          const screeningsType = "abstract";
+          const checkRoleResponse = await fetch(
+            `/check_role/${screeningsType}/${this.project_id}`
+          );
+          const { check_condition, redirect_url } =
+            await checkRoleResponse.json();
           if (check_condition) {
             window.location.href = redirect_url;
           } else {
@@ -921,9 +926,12 @@
       },
 
       async checkRole() {
-        const screeningsType = 'abstract';
-        const checkRoleResponse = await fetch(`/check_role/${screeningsType}/${this.project_id}`);
-        const { check_condition, redirect_url } = await checkRoleResponse.json();
+        const screeningsType = "abstract";
+        const checkRoleResponse = await fetch(
+          `/check_role/${screeningsType}/${this.project_id}`
+        );
+        const { check_condition, redirect_url } =
+          await checkRoleResponse.json();
         return { check_condition, redirect_url };
       },
 
