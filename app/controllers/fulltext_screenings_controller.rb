@@ -55,14 +55,16 @@ class FulltextScreeningsController < ApplicationController
   end
 
   def screen
-    fs = FulltextScreening.find(params[:fulltext_screening_id])
-    authorize(fs)
+    @fulltext_screening = FulltextScreening.find(params[:fulltext_screening_id])
+    authorize(@fulltext_screening)
     respond_to do |format|
       format.json do
-        fsr = if params[:fsr_id]
+        fsr = if params[:resolution_mode]
+                FulltextScreeningService.find_fsr_to_be_resolved(@fulltext_screening, current_user)
+              elsif params[:fsr_id]
                 FulltextScreeningResult.find_by(id: params[:fsr_id])
               else
-                FulltextScreeningService.find_or_create_unprivileged_sr(fs, current_user)
+                FulltextScreeningService.find_or_create_unprivileged_sr(@fulltext_screening, current_user)
               end
 
         return render json: { fsr_id: nil } unless fsr && (fsr.user == current_user ||
@@ -82,6 +84,7 @@ class FulltextScreeningsController < ApplicationController
     @fulltext_screening = FulltextScreening.find(params[:id])
     @project = @fulltext_screening.project
     authorize(@fulltext_screening)
+    @projects_user = ProjectsUser.find_by(user: current_user, project: @project)
     @nav_buttons.push('fulltext_screening', 'my_projects')
 
     respond_to do |format|

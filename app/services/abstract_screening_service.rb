@@ -10,7 +10,7 @@ class AbstractScreeningService < BaseScreeningService
       .count
   end
 
-  def self.find_asr_id_to_be_resolved(abstract_screening, user, create_record = true)
+  def self.find_asr_to_be_resolved(abstract_screening, user, create_record = true)
     unfinished_privileged_asrs =
       abstract_screening
       .abstract_screening_results
@@ -122,8 +122,9 @@ class AbstractScreeningService < BaseScreeningService
     filtered_grouped_results = grouped_results.reject { |group| group.empty? }
 
     sorted_results = filtered_grouped_results.flat_map do |group|
-      group.map do |(citation_project_id, screening), results|
+      group.map do |(_citation_project_id, screening), results|
         next if results.nil? || results.empty?
+
         earliest_result = results.min_by(&:created_at)
         [earliest_result, screening]
       end
@@ -144,21 +145,21 @@ class AbstractScreeningService < BaseScreeningService
                     when :single_screening
                       result.label == -1
                     when :double_screening, :all_screenings
-                      results_with_same_citation_project_id = screening.abstract_screening_results.select { |r| r.citations_project_id == result.citations_project_id }
+                      results_with_same_citation_project_id = screening.abstract_screening_results.select do |r|
+                        r.citations_project_id == result.citations_project_id
+                      end
                       results_with_same_citation_project_id.all? { |r| r.label == -1 }
                     else
                       false
                     end
 
-      if is_rejected
-        if previous_result_rejected
-          last_reject_streak += 1
-        else
-          last_reject_streak = 1
-          previous_result_rejected = true
-        end
+      break unless is_rejected
+
+      if previous_result_rejected
+        last_reject_streak += 1
       else
-        break
+        last_reject_streak = 1
+        previous_result_rejected = true
       end
     end
 

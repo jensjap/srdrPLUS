@@ -3,7 +3,7 @@ class AbstractScreeningsController < ApplicationController
 
   before_action :set_project,
                 only: %i[index new create citation_lifecycle_management export_screening_data kpis work_selection]
-  before_action :set_abstract_screening, only: %i[update_word_weight screen resolve]
+  before_action :set_abstract_screening, only: %i[update_word_weight screen]
   after_action :verify_authorized
 
   def new
@@ -123,7 +123,7 @@ class AbstractScreeningsController < ApplicationController
     respond_to do |format|
       format.json do
         asr = if params[:resolution_mode]
-                AbstractScreeningService.find_asr_id_to_be_resolved(@abstract_screening, current_user)
+                AbstractScreeningService.find_asr_to_be_resolved(@abstract_screening, current_user)
               elsif params[:asr_id]
                 AbstractScreeningResult.find_by(id: params[:asr_id])
               else

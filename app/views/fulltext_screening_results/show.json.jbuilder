@@ -38,7 +38,6 @@ cps = @screened_cps.reverse.map do |fsr|
   }
 end
 json.cps cps
-
 json.all_labels @all_labels
-
 json.project_id @fulltext_screening_result.project.id
+json.fsr_in_fsic_count FulltextScreeningService.fsr_in_fsic_count(@fulltext_screening)

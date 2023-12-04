@@ -1,5 +1,16 @@
 class FulltextScreeningService < BaseScreeningService
-  def self.find_fsr_id_to_be_resolved(fulltext_screening, user, create_record = true)
+  def self.fsr_in_fsic_count(fulltext_screening)
+    CitationsProject
+      .left_joins(:fulltext_screening_results)
+      .where(
+        project: fulltext_screening.project,
+        screening_status: CitationsProject::FS_IN_CONFLICT
+      )
+      .uniq
+      .count
+  end
+
+  def self.find_fsr_to_be_resolved(fulltext_screening, user, create_record = true)
     unfinished_privileged_fsrs =
       fulltext_screening
       .fulltext_screening_results
