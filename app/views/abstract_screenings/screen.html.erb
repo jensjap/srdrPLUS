@@ -67,15 +67,22 @@
       Continue Screening
     </button>
     <div class="h-24 mr-56 overflow-y-auto flex items-center">
-      <div @mouseup="checkSelection()" @touchend="checkSelection()">
+      <div
+        @mouseup="if (terms_and_phrases_settings) checkSelection()"
+        @touchend="if (terms_and_phrases_settings) checkSelection()"
+      >
         <div class="flex items-center">
           <h1 class="px-8 text-base font-bold leading-none">
             <template x-for="word in processedTitle">
               <span
                 :id="word.id"
-                :class="if (word.type != 'nonWord') return `cursor-pointer hover:bg-yellow-200 ${cssWordClass[word.weight]}`"
+                :class="if (terms_and_phrases_settings) {
+                  if (word.type != 'nonWord') return `cursor-pointer hover:bg-yellow-200 ${cssWordClass[word.weight]}`
+                }"
                 x-text="word.content"
-                @click="if (word.type != 'nonWord') weighWord(word.phrase)"
+                @click="if (terms_and_phrases_settings) {
+                  if (word.type != 'nonWord') weighWord(word.phrase)
+                }"
               ></span>
             </template>
           </h1>
@@ -91,15 +98,19 @@
       <div class="vertical-scroll-wrapper-item">
         <div
           class="px-8 leading-5"
-          @mouseup="checkSelection()"
-          @touchend="checkSelection()"
+          @mouseup="if (terms_and_phrases_settings) checkSelection()"
+          @touchend="if (terms_and_phrases_settings) checkSelection()"
         >
           <template x-for="word in processedAbstract">
             <span
               :id="word.id"
-              :class="if (word.type != 'nonWord') return `cursor-pointer hover:bg-yellow-200 ${cssWordClass[word.weight]}`"
+              :class="if (terms_and_phrases_settings) {
+                if (word.type != 'nonWord') return `cursor-pointer hover:bg-yellow-200 ${cssWordClass[word.weight]}`
+              }"
               x-text="word.content"
-              @click="if (word.type != 'nonWord') weighWord(word.phrase)"
+              @click="if (terms_and_phrases_settings) {
+                if (word.type != 'nonWord') weighWord(word.phrase)
+              }"
             ></span>
           </template>
         </div>
@@ -358,6 +369,7 @@
         "true",
       show_all_labels: false,
       project_id: null,
+      terms_and_phrases_settings: true,
 
       init() {
         const url = new URL(window.location.href);
