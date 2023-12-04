@@ -7,7 +7,7 @@
   </div>
   <div
     @click="createQuestion()"
-    class="bg-srdrpurple text-white rounded-md p-2 cursor-pointer text-center mt-2"
+    class="bg-srdrpurple text-white rounded-md p-2 cursor-pointer text-center mt-2 w-48"
   >
     Add Question
   </div>
@@ -140,7 +140,7 @@
   </table>
   <div
     @click="createQuestion()"
-    class="bg-srdrpurple text-white rounded-md p-2 cursor-pointer text-center"
+    class="bg-srdrpurple text-white rounded-md p-2 cursor-pointer text-center w-48"
   >
     Add Question
   </div>
@@ -323,7 +323,7 @@
           orderings[questionIndex] = {
             id: question.id,
             position: questionIndex,
-            table: 'questions'
+            table: "questions",
           };
         });
 
@@ -338,7 +338,7 @@
           },
           body: JSON.stringify({ orderings }),
         });
-        this.questions = []
+        this.questions = [];
         await this.fetch_questions();
         this.loading = false;
         toastr.success("Positions updated!", null, {
@@ -384,8 +384,8 @@
         toastr.success("Question was added!", null, {
           timeOut: 1000,
         });
-        const resp = await response.json()
-        this.edit_question_id = resp.id
+        const resp = await response.json();
+        this.edit_question_id = resp.id;
         this.fetchQuestionTable();
         this.question_modal = true;
         this.loading = false;
