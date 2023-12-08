@@ -170,7 +170,7 @@
                   @change="updateReasonsSelection(reason)"
                 />
                 <label
-                  class="border-b px-2 grow cursor-pointer text-xs"
+                  class="border-b px-2 grow cursor-pointer text-xs overflow-hidden text-ellipsis"
                   :for="`customreason-${reason.id}`"
                   x-text="reason.name"
                 ></label>
@@ -281,7 +281,7 @@
                   @change="updateTagsSelection(tag)"
                 />
                 <label
-                  class="border-b px-2 grow cursor-pointer text-xs"
+                  class="border-b px-2 grow cursor-pointer text-xs overflow-hidden text-ellipsis"
                   :for="`customtag-${tag.id}`"
                   x-text="tag.name"
                 ></label>
