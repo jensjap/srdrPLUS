@@ -419,4 +419,6 @@ Rails.application.routes.draw do
   get 'projects/:id/unlabeled_predictions', to: 'predictions#get_unlabeled_with_intervals'
 
   get 'check_role/:screenings_type/:project_id', to: 'role_check#check_role', as: 'check_role'
+
+  get '/projects_reasons/:screening_type/rejection_reasons', to: 'projects_reasons#get_default_rejection_reasons'
 end

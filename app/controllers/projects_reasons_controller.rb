@@ -38,4 +38,20 @@ class ProjectsReasonsController < ApplicationController
     projects_reason.destroy
     render json: projects_reason, status: 200
   end
+
+  def get_default_rejection_reasons
+    screening_type = params[:screening_type]
+    file_path = case screening_type
+                when 'abstract'
+                  'config/screening/as_default_rejection_reason.yml'
+                when 'fulltext'
+                  'config/screening/fs_default_rejection_reason.yml'
+                else
+                  return render json: { error: 'Invalid screening type' }, status: :bad_request
+                end
+
+    yaml_data = YAML.load_file(file_path)
+    reasons = yaml_data['rejection_reasons'].values.flatten.map { |r| r['description'] }
+    render json: reasons
+  end
 end

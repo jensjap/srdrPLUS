@@ -1,0 +1,26 @@
+rejection_reasons:
+  population:
+    - code: "P1"
+      description: "Not population of interest"
+
+  intervention_exposure:
+    - code: "IE1"
+      description: "Not intervention/exposure of interest"
+
+  outcome:
+    - code: "O1"
+      description: "No outcome of interest"
+
+  study_design:
+    - code: "SD1"
+      description: "Not study design of interest"
+    - code: "SD2"
+      description: "Follow-up duration too short"
+
+  setting:
+    - code: "S1"
+      description: "Not setting of interest"
+
+  sample_size:
+    - code: "N1"
+      description: "N analyzed too small"
