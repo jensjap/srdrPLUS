@@ -14,9 +14,7 @@ class BaseScreeningService
   end
 
   def self.find_citation_id(screening, user)
-    service_name = name
-    model, relation_name = determine_sr_model_and_relation(service_name)
-    unfinished_sr = find_unfinished_sr(screening, user, model, relation_name)
+    unfinished_sr = find_unfinished_sr(screening, user)
     return unfinished_sr.citation.id if unfinished_sr
 
     return nil if at_or_over_limit?(screening, user)
@@ -104,26 +102,34 @@ class BaseScreeningService
   end
 
   def self.get_screenings(project)
-    service_name = name
-    _, relation_name = determine_sr_model_and_relation(service_name)
-    relation = "#{relation_name}s".to_sym
-    project.send(relation)
+    project.send("#{sr_relation}s".to_sym)
   end
 
-  def self.determine_sr_model_and_relation(service_name)
-    case service_name
+  def self.sr_model
+    case name
     when 'AbstractScreeningService'
-      [AbstractScreeningResult, :abstract_screening]
+      AbstractScreeningResult
     when 'FulltextScreeningService'
-      [FulltextScreeningResult, :fulltext_screening]
+      FulltextScreeningResult
     else
-      raise "Unknown service name: #{service_name}"
+      raise "Unknown service name: #{name}"
     end
   end
 
-  def self.find_unfinished_sr(screening, user, model, relation_name)
-    model.find_by(
-      "#{relation_name}": screening,
+  def self.sr_relation
+    case name
+    when 'AbstractScreeningService'
+      :abstract_screening
+    when 'FulltextScreeningService'
+      :fulltext_screening
+    else
+      raise "Unknown service name: #{name}"
+    end
+  end
+
+  def self.find_unfinished_sr(screening, user)
+    sr_model.find_by(
+      "#{sr_relation}": screening,
       user:,
       label: nil,
       privileged: false
@@ -131,15 +137,12 @@ class BaseScreeningService
   end
 
   def self.find_or_create_unprivileged_sr(screening, user)
-    service_name = name
-    model, relation_name = determine_sr_model_and_relation(service_name)
-
     citation_id = find_citation_id(screening, user)
     return nil if citation_id.nil?
 
     cp = CitationsProject.find_by(project: screening.project, citation_id:)
-    model.find_or_create_by!(
-      "#{relation_name}": screening,
+    sr_model.find_or_create_by!(
+      "#{sr_relation}": screening,
       user:,
       citations_project: cp,
       privileged: false
@@ -160,22 +163,16 @@ class BaseScreeningService
   end
 
   def self.project_screened_citation_ids(project)
-    service_name = name
-    _, relation_name = determine_sr_model_and_relation(service_name)
-
-    relation = "#{relation_name}_results".to_sym
-    CitationsProject.joins(relation => relation_name.to_sym)
+    relation = "#{sr_relation}_results".to_sym
+    CitationsProject.joins(relation => sr_relation.to_sym)
                     .where(project:)
                     .map(&:citation_id)
   end
 
   def self.at_or_over_limit?(screening, user)
-    service_name = name
-    _, relation_name = determine_sr_model_and_relation(service_name)
-
-    relation = "#{relation_name}_results".to_sym
-    screening_type_method = "#{relation_name}_type".to_sym
-    model_name = service_name.sub('Service', '')
+    relation = "#{sr_relation}_results".to_sym
+    screening_type_method = "#{sr_relation}_type".to_sym
+    model_name = name.sub('Service', '')
     non_perpetual_const = "#{model_name}::NON_PERPETUAL".constantize
 
     return false unless non_perpetual_const.include?(screening.send(screening_type_method))
@@ -190,11 +187,7 @@ class BaseScreeningService
   end
 
   def self.other_users_screened_citation_ids(screening, user)
-    service_name = name
-    _, relation_name = determine_sr_model_and_relation(service_name)
-
-    relation = "#{relation_name}_results".to_sym
-    screening.send(relation)
+    screening.send("#{sr_relation}_results".to_sym)
              .includes(citations_project: :citation)
              .where(privileged: false)
              .where.not(user:)
@@ -203,11 +196,7 @@ class BaseScreeningService
   end
 
   def self.user_screened_citation_ids(screening, user)
-    service_name = name
-    _, relation_name = determine_sr_model_and_relation(service_name)
-
-    relation = "#{relation_name}_results".to_sym
-    screening.send(relation)
+    screening.send("#{sr_relation}_results".to_sym)
              .includes(citations_project: :citation)
              .where(privileged: false, user:)
              .map(&:citation)
@@ -229,7 +218,7 @@ class BaseScreeningService
     unscreened_citation_ids =
       CitationsProject
       .where(citation_id: unscreened_citation_ids)
-      .where(screening_status: CitationsProject::AS_PARTIALLY_SCREENED)
+      .where(screening_status: partially_screened_status)
       .map(&:citation_id)
 
     citation_id = unscreened_citation_ids.tally.select { |_, v| v == 1 }.keys.sample
@@ -237,6 +226,17 @@ class BaseScreeningService
       get_next_singles_citation_id(screening)
     else
       citation_id
+    end
+  end
+
+  def self.partially_screened_status
+    case name
+    when 'AbstractScreeningService'
+      CitationsProject::AS_PARTIALLY_SCREENED
+    when 'FulltextScreeningService'
+      CitationsProject::FS_PARTIALLY_SCREENED
+    else
+      raise "Unknown service name: #{name}"
     end
   end
 
@@ -267,11 +267,7 @@ class BaseScreeningService
   end
 
   def self.screen_citation_ids_by_expertise(screening, is_expert)
-    service_name = name
-    _, relation_name = determine_sr_model_and_relation(service_name)
-
-    relation = "#{relation_name}_results".to_sym
-    screening.send(relation)
+    screening.send("#{sr_relation}_results".to_sym)
              .joins(:citations_project)
              .group(:citations_project_id)
              .having('count(*)=1')
