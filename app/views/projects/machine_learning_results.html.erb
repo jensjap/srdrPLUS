@@ -9,12 +9,15 @@
 <div x-data="{ threshold: 0.5 }" class="bg-gray-100 p-8">
   <h1 class="text-3xl font-bold mb-4">Machine Learning Results</h1>
 
+  <p class="text-xl mb-2">Total Number of Citations: <span class="font-semibold"><%= @total_citation_number %></span></p>
   <p class="text-xl mb-2">Latest Model Time: <span class="font-semibold"><%= @latest_model_time %></span></p>
   <p class="text-xl mb-2">Rejection Counter: <span class="font-semibold"><%= @rejection_counter %></span></p>
 
   <div class="flex">
     <div class="flex-1 p-8 bg-gray-100">
       <h2 class="text-3xl font-bold mb-4">Unscreened Citation Predictions</h2>
+      <p class="text-xl mb-4">Percentage unscreened: <span class="font-semibold"><%= @percentage_unscreened %></span></p>
+      <p class="text-xl mb-4">Untrained citations: <span class="font-semibold"><%= @untrained_citation_number %> </span><span class="text-sm mb-4">(Models are trained once a day once labels for 100 citations have been recorded)</span></p>
       <p class="text-xl mb-4">Highest Score: <span class="font-semibold"><%= @scores.max %></span></p>
 
       <div id="barChart" style="width: 600px;height:400px;"></div>
