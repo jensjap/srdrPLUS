@@ -195,6 +195,7 @@
                                             x-model="option.sf_fulltext_record_id"
                                             @click="if ($el.checked) { createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name }) } else { deleteRecord(question.cells[row_index][column_index], { value: option.name }); option.followup = null }"
                                           />
+                                          &nbsp;
                                           <div
                                             class="min-w-[6rem] grow mr-2"
                                             x-text="option.name"
@@ -262,6 +263,7 @@
                                             x-model="question.cells[row_index][column_index].radio_selected"
                                             @change="createOrUpdateRecord(question.cells[row_index][column_index], { value: option.name, followup: option.followup })"
                                           />
+                                          &nbsp;
                                           <div
                                             class="min-w-[6rem] grow mr-2"
                                             x-text="option.name"
