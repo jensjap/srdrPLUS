@@ -965,6 +965,14 @@
       </div>
     </template>
   </div>
+  <div x-show="questions.length > 0" class="flex">
+    <button
+      @click="addQuestion()"
+      class="bg-srdrpurple text-white p-2 cursor-pointer"
+    >
+      Add Question
+    </button>
+  </div>
 </div>
 
 <script>
