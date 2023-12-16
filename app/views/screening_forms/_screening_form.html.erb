@@ -11,6 +11,7 @@
   @drop.prevent="drop()"
   @dragover.prevent="dragover($event)"
 >
+  <%= render 'shared/alert_modal' %>
   <div class="flex">
     <button
       @click="addQuestion()"
@@ -974,6 +975,8 @@
       dragging: null,
       dropping: null,
       screening_form: {},
+      isModalOpen: false,
+      modalContent: '',
       init() {
         this.getData();
       },
@@ -1147,103 +1150,104 @@
         event.dataTransfer.dropEffect = "move";
       },
       async deleteQuestion(question) {
-        if (
-          confirm(
-            `Are you sure you want to delete question: "${
-              question.name ? question.name : "unnamed"
-            }"`
-          )
-        ) {
-          const response = await fetch(`/sf_questions/${question.id}`, {
-            method: "DELETE",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
-            credentials: "same-origin",
+        this.openModal(`Are you sure you want to delete question: "${question.name ? question.name : "unnamed"}".<br> This action cannot be undone and might result in data loss.`, () => this.confirmDeleteQuestion(question));
+      },
+      async confirmDeleteQuestion(question) {
+        const response = await fetch(`/sf_questions/${question.id}`, {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+        });
+        if (response.status == 200) {
+          toastr.success("Question removed succesfully!", null, {
+            timeOut: 1000,
           });
-          if (response.status == 200) {
-            toastr.success("Question removed succesfully!", null, {
-              timeOut: 1000,
-            });
-            this.getData();
-          } else {
-            toastr.error("We've encountered an error", null, { timeOut: 1000 });
-          }
+          this.getData();
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
+        this.closeModal();
       },
       async deleteColumn(column) {
-        if (confirm(`Are you sure you want to delete this column?`)) {
-          const response = await fetch(`/sf_columns/${column.id}`, {
-            method: "DELETE",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
-            credentials: "same-origin",
+        this.openModal(`Are you sure you want to delete this column?<br> This action cannot be undone and might result in data loss.`, () => this.confirmDeleteColumn(column));
+      },
+      async confirmDeleteColumn(column) {
+        const response = await fetch(`/sf_columns/${column.id}`, {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+        });
+        if (response.status == 200) {
+          toastr.success("Column removed succesfully!", null, {
+            timeOut: 1000,
           });
-          if (response.status == 200) {
-            toastr.success("Column removed succesfully!", null, {
-              timeOut: 1000,
-            });
-            this.getData();
-          } else {
-            toastr.error("We've encountered an error", null, { timeOut: 1000 });
-          }
+          this.getData();
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
+        this.closeModal();
       },
       async deleteRow(row) {
-        if (confirm(`Are you sure you want to delete this column?`)) {
-          const response = await fetch(`/sf_rows/${row.id}`, {
-            method: "DELETE",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
-            credentials: "same-origin",
-          });
-          if (response.status == 200) {
-            toastr.success("Row removed succesfully!", null, {
-              timeOut: 1000,
-            });
-            this.getData();
-          } else {
-            toastr.error("We've encountered an error", null, { timeOut: 1000 });
-          }
-        }
+        this.openModal(`Are you sure you want to delete this row?<br> This action cannot be undone and might result in data loss.`, () => this.confirmDeleteRow(row));
       },
-
-      async deleteCellField(cell) {
-        if (confirm(`Are you sure you want to delete this field?`)) {
-          const response = await fetch(`/sf_cells/${cell.id}`, {
-            method: "DELETE",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
-            credentials: "same-origin",
+      async confirmDeleteRow(row) {
+        const response = await fetch(`/sf_rows/${row.id}`, {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+        });
+        if (response.status == 200) {
+          toastr.success("Row removed succesfully!", null, {
+            timeOut: 1000,
           });
-          if (response.status == 200) {
-            toastr.success("Field removed successfully!", null, {
-              timeOut: 1000,
-            });
-            this.getData();
-          } else {
-            toastr.error("We've encountered an error", null, { timeOut: 1000 });
-          }
+          this.getData();
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
+        this.closeModal();
+      },
+      async deleteCellField(cell) {
+        this.openModal(`Are you sure you want to delete this field?<br> This action cannot be undone and might result in data loss.`, () => this.confirmDeleteCellField(cell));
+      },
+      async confirmDeleteCellField(cell) {
+        const response = await fetch(`/sf_cells/${cell.id}`, {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+        });
+        if (response.status == 200) {
+          toastr.success("Field removed successfully!", null, {
+            timeOut: 1000,
+          });
+          this.getData();
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+        this.closeModal();
       },
       async checkExistingData(option) {
         const response = await fetch(
@@ -1436,6 +1440,16 @@
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
+      },
+      openModal(content, deleteAction) {
+        this.modalContent = content;
+        this.modalDeleteAction = () => deleteAction();
+        this.isModalOpen = true;
+        document.body.classList.add('overflow-hidden');
+      },
+      closeModal() {
+        this.isModalOpen = false;
+        document.body.classList.remove('overflow-hidden');
       },
     }));
   });
