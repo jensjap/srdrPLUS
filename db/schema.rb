@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_19_032241) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_18_104651) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1182,6 +1182,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_032241) do
     t.text "authors_of_report"
     t.boolean "auto_train", default: false
     t.boolean "exclude_personal_conflicts", default: true, null: false
+    t.boolean "as_reasons_tags", default: false, null: false
   end
 
   create_table "projects_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

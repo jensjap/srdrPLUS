@@ -222,11 +222,27 @@
       custom_reasons: [],
       custom_tags: [],
       project_id: null,
+      as_reasons_tags: false,
 
       async init() {
         this.project_id = <%= @project.id %>;
+        this.as_reasons_tags = <%= @project.as_reasons_tags %>;
         this.fetchReasons();
         this.fetchTags();
+      },
+
+      async toggleAddReasonsTags() {
+        this.as_reasons_tags = !this.as_reasons_tags
+        const response = await fetch(`/projects/${this.project_id}`, {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify({
+            project: {
+              as_reasons_tags: this.as_reasons_tags,
+            },
+          })
+        });
+        const data = await response.json();
       },
 
       async fetchReasons() {
@@ -306,22 +322,25 @@
       },
 
       async createDeafaultReasons() {
-        fetch('/projects_reasons/abstract/rejection_reasons')
-          .then(response => {
+        fetch("/projects_reasons/abstract/rejection_reasons")
+          .then((response) => {
             if (!response.ok) {
-              throw new Error('Network response was not ok');
+              throw new Error("Network response was not ok");
             }
             return response.json();
           })
-          .then(reasons => {
-            reasons.forEach(reason => {
-              this.addReasonModal = { type: 'custom_reasons', action: 'Create' };
+          .then((reasons) => {
+            reasons.forEach((reason) => {
+              this.addReasonModal = {
+                type: "custom_reasons",
+                action: "Create",
+              };
               this.newCustomValue = reason;
               this.createCustomValue();
             });
           })
-          .catch(error => {
-            console.error('Fetch error:', error);
+          .catch((error) => {
+            console.error("Fetch error:", error);
           });
       },
 

@@ -370,11 +370,12 @@
       show_all_labels: false,
       project_id: null,
       terms_and_phrases_settings: true,
+      as_reasons_tags: false,
 
-      init() {
+      async init() {
         const url = new URL(window.location.href);
         const asr_id = url.searchParams.get("asr_id");
-        this.getAsrId(asr_id);
+        await this.getAsrId(asr_id);
 
         const smallDevice = window.matchMedia("(min-width: 1024px)");
         smallDevice.addListener(handleDeviceChange);
@@ -394,6 +395,16 @@
           });
 
         handleDeviceChange(smallDevice);
+        this.fetchProjectInfo();
+      },
+
+      async fetchProjectInfo() {
+        const response = await fetch(`/projects/${this.project_id}`, {
+          method: "GET",
+          headers,
+        });
+        const data = await response.json();
+        this.as_reasons_tags = data.as_reasons_tags;
       },
 
       toggleWeighingScreen() {
@@ -872,7 +883,7 @@
             window.location.href = `/${screeningsType}_screenings/<%= params[:abstract_screening_id] %>?screening_finished=true`;
           }
         }
-        this.getAsr();
+        await this.getAsr();
       },
 
       async updateAsr(submissionType, originalLabel) {
@@ -884,7 +895,7 @@
       },
 
       async getAsr() {
-        this.fetchAsr("GET");
+        await this.fetchAsr("GET");
       },
 
       async fetchAsr(method, submissionType, originalLabel = null) {
