@@ -13,6 +13,7 @@ class ProjectPolicy < ApplicationPolicy
     :auto_train,
     :exclude_personal_conflicts,
     :as_reasons_tags,
+    :fs_reasons_tags,
     {
       mesh_descriptor_ids: []
     },

@@ -323,11 +323,12 @@
         "true",
       show_all_labels: false,
       project_id: null,
+      fs_reasons_tags: false,
 
-      init() {
+      async init() {
         const url = new URL(window.location.href);
         const fsr_id = url.searchParams.get("fsr_id");
-        this.getFsrId(fsr_id);
+        await this.getFsrId(fsr_id);
 
         const smallDevice = window.matchMedia("(min-width: 1024px)");
         smallDevice.addListener(handleDeviceChange);
@@ -347,6 +348,16 @@
           });
 
         handleDeviceChange(smallDevice);
+        this.fetchProjectInfo();
+      },
+
+      async fetchProjectInfo() {
+        const response = await fetch(`/projects/${this.project_id}`, {
+          method: "GET",
+          headers,
+        });
+        const data = await response.json();
+        this.fs_reasons_tags = data.fs_reasons_tags;
       },
 
       requireReasoning() {
@@ -633,7 +644,7 @@
             window.location.href = `/${screeningsType}_screenings/<%= params[:fulltext_screening_id] %>?screening_finished=true`;
           }
         }
-        this.getFsr();
+        await this.getFsr();
       },
 
       async updateFsr(submissionType, originalLabel) {
@@ -645,7 +656,7 @@
       },
 
       async getFsr() {
-        this.fetchFsr("GET");
+        await this.fetchFsr("GET");
       },
 
       async fetchFsr(method, submissionType, originalLabel = null) {
