@@ -1,7 +1,7 @@
 <div class="p-4 lg:p-8" x-data="fulltext_screenings_index">
   <!-- prettier-ignore -->
-  <%= render 'abstract_screenings/reasons_and_tags_modal' %>
-  <%= render 'abstract_screenings/screen/add_reasoning' %>
+  <%= render 'shared/screenings/reasons_and_tags_modal' %>
+  <%= render 'shared/screenings/add_reasoning' %>
   <div class="sm:flex sm:items-center">
     <div class="sm:flex-auto">
       <h1 class="text-xl font-bold">Fulltext Screenings</h1>
@@ -293,6 +293,26 @@
         await this.fetchTags();
         this.addReasonModal.on = false;
         this.newCustomValue = "";
+      },
+
+      async createDeafaultReasons() {
+        fetch('/projects_reasons/fulltext/rejection_reasons')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(reasons => {
+            reasons.forEach(reason => {
+              this.addReasonModal = { type: 'custom_reasons', action: 'Create' };
+              this.newCustomValue = reason;
+              this.createCustomValue();
+            });
+          })
+          .catch(error => {
+            console.error('Fetch error:', error);
+          });
       },
 
       async updateCustomValue(type, values) {

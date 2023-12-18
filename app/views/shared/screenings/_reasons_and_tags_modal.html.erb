@@ -57,7 +57,16 @@
           </div>
           <div>
             <div class="min-h-[100px]">
-              <div class="text-lg">Rejection Reasons</div>
+              <div class="flex justify-between items-center">
+                <div class="text-lg">Rejection Reasons</div>
+                <button
+                  type="button"
+                  class="cursor-pointer rounded-md bg-srdrpurple text-white px-4 py-2 hover:bg-srdrpurple-light mr-8 mb-4"
+                  @click="createDeafaultReasons()"
+                >
+                  Add Default Reasons
+                </button>
+              </div>
               <hr class="m-0 mb-2" />
               <template
                 x-for="(reason, index) in custom_reasons"

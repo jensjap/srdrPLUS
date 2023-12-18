@@ -101,7 +101,7 @@
                 x-on:input.debounce.500ms="checkLengthRestriction($event, 50); update_word_weight($event, word_weights[word_weight].id, word_weights[word_weight].weight)"
               />
               <div
-                class="flex justify-center items-center rounded text-white cursor-pointer bg-green-600 hover:bg-green-700"
+                class="flex justify-center items-center rounded text-white cursor-pointer bg-blue-600 hover:bg-blue-700"
                 :class="word_weights[word_weight] && word_weights[word_weight].weight == 2 ? '' : 'opacity-25'"
                 @click="sendWw(word_weight, 2, word_weights[word_weight].id)"
               >
@@ -135,7 +135,7 @@
                 </svg>
               </div>
               <div
-                class="flex justify-center items-center rounded text-white cursor-pointer bg-red-400 hover:bg-red-500"
+                class="flex justify-center items-center rounded text-white cursor-pointer bg-purple-400 hover:bg-purple-500"
                 :class="word_weights[word_weight] && word_weights[word_weight].weight == -1 ? '' : 'opacity-25'"
                 @click="sendWw(word_weight, -1, word_weights[word_weight].id)"
               >
