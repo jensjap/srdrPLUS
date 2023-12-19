@@ -23,6 +23,29 @@
 <div x-data="screeningFormData">
   <div class="py-2">
     <h1 class="text-xl">Screening Form</h1>
+    <div
+      class="text-xs flex items-end gap-x-1 font-bold"
+      x-show="options.no_reason_required || options.yes_reason_required || options.maybe_reason_required"
+    >
+      <div>
+        <span>Required for labels:</span>
+        <span
+          :class="(asr.label == 1 && !asr.form_complete) ? 'text-red-600' : ''"
+          x-show="options.yes_form_required"
+          >Yes</span
+        >
+        <span
+          :class="(asr.label == 0 && !asr.form_complete) ? 'text-red-600' : ''"
+          x-show="options.maybe_form_required"
+          >Maybe</span
+        >
+        <span
+          :class="(asr.label == -1 && !asr.form_complete) ? 'text-red-600' : ''"
+          x-show="options.no_form_required"
+          >No</span
+        >
+      </div>
+    </div>
     <hr class="m-0" />
   </div>
   <template x-if="questions == null">

@@ -443,6 +443,8 @@
             satisfactory = this.hasSomeReason() && satisfactory;
           if (this.options.no_note_required)
             satisfactory = this.hasSomeNote() && satisfactory;
+          if (this.options.no_form_required)
+            satisfactory = this.asr.form_complete && satisfactory;
         }
         if (this.asr.label == 0) {
           if (this.options.maybe_tag_required)
@@ -451,6 +453,8 @@
             satisfactory = this.hasSomeReason() && satisfactory;
           if (this.options.maybe_note_required)
             satisfactory = this.hasSomeNote() && satisfactory;
+          if (this.options.maybe_form_required)
+            satisfactory = this.asr.form_complete && satisfactory;
         }
         if (this.asr.label == 1) {
           if (this.options.yes_tag_required)
@@ -459,6 +463,8 @@
             satisfactory = this.hasSomeReason() && satisfactory;
           if (this.options.yes_note_required)
             satisfactory = this.hasSomeNote() && satisfactory;
+          if (this.options.yes_form_required)
+            satisfactory = this.asr.form_complete && satisfactory;
         }
         return satisfactory;
       },

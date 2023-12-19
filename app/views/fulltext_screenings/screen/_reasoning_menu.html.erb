@@ -140,9 +140,9 @@
               <div>
                 <span>Required for labels:</span>
                 <span
-                  :class="(fsr.label == -1 && !hasSomeReason()) ? 'text-red-600' : ''"
-                  x-show="options.no_reason_required"
-                  >No</span
+                  :class="(fsr.label == 1 && !hasSomeReason()) ? 'text-red-600' : ''"
+                  x-show="options.yes_reason_required"
+                  >Yes</span
                 >
                 <span
                   :class="(fsr.label == 0 && !hasSomeReason()) ? 'text-red-600' : ''"
@@ -150,9 +150,9 @@
                   >Maybe</span
                 >
                 <span
-                  :class="(fsr.label == 1 && !hasSomeReason()) ? 'text-red-600' : ''"
-                  x-show="options.yes_reason_required"
-                  >Yes</span
+                  :class="(fsr.label == -1 && !hasSomeReason()) ? 'text-red-600' : ''"
+                  x-show="options.no_reason_required"
+                  >No</span
                 >
               </div>
             </div>
@@ -222,9 +222,9 @@
               <div>
                 <span>Required for labels:</span>
                 <span
-                  :class="(fsr.label == -1 && !hasSomeTag()) ? 'text-red-600' : ''"
-                  x-show="options.no_tag_required"
-                  >No</span
+                  :class="(fsr.label == 1 && !hasSomeTag()) ? 'text-red-600' : ''"
+                  x-show="options.yes_tag_required"
+                  >Yes</span
                 >
                 <span
                   :class="(fsr.label == 0 && !hasSomeTag()) ? 'text-red-600' : ''"
@@ -232,9 +232,9 @@
                   >Maybe</span
                 >
                 <span
-                  :class="(fsr.label == 1 && !hasSomeTag()) ? 'text-red-600' : ''"
-                  x-show="options.yes_tag_required"
-                  >Yes</span
+                  :class="(fsr.label == -1 && !hasSomeTag()) ? 'text-red-600' : ''"
+                  x-show="options.no_tag_required"
+                  >No</span
                 >
               </div>
             </div>
@@ -301,9 +301,9 @@
               <div>
                 <span>Required for labels:</span>
                 <span
-                  :class="(fsr.label == -1 && !hasSomeNote()) ? 'text-red-600' : ''"
-                  x-show="options.no_note_required"
-                  >No</span
+                  :class="(fsr.label == 1 && !hasSomeNote()) ? 'text-red-600' : ''"
+                  x-show="options.yes_note_required"
+                  >Yes</span
                 >
                 <span
                   :class="(fsr.label == 0 && !hasSomeNote()) ? 'text-red-600' : ''"
@@ -311,9 +311,9 @@
                   >Maybe</span
                 >
                 <span
-                  :class="(fsr.label == 1 && !hasSomeNote()) ? 'text-red-600' : ''"
-                  x-show="options.yes_note_required"
-                  >Yes</span
+                  :class="(fsr.label == -1 && !hasSomeNote()) ? 'text-red-600' : ''"
+                  x-show="options.no_note_required"
+                  >No</span
                 >
               </div>
             </div>
