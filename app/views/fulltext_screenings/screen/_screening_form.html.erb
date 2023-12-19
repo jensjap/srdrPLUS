@@ -20,12 +20,12 @@
     right: 8px;
   }
 </style>
-<div x-data="screeningFormData" x-show="questions.length > 0">
+<div x-data="screeningFormData">
   <div class="py-2">
     <h1 class="text-xl">Screening Form</h1>
     <div
       class="text-xs flex items-end gap-x-1 font-bold"
-      x-show="options.no_reason_required || options.yes_reason_required || options.maybe_reason_required"
+      x-show="options.no_form_required || options.yes_form_required || options.maybe_form_required"
     >
       <div>
         <span>Required for labels:</span>
@@ -49,6 +49,28 @@
     <hr class="m-0" />
   </div>
   <div class="py-2">
+    <template x-if="questions == null">
+      <div class="py-2">Loading...</div>
+    </template>
+    <template x-if="questions && questions.length == 0">
+      <div class="py-2">
+        <div>No Screening Form</div>
+        <div class="flex justify-end items-center m-4 ml-0">
+          <input
+            class="cursor-pointer !m-0"
+            id="screening-form-complete-checkbox"
+            type="checkbox"
+            x-model="fsr.form_complete"
+            @click="$nextTick(() => { updateFsr('form_complete') });"
+          />
+          <label
+            class="grow select-none cursor-pointer mr-2"
+            for="screening-form-complete-checkbox"
+            >Screening Form Complete
+          </label>
+        </div>
+      </div>
+    </template>
     <template
       x-for="(question, question_index) in questions"
       :key="question.id"
