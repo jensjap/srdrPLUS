@@ -404,8 +404,8 @@ class ProjectsController < ApplicationController
                                     CitationsProject.find_by(citation_id: citation.id, project_id: @project.id)
                                     .abstract_screening_results.present?
                                   end.count
-    @percentage_unscreened = @unscreened_citation_number.to_f / @total_citation_number
-    @percentage_unscreened = @percentage_unscreened.round
+    @percentage_unscreened = (@unscreened_citation_number.to_f / @total_citation_number) * 100
+    @percentage_unscreened = @percentage_unscreened.round(1)
     @untrained_citation_number = MachineLearningDataSupplyingService.get_labeled_abstract_since_last_train(@project.id).size
   end
 
