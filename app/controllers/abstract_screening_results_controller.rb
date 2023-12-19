@@ -12,7 +12,7 @@ class AbstractScreeningResultsController < ApplicationController
         case params[:submissionType]
         when 'label'
           @abstract_screening_result.update(asr_params)
-          if @abstract_screening_result.privileged && @abstract_screening_result.label.zero?
+          if @abstract_screening_result.privileged && (@abstract_screening_result.label.nil? || @abstract_screening_result.label.zero?)
             @abstract_screening_result.touch
           end
         when 'notes'
