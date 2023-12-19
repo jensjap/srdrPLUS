@@ -200,7 +200,6 @@
                                             class="min-w-[6rem] grow mr-2"
                                             x-text="option.name"
                                           ></div>
-
                                         </div>
                                         <div class="w-24">
                                           <template x-if="option.with_followup">
@@ -268,7 +267,6 @@
                                             class="min-w-[6rem] grow mr-2"
                                             x-text="option.name"
                                           ></div>
-
                                         </div>
                                         <div class="w-24">
                                           <template x-if="option.with_followup">
@@ -349,6 +347,21 @@
               </table>
             </div>
           </div>
+        </div>
+        <hr />
+        <div class="flex justify-end items-center m-4">
+          <input
+            class="cursor-pointer !m-0"
+            id="screening-form-complete-checkbox"
+            type="checkbox"
+            x-model="fsr.form_complete"
+            @click="$nextTick(() => { updateFsr('form_complete') });"
+          />
+          <label
+            class="grow select-none cursor-pointer mr-2"
+            for="screening-form-complete-checkbox"
+            >Screening Form Complete
+          </label>
         </div>
       </div>
     </template>

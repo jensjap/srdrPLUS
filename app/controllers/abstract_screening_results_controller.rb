@@ -12,8 +12,8 @@ class AbstractScreeningResultsController < ApplicationController
         case params[:submissionType]
         when 'label'
           @abstract_screening_result.update(asr_params)
-        when 'notes'
-          @abstract_screening_result.update_column(:notes, params[:asr][:notes])
+        when 'notes', 'form_complete'
+          @abstract_screening_result.update_column(params[:submissionType], params[:asr][params[:submissionType]])
           @abstract_screening_result.reindex
         end
 

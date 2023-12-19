@@ -10,8 +10,8 @@ class FulltextScreeningResultsController < ApplicationController
         case params[:submissionType]
         when 'label'
           @fulltext_screening_result.update(fsr_params)
-        when 'notes'
-          @fulltext_screening_result.update_column(:notes, params[:fsr][:notes])
+        when 'notes', 'form_complete'
+          @fulltext_screening_result.update_column(params[:submissionType], params[:fsr][params[:submissionType]])
           @fulltext_screening_result.reindex
         end
 
