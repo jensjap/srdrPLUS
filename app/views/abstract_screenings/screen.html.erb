@@ -43,14 +43,15 @@
       class="absolute top-0 left-0 bg-gray-100 p-1 px-2 text-xs rounded-full z-[9] flex flex-row items-center cursor-pointer"
       :class="resolutionMode ? 'bg-srdrpurple text-white' : ''"
     >
-      <span x-text="resolutionMode ? 'Resolved Labels' : 'Your Labels'"></span>
+      <span x-text="resolutionMode ? 'Conflicts' : 'Your Labels'"></span>
+      &nbsp;
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
         stroke-width="1"
         stroke="currentColor"
-        class="w-3 h-3"
+        class="w-3 h-3 pt-1"
       >
         <path
           stroke-linecap="round"
