@@ -396,6 +396,16 @@ class ProjectsController < ApplicationController
     @labels_with_scores = MachineLearningStatisticService.get_labels_with_scores(@project.id)
     @latest_model_time = MachineLearningStatisticService.latest_model_time(@project.id)
     @rejection_counter = AbstractScreeningService.count_recent_consecutive_rejects(@project)
+    @total_citation_number = @project.citations.count()
+    @unscreened_citation_number = @project
+                                  .citations
+                                  .includes(:citations_projects)
+                                  .reject do |citation|
+                                    CitationsProject.find_by(citation_id: citation.id, project_id: @project.id)
+                                    .abstract_screening_results.present?
+                                  end.count
+    @percentage_unscreened = @unscreened_citation_number.to_f / @total_citation_number
+    @untrained_citation_number = MachineLearningDataSupplyingService.get_labeled_abstract_since_last_train(@project.id).size
   end
 
   private
