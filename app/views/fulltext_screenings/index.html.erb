@@ -213,23 +213,32 @@
       custom_tags: [],
       project_id: null,
       reasons_tags: false,
+      limit_one_reason: false,
 
       async init() {
         this.project_id = <%= @project.id %>;
         this.reasons_tags = <%= @project.fs_reasons_tags %>;
+        this.limit_one_reason = <%= @project.fs_limit_one_reason %>;
         this.fetchReasons();
         this.fetchTags();
       },
 
       async toggleAddReasonsTags() {
         this.reasons_tags = !this.reasons_tags;
+        this.updateProject({ fs_reasons_tags: this.reasons_tags });
+      },
+
+      async toggleLimitOneReason() {
+        this.limit_one_reason = !this.limit_one_reason;
+        this.updateProject({ fs_limit_one_reason: this.limit_one_reason });
+      },
+
+      async updateProject(params) {
         const response = await fetch(`/projects/${this.project_id}`, {
           method: "PATCH",
           headers,
           body: JSON.stringify({
-            project: {
-              fs_reasons_tags: this.reasons_tags,
-            },
+            project: params,
           }),
         });
         const data = await response.json();

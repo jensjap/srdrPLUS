@@ -56,7 +56,7 @@
             </button>
           </div>
           <div class="absolute left-0 top-0 pl-4 pt-4 sm:block">
-            <div class="flex justify-center items-center text-xs">
+            <div class="flex items-center text-xs">
               <button
                 type="button"
                 class="mr-2 group relative inline-flex h-2 w-10 flex-shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -84,6 +84,36 @@
               </button>
               <span class="cursor-pointer" @click="toggleAddReasonsTags()"
                 >Allow users to add reasons and tags during screening</span
+              >
+            </div>
+            <div class="flex items-center text-xs">
+              <button
+                type="button"
+                class="mr-2 group relative inline-flex h-2 w-10 flex-shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                role="switch"
+                aria-checked="false"
+                @click="toggleLimitOneReason()"
+              >
+                <span class="sr-only"
+                  >Allow users to add reasons and tags during screening</span
+                >
+                <span
+                  aria-hidden="true"
+                  class="pointer-events-none absolute h-full w-full rounded-md bg-white"
+                ></span>
+                <span
+                  aria-hidden="true"
+                  class="pointer-events-none absolute mx-auto h-2 w-9 rounded-full transition-colors duration-200 ease-in-out"
+                  :class="limit_one_reason ? 'bg-srdrpurple' : 'bg-gray-300'"
+                ></span>
+                <span
+                  aria-hidden="true"
+                  class="pointer-events-none absolute left-0 inline-block h-3 w-3 transform rounded-full border border-gray-300 bg-white shadow ring-0 transition-transform duration-200 ease-in-out"
+                  :class="limit_one_reason ? 'translate-x-7' : 'translate-x-0'"
+                ></span>
+              </button>
+              <span class="cursor-pointer" @click="toggleLimitOneReason()"
+                >Limit users to one reason</span
               >
             </div>
           </div>
