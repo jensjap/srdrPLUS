@@ -132,7 +132,12 @@
           </div>
 
           <div class="min-h-[100px]">
-            <div class="text-xl">Rejection Reasons</div>
+            <div class="text-xl">
+              Rejection Reasons
+              <span class="text-xs underline" x-show="as_limit_one_reason"
+                >(select only one)</span
+              >
+            </div>
             <div
               class="text-xs flex items-end gap-x-1 font-bold"
               x-show="options.no_reason_required || options.yes_reason_required || options.maybe_reason_required"

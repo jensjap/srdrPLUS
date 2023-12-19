@@ -324,6 +324,7 @@
       show_all_labels: false,
       project_id: null,
       fs_reasons_tags: false,
+      fs_limit_one_reason: false,
 
       async init() {
         const url = new URL(window.location.href);
@@ -358,6 +359,7 @@
         });
         const data = await response.json();
         this.fs_reasons_tags = data.fs_reasons_tags;
+        this.fs_limit_one_reason = data.fs_limit_one_reason;
       },
 
       requireReasoning() {
@@ -568,6 +570,24 @@
 
       async updateReasonsSelection(reason) {
         reason.selected = !reason.selected;
+        await this.fetchReasonsSelection(reason);
+
+        if (this.fs_limit_one_reason && reason.selected) {
+          for (const other_reason of this.fsr.custom_reasons) {
+            if (
+              reason.reason_id !== other_reason.reason_id &&
+              other_reason.selected
+            ) {
+              other_reason.selected = !other_reason.selected;
+              await this.fetchReasonsSelection(other_reason);
+            }
+          }
+        }
+
+        await this.getFsr();
+      },
+
+      async fetchReasonsSelection(reason) {
         if (reason.selected) {
           await fetch(
             `/fulltext_screening_results/${this.fsr.id}/fulltext_screening_results_reasons`,
@@ -579,7 +599,6 @@
               }),
             }
           );
-          this.getFsr();
         } else {
           await fetch(
             `/fulltext_screening_results_reasons/${reason.selected_id}`,
