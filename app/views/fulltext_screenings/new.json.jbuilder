@@ -11,6 +11,7 @@ json.fulltext_screening do
   json.all_tag @fulltext_screening.yes_tag_required && @fulltext_screening.no_tag_required && @fulltext_screening.maybe_tag_required
   json.all_reason @fulltext_screening.no_reason_required && @fulltext_screening.maybe_reason_required
   json.all_note @fulltext_screening.yes_note_required && @fulltext_screening.no_note_required && @fulltext_screening.maybe_note_required
+  json.all_form @fulltext_screening.yes_form_required && @fulltext_screening.no_form_required && @fulltext_screening.maybe_form_required
   json.no_of_citations @fulltext_screening.no_of_citations
   json.exclusive_users @fulltext_screening.exclusive_users
   json.yes_tag @fulltext_screening.yes_tag_required
@@ -22,6 +23,9 @@ json.fulltext_screening do
   json.yes_note @fulltext_screening.yes_note_required
   json.no_note @fulltext_screening.no_note_required
   json.maybe_note @fulltext_screening.maybe_note_required
+  json.yes_form @fulltext_screening.yes_form_required
+  json.no_form @fulltext_screening.no_form_required
+  json.maybe_form @fulltext_screening.maybe_form_required
   json.hide_author @fulltext_screening.hide_author
   json.hide_journal @fulltext_screening.hide_journal
   json.user_ids do

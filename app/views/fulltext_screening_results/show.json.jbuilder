@@ -27,6 +27,9 @@ json.options do
   json.yes_note_required @fulltext_screening.yes_note_required
   json.no_note_required @fulltext_screening.no_note_required
   json.maybe_note_required @fulltext_screening.maybe_note_required
+  json.yes_form_required @fulltext_screening.yes_form_required
+  json.no_form_required @fulltext_screening.no_form_required
+  json.maybe_form_required @fulltext_screening.maybe_form_required
 end
 cps = @screened_cps.reverse.map do |fsr|
   {

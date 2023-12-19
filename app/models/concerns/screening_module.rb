@@ -56,25 +56,33 @@ module ScreeningModule
 
   def tag_options
     reqs = []
-    reqs << 'Yes' if yes_tag_required
-    reqs << 'No' if no_tag_required
+    reqs << 'Include' if yes_tag_required
+    reqs << 'Reject' if no_tag_required
     reqs << 'Maybe' if maybe_tag_required
     reqs
   end
 
   def reason_options
     reqs = []
-    reqs << 'Yes' if yes_reason_required
-    reqs << 'No' if no_reason_required
+    reqs << 'Include' if yes_reason_required
+    reqs << 'Reject' if no_reason_required
     reqs << 'Maybe' if maybe_reason_required
     reqs
   end
 
   def note_options
     reqs = []
-    reqs << 'Yes' if yes_note_required
-    reqs << 'No' if no_note_required
+    reqs << 'Include' if yes_note_required
+    reqs << 'Reject' if no_note_required
     reqs << 'Maybe' if maybe_note_required
+    reqs
+  end
+
+  def form_options
+    reqs = []
+    reqs << 'Include' if yes_form_required
+    reqs << 'Reject' if no_form_required
+    reqs << 'Maybe' if maybe_form_required
     reqs
   end
 end
