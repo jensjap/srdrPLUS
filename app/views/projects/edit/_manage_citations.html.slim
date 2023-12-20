@@ -3,6 +3,10 @@
     div.columns.medium-12
       = link_to " (Dedupe citations in this project)", dedupe_citations_project_path(@project), method: :POST
 
+div.row#btm-anchor style="margin: 10px 0 0 0;"
+  div.columns.medium-12
+    a onclick="$('#add_citation_button').trigger('click')" href="#add_citation" Add Citation
+
 div.row style="margin: 0;"
   div.columns.medium-9
     = simple_form_for @project do |form_project|
@@ -87,6 +91,7 @@ div.row style="margin: 0;"
 
 div.row#btm-anchor style="margin: 10px 0 0 0;"
   div.columns.medium-12
+    div#add_citation style="display: block; position: relative; top: -180px; visibility: hidden;"
     = simple_form_for( @project,
                        url: project_path(@project),
                        html: { id: 'citations-form' } ) do |f|
@@ -94,4 +99,4 @@ div.row#btm-anchor style="margin: 10px 0 0 0;"
       = f.hidden_field :redirect_path, value: project_citations_path(@project)
 
       div
-        = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/citations_project_fields'
+        = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/citations_project_fields', id: 'add_citation_button'

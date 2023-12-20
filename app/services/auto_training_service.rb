@@ -3,11 +3,15 @@ class AutoTrainingService
   URL = ENV['ML_SERVER']
 
   def self.check_and_train_and_predict(x)
-    Project.where(auto_train: true).each do |project|
+    Project.all.each do |project|
+      next unless project.abstract_screening_results.exists?
+
+      labeled_data = MachineLearningDataSupplyingService.get_labeled_abstract_since_last_train(project.id)
+
       retries = 0
 
       begin
-        new_labels_count = MachineLearningDataSupplyingService.get_labeled_abstract_since_last_train(project.id).size
+        new_labels_count = labeled_data.size
         last_train_time = project.ml_models_projects.order(created_at: :desc).first&.created_at
         days_since_last_train = (Time.zone.now - (last_train_time || Time.zone.at(0))) / 1.day
 

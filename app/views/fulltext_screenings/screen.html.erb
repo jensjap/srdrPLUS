@@ -5,7 +5,7 @@
   @keyup.escape.window="closeAllModals()"
 >
   <!-- prettier-ignore -->
-  <%= render 'fulltext_screenings/screen/add_reasoning' %>
+  <%= render 'shared/screenings/add_reasoning' %>
   <%= render 'fulltext_screenings/screen/confirmation_modal' %>
   <%= render 'fulltext_screenings/screen/history_panel' %>
   <div
@@ -33,14 +33,15 @@
       class="absolute top-0 left-0 bg-gray-100 p-1 px-2 text-xs rounded-full z-[9] flex flex-row items-center cursor-pointer"
       :class="resolutionMode ? 'bg-srdrpurple text-white' : ''"
     >
-      <span x-text="resolutionMode ? 'Resolved Labels' : 'Your Labels'"></span>
+      <span x-text="resolutionMode ? 'Conflicts' : 'Your Labels'"></span>
+      &nbsp;
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
         stroke-width="1"
         stroke="currentColor"
-        class="w-3 h-3"
+        class="w-3 h-3 pt-1"
       >
         <path
           stroke-linecap="round"
@@ -215,10 +216,32 @@
             </div>
           </template>
           <template x-if="resolutionMode">
-            <div
-              class="cursor-not-allowed bg-gray-900 text-xs text-center font-bold flex justify-center items-center"
-              x-text="`Conflicts left: ${fsr_in_fsic_count}`"
-            ></div>
+            <div class="flex flex-col">
+              <div
+                class="bg-gray-900 text-xs text-center font-bold flex justify-center items-center"
+                x-text="`Conflicts left: ${fsr_in_fsic_count ? fsr_in_fsic_count : '...'}`"
+              ></div>
+              <div
+                class="grow cursor-pointer bg-srdrpurple flex justify-center items-center"
+                @click="handleLabelButtonClick(0)"
+                :class="(fsr.label == 0 || fsr.label == null) ? '' : 'saturate-[0.1]'"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  class="w-10 h-10"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M3 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062A1.125 1.125 0 013 16.81V8.688zM12.75 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062a1.125 1.125 0 01-1.683-.977V8.688z"
+                  />
+                </svg>
+              </div>
+            </div>
           </template>
           <div
             class="cursor-pointer border-t-2 bg-gray-500 flex justify-center items-center"
@@ -308,10 +331,10 @@
       fsr_in_fsic_count: null,
       cps: [],
       cssWordClass: {
-        2: "text-green-500 font-black",
-        1: "text-green-500",
+        2: "text-blue-500 font-black",
+        1: "text-green-500 font-black",
         0: "",
-        "-1": "text-red-500",
+        "-1": "text-purple-500 font-black",
         "-2": "text-red-500 font-black",
       },
       textarea_keywords_and_phrases: "",
@@ -672,9 +695,6 @@
         const response = await fetch(url, customHeaders);
         const data = await response.json();
 
-        if (submissionType === "label" && originalLabel === null) {
-          return this.getFsrId();
-        }
         if (method == "GET") {
           this.fsr = data.fsr;
           this.all_labels = data.all_labels;
@@ -683,6 +703,8 @@
           this.cps = data.cps;
           this.fsr_in_fsic_count = data.fsr_in_fsic_count;
           this.project_id = data.project_id;
+        } else {
+          return this.getFsrId();
         }
         this.updateLink();
       },
