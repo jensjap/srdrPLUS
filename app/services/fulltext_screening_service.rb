@@ -44,7 +44,7 @@ class FulltextScreeningService < BaseScreeningService
       .order('fulltext_screening_results.id ASC')
     citations_projects = citations_projects.includes(:fulltext_screening_results).filter do |cp|
       cp.fulltext_screening_results.none? do |fsr|
-        fsr.privileged && fsr.label.zero?
+        fsr.privileged && fsr.label&.zero?
       end
     end
     if fulltext_screening.project.exclude_personal_conflicts
