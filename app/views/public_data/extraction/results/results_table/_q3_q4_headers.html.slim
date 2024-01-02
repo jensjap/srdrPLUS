@@ -11,7 +11,7 @@ tr
   th.bg-lightgreen.vertical
   th.bg-lightgreen.freeze
   - arms.sort_by { |eefpst1| eefpst1.pos }.each do |arm|
-    th.bg-lightgreen = arm.type1.name
+    th.bg-lightgreen title="#{arm.type1.description}" = arm.type1.name
 
   th.bg-lightpink.freeze
   - bac_rss.comparisons.each do |bac|
