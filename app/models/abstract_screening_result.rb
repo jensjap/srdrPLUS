@@ -68,6 +68,9 @@ class AbstractScreeningResult < ApplicationRecord
       when -1
         citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::AS_ACCEPTED).destroy_all
         citations_project.screening_qualifications.find_or_create_by!(qualification_type: ScreeningQualification::AS_REJECTED)
+      when 0
+        citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::AS_ACCEPTED).destroy_all
+        citations_project.screening_qualifications.where(qualification_type: ScreeningQualification::AS_REJECTED).destroy_all
       end
     elsif label.try(:zero?) && citations_project.abstract_screening_results.none?(&:privileged)
       citations_project.screening_qualifications.where("qualification_type LIKE 'as-%'").destroy_all

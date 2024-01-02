@@ -13,6 +13,7 @@ class MachineLearningDataSupplyingService
 
   def self.get_labeled_abstract(project_id)
     project = Project.find(project_id)
+    return [] unless project.abstract_screening_results.exists?
 
     project_data = project.abstract_screening_results
                           .includes(citations_project: :citation)

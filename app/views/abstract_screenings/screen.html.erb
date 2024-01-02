@@ -43,14 +43,15 @@
       class="absolute top-0 left-0 bg-gray-100 p-1 px-2 text-xs rounded-full z-[9] flex flex-row items-center cursor-pointer"
       :class="resolutionMode ? 'bg-srdrpurple text-white' : ''"
     >
-      <span x-text="resolutionMode ? 'Resolved Labels' : 'Your Labels'"></span>
+      <span x-text="resolutionMode ? 'Conflicts' : 'Your Labels'"></span>
+      &nbsp;
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
         stroke-width="1"
         stroke="currentColor"
-        class="w-3 h-3"
+        class="w-3 h-3 pt-1"
       >
         <path
           stroke-linecap="round"
@@ -255,10 +256,32 @@
             </div>
           </template>
           <template x-if="resolutionMode">
-            <div
-              class="cursor-not-allowed bg-gray-900 text-xs text-center font-bold flex justify-center items-center"
-              x-text="`Conflicts left: ${asr_in_asic_count}`"
-            ></div>
+            <div class="flex flex-col">
+              <div
+                class="bg-gray-900 text-xs text-center font-bold flex justify-center items-center"
+                x-text="`Conflicts left: ${asr_in_asic_count ? asr_in_asic_count : '...'}`"
+              ></div>
+              <div
+                class="grow cursor-pointer bg-srdrpurple flex justify-center items-center"
+                @click="handleLabelButtonClick(0)"
+                :class="(asr.label == 0 || asr.label == null) ? '' : 'saturate-[0.1]'"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  class="w-10 h-10"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M3 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062A1.125 1.125 0 013 16.81V8.688zM12.75 8.688c0-.864.933-1.405 1.683-.977l7.108 4.062a1.125 1.125 0 010 1.953l-7.108 4.062a1.125 1.125 0 01-1.683-.977V8.688z"
+                  />
+                </svg>
+              </div>
+            </div>
           </template>
           <div
             class="cursor-pointer border-t-2 bg-gray-500 flex justify-center items-center"
@@ -921,9 +944,6 @@
         const response = await fetch(url, customHeaders);
         const data = await response.json();
 
-        if (submissionType === "label" && originalLabel === null) {
-          return this.getAsrId();
-        }
         if (method === "GET") {
           this.asr = data.asr;
           this.all_labels = data.all_labels;
@@ -935,6 +955,8 @@
           this.processWeights("title", "processedTitle");
           this.processWeights("abstract", "processedAbstract");
           this.project_id = data.project_id;
+        } else {
+          return this.getAsrId();
         }
         this.updateLink();
       },

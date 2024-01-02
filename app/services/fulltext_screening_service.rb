@@ -21,6 +21,16 @@ class FulltextScreeningService < BaseScreeningService
         citations_project: { screening_status: CitationsProject::FS_IN_CONFLICT }
       )
       .order(id: :ASC)
+    skipped_privileged_fsrs =
+      fulltext_screening
+      .fulltext_screening_results
+      .includes(:citations_project)
+      .where(
+        privileged: true,
+        label: 0,
+        citations_project: { screening_status: CitationsProject::FS_IN_CONFLICT }
+      )
+      .order(updated_at: :ASC)
     unfinished_privileged_fsr = unfinished_privileged_fsrs.first
     return unfinished_privileged_fsr if unfinished_privileged_fsr
 
@@ -32,6 +42,11 @@ class FulltextScreeningService < BaseScreeningService
         screening_status: CitationsProject::FS_IN_CONFLICT
       )
       .order('fulltext_screening_results.id ASC')
+    citations_projects = citations_projects.includes(:fulltext_screening_results).filter do |cp|
+      cp.fulltext_screening_results.none? do |fsr|
+        fsr.privileged && fsr.label&.zero?
+      end
+    end
     if fulltext_screening.project.exclude_personal_conflicts
       citations_projects = citations_projects.includes(:fulltext_screening_results).filter do |cp|
         cp.fulltext_screening_results.none? do |fsr|
@@ -39,6 +54,7 @@ class FulltextScreeningService < BaseScreeningService
         end
       end
     end
+    citations_projects += skipped_privileged_fsrs.map(&:citations_project)
     citations_project = citations_projects.first
 
     return nil unless citations_project

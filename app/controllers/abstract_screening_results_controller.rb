@@ -12,8 +12,11 @@ class AbstractScreeningResultsController < ApplicationController
         case params[:submissionType]
         when 'label'
           @abstract_screening_result.update(asr_params)
+          if @abstract_screening_result.privileged && @abstract_screening_result.label&.zero?
+            @abstract_screening_result.touch
+          end
         when 'notes', 'form_complete'
-          @abstract_screening_result.update_column(params[:submissionType], params[:asr][params[:submissionType]])
+          @abstract_screening_result.update_column(params[:submissionType], params[:asr][params[:submissionType]])  
           @abstract_screening_result.reindex
         end
 
