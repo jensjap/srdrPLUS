@@ -15,6 +15,10 @@
 #  updated_at                 :datetime         not null
 #  authors_of_report          :text(65535)
 #  exclude_personal_conflicts :boolean          default(TRUE), not null
+#  as_reasons_tags            :boolean          default(FALSE), not null
+#  fs_reasons_tags            :boolean          default(FALSE), not null
+#  as_limit_one_reason        :boolean          default(FALSE), not null
+#  fs_limit_one_reason        :boolean          default(FALSE), not null
 #
 
 class Project < ApplicationRecord
