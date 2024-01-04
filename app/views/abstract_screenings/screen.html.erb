@@ -397,11 +397,13 @@
       show_all_labels: false,
       project_id: null,
       terms_and_phrases_settings: true,
+      as_reasons_tags: false,
+      as_limit_one_reason: false,
 
-      init() {
+      async init() {
         const url = new URL(window.location.href);
         const asr_id = url.searchParams.get("asr_id");
-        this.getAsrId(asr_id);
+        await this.getAsrId(asr_id);
 
         const smallDevice = window.matchMedia("(min-width: 1024px)");
         smallDevice.addListener(handleDeviceChange);
@@ -421,6 +423,17 @@
           });
 
         handleDeviceChange(smallDevice);
+        this.fetchProjectInfo();
+      },
+
+      async fetchProjectInfo() {
+        const response = await fetch(`/projects/${this.project_id}`, {
+          method: "GET",
+          headers,
+        });
+        const data = await response.json();
+        this.as_reasons_tags = data.as_reasons_tags;
+        this.as_limit_one_reason = data.as_limit_one_reason;
       },
 
       toggleWeighingScreen() {
@@ -829,6 +842,24 @@
 
       async updateReasonsSelection(reason) {
         reason.selected = !reason.selected;
+        await this.fetchReasonsSelection(reason);
+
+        if (this.as_limit_one_reason && reason.selected) {
+          for (const other_reason of this.asr.custom_reasons) {
+            if (
+              reason.reason_id !== other_reason.reason_id &&
+              other_reason.selected
+            ) {
+              other_reason.selected = !other_reason.selected;
+              await this.fetchReasonsSelection(other_reason);
+            }
+          }
+        }
+
+        await this.getAsr();
+      },
+
+      async fetchReasonsSelection(reason) {
         if (reason.selected) {
           await fetch(
             `/abstract_screening_results/${this.asr.id}/abstract_screening_results_reasons`,
@@ -840,7 +871,6 @@
               }),
             }
           );
-          this.getAsr();
         } else {
           await fetch(
             `/abstract_screening_results_reasons/${reason.selected_id}`,
@@ -905,7 +935,7 @@
             window.location.href = `/${screeningsType}_screenings/<%= params[:abstract_screening_id] %>?screening_finished=true`;
           }
         }
-        this.getAsr();
+        await this.getAsr();
       },
 
       async updateAsr(submissionType, originalLabel) {
@@ -917,7 +947,7 @@
       },
 
       async getAsr() {
-        this.fetchAsr("GET");
+        await this.fetchAsr("GET");
       },
 
       async fetchAsr(method, submissionType, originalLabel = null) {

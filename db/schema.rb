@@ -1190,8 +1190,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_19_100515) do
     t.text "authors_of_report"
     t.boolean "auto_train", default: false
     t.boolean "exclude_personal_conflicts", default: false, null: false
-    t.boolean "as_reasons_tags", default: false, null: false
-    t.boolean "fs_reasons_tags", default: false, null: false
+    t.boolean "as_reasons_tags", default: true, null: false
+    t.boolean "fs_reasons_tags", default: true, null: false
     t.boolean "as_limit_one_reason", default: false, null: false
     t.boolean "fs_limit_one_reason", default: false, null: false
   end

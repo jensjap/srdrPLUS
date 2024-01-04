@@ -226,11 +226,36 @@
       custom_reasons: [],
       custom_tags: [],
       project_id: null,
+      reasons_tags: false,
+      limit_one_reason: false,
 
       async init() {
         this.project_id = <%= @project.id %>;
+        this.reasons_tags = <%= @project.as_reasons_tags %>;
+        this.limit_one_reason = <%= @project.as_limit_one_reason %>;
         this.fetchReasons();
         this.fetchTags();
+      },
+
+      async toggleAddReasonsTags() {
+        this.reasons_tags = !this.reasons_tags;
+        this.updateProject({ as_reasons_tags: this.reasons_tags });
+      },
+
+      async toggleLimitOneReason() {
+        this.limit_one_reason = !this.limit_one_reason;
+        this.updateProject({ as_limit_one_reason: this.limit_one_reason });
+      },
+
+      async updateProject(params) {
+        const response = await fetch(`/projects/${this.project_id}`, {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify({
+            project: params,
+          }),
+        });
+        const data = await response.json();
       },
 
       async fetchReasons() {
@@ -310,22 +335,25 @@
       },
 
       async createDeafaultReasons() {
-        fetch('/projects_reasons/abstract/rejection_reasons')
-          .then(response => {
+        fetch("/projects_reasons/abstract/rejection_reasons")
+          .then((response) => {
             if (!response.ok) {
-              throw new Error('Network response was not ok');
+              throw new Error("Network response was not ok");
             }
             return response.json();
           })
-          .then(reasons => {
-            reasons.forEach(reason => {
-              this.addReasonModal = { type: 'custom_reasons', action: 'Create' };
+          .then((reasons) => {
+            reasons.forEach((reason) => {
+              this.addReasonModal = {
+                type: "custom_reasons",
+                action: "Create",
+              };
               this.newCustomValue = reason;
               this.createCustomValue();
             });
           })
-          .catch(error => {
-            console.error('Fetch error:', error);
+          .catch((error) => {
+            console.error("Fetch error:", error);
           });
       },
 

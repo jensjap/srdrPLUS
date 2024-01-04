@@ -12,6 +12,10 @@ class ProjectPolicy < ApplicationPolicy
     :funding_source,
     :auto_train,
     :exclude_personal_conflicts,
+    :as_reasons_tags,
+    :fs_reasons_tags,
+    :as_limit_one_reason,
+    :fs_limit_one_reason,
     {
       mesh_descriptor_ids: []
     },
