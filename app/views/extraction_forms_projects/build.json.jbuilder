@@ -1,6 +1,16 @@
-json.array!(@extraction_forms_projects_sections.find_by(id: @panel_tab).questions.sort_by do |q|
-  q.pos
-end) do |question|
+json.array!(
+  @extraction_forms_projects_sections
+  .find_by(id: @panel_tab)
+  .questions
+  .includes(:dependencies, key_questions_projects: :key_question, question_rows: {
+              question_row_columns: [
+                :question_row_column_type,
+                {
+                  question_row_columns_question_row_column_options: :question_row_column_option
+                }
+              ]
+            }).order(pos: :asc)
+) do |question|
   json.position question.pos
   json.id question.id
   json.name question.name
