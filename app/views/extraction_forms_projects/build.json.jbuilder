@@ -1,10 +1,23 @@
-json.array! @extraction_forms_projects_sections.find_by(id: @panel_tab).questions.sort_by { |q|
+json.array!(@extraction_forms_projects_sections.find_by(id: @panel_tab).questions.sort_by do |q|
   q.pos
-} do |question|
+end) do |question|
   json.position question.pos
   json.id question.id
   json.name question.name
   json.description question.description
+  json.columns question.question_rows.first&.question_row_columns || []
+  json.rows question.question_rows
+  cells = {}
+  question.question_rows.each_with_index do |question_row, question_row_index|
+    question_row.question_row_columns.each_with_index do |question_row_column, question_row_column_index|
+      cells[question_row_index] ||= {}
+      cells[question_row_index][question_row_column_index] = {
+        id: question_row_column.id,
+        cell_type: question_row_column.question_row_column_type.name
+      }
+    end
+  end
+  json.cells cells
   ds = []
   question.dependencies.each do |d|
     ds << "Question Position: #{d.prerequisitable.question.pos}"

@@ -53,7 +53,7 @@ class QuestionsController < ApplicationController
                                                           'panel-tab': @question.extraction_forms_projects_section.id), notice: t('success')
         end
         format.js   { head :no_content }
-        format.json { render json: { ok: 123 }, status: 200 }
+        format.json { render json: {}, status: 200 }
       else
         format.html { render :edit }
         format.js   { head :no_content }

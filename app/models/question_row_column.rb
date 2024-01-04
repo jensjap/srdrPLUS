@@ -60,6 +60,15 @@ class QuestionRowColumn < ApplicationRecord
     end
   end
 
+  def remove_column_from_all_siblings
+    removal_index = question_row.question_row_columns.find_index(self)
+    question_row.question.question_rows.each do |question_row|
+      question_row.question_row_columns.each_with_index do |question_row_column, question_row_column_index|
+        question_row_column.destroy if question_row_column_index == removal_index
+      end
+    end
+  end
+
   private
 
   def create_default_question_row_column_options
@@ -76,8 +85,8 @@ class QuestionRowColumn < ApplicationRecord
   end
 
   def ensure_question_row_column_fields
-    if question_row_column_type.name == QuestionRowColumnType::NUMERIC  # Numeric requires 2 fields.
-      question_row_column_fields.create! while question_row_column_fields.length < 2
-    end
+    return unless question_row_column_type.name == QuestionRowColumnType::NUMERIC  # Numeric requires 2 fields.
+
+    question_row_column_fields.create! while question_row_column_fields.length < 2
   end
 end

@@ -316,11 +316,11 @@ Rails.application.routes.draw do
             post 'duplicate'
           end
 
-          resources :question_rows, only: [:destroy] do
+          resources :question_rows, only: %i[destroy update create] do
             member do
               post 'duplicate'
             end
-            resources :question_row_columns, only: [] do
+            resources :question_row_columns, only: %i[destroy update create] do
               resources :question_row_columns_question_row_column_options, only: [:destroy]
 
               member do
