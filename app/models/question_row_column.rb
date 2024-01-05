@@ -47,7 +47,8 @@ class QuestionRowColumn < ApplicationRecord
       id:,
       cell_type: question_row_column_type.name,
       answer_choice:
-      qrcqrcos_where_qrco(1).then do |qrcqrco|
+      question_row_columns_question_row_column_options
+        .select { |qrcqrco| qrcqrco.question_row_column_option_id == 1 }.map do |qrcqrco|
         { id: qrcqrco.id,
           name: qrcqrco.name,
           followup_field: qrcqrco.followup_field.then do |ff|
