@@ -459,7 +459,7 @@
                                     class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
                                   >
                                     <template
-                                      x-for="(option, option_index) in question.cells[row_index][column_index].options"
+                                      x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
                                       :key="option.id"
                                       ><div
                                         class="flex justify-between items-center"
@@ -477,9 +477,9 @@
                                             <input
                                               class="!m-0 cursor-pointer"
                                               type="checkbox"
-                                              :value="option.with_followup"
-                                              x-model="option.with_followup"
-                                              x-on:change="updateOption(option, { with_followup: $el.checked })"
+                                              :value="option.followup_field.value"
+                                              x-model="option.followup_field.value"
+                                              x-on:change="updateFollowupField(option.id, option.followup_field.id, $el.checked)"
                                           /></label>
                                           <div
                                             class="flex justify-center items-center mx-2"
@@ -520,7 +520,7 @@
                                             </div>
                                           </div>
                                           <div
-                                            @click="deleteOption(option)"
+                                            @click="deleteOption(option.id)"
                                             class="text-red-900 cursor-pointer"
                                           >
                                             <svg
@@ -547,7 +547,7 @@
                                       <input
                                         name="option"
                                         type="text"
-                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index], $el.value); $el.value = ''"
+                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
                                     /></label>
                                   </div>
                                 </div>
@@ -567,7 +567,7 @@
                                     class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
                                   >
                                     <template
-                                      x-for="(option, option_index) in question.cells[row_index][column_index].options"
+                                      x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
                                       :key="option.id"
                                       ><div
                                         class="flex justify-between items-center"
@@ -618,7 +618,7 @@
                                             </div>
                                           </div>
                                           <div
-                                            @click="deleteOption(option)"
+                                            @click="deleteOption(option.id)"
                                             class="text-red-900 cursor-pointer"
                                           >
                                             <svg
@@ -645,7 +645,7 @@
                                       <input
                                         name="option"
                                         type="text"
-                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index], $el.value); $el.value = ''"
+                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
                                     /></label>
                                   </div>
                                 </div>
@@ -665,7 +665,7 @@
                                     class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
                                   >
                                     <template
-                                      x-for="(option, option_index) in question.cells[row_index][column_index].options"
+                                      x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
                                       :key="option.id"
                                       ><div
                                         class="flex justify-between items-center"
@@ -716,7 +716,7 @@
                                             </div>
                                           </div>
                                           <div
-                                            @click="deleteOption(option)"
+                                            @click="deleteOption(option.id)"
                                             class="text-red-900 cursor-pointer"
                                           >
                                             <svg
@@ -743,7 +743,7 @@
                                       <input
                                         name="option"
                                         type="text"
-                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index], $el.value); $el.value = ''"
+                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
                                     /></label>
                                   </div>
                                 </div>
