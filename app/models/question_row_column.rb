@@ -46,26 +46,27 @@ class QuestionRowColumn < ApplicationRecord
     {
       id:,
       cell_type: question_row_column_type.name,
-      answer_choice: qrcqrcos_where_qrco('answer_choice').map do |qrcqrco|
-                       { id: qrcqrco.id, name: qrcqrco.name, followup_field: qrcqrco.followup_field.then do |ff|
-                                                                               { id: ff&.id, value: ff.present? }
-                                                                             end }
-                     end,
-      min_length: qrcqrcos_where_qrco('min_length').first.then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
-      max_length: qrcqrcos_where_qrco('max_length').first.then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
-      additional_char: qrcqrcos_where_qrco('additional_char').first.then do |qrcqrco|
-                         { id: qrcqrco.id, name: qrcqrco.name }
-                       end,
-      min_value: qrcqrcos_where_qrco('min_value').first.then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
-      max_value: qrcqrcos_where_qrco('max_value').first.then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
-      coefficient: qrcqrcos_where_qrco('coefficient').first.then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
-      exponent: qrcqrcos_where_qrco('exponent').first.then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } }
+      answer_choice:
+      qrcqrcos_where_qrco(1).then do |qrcqrco|
+        { id: qrcqrco.id,
+          name: qrcqrco.name,
+          followup_field: qrcqrco.followup_field.then do |ff|
+            { id: ff&.id, value: ff.present? }
+          end }
+      end,
+      min_length: qrcqrcos_where_qrco(2).then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
+      max_length: qrcqrcos_where_qrco(3).then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
+      additional_char: qrcqrcos_where_qrco(4).then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
+      min_value: qrcqrcos_where_qrco(5).then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
+      max_value: qrcqrcos_where_qrco(6).then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
+      coefficient: qrcqrcos_where_qrco(7).then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
+      exponent: qrcqrcos_where_qrco(8).then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } }
     }
   end
 
-  def qrcqrcos_where_qrco(qrco_name)
+  def qrcqrcos_where_qrco(question_row_column_option_id)
     question_row_columns_question_row_column_options
-      .where(question_row_column_option: QuestionRowColumnOption.find_by(name: qrco_name))
+      .find { |qrcqrco| qrcqrco.question_row_column_option_id == question_row_column_option_id }
   end
 
   def field_validation_value_for(name)

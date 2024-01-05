@@ -6,7 +6,7 @@ json.array!(
               question_row_columns: [
                 :question_row_column_type,
                 {
-                  question_row_columns_question_row_column_options: :question_row_column_option
+                  question_row_columns_question_row_column_options: %i[question_row_column_option followup_field]
                 }
               ]
             }).order(pos: :asc)
