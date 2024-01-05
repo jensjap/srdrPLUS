@@ -166,7 +166,8 @@
                           x-if="question.cells[row_index] !== undefined && question.cells[row_index][column_index] !== undefined && (question.cells[row_index][column_index] !== undefined || question.cells[row_index][column_index] !== null)"
                         >
                           <div
-                            class="flex justify-center items-stretch h-full w-64"
+                            class="flex justify-center items-stretch h-full"
+                            style="min-width: 0"
                           >
                             <div class="p-2 grow">
                               <template
@@ -252,7 +253,7 @@
                                     class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
                                   >
                                     <template
-                                      x-for="(option, option_index) in question.cells[row_index][column_index].options"
+                                      x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
                                       :key="option.id"
                                       ><div
                                         class="flex justify-between items-center"
@@ -270,8 +271,9 @@
                                             <input
                                               class="!m-0 cursor-pointer"
                                               type="checkbox"
-                                              x-model="option.with_followup"
-                                              x-on:change="updateOption(option, { with_followup: $el.checked })"
+                                              :value="option.followup_field.value"
+                                              x-model="option.followup_field.value"
+                                              x-on:change="updateFollowupField(option.id, option.followup_field.id, $el.checked)"
                                           /></label>
                                           <div
                                             class="flex justify-center items-center mx-2"
@@ -312,7 +314,7 @@
                                             </div>
                                           </div>
                                           <div
-                                            @click="deleteOption(option)"
+                                            @click="deleteOption(option.id)"
                                             class="text-red-900 cursor-pointer"
                                           >
                                             <svg
@@ -339,7 +341,7 @@
                                       <input
                                         name="option"
                                         type="text"
-                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index], $el.value); $el.value = ''"
+                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
                                     /></label>
                                   </div>
                                 </div>
@@ -359,7 +361,7 @@
                                     class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
                                   >
                                     <template
-                                      x-for="(option, option_index) in question.cells[row_index][column_index].options"
+                                      x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
                                       :key="option.id"
                                       ><div
                                         class="flex justify-between items-center"
@@ -410,7 +412,7 @@
                                             </div>
                                           </div>
                                           <div
-                                            @click="deleteOption(option)"
+                                            @click="deleteOption(option.id)"
                                             class="text-red-900 cursor-pointer"
                                           >
                                             <svg
@@ -437,7 +439,7 @@
                                       <input
                                         name="option"
                                         type="text"
-                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index], $el.value); $el.value = ''"
+                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
                                     /></label>
                                   </div>
                                 </div>
@@ -475,6 +477,7 @@
                                             <input
                                               class="!m-0 cursor-pointer"
                                               type="checkbox"
+                                              :value="option.with_followup"
                                               x-model="option.with_followup"
                                               x-on:change="updateOption(option, { with_followup: $el.checked })"
                                           /></label>
@@ -1105,8 +1108,64 @@
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
       },
-      async createOption() {
-        alert("createOption");
+      async createOption(question_row_column_id, params) {
+        const response = await fetch(
+          `/question_row_columns/${question_row_column_id}/question_row_columns_question_row_column_options`,
+          {
+            method: "POST",
+            headers,
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Updated succesfully!", null, {
+            timeOut: 1000,
+          });
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+        await this.fetch_questions();
+      },
+      async deleteOption(qrcqrco_id) {
+        const response = await fetch(
+          `/question_row_columns_question_row_column_options/${qrcqrco_id}`,
+          {
+            method: "DELETE",
+            headers,
+            credentials: "same-origin",
+          }
+        );
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Updated succesfully!", null, {
+            timeOut: 1000,
+          });
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+        await this.fetch_questions();
+      },
+      async updateFollowupField(
+        question_row_cquestion_row_columns_question_row_column_option_id,
+        followup_field_id,
+        checked
+      ) {
+        const url = checked
+          ? `/question_row_columns_question_row_column_options/${question_row_cquestion_row_columns_question_row_column_option_id}/followup_fields`
+          : `/followup_fields/${followup_field_id}`;
+        const response = await fetch(url, {
+          method: checked ? "POST" : "DELETE",
+          headers,
+          credentials: "same-origin",
+        });
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Updated succesfully!", null, {
+            timeOut: 1000,
+          });
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+        await this.fetch_questions();
       },
       async deleteQuestion(q) {
         this.destroyResource(`/questions/${q.id}`, "question");

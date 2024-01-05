@@ -321,7 +321,9 @@ Rails.application.routes.draw do
               post 'duplicate'
             end
             resources :question_row_columns, only: %i[destroy update create] do
-              resources :question_row_columns_question_row_column_options, only: [:destroy, :update]
+              resources :question_row_columns_question_row_column_options, only: %i[destroy update create] do
+                resources :followup_fields, only: %i[create destroy]
+              end
 
               member do
                 get 'answer_choices'

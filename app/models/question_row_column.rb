@@ -46,7 +46,11 @@ class QuestionRowColumn < ApplicationRecord
     {
       id:,
       cell_type: question_row_column_type.name,
-      answer_choice: qrcqrcos_where_qrco('answer_choice').map { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
+      answer_choice: qrcqrcos_where_qrco('answer_choice').map do |qrcqrco|
+                       { id: qrcqrco.id, name: qrcqrco.name, followup_field: qrcqrco.followup_field.then do |ff|
+                                                                               { id: ff&.id, value: ff.present? }
+                                                                             end }
+                     end,
       min_length: qrcqrcos_where_qrco('min_length').first.then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
       max_length: qrcqrcos_where_qrco('max_length').first.then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
       additional_char: qrcqrcos_where_qrco('additional_char').first.then do |qrcqrco|

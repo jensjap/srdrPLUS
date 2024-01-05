@@ -15,6 +15,17 @@ class QuestionRowColumnsQuestionRowColumnOptionsController < ApplicationControll
     end
   end
 
+  def create
+    @question_row_columns_question_row_column_option = QuestionRowColumn.find(params[:question_row_column_id]).question_row_columns_question_row_column_options.new(strong_params)
+    authorize(@question_row_columns_question_row_column_option)
+    respond_to do |format|
+      format.json do
+        render json: {},
+               status: @question_row_columns_question_row_column_option.save ? 200 : 422
+      end
+    end
+  end
+
   def update
     authorize(@question_row_columns_question_row_column_option)
     respond_to do |format|
@@ -32,6 +43,6 @@ class QuestionRowColumnsQuestionRowColumnOptionsController < ApplicationControll
   end
 
   def strong_params
-    params.require(:question_row_columns_question_row_column_option).permit(:name)
+    params.require(:question_row_columns_question_row_column_option).permit(:name, :question_row_column_option_id)
   end
 end

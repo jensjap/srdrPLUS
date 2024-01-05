@@ -6,4 +6,8 @@ class QuestionRowColumnsQuestionRowColumnOptionPolicy < ApplicationPolicy
   def update?
     project_consolidator?
   end
+
+  def create?
+    project_consolidator?
+  end
 end
