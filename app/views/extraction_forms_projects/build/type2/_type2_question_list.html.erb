@@ -1076,7 +1076,6 @@
           body: JSON.stringify(params),
         });
         this.report(response.status);
-        await this.fetch_questions();
       },
       async updateOrderings(dragPos, dropPos, table) {
         this.loading = true;
