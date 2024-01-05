@@ -22,7 +22,10 @@
           <div class="mb-1 mr-2">
             <div class="mb-1 flex">
               <div class="mr-2 text-sm">Position</div>
-              <select class="p-[2px] text-xs" name="" id="">
+              <select
+                class="p-[2px] text-xs"
+                @change="updateOrderings(question_index, $el.value - 1, 'questions')"
+              >
                 <template x-for="(q, q_index) in questions" :key="q.id">
                   <option
                     :selected="q_index == question_index"
@@ -37,7 +40,7 @@
                 placeholder="Question text"
                 class="!text-base !px-1"
                 @input.debounce.500ms="updateQuestion(question, { name: $el.value })"
-                :value="question.name"
+                x-model="question.name"
                 type="text"
               />
             </div>
@@ -46,7 +49,7 @@
                 placeholder="Question description"
                 class="!text-base !px-1"
                 @input.debounce.500ms="updateQuestion(question, { description: $el.value })"
-                :value="question.description"
+                x-model="question.description"
                 type="text"
               />
             </div>
@@ -66,7 +69,7 @@
                           placeholder="Column header"
                           class="!text-xs p-2 w-auto grow whitespace-nowrap text-center"
                           @input.debounce.500ms="updateColumn(column, { name: $el.value })"
-                          :value="question.columns[column_index]?.name"
+                          x-model="question.columns[column_index]?.name"
                           type="text"
                         />
                         <div
@@ -111,7 +114,7 @@
                           placeholder="Row header"
                           class="!text-xs p-2 w-auto grow whitespace-nowrap text-center"
                           @input.debounce.500ms="updateRow(row, { name: $el.value })"
-                          :value="question.rows[row_index]?.name"
+                          x-model="question.rows[row_index]?.name"
                           type="text"
                         />
                         <div class="h-full border-l border-gray-300">
@@ -215,7 +218,7 @@
                                         name="additional_char"
                                         type="checkbox"
                                         class="!m-0 cursor-pointer"
-                                        :value="question.cells[row_index][column_index].additional_char.name === 't'"
+                                        :checked="question.cells[row_index][column_index].additional_char.name === 't'"
                                         x-model="question.cells[row_index][column_index].additional_char.name"
                                         @click="updateCellOption(question.cells[row_index][column_index].additional_char.id, { name: $el.checked })"
                                     /></label>
@@ -271,7 +274,6 @@
                                             <input
                                               class="!m-0 cursor-pointer"
                                               type="checkbox"
-                                              :value="option.followup_field.value"
                                               x-model="option.followup_field.value"
                                               x-on:change="updateFollowupField(option.id, option.followup_field.id, $el.checked)"
                                           /></label>
@@ -477,7 +479,6 @@
                                             <input
                                               class="!m-0 cursor-pointer"
                                               type="checkbox"
-                                              :value="option.followup_field.value"
                                               x-model="option.followup_field.value"
                                               x-on:change="updateFollowupField(option.id, option.followup_field.id, $el.checked)"
                                           /></label>
@@ -1185,26 +1186,25 @@
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
       },
-
-      async fetchQuestionTable() {
-        this.loading = true;
-        this.question_table = await (
-          await fetch(`/questions/${this.edit_question_id}/edit?partial=true`)
-        ).text();
+      async updateOrderings(dragPos, dropPos, table) {
+        const temp = this.questions[dropPos];
+        this.questions[dropPos] = this.questions[dragPos];
+        this.questions[dragPos] = temp;
+        const tempOrderableElements = this.questions;
+        this.questions = [];
         this.$nextTick(() => {
-          questionsCoffeeScript();
+          this.questions = tempOrderableElements;
+          const orderings = {};
+          tempOrderableElements.forEach(
+            (oe, index) => (orderings[index] = { id: oe.id, table })
+          );
+          fetch("/api/v1/orderings/update_positions", {
+            method: "PATCH",
+            headers,
+            body: JSON.stringify({ orderings }),
+          });
+          this.questions.forEach((el, index) => (el.pos = index + 1));
         });
-        this.loading = false;
-      },
-
-      async updateDependenciesTable() {
-        this.loading = true;
-        this.dependencies_table = await (
-          await fetch(
-            `/questions/${this.edit_question_id}/dependencies?partial=true`
-          )
-        ).text();
-        this.loading = false;
       },
 
       async fetchPreviewContent() {
@@ -1226,112 +1226,18 @@
       async destroyResource(url, resourceType) {
         if (confirm("Are you sure?")) {
           this.loading = true;
-          if (
-            [
-              "question_row",
-              "question_row_column",
-              "question_row_column_option",
-            ].some((rt) => rt === resourceType)
-          ) {
-            await this.updateQuestionTable(
-              this.edit_question_id,
-              document.getElementById(`edit_question_${this.edit_question_id}`)
-            );
-          }
+
           const response = await fetch(url, {
             method: "DELETE",
             headers,
           });
 
-          if (resourceType === "question") {
-            await this.fetch_questions();
-            this.question_modal = false;
-          } else {
-            await this.fetchQuestionTable();
-          }
           toastr.success("Successfully deleted", null, {
             timeOut: 1000,
           });
+          await this.fetch_questions();
           this.loading = false;
         }
-      },
-
-      async addRowOrColumn(type) {
-        this.loading = true;
-        await this.updateQuestionTable(
-          this.edit_question_id,
-          document.getElementById(`edit_question_${this.edit_question_id}`)
-        );
-        const response = await fetch(
-          `/questions/${this.edit_question_id}/${type}`,
-          {
-            method: "POST",
-            headers,
-          }
-        );
-        await this.fetchQuestionTable();
-        this.loading = false;
-      },
-
-      async updateQuestionTable(questionId, form) {
-        const formData = new FormData(form);
-
-        const response = await fetch(`/questions/${questionId}`, {
-          method: "PATCH",
-          headers,
-          body: formData,
-        });
-        const data = await response.json();
-        this.fetch_questions();
-      },
-
-      array_move(arr, old_index, new_index) {
-        if (new_index >= arr.length) {
-          var k = new_index - arr.length + 1;
-          while (k--) {
-            arr.push(undefined);
-          }
-        }
-        arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-      },
-
-      async updatePositions(old_index, new_index) {
-        this.loading = true;
-        this.array_move(this.questions, old_index, new_index);
-
-        const orderings = {};
-        this.questions.forEach((question, questionIndex) => {
-          orderings[questionIndex] = {
-            id: question.id,
-            position: questionIndex,
-            table: "questions",
-          };
-        });
-
-        const response = await fetch("/api/v1/orderings/update_positions", {
-          method: "PATCH",
-          headers,
-          body: JSON.stringify({ orderings }),
-        });
-        this.questions = [];
-        await this.fetch_questions();
-        this.loading = false;
-        toastr.success("Positions updated!", null, {
-          timeOut: 1000,
-        });
-      },
-
-      async createDuplicateQuestion(questionId) {
-        this.loading = true;
-        const response = await fetch(`/questions/${questionId}/duplicate`, {
-          method: "POST",
-          headers,
-        });
-        await this.fetch_questions();
-        toastr.success("Question was succesfully duplicated!", null, {
-          timeOut: 1000,
-        });
-        this.loading = false;
       },
 
       async createQuestion() {
@@ -1352,7 +1258,6 @@
         });
         const resp = await response.json();
         this.edit_question_id = resp.id;
-        // this.fetchQuestionTable();
         this.question_modal = false;
         this.loading = false;
       },
