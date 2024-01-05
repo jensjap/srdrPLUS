@@ -69,7 +69,7 @@
                           placeholder="Column header"
                           class="!text-xs p-2 w-auto grow whitespace-nowrap text-center"
                           @input.debounce.500ms="updateColumn(column, { name: $el.value })"
-                          x-model="question.columns[column_index]?.name"
+                          x-model="question.columns[column_index].name"
                           type="text"
                         />
                         <div
@@ -114,7 +114,7 @@
                           placeholder="Row header"
                           class="!text-xs p-2 w-auto grow whitespace-nowrap text-center"
                           @input.debounce.500ms="updateRow(row, { name: $el.value })"
-                          x-model="question.rows[row_index]?.name"
+                          x-model="question.rows[row_index].name"
                           type="text"
                         />
                         <div class="h-full border-l border-gray-300">
@@ -824,52 +824,6 @@
                             </div>
                           </div>
                         </template>
-                        <template
-                          x-if="question.cells[row_index] !== undefined && (question.cells[row_index][column_index] === undefined || question.cells[row_index][column_index] === null)"
-                        >
-                          <div class="p-2 flex flex-col justify-center">
-                            <div
-                              class="whitespace-nowrap border-b-2 border-gray-300"
-                            >
-                              Click below to add field
-                            </div>
-                            <span
-                              @click="createCell(row, column, 'text')"
-                              class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
-                              >- Text</span
-                            >
-                            <span
-                              @click="createCell(row, column, 'numeric')"
-                              class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
-                              >- Numeric</span
-                            >
-                            <span
-                              @click="createCell(row, column, 'checkbox')"
-                              class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
-                              >- Checkbox (Multiple)</span
-                            >
-                            <span
-                              @click="createCell(row, column, 'dropdown')"
-                              class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
-                              >- Dropdown</span
-                            >
-                            <span
-                              @click="createCell(row, column, 'radio')"
-                              class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
-                              >- Radio</span
-                            >
-                            <span
-                              @click="createCell(row, column, 'select-one')"
-                              class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
-                              >- Select One</span
-                            >
-                            <span
-                              @click="createCell(row, column, 'select-multiple')"
-                              class="cursor-pointer hover:text-gray-500 overflow-ellipsis whitespace-nowrap"
-                              >- Select Multiple</span
-                            >
-                          </div>
-                        </template>
                       </td>
                     </template>
                   </tr>
@@ -919,7 +873,6 @@
 
   <!-- prettier-ignore -->
   <%= render 'extraction_forms_projects/build/type2/loading_modal' %>
-  <%= render 'extraction_forms_projects/build/type2/question_modal' %>
   <%= render 'extraction_forms_projects/build/type2/dependencies_modal' %>
   <%= render 'extraction_forms_projects/build/type2/preview_modal' %>
 </div>
@@ -935,18 +888,16 @@
     Alpine.data("type_2_question_list", () => ({
       loading: false,
       questions: [],
-      question_modal: false,
       dependencies_modal: false,
       preview_modal: false,
-      edit_question_id: null,
-      question_table: "",
       dependencies_table: "",
       preview_content: "",
-      focusElement: null,
 
       async init() {
+        this.loading = true;
         await this.fetch_questions();
         console.log(this.questions);
+        this.loading = false;
       },
 
       async updateRow(question_row, params) {
@@ -956,13 +907,7 @@
           credentials: "same-origin",
           body: JSON.stringify(params),
         });
-        if (response.status >= 200 && response.status < 300) {
-          toastr.success("Updated succesfully!", null, {
-            timeOut: 1000,
-          });
-        } else {
-          toastr.error("We've encountered an error", null, { timeOut: 1000 });
-        }
+        this.report(response.status);
       },
       async updateColumn(question_row_column, params) {
         const response = await fetch(
@@ -974,15 +919,10 @@
             body: JSON.stringify(params),
           }
         );
-        if (response.status >= 200 && response.status < 300) {
-          toastr.success("Updated succesfully!", null, {
-            timeOut: 1000,
-          });
-        } else {
-          toastr.error("We've encountered an error", null, { timeOut: 1000 });
-        }
+        this.report(response.status);
       },
       async addRow(question) {
+        this.loading = true;
         const response = await fetch(
           `/questions/${question.id}/question_rows`,
           {
@@ -991,16 +931,12 @@
             credentials: "same-origin",
           }
         );
-        if (response.status >= 200 && response.status < 300) {
-          toastr.success("Updated succesfully!", null, {
-            timeOut: 1000,
-          });
-          await this.fetch_questions();
-        } else {
-          toastr.error("We've encountered an error", null, { timeOut: 1000 });
-        }
+        this.report(response.status);
+        await this.fetch_questions();
+        this.loading = false;
       },
       async addColumn(row) {
+        this.loading = true;
         const response = await fetch(
           `/question_rows/${row.id}/question_row_columns`,
           {
@@ -1009,16 +945,12 @@
             credentials: "same-origin",
           }
         );
-        if (response.status >= 200 && response.status < 300) {
-          toastr.success("Updated succesfully!", null, {
-            timeOut: 1000,
-          });
-          await this.fetch_questions();
-        } else {
-          toastr.error("We've encountered an error", null, { timeOut: 1000 });
-        }
+        this.report(response.status);
+        await this.fetch_questions();
+        this.loading = false;
       },
       async duplicateRow(question_row) {
+        this.loading = true;
         const response = await fetch(
           `/question_rows/${question_row.id}/duplicate`,
           {
@@ -1027,31 +959,23 @@
             credentials: "same-origin",
           }
         );
-        if (response.status >= 200 && response.status < 300) {
-          toastr.success("Updated succesfully!", null, {
-            timeOut: 1000,
-          });
-          await this.fetch_questions();
-        } else {
-          toastr.error("We've encountered an error", null, { timeOut: 1000 });
-        }
+        this.report(response.status);
+        await this.fetch_questions();
+        this.loading = false;
       },
       async deleteRow(question_row) {
+        this.loading = true;
         const response = await fetch(`/question_rows/${question_row.id}`, {
           method: "DELETE",
           headers,
           credentials: "same-origin",
         });
-        if (response.status >= 200 && response.status < 300) {
-          toastr.success("Updated succesfully!", null, {
-            timeOut: 1000,
-          });
-          await this.fetch_questions();
-        } else {
-          toastr.error("We've encountered an error", null, { timeOut: 1000 });
-        }
+        this.report(response.status);
+        await this.fetch_questions();
+        this.loading = false;
       },
       async deleteColumn(question_row_column) {
+        this.loading = true;
         const response = await fetch(
           `/question_row_columns/${question_row_column.id}`,
           {
@@ -1060,16 +984,12 @@
             credentials: "same-origin",
           }
         );
-        if (response.status >= 200 && response.status < 300) {
-          toastr.success("Updated succesfully!", null, {
-            timeOut: 1000,
-          });
-          await this.fetch_questions();
-        } else {
-          toastr.error("We've encountered an error", null, { timeOut: 1000 });
-        }
+        this.report(response.status);
+        await this.fetch_questions();
+        this.loading = false;
       },
       async updateCellType(question_row_column, params) {
+        this.loading = true;
         const response = await fetch(
           `/question_row_columns/${question_row_column.id}`,
           {
@@ -1079,17 +999,9 @@
             body: JSON.stringify(params),
           }
         );
-        if (response.status >= 200 && response.status < 300) {
-          toastr.success("Updated succesfully!", null, {
-            timeOut: 1000,
-          });
-          await this.fetch_questions();
-        } else {
-          toastr.error("We've encountered an error", null, { timeOut: 1000 });
-        }
-      },
-      async createCell() {
-        alert("createCell");
+        this.report(response.status);
+        await this.fetch_questions();
+        this.loading = false;
       },
       async updateCellOption(qrcqrco_id, params) {
         const response = await fetch(
@@ -1101,15 +1013,10 @@
             body: JSON.stringify(params),
           }
         );
-        if (response.status >= 200 && response.status < 300) {
-          toastr.success("Updated succesfully!", null, {
-            timeOut: 1000,
-          });
-        } else {
-          toastr.error("We've encountered an error", null, { timeOut: 1000 });
-        }
+        this.report(response.status);
       },
       async createOption(question_row_column_id, params) {
+        this.loading = true;
         const response = await fetch(
           `/question_row_columns/${question_row_column_id}/question_row_columns_question_row_column_options`,
           {
@@ -1119,16 +1026,12 @@
             body: JSON.stringify(params),
           }
         );
-        if (response.status >= 200 && response.status < 300) {
-          toastr.success("Updated succesfully!", null, {
-            timeOut: 1000,
-          });
-        } else {
-          toastr.error("We've encountered an error", null, { timeOut: 1000 });
-        }
+        this.report(response.status);
         await this.fetch_questions();
+        this.loading = false;
       },
       async deleteOption(qrcqrco_id) {
+        this.loading = true;
         const response = await fetch(
           `/question_row_columns_question_row_column_options/${qrcqrco_id}`,
           {
@@ -1137,20 +1040,16 @@
             credentials: "same-origin",
           }
         );
-        if (response.status >= 200 && response.status < 300) {
-          toastr.success("Updated succesfully!", null, {
-            timeOut: 1000,
-          });
-        } else {
-          toastr.error("We've encountered an error", null, { timeOut: 1000 });
-        }
+        this.report(response.status);
         await this.fetch_questions();
+        this.loading = false;
       },
       async updateFollowupField(
         question_row_cquestion_row_columns_question_row_column_option_id,
         followup_field_id,
         checked
       ) {
+        this.loading = true;
         const url = checked
           ? `/question_row_columns_question_row_column_options/${question_row_cquestion_row_columns_question_row_column_option_id}/followup_fields`
           : `/followup_fields/${followup_field_id}`;
@@ -1159,17 +1058,15 @@
           headers,
           credentials: "same-origin",
         });
-        if (response.status >= 200 && response.status < 300) {
-          toastr.success("Updated succesfully!", null, {
-            timeOut: 1000,
-          });
-        } else {
-          toastr.error("We've encountered an error", null, { timeOut: 1000 });
-        }
+        this.report(response.status);
         await this.fetch_questions();
+        this.loading = false;
       },
       async deleteQuestion(q) {
-        this.destroyResource(`/questions/${q.id}`, "question");
+        this.loading = true;
+        await this.destroyResource(`/questions/${q.id}`, "question");
+        await this.fetch_questions();
+        this.loading = false;
       },
       async updateQuestion(question, params) {
         const response = await fetch(`/questions/${question.id}`, {
@@ -1178,33 +1075,38 @@
           credentials: "same-origin",
           body: JSON.stringify(params),
         });
-        if (response.status >= 200 && response.status < 300) {
-          toastr.success("Question updated succesfully!", null, {
-            timeOut: 1000,
-          });
-        } else {
-          toastr.error("We've encountered an error", null, { timeOut: 1000 });
-        }
+        this.report(response.status);
+        await this.fetch_questions();
       },
       async updateOrderings(dragPos, dropPos, table) {
+        this.loading = true;
         const temp = this.questions[dropPos];
         this.questions[dropPos] = this.questions[dragPos];
         this.questions[dragPos] = temp;
         const tempOrderableElements = this.questions;
         this.questions = [];
-        this.$nextTick(() => {
+        await this.$nextTick(async () => {
           this.questions = tempOrderableElements;
           const orderings = {};
           tempOrderableElements.forEach(
             (oe, index) => (orderings[index] = { id: oe.id, table })
           );
-          fetch("/api/v1/orderings/update_positions", {
+          await fetch("/api/v1/orderings/update_positions", {
             method: "PATCH",
             headers,
             body: JSON.stringify({ orderings }),
           });
           this.questions.forEach((el, index) => (el.pos = index + 1));
         });
+        this.loading = false;
+      },
+
+      async report(responseStatus) {
+        if (responseStatus >= 200 && responseStatus < 300) {
+          toastr.success("Updated succesfully!", null, { timeOut: 1000 });
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
       },
 
       async fetchPreviewContent() {
@@ -1232,10 +1134,7 @@
             headers,
           });
 
-          toastr.success("Successfully deleted", null, {
-            timeOut: 1000,
-          });
-          await this.fetch_questions();
+          this.report(response.status);
           this.loading = false;
         }
       },
@@ -1252,18 +1151,12 @@
             }),
           }
         );
+        this.report(response.status);
         await this.fetch_questions();
-        toastr.success("Question was added!", null, {
-          timeOut: 1000,
-        });
-        const resp = await response.json();
-        this.edit_question_id = resp.id;
-        this.question_modal = false;
         this.loading = false;
       },
 
       async fetch_questions() {
-        this.loading = true;
         const response = await fetch(
           "/extraction_forms_projects/<%= @extraction_forms_project.id %>/build?panel-tab=<%= params['panel-tab'] %>",
           {
@@ -1273,7 +1166,6 @@
         );
         const questions = await response.json();
         this.questions = questions;
-        this.loading = false;
       },
     }));
   });
