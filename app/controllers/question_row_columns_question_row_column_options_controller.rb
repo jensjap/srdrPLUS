@@ -1,5 +1,5 @@
 class QuestionRowColumnsQuestionRowColumnOptionsController < ApplicationController
-  before_action :set_question_row_columns_question_row_column_option, :skip_policy_scope, only: [:destroy]
+  before_action :set_question_row_columns_question_row_column_option, :skip_policy_scope, only: %i[destroy update]
 
   # DELETE /question_row_columns_question_row_column_options/1
   # DELETE /question_row_columns_question_row_column_options/1.json
@@ -15,9 +15,23 @@ class QuestionRowColumnsQuestionRowColumnOptionsController < ApplicationControll
     end
   end
 
+  def update
+    authorize(@question_row_columns_question_row_column_option)
+    respond_to do |format|
+      format.json do
+        render json: {},
+               status: @question_row_columns_question_row_column_option.update(strong_params) ? 200 : 422
+      end
+    end
+  end
+
   private
 
   def set_question_row_columns_question_row_column_option
     @question_row_columns_question_row_column_option = QuestionRowColumnsQuestionRowColumnOption.find(params[:id])
+  end
+
+  def strong_params
+    params.require(:question_row_columns_question_row_column_option).permit(:name)
   end
 end

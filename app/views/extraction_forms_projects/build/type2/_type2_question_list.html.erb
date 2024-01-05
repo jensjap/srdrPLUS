@@ -32,7 +32,7 @@
                 </template>
               </select>
             </div>
-            <div class="bg-gray-50 p-1 rounded-md">
+            <div class="bg-gray-100 p-1 rounded-md">
               <input
                 placeholder="Question text"
                 class="!text-base !px-1"
@@ -41,7 +41,7 @@
                 type="text"
               />
             </div>
-            <div class="bg-gray-50 p-1 rounded-md">
+            <div class="bg-gray-100 p-1 rounded-md">
               <input
                 placeholder="Question description"
                 class="!text-base !px-1"
@@ -181,18 +181,18 @@
                                   <label class="whitespace-nowrap"
                                     >Min character length
                                     <input
-                                      name="min"
+                                      name="min_length"
                                       type="number"
-                                      x-model="question.cells[row_index][column_index].min"
-                                      x-on:change.debounce.500ms="updateCell(question.cells[row_index][column_index], { min: $el.value })"
+                                      x-model="question.cells[row_index][column_index].min_length.name"
+                                      x-on:change.debounce.500ms="updateCellOption(question.cells[row_index][column_index].min_length.id, { name: $el.value })"
                                   /></label>
                                   <label class="whitespace-nowrap"
                                     >Max character length
                                     <input
-                                      name="max"
+                                      name="max_length"
                                       type="number"
-                                      x-model="question.cells[row_index][column_index].max"
-                                      x-on:change.debounce.500ms="updateCell(question.cells[row_index][column_index], { max: $el.value })"
+                                      x-model="question.cells[row_index][column_index].max_length.name"
+                                      x-on:change.debounce.500ms="updateCellOption(question.cells[row_index][column_index].max_length.id, { name: $el.value })"
                                   /></label>
                                 </div>
                               </template>
@@ -211,28 +211,29 @@
                                     <label class="whitespace-nowrap"
                                       >Allow ~, <, >, ≤, ≥
                                       <input
-                                        name="equality"
+                                        name="additional_char"
                                         type="checkbox"
                                         class="!m-0 cursor-pointer"
-                                        x-model="question.cells[row_index][column_index].with_equality"
-                                        @click="updateCell(question.cells[row_index][column_index], { with_equality: $el.checked })"
+                                        :value="question.cells[row_index][column_index].additional_char.name === 't'"
+                                        x-model="question.cells[row_index][column_index].additional_char.name"
+                                        @click="updateCellOption(question.cells[row_index][column_index].additional_char.id, { name: $el.checked })"
                                     /></label>
                                   </div>
                                   <label
                                     >Min value allowed
                                     <input
-                                      name="min"
+                                      name="min_value"
                                       type="number"
-                                      x-model="question.cells[row_index][column_index].min"
-                                      x-on:change.debounce.500ms="updateCell(question.cells[row_index][column_index], { min: $el.value })"
+                                      x-model="question.cells[row_index][column_index].min_value.name"
+                                      x-on:change.debounce.500ms="updateCellOption(question.cells[row_index][column_index].min_value.id, { name: $el.value })"
                                   /></label>
                                   <label
                                     >Max value allowed
                                     <input
-                                      name="max"
+                                      name="max_value"
                                       type="number"
-                                      x-model="question.cells[row_index][column_index].max"
-                                      x-on:change.debounce.500ms="updateCell(question.cells[row_index][column_index], { max: $el.value })"
+                                      x-model="question.cells[row_index][column_index].max_value.name"
+                                      x-on:change.debounce.500ms="updateCellOption(question.cells[row_index][column_index].max_value.id, { name: $el.value })"
                                   /></label>
                                 </div>
                               </template>
@@ -748,70 +749,70 @@
                             <div class="border-l border-gray-300">
                               <div
                                 @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'text' } })"
-                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-50"
+                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
                                 :class="{
                                   'font-bold': 'text' === question.cells[row_index][column_index].cell_type,
-                                  'bg-gray-50': 'text' === question.cells[row_index][column_index].cell_type
+                                  'bg-gray-100': 'text' === question.cells[row_index][column_index].cell_type
                                 }"
                               >
                                 Text
                               </div>
                               <div
                                 @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'numeric' } })"
-                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-50"
+                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
                                 :class="{
                                   'font-bold': 'numeric' === question.cells[row_index][column_index].cell_type,
-                                  'bg-gray-50': 'numeric' === question.cells[row_index][column_index].cell_type
+                                  'bg-gray-100': 'numeric' === question.cells[row_index][column_index].cell_type
                                 }"
                               >
                                 Numeric
                               </div>
                               <div
                                 @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'checkbox' } })"
-                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-50"
+                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
                                 :class="{
                                   'font-bold': 'checkbox' === question.cells[row_index][column_index].cell_type,
-                                  'bg-gray-50': 'checkbox' === question.cells[row_index][column_index].cell_type
+                                  'bg-gray-100': 'checkbox' === question.cells[row_index][column_index].cell_type
                                 }"
                               >
                                 Checkbox
                               </div>
                               <div
                                 @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'dropdown' } })"
-                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-50"
+                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
                                 :class="{
                                   'font-bold': 'dropdown' === question.cells[row_index][column_index].cell_type,
-                                  'bg-gray-50': 'dropdown' === question.cells[row_index][column_index].cell_type
+                                  'bg-gray-100': 'dropdown' === question.cells[row_index][column_index].cell_type
                                 }"
                               >
                                 Dropdown
                               </div>
                               <div
                                 @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'radio' } })"
-                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-50"
+                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
                                 :class="{
                                   'font-bold': 'radio' === question.cells[row_index][column_index].cell_type,
-                                  'bg-gray-50': 'radio' === question.cells[row_index][column_index].cell_type
+                                  'bg-gray-100': 'radio' === question.cells[row_index][column_index].cell_type
                                 }"
                               >
                                 Radio
                               </div>
                               <div
                                 @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'select2_single' } })"
-                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-50"
+                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
                                 :class="{
                                   'font-bold': 'select2_single' === question.cells[row_index][column_index].cell_type,
-                                  'bg-gray-50': 'select2_single' === question.cells[row_index][column_index].cell_type
+                                  'bg-gray-100': 'select2_single' === question.cells[row_index][column_index].cell_type
                                 }"
                               >
                                 Select One
                               </div>
                               <div
                                 @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'select2_multi' } })"
-                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-50"
+                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
                                 :class="{
                                   'font-bold': 'select2_multi' === question.cells[row_index][column_index].cell_type,
-                                  'bg-gray-50': 'select2_multi' === question.cells[row_index][column_index].cell_type
+                                  'bg-gray-100': 'select2_multi' === question.cells[row_index][column_index].cell_type
                                 }"
                               >
                                 Select Multiple
@@ -1086,8 +1087,23 @@
       async createCell() {
         alert("createCell");
       },
-      async updateCell() {
-        alert("updateCell");
+      async updateCellOption(qrcqrco_id, params) {
+        const response = await fetch(
+          `/question_row_columns_question_row_column_options/${qrcqrco_id}`,
+          {
+            method: "PATCH",
+            headers,
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Updated succesfully!", null, {
+            timeOut: 1000,
+          });
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
       },
       async createOption() {
         alert("createOption");
@@ -1106,7 +1122,6 @@
           toastr.success("Question updated succesfully!", null, {
             timeOut: 1000,
           });
-          await this.fetch_questions();
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }

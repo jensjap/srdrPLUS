@@ -21,10 +21,7 @@ json.array!(
   question.question_rows.each_with_index do |question_row, question_row_index|
     question_row.question_row_columns.each_with_index do |question_row_column, question_row_column_index|
       cells[question_row_index] ||= {}
-      cells[question_row_index][question_row_column_index] = {
-        id: question_row_column.id,
-        cell_type: question_row_column.question_row_column_type.name
-      }
+      cells[question_row_index][question_row_column_index] = question_row_column.form_object
     end
   end
   json.cells cells

@@ -42,6 +42,28 @@ class QuestionRowColumn < ApplicationRecord
   delegate :question_type, to: :question_row
   delegate :project, to: :question
 
+  def form_object
+    {
+      id:,
+      cell_type: question_row_column_type.name,
+      answer_choice: qrcqrcos_where_qrco('answer_choice').map { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
+      min_length: qrcqrcos_where_qrco('min_length').first.then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
+      max_length: qrcqrcos_where_qrco('max_length').first.then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
+      additional_char: qrcqrcos_where_qrco('additional_char').first.then do |qrcqrco|
+                         { id: qrcqrco.id, name: qrcqrco.name }
+                       end,
+      min_value: qrcqrcos_where_qrco('min_value').first.then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
+      max_value: qrcqrcos_where_qrco('max_value').first.then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
+      coefficient: qrcqrcos_where_qrco('coefficient').first.then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } },
+      exponent: qrcqrcos_where_qrco('exponent').first.then { |qrcqrco| { id: qrcqrco.id, name: qrcqrco.name } }
+    }
+  end
+
+  def qrcqrcos_where_qrco(qrco_name)
+    question_row_columns_question_row_column_options
+      .where(question_row_column_option: QuestionRowColumnOption.find_by(name: qrco_name))
+  end
+
   def field_validation_value_for(name)
     QuestionRowColumnsQuestionRowColumnOption
       .find_by!(
