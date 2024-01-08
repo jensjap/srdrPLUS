@@ -1,0 +1,2 @@
+class MbMessagesController < ApplicationController
+end
