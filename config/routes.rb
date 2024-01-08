@@ -421,4 +421,10 @@ Rails.application.routes.draw do
   get 'check_role/:screenings_type/:project_id', to: 'role_check#check_role', as: 'check_role'
 
   get '/projects_reasons/:screening_type/rejection_reasons', to: 'projects_reasons#get_default_rejection_reasons'
+
+  resources :message_boards, shallow: true, only: %i[show create destroy] do
+    resources :mb_messages, only: %i[index create destroy]
+  end
+
+  resources :mb_reads, only: %i[index create destroy]
 end
