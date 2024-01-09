@@ -227,15 +227,21 @@
 
       async init() {
         this.project_id = <%= @project.id %>;
-        this.reasons_tags = <%= @project.as_reasons_tags %>;
+        this.allow_adding_reasons = <%= @project.as_allow_adding_reasons %>;
+        this.allow_adding_tags = <%= @project.as_allow_adding_tags %>;
         this.limit_one_reason = <%= @project.as_limit_one_reason %>;
         this.fetchReasons();
         this.fetchTags();
       },
 
-      async toggleAddReasonsTags() {
-        this.reasons_tags = !this.reasons_tags;
-        this.updateProject({ as_reasons_tags: this.reasons_tags });
+      async toggleAllowAddingReasons() {
+        this.allow_adding_reasons = !this.allow_adding_reasons;
+        this.updateProject({ as_allow_adding_reasons: this.allow_adding_reasons });
+      },
+
+      async toggleAllowAddingTags() {
+        this.allow_adding_tags = !this.allow_adding_tags;
+        this.updateProject({ as_allow_adding_tags: this.allow_adding_tags });
       },
 
       async toggleLimitOneReason() {

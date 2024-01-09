@@ -12,8 +12,10 @@ class ProjectPolicy < ApplicationPolicy
     :funding_source,
     :auto_train,
     :exclude_personal_conflicts,
-    :as_reasons_tags,
-    :fs_reasons_tags,
+    :as_allow_adding_reasons,
+    :as_allow_adding_tags,
+    :fs_allow_adding_reasons,
+    :fs_allow_adding_tags,
     :as_limit_one_reason,
     :fs_limit_one_reason,
     {

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_19_063300) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_09_060523) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -29,6 +29,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_19_063300) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "privileged", default: false
+    t.boolean "form_complete", default: false, null: false
     t.index ["abstract_screening_id"], name: "index_abstract_screening_results_on_abstract_screening_id"
     t.index ["citations_project_id"], name: "asr_on_cp"
     t.index ["user_id"], name: "asr_on_u"
@@ -72,6 +73,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_19_063300) do
     t.boolean "hide_journal", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "yes_form_required", default: false, null: false
+    t.boolean "no_form_required", default: false, null: false
+    t.boolean "maybe_form_required", default: false, null: false
     t.index ["project_id"], name: "index_abstract_screenings_on_project_id"
   end
 
@@ -730,6 +734,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_19_063300) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "privileged", default: false
+    t.boolean "form_complete", default: false, null: false
     t.index ["citations_project_id"], name: "fsr_on_cp"
     t.index ["fulltext_screening_id"], name: "index_fulltext_screening_results_on_fulltext_screening_id"
     t.index ["user_id"], name: "fsr_on_u"
@@ -773,6 +778,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_19_063300) do
     t.boolean "hide_journal", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "yes_form_required", default: false, null: false
+    t.boolean "no_form_required", default: false, null: false
+    t.boolean "maybe_form_required", default: false, null: false
     t.index ["project_id"], name: "index_fulltext_screenings_on_project_id"
   end
 
@@ -1180,11 +1188,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_19_063300) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.text "authors_of_report"
-    t.boolean "exclude_personal_conflicts", default: false, null: false
-    t.boolean "as_reasons_tags", default: true, null: false
-    t.boolean "fs_reasons_tags", default: true, null: false
+    t.boolean "exclude_personal_conflicts", default: true, null: false
     t.boolean "as_limit_one_reason", default: false, null: false
     t.boolean "fs_limit_one_reason", default: false, null: false
+    t.boolean "as_allow_adding_reasons", default: true, null: false
+    t.boolean "as_allow_adding_tags", default: true, null: false
+    t.boolean "fs_allow_adding_reasons", default: true, null: false
+    t.boolean "fs_allow_adding_tags", default: true, null: false
   end
 
   create_table "projects_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

@@ -20,6 +20,9 @@
 #  hide_journal            :boolean          default(FALSE), not null
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
+#  yes_form_required       :boolean          default(FALSE), not null
+#  no_form_required        :boolean          default(FALSE), not null
+#  maybe_form_required     :boolean          default(FALSE), not null
 #
 class AbstractScreening < ApplicationRecord
   include ScreeningModule

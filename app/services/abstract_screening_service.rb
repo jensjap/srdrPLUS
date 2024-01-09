@@ -42,13 +42,13 @@ class AbstractScreeningService < BaseScreeningService
         screening_status: CitationsProject::AS_IN_CONFLICT
       )
       .order('abstract_screening_results.id ASC')
-    citations_projects = citations_projects.includes(:abstract_screening_results).filter do |cp|
+    citations_projects = citations_projects.filter do |cp|
       cp.abstract_screening_results.none? do |asr|
         asr.privileged && asr.label&.zero?
       end
     end
     if abstract_screening.project.exclude_personal_conflicts
-      citations_projects = citations_projects.includes(:abstract_screening_results).filter do |cp|
+      citations_projects = citations_projects.filter do |cp|
         cp.abstract_screening_results.none? do |asr|
           asr.user == user
         end

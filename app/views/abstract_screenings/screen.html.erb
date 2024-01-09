@@ -393,7 +393,8 @@
       show_all_labels: false,
       project_id: null,
       terms_and_phrases_settings: true,
-      as_reasons_tags: false,
+      as_allow_adding_reasons: false,
+      as_allow_adding_tags: false,
       as_limit_one_reason: false,
 
       async init() {
@@ -428,7 +429,8 @@
           headers,
         });
         const data = await response.json();
-        this.as_reasons_tags = data.as_reasons_tags;
+        this.as_allow_adding_reasons = data.as_allow_adding_reasons;
+        this.as_allow_adding_tags = data.as_allow_adding_tags;
         this.as_limit_one_reason = data.as_limit_one_reason;
       },
 
