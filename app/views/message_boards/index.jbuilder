@@ -1,0 +1,4 @@
+json.projects_message_boards @projects_message_boards
+json.users_message_boards @users_message_boards
+json.extractions_message_boards @extractions_message_boards
+json.screenings_message_boards @screenings_message_boards
