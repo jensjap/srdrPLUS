@@ -1,5 +1,6 @@
 class Message < ApplicationRecord
   belongs_to :message, optional: true
+  belongs_to :user
 
   has_one :message_read, dependent: :destroy
 
@@ -8,6 +9,6 @@ class Message < ApplicationRecord
   private
 
   def broadcast_message
-    ActionCable.server.broadcast("chat_#{room}", { text: })
+    ActionCable.server.broadcast("chat_#{room}", self)
   end
 end

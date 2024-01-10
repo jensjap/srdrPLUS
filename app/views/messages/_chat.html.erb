@@ -210,7 +210,7 @@
                   >
                     <div x-text="message.text"></div>
                     <div
-                      class="absolute text-xs bottom-0 right-0 -mb-5 mr-2 text-gray-500"
+                      class="text-xs text-gray-500 text-nowrap text-right"
                       x-text="new Date(message.created_at).toLocaleString()"
                     ></div>
                   </div>
@@ -236,6 +236,8 @@
               type="text"
               class="w-full !focus:outline-none !border-none !text-sm !h-8 !p-2"
               placeholder="Type message..."
+              x-model="chat_text[selected_room]"
+              @keyup.enter="sendMessage()"
             />
           </div>
         </div>
@@ -266,6 +268,12 @@
 
 <script>
   document.addEventListener("alpine:init", () => {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+    };
     Alpine.data("chat", () => ({
       modal: true,
       selected_room_type: "projects",
@@ -278,6 +286,7 @@
       extraction_rooms: [],
       screening_rooms: [],
       current_user_id: null,
+      chat_text: {},
 
       async init() {
         await this.fetchRooms();
@@ -285,6 +294,19 @@
         this.selected_room = this.selected_rooms[0];
         this.selected_messages = this.messages[this.selected_rooms[0]];
         await this.setupWS();
+      },
+
+      async sendMessage() {
+        const response = await fetch("/messages", {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            room: this.selected_room,
+            text: this.chat_text[this.selected_room],
+          }),
+        });
+        const data = await response.json();
+        this.chat_text[this.selected_room] = "";
       },
 
       async fetchRooms() {
@@ -302,7 +324,6 @@
         this.screening_rooms = data.screening_rooms;
         this.messages = data.messages;
         this.current_user_id = data.current_user_id;
-        console.log(data);
       },
 
       async setupWS() {
@@ -328,8 +349,14 @@
           if (data.type === "ping") {
             return;
           }
-          if (data.message) {
-            console.log(data.message);
+          const message = data.message;
+          if (message) {
+            this.messages[message.room]
+              ? this.messages[message.room].push(message)
+              : (this.messages[message.room] = [message]);
+            if (this.selected_room == message.room) {
+              this.selected_messages = this.messages[message.room];
+            }
           }
         };
         socket.onerror = (error) => {

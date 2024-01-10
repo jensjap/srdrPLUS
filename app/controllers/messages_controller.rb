@@ -34,4 +34,20 @@ class MessagesController < ApplicationController
       end
     end
   end
+
+  def create
+    respond_to do |format|
+      format.json do
+        message = Message.new(strong_params)
+        message.user = current_user
+        render json: {}, status: message.save ? 200 : 403
+      end
+    end
+  end
+
+  private
+
+  def strong_params
+    params.require(:message).permit(:room, :text)
+  end
 end
