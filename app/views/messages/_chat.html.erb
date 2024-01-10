@@ -216,7 +216,7 @@
                 <div x-text="message.text"></div>
                 <div
                   class="text-xs text-gray-500 text-nowrap text-right"
-                  x-text="new Date(message.created_at).toLocaleString()"
+                  x-text="`${message.handle} wrote at ${new Date(message.created_at).toLocaleString()}`"
                 ></div>
               </div>
             </div>

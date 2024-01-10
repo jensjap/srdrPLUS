@@ -27,9 +27,15 @@ class MessagesController < ApplicationController
         @extraction_rooms = extraction_rooms
         @screening_rooms = screening_rooms
         @messages = {}
-        Message.where(room: @project_rooms).order(created_at: :desc).each do |mb_message|
-          @messages[mb_message.room] ||= []
-          @messages[mb_message.room] << mb_message
+        Message.where(room: @project_rooms).includes(user: :profile).order(created_at: :desc).each do |message|
+          @messages[message.room] ||= []
+          @messages[message.room] << {
+            room: message.room,
+            user_id: message.user_id,
+            handle: message.user.handle,
+            text: message.text,
+            created_at: message.created_at
+          }
         end
       end
     end

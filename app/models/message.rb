@@ -9,6 +9,6 @@ class Message < ApplicationRecord
   private
 
   def broadcast_message
-    ActionCable.server.broadcast("chat_#{room}", self)
+    ActionCable.server.broadcast("chat_#{room}", { room:, user_id:, handle: user.handle, text:, created_at: })
   end
 end
