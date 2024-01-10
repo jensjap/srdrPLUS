@@ -163,10 +163,14 @@
                   }"
                 >
                   <div class="text-sm font-medium" x-text="room"></div>
-                  <!-- <div
+                  <div
                     class="text-xs truncate w-40"
-                    x-text="'placeholder'"
-                  ></div> -->
+                    :class="{
+                      'text-gray-400': (!messages[room] || messages[room].length === 0),
+                      'italic': (messages[room] && messages[room].length > 0)
+                    }"
+                    x-text="(messages[room] && `...${messages[room][0].text}`) || 'no messages'"
+                  ></div>
                 </div>
                 <!-- <div class="flex-shrink-0 ml-2 mr-4 self-end mb-1">
                   <span
