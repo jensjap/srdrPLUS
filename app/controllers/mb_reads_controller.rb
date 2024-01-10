@@ -1,2 +1,0 @@
-class MbReadsController < ApplicationController
-end

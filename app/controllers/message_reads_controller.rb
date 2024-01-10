@@ -1,0 +1,2 @@
+class MessageReadsController < ApplicationController
+end

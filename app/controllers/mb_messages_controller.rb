@@ -1,2 +1,0 @@
-class MbMessagesController < ApplicationController
-end

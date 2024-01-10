@@ -1,27 +1,13 @@
-# == Schema Information
-#
-# Table name: messages
-#
-#  id              :integer          not null, primary key
-#  message_type_id :integer
-#  name            :string(255)
-#  description     :text(65535)
-#  start_at        :datetime
-#  end_at          :datetime
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  active          :boolean          default(TRUE)
-#
-
 class Message < ApplicationRecord
-  include SharedDispatchableMethods
-  include SharedQueryableMethods
+  belongs_to :message, optional: true
 
-  belongs_to :message_type, inverse_of: :messages
+  has_one :message_read, dependent: :destroy
 
-  has_one :frequency, through: :message_type
+  after_create :broadcast_message
 
-  has_many :dispatches, as: :dispatchable, dependent: :destroy
+  private
 
-  validates :message_type, presence: true
+  def broadcast_message
+    ActionCable.server.broadcast("chat_#{room}", { text: })
+  end
 end

@@ -56,8 +56,6 @@ class User < ApplicationRecord
 
   has_many :degrees, through: :profile
 
-  has_many :dispatches, dependent: :destroy, inverse_of: :user
-
   has_many :projects_users, dependent: :destroy, inverse_of: :user
   has_many :projects, through: :projects_users
   has_many :citations_projects, through: :projects
