@@ -2,6 +2,7 @@
   x-cloak
   x-show="modal"
   @keyup.escape.window="modal = !modal"
+  x-trap.noscroll="modal"
   x-data="chat"
   class="inset-0 fixed z-50"
   x-transition:enter="ease-out duration-300"
@@ -141,10 +142,10 @@
           ></div>
         </div>
         <div class="mt-2 overflow-y-auto overflow-x-hidden">
-          <div class="flex flex-col">
+          <div class="flex flex-col space-y-1">
             <template x-for="room in selected_rooms">
               <div
-                class="relative flex flex-row items-center p-2 pl-0 cursor-pointer"
+                class="relative flex flex-row items-center pr-2 pl-0 cursor-pointer"
                 @click="selected_room = room; selected_messages = messages[room]"
               >
                 <!-- <div
@@ -157,13 +158,15 @@
                   :class="{
                     'bg-srdrpurple': selected_room === room,
                     'text-white': selected_room === room,
+                    'bg-gray-200': selected_room !== room,
+                    'text-black': selected_room !== room,
                   }"
                 >
                   <div class="text-sm font-medium" x-text="room"></div>
-                  <div
+                  <!-- <div
                     class="text-xs truncate w-40"
                     x-text="'placeholder'"
-                  ></div>
+                  ></div> -->
                 </div>
                 <!-- <div class="flex-shrink-0 ml-2 mr-4 self-end mb-1">
                   <span
@@ -178,55 +181,54 @@
       </div>
     </div>
     <div class="flex flex-col h-full w-full bg-white px-4 py-6">
-      <div class="h-full overflow-hidden">
-        <div class="h-full overflow-y-auto">
-          <div class="grid grid-cols-12 gap-y-2">
-            <template x-for="message in selected_messages">
-              <div
-                class="p-3 rounded-lg"
-                :class="{
+      <div
+        x-cloak
+        x-show="selected_messages && selected_messages.length > 0"
+        class="flex flex-col-reverse h-full w-full gap-y-2 overflow-auto"
+      >
+        <template x-for="message in selected_messages">
+          <div
+            class="p-3 rounded-lg"
+            :class="{
                 'col-start-1': message.user_id !== current_user_id,
                 'col-end-8': message.user_id !== current_user_id,
                 'col-start-6': message.user_id === current_user_id,
                 'col-end-13': message.user_id === current_user_id,
               }"
-              >
-                <div
-                  class="flex"
-                  :class="{
-                    'flex-row': message.user_id !== current_user_id,
-                    'items-center': message.user_id !== current_user_id,
-                    'items-center': message.user_id === current_user_id,
-                    'justify-start': message.user_id === current_user_id,
-                    'flex-row-reverse': message.user_id === current_user_id,
-                  }"
-                >
-                  <div
-                    class="relative ml-3 text-sm py-2 px-4 shadow rounded-xl"
-                    :class="{
-                      'bg-white': message.user_id !== current_user_id,
-                      'bg-indigo-100': message.user_id === current_user_id,
-                    }"
-                  >
-                    <div x-text="message.text"></div>
-                    <div
-                      class="text-xs text-gray-500 text-nowrap text-right"
-                      x-text="new Date(message.created_at).toLocaleString()"
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            </template>
-          </div>
-          <template
-            x-if="!selected_messages || selected_messages?.length === 0"
           >
-            <div class="h-full w-full flex justify-center items-center">
-              <div>No Messages</div>
+            <div
+              class="flex"
+              :class="{
+                  'flex-row': message.user_id !== current_user_id,
+                  'items-center': message.user_id !== current_user_id,
+                  'items-center': message.user_id === current_user_id,
+                  'justify-start': message.user_id === current_user_id,
+                  'flex-row-reverse': message.user_id === current_user_id,
+                }"
+            >
+              <div
+                class="relative ml-3 text-sm py-2 px-4 shadow rounded-xl"
+                :class="{
+                    'bg-white': message.user_id !== current_user_id,
+                    'bg-indigo-100': message.user_id === current_user_id,
+                  }"
+              >
+                <div x-text="message.text"></div>
+                <div
+                  class="text-xs text-gray-500 text-nowrap text-right"
+                  x-text="new Date(message.created_at).toLocaleString()"
+                ></div>
+              </div>
             </div>
-          </template>
-        </div>
+          </div>
+        </template>
       </div>
+      <template x-if="!selected_messages || selected_messages?.length === 0">
+        <div class="h-full w-full flex justify-center items-center">
+          <div>No Messages</div>
+        </div>
+      </template>
+
       <div class="flex flex-row items-center">
         <div
           class="flex flex-row items-center w-full border rounded-3xl h-12 px-2"
@@ -352,7 +354,7 @@
           const message = data.message;
           if (message) {
             this.messages[message.room]
-              ? this.messages[message.room].push(message)
+              ? this.messages[message.room].unshift(message)
               : (this.messages[message.room] = [message]);
             if (this.selected_room == message.room) {
               this.selected_messages = this.messages[message.room];

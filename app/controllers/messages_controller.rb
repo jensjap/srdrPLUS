@@ -27,7 +27,7 @@ class MessagesController < ApplicationController
         @extraction_rooms = extraction_rooms
         @screening_rooms = screening_rooms
         @messages = {}
-        Message.where(room: @project_rooms).each do |mb_message|
+        Message.where(room: @project_rooms).order(created_at: :desc).each do |mb_message|
           @messages[mb_message.room] ||= []
           @messages[mb_message.room] << mb_message
         end
