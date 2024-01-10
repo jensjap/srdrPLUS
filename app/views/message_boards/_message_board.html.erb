@@ -451,6 +451,7 @@
       async init() {
         await this.fetchMessageBoards();
         this.selected_boards = this.projects_message_boards;
+        await this.setupWS();
       },
 
       async fetchMessageBoards() {
@@ -467,6 +468,38 @@
         this.extractions_message_boards = data.extractions_message_boards;
         this.screenings_message_boards = data.screenings_message_boards;
         console.log(data);
+      },
+
+      async setupWS() {
+        const socket = new WebSocket("ws://localhost:3000/cable");
+
+        socket.onopen = () => {
+          console.log("WS connected");
+          const msg = {
+            command: "subscribe",
+            identifier: JSON.stringify({
+              channel: "ChatChannel",
+            }),
+          };
+          socket.send(JSON.stringify(msg));
+        };
+
+        socket.onclose = () => {
+          console.log("WS disconnected");
+        };
+
+        socket.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          if (data.type === "ping") {
+            return;
+          }
+          if (data.message) {
+            console.log(data.message);
+          }
+        };
+        socket.onerror = (error) => {
+          console.log("WS error: ", error);
+        };
       },
     }));
   });
