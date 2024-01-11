@@ -2,8 +2,10 @@ class ChatChannel < ApplicationCable::Channel
   rescue_from 'MyError', with: :deliver_error_message
 
   def subscribed
-    current_user.projects.each do |project|
-      stream_from "chat_project-#{project.id}"
+    ChatChannelService.generate_rooms(current_user).each do |_, rooms|
+      rooms.each do |room|
+        stream_from "chat_#{room}"
+      end
     end
   end
 
