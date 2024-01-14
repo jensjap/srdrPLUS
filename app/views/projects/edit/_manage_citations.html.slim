@@ -4,8 +4,8 @@
       = link_to " (Dedupe citations in this project)", dedupe_citations_project_path(@project), method: :POST
 
 div.row#btm-anchor style="margin: 10px 0 0 0;"
-  div.columns.medium-12
-    a onclick="$('#add_citation_button').trigger('click')" href="#add_citation" Add Citation
+  div.columns.medium-12.mt-4
+    a class="text-white bg-srdrpurple text-sm p-2 rounded-md hover:text-white hover:no-underline" onclick="$('#add_citation_button').trigger('click')" href="#add_citation" Add Citation
 
 div.row style="margin: 0;"
   div.columns.medium-9
@@ -98,5 +98,5 @@ div.row#btm-anchor style="margin: 10px 0 0 0;"
       = f.error_notification
       = f.hidden_field :redirect_path, value: project_citations_path(@project)
 
-      div
-        = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/citations_project_fields', id: 'add_citation_button'
+      div.mt-4
+        = link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/citations_project_fields', id: 'add_citation_button', class: "text-white bg-srdrpurple text-sm p-2 rounded-md hover:text-white hover:no-underline focus:text-white focus:no-underline"
