@@ -11,6 +11,7 @@
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #  privileged            :boolean          default(FALSE)
+#  form_complete         :boolean          default(FALSE), not null
 #
 class FulltextScreeningResult < ApplicationRecord
   searchkick callbacks: :async

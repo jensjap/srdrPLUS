@@ -350,7 +350,8 @@
         "true",
       show_all_labels: false,
       project_id: null,
-      fs_reasons_tags: false,
+      fs_allow_adding_reasons: false,
+      fs_allow_adding_tags: false,
       fs_limit_one_reason: false,
 
       async init() {
@@ -385,7 +386,8 @@
           headers,
         });
         const data = await response.json();
-        this.fs_reasons_tags = data.fs_reasons_tags;
+        this.fs_allow_adding_reasons = data.fs_allow_adding_reasons;
+        this.fs_allow_adding_tags = data.fs_allow_adding_tags;
         this.fs_limit_one_reason = data.fs_limit_one_reason;
       },
 
