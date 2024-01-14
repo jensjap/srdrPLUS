@@ -319,6 +319,9 @@
         yes_note_required: null,
         no_note_required: null,
         maybe_note_required: null,
+        yes_form_required: null,
+        no_form_required: null,
+        maybe_form_required: null,
       },
       fsr: {
         id: null,
@@ -326,6 +329,7 @@
         custom_reasons: [],
         custom_tags: [],
         notes: "",
+        form_complete: false,
       },
       all_labels: [],
       fsr_in_fsic_count: null,
@@ -424,6 +428,8 @@
             satisfactory = this.hasSomeReason() && satisfactory;
           if (this.options.no_note_required)
             satisfactory = this.hasSomeNote() && satisfactory;
+          if (this.options.no_form_required)
+            satisfactory = this.fsr.form_complete && satisfactory;
         }
         if (this.fsr.label == 0) {
           if (this.options.maybe_tag_required)
@@ -432,6 +438,8 @@
             satisfactory = this.hasSomeReason() && satisfactory;
           if (this.options.maybe_note_required)
             satisfactory = this.hasSomeNote() && satisfactory;
+          if (this.options.maybe_form_required)
+            satisfactory = this.fsr.form_complete && satisfactory;
         }
         if (this.fsr.label == 1) {
           if (this.options.yes_tag_required)
@@ -440,6 +448,8 @@
             satisfactory = this.hasSomeReason() && satisfactory;
           if (this.options.yes_note_required)
             satisfactory = this.hasSomeNote() && satisfactory;
+          if (this.options.yes_form_required)
+            satisfactory = this.fsr.form_complete && satisfactory;
         }
         return satisfactory;
       },
@@ -725,7 +735,7 @@
         const response = await fetch(url, customHeaders);
         const data = await response.json();
 
-        if (method == "GET") {
+        if (method === "GET") {
           this.fsr = data.fsr;
           this.all_labels = data.all_labels;
           this.citation = data.citation;

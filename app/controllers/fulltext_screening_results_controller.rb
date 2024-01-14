@@ -13,8 +13,8 @@ class FulltextScreeningResultsController < ApplicationController
           if @fulltext_screening_result.privileged && @fulltext_screening_result.label&.zero?
             @fulltext_screening_result.touch
           end
-        when 'notes'
-          @fulltext_screening_result.update_column(:notes, params[:fsr][:notes])
+        when 'notes', 'form_complete'
+          @fulltext_screening_result.update_column(params[:submissionType], params[:fsr][params[:submissionType]])
           @fulltext_screening_result.reindex
         end
 

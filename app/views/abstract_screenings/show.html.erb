@@ -93,16 +93,20 @@
               <div><%= @abstract_screening.hide_journal %></div>
             </div>
             <div class="flex justify-between">
-              <div>Tags required for:</div>
-              <div><%= @abstract_screening.tag_options.join(', ') %></div>
-            </div>
-            <div class="flex justify-between">
               <div>Reasons required for:</div>
               <div><%= @abstract_screening.reason_options.join(', ') %></div>
             </div>
             <div class="flex justify-between">
+              <div>Tags required for:</div>
+              <div><%= @abstract_screening.tag_options.join(', ') %></div>
+            </div>
+            <div class="flex justify-between">
               <div>Notes required for:</div>
               <div><%= @abstract_screening.note_options.join(', ') %></div>
+            </div>
+            <div class="flex justify-between">
+              <div>Form required for:</div>
+              <div><%= @abstract_screening.form_options.join(', ') %></div>
             </div>
           </div>
           <div class="text-xs w-full text-gray-700 p-2">

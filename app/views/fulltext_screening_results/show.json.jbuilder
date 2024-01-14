@@ -6,6 +6,7 @@ json.fsr do
   json.custom_reasons @custom_reasons
   json.custom_tags @custom_tags
   json.notes @fulltext_screening_result.notes || ''
+  json.form_complete @fulltext_screening_result.form_complete
 end
 json.citation do
   json.citation_id @fulltext_screening_result.citation.id
@@ -27,6 +28,9 @@ json.options do
   json.yes_note_required @fulltext_screening.yes_note_required
   json.no_note_required @fulltext_screening.no_note_required
   json.maybe_note_required @fulltext_screening.maybe_note_required
+  json.yes_form_required @fulltext_screening.yes_form_required
+  json.no_form_required @fulltext_screening.no_form_required
+  json.maybe_form_required @fulltext_screening.maybe_form_required
 end
 cps = @screened_cps.reverse.map do |fsr|
   {
