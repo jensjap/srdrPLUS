@@ -4,7 +4,8 @@ class AbstractScreeningService < BaseScreeningService
       .left_joins(:abstract_screening_results)
       .where(
         project: abstract_screening.project,
-        screening_status: CitationsProject::AS_IN_CONFLICT
+        screening_status: CitationsProject::AS_IN_CONFLICT,
+        abstract_screening_results: { abstract_screening: }
       )
       .uniq
       .count
@@ -39,16 +40,17 @@ class AbstractScreeningService < BaseScreeningService
       .left_joins(:abstract_screening_results)
       .where(
         project: abstract_screening.project,
-        screening_status: CitationsProject::AS_IN_CONFLICT
+        screening_status: CitationsProject::AS_IN_CONFLICT,
+        abstract_screening_results: { abstract_screening: }
       )
       .order('abstract_screening_results.id ASC')
-    citations_projects = citations_projects.includes(:abstract_screening_results).filter do |cp|
+    citations_projects = citations_projects.filter do |cp|
       cp.abstract_screening_results.none? do |asr|
         asr.privileged && asr.label&.zero?
       end
     end
     if abstract_screening.project.exclude_personal_conflicts
-      citations_projects = citations_projects.includes(:abstract_screening_results).filter do |cp|
+      citations_projects = citations_projects.filter do |cp|
         cp.abstract_screening_results.none? do |asr|
           asr.user == user
         end
