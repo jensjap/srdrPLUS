@@ -11,7 +11,7 @@ class Message < ApplicationRecord
   def broadcast_message
     type, id = room.split('-')
     online_user_ids = ActionCable.server.connections.map(&:current_user).map(&:id)
-    users =
+    broadcast_users =
       case type
       when 'project'
         User
@@ -49,8 +49,11 @@ class Message < ApplicationRecord
       else
         []
       end
-    users.each do |user|
-      ActionCable.server.broadcast("user_#{user.id}", { room:, user_id:, handle: user.handle, text:, created_at: })
+    broadcast_users.each do |broadcast_user|
+      ActionCable.server.broadcast(
+        "user_#{broadcast_user.id}",
+        { room:, user_id:, handle: user.handle, text:, created_at: }
+      )
     end
   end
 end
