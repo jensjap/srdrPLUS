@@ -7,7 +7,7 @@ class AbstractScreeningsController < ApplicationController
   after_action :verify_authorized
 
   def new
-    @abstract_screening = @project.abstract_screenings.new
+    @abstract_screening = @project.abstract_screenings.new(abstract_screening_type: 'double-perpetual')
     authorize(@abstract_screening)
   end
 

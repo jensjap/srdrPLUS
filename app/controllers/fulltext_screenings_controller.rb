@@ -6,7 +6,7 @@ class FulltextScreeningsController < ApplicationController
   after_action :verify_authorized
 
   def new
-    @fulltext_screening = @project.fulltext_screenings.new
+    @fulltext_screening = @project.fulltext_screenings.new(fulltext_screening_type: 'double-perpetual')
     authorize(@fulltext_screening)
   end
 
