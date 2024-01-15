@@ -557,6 +557,7 @@ class EppiService
   def get_reference_2847(extraction, codes)
     citation = extraction.citations_project.citation
     reference = {
+      'ItemId' => citation.id,
       'Codes' => codes,
       'Outcomes' => [],
       'Title' => citation.name || '',
