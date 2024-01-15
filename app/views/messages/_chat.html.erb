@@ -297,9 +297,18 @@
       async init() {
         await this.fetchRooms();
         this.selected_rooms = this.project_rooms;
+        this.sortRooms();
         this.selected_room = this.selected_rooms[0];
         this.selected_messages = this.messages[this.selected_rooms[0]];
         await this.setupWS();
+      },
+
+      sortRooms() {
+        this.selected_rooms = this.selected_rooms.sort((a, b) => {
+          const x = (this.messages[a] && this.messages[a][0]?.created_at) || 0;
+          const y = (this.messages[b] && this.messages[b][0]?.created_at) || 0;
+          return new Date(y) - new Date(x);
+        });
       },
 
       async sendMessage() {
@@ -364,6 +373,7 @@
               this.selected_messages = this.messages[message.room];
             }
           }
+          this.sortRooms();
         };
         socket.onerror = (error) => {
           console.log("WS error: ", error);
