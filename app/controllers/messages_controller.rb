@@ -6,7 +6,7 @@ class MessagesController < ApplicationController
         rooms = ChatChannelService.generate_rooms(current_user)
         @project_rooms = rooms[:project_rooms]
         @user_rooms = rooms[:user_rooms]
-        @extraction_rooms = rooms[:extraction_rooms]
+        @citation_rooms = rooms[:citation_rooms]
         @screening_rooms = rooms[:screening_rooms]
         @messages = {}
         Message.where(room: @project_rooms).includes(user: :profile).order(created_at: :desc).each do |message|
@@ -24,6 +24,7 @@ class MessagesController < ApplicationController
   end
 
   def create
+    # TODO: authorize the room
     respond_to do |format|
       format.json do
         message = Message.new(strong_params)

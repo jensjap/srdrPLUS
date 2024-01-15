@@ -9,6 +9,48 @@ class Message < ApplicationRecord
   private
 
   def broadcast_message
-    ActionCable.server.broadcast("chat_#{room}", { room:, user_id:, handle: user.handle, text:, created_at: })
+    type, id = room.split('-')
+    online_user_ids = ActionCable.server.connections.map(&:current_user).map(&:id)
+    users =
+      case type
+      when 'project'
+        User
+      .joins(projects_users: :project)
+      .where(projects: { id: })
+      .includes(:profile)
+      .where(id: online_user_ids)
+      .distinct
+      when 'user'
+        User
+      .where(id: id
+        .split('/'))
+      .where(id: online_user_ids)
+      .distinct
+      when 'citation'
+        []
+      #   User
+      # .joins(projects_users: { project: { citations_projects: :citation } })
+      # .where(citations: { id: })
+      # .includes(:profile)
+      # .where(id: online_user_ids)
+      # .distinct
+      when 'abstract_screening'
+        User
+      .joins(projects_users: { project: { abstract_screenings: { id: } } })
+      .includes(:profile)
+      .where(id: online_user_ids)
+      .distinct
+      when 'fulltext_screening'
+        User
+      .joins(projects_users: { project: { fulltext_screenings: { id: } } })
+      .includes(:profile)
+      .where(id: online_user_ids)
+      .distinct
+      else
+        []
+      end
+    users.each do |user|
+      ActionCable.server.broadcast("user_#{user.id}", { room:, user_id:, handle: user.handle, text:, created_at: })
+    end
   end
 end

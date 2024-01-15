@@ -75,9 +75,9 @@
               <span
                 class="flex items-center justify-center text-indigo-100 hover:bg-srdrpurple-light h-8 w-8 rounded-md"
                 :class="{
-                  'bg-srdrpurple-light': selected_room_type === 'extractions'
+                  'bg-srdrpurple-light': selected_room_type === 'citations'
                 }"
-                @click="selected_room_type = 'extractions'; selected_rooms = extraction_rooms; selected_room = extraction_rooms[0];"
+                @click="selected_room_type = 'citations'; selected_rooms = citation_rooms; selected_room = citation_rooms[0];"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -289,7 +289,7 @@
       messages: [],
       project_rooms: [],
       user_rooms: [],
-      extraction_rooms: [],
+      citation_rooms: [],
       screening_rooms: [],
       current_user_id: null,
       chat_text: {},
@@ -326,7 +326,7 @@
         const data = await response.json();
         this.project_rooms = data.project_rooms;
         this.user_rooms = data.user_rooms;
-        this.extraction_rooms = data.extraction_rooms;
+        this.citation_rooms = data.citation_rooms;
         this.screening_rooms = data.screening_rooms;
         this.messages = data.messages;
         this.current_user_id = data.current_user_id;
