@@ -12,7 +12,7 @@ class RobotScreenService
       {
         body: body.to_json,
         headers: { 'Content-Type' => 'application/json', 'Accept': 'application/json' },
-        timeout: 300
+        timeout: 3000
       }
     )
     JSON.parse(res.body)
