@@ -11,7 +11,7 @@ class MessagesController < ApplicationController
         @messages = {}
         Message
           .where(room: @project_rooms)
-          .includes(:message_unreads, { user: :profile })
+          .includes({ user: :profile, message_unreads: :user })
           .order(created_at: :desc)
           .each do |message|
           message_unread = message.message_unreads.find do |mu|
