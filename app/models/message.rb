@@ -22,36 +22,35 @@ class Message < ApplicationRecord
   private
 
   def broadcast_message
-    type, id = room.split('-')
+    room_type, room_id = room.split('-')
     online_users = ActionCable.server.connections.map(&:current_user)
     broadcast_users =
-      case type
+      case room_type
       when 'project'
         User
       .joins(projects_users: :project)
-      .where(projects: { id: })
+      .where(projects: { id: room_id })
       .includes(:profile)
       .distinct
       when 'user'
         User
-      .where(id: id
-        .split('/'))
+      .where(id: room_id.split('/'))
       .distinct
       when 'citation'
         []
       #   User
       # .joins(projects_users: { project: { citations_projects: :citation } })
-      # .where(citations: { id: })
+      # .where(citations: { id: room_id })
       # .includes(:profile)
       # .distinct
       when 'abstract_screening'
         User
-      .joins(projects_users: { project: { abstract_screenings: { id: } } })
+      .joins(projects_users: { project: { abstract_screenings: { id: room_id } } })
       .includes(:profile)
       .distinct
       when 'fulltext_screening'
         User
-      .joins(projects_users: { project: { fulltext_screenings: { id: } } })
+      .joins(projects_users: { project: { fulltext_screenings: { id: room_id } } })
       .includes(:profile)
       .distinct
       else
@@ -67,6 +66,7 @@ class Message < ApplicationRecord
       ActionCable.server.broadcast(
         "user_#{broadcast_user.id}",
         {
+          id:,
           room:,
           user_id:,
           handle: user.handle,

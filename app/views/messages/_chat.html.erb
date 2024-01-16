@@ -143,7 +143,7 @@
         </div>
         <div class="mt-2 overflow-y-auto overflow-x-hidden">
           <div class="flex flex-col space-y-1">
-            <template x-for="room in selected_rooms">
+            <template x-for="room in selected_rooms" :key="room">
               <div
                 class="relative flex flex-row items-center pr-2 pl-0 cursor-pointer"
                 @click="openRoom(room)"
@@ -193,7 +193,7 @@
         x-show="selected_messages && selected_messages.length > 0"
         class="flex flex-col-reverse h-full w-full gap-y-2 overflow-auto"
       >
-        <template x-for="message in selected_messages">
+        <template x-for="message in selected_messages" :key="message.id">
           <div
             class="p-3 rounded-lg"
             :class="{
@@ -292,7 +292,7 @@
       selected_room: null,
       selected_rooms: [],
       selected_messages: [],
-      messages: [],
+      messages: {},
       project_rooms: [],
       user_rooms: [],
       citation_rooms: [],
@@ -395,9 +395,6 @@
             this.messages[message.room]
               ? this.messages[message.room].unshift(message)
               : (this.messages[message.room] = [message]);
-            if (this.selected_room == message.room) {
-              this.selected_messages = this.messages[message.room];
-            }
           }
           this.sortRooms();
         };

@@ -19,6 +19,7 @@ class MessagesController < ApplicationController
           end
           @messages[message.room] ||= []
           @messages[message.room] << {
+            id: message.id,
             room: message.room,
             user_id: message.user_id,
             handle: message.user.handle,
