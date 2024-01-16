@@ -220,7 +220,10 @@
                     'bg-indigo-100': message.user_id === current_user_id,
                   }"
               >
-                <div x-text="message.text"></div>
+                <div
+                  x-text="message.text"
+                  @click="destroyMessageUnread(message)"
+                ></div>
                 <div
                   class="text-xs text-gray-500 text-nowrap text-right"
                   x-text="`${message.handle} wrote at ${new Date(message.created_at).toLocaleString()}`"
@@ -317,6 +320,19 @@
           const y = (this.messages[b] && this.messages[b][0]?.created_at) || 0;
           return new Date(y) - new Date(x);
         });
+      },
+
+      async destroyMessageUnread(message) {
+        const response = await fetch(
+          `/message_unreads/${message.message_unread_id}`,
+          {
+            method: "DELETE",
+            headers,
+          }
+        );
+        const data = await response.json();
+        message.read = true;
+        message.unread_message_id = null;
       },
 
       async sendMessage() {

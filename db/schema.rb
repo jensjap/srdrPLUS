@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_16_062348) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_16_083402) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -991,6 +991,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_16_062348) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["message_id"], name: "index_message_unreads_on_message_id"
+    t.index ["user_id", "message_id"], name: "index_message_unreads_on_user_id_and_message_id", unique: true
     t.index ["user_id"], name: "index_message_unreads_on_user_id"
   end
 

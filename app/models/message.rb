@@ -57,14 +57,25 @@ class Message < ApplicationRecord
       else
         []
       end
-    (broadcast_users & online_users).each do |broadcast_user|
-      ActionCable.server.broadcast(
-        "user_#{broadcast_user.id}",
-        { room:, user_id:, handle: user.handle, text:, created_at:, read: false }
-      )
-    end
     broadcast_users.each do |broadcast_user|
       message_unreads.create(user: broadcast_user)
+    end
+    (broadcast_users & online_users).each do |broadcast_user|
+      message_unread = message_unreads.find do |mu|
+        mu.user == broadcast_user
+      end
+      ActionCable.server.broadcast(
+        "user_#{broadcast_user.id}",
+        {
+          room:,
+          user_id:,
+          handle: user.handle,
+          text:,
+          created_at:,
+          read: message_unread.blank?,
+          message_unread_id: message_unread&.id
+        }
+      )
     end
   end
 end
