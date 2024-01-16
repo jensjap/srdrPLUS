@@ -9,14 +9,16 @@ class MessagesController < ApplicationController
         @citation_rooms = rooms[:citation_rooms]
         @screening_rooms = rooms[:screening_rooms]
         @messages = {}
-        Message.where(room: @project_rooms).includes(user: :profile).order(created_at: :desc).each do |message|
+        Message.where(room: @project_rooms).includes(:message_unreads,
+                                                     { user: :profile }).order(created_at: :desc).each do |message|
           @messages[message.room] ||= []
           @messages[message.room] << {
             room: message.room,
             user_id: message.user_id,
             handle: message.user.handle,
             text: message.text,
-            created_at: message.created_at
+            created_at: message.created_at,
+            read: message.message_unreads.none? { |message_unread| message_unread.user == current_user }
           }
         end
       end

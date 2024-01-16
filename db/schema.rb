@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_10_082650) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_16_062348) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -985,13 +985,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_10_082650) do
     t.index ["project_id"], name: "index_mesh_descriptors_projects_on_project_id"
   end
 
-  create_table "message_reads", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "message_unreads", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "message_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["message_id"], name: "index_message_reads_on_message_id"
-    t.index ["user_id"], name: "index_message_reads_on_user_id"
+    t.index ["message_id"], name: "index_message_unreads_on_message_id"
+    t.index ["user_id"], name: "index_message_unreads_on_user_id"
   end
 
   create_table "messages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

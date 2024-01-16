@@ -1,0 +1,2 @@
+class MessageUnreadsController < ApplicationController
+end

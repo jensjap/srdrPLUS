@@ -146,7 +146,7 @@
             <template x-for="room in selected_rooms">
               <div
                 class="relative flex flex-row items-center pr-2 pl-0 cursor-pointer"
-                @click="selected_room = room; selected_messages = messages[room]"
+                @click="openRoom(room)"
               >
                 <!-- <div
                   class="absolute text-xs text-gray-500 right-0 top-0 mr-8 mt-3"
@@ -172,12 +172,15 @@
                     x-text="(messages[room] && `...${messages[room][0].text}`) || 'no messages'"
                   ></div>
                 </div>
-                <!-- <div class="flex-shrink-0 ml-2 mr-4 self-end mb-1">
+                <div
+                  class="flex-shrink-0 ml-2 mr-4 self-end mb-1 absolute right-0 bottom-0"
+                  x-show="(messages[room] || []).some(message => !message.read)"
+                >
                   <span
                     class="flex items-center justify-center h-5 w-5 bg-red-500 text-white text-xs rounded-full"
-                    >5</span
-                  >
-                </div> -->
+                    x-text="(messages[room] || []).filter(x => !x.read)?.length"
+                  ></span>
+                </div>
               </div>
             </template>
           </div>
@@ -301,6 +304,11 @@
         this.selected_room = this.selected_rooms[0];
         this.selected_messages = this.messages[this.selected_rooms[0]];
         await this.setupWS();
+      },
+
+      openRoom(room) {
+        this.selected_room = room;
+        this.selected_messages = this.messages[room];
       },
 
       sortRooms() {
