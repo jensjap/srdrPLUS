@@ -320,6 +320,8 @@
       },
 
       async sendMessage() {
+        if (!this.chat_text[this.selected_room]) return;
+
         const response = await fetch("/messages", {
           method: "POST",
           headers,
