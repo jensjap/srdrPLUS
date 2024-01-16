@@ -125,10 +125,6 @@
             <% end %>
           </div>
         </div>
-        <!-- prettier-ignore -->
-        <% if BaseScreeningService.screening_dashboard_user?(current_user) %>
-          <%= render 'charts', project: @project %>
-        <% end %>
       </div>
     </div>
     <div class="relative my-4">
