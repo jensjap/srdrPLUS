@@ -8,10 +8,12 @@ class EppiService
     attributes_mapping = get_attributes_id_mapping()
 
     extractions.each do |extraction|
-      design_section, index_section = get_sections(extraction)
-      if design_section.status['name'] == 'Completed' and index_section.status['name'] == 'Completed'
-        ref_code = get_ref_code_2847(design_section, index_section)
-        refs << get_reference_2847(extraction, ref_code)
+      if extraction.consolidated
+        design_section, index_section, rob_section = get_sections(extraction)
+        if design_section.status['name'] == 'Completed' and index_section.status['name'] == 'Completed' and rob_section.status['name'] == 'Completed'
+          ref_code = get_ref_code_2847(design_section, index_section, rob_section)
+          refs << get_reference_2847(extraction, ref_code)
+        end
       end
     end
 
@@ -267,6 +269,12 @@ class EppiService
         'Smoking Related Disease' => 50,
         'Other' => 51,
         'Lung infiltrates' => 52
+      },
+      'overall_risk_of_bias' => {
+        'Low' => 53,
+        'Moderate' => 54,
+        'High' => 55,
+        'Critical' => 56
       }
     }
   end
@@ -275,12 +283,29 @@ class EppiService
     sections_hash = extraction.extractions_extraction_forms_projects_sections.index_by(&:section_name)
     design_section = sections_hash["Design Details"]
     index_section = sections_hash["Indexing Fields"]
-    return design_section, index_section
+    rob_section = sections_hash["Risk of Bias Assessment"]
+    return design_section, index_section, rob_section
   end
 
-  def get_ref_code_2847(design_section, index_section)
+  def get_ref_code_2847(design_section, index_section, rob_section)
     ref_codes = []
     attributes_mapping = get_attributes_id_mapping()
+
+    rob_eefpsqrcfs = rob_section.extractions_extraction_forms_projects_sections_question_row_column_fields
+    rob_eefpsqrcfs.each do |eefpsqrcf|
+      question_row_column = eefpsqrcf.question_row_column_field.question_row_column
+      next unless question_row_column.question_row_column_type.id == 7
+
+      value = eefpsqrcf.records[0]['name']
+      next if value.blank?
+
+      ans_form = question_row_column.question_row_columns_question_row_column_options
+      ans = ans_form.find(value)['name'].strip.gsub(/\s+/, ' ')
+
+      if attributes_mapping['overall_risk_of_bias'].key?(ans)
+        ref_codes << attributes_mapping['overall_risk_of_bias'][ans]
+      end
+    end
 
     index_eefpsqrcfs = index_section.extractions_extraction_forms_projects_sections_question_row_column_fields
     index_eefpsqrcfs.each do |eefpsqrcf|
@@ -426,7 +451,7 @@ class EppiService
           'Attributes' => {
             'AttributesList' => [
               {
-                'AttributeId' => 2004,
+                'AttributeId' => 2005,
                 'AttributeType' => 'Selectable (show checkbox)',
                 'AttributeName' => 'Article Purpose',
                 'Attributes' => {
@@ -434,7 +459,7 @@ class EppiService
                 }
               },
               {
-                'AttributeId' => 2005,
+                'AttributeId' => 2006,
                 'AttributeType' => 'Selectable (show checkbox)',
                 'AttributeName' => 'Exposure Measurement',
                 'Attributes' => {
@@ -442,7 +467,7 @@ class EppiService
                 }
               },
               {
-                'AttributeId' => 2006,
+                'AttributeId' => 2007,
                 'AttributeType' => 'Selectable (show checkbox)',
                 'AttributeName' => 'Outcomes: Measurement',
                 'Attributes' => {
@@ -450,7 +475,7 @@ class EppiService
                 }
               },
               {
-                'AttributeId' => 2007,
+                'AttributeId' => 2008,
                 'AttributeType' => 'Selectable (show checkbox)',
                 'AttributeName' => 'Conflict Period(s)',
                 'Attributes' => {
@@ -467,7 +492,7 @@ class EppiService
           'Attributes' => {
             'AttributesList' => [
               {
-                'AttributeId' => 2008,
+                'AttributeId' => 2009,
                 'AttributeType' => 'Selectable (show checkbox)',
                 'AttributeName' => 'Airway inflammation/thickening',
                 'Attributes' => {
@@ -475,7 +500,7 @@ class EppiService
                 }
               },
               {
-                'AttributeId' => 2009,
+                'AttributeId' => 2010,
                 'AttributeType' => 'Selectable (show checkbox)',
                 'AttributeName' => 'Interstitial Lung Diseasess',
                 'Attributes' => {
@@ -483,7 +508,7 @@ class EppiService
                 }
               },
               {
-                'AttributeId' => 2010,
+                'AttributeId' => 2011,
                 'AttributeType' => 'Selectable (show checkbox)',
                 'AttributeName' => 'Obstructive Lung Diseases',
                 'Attributes' => {
@@ -491,7 +516,7 @@ class EppiService
                 }
               },
               {
-                'AttributeId' => 2011,
+                'AttributeId' => 2012,
                 'AttributeType' => 'Selectable (show checkbox)',
                 'AttributeName' => 'Respiratory Tract Infections',
                 'Attributes' => {
@@ -499,7 +524,7 @@ class EppiService
                 }
               },
               {
-                'AttributeId' => 2012,
+                'AttributeId' => 2013,
                 'AttributeType' => 'Selectable (show checkbox)',
                 'AttributeName' => 'Other Respiratory Disease',
                 'Attributes' => {
@@ -515,6 +540,14 @@ class EppiService
           'AttributeName' => 'Study Design',
           'Attributes' => {
             'AttributesList' => attributes['designs']
+          }
+        },
+        {
+          'AttributeId' => 2004,
+          'AttributeType' => 'Selectable (show checkbox)',
+          'AttributeName' => 'Risk of Bias',
+          'Attributes' => {
+            'AttributesList' => attributes['overall_risk_of_bias']
           }
         }
       ]
