@@ -1,5 +1,6 @@
 class MessagesController < ApplicationController
   def index
+    # TODO: authorize
     respond_to do |format|
       format.json do
         @current_user = current_user
@@ -35,6 +36,7 @@ class MessagesController < ApplicationController
   end
 
   def update
+    # TODO: authorize
     respond_to do |format|
       format.json do
         message = Message.find(params[:id])
@@ -52,6 +54,17 @@ class MessagesController < ApplicationController
         message.user = current_user
         message.save!
         message.broadcast_message
+        render json: {}, status: 200
+      end
+    end
+  end
+
+  def destroy
+    # TODO: authorize
+    respond_to do |format|
+      format.json do
+        message = Message.find(params[:id])
+        message.destroy
         render json: {}, status: 200
       end
     end
