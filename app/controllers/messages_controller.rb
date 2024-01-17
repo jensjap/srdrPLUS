@@ -39,7 +39,9 @@ class MessagesController < ApplicationController
       format.json do
         message = Message.new(strong_params)
         message.user = current_user
-        render json: {}, status: message.save ? 200 : 403
+        message.save!
+        message.broadcast_message
+        render json: {}, status: 200
       end
     end
   end

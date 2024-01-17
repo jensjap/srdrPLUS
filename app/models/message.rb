@@ -17,10 +17,6 @@ class Message < ApplicationRecord
 
   has_many :message_unreads, dependent: :destroy
 
-  after_create :broadcast_message
-
-  private
-
   def broadcast_message
     room_type, room_id = room.split('-')
     online_users = ActionCable.server.connections.map(&:current_user)

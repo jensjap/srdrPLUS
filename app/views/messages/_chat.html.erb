@@ -312,6 +312,9 @@
       openRoom(room) {
         this.selected_room = room;
         this.selected_messages = this.messages[room];
+        this.selected_messages.forEach((message) =>
+          this.destroyMessageUnread(message)
+        );
       },
 
       sortRooms() {
@@ -323,6 +326,8 @@
       },
 
       async destroyMessageUnread(message) {
+        if (message.read) return;
+
         const response = await fetch(
           `/message_unreads/${message.message_unread_id}`,
           {
@@ -330,9 +335,10 @@
             headers,
           }
         );
-        const data = await response.json();
-        message.read = true;
-        message.unread_message_id = null;
+        if (response.status >= 200 && response.status < 300) {
+          message.read = true;
+          message.unread_message_id = null;
+        }
       },
 
       async sendMessage() {
@@ -385,17 +391,19 @@
           console.log("WS disconnected");
         };
 
-        socket.onmessage = (event) => {
+        socket.onmessage = async (event) => {
           const data = JSON.parse(event.data);
-          if (data.type === "ping") {
+          const message = data.message;
+          if (data.type === "ping" || message === undefined) {
             return;
           }
-          const message = data.message;
-          if (message) {
-            this.messages[message.room]
-              ? this.messages[message.room].unshift(message)
-              : (this.messages[message.room] = [message]);
+
+          if (message.room === this.selected_room) {
+            await this.destroyMessageUnread(message);
           }
+          this.messages[message.room]
+            ? this.messages[message.room].unshift(message)
+            : (this.messages[message.room] = [message]);
           this.sortRooms();
         };
         socket.onerror = (error) => {
