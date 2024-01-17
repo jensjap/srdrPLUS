@@ -9,6 +9,7 @@ div style='margin-left: 34px;'
 div style='margin: 0 34px; border-color: #bbb6dd; padding: 0; width: auto;'
   h6 style='margin: 0;'
     = @extraction.citation.handle.split("\n").join(" - ")
+  span Refman ID: #{ @extraction.citations_project.refman.to_s }
 
 - unless @panel_tab_id == 'keyquestions'
   div style='display: none;'

@@ -46,6 +46,8 @@ class CitationsController < ApplicationController
 
   def edit
     authorize_access
+    @project = Project.includes(citations_projects: :citation).find(params[:project_id])
+    authorize(@project)
     @citation.build_journal unless @citation.journal.present?
   end
 
