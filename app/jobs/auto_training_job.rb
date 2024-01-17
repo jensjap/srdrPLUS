@@ -2,6 +2,8 @@ class AutoTrainingJob
   include Sidekiq::Worker
 
   def perform
+    return unless ENV['AUTOTRAIN'] == 'true'
+
     begin
       AutoTrainingService.check_and_train_and_predict(100)
     rescue => e
