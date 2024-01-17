@@ -189,9 +189,74 @@
     </div>
     <div class="flex flex-col h-full w-full bg-white px-4 py-6">
       <div
+        class="flex flex-col-reverse h-64 w-full gap-y-2 overflow-y-scroll bg-gray-100 border border-gray-100"
+        x-show="selected_messages.some(message => message.pinned)"
+      >
+        <template
+          x-for="message in selected_messages.filter(message => message.pinned)"
+          :key="message.id"
+        >
+          <div
+            class="p-3 rounded-lg"
+            :class="{
+                'col-start-1': message.user_id !== current_user_id,
+                'col-end-8': message.user_id !== current_user_id,
+                'col-start-6': message.user_id === current_user_id,
+                'col-end-13': message.user_id === current_user_id,
+              }"
+          >
+            <div
+              class="flex"
+              :class="{
+                  'flex-row': message.user_id !== current_user_id,
+                  'items-center': message.user_id !== current_user_id,
+                  'items-center': message.user_id === current_user_id,
+                  'justify-start': message.user_id === current_user_id,
+                  'flex-row-reverse': message.user_id === current_user_id,
+                }"
+            >
+              <div
+                class="relative ml-3 text-sm py-2 px-4 shadow rounded-xl"
+                :class="{
+                    'bg-white': message.user_id !== current_user_id,
+                    'bg-indigo-100': message.user_id === current_user_id,
+                  }"
+              >
+                <div
+                  x-text="message.text"
+                  class="whitespace-pre-wrap"
+                  @click="destroyMessageUnread(message)"
+                ></div>
+                <div class="flex space-x-1">
+                  <div
+                    class="text-xs text-gray-500 text-nowrap text-right"
+                    x-text="`${message.handle} wrote at ${new Date(message.created_at).toLocaleString()}`"
+                  ></div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    :fill="message.pinned ? 'gray' : 'none'"
+                    viewBox="0 0 24 24"
+                    stroke-width="0.5"
+                    stroke="currentColor"
+                    class="w-4 h-4 cursor-pointer"
+                    @click="togglePin(message)"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+      <div
         x-cloak
         x-show="selected_messages && selected_messages.length > 0"
-        class="flex flex-col-reverse h-full w-full gap-y-2 overflow-auto"
+        class="flex flex-col-reverse h-full w-full gap-y-2 overflow-y-scroll bg-gray-50 border border-gray-100"
       >
         <template x-for="message in selected_messages" :key="message.id">
           <div
@@ -222,56 +287,60 @@
               >
                 <div
                   x-text="message.text"
+                  class="whitespace-pre-wrap"
                   @click="destroyMessageUnread(message)"
                 ></div>
-                <div
-                  class="text-xs text-gray-500 text-nowrap text-right"
-                  x-text="`${message.handle} wrote at ${new Date(message.created_at).toLocaleString()}`"
-                ></div>
+                <div class="flex space-x-1">
+                  <div
+                    class="text-xs text-gray-500 text-nowrap text-right"
+                    x-text="`${message.handle} wrote at ${new Date(message.created_at).toLocaleString()}`"
+                  ></div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    :fill="message.pinned ? 'gray' : 'none'"
+                    viewBox="0 0 24 24"
+                    stroke-width="0.5"
+                    stroke="currentColor"
+                    class="w-4 h-4 cursor-pointer"
+                    @click="togglePin(message)"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+                    />
+                  </svg>
+                </div>
               </div>
             </div>
           </div>
         </template>
       </div>
-      <template x-if="!selected_messages || selected_messages?.length === 0">
+      <template x-if="selected_messages.length === 0">
         <div class="h-full w-full flex justify-center items-center">
           <div>No Messages</div>
         </div>
       </template>
 
-      <div class="flex flex-row items-center">
-        <div
-          class="flex flex-row items-center w-full border rounded-3xl h-12 px-2"
-        >
-          <div class="w-full m-4">
-            <input
+      <div class="flex flex-row items-center pt-1">
+        <div class="flex flex-row items-center w-full h-32">
+          <div class="w-full">
+            <textarea
+              maxlength="65000"
+              rows="5"
               type="text"
-              class="w-full !focus:outline-none !border-none !text-sm !h-8 !p-2"
+              class="w-full text-sm !p-2 !resize-none"
               placeholder="Type message..."
               x-model="chat_text[selected_room]"
-              @keyup.enter="sendMessage()"
-            />
+              @keydown.shift="shiftPressed = true"
+              @keyup.shift="shiftPressed = false"
+              @keydown.enter.prevent="if (shiftPressed) {
+                return $event.target.value = $event.target.value + '\n'
+              }
+              sendMessage()
+              "
+            ></textarea>
           </div>
-        </div>
-        <div class="ml-6">
-          <button
-            class="flex items-center justify-center h-8 w-8 rounded-full hover:bg-srdrpurple-light text-white bg-srdrpurple cursor-pointer"
-          >
-            <svg
-              class="w-5 h-5 transform rotate-90 -mr-px"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-              ></path>
-            </svg>
-          </button>
         </div>
       </div>
     </div>
@@ -299,19 +368,20 @@
       screening_rooms: [],
       current_user_id: null,
       chat_text: {},
+      shiftPressed: false,
 
       async init() {
         await this.fetchRooms();
         this.selected_rooms = this.project_rooms;
         this.sortRooms();
         this.selected_room = this.selected_rooms[0];
-        this.selected_messages = this.messages[this.selected_rooms[0]];
+        this.selected_messages = this.messages[this.selected_rooms[0]] || [];
         await this.setupWS();
       },
 
       openRoom(room) {
         this.selected_room = room;
-        this.selected_messages = this.messages[room];
+        this.selected_messages = this.messages[room] || [];
         this.selected_messages.forEach((message) =>
           this.destroyMessageUnread(message)
         );
@@ -323,6 +393,19 @@
           const y = (this.messages[b] && this.messages[b][0]?.created_at) || 0;
           return new Date(y) - new Date(x);
         });
+      },
+
+      async togglePin(message) {
+        const response = await fetch(`/messages/${message.id}`, {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify({
+            pinned: !message.pinned,
+          }),
+        });
+        if (response.status >= 200 && response.status < 300) {
+          message.pinned = !message.pinned;
+        }
       },
 
       async destroyMessageUnread(message) {
@@ -342,7 +425,11 @@
       },
 
       async sendMessage() {
-        if (!this.chat_text[this.selected_room]) return;
+        if (
+          !this.chat_text[this.selected_room] ||
+          this.chat_text[this.selected_room].trim().length === 0
+        )
+          return;
 
         const response = await fetch("/messages", {
           method: "POST",
@@ -352,8 +439,9 @@
             text: this.chat_text[this.selected_room],
           }),
         });
-        const data = await response.json();
-        this.chat_text[this.selected_room] = "";
+        if (response.status >= 200 && response.status < 300) {
+          this.chat_text[this.selected_room] = "";
+        }
       },
 
       async fetchRooms() {

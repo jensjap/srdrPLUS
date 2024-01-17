@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_16_083402) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_17_113422) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -999,7 +999,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_16_083402) do
     t.bigint "message_id"
     t.bigint "user_id", null: false
     t.string "room", null: false
-    t.string "text", null: false
+    t.text "text", null: false
     t.boolean "pinned", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

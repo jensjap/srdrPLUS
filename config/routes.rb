@@ -422,7 +422,7 @@ Rails.application.routes.draw do
 
   get '/projects_reasons/:screening_type/rejection_reasons', to: 'projects_reasons#get_default_rejection_reasons'
 
-  resources :messages, shallow: true, only: %i[index create] do
+  resources :messages, shallow: true, only: %i[index create update] do
     resources :message_unreads, only: %i[destroy]
   end
 end

@@ -69,7 +69,8 @@ class Message < ApplicationRecord
           text:,
           created_at:,
           read: message_unread.blank?,
-          message_unread_id: message_unread&.id
+          message_unread_id: message_unread&.id,
+          pinned:
         }
       )
     end

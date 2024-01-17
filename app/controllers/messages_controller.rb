@@ -26,9 +26,20 @@ class MessagesController < ApplicationController
             text: message.text,
             created_at: message.created_at,
             read: message_unread.blank?,
-            message_unread_id: message_unread&.id
+            message_unread_id: message_unread&.id,
+            pinned: message.pinned
           }
         end
+      end
+    end
+  end
+
+  def update
+    respond_to do |format|
+      format.json do
+        message = Message.find(params[:id])
+        message.update(strong_params)
+        render json: {}, status: 200
       end
     end
   end
@@ -49,6 +60,6 @@ class MessagesController < ApplicationController
   private
 
   def strong_params
-    params.require(:message).permit(:room, :text)
+    params.require(:message).permit(:room, :text, :pinned)
   end
 end
