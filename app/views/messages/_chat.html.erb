@@ -162,7 +162,13 @@
                     'text-black': selected_room !== room,
                   }"
                 >
-                  <div class="text-sm font-medium" x-text="room"></div>
+                  <div
+                    class="text-sm font-medium"
+                    x-text="room"
+                    :class="{
+                      'text-gray-400': (!messages[room] || messages[room].length === 0)
+                    }"
+                  ></div>
                   <div
                     class="text-xs truncate w-40"
                     :class="{
