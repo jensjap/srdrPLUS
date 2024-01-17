@@ -379,7 +379,7 @@
         await this.setupWS();
       },
 
-      openRoom(room) {
+      async openRoom(room) {
         this.selected_room = room;
         this.selected_messages = this.messages[room] || [];
         this.selected_messages.forEach((message) =>
@@ -492,6 +492,10 @@
           this.messages[message.room]
             ? this.messages[message.room].unshift(message)
             : (this.messages[message.room] = [message]);
+
+          if (message.room === this.selected_room) {
+            this.selected_messages = this.messages[message.room];
+          }
           this.sortRooms();
         };
         socket.onerror = (error) => {
