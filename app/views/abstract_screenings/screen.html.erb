@@ -988,7 +988,9 @@
           this.processWeights("abstract", "processedAbstract");
           this.project_id = data.project_id;
         } else {
-          return this.getAsrId();
+          if (submissionType !== "notes") {
+            return this.getAsrId();
+          }
         }
         this.updateLink();
       },
