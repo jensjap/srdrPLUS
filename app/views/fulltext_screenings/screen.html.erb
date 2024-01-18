@@ -746,7 +746,9 @@
           this.fsr_in_fsic_count = data.fsr_in_fsic_count;
           this.project_id = data.project_id;
         } else {
-          return this.getFsrId();
+          if (submissionType !== "notes") {
+            return this.getFsrId();
+          }
         }
         this.updateLink();
       },
