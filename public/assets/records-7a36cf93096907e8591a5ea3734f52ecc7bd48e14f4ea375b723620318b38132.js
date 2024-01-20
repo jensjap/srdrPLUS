@@ -16,7 +16,7 @@
   });
 
   documentCode = function() {
-    var submitForm, timers;
+    var checkDirty, setTimeoutError, submitForm, timers;
     timers = {};
     submitForm = function(form) {
       return function() {
@@ -42,7 +42,7 @@
         return timers[formId] = setTimeout(submitForm($form), 750);
       }
     });
-    return $(document).on('input propertychange', 'form.edit_record input, form.edit_record textarea', function(e) {
+    $(document).on('input propertychange', 'form.edit_record input, form.edit_record textarea', function(e) {
       var $form, formId, valueChanged;
       e.preventDefault();
       valueChanged = false;
@@ -55,12 +55,26 @@
         $form = $(this).closest('form');
         formId = $form.attr('id');
         $form.addClass('dirty');
+        setTimeoutError({
+          duration: 10000
+        });
         if (formId in timers) {
           clearTimeout(timers[formId]);
         }
         return timers[formId] = setTimeout(submitForm($form), 750);
       }
     });
+    checkDirty = function(element) {
+      if (element.closest('form').classList.contains('dirty')) {
+        return toastr.error('You seem to be offline or the server is currently unresponsive. Please ensure your network is operational or try again later.', 'Warning: Error detected!');
+      }
+    };
+    return setTimeoutError = function(params) {
+      var duration, element;
+      duration = params.duration;
+      element = event.target;
+      return setTimeout(checkDirty.bind(null, element), duration);
+    };
   };
 
 }).call(this);
