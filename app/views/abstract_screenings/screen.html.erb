@@ -974,6 +974,9 @@
           url += "?resolution_mode=true";
         }
         const response = await fetch(url, customHeaders);
+        if (response.status < 200 && response.status >= 300) {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
         const data = await response.json();
 
         if (method === "GET") {
@@ -988,7 +991,10 @@
           this.processWeights("abstract", "processedAbstract");
           this.project_id = data.project_id;
         } else {
-          if (submissionType !== "notes") {
+          if (
+            submissionType !== "notes" &&
+            submissionType !== "form_complete"
+          ) {
             return this.getAsrId();
           }
         }
