@@ -23,7 +23,7 @@
             <% @project.recent_exported_items.each do |rei| %>
               <tr>
                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0"><%= rei.created_at.in_time_zone(current_user.profile.time_zone) %></td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= rei.file.filename.base %></td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= rei.file.filename.present? ? rei.file.filename.base : 'In progress..' %></td>
                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= rei.export_type.name %></td>
                 <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                   <a href="<%= rei.external_url %>" class="text-indigo-600 hover:text-indigo-900">Download<span class="sr-only">, Export File</span></a>

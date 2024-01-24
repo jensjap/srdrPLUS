@@ -30,7 +30,7 @@ class AutoTrainingService
         if retries < MAX_RETRIES
           retry
         else
-          Rails.logger.error "training failed for project #{project.id}: #{e.message}"
+          raise StandardError.new("Error for project #{project.id}: #{e.message}")
         end
       end
     end

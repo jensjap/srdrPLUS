@@ -1,6 +1,11 @@
 #sdMetaData-list class="p-4 lg:p-8"
   h1 class="text-xl font-bold" = "SR-360"
   h5 = @project.name
+  div class="pt-4 lg:pt-8"
+  - if @sd_meta_data.present?
+    button.create-button.button [data-open='create-sd-meta-datum-modal']
+      i.fi-plus>
+      = 'Create SR-360 Item'
   br
   - if @sd_meta_data.present?
     br

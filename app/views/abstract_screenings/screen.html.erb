@@ -361,6 +361,9 @@
         yes_note_required: null,
         no_note_required: null,
         maybe_note_required: null,
+        yes_form_required: null,
+        no_form_required: null,
+        maybe_form_required: null,
       },
       asr: {
         id: null,
@@ -368,6 +371,7 @@
         custom_reasons: [],
         custom_tags: [],
         notes: "",
+        form_complete: false,
       },
       all_labels: [],
       asr_in_asic_count: null,
@@ -393,11 +397,14 @@
       show_all_labels: false,
       project_id: null,
       terms_and_phrases_settings: true,
+      as_allow_adding_reasons: false,
+      as_allow_adding_tags: false,
+      as_limit_one_reason: false,
 
-      init() {
+      async init() {
         const url = new URL(window.location.href);
         const asr_id = url.searchParams.get("asr_id");
-        this.getAsrId(asr_id);
+        await this.getAsrId(asr_id);
 
         const smallDevice = window.matchMedia("(min-width: 1024px)");
         smallDevice.addListener(handleDeviceChange);
@@ -417,6 +424,18 @@
           });
 
         handleDeviceChange(smallDevice);
+        this.fetchProjectInfo();
+      },
+
+      async fetchProjectInfo() {
+        const response = await fetch(`/projects/${this.project_id}`, {
+          method: "GET",
+          headers,
+        });
+        const data = await response.json();
+        this.as_allow_adding_reasons = data.as_allow_adding_reasons;
+        this.as_allow_adding_tags = data.as_allow_adding_tags;
+        this.as_limit_one_reason = data.as_limit_one_reason;
       },
 
       toggleWeighingScreen() {
@@ -462,6 +481,8 @@
             satisfactory = this.hasSomeReason() && satisfactory;
           if (this.options.no_note_required)
             satisfactory = this.hasSomeNote() && satisfactory;
+          if (this.options.no_form_required)
+            satisfactory = this.asr.form_complete && satisfactory;
         }
         if (this.asr.label == 0) {
           if (this.options.maybe_tag_required)
@@ -470,6 +491,8 @@
             satisfactory = this.hasSomeReason() && satisfactory;
           if (this.options.maybe_note_required)
             satisfactory = this.hasSomeNote() && satisfactory;
+          if (this.options.maybe_form_required)
+            satisfactory = this.asr.form_complete && satisfactory;
         }
         if (this.asr.label == 1) {
           if (this.options.yes_tag_required)
@@ -478,6 +501,8 @@
             satisfactory = this.hasSomeReason() && satisfactory;
           if (this.options.yes_note_required)
             satisfactory = this.hasSomeNote() && satisfactory;
+          if (this.options.yes_form_required)
+            satisfactory = this.asr.form_complete && satisfactory;
         }
         return satisfactory;
       },
@@ -819,6 +844,24 @@
 
       async updateReasonsSelection(reason) {
         reason.selected = !reason.selected;
+        await this.fetchReasonsSelection(reason);
+
+        if (this.as_limit_one_reason && reason.selected) {
+          for (const other_reason of this.asr.custom_reasons) {
+            if (
+              reason.reason_id !== other_reason.reason_id &&
+              other_reason.selected
+            ) {
+              other_reason.selected = !other_reason.selected;
+              await this.fetchReasonsSelection(other_reason);
+            }
+          }
+        }
+
+        await this.getAsr();
+      },
+
+      async fetchReasonsSelection(reason) {
         if (reason.selected) {
           await fetch(
             `/abstract_screening_results/${this.asr.id}/abstract_screening_results_reasons`,
@@ -830,7 +873,6 @@
               }),
             }
           );
-          this.getAsr();
         } else {
           await fetch(
             `/abstract_screening_results_reasons/${reason.selected_id}`,
@@ -895,7 +937,7 @@
             window.location.href = `/${screeningsType}_screenings/<%= params[:abstract_screening_id] %>?screening_finished=true`;
           }
         }
-        this.getAsr();
+        await this.getAsr();
       },
 
       async updateAsr(submissionType, originalLabel) {
@@ -907,7 +949,7 @@
       },
 
       async getAsr() {
-        this.fetchAsr("GET");
+        await this.fetchAsr("GET");
       },
 
       async fetchAsr(method, submissionType, originalLabel = null) {
@@ -946,7 +988,9 @@
           this.processWeights("abstract", "processedAbstract");
           this.project_id = data.project_id;
         } else {
-          return this.getAsrId();
+          if (submissionType !== "notes") {
+            return this.getAsrId();
+          }
         }
         this.updateLink();
       },

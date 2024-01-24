@@ -6,7 +6,7 @@ class FulltextScreeningsController < ApplicationController
   after_action :verify_authorized
 
   def new
-    @fulltext_screening = @project.fulltext_screenings.new
+    @fulltext_screening = @project.fulltext_screenings.new(fulltext_screening_type: 'double-perpetual')
     authorize(@fulltext_screening)
   end
 
@@ -153,6 +153,9 @@ class FulltextScreeningsController < ApplicationController
       :yes_note_required,
       :no_note_required,
       :maybe_note_required,
+      :yes_form_required,
+      :no_form_required,
+      :maybe_form_required,
       :hide_author,
       :hide_journal,
       :no_of_citations,

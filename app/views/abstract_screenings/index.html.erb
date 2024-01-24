@@ -109,16 +109,20 @@
                       <div><%= as.hide_journal %></div>
                     </div>
                     <div class="flex justify-between">
-                      <div>Tags required for:</div>
-                      <div><%= as.tag_options.join(', ') %></div>
-                    </div>
-                    <div class="flex justify-between">
                       <div>Reasons required for:</div>
                       <div><%= as.reason_options.join(', ') %></div>
                     </div>
                     <div class="flex justify-between">
+                      <div>Tags required for:</div>
+                      <div><%= as.tag_options.join(', ') %></div>
+                    </div>
+                    <div class="flex justify-between">
                       <div>Notes required for:</div>
                       <div><%= as.note_options.join(', ') %></div>
+                    </div>
+                    <div class="flex justify-between">
+                      <div>Form required for:</div>
+                      <div><%= as.form_options.join(', ') %></div>
                     </div>
                   </td>
                   <td class="px-3 text-sm text-gray-500">
@@ -222,11 +226,42 @@
       custom_reasons: [],
       custom_tags: [],
       project_id: null,
+      reasons_tags: false,
+      limit_one_reason: false,
 
       async init() {
         this.project_id = <%= @project.id %>;
+        this.allow_adding_reasons = <%= @project.as_allow_adding_reasons %>;
+        this.allow_adding_tags = <%= @project.as_allow_adding_tags %>;
+        this.limit_one_reason = <%= @project.as_limit_one_reason %>;
         this.fetchReasons();
         this.fetchTags();
+      },
+
+      async toggleAllowAddingReasons() {
+        this.allow_adding_reasons = !this.allow_adding_reasons;
+        this.updateProject({ as_allow_adding_reasons: this.allow_adding_reasons });
+      },
+
+      async toggleAllowAddingTags() {
+        this.allow_adding_tags = !this.allow_adding_tags;
+        this.updateProject({ as_allow_adding_tags: this.allow_adding_tags });
+      },
+
+      async toggleLimitOneReason() {
+        this.limit_one_reason = !this.limit_one_reason;
+        this.updateProject({ as_limit_one_reason: this.limit_one_reason });
+      },
+
+      async updateProject(params) {
+        const response = await fetch(`/projects/${this.project_id}`, {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify({
+            project: params,
+          }),
+        });
+        const data = await response.json();
       },
 
       async fetchReasons() {
@@ -306,22 +341,25 @@
       },
 
       async createDeafaultReasons() {
-        fetch('/projects_reasons/abstract/rejection_reasons')
-          .then(response => {
+        fetch("/projects_reasons/abstract/rejection_reasons")
+          .then((response) => {
             if (!response.ok) {
-              throw new Error('Network response was not ok');
+              throw new Error("Network response was not ok");
             }
             return response.json();
           })
-          .then(reasons => {
-            reasons.forEach(reason => {
-              this.addReasonModal = { type: 'custom_reasons', action: 'Create' };
+          .then((reasons) => {
+            reasons.forEach((reason) => {
+              this.addReasonModal = {
+                type: "custom_reasons",
+                action: "Create",
+              };
               this.newCustomValue = reason;
               this.createCustomValue();
             });
           })
-          .catch(error => {
-            console.error('Fetch error:', error);
+          .catch((error) => {
+            console.error("Fetch error:", error);
           });
       },
 

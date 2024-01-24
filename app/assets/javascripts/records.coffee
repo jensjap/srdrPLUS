@@ -62,12 +62,22 @@ documentCode = () ->
 
       # Mark form as 'dirty'.
       $form.addClass( 'dirty' )
+      setTimeoutError({ duration: 10000 })
 
       if formId of timers
         clearTimeout( timers[formId] )
       timers[formId] = setTimeout( submitForm( $form ), 750 )
 
-      #!!! jens-2021-02-20: Crashes some work forms (infinite loop).
-      # the following will help the text expand as typing takes place
-      # while $(this).outerHeight() < @scrollHeight + parseFloat($(this).css('borderTopWidth')) + parseFloat($(this).css('borderBottomWidth'))
-      #   $(this).height $(this).height() + 1
+  checkDirty = ( element ) ->
+    if element.closest( 'form' ).classList.contains( 'dirty' )
+      toastr.error(
+        'You seem to be offline or the server is currently unresponsive.
+         Please ensure your network is operational or try again later.',
+        'Warning: Error detected!'
+      )
+
+  setTimeoutError = ( params ) ->
+    duration = params.duration
+    element = event.target
+    setTimeout(checkDirty.bind( null, element ), duration)
+    

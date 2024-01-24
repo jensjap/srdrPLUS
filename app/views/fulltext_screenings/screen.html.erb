@@ -319,6 +319,9 @@
         yes_note_required: null,
         no_note_required: null,
         maybe_note_required: null,
+        yes_form_required: null,
+        no_form_required: null,
+        maybe_form_required: null,
       },
       fsr: {
         id: null,
@@ -326,6 +329,7 @@
         custom_reasons: [],
         custom_tags: [],
         notes: "",
+        form_complete: false,
       },
       all_labels: [],
       fsr_in_fsic_count: null,
@@ -346,11 +350,14 @@
         "true",
       show_all_labels: false,
       project_id: null,
+      fs_allow_adding_reasons: false,
+      fs_allow_adding_tags: false,
+      fs_limit_one_reason: false,
 
-      init() {
+      async init() {
         const url = new URL(window.location.href);
         const fsr_id = url.searchParams.get("fsr_id");
-        this.getFsrId(fsr_id);
+        await this.getFsrId(fsr_id);
 
         const smallDevice = window.matchMedia("(min-width: 1024px)");
         smallDevice.addListener(handleDeviceChange);
@@ -370,6 +377,18 @@
           });
 
         handleDeviceChange(smallDevice);
+        this.fetchProjectInfo();
+      },
+
+      async fetchProjectInfo() {
+        const response = await fetch(`/projects/${this.project_id}`, {
+          method: "GET",
+          headers,
+        });
+        const data = await response.json();
+        this.fs_allow_adding_reasons = data.fs_allow_adding_reasons;
+        this.fs_allow_adding_tags = data.fs_allow_adding_tags;
+        this.fs_limit_one_reason = data.fs_limit_one_reason;
       },
 
       requireReasoning() {
@@ -411,6 +430,8 @@
             satisfactory = this.hasSomeReason() && satisfactory;
           if (this.options.no_note_required)
             satisfactory = this.hasSomeNote() && satisfactory;
+          if (this.options.no_form_required)
+            satisfactory = this.fsr.form_complete && satisfactory;
         }
         if (this.fsr.label == 0) {
           if (this.options.maybe_tag_required)
@@ -419,6 +440,8 @@
             satisfactory = this.hasSomeReason() && satisfactory;
           if (this.options.maybe_note_required)
             satisfactory = this.hasSomeNote() && satisfactory;
+          if (this.options.maybe_form_required)
+            satisfactory = this.fsr.form_complete && satisfactory;
         }
         if (this.fsr.label == 1) {
           if (this.options.yes_tag_required)
@@ -427,6 +450,8 @@
             satisfactory = this.hasSomeReason() && satisfactory;
           if (this.options.yes_note_required)
             satisfactory = this.hasSomeNote() && satisfactory;
+          if (this.options.yes_form_required)
+            satisfactory = this.fsr.form_complete && satisfactory;
         }
         return satisfactory;
       },
@@ -580,6 +605,24 @@
 
       async updateReasonsSelection(reason) {
         reason.selected = !reason.selected;
+        await this.fetchReasonsSelection(reason);
+
+        if (this.fs_limit_one_reason && reason.selected) {
+          for (const other_reason of this.fsr.custom_reasons) {
+            if (
+              reason.reason_id !== other_reason.reason_id &&
+              other_reason.selected
+            ) {
+              other_reason.selected = !other_reason.selected;
+              await this.fetchReasonsSelection(other_reason);
+            }
+          }
+        }
+
+        await this.getFsr();
+      },
+
+      async fetchReasonsSelection(reason) {
         if (reason.selected) {
           await fetch(
             `/fulltext_screening_results/${this.fsr.id}/fulltext_screening_results_reasons`,
@@ -591,7 +634,6 @@
               }),
             }
           );
-          this.getFsr();
         } else {
           await fetch(
             `/fulltext_screening_results_reasons/${reason.selected_id}`,
@@ -656,7 +698,7 @@
             window.location.href = `/${screeningsType}_screenings/<%= params[:fulltext_screening_id] %>?screening_finished=true`;
           }
         }
-        this.getFsr();
+        await this.getFsr();
       },
 
       async updateFsr(submissionType, originalLabel) {
@@ -668,7 +710,7 @@
       },
 
       async getFsr() {
-        this.fetchFsr("GET");
+        await this.fetchFsr("GET");
       },
 
       async fetchFsr(method, submissionType, originalLabel = null) {
@@ -695,7 +737,7 @@
         const response = await fetch(url, customHeaders);
         const data = await response.json();
 
-        if (method == "GET") {
+        if (method === "GET") {
           this.fsr = data.fsr;
           this.all_labels = data.all_labels;
           this.citation = data.citation;
@@ -704,7 +746,9 @@
           this.fsr_in_fsic_count = data.fsr_in_fsic_count;
           this.project_id = data.project_id;
         } else {
-          return this.getFsrId();
+          if (submissionType !== "notes") {
+            return this.getFsrId();
+          }
         }
         this.updateLink();
       },

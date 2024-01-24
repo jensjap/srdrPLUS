@@ -32,10 +32,6 @@
         <span x-text="scores_above_threshold(<%= @scores.to_json %>, threshold)"></span>
       </p>
     </div>
-    <div class="flex-1 p-8 bg-gray-200">
-      <h2 class="text-3xl font-bold mb-4">Predictions vs. Real Labels</h2>
-      <div id="confusionMatrix" style="width: 600px;height:400px;"></div>
-    </div>
   </div>
 </div>
 
@@ -73,14 +69,12 @@
   }
 
   const barChart = echarts.init(document.getElementById('barChart'));
-  const matrixChart = echarts.init(document.getElementById('confusionMatrix'));
 
   const dataContainer = document.getElementById('dataContainer');
   const scores = JSON.parse(dataContainer.getAttribute('data-scores'));
   const labelsWithScores = JSON.parse(dataContainer.getAttribute('data-labels-with-scores'));
 
   const barData = calculateBins(scores);
-  const { TP, FP, TN, FN } = calculateConfusionMatrix(labelsWithScores, threshold.value);
 
   const barOption = {
     title: {
@@ -101,51 +95,5 @@
     }]
   };
 
-  const matrixOption = {
-    title: {
-      text: 'Confusion Matrix'
-    },
-    tooltip: {
-      trigger: 'item',
-      formatter: function (params) {
-        return params.value[2];
-      }
-    },
-    visualMap: {
-      show: false,
-      min: 0,
-      max: Math.max(TP, FP, TN, FN),
-      calculable: true,
-      orient: 'horizontal',
-      left: 'center',
-      bottom: '15%',
-      inRange: {
-        color: ['#f2f2f2', '#D9E6F2', '#a2c4c9']
-      }
-    },
-    xAxis: {
-      type: 'category',
-      data: ['Predicted Accept', 'Predicted Reject']
-    },
-    yAxis: {
-      type: 'category',
-      data: ['Reject', 'Accept']
-    },
-    series: [{
-      name: 'Confusion Matrix',
-      type: 'heatmap',
-      data: [
-        [0, 0, TN],
-        [0, 1, FN],
-        [1, 0, FP],
-        [1, 1, TP]
-      ],
-      label: {
-        show: true
-      }
-    }]
-  };
-
   barChart.setOption(barOption);
-  matrixChart.setOption(matrixOption);
 </script>

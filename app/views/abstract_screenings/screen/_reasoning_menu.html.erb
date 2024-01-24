@@ -132,7 +132,12 @@
           </div>
 
           <div class="min-h-[100px]">
-            <div class="text-xl">Rejection Reasons</div>
+            <div class="text-xl">
+              Rejection Reasons
+              <span class="text-xs underline" x-show="as_limit_one_reason"
+                >(select only one)</span
+              >
+            </div>
             <div
               class="text-xs flex items-end gap-x-1 font-bold"
               x-show="options.no_reason_required || options.yes_reason_required || options.maybe_reason_required"
@@ -140,9 +145,9 @@
               <div>
                 <span>Required for labels:</span>
                 <span
-                  :class="(asr.label == -1 && !hasSomeReason()) ? 'text-red-600' : ''"
-                  x-show="options.no_reason_required"
-                  >No</span
+                  :class="(asr.label == 1 && !hasSomeReason()) ? 'text-red-600' : ''"
+                  x-show="options.yes_reason_required"
+                  >Yes</span
                 >
                 <span
                   :class="(asr.label == 0 && !hasSomeReason()) ? 'text-red-600' : ''"
@@ -150,9 +155,9 @@
                   >Maybe</span
                 >
                 <span
-                  :class="(asr.label == 1 && !hasSomeReason()) ? 'text-red-600' : ''"
-                  x-show="options.yes_reason_required"
-                  >Yes</span
+                  :class="(asr.label == -1 && !hasSomeReason()) ? 'text-red-600' : ''"
+                  x-show="options.no_reason_required"
+                  >No</span
                 >
               </div>
             </div>
@@ -170,7 +175,7 @@
                   @change="updateReasonsSelection(reason)"
                 />
                 <label
-                  class="border-b px-2 grow cursor-pointer text-xs"
+                  class="border-b px-2 grow cursor-pointer text-xs overflow-hidden text-ellipsis"
                   :for="`customreason-${reason.id}`"
                   x-text="reason.name"
                 ></label>
@@ -194,7 +199,10 @@
                 </div>
               </div>
             </template>
-            <div class="w-full flex justify-end">
+            <div
+              class="w-full flex justify-end"
+              x-show="as_allow_adding_reasons"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -222,9 +230,9 @@
               <div>
                 <span>Required for labels:</span>
                 <span
-                  :class="(asr.label == -1 && !hasSomeTag()) ? 'text-red-600' : ''"
-                  x-show="options.no_tag_required"
-                  >No</span
+                  :class="(asr.label == 1 && !hasSomeTag()) ? 'text-red-600' : ''"
+                  x-show="options.yes_tag_required"
+                  >Yes</span
                 >
                 <span
                   :class="(asr.label == 0 && !hasSomeTag()) ? 'text-red-600' : ''"
@@ -232,9 +240,9 @@
                   >Maybe</span
                 >
                 <span
-                  :class="(asr.label == 1 && !hasSomeTag()) ? 'text-red-600' : ''"
-                  x-show="options.yes_tag_required"
-                  >Yes</span
+                  :class="(asr.label == -1 && !hasSomeTag()) ? 'text-red-600' : ''"
+                  x-show="options.no_tag_required"
+                  >No</span
                 >
               </div>
             </div>
@@ -249,7 +257,7 @@
                   @change="updateTagsSelection(tag)"
                 />
                 <label
-                  class="border-b px-2 grow cursor-pointer text-xs"
+                  class="border-b px-2 grow cursor-pointer text-xs overflow-hidden text-ellipsis"
                   :for="`customtag-${tag.id}`"
                   x-text="tag.name"
                 ></label>
@@ -273,7 +281,7 @@
                 </div>
               </div>
             </template>
-            <div class="w-full flex justify-end">
+            <div class="w-full flex justify-end" x-show="as_allow_adding_tags">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -301,9 +309,9 @@
               <div>
                 <span>Required for labels:</span>
                 <span
-                  :class="(asr.label == -1 && !hasSomeNote()) ? 'text-red-600' : ''"
-                  x-show="options.no_note_required"
-                  >No</span
+                  :class="(asr.label == 1 && !hasSomeNote()) ? 'text-red-600' : ''"
+                  x-show="options.yes_note_required"
+                  >Yes</span
                 >
                 <span
                   :class="(asr.label == 0 && !hasSomeNote()) ? 'text-red-600' : ''"
@@ -311,9 +319,9 @@
                   >Maybe</span
                 >
                 <span
-                  :class="(asr.label == 1 && !hasSomeNote()) ? 'text-red-600' : ''"
-                  x-show="options.yes_note_required"
-                  >Yes</span
+                  :class="(asr.label == -1 && !hasSomeNote()) ? 'text-red-600' : ''"
+                  x-show="options.no_note_required"
+                  >No</span
                 >
               </div>
             </div>
