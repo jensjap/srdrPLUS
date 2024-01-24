@@ -5,10 +5,10 @@ class CitationsRisExportService < CitationsExportService
 
     def export_payload_in_ris(citations)
         payload = []
+        payload << " "
         citations.each do |cit|
             authors = cit[:author_string].split(',')
             s = ERB.new(<<-BLOCK).result(binding)
-
 TY  - JOUR
 T1  - <%= cit[:title] %>
 <% authors.each do |author| %>AU  - <%= author.strip %>
@@ -32,6 +32,6 @@ ER  -
 BLOCK
             payload << s
         end
-        payload
+        payload.join("\n")
     end
 end

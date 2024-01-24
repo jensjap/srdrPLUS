@@ -1,5 +1,6 @@
 <div class="p-4 lg:p-8" x-data="citation_lifecycle_management">
   <!-- prettier-ignore -->
+  <%= render 'citations_in_ris' %>
   <%= render 'selection' %>
   <%= render 'create_extractions' %>
   <%= render 'loading' %>
@@ -483,6 +484,15 @@
 </div>
 
 <script>
+  function copyAllTextToClipboard(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+  }
+
   document.addEventListener("alpine:init", () => {
     Alpine.data("citation_lifecycle_management", () => ({
       results: null,
@@ -504,8 +514,10 @@
       showLoading: false,
       showDetailView: false,
       showCreateExtractions: false,
+      showCitationsInRis: false,
       detailedResult: 0,
       lastIndexSelected: null,
+      copied: false,
 
       init() {
         window.shift = false;
@@ -519,6 +531,17 @@
           this.pagination.sort = null;
           this.fetch_results();
         });
+      },
+
+      copyText() {
+        const textToCopy = document.getElementById('citationInRisModal').innerText;
+        copyAllTextToClipboard(textToCopy);
+        this.copied = true;
+
+        // Reset the "Copied!" text after a short delay (e.g., 3 seconds)
+        setTimeout(() => {
+          this.copied = false;
+        }, 3000);
       },
 
       applyTdBg(screening_status) {
@@ -608,6 +631,42 @@
         }
         params.push(`page=${this.pagination.current_page}`);
         return url + "?" + params.join("&");
+      },
+
+      async loadSelectedCitationsInRis() {
+        try {
+          this.showloading = true;
+
+          const response = await fetch("/projects/<%= params[:project_id] %>/citations_in_ris", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+            },
+            body: JSON.stringify({
+              project: {
+                citation: this.selected.map((cp) => cp.citation_id),
+              },
+            }),
+          });
+
+          if (!response.ok) {
+            console.error(`Error: ${response.status} - ${response.statusText}`);
+            return;
+          }
+
+          const data = await response.json();
+
+          let risModalPre = document.getElementById("citationInRisModal");
+          risModalPre.innerText = data.payload;
+
+        } catch (error) {
+          console.error("An error occurred:", error);
+        } finally {
+          this.showloading = false;
+        }
       },
 
       async createExtractions() {

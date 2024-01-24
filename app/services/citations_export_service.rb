@@ -19,7 +19,7 @@ class CitationsExportService
         else
             raise 'UnknownExportType'
         end
-        puts payload
+        payload
     end
 
     private

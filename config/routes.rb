@@ -254,6 +254,7 @@ Rails.application.routes.draw do
       post 'import_endnote'
       post 'import_pubmed'
       post 'dedupe_citations'
+      post 'citations_in_ris'
       post 'create_citation_screening_extraction_form'
       post 'create_full_text_screening_extraction_form'
     end
