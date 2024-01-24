@@ -1454,7 +1454,7 @@
       },
       openModal(content, deleteAction) {
         this.modalContent = content;
-        this.modalDeleteAction = () => deleteAction();
+        this.modalConfirmAction = () => deleteAction();
         this.isModalOpen = true;
         document.body.classList.add('overflow-hidden');
       },
