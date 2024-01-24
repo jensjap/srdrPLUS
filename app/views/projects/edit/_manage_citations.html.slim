@@ -10,30 +10,37 @@ div.row#btm-anchor style="margin: 10px 0 0 0;"
 div x-data="{
   isModalOpen: false,
   modalContent: '',
-  openModal() {
+  currentAction: '',
+  openModal(action) {
     this.isModalOpen = true;
+    this.currentAction = action;
   },
   closeModal() {
     this.isModalOpen = false;
+    this.currentAction = '';
     if (typeof window.modalResolve == 'function') {
-      window.modalResolve(false)
+      window.modalResolve(false);
     }
   },
   modalConfirmAction() {
     this.isModalOpen = false;
+    if (this.currentAction === 'deleteCitations') {
+      document.getElementById('citations-form').submit();
+    }
+    this.currentAction = '';
     if (typeof window.modalResolve == 'function') {
-      window.modalResolve(true)
+      window.modalResolve(true);
     }
   },
-  showModal(message) {
+  showModal(message, action = 'defaultAction') {
     this.modalContent = message;
-    this.openModal();
+    this.openModal(action);
   }
-}" @show-modal.window="showModal($event.detail)"
+}" @show-modal.window="showModal($event.detail.message, $event.detail.action)"
   = render 'shared/alert_modal'
   div.row style="margin: 0;"
     div.columns.medium-9
-      = simple_form_for @project do |form_project|
+      = simple_form_for @project, html: { id: 'citations-form' } do |form_project|
         #delete-citations-inner
           table#citations-table
             thead
@@ -62,7 +69,9 @@ div x-data="{
           .float-right
             input#delete-citations-select-all.m-10 type="checkbox"
             label.m-10 for='delete-citations-select-all' = 'Select All'
-            = form_project.submit 'Delete Selected Citations', class: "button alert float-right"
+            button class="button alert float-right" @click.prevent="showModal('Any data associated with these citations will also be removed: Any screening results (labels), any extracted data, etc.', 'deleteCitations')"
+              | Delete Selected Citations
+
 
     div.columns.medium-3
       div#top-anchor(data-sticky-container)
