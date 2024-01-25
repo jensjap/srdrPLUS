@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_09_060523) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_25_111503) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -969,6 +969,17 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_09_060523) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
+  create_table "memberships", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "room_id", null: false
+    t.bigint "user_id", null: false
+    t.boolean "admin", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["room_id"], name: "index_memberships_on_room_id"
+    t.index ["user_id", "room_id"], name: "index_memberships_on_user_id_and_room_id", unique: true
+    t.index ["user_id"], name: "index_memberships_on_user_id"
+  end
+
   create_table "mesh_descriptors", charset: "utf8mb3", force: :cascade do |t|
     t.text "name"
     t.text "resource_uri"
@@ -998,13 +1009,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_09_060523) do
   create_table "messages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "message_id"
     t.bigint "user_id", null: false
-    t.string "room", null: false
     t.text "text", null: false
     t.boolean "pinned", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "room_id"
     t.index ["message_id"], name: "index_messages_on_message_id"
-    t.index ["room"], name: "index_messages_on_room"
+    t.index ["room_id"], name: "index_messages_on_room_id"
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
@@ -1175,9 +1186,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_09_060523) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.text "authors_of_report"
-    t.boolean "exclude_personal_conflicts", default: false, null: false
-    t.boolean "as_limit_one_reason", default: true, null: false
-    t.boolean "fs_limit_one_reason", default: true, null: false
+    t.boolean "exclude_personal_conflicts", default: true, null: false
+    t.boolean "as_limit_one_reason", default: false, null: false
+    t.boolean "fs_limit_one_reason", default: false, null: false
     t.boolean "as_allow_adding_reasons", default: true, null: false
     t.boolean "as_allow_adding_tags", default: true, null: false
     t.boolean "fs_allow_adding_reasons", default: true, null: false
@@ -1455,6 +1466,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_09_060523) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["name"], name: "index_roles_on_name", unique: true
+  end
+
+  create_table "rooms", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_rooms_on_name"
   end
 
   create_table "screening_forms", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -2178,6 +2196,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_09_060523) do
   add_foreign_key "labels_reasons", "labels"
   add_foreign_key "labels_reasons", "projects_users_roles"
   add_foreign_key "labels_reasons", "reasons"
+  add_foreign_key "messages", "rooms"
   add_foreign_key "ml_predictions", "citations_projects"
   add_foreign_key "ml_predictions", "ml_models"
   add_foreign_key "model_performances", "ml_models"

@@ -59,6 +59,8 @@ class User < ApplicationRecord
   has_many :suggestions, dependent: :destroy, inverse_of: :user
   has_many :messages, dependent: :destroy, inverse_of: :user
   has_many :message_unreads, dependent: :destroy, inverse_of: :user
+  has_many :memberships, dependent: :destroy, inverse_of: :user
+  has_many :rooms, through: :memberships
 
   delegate :username, to: :profile, allow_nil: true
   delegate :first_name, to: :profile, allow_nil: true

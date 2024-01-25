@@ -5,15 +5,16 @@
 #  id         :bigint           not null, primary key
 #  message_id :bigint
 #  user_id    :bigint           not null
-#  room       :string(255)      not null
-#  text       :string(255)      not null
+#  text       :text(65535)      not null
 #  pinned     :boolean          default(FALSE), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  room_id    :bigint
 #
 class Message < ApplicationRecord
-  belongs_to :message, optional: true
   belongs_to :user
+  belongs_to :room
+  belongs_to :message, optional: true
 
   has_many :message_unreads, dependent: :destroy
 
