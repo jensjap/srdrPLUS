@@ -47,6 +47,8 @@ class FulltextScreeningResult < ApplicationRecord
   end
 
   def evaluate_screening_qualifications
+    return if citations_project.marked_for_destruction?
+
     manual_sqs = citations_project
                  .screening_qualifications
                  .where("qualification_type LIKE 'fs-%'")
