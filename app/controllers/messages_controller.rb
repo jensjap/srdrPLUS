@@ -73,6 +73,6 @@ class MessagesController < ApplicationController
   private
 
   def strong_params
-    params.require(:message).permit(:room_id, :text, :pinned)
+    params.require(:message).permit(:room_id, :text, :pinned, :message_id)
   end
 end
