@@ -16,8 +16,8 @@ class MessagesController < ApplicationController
           message_unread = message.message_unreads.find do |mu|
             mu.user == current_user
           end
-          @messages[message.room] ||= []
-          @messages[message.room] << {
+          @messages[message.room.id] ||= []
+          @messages[message.room.id] << {
             id: message.id,
             room: message.room,
             user_id: message.user_id,
@@ -71,6 +71,6 @@ class MessagesController < ApplicationController
   private
 
   def strong_params
-    params.require(:message).permit(:room, :text, :pinned)
+    params.require(:message).permit(:room_id, :text, :pinned)
   end
 end

@@ -19,37 +19,14 @@ class Message < ApplicationRecord
   has_many :message_unreads, dependent: :destroy
 
   def broadcast_message
-    room_type, room_id = room.split('-')
+    room_type = room.project_id.nil? ? 'user' : 'project'
     online_users = ActionCable.server.connections.map(&:current_user)
     broadcast_users =
       case room_type
       when 'project'
-        User
-      .joins(projects_users: :project)
-      .where(projects: { id: room_id })
-      .includes(:profile)
-      .distinct
+        room.project.users
       when 'user'
-        User
-      .where(id: room_id.split('/'))
-      .distinct
-      when 'citation'
         []
-      #   User
-      # .joins(projects_users: { project: { citations_projects: :citation } })
-      # .where(citations: { id: room_id })
-      # .includes(:profile)
-      # .distinct
-      when 'abstract_screening'
-        User
-      .joins(projects_users: { project: { abstract_screenings: { id: room_id } } })
-      .includes(:profile)
-      .distinct
-      when 'fulltext_screening'
-        User
-      .joins(projects_users: { project: { fulltext_screenings: { id: room_id } } })
-      .includes(:profile)
-      .distinct
       else
         []
       end

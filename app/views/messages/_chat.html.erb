@@ -114,25 +114,25 @@
                     class="text-sm font-medium"
                     x-text="room.name"
                     :class="{
-                      'text-gray-400': (!messages[room] || messages[room].length === 0)
+                      'text-gray-400': (!messages[room.id] || messages[room.id].length === 0)
                     }"
                   ></div>
                   <div
                     class="text-xs truncate w-40"
                     :class="{
-                      'text-gray-400': (!messages[room] || messages[room].length === 0),
-                      'italic': (messages[room] && messages[room].length > 0)
+                      'text-gray-400': (!messages[room.id] || messages[room.id].length === 0),
+                      'italic': (messages[room.id] && messages[room.id].length > 0)
                     }"
-                    x-text="(messages[room] && messages[room].length > 0 && `...${messages[room][0].text}`) || 'no messages'"
+                    x-text="(messages[room.id] && messages[room.id].length > 0 && `...${messages[room.id][0].text}`) || 'no messages'"
                   ></div>
                 </div>
                 <div
                   class="flex-shrink-0 ml-2 mr-4 self-end mb-1 absolute right-0 bottom-0"
-                  x-show="(messages[room] || []).some(message => !message.read)"
+                  x-show="(messages[room.id] || []).some(message => !message.read)"
                 >
                   <span
                     class="flex items-center justify-center h-5 w-5 bg-red-500 text-white text-xs rounded-full"
-                    x-text="(messages[room] || []).filter(x => !x.read)?.length"
+                    x-text="(messages[room.id] || []).filter(x => !x.read)?.length"
                   ></span>
                 </div>
               </div>
@@ -492,7 +492,7 @@
 
       async openRoom(room) {
         this.selected_room = room;
-        this.selected_messages = this.messages[room] || [];
+        this.selected_messages = this.messages[room.id] || [];
         this.selected_messages.forEach((message) =>
           this.destroyMessageUnread(message)
         );
@@ -500,8 +500,10 @@
 
       sortRooms() {
         this.selected_rooms = this.selected_rooms.sort((a, b) => {
-          const x = (this.messages[a] && this.messages[a][0]?.created_at) || 0;
-          const y = (this.messages[b] && this.messages[b][0]?.created_at) || 0;
+          const x =
+            (this.messages[a.id] && this.messages[a.id][0]?.created_at) || 0;
+          const y =
+            (this.messages[b.id] && this.messages[b.id][0]?.created_at) || 0;
           return new Date(y) - new Date(x);
         });
       },
@@ -561,7 +563,7 @@
           method: "POST",
           headers,
           body: JSON.stringify({
-            room: this.selected_room,
+            room_id: this.selected_room.id,
             text: this.chat_text[this.selected_room],
           }),
         });
@@ -610,15 +612,15 @@
             return;
           }
 
-          if (message.room === this.selected_room) {
+          if (message.room.id === this.selected_room.id) {
             await this.destroyMessageUnread(message);
           }
-          this.messages[message.room]
-            ? this.messages[message.room].unshift(message)
-            : (this.messages[message.room] = [message]);
+          this.messages[message.room.id]
+            ? this.messages[message.room.id].unshift(message)
+            : (this.messages[message.room.id] = [message]);
 
-          if (message.room === this.selected_room) {
-            this.selected_messages = this.messages[message.room];
+          if (message.room.id === this.selected_room.id) {
+            this.selected_messages = this.messages[message.room.id];
           }
           this.sortRooms();
         };
