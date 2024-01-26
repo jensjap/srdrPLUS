@@ -25,7 +25,7 @@
                 :class="{
                   'bg-srdrpurple-light': selected_room_type === 'projects'
                 }"
-                @click="selected_room_type = 'projects'; selected_rooms = project_rooms; selected_room = project_rooms[0];"
+                @click="selected_room_type = 'projects'; selected_rooms = project_rooms; openRoom(project_rooms[0]);"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -51,7 +51,7 @@
                 :class="{
                   'bg-srdrpurple-light': selected_room_type === 'users'
                 }"
-                @click="selected_room_type = 'users'; selected_rooms = user_rooms; selected_room = user_rooms[0];"
+                @click="selected_room_type = 'users'; selected_rooms = user_rooms; openRoom(user_rooms[0]);"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -147,30 +147,52 @@
           class="flex-1 text-base font-bold overflow-hidden"
           x-text="selected_room?.name"
         ></h1>
-        <div
-          class="flex justify-center items-center cursor-pointer w-32"
-          @click="userMenu = !userMenu"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-6 h-6"
+        <div class="flex">
+          <div
+            class="flex justify-center items-center cursor-pointer w-20"
+            @click="pinnedMenu = !pinnedMenu"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"
-            />
-          </svg>
-          <div class="px-1 text-sm">User Menu</div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              :fill="pinnedMenu ? 'black' : 'none'"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+              />
+            </svg>
+            <div class="px-1 text-sm">Pinned</div>
+          </div>
+          <div
+            class="flex justify-center items-center cursor-pointer w-20"
+            @click="userMenu = !userMenu"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              :fill="userMenu ? 'black' : 'none'"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"
+              />
+            </svg>
+            <div class="px-1 text-sm">Users</div>
+          </div>
         </div>
       </div>
       <div
-        class="flex flex-col-reverse h-64 w-full gap-y-2 overflow-y-scroll bg-gray-100 border border-gray-100"
-        x-show="selected_messages.some(message => message.pinned)"
+        class="flex flex-col-reverse flex-1 w-full gap-y-2 overflow-y-scroll bg-gray-200 border border-gray-100"
+        x-show="pinnedMenu"
       >
         <template
           x-for="message in selected_messages.filter(message => message.pinned)"
@@ -250,7 +272,7 @@
       </div>
       <div
         x-cloak
-        x-show="selected_messages && selected_messages.length > 0"
+        x-show="(selected_messages && selected_messages.length > 0) && !pinnedMenu"
         class="flex flex-col-reverse flex-1 w-full gap-y-2 overflow-y-scroll bg-gray-50 border border-gray-100"
       >
         <template x-for="message in selected_messages" :key="message.id">
@@ -326,7 +348,7 @@
           </div>
         </template>
       </div>
-      <template x-if="selected_messages.length === 0">
+      <template x-if="selected_messages.length === 0 && !pinnedMenu">
         <div class="flex-1 w-full flex justify-center items-center">
           <div>No Messages</div>
         </div>
@@ -477,6 +499,7 @@
       chat_text: {},
       shiftPressed: false,
       userMenu: true,
+      pinnedMenu: false,
       userSearchString: "",
       roomsUsers: ["jack", "jill", "julia", "oscar"], //placeholders
       allUsers: ["john", "angela", "max", "kevin"], //placeholders
@@ -485,14 +508,13 @@
         await this.fetchRooms();
         this.selected_rooms = this.project_rooms;
         this.sortRooms();
-        this.selected_room = this.selected_rooms[0];
-        this.selected_messages = this.messages[this.selected_rooms[0]] || [];
+        this.openRoom(this.selected_rooms[0]);
         await this.setupWS();
       },
 
       async openRoom(room) {
         this.selected_room = room;
-        this.selected_messages = this.messages[room.id] || [];
+        this.selected_messages = this.messages[room?.id] || [];
         this.selected_messages.forEach((message) =>
           this.destroyMessageUnread(message)
         );
