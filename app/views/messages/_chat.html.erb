@@ -49,9 +49,9 @@
               <span
                 class="flex items-center justify-center text-indigo-100 hover:bg-srdrpurple-light h-8 w-8 rounded-md"
                 :class="{
-                  'bg-srdrpurple-light': selected_room_type === 'users'
+                  'bg-srdrpurple-light': selected_room_type === 'chats'
                 }"
-                @click="selected_room_type = 'users'; selected_rooms = user_rooms; openRoom(user_rooms[0]);"
+                @click="selected_room_type = 'chats'; selected_rooms = chat_rooms; openRoom(chat_rooms[0]);"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -501,7 +501,7 @@
       selected_messages: [],
       messages: {},
       project_rooms: [],
-      user_rooms: [],
+      chat_rooms: [],
       current_user_id: null,
       chat_text: {},
       shiftPressed: false,
@@ -543,7 +543,6 @@
         });
         const data = await response.json();
         this.roomUsers = data;
-        console.log(data);
       },
 
       sortRooms() {
@@ -630,7 +629,7 @@
         });
         const data = await response.json();
         this.project_rooms = data.project_rooms;
-        this.user_rooms = data.user_rooms;
+        this.chat_rooms = data.chat_rooms;
         this.messages = data.messages;
         this.current_user_id = data.current_user_id;
       },
