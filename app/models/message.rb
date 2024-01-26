@@ -15,6 +15,7 @@ class Message < ApplicationRecord
   belongs_to :user
   belongs_to :room
   belongs_to :message, optional: true
+  has_many :messages
 
   has_many :message_unreads, dependent: :destroy
 
