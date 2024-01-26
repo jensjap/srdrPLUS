@@ -91,7 +91,7 @@
         </div>
         <div class="mt-2 overflow-y-auto overflow-x-hidden">
           <div class="flex flex-col space-y-1">
-            <template x-for="room in selected_rooms" :key="room">
+            <template x-for="room in selected_rooms" :key="room.id">
               <div
                 class="relative flex flex-row items-center pr-2 pl-0 cursor-pointer"
                 @click="openRoom(room)"
@@ -102,7 +102,7 @@
                   5 min
                 </div> -->
                 <div
-                  class="flex flex-col flex-grow p-2 rounded-md"
+                  class="flex flex-col flex-1 p-2 rounded-md"
                   :class="{
                     'bg-srdrpurple': selected_room === room,
                     'text-white': selected_room === room,
@@ -112,7 +112,7 @@
                 >
                   <div
                     class="text-sm font-medium"
-                    x-text="room"
+                    x-text="room.name"
                     :class="{
                       'text-gray-400': (!messages[room] || messages[room].length === 0)
                     }"
@@ -143,9 +143,12 @@
     </div>
     <div class="flex flex-col h-full w-full bg-white px-4 py-6">
       <div class="h-6 flex justify-between mb-1">
-        <h1 class="text-lg font-bold" x-text="selected_room"></h1>
+        <h1
+          class="flex-1 text-base font-bold overflow-hidden"
+          x-text="selected_room?.name"
+        ></h1>
         <div
-          class="flex justify-center items-center cursor-pointer"
+          class="flex justify-center items-center cursor-pointer w-32"
           @click="userMenu = !userMenu"
         >
           <svg
@@ -248,7 +251,7 @@
       <div
         x-cloak
         x-show="selected_messages && selected_messages.length > 0"
-        class="flex flex-col-reverse grow w-full gap-y-2 overflow-y-scroll bg-gray-50 border border-gray-100"
+        class="flex flex-col-reverse flex-1 w-full gap-y-2 overflow-y-scroll bg-gray-50 border border-gray-100"
       >
         <template x-for="message in selected_messages" :key="message.id">
           <div
@@ -324,7 +327,7 @@
         </template>
       </div>
       <template x-if="selected_messages.length === 0">
-        <div class="grow w-full flex justify-center items-center">
+        <div class="flex-1 w-full flex justify-center items-center">
           <div>No Messages</div>
         </div>
       </template>
@@ -355,7 +358,7 @@
       class="flex flex-col h-full w-64 bg-gray-100 p-2"
     >
       <div><h1 class="text-xl font-semibold my-2">Users</h1></div>
-      <div class="grow overflow-y-scroll">
+      <div class="flex-1 overflow-y-scroll">
         <div class="flex flex-col space-y-2 text-sm">
           <template x-for="userName in roomsUsers">
             <div class="flex justify-between items-center">
@@ -399,7 +402,7 @@
       </div>
       <div>
         <div
-          class="h-24 flex flex-col space-y-2 text-sm grow overflow-y-scroll"
+          class="h-24 flex flex-col space-y-2 text-sm flex-1 overflow-y-scroll"
         >
           <template
             x-for="username in allUsers.filter(username => (new RegExp(userSearchString, 'i')).test(username))"
@@ -470,8 +473,6 @@
       messages: {},
       project_rooms: [],
       user_rooms: [],
-      citation_rooms: [],
-      screening_rooms: [],
       current_user_id: null,
       chat_text: {},
       shiftPressed: false,
@@ -580,8 +581,6 @@
         const data = await response.json();
         this.project_rooms = data.project_rooms;
         this.user_rooms = data.user_rooms;
-        this.citation_rooms = data.citation_rooms;
-        this.screening_rooms = data.screening_rooms;
         this.messages = data.messages;
         this.current_user_id = data.current_user_id;
       },

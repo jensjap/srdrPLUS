@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_25_111503) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_25_125347) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1472,7 +1472,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_25_111503) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "project_id"
     t.index ["name"], name: "index_rooms_on_name"
+    t.index ["project_id"], name: "index_rooms_on_project_id", unique: true
   end
 
   create_table "screening_forms", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -2242,6 +2244,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_25_111503) do
   add_foreign_key "result_statistic_sections_measures", "result_statistic_sections_measures"
   add_foreign_key "result_statistic_sections_measures_comparisons", "comparisons"
   add_foreign_key "result_statistic_sections_measures_comparisons", "result_statistic_sections"
+  add_foreign_key "rooms", "projects"
   add_foreign_key "screening_options", "label_types"
   add_foreign_key "screening_options", "projects"
   add_foreign_key "screening_options", "screening_option_types"

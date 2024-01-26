@@ -10,4 +10,5 @@
 class Room < ApplicationRecord
   has_many :memberships, dependent: :destroy
   has_many :users, through: :memberships
+  belongs_to :project, optional: true
 end

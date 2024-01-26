@@ -1,38 +1,24 @@
 class ChatChannelService
   def self.generate_rooms(user)
     @rooms = {}
-
-    @rooms[:project_rooms] = user.projects.map { |p| "project-#{p.id}" }
-    @rooms[:user_rooms] =
-      User
+    Project
+      .left_joins(:room)
       .joins(projects_users: :user)
-      .where(projects_users: { project: user.projects })
-      .distinct
-      .map do |uuser|
-        user_ids = [user.id, uuser.id].sort
-        "user-#{user_ids.join('/')}"
-      end
-    @rooms[:citation_rooms] = []
-    # Citation
-    # .joins(citations_projects: { project: { projects_users: :user } })
-    # .where(citations_projects: { project: { projects_users: { user: } } })
-    # .distinct.map do |citation|
-    #   "citation-#{citation.id}"
-    # end
-    @rooms[:screening_rooms] =
-      AbstractScreening
-      .where(project: user.projects)
-      .distinct
-      .map do |abstract_screening|
-        "abstract_screening-#{abstract_screening.id}"
-      end
-    @rooms[:screening_rooms] +=
-      FulltextScreening
-      .where(project: user.projects)
-      .distinct
-      .map do |fulltext_screening|
-        "fulltext_screening-#{fulltext_screening.id}"
-      end
+      .where(users: user)
+      .where(rooms: { id: nil })
+      .each do |project|
+      project.create_room(name: project.name)
+    end
+    Room
+      .joins(:project)
+      .left_joins(:memberships)
+      .where(rooms: { project: user.projects })
+      .includes(:users)
+      .each do |room|
+      room.users << user unless room.user_ids.include?(user.id)
+    end
+    @rooms[:project_rooms] = user.rooms.where.not(project_id: nil)
+    @rooms[:user_rooms] = user.rooms.where(project_id: nil)
     @rooms
   end
 end

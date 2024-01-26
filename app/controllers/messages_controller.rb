@@ -7,8 +7,6 @@ class MessagesController < ApplicationController
         rooms = ChatChannelService.generate_rooms(current_user)
         @project_rooms = rooms[:project_rooms]
         @user_rooms = rooms[:user_rooms]
-        @citation_rooms = rooms[:citation_rooms]
-        @screening_rooms = rooms[:screening_rooms]
         @messages = {}
         Message
           .where(room: @project_rooms)
