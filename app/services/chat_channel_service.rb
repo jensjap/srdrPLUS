@@ -15,7 +15,9 @@ class ChatChannelService
       .where(rooms: { project: user.projects })
       .includes(:users)
       .each do |room|
-      room.users << user unless room.user_ids.include?(user.id)
+      room.project.users.each do |uuser|
+        room.users << uuser unless room.user_ids.include?(uuser.id)
+      end
     end
     @rooms[:project_rooms] = user.rooms.where.not(project_id: nil)
     @rooms[:user_rooms] = user.rooms.where(project_id: nil)
