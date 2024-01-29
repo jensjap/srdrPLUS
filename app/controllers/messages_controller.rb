@@ -4,6 +4,9 @@ class MessagesController < ApplicationController
     respond_to do |format|
       format.json do
         @current_user = current_user
+        @all_users = ProjectsUser.joins(:project).where(projects: current_user.projects).includes(user: :profile).map do |pu|
+          { username: pu.user.username, user_id: pu.user_id }
+        end.uniq
         rooms = ChatChannelService.generate_rooms(current_user)
         @project_rooms = rooms[:project_rooms]
         @chat_rooms = rooms[:chat_rooms]

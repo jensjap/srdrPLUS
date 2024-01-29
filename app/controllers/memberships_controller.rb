@@ -24,4 +24,26 @@ class MembershipsController < ApplicationController
       end
     end
   end
+
+  def create
+    # TODO: authorize
+    respond_to do |format|
+      format.json do
+        membership = Membership.new(membership_params)
+        if membership.save
+          @room = membership.room
+          @memberships = @room.memberships.includes(user: :profile)
+          render :index
+        else
+          render json: {}, status: 403
+        end
+      end
+    end
+  end
+
+  private
+
+  def membership_params
+    params.require(:membership).permit(:user_id, :room_id)
+  end
 end

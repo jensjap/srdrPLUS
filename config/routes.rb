@@ -427,6 +427,6 @@ Rails.application.routes.draw do
   end
 
   resources :rooms, shallow: true, only: %i[create] do
-    resources :memberships, only: %i[index destroy]
+    resources :memberships, only: %i[index destroy create]
   end
 end
