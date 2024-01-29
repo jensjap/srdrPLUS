@@ -1,0 +1,16 @@
+<div
+  class="fixed top-1/2 left-1/2 h-[32rem] -mt-[18rem] w-96 -ml-48 md:h-[40rem] md:-mt-[20rem] md:w-[48rem] md:-ml-[24rem] z-10 transform overflow-scroll rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:p-6 border border-slate-200"
+  x-show="showCitationsInRis"
+  x-cloak
+  x-transition:enter="ease-out duration-300"
+  x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+  x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+  x-transition:leave="ease-in duration-200"
+  x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+  x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+  @click.outside="showCitationsInRis = !showCitationsInRis"
+  @keyup.window.esc="showCitationsInRis = false"
+>
+    <pre id="citationInRisModal"></pre>
+    <button x-data="{ copied: false }" @click="copyText" x-text="copied ? 'Copied!' : 'Copy text!'" class="bg-srdrpurple hover:bg-srdrpurple-light text-white font-bold py-2 px-4 rounded">
+</div>

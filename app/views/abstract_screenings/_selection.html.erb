@@ -54,6 +54,13 @@
       >
         Extraction Menu
       </div>
+      <div
+        class="cursor-pointer text-center h-full p-2 m-1 text-xs bg-blue-800 hover:bg-blue-500 border-[1px] border-white text-white rounded-md drop-shadow-md select-none"
+        :class="showCitationsInRis ? '!bg-srdr-primary' : ''"
+        @click="showCitationsInRis = true; loadSelectedCitationsInRis()"
+      >
+        Selected Citations in RIS
+      </div>
     </div>
   </div>
 </div>

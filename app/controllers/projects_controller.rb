@@ -2,7 +2,7 @@ class ProjectsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:export]
 
   before_action :set_project, only: %i[
-    export_data show edit update destroy export
+    citations_in_ris export_data show edit update destroy export
     export_assignments_and_mappings import_assignments_and_mappings simple_import
     import_csv import_pubmed import_endnote import_ris
     confirm_deletion dedupe_citations create_citation_screening_extraction_form
@@ -407,6 +407,22 @@ class ProjectsController < ApplicationController
     @percentage_unscreened = (@unscreened_citation_number.to_f / @total_citation_number) * 100
     @percentage_unscreened = @percentage_unscreened.round(1)
     @untrained_citation_number = MachineLearningDataSupplyingService.get_labeled_abstract_since_last_train(@project.id).size
+  end
+
+  def citations_in_ris
+    authorize @project
+    citation_ids = params[:project][:citation]
+    respond_to do |format|
+      format.json do
+        render status: 204 unless citation_ids.all?{ |x| x.is_a? Integer }
+        cres = CitationsRisExportService.new('RIS', @project.id, citation_ids)
+        @payload = cres.export
+        json_response = {
+          payload: @payload
+        }
+        render json: json_response
+      end
+    end
   end
 
   private

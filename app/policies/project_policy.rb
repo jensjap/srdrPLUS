@@ -172,6 +172,10 @@ class ProjectPolicy < ApplicationPolicy
     project_leader?
   end
 
+  def citations_in_ris?
+    project_contributor?
+  end
+
   def permitted_attributes
     if project_leader?
       FULL_PARAMS
