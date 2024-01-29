@@ -13,14 +13,15 @@ class Membership < ApplicationRecord
   belongs_to :room
   belongs_to :user
 
-  def broadcast_membership
+  ADD_MEMBERSHIP = 'add-membership'.freeze
+  REMOVE_MEMBERSHIP = 'remove-membership'.freeze
+
+  def broadcast_membership(message_type)
     ActionCable.server.broadcast(
       "user_#{user.id}",
       {
-        message_type: 'membership',
-        id: room.id,
-        project_id: room.project_id,
-        name: room.name
+        message_type:,
+        room:
       }
     )
   end

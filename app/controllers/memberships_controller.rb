@@ -15,6 +15,7 @@ class MembershipsController < ApplicationController
       format.json do
         membership = Membership.find(params[:id])
         if membership.destroy
+          membership.broadcast_membership(Membership::REMOVE_MEMBERSHIP)
           @room = membership.room
           @memberships = @room.memberships.includes(user: :profile)
           render :index
@@ -31,7 +32,7 @@ class MembershipsController < ApplicationController
       format.json do
         membership = Membership.new(membership_params)
         if membership.save
-          membership.broadcast_membership
+          membership.broadcast_membership(Membership::ADD_MEMBERSHIP)
           @room = membership.room
           @memberships = @room.memberships.includes(user: :profile)
           render :index

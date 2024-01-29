@@ -867,8 +867,22 @@
             return;
           }
 
-          if (data.message.message_type === "membership") {
-            this.chat_rooms.push(data.message);
+          if (data.message.message_type === "add-membership") {
+            this.chat_rooms.push(data.message.room);
+            return;
+          }
+          if (data.message.message_type === "remove-membership") {
+            this.messages[message.room.id] = [];
+            this.chat_rooms = this.chat_rooms.filter(
+              (room) => room.id !== message.room.id
+            );
+            if ((selected_room_type = "chats")) {
+              this.selected_rooms = this.chat_rooms;
+            }
+            if (this.selected_room.id === message.room.id) {
+              this.selected_room = null;
+              this.selected_messages = [];
+            }
             return;
           }
 
