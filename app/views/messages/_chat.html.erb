@@ -536,6 +536,7 @@
                 stroke-width="1.5"
                 stroke="currentColor"
                 class="w-4 h-4 cursor-pointer"
+                @click="destroyMembership(user.membership_id)"
               >
                 <path
                   stroke-linecap="round"
@@ -650,8 +651,8 @@
       },
 
       async fetchRoomUsers(room) {
+        this.roomUsers = [];
         if (!room) {
-          this.roomUsers = [];
           return;
         }
 
@@ -686,6 +687,19 @@
         });
         if (response.status >= 200 && response.status < 300) {
           message.pinned = !message.pinned;
+        }
+      },
+
+      async destroyMembership(membership_id) {
+        if (!confirm("Are you sure you want to remove this user?")) return;
+
+        const response = await fetch(`/memberships/${membership_id}`, {
+          method: "DELETE",
+          headers,
+        });
+        if (response.status >= 200 && response.status < 300) {
+          const data = await response.json();
+          this.roomUsers = data;
         }
       },
 

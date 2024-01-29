@@ -1,5 +1,6 @@
-json.array! @users do |user|
-  json.username user.username
-  json.user_id user.id
+json.array! @memberships do |membership|
+  json.username membership.user.username
+  json.user_id membership.user.id
   json.room_id @room.id
+  json.membership_id membership.id
 end
