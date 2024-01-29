@@ -12,7 +12,7 @@ class MessagesController < ApplicationController
         @chat_rooms = rooms[:chat_rooms]
         @messages = {}
         Message
-          .where(room: @project_rooms)
+          .where(room: @project_rooms | @chat_rooms)
           .includes(:messages, { user: :profile, message_unreads: :user })
           .order(created_at: :desc)
           .each do |message|

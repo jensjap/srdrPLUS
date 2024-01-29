@@ -83,11 +83,19 @@
             </div> -->
           </div>
         </div>
-        <div class="mt-5">
+        <div class="mt-5 flex justify-between items-center">
           <div
             class="text-xs text-gray-400 font-semibold uppercase"
             x-text="`${selected_room_type.toUpperCase()} (${selected_rooms.length})`"
           ></div>
+          <button
+            class="text-xs cursor-pointer !px-1 rounded-md bg-srdrpurple text-white"
+            x-cloak
+            x-show="selected_room_type === 'chats'"
+            @click="createRoom()"
+          >
+            Create Chat
+          </button>
         </div>
         <div class="mt-2 overflow-y-auto overflow-x-hidden">
           <div class="flex flex-col space-y-1">
@@ -691,6 +699,36 @@
         }
       },
 
+      async destroyRoom(room_id) {
+        if (!confirm("Are you sure you want to remove this user?")) return;
+
+        const response = await fetch(`/rooms/${room_id}`, {
+          method: "DELETE",
+          headers,
+        });
+        if (response.status >= 200 && response.status < 300) {
+          const data = await response.json();
+        }
+      },
+
+      async createRoom() {
+        const name =
+          prompt("Please give your chat a name", "Unnamed") || "Unnamed";
+        const response = await fetch("/rooms/", {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            name,
+          }),
+        });
+        if (response.status >= 200 && response.status < 300) {
+          const data = await response.json();
+          this.chat_rooms.push(data);
+          this.messages[data.id] = [];
+          this.openRoom(data);
+        }
+      },
+
       async destroyMembership(membership_id) {
         if (!confirm("Are you sure you want to remove this user?")) return;
 
@@ -826,6 +864,11 @@
           const data = JSON.parse(event.data);
           const message = data.message;
           if (data.type === "ping" || message === undefined) {
+            return;
+          }
+
+          if (data.message.message_type === "membership") {
+            this.chat_rooms.push(data.message);
             return;
           }
 

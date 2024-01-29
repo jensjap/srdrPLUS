@@ -20,16 +20,14 @@ class Message < ApplicationRecord
   has_many :message_unreads, dependent: :destroy
 
   def broadcast_message
-    room_type = room.project_id.nil? ? 'user' : 'project'
+    room_type = room.project_id.nil? ? 'chat' : 'project'
     online_users = ActionCable.server.connections.map(&:current_user)
     broadcast_users =
       case room_type
       when 'project'
         room.project.users
-      when 'user'
-        []
-      else
-        []
+      when 'chat'
+        room.users
       end
     broadcast_users.each do |broadcast_user|
       message_unreads.create(user: broadcast_user)
@@ -41,6 +39,7 @@ class Message < ApplicationRecord
       ActionCable.server.broadcast(
         "user_#{broadcast_user.id}",
         {
+          message_type: 'message',
           id:,
           room:,
           user_id:,

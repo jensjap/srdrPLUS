@@ -31,6 +31,7 @@ class MembershipsController < ApplicationController
       format.json do
         membership = Membership.new(membership_params)
         if membership.save
+          membership.broadcast_membership
           @room = membership.room
           @memberships = @room.memberships.includes(user: :profile)
           render :index
