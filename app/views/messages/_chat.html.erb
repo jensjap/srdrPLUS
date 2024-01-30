@@ -25,7 +25,7 @@
                 :class="{
                   'bg-srdrpurple-light': selected_room_type === 'projects'
                 }"
-                @click="selected_room_type = 'projects'; selected_rooms = project_rooms; openRoom(project_rooms[0]);"
+                @click="selected_room_type = 'projects'; selected_rooms = project_rooms; openRoom(project_rooms[0]); threadMessageId = null;"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -57,7 +57,7 @@
                 :class="{
                   'bg-srdrpurple-light': selected_room_type === 'chats'
                 }"
-                @click="selected_room_type = 'chats'; selected_rooms = chat_rooms; openRoom(chat_rooms[0]);"
+                @click="selected_room_type = 'chats'; selected_rooms = chat_rooms; openRoom(chat_rooms[0]); threadMessageId = null;"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -114,7 +114,7 @@
             <template x-for="room in selected_rooms" :key="room.id">
               <div
                 class="relative flex flex-row items-center pr-2 pl-0 cursor-pointer"
-                @click="openRoom(room)"
+                @click="openRoom(room); threadMessageId = null;"
               >
                 <!-- <div
                   class="absolute text-xs text-gray-500 right-0 top-0 mr-8 mt-3"
