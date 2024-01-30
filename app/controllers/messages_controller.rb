@@ -3,36 +3,17 @@ class MessagesController < ApplicationController
     # TODO: authorize
     respond_to do |format|
       format.json do
-        @current_user = current_user
-        @all_users = ProjectsUser.joins(:project).where(projects: current_user.projects).includes(user: :profile).map do |pu|
-          { username: pu.user.username, user_id: pu.user_id }
-        end.uniq
-        rooms = ChatChannelService.generate_rooms(current_user)
-        @project_rooms = rooms[:project_rooms]
-        @chat_rooms = rooms[:chat_rooms]
-        @messages = {}
-        Message
-          .where(room: @project_rooms | @chat_rooms)
-          .includes(:messages, { user: :profile, message_unreads: :user })
-          .order(created_at: :desc)
-          .each do |message|
-          message_unread = message.message_unreads.find do |mu|
-            mu.user == current_user
-          end
-          @messages[message.room.id] ||= []
-          @messages[message.room.id] << {
-            id: message.id,
-            room: message.room,
-            user_id: message.user_id,
-            handle: message.user.handle,
-            text: message.text,
-            created_at: message.created_at,
-            read: message_unread.blank?,
-            message_unread_id: message_unread&.id,
-            pinned: message.pinned,
-            message_id: message.message_id,
-            messages: message.messages
-          }
+        if params[:room_id]
+          @messages = get_messages(Room.find_by(id: params[:room_id]))
+        else
+          @current_user = current_user
+          @all_users = ProjectsUser.joins(:project).where(projects: current_user.projects).includes(user: :profile).map do |pu|
+            { username: pu.user.username, user_id: pu.user_id }
+          end.uniq
+          rooms = ChatChannelService.generate_rooms(current_user)
+          @project_rooms = rooms[:project_rooms]
+          @chat_rooms = rooms[:chat_rooms]
+          @messages = get_messages(@project_rooms | @chat_rooms)
         end
       end
     end
@@ -77,5 +58,33 @@ class MessagesController < ApplicationController
 
   def strong_params
     params.require(:message).permit(:room_id, :text, :pinned, :message_id)
+  end
+
+  def get_messages(rooms)
+    messages = {}
+    Message
+      .where(room: rooms)
+      .includes(:messages, { user: :profile, message_unreads: :user })
+      .order(created_at: :desc)
+      .each do |message|
+      message_unread = message.message_unreads.find do |mu|
+        mu.user == current_user
+      end
+      messages[message.room.id] ||= []
+      messages[message.room.id] << {
+        id: message.id,
+        room: message.room,
+        user_id: message.user_id,
+        handle: message.user.handle,
+        text: message.text,
+        created_at: message.created_at,
+        read: message_unread.blank?,
+        message_unread_id: message_unread&.id,
+        pinned: message.pinned,
+        message_id: message.message_id,
+        messages: message.messages
+      }
+    end
+    messages
   end
 end

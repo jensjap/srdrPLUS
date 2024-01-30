@@ -422,6 +422,7 @@ Rails.application.routes.draw do
 
   get '/projects_reasons/:screening_type/rejection_reasons', to: 'projects_reasons#get_default_rejection_reasons'
 
+  get '/rooms/:room_id/messages', to: 'messages#index'
   resources :messages, shallow: true, only: %i[index create update destroy] do
     resources :message_unreads, only: %i[destroy]
   end

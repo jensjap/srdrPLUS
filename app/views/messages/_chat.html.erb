@@ -842,6 +842,21 @@
         this.allUsers = data.all_users;
       },
 
+      async getMessages(room) {
+        const response = await fetch(`/rooms/${room.id}/messages`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.messages = {
+          ...this.messages,
+          ...data.messages,
+        };
+      },
+
       async setupWS() {
         const socket = new WebSocket("ws://localhost:3000/cable");
 
@@ -867,16 +882,31 @@
             return;
           }
 
-          if (data.message.message_type === "add-membership") {
-            this.chat_rooms.push(data.message.room);
+          if (message.message_type === "add-membership") {
+            if (message.room.project_id) {
+              this.project_rooms.push(message.room);
+            } else {
+              this.chat_rooms.push(message.room);
+            }
+            this.getMessages(message.room);
             return;
           }
-          if (data.message.message_type === "remove-membership") {
+
+          if (message.message_type === "remove-membership") {
             this.messages[message.room.id] = [];
-            this.chat_rooms = this.chat_rooms.filter(
-              (room) => room.id !== message.room.id
-            );
-            if ((selected_room_type = "chats")) {
+
+            if (message.room.project_id) {
+              this.project_rooms = this.project_rooms.filter(
+                (room) => room.id !== message.room.id
+              );
+            } else {
+              this.chat_rooms = this.chat_rooms.filter(
+                (room) => room.id !== message.room.id
+              );
+            }
+            if (this.selected_room_type === "projects") {
+              this.selected_rooms = this.project_rooms;
+            } else {
               this.selected_rooms = this.chat_rooms;
             }
             if (this.selected_room.id === message.room.id) {
@@ -886,24 +916,27 @@
             return;
           }
 
-          if (message.room.id === this.selected_room.id) {
-            await this.destroyMessageUnread(message);
-          }
-          this.messages[message.room.id]
-            ? this.messages[message.room.id].unshift(message)
-            : (this.messages[message.room.id] = [message]);
-          if (message.message_id) {
-            for (const m of this.messages[message.room.id]) {
-              if (m.id === message.message_id) {
-                m.messages.unshift(message);
+          if (message.message_type === "message") {
+            if (message.room.id === this.selected_room.id) {
+              await this.destroyMessageUnread(message);
+            }
+            this.messages[message.room.id]
+              ? this.messages[message.room.id].unshift(message)
+              : (this.messages[message.room.id] = [message]);
+            if (message.message_id) {
+              for (const m of this.messages[message.room.id]) {
+                if (m.id === message.message_id) {
+                  m.messages.unshift(message);
+                }
               }
             }
-          }
 
-          if (message.room.id === this.selected_room.id) {
-            this.selected_messages = this.messages[message.room.id];
+            if (message.room.id === this.selected_room.id) {
+              this.selected_messages = this.messages[message.room.id];
+            }
+            this.sortRooms();
+            return;
           }
-          this.sortRooms();
         };
         socket.onerror = (error) => {
           console.log("WS error: ", error);
