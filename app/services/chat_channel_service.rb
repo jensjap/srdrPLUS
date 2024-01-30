@@ -13,7 +13,7 @@ class ChatChannelService
       .joins(:project)
       .left_joins(:memberships)
       .where(rooms: { project: user.projects })
-      .includes(:users)
+      .includes(:users, project: :users)
       .each do |room|
       room.project.users.each do |uuser|
         room.users << uuser unless room.user_ids.include?(uuser.id)
