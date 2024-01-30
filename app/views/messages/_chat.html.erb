@@ -385,6 +385,9 @@
                       } else {
                         threadMessages = message.messages;
                         threadMessageId = message.id
+                        message.messages.forEach((message) => {
+                          destroyMessageUnread(message);
+                        });
                       }"
                     >
                       <svg
@@ -404,6 +407,12 @@
                       <span
                         class="text-xs text-gray-500"
                         x-text="message.messages.length === 0 ? '' : `+${message.messages.length}`"
+                      ></span>
+                      <span
+                        class="absolute flex items-center justify-center h-4 w-4 bg-red-500 text-white text-xs rounded-full right-1 top-1"
+                        x-cloak
+                        x-show="message.messages.filter(message => !message.read)?.length > 0"
+                        x-text="message.messages.filter(message => !message.read)?.length"
                       ></span>
                     </div>
                   </div>
@@ -665,9 +674,11 @@
       async openRoom(room) {
         this.selected_room = room;
         this.selected_messages = this.messages[room?.id] || [];
-        this.selected_messages.forEach((message) =>
-          this.destroyMessageUnread(message)
-        );
+        this.selected_messages.forEach((message) => {
+          if (message.message_id === null) {
+            this.destroyMessageUnread(message);
+          }
+        });
         await this.fetchRoomUsers(room);
       },
 
@@ -929,7 +940,11 @@
           }
 
           if (message.message_type === "message") {
-            if (message.room.id === this.selected_room.id) {
+            if (
+              message.room.id === this.selected_room.id &&
+              (message.message_id === null ||
+                message.message_id === this.threadMessageId)
+            ) {
               await this.destroyMessageUnread(message);
             }
             this.messages[message.room.id]

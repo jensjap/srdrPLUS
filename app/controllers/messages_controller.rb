@@ -64,7 +64,7 @@ class MessagesController < ApplicationController
     messages = {}
     Message
       .where(room: rooms)
-      .includes(:messages, { user: :profile, message_unreads: :user })
+      .includes(:room, { user: :profile, message_unreads: :user, messages: [:room, { user: :profile, message_unreads: :user }] })
       .order(created_at: :desc)
       .each do |message|
       message_unread = message.message_unreads.find do |mu|
@@ -82,7 +82,23 @@ class MessagesController < ApplicationController
         message_unread_id: message_unread&.id,
         pinned: message.pinned,
         message_id: message.message_id,
-        messages: message.messages
+        messages: message.messages.map do |mmessage|
+                    mmessage_unread = mmessage.message_unreads.find do |mmu|
+                      mmu.user == current_user
+                    end
+                    {
+                      id: mmessage.id,
+                      room: mmessage.room,
+                      user_id: mmessage.user_id,
+                      handle: mmessage.user.handle,
+                      text: mmessage.text,
+                      created_at: mmessage.created_at,
+                      read: mmessage_unread.blank?,
+                      message_unread_id: mmessage_unread&.id,
+                      pinned: mmessage.pinned,
+                      message_id: mmessage.message_id
+                    }
+                  end
       }
     end
     messages
