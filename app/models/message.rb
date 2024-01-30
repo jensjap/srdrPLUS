@@ -30,7 +30,7 @@ class Message < ApplicationRecord
         room.users
       end
     broadcast_users.each do |broadcast_user|
-      message_unreads.create(user: broadcast_user)
+      message_unreads.create(user: broadcast_user) unless user == broadcast_user
     end
     (broadcast_users & online_users).each do |broadcast_user|
       message_unread = message_unreads.find do |mu|
