@@ -556,6 +556,8 @@
                 stroke="currentColor"
                 class="w-4 h-4 cursor-pointer"
                 @click="destroyMembership(user.membership_id)"
+                x-cloak
+                x-show="!user.projects_user"
               >
                 <path
                   stroke-linecap="round"

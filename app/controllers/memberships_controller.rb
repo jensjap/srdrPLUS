@@ -3,7 +3,7 @@ class MembershipsController < ApplicationController
     # TODO: authorize
     respond_to do |format|
       format.json do
-        @room = Room.find(params[:room_id])
+        @room = Room.includes(project: :users).find(params[:room_id])
         @memberships = @room.memberships.includes(user: :profile)
       end
     end
