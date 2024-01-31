@@ -134,12 +134,6 @@ class ProjectsController < ApplicationController
     end
   end
 
-  # GET /projects/1/confirm_deletion.js
-  def confirm_deletion
-    respond_to do |format|
-      format.js
-    end
-  end
 
   # DELETE /projects/1
   # DELETE /projects/1.json
