@@ -1097,13 +1097,30 @@ class AdvancedExportJob < ApplicationJob
     WORKSHEET_NAME_FORBIDDEN_CHARS.each do |c|
       candidate_name.delete!(c)
     end
-    candidate_name = candidate_name[0..28]
+
+    # Excel limits sheet name length to 31 characters
+    candidate_name = limit_sheet_name_length(candidate_name, 31)
+
     while (@package.workbook.worksheets.any? do |worksheet|
              worksheet.name == candidate_name
            end) || RESERVED_WORKSHEET_NAMES.include?(candidate_name)
       counter += 1
-      candidate_name = "#{name}_#{counter}"
+      counter_length = counter.to_s.length
+      candidate_name = candidate_name[0..(28-(counter_length-1))]
+      candidate_name = "#{candidate_name}_#{counter}"
     end
+
     candidate_name
+  end
+
+  def limit_sheet_name_length(name, max_length)
+    if name.length > max_length
+      half_length = (max_length-3) / 2
+      first_part  = name[0, half_length]
+      second_part = name[-half_length..-1]
+      name = "#{first_part}...#{second_part}"
+    end
+
+    name
   end
 end
