@@ -33,10 +33,11 @@ div x-data="{
     }
   },
   showModal(message, action = 'defaultAction') {
+    console.log(message)
     this.modalContent = message;
     this.openModal(action);
   }
-}" @show-modal.window="showModal($event.detail.message, $event.detail.action)"
+}" @show-modal.window="showModal($event.detail)"
   = render 'shared/alert_modal'
   div.row style="margin: 0;"
     div.columns.medium-9
