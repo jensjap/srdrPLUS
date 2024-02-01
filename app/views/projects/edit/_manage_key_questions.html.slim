@@ -1,4 +1,5 @@
-div class="mx-auto p-4 lg:p-8"
+div class="mx-auto p-4 lg:p-8" x-data="$store.deleteConfirmation"
+  = render 'shared/alert_modal'
   - if @project.duplicate_key_question?
 
     p#warning.callout.alert
@@ -32,9 +33,11 @@ div class="mx-auto p-4 lg:p-8"
             td = link_to edit_key_questions_project_path(kqp) do
               i.fi-pencil>
               = t('edit')
-            td = link_to kqp, method: :delete, data: { confirm: t('confirm') } do
-              i.fi-trash>
-              = t('remove')
+            td
+              - delete_url = key_questions_project_path(kqp)
+              a href="#" @click.prevent="$store.deleteConfirmation.openModal('#{delete_url}')"
+                i.fi-trash>
+                = t('remove')
 
   hr
 
@@ -51,3 +54,37 @@ div class="mx-auto p-4 lg:p-8"
     = link_to 'Build Extraction Form', build_extraction_forms_project_path(efp.id, 'panel-tab': efp.default_section_id), class: 'button', style: 'float: right'
   - else
     div.button style='float: right; opacity: 0.25;' onclick="alert('You must add at least one key question first.')" Build Extraction Form
+
+javascript:
+  document.addEventListener('alpine:init', () => {
+    Alpine.store('deleteConfirmation', {
+      isModalOpen: false,
+      modalContent: 'Are you sure you want to delete this key question?<br> This action cannot be undone and might result in data loss.',
+      deleteUrl: '',
+      openModal(url) {
+        this.deleteUrl = url;
+        this.isModalOpen = true;
+      },
+      closeModal() {
+        this.isModalOpen = false;
+      },
+      modalConfirmAction() {
+        fetch(this.deleteUrl, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").getAttribute('content'),
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include'
+        })
+          .then(response => {
+            if (response.ok || response.status === 204) {
+              window.location.reload();
+            }
+          })
+          .catch(error => console.error('Error:', error))
+          .finally(() => this.closeModal());
+      }
+    });
+  });
