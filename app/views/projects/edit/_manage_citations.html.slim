@@ -8,22 +8,22 @@ div.row#btm-anchor style="margin: 10px 0 0 0;"
     a class="text-white bg-srdrpurple text-sm p-2 rounded-md hover:text-white hover:no-underline" onclick="$('#add_citation_button').trigger('click')" href="#add_citation" Add Citation
 
 div x-data="{
-  isModalOpen: false,
-  modalContent: '',
+  isAlertModalOpen: false,
+  alertModalContent: '',
   currentAction: '',
   openModal(action) {
-    this.isModalOpen = true;
+    this.isAlertModalOpen = true;
     this.currentAction = action;
   },
-  closeModal() {
-    this.isModalOpen = false;
+  closeAlertModal() {
+    this.isAlertModalOpen = false;
     this.currentAction = '';
     if (typeof window.modalResolve == 'function') {
       window.modalResolve(false);
     }
   },
   modalConfirmAction() {
-    this.isModalOpen = false;
+    this.isAlertModalOpen = false;
     if (this.currentAction === 'deleteCitations') {
       document.getElementById('citations-form').submit();
     }
@@ -34,7 +34,7 @@ div x-data="{
   },
   showModal(message, action = 'defaultAction') {
     console.log(message)
-    this.modalContent = message;
+    this.alertModalContent = message;
     this.openModal(action);
   }
 }" @show-modal.window="showModal($event.detail)"

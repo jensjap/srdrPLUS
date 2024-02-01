@@ -46,8 +46,8 @@ div class="mx-auto p-4 lg:p-8"
 javascript:
   function alertModal(projectId) {
     return {
-      isModalOpen: false,
-      modalContent: '',
+      isAlertModalOpen: false,
+      alertModalContent: '',
       inputText: '',
       modalConfirmAction: function() {
         if (this.inputText.toUpperCase() === 'DELETE') {
@@ -67,15 +67,15 @@ javascript:
             }
           });
 
-          this.isModalOpen = false;
+          this.isAlertModalOpen = false;
         }
       },
-      closeModal: function() {
-        this.isModalOpen = false;
+      closeAlertModal: function() {
+        this.isAlertModalOpen = false;
       },
       openModal: function(content) {
-        this.modalContent = content;
-        this.isModalOpen = true;
+        this.alertModalContent = content;
+        this.isAlertModalOpen = true;
         this.inputText = '';
       }
     }

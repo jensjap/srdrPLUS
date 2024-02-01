@@ -1,5 +1,5 @@
 <div
-  x-show="isModalOpen"
+  x-show="isAlertModalOpen"
   class="fixed inset-0 z-50 overflow-y-auto h-full w-full"
   x-cloak
 >
@@ -7,12 +7,12 @@
 
   <div
     class="relative top-20 mx-auto p-5 border w-3/4 lg:w-1/2 h-auto shadow-lg rounded-md bg-white z-50"
-    @click.outside="closeModal()"
+    @click.outside="closeAlertModal()"
   >
     <div class="mt-3 text-center">
       <h3 class="text-lg lg:text-2xl leading-6 font-medium text-gray-900">Alert</h3>
       <div class="mt-2 px-4 py-2 lg:px-7 lg:py-3">
-        <p class="text-sm lg:text-lg text-gray-500" x-html="modalContent"></p>
+        <p class="text-sm lg:text-lg text-gray-500" x-html="alertModalContent"></p>
       </div>
       <div class="flex justify-around px-4 py-3">
         <button
@@ -25,7 +25,7 @@
         <button
           id="cancel-btn"
           class="px-4 py-2 bg-gray-300 text-gray-700 text-base font-medium rounded-md shadow-sm hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
-          x-on:click="closeModal()"
+          x-on:click="closeAlertModal()"
           type="button"
         >
           Cancel

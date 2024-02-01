@@ -58,15 +58,15 @@ div class="mx-auto p-4 lg:p-8" x-data="$store.deleteConfirmation"
 javascript:
   document.addEventListener('alpine:init', () => {
     Alpine.store('deleteConfirmation', {
-      isModalOpen: false,
-      modalContent: 'Are you sure you want to delete this key question?<br> This action cannot be undone and might result in data loss.',
+      isAlertModalOpen: false,
+      alertModalContent: 'Are you sure you want to delete this key question?<br> This action cannot be undone and might result in data loss.',
       deleteUrl: '',
       openModal(url) {
         this.deleteUrl = url;
-        this.isModalOpen = true;
+        this.isAlertModalOpen = true;
       },
-      closeModal() {
-        this.isModalOpen = false;
+      closeAlertModal() {
+        this.isAlertModalOpen = false;
       },
       modalConfirmAction() {
         fetch(this.deleteUrl, {
@@ -84,7 +84,7 @@ javascript:
             }
           })
           .catch(error => console.error('Error:', error))
-          .finally(() => this.closeModal());
+          .finally(() => this.closeAlertModal());
       }
     });
   });
