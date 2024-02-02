@@ -70,12 +70,20 @@ class SdMetaDataController < ApplicationController
 
     sd_meta_datum.destroy
     if sd_meta_datum.destroyed?
-      flash[:notice] = "Succesfully deleted Sd Meta Datum ID: #{sd_meta_datum.id}"
+      if request.xhr?
+        render json: { success: true, message: "Succesfully deleted Sd Meta Datum ID: #{sd_meta_datum.id}" }, status: :ok
+      else
+        flash[:notice] = "Succesfully deleted Sd Meta Datum ID: #{sd_meta_datum.id}"
+        redirect_to(project_sd_meta_data_path(project))
+      end
     else
-      flash[:alert] = "Error deleting Sd Meta Datum ID: #{sd_meta_datum.id}"
+      if request.xhr?
+        render json: { alert: "Error deleting Sd Meta Datum ID: #{sd_meta_datum.id}" }, status: :unprocessable_entity
+      else
+        flash[:alert] = "Error deleting Sd Meta Datum ID: #{sd_meta_datum.id}"
+        redirect_to(project_sd_meta_data_path(project))
+      end
     end
-
-    redirect_to(project_sd_meta_data_path(project), status: 303)
   end
 
   def create
