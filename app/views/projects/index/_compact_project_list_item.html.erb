@@ -21,7 +21,68 @@
     <% end %>
   </div>
 
-  <div class="overflow-x-auto pb-1 px-1 grid grid-cols-3 gap-2 lg:grid-cols-12 <%= index % 2 == 0 ? '!bg-purple-100' : '!bg-white' %>" >
+  <div class="pb-1 px-1 grid grid-cols-3 gap-2 lg:grid-cols-12 <%= index % 2 == 0 ? '!bg-purple-100' : '!bg-white' %>">
+
+    <!-- Dropdown for "Edit Forms" link -->
+    <div x-data="{ isOpen: false }"
+         class="relative inline-block text-left"
+         @click.away="isOpen = false"
+         :id="'projectDropdown_' + <%= project.id %>">
+      <button @click="isOpen = !isOpen"
+              type="button"
+              class="inline-flex items-center px-4 py-2 text-sm font-medium text-srdr-primary focus:outline-none focus:shadow-outline-blue"
+              id="editFormsDropdown"
+              aria-haspopup="true"
+              aria-expanded="true">
+        Edit Forms
+        <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+
+      <!-- Dropdown items -->
+      <div x-cloak
+           x-show="isOpen"
+           x-transition:enter="transition ease-out duration-200"
+           x-transition:enter-start="transform opacity-0 scale-95"
+           x-transition:enter-end="transform opacity-100 scale-100"
+           x-transition:leave="transition ease-in duration-75"
+           x-transition:leave-start="transform opacity-100 scale-100"
+           x-transition:leave-end="transform opacity-0 scale-95"
+           style="right: -50px;"
+           class="z-10 origin-top-left absolute right-0 mt-0 w-46 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 border border-black"
+           role="menu"
+           aria-orientation="vertical"
+           aria-labelledby="projectDropdown_<%= project.id %>">
+        <%= link_to "Screening Form Builder", project_screening_forms_path(project), class: "block px-4 py-2 text-gray-800 hover:bg-srdr-primary hover:text-white" %>
+        <%= link_to "Extraction Form Builder", build_extraction_forms_project_path(project.extraction_forms_projects.first), class: "block px-4 py-2 text-gray-800 hover:bg-srdr-primary hover:text-white" %>
+      </div>
+
+      <script>
+        function handleMouseEnter() {
+          console.log('handleMouseEnter');
+          if (window.innerWidth > 768) {
+            this.isOpen = true;
+          }
+        }
+
+        function handleClick() {
+          console.log('handleClick');
+          if (window.innerWidth <= 768) {
+            this.isOpen = !this.isOpen;
+          }
+        }
+
+        function handleMouseLeave() {
+          console.log('handleMouseLeave');
+          if (window.innerWidth > 768) {
+            this.isOpen = false;
+          }
+        }
+      </script>
+
+    </div>
+
     <div class="break-words">
       <!-- prettier-ignore -->
       <% pu_count = @projects_projects_user_counts[project.id] %>
