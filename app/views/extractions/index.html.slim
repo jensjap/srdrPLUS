@@ -100,7 +100,7 @@ javascript:
   document.addEventListener('alpine:init', () => {
     Alpine.store('deleteConfirmation', {
       isAlertModalOpen: false,
-      alertModalContent: 'Warning! You are about to delete extraction. \nThis action cannot be undone. Proceed anyway?',
+      alertModalContent: 'Warning! You are about to delete an Extraction and any associated data with it. \nThis action cannot be undone. Please confirm to proceed.',
       deleteUrl: '',
       openModal(url) {
         this.deleteUrl = url;

@@ -15,12 +15,19 @@
         <p class="text-sm lg:text-lg text-gray-500" x-html="alertModalContent"></p>
       </div>
       <div class="flex justify-around px-4 py-3">
-        <input x-model="inputText" type="text" class="input-class" placeholder="Type DELETE here">
+        <input
+          x-model="inputText"
+          type="text"
+          class="input-class"
+          placeholder="Type DELETE here"
+          @keydown.enter.prevent="modalConfirmAction"
+        >
         <button
           id="ok-btn"
           class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300"
           x-on:click="modalConfirmAction"
           x-bind:disabled="inputText.toUpperCase() !== 'DELETE'"
+          type="button"
         >
           Confirm
         </button>
