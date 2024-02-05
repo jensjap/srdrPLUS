@@ -20,9 +20,8 @@
     <% end %>
     <% end %>
   </div>
-  <div
-    class="overflow-x-auto pb-1 px-1 grid grid-cols-3 gap-2 lg:grid-cols-12 <%= index % 2 == 0 ? '!bg-purple-100' : '!bg-white' %>"
-  >
+
+  <div class="overflow-x-auto pb-1 px-1 grid grid-cols-3 gap-2 lg:grid-cols-12 <%= index % 2 == 0 ? '!bg-purple-100' : '!bg-white' %>" >
     <div class="break-words">
       <!-- prettier-ignore -->
       <% pu_count = @projects_projects_user_counts[project.id] %>
@@ -40,14 +39,12 @@
       <% cp_count = @projects_citations_project_counts[project.id] %>
       <% cp_title = "Citations (#{cp_count || 0})" %>
       <%= link_to cp_title, project_citations_path(project), title: t('manage_citations') %>
-      <%= link_to "+", project_citations_path(project), title: t('manage_citations'), class:"bg-purple-800 px-1 rounded-md text-white hover:text-white" %>
     </div>
     <div class="break-words">
       <!-- prettier-ignore -->
       <% e_count = @projects_extraction_counts[project.id] %>
       <% e_title = "Extractions (#{e_count || 0})" %>
       <%= link_to e_title, project_extractions_path(project), title: t('manage_extractions') %>
-      <%= link_to "+", new_project_extraction_path(project), title: t('manage_citations'), class:"bg-purple-800 px-1 rounded-md text-white hover:text-white" %>
     </div>
     <div class="break-words">
       <a
