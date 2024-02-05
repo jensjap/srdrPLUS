@@ -17,7 +17,7 @@
       hover:text-white") %>
     </div>
   </div>
-  <dl class="mt-5 grid grid-cols-1 gap-3 lg:grid-cols-3">
+  <dl class="mt-5 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
     <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
       <dt class="text-sm font-medium text-gray-500 truncate">
         I. Abstract Screening
@@ -153,7 +153,7 @@
 
     <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
       <dt class="text-sm font-medium text-gray-500 truncate">
-        III. Extractions
+        III. Extraction
         <span
           x-text="`(${$store.dashboard.getFullTextExtractionTotal()})`"
         ></span>
@@ -183,10 +183,6 @@
             <span class="text-xs font-extralight text-gray-500"
               >In progress
             </span>
-            <span
-              class="text-xs font-extralight text-gray-500"
-              x-text="`(${$store.dashboard.kpis.eic} consolidating)`"
-            ></span>
             <span class="text-xs font-extralight bg-slate-200 p-1"> eip</span>
           </div>
           <div>
@@ -214,6 +210,64 @@
         </div>
       </dd>
     </div>
+
+    <div class="px-4 py-5 bg-white shadow rounded-lg lg:p-6">
+      <dt class="text-sm font-medium text-gray-500 truncate">
+        IV. Consolidation
+        <span x-text="`(${$store.dashboard.getConsolidationTotal()})`"></span>
+      </dt>
+      <dd class="mt-1 font-semibold text-gray-900">
+        <div>
+          <div>
+            <span
+              x-text="$store.dashboard.kpis.cnc"
+              :class="$store.dashboard.show.cnc ? '' : 'invisible'"
+              x-transition
+            >
+              ..
+            </span>
+            <span class="text-xs font-extralight text-gray-500"
+              >Need consolidation </span
+            ><span class="text-xs font-extralight border p-1"> cnc</span>
+          </div>
+          <div>
+            <span
+              x-text="$store.dashboard.kpis.cip"
+              :class="$store.dashboard.show.cip ? '' : 'invisible'"
+              x-transition
+            >
+              ..
+            </span>
+            <span class="text-xs font-extralight text-gray-500"
+              >In progress
+            </span>
+            <span class="text-xs font-extralight bg-slate-200 p-1"> cip</span>
+          </div>
+          <div>
+            <span
+              x-text="$store.dashboard.kpis.cr"
+              :class="$store.dashboard.show.cr ? '' : 'invisible'"
+              x-transition
+            >
+              ..
+            </span>
+            <span class="text-xs font-extralight text-gray-500">Rejected </span
+            ><span class="text-xs font-extralight bg-red-200 p-1"> cr</span>
+          </div>
+          <div>
+            <span
+              x-text="$store.dashboard.kpis.cc"
+              :class="$store.dashboard.show.cc ? '' : 'invisible'"
+              x-transition
+            >
+              ..
+            </span>
+            <span class="text-xs font-extralight text-gray-500">Complete </span
+            ><span class="text-xs font-extralight bg-green-200 p-1"> cc</span>
+          </div>
+        </div>
+      </dd>
+    </div>
   </dl>
 </div>
 
@@ -236,6 +290,10 @@
         eip: "..",
         er: "..",
         ec: "..",
+        cnc: "..",
+        cip: "..",
+        cr: "..",
+        cc: "..",
       },
 
       show: {
@@ -253,6 +311,10 @@
         eip: true,
         er: true,
         ec: true,
+        cnc: true,
+        cip: true,
+        cr: true,
+        cc: true,
       },
 
       init() {
@@ -294,6 +356,14 @@
           (parseInt(this.kpis.eip) || 0) +
           (parseInt(this.kpis.er) || 0) +
           (parseInt(this.kpis.ec) || 0)
+        );
+      },
+      getConsolidationTotal() {
+        return (
+          (parseInt(this.kpis.cnc) || 0) +
+          (parseInt(this.kpis.cip) || 0) +
+          (parseInt(this.kpis.cr) || 0) +
+          (parseInt(this.kpis.cc) || 0)
         );
       },
     });

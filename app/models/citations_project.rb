@@ -40,6 +40,10 @@ class CitationsProject < ApplicationRecord
   E_IN_PROGRESS = 'eip'.freeze
   E_REJECTED = 'er'.freeze
   E_COMPLETE = 'ec'.freeze
+  C_NEED_CONSOLIDATION = 'CNC'.freeze
+  C_IN_PROGRESS = 'CIP'.freeze
+  C_REJECTED = 'CR'.freeze
+  C_COMPLETE = 'CC'.freeze
   ALL = [
     AS_UNSCREENED,
     AS_PARTIALLY_SCREENED,
