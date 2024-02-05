@@ -444,6 +444,7 @@ class ProjectsController < ApplicationController
     @project = project
     if project_params[:projects_users_attributes].present?
       project.create_empty = true
+
       return false unless project.save
 
       if project.imported_files.present?
@@ -451,8 +452,15 @@ class ProjectsController < ApplicationController
         flash[:success] =
           "Import request submitted for project '#{project.name}'. You will be notified by email of its completion."
       end
+
       return true
+
+    else
+      # Setting default KQ.
+      project.key_questions << KeyQuestion.first unless project.key_questions.present?
+
     end
+
     project.save
   end
 
