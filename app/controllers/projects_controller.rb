@@ -134,12 +134,6 @@ class ProjectsController < ApplicationController
     end
   end
 
-  # GET /projects/1/confirm_deletion.js
-  def confirm_deletion
-    respond_to do |format|
-      format.js
-    end
-  end
 
   # DELETE /projects/1
   # DELETE /projects/1.json
@@ -147,12 +141,10 @@ class ProjectsController < ApplicationController
     authorize(@project)
 
     @project.destroy
+    flash[:info] = t('.removed')
     respond_to do |format|
-      format.html do
-        redirect_to projects_url,
-                    notice: t('removed')
-      end
-      format.json { head :no_content }
+      format.html { redirect_to projects_url }
+      format.json {}
     end
   end
 

@@ -111,6 +111,11 @@ documentCode = ->
     })
     dt.draw()
 
+    $(document).on 'click', 'table.extractions-list .delete-btn', (event) ->
+      event.preventDefault()
+      url = $(this).data('delete-url')
+      Alpine.store('deleteConfirmation').openModal(url)
+
     last_col = 6
     $('table.extractions-list').on('click', '.table-sortable', (e) ->
       element = $(this)

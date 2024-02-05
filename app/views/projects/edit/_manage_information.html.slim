@@ -38,5 +38,45 @@ div class="mx-auto p-4 lg:p-8"
     div class="mt-4 flex justify-between"
       div
         = f.button :submit, t('save_changes')
-      div style="text-align: right;"
-        = link_to "Delete Project", confirm_deletion_project_path(@project), method: :get, class: "alert button", remote: true
+      div style="text-align: right;" x-data="alertModal('#{@project.id}')"
+        button @click="openModal('To proceed, please follow the instructions below. Type DELETE and press the button to confirm project deletion.')" type="button" class='alert button'
+          | Delete
+        == render 'shared/alert_modal_for_delete'
+
+javascript:
+  function alertModal(projectId) {
+    return {
+      isAlertModalOpen: false,
+      alertModalContent: '',
+      inputText: '',
+      modalConfirmAction: function() {
+        if (this.inputText.toUpperCase() === 'DELETE') {
+          fetch(`/projects/${projectId}`, {
+            method: 'DELETE',
+            headers: {
+              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+          })
+          .then(response => {
+            if(response.ok || response.status === 204) {
+              window.location.href = '/projects';
+            } else {
+              toastr.error('Unable to delete the project', 'Error');
+            }
+          });
+
+          this.isAlertModalOpen = false;
+        }
+      },
+      closeAlertModal: function() {
+        this.isAlertModalOpen = false;
+      },
+      openModal: function(content) {
+        this.alertModalContent = content;
+        this.isAlertModalOpen = true;
+        this.inputText = '';
+      }
+    }
+  }

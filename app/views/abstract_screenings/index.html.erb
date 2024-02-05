@@ -228,6 +228,8 @@
       project_id: null,
       reasons_tags: false,
       limit_one_reason: false,
+      isAlertModalOpen: false,
+      alertModalContent: '',
 
       async init() {
         this.project_id = <%= @project.id %>;
@@ -409,11 +411,8 @@
 
       async deleteCustomValue(type, index) {
         const id = this[type][index].id;
-        if (
-          confirm(
-            `Would you like to delete "${this[type][index].name}" as a custom choice?`
-          )
-        ) {
+        this.alertModalContent = `Would you like to delete "${this[type][index].name}" as a custom choice?`;
+        this.modalConfirmAction = async () => {
           let url;
           if (type == "custom_reasons") {
             url = `/projects_reasons/${id}`;
@@ -427,8 +426,14 @@
           await response.json();
           await this.fetchReasons();
           await this.fetchTags();
-        }
+          this.closeAlertModal();
+        };
+        this.isAlertModalOpen = true;
       },
+
+      closeAlertModal() {
+        this.isAlertModalOpen = false;
+      }
     }));
   });
 </script>
