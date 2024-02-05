@@ -79,6 +79,6 @@ class ApplicationPolicy
   end
 
   def not_part_of_project?
-    @projects_user&.nil?
+    @projects_user.nil?
   end
 end
