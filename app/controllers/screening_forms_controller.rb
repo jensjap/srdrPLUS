@@ -1,6 +1,7 @@
 class ScreeningFormsController < ApplicationController
   def index
     @project = Project.find(params[:project_id])
+    authorize(@project, policy_class: ScreeningFormPolicy)
     @nav_buttons.push('screening_forms', 'my_projects')
 
     respond_to do |format|
