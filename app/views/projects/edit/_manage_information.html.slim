@@ -63,7 +63,7 @@ javascript:
             if(response.ok || response.status === 204) {
               window.location.href = '/projects';
             } else {
-              alert('Error: Unable to delete the project.');
+              toastr.error('Unable to delete the project', 'Error');
             }
           });
 

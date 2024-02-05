@@ -141,12 +141,10 @@ class ProjectsController < ApplicationController
     authorize(@project)
 
     @project.destroy
+    flash[:info] = t('.removed')
     respond_to do |format|
-      format.html do
-        redirect_to projects_url,
-                    notice: t('removed')
-      end
-      format.json { head :no_content }
+      format.html { redirect_to projects_url }
+      format.json {}
     end
   end
 
