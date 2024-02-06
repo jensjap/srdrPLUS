@@ -274,152 +274,42 @@
 
     <!-- prettier-ignore -->
     <% if add_submenu?(controller_name, action_name, controller, @publishable_record) %>
-    <% project = find_project(@project, @extraction, @extraction_forms_project, @question, @extraction_forms_projects_section, @publishable_record) %>
-    <div
-      class="bg-srdr-secondary mx-auto px-4 lg:px-8 text-white overflow-x-auto whitespace-nowrap"
-    >
-      <div class="flex h-8 items-center justify-between">
-        <div>
-          <!-- prettier-ignore -->
-          <%= "Project ID##{project.id}: #{project.name}" %>
-        <% if project.publishing.present? && project.publishing.approval.present? %>
-          <span
-            class="ml-4 inline-flex items-center rounded bg-green-100 px-2 py-0.5 text-xs font-bold text-green-800"
-            >Published</span
-          >
-          <% elsif project.publishing.present? %>
-          <span
-            class="ml-4 inline-flex items-center rounded bg-yellow-700 px-2 py-0.5 text-xs font-bold text-white"
-            >Publication Requested</span
-          >
-          <% else %>
-          <span
-            class="ml-4 inline-flex items-center rounded bg-gray-100 px-2 py-0.5 text-xs font-bold text-gray-800"
-            >Unpublished</span
-          >
-          <% end %>
-        </div>
-        <div class="ml-4" x-show="!extractions" x-cloak>
-          <a
-            href="<%= project_extractions_path(project) %>"
-            class="rounded-md px-2 py-1 text-xs font-medium bg-green-700 !text-white border-[0.5px] border-white"
-            >Go to Extractions
-          </a>
-        </div>
-      </div>
-      <div class="flex h-8 items-center justify-between">
-        <div class="flex items-center">
-          <!-- Current: "rounded-md bg-srdr-secondary px-3 py-2 text-sm font-medium text-white" -->
-          <a
-            href="<%= edit_project_path(project) %>?page=info"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="project_info && 'bg-srdr-primary !text-white'"
-            >Project Info</a
-          >
-          <a
-            href="<%= edit_project_path(project) %>?page=key_questions"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="key_questions && 'bg-srdr-primary !text-white'"
-            >Key Questions</a
-          >
-          <a
-            href="<%= edit_project_path(project) %>?page=members_and_roles"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="members_and_roles && 'bg-srdr-primary !text-white'"
-            >Member(s) & Role(s)</a
-          >
-          <a
-            href="<%= project_citations_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="citation_pool && 'bg-srdr-primary !text-white'"
-            >Citations</a
-          >
-          <% projects_user = ProjectsUser.find_by(project_id: project.id, user_id: current_user.id) %>
-          <% if BaseScreeningService.screening_user?(current_user) %>
-          <a
-            href="<%= project_citation_lifecycle_management_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="lifecycle_management && 'bg-srdr-primary !text-white'"
-            >Citation Phase Management</a
-          >
-          <% end %>
-          <a
-            href="<%= project_screening_forms_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="screening_forms && 'bg-srdr-primary !text-white'"
-            >Screening Form Builder</a
-          >
-          <% if projects_user&.project_leader? || projects_user&.project_consolidator? %>
-            <a
-              href="<%= project_abstract_screenings_path(project) %>"
-              class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-              :class="abstract_screening && 'bg-srdr-primary !text-white'"
-            >Abstract Screening</a
-            >
-            <% if BaseScreeningService.screening_user?(current_user) %>
-              <a
-                href="<%= project_fulltext_screenings_path(project) %>"
-                class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-                :class="fulltext_screening && 'bg-srdr-primary !text-white'"
-              >Full-Text Screening</a
+      <% project = find_project(@project, @extraction, @extraction_forms_project, @question, @extraction_forms_projects_section, @publishable_record) %>
+      <div class="bg-srdr-secondary mx-auto px-4 lg:px-8 text-white overflow-x-auto whitespace-nowrap" >
+        <div class="flex h-8 items-center justify-between">
+          <div>
+            <!-- prettier-ignore -->
+            <%= link_to "Project ID##{project.id}: #{project.name}", project_citation_lifecycle_management_path(project), class: "rounded-md my-2 py-3 px-5 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white" %>
+            <% if project.publishing.present? && project.publishing.approval.present? %>
+              <span
+                class="ml-4 inline-flex items-center rounded bg-green-100 px-2 py-0.5 text-xs font-bold text-green-800"
+                >Published</span
+              >
+            <% elsif project.publishing.present? %>
+              <span
+                class="ml-4 inline-flex items-center rounded bg-yellow-700 px-2 py-0.5 text-xs font-bold text-white"
+                >Publication Requested</span
+              >
+            <% else %>
+              <span
+                class="ml-4 inline-flex items-center rounded bg-gray-100 px-2 py-0.5 text-xs font-bold text-gray-800"
+                >Unpublished</span
               >
             <% end %>
-          <% end %>
-          <% if projects_user&.project_contributor? && !projects_user&.project_leader? && !projects_user&.project_consolidator? %>
+          </div>
+          <div class="ml-4" x-show="!extractions" x-cloak>
             <a
-              href="<%= work_selection_project_abstract_screenings_path(project) %>"
-              class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-              :class="abstract_screening && 'bg-srdr-primary !text-white'"
-            >Abstract Screening</a
-            >
-            <% if BaseScreeningService.screening_user?(current_user) %>
-              <a
-                href="<%= work_selection_project_fulltext_screenings_path(project) %>"
-                class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-                :class="fulltext_screening && 'bg-srdr-primary !text-white'"
-              >Full-Text Screening</a
-              >
-            <% end %>
-          <% end %>
-          <a
-            href="<%= build_extraction_forms_project_path(project.extraction_forms_projects.first, 'panel-tab': project.extraction_forms_projects.first.default_section_id) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="extractions_form_builder && 'bg-srdr-primary !text-white'"
-            >Extractions Form Builder</a
-          >
-          <a
-            href="<%= project_extractions_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="extractions && 'bg-srdr-primary !text-white'"
-            >Extractions</a
-          >
-          <a
-            href="<%= comparison_tool_project_extractions_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="comparison_tool && 'bg-srdr-primary !text-white'"
-            >Comparison Tool</a
-          >
-          <a
-            href="<%= project_sd_meta_data_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="sr_360 && 'bg-srdr-primary !text-white'"
-            >SR-360</a
-          >
-          <a
-            href="<%= project_imports_path(project) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="import_export && 'bg-srdr-primary !text-white'"
-            >Export & Import</a
-          >
-          <a
-            href="<%= new_publishing_path(type: Project.to_s, id: project.id) %>"
-            class="rounded-md px-2 py-1 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white"
-            :class="publication && 'bg-srdr-primary !text-white'"
-            >Publication</a
-          >
+              href="<%= project_extractions_path(project) %>"
+              class="rounded-md px-2 py-1 text-xs font-medium bg-green-700 !text-white border-[0.5px] border-white"
+              >Go to Extractions
+            </a>
+          </div>
+        </div>
+
+        <div class="flex h-8 items-center justify-between">
+          <%= render "projects/index/compact_project_list_item", project: project, index: 0, bg: 'purple' %>
         </div>
       </div>
-    </div>
     <% end %>
   </nav>
 </div>
