@@ -54,6 +54,11 @@ class CitationsProject < ApplicationRecord
     E_REJECTED,
     E_COMPLETE
   ]
+  REJECTED = [
+    AS_REJECTED,
+    FS_REJECTED,
+    E_REJECTED
+  ]
 
   # We find all CitationsProject entries that have the exact same citation_id
   # and project_id. Then we pick the first (oldest) one. We refer to it as the
