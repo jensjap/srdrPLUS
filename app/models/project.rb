@@ -83,7 +83,6 @@ class Project < ApplicationRecord
   has_many :key_questions_projects,
            dependent: :destroy, inverse_of: :project
   has_many :key_questions,
-           -> { joins(:key_questions_projects) },
            through: :key_questions_projects, dependent: :destroy
 
   has_many :extraction_forms_projects_sections,
