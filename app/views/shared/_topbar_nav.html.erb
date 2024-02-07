@@ -275,11 +275,13 @@
     <!-- prettier-ignore -->
     <% if add_submenu?(controller_name, action_name, controller, @publishable_record) %>
       <% project = find_project(@project, @extraction, @extraction_forms_project, @question, @extraction_forms_projects_section, @publishable_record) %>
-      <div class="bg-srdr-secondary mx-auto px-4 lg:px-8 text-white overflow-x-auto whitespace-nowrap" >
-        <div class="flex h-8 items-center justify-between">
-          <div>
+      <div class="h-20 bg-srdr-secondary px-4 lg:px-8 text-white" >
+        <div class="flex h-8 items-center justify-between pt-4">
+          <div class="">
             <!-- prettier-ignore -->
-            <%= link_to "Project ID##{project.id}: #{project.name}", project_citation_lifecycle_management_path(project), class: "rounded-md my-2 py-3 px-5 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white" %>
+            <%= link_to "Project ID##{project.id}: #{project.name}",
+                        project_citation_lifecycle_management_path(project),
+                        class: "rounded-md m-2 p-2 text-lg font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white" %>
             <% if project.publishing.present? && project.publishing.approval.present? %>
               <span
                 class="ml-4 inline-flex items-center rounded bg-green-100 px-2 py-0.5 text-xs font-bold text-green-800"
@@ -305,8 +307,7 @@
             </a>
           </div>
         </div>
-
-        <div class="flex h-8 items-center justify-between">
+        <div class="flex h-8 items-center justify-between pt-4 bg-srdr-secondary">
           <%= render "projects/index/compact_project_list_item", project: project, index: 0, bg: 'purple' %>
         </div>
       </div>
