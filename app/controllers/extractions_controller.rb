@@ -294,7 +294,7 @@ class ExtractionsController < ApplicationController
     return redirect_to("/projects/#{@project.id}/consolidations", status: 303) if cookies[:consolidation_beta]
 
     authorize(@project, policy_class: ExtractionPolicy)
-    @nav_buttons.push('comparison_tool', 'my_projects')
+    @nav_buttons.push('extractions', 'my_projects')
     @citation_groups = @project.citation_groups
   end
 

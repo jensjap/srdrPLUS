@@ -9,7 +9,7 @@ class SdMetaDataController < ApplicationController
     @sd_meta_datum = SdMetaDatum.find(params[:id])
     @project = @sd_meta_datum.try(:project)
     authorize(@sd_meta_datum)
-    @nav_buttons.push('sr_360', 'my_projects')
+    @nav_buttons.push('publication', 'my_projects')
     @report = @sd_meta_datum.report
   end
 
@@ -113,7 +113,7 @@ class SdMetaDataController < ApplicationController
     # @sd_meta_datum.sd_evidence_tables.build
     @project = @sd_meta_datum.project
     authorize(@sd_meta_datum)
-    @nav_buttons.push('sr_360', 'my_projects')
+    @nav_buttons.push('publication', 'my_projects')
     @report = @sd_meta_datum.report
     @url = sd_meta_datum_path(@sd_meta_datum)
 
@@ -128,7 +128,7 @@ class SdMetaDataController < ApplicationController
         @sd_meta_datum = SdMetaDatum.find(params[:id])
         @project = @sd_meta_datum.project
         authorize(@sd_meta_datum)
-        @nav_buttons.push('sr_360', 'my_projects')
+        @nav_buttons.push('publication', 'my_projects')
         @report = @sd_meta_datum.report
         @url = sd_meta_datum_path(@sd_meta_datum)
 
@@ -176,7 +176,7 @@ class SdMetaDataController < ApplicationController
     # @projects = policy_scope(Project)
     @project = Project.find(params[:project_id])
     authorize(@project, policy_class: SdMetaDatumPolicy)
-    @nav_buttons.push('sr_360', 'my_projects')
+    @nav_buttons.push('publication', 'my_projects')
     @reports = Report.all
     @sd_meta_data = policy_scope(SdMetaDatum).where(project: @project)
   end

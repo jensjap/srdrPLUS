@@ -4,7 +4,7 @@ class ExtractionFormsProjectsController < ApplicationController
   before_action :skip_policy_scope
 
   def preview
-    @nav_buttons.push('extractions_form_builder', 'my_projects')
+    @nav_buttons.push('form_builder', 'my_projects')
     @key_questions_projects = @extraction_forms_project.project.key_questions_projects.includes(:key_question)
     @key_questions_projects_array_for_select = @extraction_forms_project.project.key_questions_projects_array_for_select
     @extraction_forms_projects_sections = @extraction_forms_project
@@ -77,7 +77,7 @@ class ExtractionFormsProjectsController < ApplicationController
 
   # GET /extraction_forms_projects/1/build
   def build
-    @nav_buttons.push('extractions_form_builder', 'my_projects')
+    @nav_buttons.push('form_builder', 'my_projects')
     if @extraction_forms_project.project.key_questions.blank?
       key_question = KeyQuestion.find_or_create_by(name: 'Default question')
       @extraction_forms_project.project.key_questions << key_question

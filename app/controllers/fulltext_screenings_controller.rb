@@ -42,7 +42,7 @@ class FulltextScreeningsController < ApplicationController
 
   def index
     authorize(@project, policy_class: FulltextScreeningPolicy)
-    @nav_buttons.push('fulltext_screening', 'my_projects')
+    @nav_buttons.push('screening', 'my_projects')
     @fulltext_screenings =
       policy_scope(@project, policy_scope_class: FulltextScreeningPolicy::Scope)
       .order(id: :desc)
@@ -85,7 +85,7 @@ class FulltextScreeningsController < ApplicationController
     @project = @fulltext_screening.project
     authorize(@fulltext_screening)
     @projects_user = ProjectsUser.find_by(user: current_user, project: @project)
-    @nav_buttons.push('fulltext_screening', 'my_projects')
+    @nav_buttons.push('screening', 'my_projects')
 
     respond_to do |format|
       format.html do

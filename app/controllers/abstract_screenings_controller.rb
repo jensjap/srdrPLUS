@@ -102,7 +102,7 @@ class AbstractScreeningsController < ApplicationController
 
   def index
     authorize(@project, policy_class: AbstractScreeningPolicy)
-    @nav_buttons.push('abstract_screening', 'my_projects')
+    @nav_buttons.push('screening', 'my_projects')
     @abstract_screenings =
       policy_scope(@project, policy_scope_class: AbstractScreeningPolicy::Scope)
       .order(id: :desc)
@@ -148,7 +148,7 @@ class AbstractScreeningsController < ApplicationController
     @project = @abstract_screening.project
     authorize(@abstract_screening)
     @projects_user = ProjectsUser.find_by(user: current_user, project: @project)
-    @nav_buttons.push('abstract_screening', 'my_projects')
+    @nav_buttons.push('screening', 'my_projects')
 
     respond_to do |format|
       format.html do
