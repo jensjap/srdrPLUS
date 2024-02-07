@@ -8,7 +8,7 @@
                 class: "#{ usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : '' }",
                 'x-bind:class': "{ 'bg-srdr-primary': project_info, '!text-white': project_info }" %>
   <% else %>
-    <div style="opacity: 0.3; cursor: not-allowed">Project Info</div>
+    <div class="<%= usage.eql?('project-navigation') ? 'text-white' : '' %>" style="opacity: 0.3; cursor: not-allowed">Project Info</div>
   <% end %>
 </div>
 
