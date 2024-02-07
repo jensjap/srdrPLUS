@@ -1,6 +1,6 @@
-<% if bg.eql?('white') %>
+<% if usage.eql?('project-card') %>
 <div class="mx-4 grid grid-cols-3 gap-4 lg:grid-cols-9 <%= index % 2 == 0 ? '!bg-purple-100' : '!bg-white' %> text-srdr-primary">
-<% elsif bg.eql?('purple') %>
+<% elsif usage.eql?('project-navigation') %>
 <div class="mt-3 grid grid-cols-3 gap-4 lg:grid-cols-9 w-full bg-srdr-secondary !text-gray-300">
 <% else %>
 <div class="grid grid-cols-3 gap-4 lg:grid-cols-9">
@@ -12,7 +12,7 @@
        :id="'editformsDropdownProjectId_' + <%= project.id %>">
     <button @click="isOpen = !isOpen"
             type="button"
-            class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= bg.eql?('purple') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
+            class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
             :class="form_builder && 'bg-srdr-primary !text-white'"
             id="editFormsDropdown"
             aria-haspopup="true"
@@ -55,7 +55,7 @@
          :id="'screeningDropdownProjectId_' + <%= project.id %>">
       <button @click="isOpen = !isOpen"
               type="button"
-              class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= bg.eql?('purple') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
+              class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
               :class="screening && 'bg-srdr-primary !text-white'"
               id="editFormsDropdown"
               aria-haspopup="true"
@@ -102,7 +102,7 @@
        :id="'extractionsDropdownProjectId_' + <%= project.id %>">
     <button @click="isOpen = !isOpen"
             type="button"
-            class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= bg.eql?('purple') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
+            class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
             :class="extractions && 'bg-srdr-primary !text-white'"
             id="editFormsDropdown"
             aria-haspopup="true"
@@ -147,7 +147,7 @@
        :id="'exportImportDropdownProjectId_' + <%= project.id %>">
     <button @click="isOpen = !isOpen"
             type="button"
-            class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= bg.eql?('purple') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
+            class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
             :class="import_export && 'bg-srdr-primary !text-white'"
             id="editFormsDropdown"
             aria-haspopup="true"
@@ -198,7 +198,7 @@
        :id="'publicationDropdownProjectId_' + <%= project.id %>">
     <button @click="isOpen = !isOpen"
             type="button"
-            class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= bg.eql?('purple') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
+            class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
             :class="publication && 'bg-srdr-primary !text-white'"
             id="editFormsDropdown"
             aria-haspopup="true"
@@ -241,7 +241,7 @@
       <%= link_to 'Project Info',
                   edit_project_path(project, page: 'info'),
                   title: 'Edit Project Information',
-                  class: "#{ bg.eql?('purple') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : '' }",
+                  class: "#{ usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : '' }",
                   'x-bind:class': "{ 'bg-srdr-primary': project_info, '!text-white': project_info }" %>
     <% else %>
       <div style="opacity: 0.3; cursor: not-allowed">Project Info</div>
@@ -256,7 +256,7 @@
     <%= link_to kqp_title,
                 edit_project_path(project, page: 'key_questions'),
                 title: t('.key_questions'),
-                class: "#{ bg.eql?('purple') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : '' }",
+                class: "#{ usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : '' }",
                 'x-bind:class': "{ 'bg-srdr-primary': key_questions, '!text-white': key_questions }" %>
   </div>
 
@@ -268,7 +268,7 @@
     <%= link_to pu_title,
                 edit_project_path(project, page: 'members_and_roles'),
                 title: t('.members_and_roles'),
-                class: "#{ bg.eql?('purple') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : '' }",
+                class: "#{ usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : '' }",
                 'x-bind:class': "{ 'bg-srdr-primary': members_and_roles, '!text-white': members_and_roles }" %>
   </div>
 
@@ -280,7 +280,7 @@
     <%= link_to cp_title,
                 project_citations_path(project),
                 title: t('manage_citations'),
-                class: "#{ bg.eql?('purple') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : '' }",
+                class: "#{ usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : '' }",
                 'x-bind:class': "{ 'bg-srdr-primary': citation_pool, '!text-white': citation_pool }" %>
   </div>
 </div>
