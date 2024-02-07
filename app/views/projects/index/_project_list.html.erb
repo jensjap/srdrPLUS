@@ -5,7 +5,7 @@
       <div class="pt-1 px-1">
         <!-- Project Title -->
         <p class="<%= index % 2 == 0 ? '!bg-purple-100' : '!bg-white' %>">
-          <b><%= link_to project.name, project_citation_lifecycle_management_path(project) %></b>
+          <b class="font-extrabold text-lg"><%= link_to project.name, project_citation_lifecycle_management_path(project) %></b>
           <!-- prettier-ignore -->
           <%= "(#{ @order.split("-").first } #{t("time_prefix")} #{time_ago_in_words(project.send(@order.underscore).in_time_zone(current_user.profile.time_zone))} #{t("ago")})" %>
           <!-- prettier-ignore -->
