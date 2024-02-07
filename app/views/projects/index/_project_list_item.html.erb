@@ -236,7 +236,7 @@
       <%= link_to 'Project Info',
                   edit_project_path(project, page: 'info'),
                   title: 'Edit Project Information',
-                  class: "#{ bg.eql?('white') ? '' : 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white' }" %>
+                  class: "#{ bg.eql?('purple') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : '' }" %>
     <% else %>
       <div style="opacity: 0.3; cursor: not-allowed">Project Info</div>
     <% end %>
@@ -250,7 +250,7 @@
     <%= link_to kqp_title,
                 edit_project_path(project, page: 'key_questions'),
                 title: t('.key_questions'),
-                class: "#{ bg.eql?('white') ? '' : 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white' }" %>
+                class: "#{ bg.eql?('purple') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : '' }" %>
   </div>
 
   <!-- Link to Members & Roles -->
@@ -261,7 +261,7 @@
     <%= link_to pu_title,
                 edit_project_path(project, page: 'members_and_roles'),
                 title: t('.members_and_roles'),
-                class: "#{ bg.eql?('white') ? '' : 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white' }" %>
+                class: "#{ bg.eql?('purple') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : '' }" %>
   </div>
 
   <!-- Link to Citations -->
@@ -272,7 +272,7 @@
     <%= link_to cp_title,
                 project_citations_path(project),
                 title: t('manage_citations'),
-                class: "#{ bg.eql?('white') ? '' : 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white' }" %>
+                class: "#{ bg.eql?('purple') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white hover:underline' : '' }" %>
   </div>
 </div>
 
