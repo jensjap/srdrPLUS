@@ -1,6 +1,7 @@
 <div class="text-sm">
   <% @projects.each_with_index do |project, index| %>
     <div class="border border-srdrpurple-light m-1">
+      <!-- Project Title and Description -->
       <div class="<%= index % 2 == 0 ? '!bg-purple-100' : '!bg-white' %> pt-1 px-1">
         <b><%= link_to project.name, project_citation_lifecycle_management_path(project) %></b>
         <!-- prettier-ignore -->
@@ -22,7 +23,8 @@
         <% end %>
       </div>
 
-      <%= render "projects/index/project_list_item", project: project, index: index, bg: 'white' %>
+      <!-- Project List Item Links -->
+      <%= render "projects/index/project_list_item_links", project: project, index: index, bg: 'white' %>
     </div>
   <% end %>
 </div>

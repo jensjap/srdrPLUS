@@ -156,7 +156,7 @@ en:
         confirm: Are you sure you want to remove this key questions?
     index:
       create: Create Project
-      project_list_item:
+      project_list_item_links:
         members_and_roles: Member(s) and Role(s)
         key_questions: Key Question(s)
   errors:
