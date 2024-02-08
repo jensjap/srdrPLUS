@@ -25,7 +25,7 @@ div x-data="{
   modalConfirmAction() {
     this.isAlertModalOpen = false;
     if (this.currentAction === 'deleteCitations') {
-      document.getElementById('citations-form').submit();
+      document.getElementById('citations-form-main').submit();
     }
     this.currentAction = '';
     if (typeof window.modalResolve == 'function') {
@@ -40,7 +40,7 @@ div x-data="{
   = render 'shared/alert_modal'
   div.row style="margin: 0;"
     div.columns.medium-9
-      = simple_form_for @project, html: { id: 'citations-form' } do |form_project|
+      = simple_form_for @project, html: { id: 'citations-form-main' } do |form_project|
         #delete-citations-inner
           table#citations-table
             thead
