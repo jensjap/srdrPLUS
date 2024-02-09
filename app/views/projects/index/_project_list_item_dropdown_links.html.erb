@@ -234,7 +234,9 @@
     </div>
   </div>
 
-  <%#= render "projects/index/project_list_item_links", project: project, usage: usage %>
+  <% if usage.eql?('project-card') %>
+    <%#= render "projects/index/project_list_item_links", project: project, usage: usage %>
+  <% end %>
 
 </div>
 

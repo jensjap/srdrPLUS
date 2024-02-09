@@ -1,29 +1,27 @@
 <div class="text-sm">
   <% @projects.each_with_index do |project, index| %>
-    <div class="border border-srdrpurple-light m-1">
+    <div class="border border-srdrpurple-light m-1 <%= index % 2 == 0 ? '!bg-purple-100' : '!bg-white' %>">
       <!-- Project Title and Description -->
       <div class="pt-1 px-1">
         <!-- Project Title -->
-        <p class="<%= index % 2 == 0 ? '!bg-purple-100' : '!bg-white' %>">
-          <b class="font-extrabold text-lg"><%= link_to project.name, project_citation_lifecycle_management_path(project) %></b>
+        <b class="font-extrabold text-lg"><%= link_to project.name, project_citation_lifecycle_management_path(project) %></b>
+        <!-- prettier-ignore -->
+        <%= "(#{ @order.split("-").first } #{t("time_prefix")} #{time_ago_in_words(project.send(@order.underscore).in_time_zone(current_user.profile.time_zone))} #{t("ago")})" %>
+        <!-- prettier-ignore -->
+        <% if project.publishing.present? %>
+          <% if project.publishing.approved? %>
+            <span class="bg-green-800 text-white p-1 m-1 rounded-md text-xs inline-block absolute right-6">
+              <!-- prettier-ignore -->
+              Publishing approved on <%= project.publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P") + " (requested by #{ project.publishing.user.handle })"%>
+            </span>
+          <% else %>
+            <span class="bg-orange-800 text-white p-1 m-1 rounded-md text-xs inline-block absolute right-6">
+              <!-- prettier-ignore -->
+              Publishing requested on <%= project.publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P") + " (requested by #{ project.publishing.user.handle })" %>
+            </span>
           <!-- prettier-ignore -->
-          <%= "(#{ @order.split("-").first } #{t("time_prefix")} #{time_ago_in_words(project.send(@order.underscore).in_time_zone(current_user.profile.time_zone))} #{t("ago")})" %>
-          <!-- prettier-ignore -->
-          <% if project.publishing.present? %>
-            <% if project.publishing.approved? %>
-              <span class="bg-green-800 text-white p-1 m-1 rounded-md text-xs inline-block absolute right-6">
-                <!-- prettier-ignore -->
-                Publishing approved on <%= project.publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P") + " (requested by #{ project.publishing.user.handle })"%>
-              </span>
-            <% else %>
-              <span class="bg-orange-800 text-white p-1 m-1 rounded-md text-xs inline-block absolute right-6">
-                <!-- prettier-ignore -->
-                Publishing requested on <%= project.publishing.created_at.in_time_zone(current_user.profile.time_zone).strftime("%b %-d, %Y - %l:%M %P") + " (requested by #{ project.publishing.user.handle })" %>
-              </span>
-            <!-- prettier-ignore -->
-            <% end %>
           <% end %>
-        </p>
+        <% end %>
 
         <!-- Description -->
         <% if project.description.present? %>
