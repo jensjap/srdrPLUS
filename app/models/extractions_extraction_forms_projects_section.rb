@@ -20,6 +20,13 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 
   after_create :create_default_draft_status
 
+  scope :not_disqualified,
+        lambda {
+          joins(extraction: :citations_project)
+            .where
+            .not(citations_project: { screening_status: CitationsProject::REJECTED })
+        }
+
   belongs_to :extraction,                        inverse_of: :extractions_extraction_forms_projects_sections
   belongs_to :extraction_forms_projects_section, inverse_of: :extractions_extraction_forms_projects_sections
   belongs_to :link_to_type1, class_name: 'ExtractionsExtractionFormsProjectsSection',
@@ -30,6 +37,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   has_one :status, through: :statusing
 
   has_many :link_to_type2s,
+           -> { not_disqualified },
            class_name: 'ExtractionsExtractionFormsProjectsSection',
            foreign_key: 'extractions_extraction_forms_projects_section_id',
            dependent: :nullify
@@ -178,15 +186,13 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption
         .includes(:question_row_columns_question_row_column_option)
         .where(extractions_extraction_forms_projects_sections_question_row_column_field: recordables).each do |eefpsqrcfqrcqrco|
-        begin
-          text_arr << eefpsqrcfqrcqrco.question_row_columns_question_row_column_option.name
-        rescue Exception => e
-          # !!! This can happen when records are created and then the answer options are deleted or question type changes altogether.
-          # !   Need to decide what to do here.
-          Sentry.capture_exception(e) if Rails.env.production?
-          Rails.logger.info(e)
-          next
-        end
+        text_arr << eefpsqrcfqrcqrco.question_row_columns_question_row_column_option.name
+      rescue Exception => e
+        # !!! This can happen when records are created and then the answer options are deleted or question type changes altogether.
+        # !   Need to decide what to do here.
+        Sentry.capture_exception(e) if Rails.env.production?
+        Rails.logger.info(e)
+        next
       end
       text_arr.join("\x0D\x0A")
 
@@ -310,12 +316,12 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   # So we are creating a build method manually
   def build_status(params)
     new_status = Status.find_by(params)
-    if new_status.present?
-      if statusing.present?
-        statusing.update(statusable: self, status: new_status)
-      else
-        create_statusing(status: new)
-      end
+    return unless new_status.present?
+
+    if statusing.present?
+      statusing.update(statusable: self, status: new_status)
+    else
+      create_statusing(status: new)
     end
   end
 
