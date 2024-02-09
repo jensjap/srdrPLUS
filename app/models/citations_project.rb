@@ -17,6 +17,9 @@
 class CitationsProject < ApplicationRecord
   searchkick callbacks: :async
 
+  scope :not_disqualified,
+        -> { where.not(screening_status: CitationsProject::REJECTED) }
+
   belongs_to :citation, inverse_of: :citations_projects
   belongs_to :project, inverse_of: :citations_projects # , touch: true
 
