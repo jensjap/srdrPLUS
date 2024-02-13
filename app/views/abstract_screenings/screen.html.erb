@@ -756,7 +756,10 @@
         let matches = [];
         for (const phrase of Object.keys(this.word_weights)) {
           const word_weight = this.word_weights[phrase];
-          var regex = new RegExp(phrase, "gi");
+          const escapedPhrase = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const regex = new RegExp(escapedPhrase, "gi");
+
+          let match;
           while ((match = regex.exec(this.citation[sourceKey])) != null) {
             matches.push({
               head: match.index,
