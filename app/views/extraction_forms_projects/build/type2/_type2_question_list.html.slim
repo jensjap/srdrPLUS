@@ -79,6 +79,7 @@ div
                   i.fi-page-copy>
                   = 'Duplicate'
 
-                = link_to q, method: :delete, data: { confirm: t('confirm') } do
+                - delete_url = questions_path(q)
+                a href="#" @click.prevent="$store.deleteConfirmation.openModal('#{delete_url}')"
                   i.fi-trash>
                   = t('remove')

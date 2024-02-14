@@ -983,8 +983,8 @@
       dragging: null,
       dropping: null,
       screening_form: {},
-      isModalOpen: false,
-      modalContent: '',
+      isAlertModalOpen: false,
+      alertModalContent: '',
       init() {
         this.getData();
       },
@@ -1180,7 +1180,7 @@
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
-        this.closeModal();
+        this.closeAlertModal();
       },
       async deleteColumn(column) {
         this.openModal(`Are you sure you want to delete this column?<br> This action cannot be undone and might result in data loss.`, () => this.confirmDeleteColumn(column));
@@ -1205,7 +1205,7 @@
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
-        this.closeModal();
+        this.closeAlertModal();
       },
       async deleteRow(row) {
         this.openModal(`Are you sure you want to delete this row?<br> This action cannot be undone and might result in data loss.`, () => this.confirmDeleteRow(row));
@@ -1230,7 +1230,7 @@
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
-        this.closeModal();
+        this.closeAlertModal();
       },
       async deleteCellField(cell) {
         this.openModal(`Are you sure you want to delete this field?<br> This action cannot be undone and might result in data loss.`, () => this.confirmDeleteCellField(cell));
@@ -1255,7 +1255,7 @@
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
-        this.closeModal();
+        this.closeAlertModal();
       },
       async checkExistingData(option) {
         const response = await fetch(
@@ -1309,7 +1309,7 @@
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
-        this.closeModal();
+        this.closeAlertModal();
       },
       async deleteOption(option) {
         const hasExistingData = await this.checkExistingData(option);
@@ -1337,7 +1337,7 @@
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
-        this.closeModal();
+        this.closeAlertModal();
       },
       moveOption(option, new_index) {
         this.updateOption(option, { new_index });
@@ -1453,13 +1453,13 @@
         }
       },
       openModal(content, deleteAction) {
-        this.modalContent = content;
-        this.modalDeleteAction = () => deleteAction();
-        this.isModalOpen = true;
+        this.alertModalContent = content;
+        this.modalConfirmAction = () => deleteAction();
+        this.isAlertModalOpen = true;
         document.body.classList.add('overflow-hidden');
       },
-      closeModal() {
-        this.isModalOpen = false;
+      closeAlertModal() {
+        this.isAlertModalOpen = false;
         document.body.classList.remove('overflow-hidden');
       },
     }));

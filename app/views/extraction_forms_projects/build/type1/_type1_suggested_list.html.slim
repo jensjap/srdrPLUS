@@ -47,6 +47,7 @@ h4 List of Suggested #{ section_name }s
                 i.fi-pencil>
                 = t('edit')
 
-              = link_to extraction_forms_projects_section_dissociate_type1_path(efps, type1_id: efpst1.type1_id), method: :delete, data: { confirm: t('confirm') } do
+              - delete_url = extraction_forms_projects_section_dissociate_type1_path(efps, type1_id: efpst1.type1_id)
+              a href="#" @click.prevent="$store.deleteConfirmation.openModal('#{delete_url}', 'Are you sure?')"
                 i.fi-trash>
                 = t('remove')

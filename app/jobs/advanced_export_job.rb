@@ -928,18 +928,18 @@ class AdvancedExportJob < ApplicationJob
             end
             next if rss.nil? || wac_comparisons[rss.id].blank? || arms_lookups[extraction.id].blank?
 
-            row = extract_default_row_columns(extraction)
-            row += [
-              eefpst1.type1.name,
-              eefpst1.type1.description,
-              print_type1_type(eefpst1.type1_type_id),
-              eefpst1r.population_name.name,
-              eefpst1r.population_name.description,
-              '#'
-            ]
-            row_style = [nil] * (row.length + 1)
-
             wac_comparisons[rss.id].each do |comparison|
+              row = extract_default_row_columns(extraction)
+              row += [
+                eefpst1.type1.name,
+                eefpst1.type1.description,
+                print_type1_type(eefpst1.type1_type_id),
+                eefpst1r.population_name.name,
+                eefpst1r.population_name.description,
+                '#'
+              ]
+              row_style = [nil] * (row.length + 1)
+
               g1, g2 = comparison.comparate_groups.map do |comparate_group|
                 comparate_group.comparates.map do |comparate|
                   raise 'inconsistent data' if comparate.comparable_element.comparable.nil?
@@ -957,9 +957,9 @@ class AdvancedExportJob < ApplicationJob
                   row_style << (exists ? @styles[type1_index % 4] : nil)
                 end
               end
-            end
 
-            sheet.add_row(row, style: row_style)
+              sheet.add_row(row, style: row_style)
+            end
           end
         end
       end
@@ -1106,7 +1106,7 @@ class AdvancedExportJob < ApplicationJob
            end) || RESERVED_WORKSHEET_NAMES.include?(candidate_name)
       counter += 1
       counter_length = counter.to_s.length
-      candidate_name = candidate_name[0..(28-(counter_length-1))]
+      candidate_name = candidate_name[0..(28 - (counter_length - 1))]
       candidate_name = "#{candidate_name}_#{counter}"
     end
 
@@ -1115,7 +1115,7 @@ class AdvancedExportJob < ApplicationJob
 
   def limit_sheet_name_length(name, max_length)
     if name.length > max_length
-      half_length = (max_length-3) / 2
+      half_length = (max_length - 3) / 2
       first_part  = name[0, half_length]
       second_part = name[-half_length..-1]
       name = "#{first_part}...#{second_part}"

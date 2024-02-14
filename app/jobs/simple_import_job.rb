@@ -478,15 +478,31 @@ class SimpleImportJob < ApplicationJob
   end
 
   def find_or_create_eefpsqrcf_by_eefps_and_qrcf_and_arm_name(eefps, qrcf, arm_name, arm_description)
-    type1 = if arm_description.blank?
-              Type1
-                .where('name=? AND (description IS NULL OR description=?)', arm_name, arm_description)
+    # Excel will always pass an empty cell as "", but sometimes arm_description is nil,
+    # so we must check both in the context of the eefpst1.
+    if arm_description.blank?
+      eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1
+                .joins(:type1)
+                .where(extractions_extraction_forms_projects_section: eefps.link_to_type1)
+                .where('type1s.name=? AND type1s.description=?', arm_name, '')
                 .first
-            else
-              Type1.find_by!(name: arm_name, description: arm_description)
-            end
-    eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1
-              .find_by!(type1:, extractions_extraction_forms_projects_section: eefps.link_to_type1)
+      if eefpst1.blank?
+        eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1
+                  .joins(:type1)
+                  .where(extractions_extraction_forms_projects_section: eefps.link_to_type1)
+                  .where('type1s.name=? AND type1s.description IS NULL', arm_name)
+                  .first
+      end
+    else
+      eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1
+                .joins(:type1)
+                .where(extractions_extraction_forms_projects_section: eefps.link_to_type1)
+                .where('type1s.name=? AND type1s.description=?', arm_name, arm_description)
+                .first
+    end
+
+    raise "Unable to locate suitable eefpst1" if eefpst1.blank?
+
     ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by!(
       extractions_extraction_forms_projects_section: eefps,
       question_row_column_field: qrcf,
