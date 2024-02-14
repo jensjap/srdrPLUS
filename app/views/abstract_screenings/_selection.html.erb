@@ -10,56 +10,109 @@
     x-transition:leave-start="translate-y-0"
     x-transition:leave-end="translate-y-full"
   >
-    <div class="flex justify-center items-center overflow-x-auto">
-      <div class="h-full p-2 m-1 mr-6">
+    <div class="flex justify-center items-center overflow-x-auto space-x-2">
+      <div class="h-full p-2">
         <span
-          class="text-white"
+          class="text-white text-xs"
           x-text="`Toggle ${selected.length} Citation(s)`"
         ></span>
       </div>
-      <div
-        class="cursor-pointer text-center h-full p-2 m-1 text-xs bg-green-800 hover:bg-green-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
-        @click="createScreeningQualification('as-accepted')"
-      >
-        Abstract Screening Acceptance
+      <div>
+        <div class="text-white text-xs text-center my-2 border-b border-white">
+          Abstract Screening
+        </div>
+        <div class="flex space-x-1">
+          <div
+            class="cursor-pointer text-center h-full p-1 text-xs bg-green-800 hover:bg-green-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
+            @click="createScreeningQualification('as-accepted')"
+          >
+            Acceptance
+          </div>
+          <div
+            class="cursor-pointer text-center h-full p-1 text-xs bg-red-800 hover:bg-red-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
+            @click="createScreeningQualification('as-rejected')"
+          >
+            Rejection
+          </div>
+        </div>
       </div>
-      <div
-        class="cursor-pointer text-center h-full p-2 m-1 mr-6 text-xs bg-red-800 hover:bg-red-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
-        @click="createScreeningQualification('as-rejected')"
-      >
-        Abstract Screening Rejection
+      <div>
+        <div class="text-white text-xs text-center my-2 border-b border-white">
+          Full-Text Screening
+        </div>
+        <div class="flex space-x-1">
+          <div
+            class="cursor-pointer text-center h-full p-1 text-xs bg-green-800 hover:bg-green-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
+            @click="createScreeningQualification('fs-accepted')"
+          >
+            Acceptance
+          </div>
+          <div
+            class="cursor-pointer text-center h-full p-1 text-xs bg-red-800 hover:bg-red-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
+            @click="createScreeningQualification('fs-rejected')"
+          >
+            Rejection
+          </div>
+        </div>
       </div>
-      <div
-        class="cursor-pointer text-center h-full p-2 m-1 text-xs bg-green-800 hover:bg-green-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
-        @click="createScreeningQualification('fs-accepted')"
-      >
-        Full-Text Screening Acceptance
+      <div>
+        <div class="text-white text-xs text-center my-2 border-b border-white">
+          Extraction
+        </div>
+        <div class="flex space-x-1">
+          <div
+            class="cursor-pointer text-center h-full p-1 text-xs bg-red-800 hover:bg-red-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
+            @click="createScreeningQualification('e-rejected')"
+          >
+            Rejection
+          </div>
+          <div
+            class="cursor-pointer text-center h-full p-1 text-xs bg-green-800 hover:bg-green-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
+            @click="createScreeningQualification('e-accepted')"
+          >
+            Acceptance
+          </div>
+        </div>
       </div>
-      <div
-        class="cursor-pointer text-center h-full p-2 m-1 mr-6 text-xs bg-red-800 hover:bg-red-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
-        @click="createScreeningQualification('fs-rejected')"
-      >
-        Full-Text Screening Rejection
+      <div>
+        <div class="text-white text-xs text-center my-2 border-b border-white">
+          Consolidation
+        </div>
+        <div class="flex space-x-1">
+          <div
+            class="cursor-pointer text-center h-full p-1 text-xs bg-red-800 hover:bg-red-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
+            @click="createScreeningQualification('c-rejected')"
+          >
+            Rejection
+          </div>
+          <div
+            class="cursor-pointer text-center h-full p-1 text-xs bg-green-800 hover:bg-green-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
+            @click="createScreeningQualification('c-accepted')"
+          >
+            Acceptance
+          </div>
+        </div>
       </div>
-      <div
-        class="cursor-pointer text-center h-full p-2 m-1 mr-6 text-xs bg-red-800 hover:bg-red-500 border-[1px] border-white text-white rounded-md drop-shadow-md"
-        @click="createScreeningQualification('e-rejected')"
-      >
-        Extract Rejection
-      </div>
-      <div
-        class="cursor-pointer text-center h-full p-2 m-1 text-xs bg-srdr-secondary hover:bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md select-none"
-        :class="showCreateExtractions ? '!bg-srdr-primary' : ''"
-        @click="showCreateExtractions = true"
-      >
-        Extraction Menu
-      </div>
-      <div
-        class="cursor-pointer text-center h-full p-2 m-1 text-xs bg-blue-800 hover:bg-blue-500 border-[1px] border-white text-white rounded-md drop-shadow-md select-none"
-        :class="showCitationsInRis ? '!bg-srdr-primary' : ''"
-        @click="showCitationsInRis = true; loadSelectedCitationsInRis()"
-      >
-        Selected Citations in RIS
+      <div>
+        <div class="text-white text-xs text-center my-2 border-b border-white">
+          Menu
+        </div>
+        <div class="flex space-x-1">
+          <div
+            class="cursor-pointer text-center h-full p-1 text-xs bg-srdr-secondary hover:bg-srdr-primary border-[1px] border-white text-white rounded-md drop-shadow-md select-none"
+            :class="showCreateExtractions ? '!bg-srdr-primary' : ''"
+            @click="showCreateExtractions = true"
+          >
+            Extraction
+          </div>
+          <div
+            class="cursor-pointer text-center h-full p-1 text-xs bg-blue-800 hover:bg-blue-500 border-[1px] border-white text-white rounded-md drop-shadow-md select-none"
+            :class="showCitationsInRis ? '!bg-srdr-primary' : ''"
+            @click="showCitationsInRis = true; loadSelectedCitationsInRis()"
+          >
+            Citation(s) in RIS
+          </div>
+        </div>
       </div>
     </div>
   </div>

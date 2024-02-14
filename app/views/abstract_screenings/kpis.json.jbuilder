@@ -25,7 +25,11 @@ json.fsr citations_projects.filter { |cp| cp.screening_status == CitationsProjec
 json.ene citations_projects.filter { |cp| cp.screening_status == CitationsProject::E_NEED_EXTRACTION }.count
 json.eip citations_projects.filter { |cp| cp.screening_status == CitationsProject::E_IN_PROGRESS }.count
 json.er citations_projects.filter { |cp| cp.screening_status == CitationsProject::E_REJECTED }.count
-json.ec citations_projects.filter { |cp| cp.screening_status == CitationsProject::E_COMPLETE }.count
+json.ec(citations_projects.filter do |cp|
+  cp.screening_qualifications.any? do |sq|
+    sq.qualification_type == ScreeningQualification::E_ACCEPTED
+  end
+end.count)
 
 json.cnc citations_projects.filter { |cp| cp.screening_status == CitationsProject::C_NEED_CONSOLIDATION }.count
 json.cip citations_projects.filter { |cp| cp.screening_status == CitationsProject::C_IN_PROGRESS }.count

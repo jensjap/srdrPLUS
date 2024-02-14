@@ -17,6 +17,8 @@ class ScreeningQualificationsController < ApplicationController
             existing_sqs.destroy_all
             citations_project.abstract_screening_results.each(&:evaluate_screening_qualifications)
             citations_project.fulltext_screening_results.each(&:evaluate_screening_qualifications)
+            citations_project.evaluate_extraction_qualification_status(false)
+            citations_project.evaluate_extraction_qualification_status(true)
           else
             if (opposite_qualification = ScreeningQualification.opposite_qualification(qualification_type))
               citations_project.screening_qualifications.where(qualification_type: opposite_qualification).destroy_all
@@ -28,9 +30,10 @@ class ScreeningQualificationsController < ApplicationController
 
           results << { citations_project_id: citations_project.id,
                        screening_status: citations_project.screening_status,
-                       abstract_qualification: citations_project.abstract_qualification,
-                       fulltext_qualification: citations_project.fulltext_qualification,
-                       extraction_qualification: citations_project.extraction_qualification }
+                       abstract_qualification: citations_project.qualification('as'),
+                       fulltext_qualification: citations_project.qualification('fs'),
+                       extraction_qualification: citations_project.qualification('e-'),
+                       consolidation_qualification: citations_project.qualification('c-') }
         end
 
         render json: results

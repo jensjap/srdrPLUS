@@ -24,6 +24,8 @@ class Statusing < ApplicationRecord
     return unless statusable.instance_of?(ExtractionsExtractionFormsProjectsSection)
     return if statusable.try(:citations_project).try(:marked_for_destruction?)
 
+    statusable.try(:citations_project).try(:evaluate_extraction_qualification_status,
+                                           statusable.extraction.consolidated)
     statusable.try(:citations_project).try(:evaluate_screening_status)
   end
 end
