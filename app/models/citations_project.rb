@@ -17,6 +17,9 @@
 class CitationsProject < ApplicationRecord
   searchkick callbacks: :async
 
+  scope :not_disqualified,
+        -> { where.not(screening_status: CitationsProject::REJECTED) }
+
   belongs_to :citation, inverse_of: :citations_projects
   belongs_to :project, inverse_of: :citations_projects # , touch: true
 
@@ -53,6 +56,11 @@ class CitationsProject < ApplicationRecord
     E_IN_PROGRESS,
     E_REJECTED,
     E_COMPLETE
+  ]
+  REJECTED = [
+    AS_REJECTED,
+    FS_REJECTED,
+    E_REJECTED
   ]
 
   # We find all CitationsProject entries that have the exact same citation_id
