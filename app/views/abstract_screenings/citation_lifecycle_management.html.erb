@@ -357,6 +357,51 @@
                   <th
                     scope="col"
                     class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    @click="changeOrderBy('consolidation_qualification')"
+                  >
+                    <div class="flex justify-between">
+                      Consolidation
+                      <template
+                        x-if="pagination.sort == 'asc' && pagination.order_by == 'consolidation_qualification'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                          />
+                        </svg>
+                      </template>
+                      <template
+                        x-if="pagination.sort == 'desc' && pagination.order_by == 'consolidation_qualification'"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-6 w-6"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                          />
+                        </svg>
+                      </template>
+                    </div>
+                  </th>
+                  <th
+                    scope="col"
+                    class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     @click="changeOrderBy('screening_status')"
                   >
                     <div class="flex justify-between">
@@ -454,6 +499,10 @@
                         x-text="result.extraction_qualification"
                       ></td>
                       <td
+                        class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                        x-text="result.consolidation_qualification"
+                      ></td>
+                      <td
                         class="px-3 text-sm text-black w-24 overflow-hidden text-ellipsis whitespace-nowrap"
                         :class="applyTdBg(result.screening_status)"
                         x-text="result.screening_status"
@@ -485,11 +534,11 @@
 
 <script>
   function copyAllTextToClipboard(text) {
-    const textarea = document.createElement('textarea');
+    const textarea = document.createElement("textarea");
     textarea.value = text;
     document.body.appendChild(textarea);
     textarea.select();
-    document.execCommand('copy');
+    document.execCommand("copy");
     document.body.removeChild(textarea);
   }
 
@@ -534,7 +583,8 @@
       },
 
       copyText() {
-        const textToCopy = document.getElementById('citationInRisModal').innerText;
+        const textToCopy =
+          document.getElementById("citationInRisModal").innerText;
         copyAllTextToClipboard(textToCopy);
         this.copied = true;
 
@@ -637,20 +687,24 @@
         try {
           this.showloading = true;
 
-          const response = await fetch("/projects/<%= params[:project_id] %>/citations_in_ris", {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
-            },
-            body: JSON.stringify({
-              project: {
-                citation: this.selected.map((cp) => cp.citation_id),
+          const response = await fetch(
+            "/projects/<%= params[:project_id] %>/citations_in_ris",
+            {
+              method: "POST",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                  .content,
               },
-            }),
-          });
+              body: JSON.stringify({
+                project: {
+                  citation: this.selected.map((cp) => cp.citation_id),
+                },
+              }),
+            }
+          );
 
           if (!response.ok) {
             console.error(`Error: ${response.status} - ${response.statusText}`);
@@ -661,7 +715,6 @@
 
           let risModalPre = document.getElementById("citationInRisModal");
           risModalPre.innerText = data.payload;
-
         } catch (error) {
           console.error("An error occurred:", error);
         } finally {
@@ -790,6 +843,8 @@
                 screeningStatus.fulltext_qualification;
               result.extraction_qualification =
                 screeningStatus.extraction_qualification;
+              result.consolidation_qualification =
+                screeningStatus.consolidation_qualification;
             }
           });
         });
