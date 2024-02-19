@@ -48,6 +48,8 @@ class User < ApplicationRecord
   belongs_to :user_type
 
   has_one :profile, dependent: :destroy, inverse_of: :user
+  accepts_nested_attributes_for :profile
+
   has_one :organization, through: :profile
 
   has_many :actions, dependent: :destroy, inverse_of: :user
@@ -126,7 +128,9 @@ class User < ApplicationRecord
         break unless Profile.find_by(username: _username)
       end
     end
-
-    create_profile(username: _username)
+    first_name = self&.profile&.first_name
+    middle_name = self&.profile&.middle_name
+    last_name = self&.profile&.last_name
+    create_profile(username: _username, first_name:, middle_name:, last_name:)
   end
 end
