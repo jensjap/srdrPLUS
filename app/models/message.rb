@@ -29,12 +29,10 @@ class Message < ApplicationRecord
       when 'chat'
         room.users
       end
-    broadcast_users.each do |broadcast_user|
-      message_unreads.create(user: broadcast_user) unless user == broadcast_user
-    end
+    MessageUnread.insert_all(broadcast_users.reject { |bu| bu == user }.map { |bu| { user_id: bu.id, message_id: id } })
     (broadcast_users & online_users).each do |broadcast_user|
       message_unread = message_unreads.find do |mu|
-        mu.user == broadcast_user
+        mu.user_id == broadcast_user.id
       end
       ActionCable.server.broadcast(
         "user_#{broadcast_user.id}",
