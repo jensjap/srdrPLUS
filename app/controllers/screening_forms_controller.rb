@@ -2,7 +2,7 @@ class ScreeningFormsController < ApplicationController
   def index
     @project = Project.find(params[:project_id])
     authorize(@project, policy_class: ScreeningFormPolicy)
-    @nav_buttons.push('form_builder', 'my_projects')
+    @nav_buttons.push('form_builder_dropdown', 'screening_form_builder', 'my_projects')
 
     respond_to do |format|
       format.json do

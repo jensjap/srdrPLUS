@@ -3,7 +3,7 @@ class ImportsController < ApplicationController
 
   def index
     authorize(@project, policy_class: ImportPolicy)
-    @nav_buttons.push('import_export', 'my_projects')
+    @nav_buttons.push('export_import_dropdown', 'export_import', 'my_projects')
     @import = @projects_user.imports.build
     @imported_file = ImportedFile.new import: @import
   end
@@ -28,7 +28,7 @@ class ImportsController < ApplicationController
       flash[:error] = 'This import cannot be previewed.'
       redirect_to(project_citations_path(@project), status: 303)
     end
-    @nav_buttons.push('citation_pool', 'my_projects')
+    @nav_buttons.push('project_info_dropdown', 'citation_pool', 'my_projects')
   end
 
   def start

@@ -4,7 +4,7 @@ class PublishingsController < ApplicationController
 
   def new
     authorize(@project, policy_class: PublishingPolicy)
-    @nav_buttons.push('my_projects', 'publication')
+    @nav_buttons.push('publication_dropdown', 'publication', 'my_projects')
     @publishing = Publishing.new(publishable: @publishable_record)
   end
 

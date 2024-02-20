@@ -56,7 +56,7 @@ class CitationsController < ApplicationController
   end
 
   def index
-    @nav_buttons.push('citation_pool', 'my_projects')
+    @nav_buttons.push('project_info_dropdown', 'citation_pool', 'my_projects')
     @citations = @project
                  .citations
                  .select(:id, :name, :pmid, :registry_number, :accession_number, :doi, :other, :authors)

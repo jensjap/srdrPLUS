@@ -42,7 +42,7 @@ class FulltextScreeningsController < ApplicationController
 
   def index
     authorize(@project, policy_class: FulltextScreeningPolicy)
-    @nav_buttons.push('screening', 'my_projects')
+    @nav_buttons.push('screening_dropdown', 'fulltext_screening', 'my_projects')
     @fulltext_screenings =
       policy_scope(@project, policy_scope_class: FulltextScreeningPolicy::Scope)
       .order(id: :desc)
@@ -51,6 +51,7 @@ class FulltextScreeningsController < ApplicationController
   end
 
   def work_selection
+    @nav_buttons.push('screening_dropdown', 'fulltext_screening', 'my_projects')
     authorize(@project, policy_class: AbstractScreeningPolicy)
   end
 

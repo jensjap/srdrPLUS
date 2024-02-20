@@ -47,13 +47,13 @@ class ProjectsController < ApplicationController
 
     case params[:page]
     when 'key_questions'
-      @nav_buttons.push('key_questions', 'my_projects')
+      @nav_buttons.push('project_info_dropdown', 'key_questions', 'my_projects')
       render 'projects/edit/_manage_key_questions'
     when 'members_and_roles'
-      @nav_buttons.push('members_and_roles', 'my_projects')
+      @nav_buttons.push('project_info_dropdown', 'members_and_roles', 'my_projects')
       render 'projects/edit/_manage_projects_users'
     else
-      @nav_buttons.push('project_info', 'my_projects')
+      @nav_buttons.push('project_info_dropdown', 'project_info', 'my_projects')
       render 'projects/edit/_manage_information'
     end
   end

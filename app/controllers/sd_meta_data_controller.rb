@@ -176,7 +176,7 @@ class SdMetaDataController < ApplicationController
     # @projects = policy_scope(Project)
     @project = Project.find(params[:project_id])
     authorize(@project, policy_class: SdMetaDatumPolicy)
-    @nav_buttons.push('publication', 'my_projects')
+    @nav_buttons.push('publication_dropdown', 'sr360', 'my_projects')
     @reports = Report.all
     @sd_meta_data = policy_scope(SdMetaDatum).where(project: @project)
   end

@@ -15,6 +15,7 @@ module.exports = {
         },
         "srdr-primary": "#4c0d7d",
         "srdr-secondary": "#33124b",
+        "srdr-tertiary": "#005B94",
       },
       fontFamily: {
         sans: ["Inter var", ...defaultTheme.fontFamily.sans],
