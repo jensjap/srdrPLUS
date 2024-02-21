@@ -23,6 +23,8 @@ module SrdrPLUS
     # config.active_job.queue_name_prefix = "srdrPLUS_#{ Rails.env }"
 
     config.autoload_paths += %w(#{config.root}/lib)
+
+    config.autoload_paths += Dir[Rails.root.join('app', 'services', '**', '*')]
   end
 end
 
