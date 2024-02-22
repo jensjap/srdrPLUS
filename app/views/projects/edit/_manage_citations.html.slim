@@ -50,7 +50,8 @@ div x-data="{
                 th Authors
                 th Title
                 th Edit
-                th Delete?
+                - if ProjectPolicy.new(current_user, @project).project_leader?
+                  th Delete?
 
             tbody
               - @citations.each do |citation|
@@ -62,15 +63,16 @@ div x-data="{
                   td
                     div style="overflow: hidden; height: 18px;" = citation.name
                   td style="text-align: center;" = link_to 'Edit', edit_citation_path(citation, project_id: @project.id)
-                  = form_project.simple_fields_for :citations_projects, @citations_projects_dict[citation.id] do |sf_cp|
-                    td style="text-align: center;" = sf_cp.check_box :_destroy, id: "sf_cp-#{citation.id}", style: "margin: 0"
-
-        #delete-citations-submit-row.m-10
-          .float-right
-            input#delete-citations-select-all.m-10 type="checkbox"
-            label.m-10 for='delete-citations-select-all' = 'Select All'
-            button class="button alert float-right" @click.prevent="showModal('Any data associated with these citations will also be removed: Any screening results (labels), any extracted data, etc.', 'deleteCitations')"
-              | Delete Selected Citations
+                  - if ProjectPolicy.new(current_user, @project).project_consolidator?
+                    = form_project.simple_fields_for :citations_projects, @citations_projects_dict[citation.id] do |sf_cp|
+                      td style="text-align: center; margin: 0;" = sf_cp.check_box :_destroy, id: "sf_cp-#{citation.id}"
+        - if ProjectPolicy.new(current_user, @project).project_leader?
+          #delete-citations-submit-row.m-10
+            .float-right
+              input#delete-citations-select-all.m-10 type="checkbox"
+              label.m-10 for='delete-citations-select-all' = 'Select All'
+              button class="button alert float-right" @click.prevent="showModal('Any data associated with these citations will also be removed: Any screening results (labels), any extracted data, etc.', 'deleteCitations')"
+                | Delete Selected Citations
 
 
     div.columns.medium-3
