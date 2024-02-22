@@ -4,7 +4,7 @@ div class="mx-auto p-4 lg:p-8"
 
   h1 class="text-xl font-bold" Project Info
 
-  = simple_form_for(@project, html: { id: "project-id-#{@project.id}", data: { 'abide': '', 'live-validate': true } }) do |f|
+  = simple_form_for(@project, html: { inert: !ProjectPolicy.new(current_user, @project).project_leader?, id: "project-id-#{@project.id}", data: { 'abide': '', 'live-validate': true } }) do |f|
     = f.error_notification
 
     .alert.callout data-abide-error='' style='display: none;'
@@ -35,13 +35,14 @@ div class="mx-auto p-4 lg:p-8"
       .bg-blue-200.p-3.rounded
         = f.input :exclude_personal_conflicts, label: 'Exclude Personal Conflicts When Screening Conflict Resolutions', as: :boolean, input_html: { class: 'cursor-pointer' }, label_html: { class: 'cursor-pointer' }
 
-    div class="mt-4 flex justify-between"
-      div
-        = f.button :submit, t('save_changes')
-      div style="text-align: right;" x-data="alertModal('#{@project.id}')"
-        button @click="openModal('To proceed, please follow the instructions below. Type DELETE and press the button to confirm project deletion.')" type="button" class='alert button'
-          | Delete
-        == render 'shared/alert_modal_for_delete'
+    - if ProjectPolicy.new(current_user, @project).project_leader?
+      div class="mt-4 flex justify-between"
+        div
+          = f.button :submit, t('save_changes')
+        div style="text-align: right;" x-data="alertModal('#{@project.id}')"
+          button @click="openModal('To proceed, please follow the instructions below. Type DELETE and press the button to confirm project deletion.')" type="button" class='alert button'
+            | Delete
+          == render 'shared/alert_modal_for_delete'
 
 javascript:
   function alertModal(projectId) {
