@@ -18,17 +18,14 @@ class CitationSupplyingService
     ]
 
     citations = citations.map { |citation| create_fhir_obj(citation) }
-    bundle = FhirResourceService.get_bundle(objs=citations, type='collection', link_info=link_info)
+    bundle = FhirResourceService.get_bundle(fhir_objs: citations, type: 'collection', link_info: link_info)
 
-    return 'Error in validation' unless FhirResourceService.validate_resource(bundle)
     bundle.to_json
   end
 
   def find_by_citation_id(citation_id)
     citation = Citation.find(citation_id)
     citation_in_fhir = create_fhir_obj(citation)
-
-    return 'Error in validation' unless FhirResourceService.validate_resource(citation_in_fhir)
 
     citation_in_fhir.to_json
   end
@@ -37,18 +34,18 @@ class CitationSupplyingService
 
   def create_fhir_obj(raw)
     citation = FhirResourceService.get_citation(
-      '1', # id_prefix
-      raw.id, # srdrplus_id
-      'Citation', # srdrplus_type
-      'active', # status
-      raw.name.present? ? raw.name : nil, # title
-      raw.abstract.present? ? raw.abstract : nil, # abstract
-      raw.authors.present? ? raw.authors : nil, # authors
-      raw.pmid.present? ? raw.pmid : nil, # pmid
-      raw.journal&.publication_date, # journal_publication_date
-      raw.journal&.volume, # journal_volume
-      raw.journal&.issue, # journal_issue
-      raw.journal&.name # journal_published_in
+      id_prefix: '1',
+      srdrplus_id: raw.id,
+      srdrplus_type: 'Citation',
+      status: 'active',
+      title: raw.name.present? ? raw.name : nil,
+      abstract: raw.abstract.present? ? raw.abstract : nil,
+      authors: raw.authors.present? ? raw.authors : nil,
+      pmid: raw.pmid.present? ? raw.pmid : nil,
+      journal_publication_date: raw.journal&.publication_date,
+      journal_volume: raw.journal&.volume,
+      journal_issue: raw.journal&.issue,
+      journal_published_in: raw.journal&.name
     )
 
     citation

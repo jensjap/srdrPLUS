@@ -20,7 +20,7 @@ class FhirResourceService
       }]
     end
 
-    def get_bundle(fhir_objs, type, link_info=nil)
+    def get_bundle(fhir_objs:, type:, link_info: nil)
       bundle = {
         'resourceType' => 'Bundle',
         'type' => type,
@@ -29,25 +29,25 @@ class FhirResourceService
       }
 
       for fhir_obj in fhir_objs do
-        bundle['entry'].append({ 'resource' => fhir_obj }) if validate_resource(fhir_obj)
+        bundle['entry'].append({ 'resource' => fhir_obj })
       end
 
       bundle
     end
 
     def get_citation(
-      id_prefix,
-      srdrplus_id,
-      srdrplus_type,
-      status,
-      title = nil,
-      abstract = nil,
-      authors = nil,
-      pmid = nil,
-      journal_publication_date = nil,
-      journal_volume = nil,
-      journal_issue = nil,
-      journal_published_in = nil
+      id_prefix:,
+      srdrplus_id:,
+      srdrplus_type:,
+      status:,
+      title: nil,
+      abstract: nil,
+      authors: nil,
+      pmid: nil,
+      journal_publication_date: nil,
+      journal_volume: nil,
+      journal_issue: nil,
+      journal_published_in: nil
     )
       citation = {
         'resourceType' => 'Citation',
@@ -99,7 +99,7 @@ class FhirResourceService
       citation
     end
 
-    def get_evidence_variable(title, id_prefix, srdrplus_id, srdrplus_type, status, notes = nil, group_content = nil)
+    def get_evidence_variable(title:, id_prefix:, srdrplus_id:, srdrplus_type:, status:, notes: nil, group_content: nil)
       evidence_variable = {
         'resourceType' => 'EvidenceVariable',
         'status' => status,
