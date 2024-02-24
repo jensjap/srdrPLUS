@@ -16,8 +16,9 @@
   });
 
   documentCode = function() {
-    var checkDirty, setTimeoutError, submitForm, timers;
+    var checkDirty, error_timers, setTimeoutError, submitForm, timers;
     timers = {};
+    error_timers = {};
     submitForm = function(form) {
       return function() {
         return form.submit();
@@ -56,7 +57,8 @@
         formId = $form.attr('id');
         $form.addClass('dirty');
         setTimeoutError({
-          duration: 10000
+          duration: 10000,
+          formId: formId
         });
         if (formId in timers) {
           clearTimeout(timers[formId]);
@@ -70,10 +72,14 @@
       }
     };
     return setTimeoutError = function(params) {
-      var duration, element;
+      var duration, element, formId;
       duration = params.duration;
+      formId = params.formId;
       element = event.target;
-      return setTimeout(checkDirty.bind(null, element), duration);
+      if (formId in error_timers) {
+        clearTimeout(error_timers[formId]);
+      }
+      return error_timers[formId] = setTimeout(checkDirty.bind(null, element), duration);
     };
   };
 
