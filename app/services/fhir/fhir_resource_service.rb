@@ -28,8 +28,10 @@ class FhirResourceService
         'entry' => []
       }
 
-      for fhir_obj in fhir_objs do
-        bundle['entry'].append({ 'resource' => fhir_obj })
+      fhir_objs.each do |fhir_obj|
+        if !fhir_obj.blank?
+          bundle['entry'] << { 'resource' => fhir_obj }
+        end
       end
 
       bundle
@@ -58,11 +60,11 @@ class FhirResourceService
 
       cited_artifact = {}
 
-      cited_artifact['title'] = [{ 'text' => title }] if title.present?
-      cited_artifact['abstract'] = [{ 'text' => abstract }] if abstract.present?
+      cited_artifact['title'] = [{ 'text' => title }] if !title.blank?
+      cited_artifact['abstract'] = [{ 'text' => abstract }] if !abstract.blank?
 
       entries = []
-      if authors.present?
+      if !authors.blank?
         authors.split(', ').each_with_index do |author, i|
           author_ref = {
             'resourceType' => 'Practitioner',
@@ -80,10 +82,10 @@ class FhirResourceService
       end
 
       journal_info = {}
-      journal_info['publicationDateText'] = journal_publication_date if journal_publication_date.present?
-      journal_info['volume'] = journal_volume if journal_volume.present?
-      journal_info['issue'] = journal_issue if journal_issue.present?
-      journal_info['publishedIn'] = { 'title' => journal_published_in } if journal_published_in.present?
+      journal_info['publicationDateText'] = journal_publication_date if !journal_publication_date.blank?
+      journal_info['volume'] = journal_volume if !journal_volume.blank?
+      journal_info['issue'] = journal_issue if !journal_issue.blank?
+      journal_info['publishedIn'] = { 'title' => journal_published_in } if !journal_published_in.blank?
 
       cited_artifact['publicationForm'] = [journal_info] unless journal_info.empty?
 
@@ -124,6 +126,22 @@ class FhirResourceService
       evidence_variable.compact
     end
 
+    def get_questionnaire(title:, id_prefix:, srdrplus_id:, srdrplus_type:, status:, items: nil)
+      questionnaire = {
+        'resourceType' => 'Questionnaire',
+        'status' => status,
+        'id' => "#{id_prefix}-#{srdrplus_id}",
+        'identifier' => build_identifier(srdrplus_type, srdrplus_id),
+        'title' => title,
+      }
+
+      if !items.blank?
+        questionnaire['item'] = items
+      end
+
+      questionnaire.compact
+    end
+
     def build_contained_group(group_content)
       group = {
         'resourceType' => 'Group',
@@ -139,6 +157,57 @@ class FhirResourceService
       end
 
       [group]
+    end
+
+    def build_questionnaire_item(
+      linkid:,
+      type:,
+      text: nil,
+      repeats: nil,
+      maxLength: nil,
+      definition: nil,
+      extension: nil,
+      answer_constraint: nil,
+      enable_when_items: nil,
+      enable_behavior: nil,
+      answer_options: nil,
+      items: nil
+    )
+      main_item = {
+        'extension' => extension,
+        'linkId' => linkid,
+        'definition' => definition,
+        'text' => text,
+        'type' => type,
+        'repeats' => repeats,
+        'maxLength' => maxLength,
+        'answerConstraint' => answer_constraint,
+        'enableBehavior' => enable_behavior,
+        'item' => items
+      }.compact
+
+      if !answer_options.blank?
+        main_item['answerOption'] = answer_options.map { |answer_option| {'valueString' => answer_option} }
+      end
+
+      if !enable_when_items.blank?
+        main_item['enableWhen'] = enable_when_items.map do |enable_item|
+          condition = {
+            'question' => enable_item[0],
+            'operator' => enable_item[1]
+          }
+
+          if enable_item[2].is_a?(String)
+            condition['answerString'] = enable_item[2]
+          elsif !!enable_item[2] == enable_item[2]
+            condition['answerBoolean'] = enable_item[2]
+          end
+
+          condition
+        end
+      end
+
+      main_item
     end
   end
 end
