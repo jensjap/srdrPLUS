@@ -39,6 +39,7 @@
                 <th></th>
                 <th data-sort-direction="asc">Citation (Sorted by Title)</th>
                 <th>Status</th>
+                <th>Approved</th>
               </tr>
             </thead>
             <tbody>
@@ -68,6 +69,17 @@
                       :class="{
                         'bg-green-900': c_extraction.status_id === 2,
                         'bg-yellow-600': c_extraction.status_id === 1,
+                      }"
+                    ></button>
+                  </td>
+                  <td>
+                    <button
+                      @click="toggleApproval(c_extraction)"
+                      x-text="c_extraction.approved_on === null ? 'Unapproved' : 'Approved'"
+                      class="p-2 w-32 cursor-pointer text-white"
+                      :class="{
+                        'bg-green-900': c_extraction.approved_on !== null,
+                        'bg-yellow-600': c_extraction.approved_on === null
                       }"
                     ></button>
                   </td>
@@ -256,6 +268,30 @@
             }),
           }
         );
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Saved successfully", null, { timeOut: 1000 });
+          this.fetch_results();
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+
+      async toggleApproval(extraction) {
+        let url =
+          extraction.approved_on === null
+            ? `/extractions/${extraction.id}/approve`
+            : `/extractions/${extraction.id}/disapprove`;
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+        });
         if (response.status >= 200 && response.status < 300) {
           toastr.success("Saved successfully", null, { timeOut: 1000 });
           this.fetch_results();
