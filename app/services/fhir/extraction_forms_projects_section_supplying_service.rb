@@ -15,7 +15,7 @@ class ExtractionFormsProjectsSectionSupplyingService
     ]
     bundle = FhirResourceService.get_bundle(fhir_objs: efpss, type: 'collection', link_info: link_info)
 
-    bundle.to_json
+    bundle
   end
 
   def find_by_extraction_forms_projects_section_id(id)
@@ -33,7 +33,7 @@ class ExtractionFormsProjectsSectionSupplyingService
     efps_in_fhir = create_fhir_obj(efps)
     return efps_in_fhir if efps_in_fhir.blank?
 
-    efps_in_fhir.to_json
+    efps_in_fhir
   end
 
   private

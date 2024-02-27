@@ -18,14 +18,14 @@ class KeyQuestionSupplyingService
     key_questions = key_questions.map { |key_question| create_fhir_obj(key_question) }
     bundle = FhirResourceService.get_bundle(fhir_objs: key_questions, type: 'collection', link_info: link_info)
 
-    bundle.to_json
+    bundle
   end
 
   def find_by_key_question_id(key_question_id)
     key_question = KeyQuestionsProject.find(key_question_id)
     key_question_in_fhir = create_fhir_obj(key_question)
 
-    key_question_in_fhir.to_json
+    key_question_in_fhir
   end
 
   private

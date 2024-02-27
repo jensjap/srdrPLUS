@@ -20,14 +20,14 @@ class CitationSupplyingService
     citations = citations.map { |citation| create_fhir_obj(citation) }
     bundle = FhirResourceService.get_bundle(fhir_objs: citations, type: 'collection', link_info: link_info)
 
-    bundle.to_json
+    bundle
   end
 
   def find_by_citation_id(citation_id)
     citation = Citation.find(citation_id)
     citation_in_fhir = create_fhir_obj(citation)
 
-    citation_in_fhir.to_json
+    citation_in_fhir
   end
 
   private

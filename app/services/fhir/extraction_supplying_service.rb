@@ -849,7 +849,7 @@ class ExtractionSupplyingService
         'value' => "ExtractionsExtractionFormsProjectsSection/#{raw.id}"
       }],
       'contained' => questions,
-      'questionnaire' => "##{questions.id}",
+      'questionnaire' => "##{questions['id']}",
       'subject' => {},
       'item' => []
     }
