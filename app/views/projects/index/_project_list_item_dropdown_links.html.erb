@@ -35,11 +35,11 @@
   }"
 >
   <% if usage.eql?('project-card') %>
-  <div class="mx-4 grid grid-cols-3 gap-4 lg:grid-cols-9 <%= index % 2 == 0 ? '!bg-purple-100' : '!bg-white' %> text-srdr-primary">
+  <div class="mx-4 grid grid-cols-1 gap-6 lg:grid-cols-6 w-full text-xl <%= index % 2 == 0 ? '!bg-purple-100' : '!bg-white' %> text-srdr-primary">
   <% elsif usage.eql?('project-navigation') %>
-  <div class="mt-3 grid grid-cols-3 gap-4 lg:grid-cols-9 w-full bg-srdr-secondary !text-gray-300">
+  <div class="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-6 w-full text-xl bg-srdr-secondary !text-gray-300">
   <% else %>
-  <div class="grid grid-cols-3 gap-4 lg:grid-cols-9">
+  <div class="grid grid-cols-3 gap-6 lg:grid-cols-6">
   <% end %>
     <!-- Dropdown for "Project Info" -->
     <div class="relative inline-block text-left"
@@ -48,12 +48,12 @@
          :id="'projectInfoDropdownProjectId_' + <%= project.id %>">
       <button @click="isOpen = !isOpen"
               type="button"
-              class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
+              class="text-xl cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
               :class="project_info_dropdown && 'bg-srdr-tertiary !text-white'"
               id="projectInfoDropdown"
               aria-haspopup="true"
               aria-expanded="true">
-        Project Info
+        <i class='fi-info'> Project Info</i>
         <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
@@ -68,7 +68,7 @@
            x-transition:leave="transition ease-in duration-75"
            x-transition:leave-start="transform opacity-100 scale-100"
            x-transition:leave-end="transform opacity-0 scale-95"
-           style=""
+           style="min-width: max-content;"
            class="shadow-lg custom-shadow-dropdown z-10 origin-top-right absolute mt-0 w-46 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 border border-black"
            role="menu"
            aria-orientation="vertical"
@@ -109,12 +109,12 @@
          :id="'editFormsDropdownProjectId_' + <%= project.id %>">
       <button @click="isOpen = !isOpen"
               type="button"
-              class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
+              class="text-xl cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
               :class="form_builder_dropdown && 'bg-srdr-tertiary !text-white'"
               id="editFormsDropdown"
               aria-haspopup="true"
               aria-expanded="true">
-        Edit Forms
+        <i class='fi-page-edit'> Edit Forms</i>
         <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
@@ -129,7 +129,7 @@
            x-transition:leave="transition ease-in duration-75"
            x-transition:leave-start="transform opacity-100 scale-100"
            x-transition:leave-end="transform opacity-0 scale-95"
-           style=""
+           style="min-width: max-content;"
            class="shadow-lg custom-shadow-dropdown z-10 origin-top-right absolute mt-0 w-46 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 border border-black"
            role="menu"
            aria-orientation="vertical"
@@ -158,14 +158,14 @@
            :id="'screeningDropdownProjectId_' + <%= project.id %>">
         <button @click="isOpen = !isOpen"
                 type="button"
-                class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
+                class="text-xl cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
                 :class="screening_dropdown && 'bg-srdr-tertiary !text-white'"
                 id="screeningDropdown"
                 aria-haspopup="true"
                 aria-expanded="true">
           <% c_count = @projects.present? ? @projects_citations_project_counts[project.id] : project.citations.size %>
           <% c_title = "Screening (#{ c_count || 0 })" %>
-          <%= c_title %>
+          <i class='fi-page-search'> <%= c_title %></i>
           <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
           </svg>
@@ -180,7 +180,7 @@
              x-transition:leave="transition ease-in duration-75"
              x-transition:leave-start="transform opacity-100 scale-100"
              x-transition:leave-end="transform opacity-0 scale-95"
-             style=""
+             style="min-width: max-content;"
              class="shadow-lg custom-shadow-dropdown z-10 origin-top-right absolute mt-0 w-46 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 border border-black"
              role="menu"
              aria-orientation="vertical"
@@ -223,14 +223,14 @@
          :id="'extractionsDropdownProjectId_' + <%= project.id %>">
       <button @click="isOpen = !isOpen"
               type="button"
-              class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
+              class="text-xl cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
               :class="extractions_dropdown && 'bg-srdr-tertiary !text-white'"
               id="extractionsDropdown"
               aria-haspopup="true"
               aria-expanded="true">
         <% e_count = @projects.present? ? @projects_extraction_counts[project.id] : project.extractions.size %>
         <% e_title = "Extractions (#{e_count || 0})" %>
-        <%= e_title %>
+        <i class='fi-wrench'> <%= e_title %></i>
         <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
@@ -245,7 +245,7 @@
            x-transition:leave="transition ease-in duration-75"
            x-transition:leave-start="transform opacity-100 scale-100"
            x-transition:leave-end="transform opacity-0 scale-95"
-           style=""
+           style="min-width: max-content;"
            class="shadow-lg custom-shadow-dropdown z-10 origin-top-right absolute mt-0 w-46 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 border border-black"
            role="menu"
            aria-orientation="vertical"
@@ -274,12 +274,12 @@
          :id="'exportImportDropdownProjectId_' + <%= project.id %>">
       <button @click="isOpen = !isOpen"
               type="button"
-              class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
+              class="text-xl cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
               :class="export_import_dropdown && 'bg-srdr-tertiary !text-white'"
               id="exportImportDropdown"
               aria-haspopup="true"
               aria-expanded="true">
-        Export & Import
+        <i class='fi-page-export'> Export & Import</i>
         <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
@@ -294,7 +294,7 @@
            x-transition:leave="transition ease-in duration-75"
            x-transition:leave-start="transform opacity-100 scale-100"
            x-transition:leave-end="transform opacity-0 scale-95"
-           style=""
+           style="min-width: max-content;"
            class="shadow-lg custom-shadow-dropdown z-10 origin-top-right absolute mt-0 w-46 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 border border-black"
            role="menu"
            aria-orientation="vertical"
@@ -326,12 +326,12 @@
          :id="'publicationDropdownProjectId_' + <%= project.id %>">
       <button @click="isOpen = !isOpen"
               type="button"
-              class="cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
+              class="text-xl cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
               :class="publication_dropdown && 'bg-srdr-tertiary !text-white'"
               id="publicationsDropdown"
               aria-haspopup="true"
               aria-expanded="true">
-        Publication
+        <i class='fi-print'> Publication</i>
         <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
@@ -346,7 +346,7 @@
            x-transition:leave="transition ease-in duration-75"
            x-transition:leave-start="transform opacity-100 scale-100"
            x-transition:leave-end="transform opacity-0 scale-95"
-           style=""
+           style="min-width: max-content;"
            class="shadow-lg custom-shadow-dropdown z-10 origin-top-right absolute mt-0 w-46 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 border border-black"
            role="menu"
            aria-orientation="vertical"
