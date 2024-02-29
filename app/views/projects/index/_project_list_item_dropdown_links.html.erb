@@ -81,15 +81,21 @@
                     edit_project_path(project, page: 'info'),
                     class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
                     'x-bind:class': "{ 'bg-srdr-tertiary': project_info, '!text-white': project_info }" %>
-        <%= link_to 'Key Questions',
+        <% kq_count = @projects.present? ? @projects_key_questions_project_counts[project.id] : project.key_questions.size %>
+        <% kq_title = "Key Questions (#{ kq_count || 0 })" %>
+        <%= link_to "#{ kq_title }",
                     edit_project_path(project, page: 'key_questions'),
                     class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
                     'x-bind:class': "{ 'bg-srdr-tertiary': key_questions, '!text-white': key_questions }" %>
-        <%= link_to 'Members & Roles',
+        <% m_count = @projects.present? ? @projects_projects_user_counts[project.id] : project.members.size %>
+        <% m_title = "Members & Roles (#{ m_count || 1 })" %>
+        <%= link_to "#{ m_title }",
                     edit_project_path(project, page: 'members_and_roles'),
                     class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
                     'x-bind:class': "{ 'bg-srdr-tertiary': members_and_roles, '!text-white': members_and_roles }" %>
-        <%= link_to 'Citations',
+        <% c_count = @projects.present? ? @projects_citations_project_counts[project.id] : project.citations.size %>
+        <% c_title = "Citations (#{ c_count || 0 })" %>
+        <%= link_to "#{ c_title }",
                     project_citations_path(project),
                     class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
                     'x-bind:class': "{ 'bg-srdr-tertiary': citation_pool, '!text-white': citation_pool }" %>
@@ -157,7 +163,9 @@
                 id="screeningDropdown"
                 aria-haspopup="true"
                 aria-expanded="true">
-          Screening
+          <% c_count = @projects.present? ? @projects_citations_project_counts[project.id] : project.citations.size %>
+          <% c_title = "Screening (#{ c_count || 0 })" %>
+          <%= c_title %>
           <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
           </svg>
@@ -242,12 +250,16 @@
            role="menu"
            aria-orientation="vertical"
            aria-labelledby="extractionsDropdownProjectId_<%= project.id %>">
-        <%= link_to 'Data Extractions',
+        <% e_count = @projects.present? ? @projects_extraction_counts_wo_consolidated[project.id] : project.extractions.where(consolidated: false).size %>
+        <% e_title = "Data Extractions (#{ e_count })" %>
+        <%= link_to "#{ e_title }",
                     project_extractions_path(project),
                     title: t('manage_extractions'),
                     class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
                     'x-bind:class': "{ 'bg-srdr-tertiary': extractions, '!text-white': extractions }" %>
-        <%= link_to 'Comparison Tool',
+        <% e_consolidated_count = @projects.present? ? @projects_extraction_counts_w_consolidated[project.id] : project.extractions.where(consolidated: true).size %>
+        <% e_consolidated_title = "Comparison Tool (#{ e_consolidated_count })" %>
+        <%= link_to "#{ e_consolidated_title }",
                     comparison_tool_project_extractions_path(project),
                     title: 'Comparison Tool',
                     class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",

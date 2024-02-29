@@ -539,6 +539,18 @@ class ProjectsController < ApplicationController
                                        .group(:project_id)
                                        .count
 
+      @projects_extraction_counts_wo_consolidated = Extraction
+                                                    .where(consolidated: false)
+                                                    .where(project_id: project_ids)
+                                                    .group(:project_id)
+                                                    .count
+
+      @projects_extraction_counts_w_consolidated = Extraction
+                                                   .where(consolidated: true)
+                                                   .where(project_id: project_ids)
+                                                   .group(:project_id)
+                                                   .count
+
       @projects_extraction_counts = Extraction
                                     .where(project_id: project_ids)
                                     .group(:project_id)
