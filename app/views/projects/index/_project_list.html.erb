@@ -34,7 +34,9 @@
       </div>
 
       <!-- Project List Item Links -->
-      <%= render "projects/index/project_list_item_dropdown_links", project: project, index: index, usage: 'project-card' %>
+      <div class='grid'>
+        <%= render "projects/index/project_list_item_dropdown_links", project: project, index: index, usage: 'project-card' %>
+      </div>
     </div>
   <% end %>
 </div>

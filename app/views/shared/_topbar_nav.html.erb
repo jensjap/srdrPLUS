@@ -285,7 +285,7 @@
             <!-- prettier-ignore -->
             <%= link_to "Project ID##{project.id}: #{project.name}",
                         project_citation_lifecycle_management_path(project),
-                        class: "button rounded-md p-2 text-xl font-medium text-gray-300 hover:bg-srdr-primary hover:text-white focus:text-white" %>
+                        class: "rounded-md text-xl font-medium text-gray-300 hover:text-white focus:text-white" %>
             <% if project.publishing.present? && project.publishing.approval.present? %>
               <span
                 class="ml-4 inline-flex items-center rounded bg-green-100 px-2 py-0.5 text-xs font-bold text-green-800"
