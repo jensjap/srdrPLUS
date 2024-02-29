@@ -451,8 +451,8 @@ class ScreeningDataExportJob < ApplicationJob
           asr.privileged ? 'Adjudicator' : asr.user.handle,
           consensus_dict[cp.id],
           asr.label,
-          asr.reasons.map(&:name).join('; '),
-          asr.tags.map(&:name).join('; '),
+          asr.reasons.map(&:name).join('||'),
+          asr.tags.map(&:name).join('||'),
           asr.notes
         ]
 
@@ -512,14 +512,16 @@ class ScreeningDataExportJob < ApplicationJob
       'Publication String',
       'DOI',
       'Keywords',
-      'Update At',
+      'Last Label Time',
       'Username',
       'Consensus Label',
-      'Label',
+      'User Label',
       'Reasons',
       'Tags',
       'Notes',
     ]
+    #!!! if this is a 1x1 "matrix" question, then we do not need to show row or column index/headers.
+    #!!! check this first and then resolve the column/row headers.
     asf.sf_questions.each_with_index do |sf_question, q_index|
       sf_question.sf_rows.each_with_index do |sf_row, r_index|
         question_name = sf_question.name.blank? ? "Question #{q_index}" : sf_question.name
