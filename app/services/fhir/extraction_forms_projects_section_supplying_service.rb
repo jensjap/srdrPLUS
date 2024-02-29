@@ -187,8 +187,8 @@ class ExtractionFormsProjectsSectionSupplyingService
     when 2
       qrc_type = 'decimal'
       qrc_extension = [
-        {'url' => 'http://hl7.org/fhir/StructureDefinition/minValue', 'valueDecimal' => options[4]['name']},
-        {'url' => 'http://hl7.org/fhir/StructureDefinition/maxValue', 'valueDecimal' => options[5]['name']}
+        {'url' => 'http://hl7.org/fhir/StructureDefinition/minValue', 'valueDecimal' => options[4]['name'].to_i},
+        {'url' => 'http://hl7.org/fhir/StructureDefinition/maxValue', 'valueDecimal' => options[5]['name'].to_i}
       ]
     when 5
       qrc_type = 'text'

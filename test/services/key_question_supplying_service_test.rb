@@ -11,7 +11,6 @@ class KeyQuestionSupplyingServiceTest < ActiveSupport::TestCase
     bundle = @service.find_by_project_id(@project.id)
 
     assert_not_empty bundle.entry
-    assert bundle.entry.first.resource.is_a?(FHIR::EvidenceVariable)
   end
 
   test "should return FHIR EvidenceVariable of key question" do

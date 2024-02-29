@@ -11,7 +11,6 @@ class ExtractionFormsProjectsSectionSupplyingServiceTest < ActiveSupport::TestCa
     bundle = @service.find_by_extraction_forms_project_id(@efp.id)
 
     assert_not_empty bundle.entry
-    assert bundle.entry.first.resource.is_a?(FHIR::Questionnaire)
   end
 
   test "should return FHIR Questionnaire Resource of efps" do

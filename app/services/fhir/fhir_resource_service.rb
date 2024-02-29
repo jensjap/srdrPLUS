@@ -34,6 +34,7 @@ class FhirResourceService
         end
       end
 
+      return if bundle['entry'].blank?
       bundle
     end
 
@@ -101,13 +102,14 @@ class FhirResourceService
       citation
     end
 
-    def get_evidence_variable(title:, id_prefix:, srdrplus_id:, srdrplus_type:, status:, notes: nil, group_content: nil)
+    def get_evidence_variable(title:, id_prefix:, srdrplus_id:, srdrplus_type:, status:, description: nil, notes: nil, group_content: nil)
       evidence_variable = {
         'resourceType' => 'EvidenceVariable',
         'status' => status,
         'id' => "#{id_prefix}-#{srdrplus_id}",
         'identifier' => build_identifier(srdrplus_type, srdrplus_id),
         'title' => title,
+        'description' => description
       }
 
       if group_content
@@ -140,6 +142,38 @@ class FhirResourceService
       end
 
       questionnaire.compact
+    end
+
+    def get_questionnaire_response(
+      id_prefix:,
+      srdrplus_id:,
+      srdrplus_type:,
+      status:,
+      type1_id:,
+      contained_items:,
+      questionnaire:,
+      items:,
+      type1_display: nil
+    )
+      questionnaire_response = {
+        'resourceType' => 'QuestionnaireResponse',
+        'status' => status,
+        'id' => "#{id_prefix}-#{srdrplus_id}-type1id-#{type1_id}",
+        'identifier' => build_identifier(srdrplus_type, srdrplus_id),
+        'contained' => contained_items,
+        'questionnaire' => questionnaire,
+        'item' => items,
+      }
+
+      if type1_display
+        questionnaire_response['subject'] = {
+          'reference' => "Type1/#{type1_id}",
+          'type' => 'EvidenceVariable',
+          'display' => type1_display
+        }
+      end
+
+      questionnaire_response.compact
     end
 
     def build_contained_group(group_content)
@@ -208,6 +242,41 @@ class FhirResourceService
       end
 
       main_item
+    end
+
+    def build_questionnaire_response_item(linkid:, value:, value_type: 'valueString', item: nil)
+      main_item = {
+        'linkId' => linkid,
+        'answer' => [{
+          value_type => value,
+          'item' => item
+        }.compact]
+      }
+    end
+
+    def build_evidence_variable_definition(description:, variable_role:, comparator_category: nil)
+      {
+        'description' => description,
+        'variableRole' => variable_role,
+        'comparatorCategory' => comparator_category
+      }.compact
+    end
+
+    def deep_clean(item)
+      case item
+      when Hash
+        cleaned_hash = item.each_with_object({}) do |(key, value), new_hash|
+          cleaned_value = deep_clean(value)
+          new_hash[key] = cleaned_value unless cleaned_value.nil?
+        end
+        cleaned_hash.empty? ? nil : cleaned_hash
+      when Array
+        cleaned_array = item.map { |element| deep_clean(element) }.compact
+        cleaned_array.reject! { |element| element.is_a?(Hash) && element.empty? }
+        cleaned_array
+      else
+        item
+      end
     end
   end
 end
