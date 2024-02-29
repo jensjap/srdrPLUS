@@ -216,7 +216,7 @@
       </div>
     <% end %>
 
-    <!-- Link to Extractions -->
+    <!-- Dropdown for Extractions -->
     <div class="relative inline-block text-left"
          x-data="{ isOpen: false }"
          @click.away="isOpen = false"
@@ -251,14 +251,14 @@
            aria-orientation="vertical"
            aria-labelledby="extractionsDropdownProjectId_<%= project.id %>">
         <% e_count = @projects.present? ? @projects_extraction_counts_wo_consolidated[project.id] : project.extractions.where(consolidated: false).size %>
-        <% e_title = "Data Extractions (#{ e_count })" %>
+        <% e_title = "Data Extractions (#{ e_count || 0 })" %>
         <%= link_to "#{ e_title }",
                     project_extractions_path(project),
                     title: t('manage_extractions'),
                     class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
                     'x-bind:class': "{ 'bg-srdr-tertiary': extractions, '!text-white': extractions }" %>
         <% e_consolidated_count = @projects.present? ? @projects_extraction_counts_w_consolidated[project.id] : project.extractions.where(consolidated: true).size %>
-        <% e_consolidated_title = "Comparison Tool (#{ e_consolidated_count })" %>
+        <% e_consolidated_title = "Comparison Tool (#{ e_consolidated_count || 0 })" %>
         <%= link_to "#{ e_consolidated_title }",
                     comparison_tool_project_extractions_path(project),
                     title: 'Comparison Tool',
