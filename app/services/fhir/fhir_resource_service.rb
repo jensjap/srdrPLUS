@@ -20,22 +20,22 @@ class FhirResourceService
       }]
     end
 
-    def get_bundle(fhir_objs:, type:, link_info: nil)
+    def get_bundle(fhir_objs:, type:, link_info: nil, full_urls: nil)
+      full_urls ||= []
+
+      fhir_objs = fhir_objs.zip(full_urls).each_with_object([]) do |(obj, url), array|
+        array << { 'fullUrl' => url, 'resource' => obj }
+      end
+
       bundle = {
         'resourceType' => 'Bundle',
         'type' => type,
         'link' => link_info,
-        'entry' => []
+        'entry' => fhir_objs
       }
 
-      fhir_objs.each do |fhir_obj|
-        if !fhir_obj.blank?
-          bundle['entry'] << { 'resource' => fhir_obj }
-        end
-      end
-
       return if bundle['entry'].blank?
-      bundle
+      deep_clean(bundle)
     end
 
     def get_citation(

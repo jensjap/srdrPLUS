@@ -9,7 +9,7 @@ class SdMetaDataSupplyingService
     ]
 
     sd_meta_data_in_fhir = sd_meta_data_ids.map { |id| find_by_sd_meta_data_id(id) }
-    create_bundle(sd_meta_data_in_fhir, 'collection', link_info)
+    FhirResourceService.get_bundle(fhir_objs: sd_meta_data_in_fhir, type: 'collection', link_info: link_info)
   end
 
   def find_by_sd_meta_data_id(sd_meta_data_id)
@@ -31,18 +31,10 @@ class SdMetaDataSupplyingService
     combination_full_url.unshift(nil)
     combination = sd_picod_in_fhir.dup + sd_key_questions_in_fhir.dup + sd_search_strategy_in_fhir.dup + sd_outcome_in_fhir.dup
     combination.unshift(sd_meta_data_in_fhir)
-    create_bundle(fhir_objs=combination, type='document', link_info=nil, full_urls=combination_full_url)
+    FhirResourceService.get_bundle(fhir_objs: combination, type: 'document', full_urls: combination_full_url)
   end
 
   private
-
-  def create_bundle(fhir_objs, type, link_info=nil, full_urls=nil)
-    full_urls ||= []
-    valid_objs = fhir_objs.zip(full_urls).each_with_object([]) do |(obj, url), array|
-      array << { 'fullUrl' => url, 'resource' => obj }# if obj.valid?
-    end
-    FHIR::Bundle.new('type' => type, 'link' => link_info, 'entry' => valid_objs)
-  end
 
   def build_link_info(relation, url)
     { 'relation' => relation, 'url' => url }
@@ -148,31 +140,7 @@ class SdMetaDataSupplyingService
     sd_meta_regression_analysis_results = raw.sd_result_items&.map { |item| [item.sd_key_question, item.sd_meta_regression_analysis_results] }
     create_section_with_entries_and_figures(composition, 'Meta Regression Analysis Results', sd_meta_regression_analysis_results)
 
-    FHIR::Composition.new(composition)
-  end
-
-  def create_evidence_variable_fhir_obj(id_prefix, identifier, title, characteristics_data, notes = nil)
-    evidence_variable = {
-      'status' => 'active',
-      'id' => "#{id_prefix}-#{identifier.id}",
-      'identifier' => build_identifier(identifier.class.name, identifier.id),
-      'characteristic' => [],
-      'note' => [],
-      'title' => title,
-    }.compact
-
-    characteristics_data.each do |code, value|
-      next unless value
-      evidence_variable['characteristic'] << {'description' => value, 'definitionCodeableConcept' => {'coding' => [{'code' => code}]}}
-    end
-
-    if notes
-      notes.each do |note|
-        evidence_variable['note'] << {'text' => note}
-      end
-    end
-
-    FHIR::EvidenceVariable.new(evidence_variable)
+    composition
   end
 
   def create_outcome_fhir_obj(raw)
@@ -180,7 +148,14 @@ class SdMetaDataSupplyingService
       ['Outcome', raw.name]
     ]
 
-    create_evidence_variable_fhir_obj('11', raw, 'Outcome', characteristics_data)
+    FhirResourceService.get_evidence_variable(
+      title: 'Outcome',
+      id_prefix: '11',
+      srdrplus_id: raw.id.to_s,
+      srdrplus_type: 'SdPicod',
+      status: 'active',
+      group_content: characteristics_data
+    )
   end
 
   def create_search_strategy_fhir_obj(raw)
@@ -191,7 +166,14 @@ class SdMetaDataSupplyingService
       ['Database', raw.sd_search_database&.name]
     ]
 
-    create_evidence_variable_fhir_obj('10', raw, 'Search Strategy', characteristics_data)
+    FhirResourceService.get_evidence_variable(
+      title: 'Search Strategy',
+      id_prefix: '10',
+      srdrplus_id: raw.id.to_s,
+      srdrplus_type: 'SdPicod',
+      status: 'active',
+      group_content: characteristics_data
+    )
   end
 
   def create_picodts_fhir_obj(raw)
@@ -209,16 +191,15 @@ class SdMetaDataSupplyingService
 
     notes = raw.sd_key_questions.map { |sd_key_question| "SdKeyQuestion/#{sd_key_question.id}" }
 
-    #FhirResourceService.get_evidence_variable(
-    #  title = 'PICODTS',
-    #  id_prefix = '9',
-    #  srdrplus_id = raw.id.to_s,
-    #  srdrplus_type = 'SdPicod',
-    #  status = 'active',
-    #  notes = notes,
-    #  group_content = characteristics_data
-    #)
-    create_evidence_variable_fhir_obj('9', raw, 'PICODTS', characteristics_data, notes)
+    FhirResourceService.get_evidence_variable(
+      title: 'PICODTS',
+      id_prefix: '9',
+      srdrplus_id: raw.id.to_s,
+      srdrplus_type: 'SdPicod',
+      status: 'active',
+      notes: notes,
+      group_content: characteristics_data
+    )
   end
 
   def create_key_question_fhir_obj(raw)
@@ -229,7 +210,15 @@ class SdMetaDataSupplyingService
       notes << "Include meta-analysis: #{raw.includes_meta_analysis}"
     end
 
-    create_evidence_variable_fhir_obj('8', raw, raw.name, characteristics_data, notes)
+    FhirResourceService.get_evidence_variable(
+      title: raw.name,
+      id_prefix: '8',
+      srdrplus_id: raw.id.to_s,
+      srdrplus_type: 'SdPicod',
+      status: 'active',
+      notes: notes,
+      group_content: characteristics_data
+    )
   end
 
   def get_identifier_values(raw_data, prefix)
@@ -246,22 +235,15 @@ class SdMetaDataSupplyingService
     sr360_updated_date = raw.updated_at.strftime("%Y-%m-%dT%H:%M:%S%:z")
 
     {
+      'resourceType' => 'Composition',
       'status' => sr360_status,
       'id' => "7-#{raw.id}",
-      'identifier' => build_identifier('SdMetaData', raw.id),
+      'identifier' => FhirResourceService.build_identifier('SdMetaData', raw.id),
       'type' => { 'text' => 'EvidenceReport' },
       'date' => sr360_updated_date,
       'author' => { 'display' => 'SRDR+' },
       'title' => sr360_title
     }
-  end
-
-  def build_identifier(resource, id)
-    [{
-      'type' => { 'text' => 'SRDR+ Object Identifier' },
-      'system' => 'https://srdrplus.ahrq.gov/',
-      'value' => "#{resource}/#{id}"
-    }]
   end
 
   def get_sd_outcomes(sd_meta_data)
