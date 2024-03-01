@@ -1,11 +1,9 @@
 class AllResourceSupplyingService
 
   def find_by_project_id(id)
-    require 'json'
     project = Project.find(id)
     project_info = {
       'project_name' => project.name,
-      'project_description' => project.description,
       'project_attribution' => project.attribution,
       'project_authors_of_report' => project.authors_of_report,
       'project_methodology_description' => project.methodology_description,
@@ -13,17 +11,22 @@ class AllResourceSupplyingService
       'project_doi' => project.doi,
       'project_note' => project.notes,
       'project_funding_source' => project.funding_source,
-      'project_mesh' => []
     }
-    for mesh in project.mesh_descriptors do
-      project_info['project_mesh'].append(mesh.name)
+
+    project_info['project_description'] = project.description if !project.description.blank?
+
+    if !project.mesh_descriptors.blank?
+      project_info['project_mesh'] ||= []
+      project.mesh_descriptors.each do |mesh|
+        project_info['project_mesh'] << mesh.name
+      end
     end
 
     efpss = []
-    for efp in project.extraction_forms_projects do
+    project.extraction_forms_projects.each do |efp|
       efpss.append(ExtractionFormsProjectsSectionSupplyingService.new.find_by_extraction_forms_project_id(efp.id))
     end
-    forms = create_bundle(objs=efpss, type='collection')
+    forms = FhirResourceService.get_bundle(fhir_objs: efpss, type: 'collection')
     citations = CitationSupplyingService.new.find_by_project_id(id)
     key_questions = KeyQuestionSupplyingService.new.find_by_project_id(id)
     extractions = ExtractionSupplyingService.new.find_by_project_id(id)
@@ -38,25 +41,8 @@ class AllResourceSupplyingService
         'url' => 'doc/fhir/project.txt'
       }
     ]
-    all_resource = create_bundle(objs=[forms, citations, key_questions, extractions], type='collection', link_info=link_info)
-    project_info['bundle'] = all_resource
-    return project_info.to_json
+    project_info['bundle'] = FhirResourceService.get_bundle(fhir_objs: [forms, citations, key_questions, extractions], type: 'collection', link_info: link_info)
+
+    FhirResourceService.deep_clean(project_info)
   end
-
-  private
-
-  def create_bundle(fhir_objs, type, link_info=nil)
-    bundle = {
-      'type' => type,
-      'link' => link_info,
-      'entry' => []
-    }
-
-    for fhir_obj in fhir_objs do
-      bundle['entry'].append({ 'resource' => fhir_obj }) if fhir_obj
-    end
-
-    FHIR::Bundle.new(bundle)
-  end
-
 end
