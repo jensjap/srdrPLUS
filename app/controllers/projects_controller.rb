@@ -404,6 +404,34 @@ class ProjectsController < ApplicationController
                                     CitationsProject.find_by(citation_id: citation.id, project_id: @project.id)
                                     .abstract_screening_results.present?
                                   end.count
+    latest_ml_model = MlModel.joins(:projects)
+                             .where("projects.id = ?", @project.id)
+                             .order(created_at: :desc)
+                             .limit(1)
+                             .first
+    if latest_ml_model
+      @top_unscreened_citations = @project.citations
+                                          .joins(citations_projects: :ml_predictions)
+                                          .where(citations_projects: { project_id: @project.id })
+                                          .where.not(citations_projects: { id: AbstractScreeningResult.select(:citations_project_id) })
+                                          .where(ml_predictions: { ml_model_id: latest_ml_model.id })
+                                          .select('citations.*', 'ml_predictions.score', 'citations_projects.id AS citations_project_id')
+                                          .order('ml_predictions.score DESC')
+                                          .limit(20)
+
+      citations_project_ids = @top_unscreened_citations.map { |item| item.citations_project_id }
+      scores_map = @top_unscreened_citations.each_with_object({}) do |item, map|
+        map[item.citations_project_id] = item.score
+      end
+
+      @searched_top_unscreened_citations = CitationsProject.search('*', where: { citations_project_id: citations_project_ids }, load: false)
+      @searched_top_unscreened_citations.each do |result|
+        result['ml_score'] = scores_map[result.citations_project_id]
+      end
+      @searched_top_unscreened_citations
+    else
+      @searched_top_unscreened_citations = []
+    end
     @percentage_unscreened = (@unscreened_citation_number.to_f / @total_citation_number) * 100
     @percentage_unscreened = @percentage_unscreened.round(1)
     @untrained_citation_number = MachineLearningDataSupplyingService.get_labeled_abstract_since_last_train(@project.id).size

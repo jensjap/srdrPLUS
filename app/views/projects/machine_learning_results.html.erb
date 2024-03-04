@@ -1,36 +1,135 @@
 <script src="/echarts.min.js"></script>
 
-<div id="dataContainer"
-     data-scores="<%= @scores.to_json %>"
-     data-labels-with-scores="<%= @labels_with_scores.to_json %>"
-     style="display: none;">
-</div>
+<div x-data="machine_learning_results" data-top-unscreened-citations="<%= @searched_top_unscreened_citations.to_json %>">
+  <%= render '/abstract_screenings/detail_view' %>
+  <div id="dataContainer"
+      data-scores="<%= @scores.to_json %>"
+      data-labels-with-scores="<%= @labels_with_scores.to_json %>"
+      style="display: none;">
+  </div>
 
-<div x-data="{ threshold: 0.5 }" class="bg-gray-100 p-8">
-  <h1 class="text-3xl font-bold mb-4">Machine Learning Results</h1>
+  <div x-data="{ threshold: 0.5 }" class="bg-gray-100 p-8">
+    <h1 class="text-3xl font-bold mb-4">Machine Learning Results</h1>
 
-  <p class="text-xl mb-2">Total Number of Citations: <span class="font-semibold"><%= @total_citation_number %></span></p>
-  <p class="text-xl mb-2">Latest Model Time: <span class="font-semibold"><%= @latest_model_time %></span></p>
-  <p class="text-xl mb-2">Rejection Counter: <span class="font-semibold"><%= @rejection_counter %></span></p>
+    <p class="text-xl mb-2">Total Number of Citations: <span class="font-semibold"><%= @total_citation_number %></span></p>
+    <p class="text-xl mb-2">Latest Model Time: <span class="font-semibold"><%= @latest_model_time %></span></p>
+    <p class="text-xl mb-2">Rejection Counter: <span class="font-semibold"><%= @rejection_counter %></span></p>
 
-  <div class="flex">
-    <div class="flex-1 p-8 bg-gray-100">
-      <h2 class="text-3xl font-bold mb-4">Unscreened Citation Predictions</h2>
-      <p class="text-xl mb-4">Percentage unscreened: <span class="font-semibold"><%= @percentage_unscreened %>%</span></p>
-      <p class="text-xl mb-4">Untrained citations: <span class="font-semibold"><%= @untrained_citation_number %> </span><span class="text-sm mb-4">(Models are trained once a day once labels for 100 citations have been recorded)</span></p>
-      <p class="text-xl mb-4">Highest Score: <span class="font-semibold"><%= @scores.max %></span></p>
+    <div class="flex">
+      <div class="flex-1 p-8 bg-gray-100">
+        <h2 class="text-3xl font-bold mb-4">Unscreened Citation Predictions</h2>
+        <p class="text-xl mb-4">Percentage unscreened: <span class="font-semibold"><%= @percentage_unscreened %>%</span></p>
+        <p class="text-xl mb-4">Untrained citations: <span class="font-semibold"><%= @untrained_citation_number %> </span><span class="text-sm mb-4">(Models are trained once a day once labels for 100 citations have been recorded)</span></p>
+        <p class="text-xl mb-4">Highest Score: <span class="font-semibold"><%= @scores.max %></span></p>
 
-      <div id="barChart" style="width: 600px;height:400px;"></div>
+        <div id="barChart" style="width: 600px;height:400px;"></div>
 
-      <div class="flex items-center mb-4">
-        <label for="threshold" class="text-xl mr-4">Enter threshold:</label>
-        <input id="threshold" x-model="threshold" type="float" placeholder="Enter threshold" class="w-1/6 p-2 rounded border shadow" />
+        <div class="flex items-center mb-4">
+          <label for="threshold" class="text-xl mr-4">Enter threshold:</label>
+          <input id="threshold" x-model="threshold" type="float" placeholder="Enter threshold" class="w-1/6 p-2 rounded border shadow" />
+        </div>
+
+        <p class="text-xl">
+          <span>Number of citations above the threshold:</span>
+          <span x-text="scores_above_threshold(<%= @scores.to_json %>, threshold)"></span>
+        </p>
+
+        <h2 class="text-3xl font-bold mt-8 mb-4">Top 20 Unscreened Citations</h2>
+        <table class="w-full divide-y divide-gray-300">
+          <thead class="bg-gray-50">
+            <tr>
+              <th
+                scope="col"
+                class="cursor-pointer py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+              >
+                <div class="flex justify-between">
+                  Accession No. (e.g. PubMed ID)
+                </div>
+              </th>
+              <th
+                scope="col"
+                class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              >
+                <div class="flex justify-between">
+                  Authors
+                </div>
+              </th>
+              <th
+                scope="col"
+                class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              >
+                <div class="flex justify-between">
+                  Title
+                </div>
+              </th>
+              <th
+                scope="col"
+                class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              >
+                <div class="flex justify-between">
+                  Pub Date
+                </div>
+              </th>
+              <th
+                scope="col"
+                class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              >
+                <div class="flex justify-between">
+                  Score
+                </div>
+              </th>
+              <th
+                scope="col"
+                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 select-none"
+              ></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 bg-white">
+            <template x-if="results == null">
+              <tr>
+                <td>Loading..</td>
+              </tr>
+            </template>
+            <template x-if="results != null && results.length == 0">
+              <tr>
+                <td>No results</td>
+              </tr>
+            </template>
+            <template x-if="results != null">
+              <template x-for="(result, i) in results">
+                <tr>
+                  <td
+                    class="pl-4 pr-3 text-sm text-gray-500 max-w-[250px] sm:pl-6 w-32 overflow-hidden text-ellipsis whitespace-nowrap"
+                    x-text="result.accession_number_alts"
+                  ></td>
+                  <td
+                    class="px-3 text-sm text-gray-500 max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap"
+                    x-text="result.author_map_string"
+                  ></td>
+                  <td
+                    class="px-3 text-sm text-gray-500 max-w-[250px] overflow-hidden text-ellipsis whitespace-nowrap"
+                    x-text="result.name"
+                  ></td>
+                  <td
+                    class="px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                    x-text="result.year"
+                  ></td>
+                  <td
+                    class="pl-4 pr-3 text-sm text-gray-500 max-w-[250px] sm:pl-6 w-32 overflow-hidden text-ellipsis whitespace-nowrap"
+                    x-text="result.ml_score"
+                  ></td>
+                  <td
+                    class="cursor-pointer select-none px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                    @click.stop="if (showDetailView && detailedResult == i) { showDetailView = false } else { detailedResult = i; showDetailView = true }"
+                  >
+                    <div>See Details</div>
+                  </td>
+                </tr>
+              </template>
+            </template>
+          </tbody>
+        </table>
       </div>
-
-      <p class="text-xl">
-        <span>Number of citations above the threshold:</span>
-        <span x-text="scores_above_threshold(<%= @scores.to_json %>, threshold)"></span>
-      </p>
     </div>
   </div>
 </div>
@@ -67,6 +166,17 @@
   function scores_above_threshold(scores, threshold) {
     return scores.filter(score => score >= threshold).length;
   }
+
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('machine_learning_results', () => ({
+      detailedResult: 0,
+      showDetailView: false,
+      init() {
+        this.results = JSON.parse(this.$el.getAttribute('data-top-unscreened-citations'));
+        this.results = this.results['query'].sort((a, b) => b.ml_score - a.ml_score);
+      },
+    }));
+  });
 
   const barChart = echarts.init(document.getElementById('barChart'));
 
