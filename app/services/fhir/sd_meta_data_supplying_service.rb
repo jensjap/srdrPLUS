@@ -203,7 +203,6 @@ class SdMetaDataSupplyingService
   end
 
   def create_key_question_fhir_obj(raw)
-    characteristics_data = []
     notes = raw.key_question_types.map { |key_question_type| "Types: #{key_question_type['name']}" }
 
     if raw.includes_meta_analysis
@@ -217,7 +216,6 @@ class SdMetaDataSupplyingService
       srdrplus_type: 'SdPicod',
       status: 'active',
       notes: notes,
-      group_content: characteristics_data
     )
   end
 
