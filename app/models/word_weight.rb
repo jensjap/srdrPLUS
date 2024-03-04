@@ -2,20 +2,21 @@
 #
 # Table name: word_weights
 #
-#  id                    :bigint           not null, primary key
-#  user_id               :bigint
-#  abstract_screening_id :bigint
-#  weight                :integer          not null
-#  word                  :string(255)      not null
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
+#  id         :bigint           not null, primary key
+#  weight     :integer          not null
+#  word       :string(255)      not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  project_id :integer
 #
 class WordWeight < ApplicationRecord
-  belongs_to :user
-  belongs_to :abstract_screening
+  belongs_to :user, optional: true # TO DO: DELETE AFTER MIGRATING
+  belongs_to :abstract_screening, optional: true # TO DO: DELETE AFTER MIGRATING
 
-  def self.word_weights_object(user, abstract_screening)
-    word_weights = WordWeight.where(user:, abstract_screening:)
+  belongs_to :project
+
+  def self.word_weights_object(project)
+    word_weights = WordWeight.where(project:)
     word_weights.each_with_object({}) do |ww, hash|
       hash[ww.word] = { weight: ww.weight, id: ww.id }
       hash

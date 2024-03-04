@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_09_060523) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_04_104255) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -635,6 +635,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_09_060523) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "user_id"
+    t.datetime "approved_on"
     t.index ["citations_project_id"], name: "index_extractions_on_citations_project_id"
     t.index ["project_id", "citations_project_id", "projects_users_role_id"], name: "index_e_on_p_id_cp_id_pur_id_uniq"
     t.index ["projects_users_role_id"], name: "index_extractions_on_projects_users_role_id"
@@ -2104,15 +2105,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_09_060523) do
   end
 
   create_table "word_weights", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "abstract_screening_id"
     t.integer "weight", limit: 1, null: false
     t.string "word", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["abstract_screening_id"], name: "ww_on_as"
-    t.index ["user_id", "abstract_screening_id", "word"], name: "u_as_w", unique: true
-    t.index ["user_id"], name: "ww_on_u"
+    t.integer "project_id"
+    t.index ["project_id", "word"], name: "project_id_word", unique: true
+    t.index ["project_id"], name: "index_word_weights_on_project_id"
   end
 
   add_foreign_key "abstrackr_settings", "profiles"
@@ -2280,4 +2279,5 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_09_060523) do
   add_foreign_key "training_data_infos", "ml_models"
   add_foreign_key "users", "user_types"
   add_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures"
+  add_foreign_key "word_weights", "projects"
 end
