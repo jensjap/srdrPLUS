@@ -520,15 +520,17 @@ class ScreeningDataExportJob < ApplicationJob
       'Tags',
       'Notes',
     ]
-    #!!! if this is a 1x1 "matrix" question, then we do not need to show row or column index/headers.
-    #!!! check this first and then resolve the column/row headers.
     asf.sf_questions.each_with_index do |sf_question, q_index|
-      sf_question.sf_rows.each_with_index do |sf_row, r_index|
-        question_name = sf_question.name.blank? ? "Question #{q_index}" : sf_question.name
-        row_name = sf_row.name.blank? ? "Row #{r_index}" : sf_row.name
-        sf_question.sf_columns.each_with_index do |sf_column, c_index|
-          column_name = sf_column.name.blank? ? "Column #{c_index}" : sf_column.name
-          headers << "#{question_name}: #{row_name} / #{column_name}"
+      question_name = sf_question.name.blank? ? "Question #{q_index}" : sf_question.name
+      if sf_question.sf_rows.size.eql?(1) && sf_question.sf_columns.size.eql?(1)
+        headers << question_name.to_s
+      else
+        sf_question.sf_rows.each_with_index do |sf_row, r_index|
+          row_name = sf_row.name.blank? ? "Row #{r_index}" : sf_row.name
+          sf_question.sf_columns.each_with_index do |sf_column, c_index|
+            column_name = sf_column.name.blank? ? "Column #{c_index}" : sf_column.name
+            headers << "#{question_name}: #{row_name} / #{column_name}"
+          end
         end
       end
     end
