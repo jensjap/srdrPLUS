@@ -47,12 +47,12 @@ class SdMetaDataSupplyingService
     add_date_section(composition, 'Date of Publication to SRDR+', raw.date_of_publication_to_srdr)
     add_date_section(composition, 'Date of Publication of Full Report', raw.date_of_publication_full_report)
 
-    add_reference_section(composition, 'Key Questions', raw.sd_key_questions, 'SdKeyQuestion')
-    add_reference_section(composition, 'PICODTS', raw.sd_picods, 'SdPicod')
-    add_reference_section(composition, 'Search Strategies', raw.sd_search_strategies, 'SdSearchStrategy')
+    add_reference_section(composition, 'Key Questions', raw.sd_key_questions, 'SdKeyQuestion', 'EvidenceVariable')
+    add_reference_section(composition, 'PICODTS', raw.sd_picods, 'SdPicod', 'Group')
+    add_reference_section(composition, 'Search Strategies', raw.sd_search_strategies, 'SdSearchStrategy', 'Group')
 
     sd_outcomes = get_sd_outcomes(raw)
-    add_reference_section(composition, 'Outcomes', sd_outcomes, 'SdOutcome')
+    add_reference_section(composition, 'Outcomes', sd_outcomes, 'SdOutcome', 'Group')
 
     sections = {
       'Funding Source' => raw.funding_sources&.map { |source| source['name'] },
@@ -148,11 +148,11 @@ class SdMetaDataSupplyingService
       ['Outcome', raw.name]
     ]
 
-    FhirResourceService.get_evidence_variable(
+    FhirResourceService.get_group(
       title: 'Outcome',
       id_prefix: '11',
       srdrplus_id: raw.id.to_s,
-      srdrplus_type: 'SdPicod',
+      srdrplus_type: 'SdOutcome',
       status: 'active',
       group_content: characteristics_data
     )
@@ -166,11 +166,11 @@ class SdMetaDataSupplyingService
       ['Database', raw.sd_search_database&.name]
     ]
 
-    FhirResourceService.get_evidence_variable(
+    FhirResourceService.get_group(
       title: 'Search Strategy',
       id_prefix: '10',
       srdrplus_id: raw.id.to_s,
-      srdrplus_type: 'SdPicod',
+      srdrplus_type: 'SdSearchStrategy',
       status: 'active',
       group_content: characteristics_data
     )
@@ -191,7 +191,7 @@ class SdMetaDataSupplyingService
 
     notes = raw.sd_key_questions.map { |sd_key_question| "SdKeyQuestion/#{sd_key_question.id}" }
 
-    FhirResourceService.get_evidence_variable(
+    FhirResourceService.get_group(
       title: 'PICODTS',
       id_prefix: '9',
       srdrplus_id: raw.id.to_s,
@@ -213,7 +213,7 @@ class SdMetaDataSupplyingService
       title: raw.name,
       id_prefix: '8',
       srdrplus_id: raw.id.to_s,
-      srdrplus_type: 'SdPicod',
+      srdrplus_type: 'SdKeyQuestion',
       status: 'active',
       notes: notes,
     )
@@ -261,10 +261,10 @@ class SdMetaDataSupplyingService
     add_section(composition, title, value)
   end
 
-  def add_reference_section(composition, title, raw_data, prefix)
+  def add_reference_section(composition, title, raw_data, prefix, type)
     id_values = get_identifier_values(raw_data, prefix)
 
-    entrys = id_values.map { |id_value| {'reference' => id_value, 'type' => 'EvidenceVariable'} }
+    entrys = id_values.map { |id_value| {'reference' => id_value, 'type' => type} }
     add_section(composition, title, nil, entrys)
   end
 

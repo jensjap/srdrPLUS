@@ -176,6 +176,38 @@ class FhirResourceService
       questionnaire_response.compact
     end
 
+    def get_group(
+      title:,
+      id_prefix:,
+      srdrplus_id:,
+      srdrplus_type:,
+      status:,
+      group_content:,
+      notes: nil
+    )
+      group = {
+        'resourceType' => 'Group',
+        'status' => status,
+        'id' => "#{id_prefix}-#{srdrplus_id}",
+        'identifier' => build_identifier(srdrplus_type, srdrplus_id),
+        'title' => title,
+        'membership' => 'conceptual',
+        'combinationMethod' => 'all-of',
+        'characteristic' => [],
+      }
+
+      if !notes.blank?
+        group['description'] = notes.join(', ')
+      end
+
+      group_content.each do |code, value|
+        next unless value
+        group['characteristic'] << {'code' => {'text' => code}, 'valueCodeableConcept' => {'text' => value}, 'exclude' => false}
+      end
+
+      group.compact
+    end
+
     def build_contained_group(group_content)
       group = {
         'resourceType' => 'Group',
@@ -254,12 +286,18 @@ class FhirResourceService
       }
     end
 
-    def build_evidence_variable_definition(description:, variable_role:, comparator_category: nil)
-      {
+    def build_evidence_variable_definition(description:, variable_role:, comparator_category: nil, comparator_display: nil)
+      definition = {
         'description' => description,
         'variableRole' => variable_role,
-        'comparatorCategory' => comparator_category
-      }.compact
+        'comparatorCategory' => comparator_category,
+      }
+
+      if !comparator_display.blank?
+        definition['observed'] = { 'display' => comparator_display }
+      end
+
+      definition.compact
     end
 
     def deep_clean(item)

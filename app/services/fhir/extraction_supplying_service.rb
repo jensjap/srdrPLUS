@@ -56,8 +56,8 @@ class ExtractionSupplyingService
     form = ExtractionFormsProjectsSection.find(raw.extraction_forms_projects_section_id)
 
     case form.extraction_forms_projects_section_type_id
-    when 1
-      create_evidence_variables(form, raw)
+    #when 1
+    #  create_evidence_variables(form, raw)
     when 2
       case raw.status['name']
       when 'Draft'
@@ -695,18 +695,14 @@ class ExtractionSupplyingService
         arm_name_group = [arm_name_group] unless arm_name_group.respond_to?(:each)
 
         combined_names = arm_name_group.join(", ")
-
-        if index == 0
-          arm_names_combined << combined_names
-        else
-          arm_names_combined << "comparator group#{index}: #{combined_names}"
-        end
+        arm_names_combined << combined_names
       end
 
       description_for_exposure = arm_names_combined.first
       comparator_category = arm_names_combined[1..].join("; ")
+      comparator_display = arm_names_combined.join(" vs ")
 
-      evidence['variableDefinition'] << FhirResourceService.build_evidence_variable_definition(description: description_for_exposure, variable_role: 'exposure', comparator_category: comparator_category)
+      evidence['variableDefinition'] << FhirResourceService.build_evidence_variable_definition(description: description_for_exposure, variable_role: 'exposure', comparator_category: comparator_category, comparator_display: comparator_display)
     end
 
     time_point_string = time_point_names.join(' - ')
