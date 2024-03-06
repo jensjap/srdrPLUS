@@ -25,6 +25,8 @@ class ScreeningDataExportJob < ApplicationJob
     wb = p.workbook
     project = Project.find(project_id)
     users = project.users.includes(:profile).map { |user| [user.id, user.handle.squeeze(' ')] }
+    consensus_dict = build_consensus_dict(project)
+
     # %w[AS FS].each do |screening_type|
     #   wb.add_worksheet(name: "#{screening_type} data by citations") do |sheet|
     #     headers = [
@@ -427,71 +429,100 @@ class ScreeningDataExportJob < ApplicationJob
     #   end
     # end
 
-    # New label export structure.
-    wb.add_worksheet(name: 'One AS Label per Row') do |sheet|
-      asf            = ScreeningForm.find_or_create_by(project:, form_type: 'abstract')
-      sheet          = build_headers_and_add_to_sheet__one_label_per_row(sheet, project, asf)
-      consensus_dict = build_consensus_dict(project)
-      asrs           = AbstractScreeningResult
-                       .includes(:tags, :reasons, user: :profile)
-                       .joins(:citations_project)
-                       .where(citations_project: { project: })
-      asrs.each do |asr|
-        cp = asr.citations_project
-        citation = cp.citation
-        row = [
-          citation.id,
-          citation.accession_number,
-          citation.pmid,
-          cp.refman,
-          "#{ citation.journal&.name } #{ citation.journal&.volume }(#{ citation.journal&.issue }):#{ citation&.page_number_start }-#{ citation&.page_number_end }",
-          citation.doi,
-          citation.keywords.map(&:name).join(', '),
-          asr.updated_at,
-          asr.privileged ? 'Adjudicator' : asr.user.handle,
-          consensus_dict[cp.id],
-          asr.label,
-          asr.reasons.map(&:name).join('||'),
-          asr.tags.map(&:name).join('||'),
-          asr.notes
-        ]
+    %w[AS FS].each do |screening_type|
+      # New label export structure: Sheet 1
+      wb.add_worksheet(name: "#{ screening_type } Long") do |sheet|
+        sf = case screening_type
+             when 'AS'
+               ScreeningForm.find_or_create_by(project:, form_type: 'abstract')
+             when 'FS'
+               ScreeningForm.find_or_create_by(project:, form_type: 'fulltext')
+             end
+        sheet = build_headers_and_add_to_sheet(sheet, project, 'sheet1', sf)
+        srs = case screening_type
+              when 'AS'
+                AbstractScreeningResult
+              .includes(:tags, :reasons, user: :profile)
+              .joins(:citations_project)
+              .where(citations_project: { project: })
+              when 'FS'
+                FulltextScreeningResult
+              .includes(:tags, :reasons, user: :profile)
+              .joins(:citations_project)
+              .where(citations_project: { project: })
+              end
+        srs.each do |sr|
+          cp = sr.citations_project
+          citation = cp.citation
+          row = [
+            citation.id,
+            citation.accession_number,
+            citation.pmid,
+            cp.refman,
+            "#{ citation.journal&.name } #{ citation.journal&.volume }(#{ citation.journal&.issue }):#{ citation&.page_number_start }-#{ citation&.page_number_end }",
+            citation.doi,
+            citation.keywords.map(&:name).join(', '),
+            sr.updated_at,
+            consensus_dict[screening_type][cp.id],
+            sr.privileged ? 'Adjudicator' : sr.user.handle,
+            sr.label,
+            sr.reasons.map(&:name).join('||'),
+            sr.tags.map(&:name).join('||'),
+            sr.notes
+          ]
 
-        # Add screening form answers to row.
-        asf.sf_questions.each_with_index do |sf_question, _q_index|
-          sf_question.sf_rows.each_with_index do |sf_row, _r_index|
-            sf_question.sf_columns.each_with_index do |sf_column, _c_index|
-              sf_cell = SfCell.find_by(sf_row:, sf_column:)
-              if sf_cell.nil?
-                row << nil
-              else
-                cell = ''
-                sfars = SfAbstractRecord.where(sf_cell:, abstract_screening_result: asr)
-                sfos = sf_cell.sf_options
-                case sf_cell.cell_type
-                when SfCell::TEXT
-                  cell += sfars.map(&:value).join('\n')
-                when SfCell::NUMERIC
-                  sfars.each_with_index do |sfar, idx|
-                    cell += "\n" if idx > 0
-                    cell += sfar.equality.to_s if sf_cell.with_equality
-                    cell += sfar.value.to_s
+          # Add screening form answers to row.
+          sf.sf_questions.each_with_index do |sf_question, _q_index|
+            sf_question.sf_rows.each_with_index do |sf_row, _r_index|
+              sf_question.sf_columns.each_with_index do |sf_column, _c_index|
+                sf_cell = SfCell.find_by(sf_row:, sf_column:)
+                if sf_cell.nil?
+                  row << nil
+                else
+                  cell = ''
+                  sfrs = case screening_type
+                         when 'AS'
+                           SfAbstractRecord.where(sf_cell:, abstract_screening_result: sr)
+                         when 'FS'
+                           SfFulltextRecord.where(sf_cell:, fulltext_screening_result: sr)
+                         end
+                  sfos = sf_cell.sf_options
+                  case sf_cell.cell_type
+                  when SfCell::TEXT
+                    cell += sfrs.map(&:value).join('\n')
+                  when SfCell::NUMERIC
+                    sfrs.each_with_index do |sfr, idx|
+                      cell += "\n" if idx > 0
+                      cell += sfr.equality.to_s if sf_cell.with_equality
+                      cell += sfr.value.to_s
+                    end
+                  when SfCell::CHECKBOX, SfCell::DROPDOWN, SfCell::RADIO, SfCell::SELECT_ONE, SfCell::SELECT_MULTIPLE
+                    sfrs.each_with_index do |sfr, idx|
+                      cell += "\n" if idx.positive?
+                      sfo = sfos.select { |sfo| sfo.name == sfr.value }.first
+                      cell += "#{sfr.value}"
+                      cell += ": #{sfr.followup}" if sfo&.with_followup
+                    end
                   end
-                when SfCell::CHECKBOX, SfCell::DROPDOWN, SfCell::RADIO, SfCell::SELECT_ONE, SfCell::SELECT_MULTIPLE
-                  sfars.each_with_index do |sfar, idx|
-                    cell += "\n" if idx > 0
-                    sfo = sfos.select { |sfo| sfo.name == sfar.value }.first
-                    cell += "#{ sfar.value }"
-                    cell += ": #{ sfar.followup }" if sfo&.with_followup
-                  end
+                  row << cell
                 end
-                row << cell
               end
             end
           end
+          sheet.add_row(
+            row.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
+          )
         end
-        sheet.add_row(
-          row.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
-        )
+      end
+
+      # New label export structure: Sheet 2
+      wb.add_worksheet(name: "#{ screening_type } Wide Brief") do |sheet|
+        #!!!
+      end
+
+      # new label export structure: Sheet 3
+      wb.add_worksheet(name: "#{ screening_type } Wide Screening Form") do |sheet|
+        #!!!
       end
     end
 
@@ -503,7 +534,7 @@ class ScreeningDataExportJob < ApplicationJob
 
   private
 
-  def build_headers_and_add_to_sheet__one_label_per_row(sheet, project, asf)
+  def build_headers_and_add_to_sheet(sheet, project, style, sf=nil)
     headers = [
       'SRDR Citation ID',
       'Accession Number',
@@ -513,23 +544,58 @@ class ScreeningDataExportJob < ApplicationJob
       'DOI',
       'Keywords',
       'Last Label Time',
-      'Username',
-      'Consensus Label',
-      'User Label',
-      'Reasons',
-      'Tags',
-      'Notes',
     ]
-    asf.sf_questions.each_with_index do |sf_question, q_index|
-      question_name = sf_question.name.blank? ? "Question #{q_index}" : sf_question.name
-      if sf_question.sf_rows.size.eql?(1) && sf_question.sf_columns.size.eql?(1)
-        headers << question_name.to_s
-      else
-        sf_question.sf_rows.each_with_index do |sf_row, r_index|
-          row_name = sf_row.name.blank? ? "Row #{r_index}" : sf_row.name
-          sf_question.sf_columns.each_with_index do |sf_column, c_index|
-            column_name = sf_column.name.blank? ? "Column #{c_index}" : sf_column.name
-            headers << "#{question_name}: #{row_name} / #{column_name}"
+    case style
+    when 'sheet1'
+      headers.concat [
+        'Consensus Label',
+        'Username',
+        'User Label',
+        'Reasons',
+        'Tags',
+        'Notes',
+      ]
+      sf.sf_questions.each_with_index do |sf_question, q_index|
+        question_name = sf_question.name.blank? ? "Question #{q_index}" : sf_question.name
+        if sf_question.sf_rows.size.eql?(1) && sf_question.sf_columns.size.eql?(1)
+          headers << question_name.to_s
+        else
+          sf_question.sf_rows.each_with_index do |sf_row, r_index|
+            row_name = sf_row.name.blank? ? "Row #{r_index}" : sf_row.name
+            sf_question.sf_columns.each_with_index do |sf_column, c_index|
+              column_name = sf_column.name.blank? ? "Column #{c_index}" : sf_column.name
+              headers << "#{question_name}: #{row_name} / #{column_name}"
+            end
+          end
+        end
+      end
+    when 'sheet2'
+      headers.concat [
+        'Concensus Label',
+      ]
+      users = project.users.includes(:profile).map { |user| [user.id, user.handle.squeeze(' ')] }
+      users.each do |user|
+        headers << "\"#{user[1]}\" Label"
+      end
+      headers << 'Tags'
+      headers << 'Reasons'
+      headers << 'Notes'
+    when 'sheet3'
+      users.each_with_index do |user, idx|
+        sf.sf_questions.each_with_index do |sf_question, q_index|
+          question_name = sf_question.name.blank? ? "Question #{q_index}" : sf_question.name
+          if sf_question.sf_rows.size.eql?(1) && sf_question.sf_columns.size.eql?(1)
+            headers << "#{ question_name.to_s }: Adjudicator" if idx.eql?(0)
+            headers << "#{ question_name.to_s }: #{ user[1] }"
+          else
+            sf_question.sf_rows.each_with_index do |sf_row, r_index|
+              row_name = sf_row.name.blank? ? "Row #{r_index}" : sf_row.name
+              sf_question.sf_columns.each_with_index do |sf_column, c_index|
+                column_name = sf_column.name.blank? ? "Column #{c_index}" : sf_column.name
+                headers << "#{question_name}: #{row_name} / #{column_name}: Adjudicator" if idx.eql?(0)
+                headers << "#{question_name}: #{row_name} / #{column_name}: #{ user[1] }"
+              end
+            end
           end
         end
       end
@@ -551,45 +617,56 @@ class ScreeningDataExportJob < ApplicationJob
   # return { :citations_project_id => consensus_label }
   def build_consensus_dict(project)
     consensus_dict = {}
-    project.citations_projects.each do |citations_project|
-      consensus_dict[citations_project.id] = nil
-      priv_asr = AbstractScreeningResult.where(citations_project:, privileged: true)
-      debugger if Rails.env.development? && priv_asr.size > 1
-      priv_asr = priv_asr.first
-      # Privileged label is prioritized.
-      if priv_asr.present? && [-1, 1].include?(priv_asr.label)
-        consensus_dict[citations_project.id] = priv_asr.label
-      # If no privileged label exists then we check privileged: false labels.
-      else
-        asrs = AbstractScreeningResult.where(citations_project:, privileged: false)
-        case asrs.size
-        when 0
-          consensus_dict[citations_project.id] = nil
-        when 1
-          asr = asrs.first
-          as = asr.abstract_screening
-          consensus_dict[citations_project.id] = case as.screening_type
-                                                 when /single/i
-                                                   asr.label
-                                                 when /double|expert/i
-                                                   'o'
-                                                 when /pilot/i
-                                                   # Check how many users are assigned in case of exclusive_users.
-                                                   if as.exclusive_users
-                                                     as.users.size.eql?(1) ? asr.label : 'o'
-                                                   # Otherwise look for project.members size to determine 'o' status.
-                                                   else
-                                                     project.members.size.eql?(1) ? asr.label : 'o'
-                                                   end
-                                                 end
+    ['AS', 'FS'].each do |screening_type|
+      consensus_dict[screening_type] = {}
+      project.citations_projects.each do |citations_project|
+        consensus_dict[screening_type][citations_project.id] = nil
+        priv_srs =
+          case screening_type
+          when 'AS'
+            AbstractScreeningResult.where(citations_project:, privileged: true)
+          when 'FS'
+            FulltextScreeningResult.where(citations_project:, privileged: true)
+          end
+        debugger if Rails.env.development? && priv_srs.size > 1
+        priv_sr = priv_srs.first
+        # Privileged label is prioritized.
+        if priv_sr.present? && [-1, 1].include?(priv_sr.label)
+          consensus_dict[screening_type][citations_project.id] = priv_sr.label
+        # If no privileged label exists then we check privileged: false labels.
         else
-          asr = asrs.first
-          consensus_dict[citations_project.id] = case asrs.map(&:label).reject(&:blank?).uniq.size
-                                                 when 1
-                                                   asrs.any? { |asr| asr.label == 0 } ? 'x' : asr.label
-                                                 else
-                                                   'x'
-                                                 end
+          srs = AbstractScreeningResult.where(citations_project:, privileged: false)
+          case srs.size
+          when 0
+            consensus_dict[screening_type][citations_project.id] = nil
+          when 1
+            sr = srs.first
+            as = sr.abstract_screening
+            consensus_dict[screening_type][citations_project.id] =
+              case as.screening_type
+              when /single/i
+                sr.label
+              when /double|expert/i
+                'o'
+              when /pilot/i
+                # Check how many users are assigned in case of exclusive_users.
+                if as.exclusive_users
+                  as.users.size.eql?(1) ? sr.label : 'o'
+                # Otherwise look for project.members size to determine 'o' status.
+                else
+                  project.members.size.eql?(1) ? sr.label : 'o'
+                end
+              end
+          else
+            sr = srs.first
+            consensus_dict[screening_type][citations_project.id] =
+              case srs.map(&:label).reject(&:blank?).uniq.size
+              when 1
+                srs.any? { |sr| sr.label == 0 } ? 'x' : sr.label
+              else
+                'x'
+              end
+          end
         end
       end
     end
