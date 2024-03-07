@@ -517,7 +517,84 @@ class ScreeningDataExportJob < ApplicationJob
 
       # New label export structure: Sheet 2
       wb.add_worksheet(name: "#{ screening_type } Wide Brief") do |sheet|
-        #!!!
+        sheet = build_headers_and_add_to_sheet(sheet, project, 'sheet2')
+        mh = {}
+        screening_results =
+          case screening_type
+          when 'AS'
+            project.abstract_screening_results.includes(:tags, :reasons, user: :profile)
+          when 'FS'
+            project.fulltext_screening_results.includes(:tags, :reasons, user: :profile)
+          end
+        screening_results.each do |sr|
+          mh[sr.citations_project_id] ||= {
+            user_labels: {},
+            user_reasons: [],
+            notes: [],
+            tags: [],
+            consensus_label: nil,
+            consensus_user: nil,
+            consensus_tags: nil,
+            consensus_reasons: nil,
+            consensus_notes: nil,
+            sr_label_dates: []
+          }
+          if sr.privileged
+            unless sr.label.blank?
+              mh[sr.citations_project_id][:consensus_label] = sr.label
+              mh[sr.citations_project_id][:consensus_user] = sr.user.handle
+              mh[sr.citations_project_id][:consensus_tags] = sr.tags.map(&:name).join('||')
+              mh[sr.citations_project_id][:consensus_reasons] = sr.reasons.map(&:name).join('||')
+              mh[sr.citations_project_id][:consensus_notes] = sr.notes
+            end
+          else
+            mh[sr.citations_project_id][:user_labels][sr.user_id] = sr.label
+            mh[sr.citations_project_id][:tags] += sr.tags.map(&:name)
+            mh[sr.citations_project_id][:user_reasons] += sr.reasons.map(&:name)
+            mh[sr.citations_project_id][:notes] += [sr.notes] unless sr.notes.blank?
+            mh[sr.citations_project_id][:sr_label_dates] << sr.updated_at
+          end
+        end
+
+        CitationsProject.search(where: { project_id: project.id }, load: false).each do |cp|
+          cp_id = cp.id.to_i
+          columns = [
+            cp['citation_id'],
+            cp['accession_number'],
+            cp['pmid'],
+            cp['refman'],
+            cp['publication'],
+            cp['doi'],
+            cp['keywords'],
+          ]
+          last_label_time = mh.dig(cp_id, :sr_label_dates)&.max&.in_time_zone(@desired_time_zone)
+          columns << last_label_time
+          columns << consensus_dict[screening_type][cp_id]
+          users = project.users.each do |user|
+            columns << mh.dig(cp_id, :user_labels, user.id.to_i)
+          end
+          tags = if mh.dig(cp_id, :consensus_label).present?
+                   mh.dig(cp_id, :consensus_tags)
+                 else
+                   mh.dig(cp_id, :tags)&.uniq&.join('||')
+                 end
+          columns << tags
+          reasons = if mh.dig(cp_id, :consensus_label).present?
+                      mh.dig(cp_id, :consensus_reasons)
+                    else
+                      mh.dig(cp_id, :user_reasons)&.uniq&.join('||')
+                    end
+          columns << reasons
+          notes = if mh.dig(cp_id, :consensus_label).present?
+                    mh.dig(cp_id, :consensus_notes)
+                  else
+                    mh.dig(cp_id, :notes)&.uniq&.join('||')
+                  end
+          columns << notes
+          sheet.add_row(
+            columns.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
+          )
+        end
       end
 
       # new label export structure: Sheet 3
