@@ -24,8 +24,8 @@ class ScreeningDataExportJob < ApplicationJob
     p = Axlsx::Package.new
     wb = p.workbook
     project = Project.find(project_id)
-    users = project.users.includes(:profile).map { |user| [user.id, user.handle.squeeze(' ')] }
-    consensus_dict = build_consensus_dict(project)
+    @users = project.users.includes(:profile).map { |user| [user.id.to_i, user.handle.squeeze(' ')] }
+    @consensus_dict = build_consensus_dict(project)
 
     # %w[AS FS].each do |screening_type|
     #   wb.add_worksheet(name: "#{screening_type} data by citations") do |sheet|
@@ -463,7 +463,7 @@ class ScreeningDataExportJob < ApplicationJob
             citation.doi,
             citation.keywords.map(&:name).join(', '),
             sr.updated_at,
-            consensus_dict[screening_type][cp.id],
+            @consensus_dict[screening_type][cp.id],
             sr.privileged ? 'Adjudicator' : sr.user.handle,
             sr.label,
             sr.reasons.map(&:name).join('||'),
@@ -569,9 +569,9 @@ class ScreeningDataExportJob < ApplicationJob
           ]
           last_label_time = mh.dig(cp_id, :sr_label_dates)&.max&.in_time_zone(@desired_time_zone)
           columns << last_label_time
-          columns << consensus_dict[screening_type][cp_id]
-          users = project.users.each do |user|
-            columns << mh.dig(cp_id, :user_labels, user.id.to_i)
+          columns << @consensus_dict[screening_type][cp_id]
+          @users.each do |user|
+            columns << mh.dig(cp_id, :user_labels, user[0])
           end
           tags = if mh.dig(cp_id, :consensus_label).present?
                    mh.dig(cp_id, :consensus_tags)
@@ -599,7 +599,88 @@ class ScreeningDataExportJob < ApplicationJob
 
       # new label export structure: Sheet 3
       wb.add_worksheet(name: "#{ screening_type } Wide Screening Form") do |sheet|
-        #!!!
+        sf = case screening_type
+             when 'AS'
+               ScreeningForm.find_or_create_by(project:, form_type: 'abstract')
+             when 'FS'
+               ScreeningForm.find_or_create_by(project:, form_type: 'fulltext')
+             end
+        sheet = build_headers_and_add_to_sheet(sheet, project, 'sheet3', sf)
+
+#        srs = case screening_type
+#              when 'AS'
+#                AbstractScreeningResult
+#              .includes(:tags, :reasons, user: :profile)
+#              .joins(:citations_project)
+#              .where(citations_project: { project: })
+#              when 'FS'
+#                FulltextScreeningResult
+#              .includes(:tags, :reasons, user: :profile)
+#              .joins(:citations_project)
+#              .where(citations_project: { project: })
+#              end
+#        srs.each do |sr|
+#          cp = sr.citations_project
+#          citation = cp.citation
+#          row = [
+#            citation.id,
+#            citation.accession_number,
+#            citation.pmid,
+#            cp.refman,
+#            "#{ citation.journal&.name } #{ citation.journal&.volume }(#{ citation.journal&.issue }):#{ citation&.page_number_start }-#{ citation&.page_number_end }",
+#            citation.doi,
+#            citation.keywords.map(&:name).join(', '),
+#            sr.updated_at,
+#            @consensus_dict[screening_type][cp.id],
+#            sr.privileged ? 'Adjudicator' : sr.user.handle,
+#            sr.label,
+#            sr.reasons.map(&:name).join('||'),
+#            sr.tags.map(&:name).join('||'),
+#            sr.notes
+#          ]
+#
+#          # Add screening form answers to row.
+#          sf.sf_questions.each_with_index do |sf_question, _q_index|
+#            sf_question.sf_rows.each_with_index do |sf_row, _r_index|
+#              sf_question.sf_columns.each_with_index do |sf_column, _c_index|
+#                sf_cell = SfCell.find_by(sf_row:, sf_column:)
+#                if sf_cell.nil?
+#                  row << nil
+#                else
+#                  cell = ''
+#                  sfrs = case screening_type
+#                         when 'AS'
+#                           SfAbstractRecord.where(sf_cell:, abstract_screening_result: sr)
+#                         when 'FS'
+#                           SfFulltextRecord.where(sf_cell:, fulltext_screening_result: sr)
+#                         end
+#                  sfos = sf_cell.sf_options
+#                  case sf_cell.cell_type
+#                  when SfCell::TEXT
+#                    cell += sfrs.map(&:value).join('\n')
+#                  when SfCell::NUMERIC
+#                    sfrs.each_with_index do |sfr, idx|
+#                      cell += "\n" if idx > 0
+#                      cell += sfr.equality.to_s if sf_cell.with_equality
+#                      cell += sfr.value.to_s
+#                    end
+#                  when SfCell::CHECKBOX, SfCell::DROPDOWN, SfCell::RADIO, SfCell::SELECT_ONE, SfCell::SELECT_MULTIPLE
+#                    sfrs.each_with_index do |sfr, idx|
+#                      cell += "\n" if idx.positive?
+#                      sfo = sfos.select { |sfo| sfo.name == sfr.value }.first
+#                      cell += "#{sfr.value}"
+#                      cell += ": #{sfr.followup}" if sfo&.with_followup
+#                    end
+#                  end
+#                  row << cell
+#                end
+#              end
+#            end
+#          end
+#          sheet.add_row(
+#            row.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
+#          )
+#        end
       end
     end
 
@@ -650,26 +731,24 @@ class ScreeningDataExportJob < ApplicationJob
       headers.concat [
         'Concensus Label',
       ]
-      users = project.users.includes(:profile).map { |user| [user.id, user.handle.squeeze(' ')] }
-      users.each do |user|
+      @users.each do |user|
         headers << "\"#{user[1]}\" Label"
       end
       headers << 'Tags'
       headers << 'Reasons'
       headers << 'Notes'
     when 'sheet3'
-      users.each_with_index do |user, idx|
+      tmp_users = [[0, 'Adjudicator']] + @users
+      tmp_users.each do |user|
         sf.sf_questions.each_with_index do |sf_question, q_index|
           question_name = sf_question.name.blank? ? "Question #{q_index}" : sf_question.name
           if sf_question.sf_rows.size.eql?(1) && sf_question.sf_columns.size.eql?(1)
-            headers << "#{ question_name.to_s }: Adjudicator" if idx.eql?(0)
             headers << "#{ question_name.to_s }: #{ user[1] }"
           else
             sf_question.sf_rows.each_with_index do |sf_row, r_index|
               row_name = sf_row.name.blank? ? "Row #{r_index}" : sf_row.name
               sf_question.sf_columns.each_with_index do |sf_column, c_index|
                 column_name = sf_column.name.blank? ? "Column #{c_index}" : sf_column.name
-                headers << "#{question_name}: #{row_name} / #{column_name}: Adjudicator" if idx.eql?(0)
                 headers << "#{question_name}: #{row_name} / #{column_name}: #{ user[1] }"
               end
             end
