@@ -93,11 +93,16 @@
                   >
                     <thead>
                       <tr>
-                        <td class="bg-white"></td>
+                        <td
+                          x-show="question.columns.length > 1 || question.rows.length > 1"
+                          class="bg-white"
+                        ></td>
                         <template
                           x-for="(column, column_index) in question.columns"
                         >
-                          <th>
+                          <th
+                            x-show="question.columns.length > 1 || question.rows.length > 1"
+                          >
                             <div class="flex justify-center items-center">
                               <div
                                 class="grow whitespace-nowrap"
@@ -111,7 +116,9 @@
                     <tbody>
                       <template x-for="(row, row_index) in (question.rows)">
                         <tr>
-                          <th>
+                          <th
+                            x-show="question.columns.length > 1 || question.rows.length > 1"
+                          >
                             <div class="h-full flex justify-center items-start">
                               <div
                                 class="grow whitespace-nowrap"
