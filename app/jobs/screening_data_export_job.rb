@@ -233,11 +233,15 @@ class ScreeningDataExportJob < ApplicationJob
         asf = ScreeningForm.find_or_create_by(project:, form_type: 'abstract')
         asf.sf_questions.each_with_index do |sf_question, q_index|
           sf_question.sf_rows.each_with_index do |sf_row, r_index|
-            question_name = sf_row.name.blank? ? "Question #{q_index}" : sf_question.name
+            question_name = sf_question.name.blank? ? "Question #{q_index}" : sf_question.name
             row_name = sf_row.name.blank? ? "Row #{r_index}" : sf_row.name
             sf_question.sf_columns.each_with_index do |sf_column, c_index|
               column_name = sf_column.name.blank? ? "Column #{c_index}" : sf_column.name
-              headers << "#{question_name}: #{row_name} / #{column_name}"
+              headers << if sf_question.sf_columns.length > 1 || sf_question.sf_rows.length > 1
+                           "#{question_name}: #{row_name} / #{column_name}"
+                         else
+                           question_name
+                         end
             end
           end
         end
@@ -340,11 +344,15 @@ class ScreeningDataExportJob < ApplicationJob
         fsf = ScreeningForm.find_or_create_by(project:, form_type: 'fulltext')
         fsf.sf_questions.each_with_index do |sf_question, q_index|
           sf_question.sf_rows.each_with_index do |sf_row, r_index|
-            question_name = sf_row.name.blank? ? "Question #{q_index}" : sf_question.name
+            question_name = sf_question.name.blank? ? "Question #{q_index}" : sf_question.name
             row_name = sf_row.name.blank? ? "Row #{r_index}" : sf_row.name
             sf_question.sf_columns.each_with_index do |sf_column, c_index|
               column_name = sf_column.name.blank? ? "Column #{c_index}" : sf_column.name
-              headers << "#{question_name}: #{row_name} / #{column_name}"
+              headers << if sf_question.sf_columns.length > 1 || sf_question.sf_rows.length > 1
+                           "#{question_name}: #{row_name} / #{column_name}"
+                         else
+                           question_name
+                         end
             end
           end
         end
