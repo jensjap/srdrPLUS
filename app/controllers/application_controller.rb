@@ -24,6 +24,7 @@ class ApplicationController < ActionController::Base
   before_action :set_exit_disclaimer_message
   before_action :set_sentry_context
   before_action :set_nav_buttons
+  before_action :set_security_response_headers
 
   def set_nav_buttons
     @nav_buttons = []
@@ -89,5 +90,9 @@ class ApplicationController < ActionController::Base
   def set_exit_disclaimer_message
     @exit_disclaimer = "Exit Disclaimer\r\r- This external link provides additional information that is consistent with the intended purpose of a Federal site.\r- Linking to a non-Federal site does not constitute an endorsement by the Department of Health and Human Services (HHS) or any of its employees of the sponsors or the information and products presented on the site.\r- HHS cannot attest to the accuracy of information provided by this link.\r- You will be subject to the destination site's privacy policy when you follow the link."
     gon.exit_disclaimer = @exit_disclaimer
+  end
+
+  def set_security_response_headers
+    response.headers['X-Frame-Options'] = 'DENY'
   end
 end

@@ -23,6 +23,10 @@ module SrdrPLUS
     # config.active_job.queue_name_prefix = "srdrPLUS_#{ Rails.env }"
 
     config.autoload_paths += %w(#{config.root}/lib)
+
+    # Restriction of Rendered UI Layers or Frames.
+    config.action_dispatch.default_headers['Content-Security-Policy'] = "frame-ancestors 'self';"
+    config.action_dispatch.default_headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
   end
 end
 
