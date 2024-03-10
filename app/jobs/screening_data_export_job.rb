@@ -430,6 +430,44 @@ class ScreeningDataExportJob < ApplicationJob
     # end
 
     %w[AS FS].each do |screening_type|
+      mh = {}
+      screening_results =
+        case screening_type
+        when 'AS'
+          project.abstract_screening_results.includes(:tags, :reasons, user: :profile)
+        when 'FS'
+          project.fulltext_screening_results.includes(:tags, :reasons, user: :profile)
+        end
+      screening_results.each do |sr|
+        mh[sr.citations_project_id] ||= {
+          user_labels: {},
+          user_reasons: [],
+          notes: [],
+          tags: [],
+          consensus_label: nil,
+          consensus_user: nil,
+          consensus_tags: nil,
+          consensus_reasons: nil,
+          consensus_notes: nil,
+          sr_label_dates: []
+        }
+        if sr.privileged
+          unless sr.label.blank?
+            mh[sr.citations_project_id][:consensus_label] = sr.label
+            mh[sr.citations_project_id][:consensus_user] = sr.user.handle
+            mh[sr.citations_project_id][:consensus_tags] = sr.tags.map(&:name).join('||')
+            mh[sr.citations_project_id][:consensus_reasons] = sr.reasons.map(&:name).join('||')
+            mh[sr.citations_project_id][:consensus_notes] = sr.notes
+          end
+        else
+          mh[sr.citations_project_id][:user_labels][sr.user_id] = sr.label
+          mh[sr.citations_project_id][:tags] += sr.tags.map(&:name)
+          mh[sr.citations_project_id][:user_reasons] += sr.reasons.map(&:name)
+          mh[sr.citations_project_id][:notes] += [sr.notes] unless sr.notes.blank?
+          mh[sr.citations_project_id][:sr_label_dates] << sr.updated_at
+        end
+      end
+
       # New label export structure: Sheet 1
       wb.add_worksheet(name: "#{ screening_type } Long") do |sheet|
         sf = case screening_type
@@ -518,44 +556,6 @@ class ScreeningDataExportJob < ApplicationJob
       # New label export structure: Sheet 2
       wb.add_worksheet(name: "#{ screening_type } Wide Brief") do |sheet|
         sheet = build_headers_and_add_to_sheet(sheet, project, 'sheet2')
-        mh = {}
-        screening_results =
-          case screening_type
-          when 'AS'
-            project.abstract_screening_results.includes(:tags, :reasons, user: :profile)
-          when 'FS'
-            project.fulltext_screening_results.includes(:tags, :reasons, user: :profile)
-          end
-        screening_results.each do |sr|
-          mh[sr.citations_project_id] ||= {
-            user_labels: {},
-            user_reasons: [],
-            notes: [],
-            tags: [],
-            consensus_label: nil,
-            consensus_user: nil,
-            consensus_tags: nil,
-            consensus_reasons: nil,
-            consensus_notes: nil,
-            sr_label_dates: []
-          }
-          if sr.privileged
-            unless sr.label.blank?
-              mh[sr.citations_project_id][:consensus_label] = sr.label
-              mh[sr.citations_project_id][:consensus_user] = sr.user.handle
-              mh[sr.citations_project_id][:consensus_tags] = sr.tags.map(&:name).join('||')
-              mh[sr.citations_project_id][:consensus_reasons] = sr.reasons.map(&:name).join('||')
-              mh[sr.citations_project_id][:consensus_notes] = sr.notes
-            end
-          else
-            mh[sr.citations_project_id][:user_labels][sr.user_id] = sr.label
-            mh[sr.citations_project_id][:tags] += sr.tags.map(&:name)
-            mh[sr.citations_project_id][:user_reasons] += sr.reasons.map(&:name)
-            mh[sr.citations_project_id][:notes] += [sr.notes] unless sr.notes.blank?
-            mh[sr.citations_project_id][:sr_label_dates] << sr.updated_at
-          end
-        end
-
         CitationsProject.search(where: { project_id: project.id }, load: false).each do |cp|
           cp_id = cp.id.to_i
           columns = [
@@ -606,6 +606,102 @@ class ScreeningDataExportJob < ApplicationJob
                ScreeningForm.find_or_create_by(project:, form_type: 'fulltext')
              end
         sheet = build_headers_and_add_to_sheet(sheet, project, 'sheet3', sf)
+        CitationsProject.search(where: { project_id: project.id }, load: false).each do |cp|
+          cp_id = cp.id.to_i
+          columns = [
+            cp['citation_id'],
+            cp['accession_number'],
+            cp['pmid'],
+            cp['refman'],
+            cp['publication'],
+            cp['doi'],
+            cp['keywords'],
+          ]
+          last_label_time = mh.dig(cp_id, :sr_label_dates)&.max&.in_time_zone(@desired_time_zone)
+          columns << last_label_time
+          tmp_users = [[0, 'Adjudicator']] + @users
+          tmp_users.each do |user|
+            sr = case screening_type
+                 when 'AS'
+                   srs = if user[0].eql?(0)
+                           AbstractScreeningResult.where(
+                             citations_project_id: cp_id,
+                             privileged: true
+                           )
+                         else
+                           AbstractScreeningResult.where(
+                             user_id: user[0],
+                             citations_project_id: cp_id,
+                             privileged: false
+                           )
+                         end
+                   raise 'Too many consolidated labels found!' if srs.size > 1
+
+                   srs.blank? ? nil : srs.first
+                 when 'FS'
+                   srs = if user[0].eql?(0)
+                           FulltextScreeningResult.where(
+                             citations_project_id: cp_id,
+                             privileged: true
+                           )
+                         else
+                           FulltextScreeningResult.where(
+                             user_id: user[0],
+                             citations_project_id: cp_id,
+                             privileged: false
+                           )
+                         end
+                   raise 'Too many consolidated labels found!' if srs.size > 1
+
+                   srs.blank? ? nil : srs.first
+                 end
+            # Add screening form answers to row.
+            sf.sf_questions.each_with_index do |sf_question, _q_index|
+              sf_question.sf_rows.each_with_index do |sf_row, _r_index|
+                sf_question.sf_columns.each_with_index do |sf_column, _c_index|
+                  sf_cell = SfCell.find_by(sf_row:, sf_column:)
+                  if sf_cell.nil?
+                    columns << nil
+                  else
+                    if sr.nil?
+                      columns << ''
+                      next
+                    end
+                    cell = ''
+                    sfrs = case screening_type
+                           when 'AS'
+                             SfAbstractRecord.where(sf_cell:, abstract_screening_result: sr)
+                           when 'FS'
+                             SfFulltextRecord.where(sf_cell:, fulltext_screening_result: sr)
+                           end
+                    sfos = sf_cell.sf_options
+                    case sf_cell.cell_type
+                    when SfCell::TEXT
+                      cell += sfrs.map(&:value).join('\n')
+                    when SfCell::NUMERIC
+                      sfrs.each_with_index do |sfr, idx|
+                        cell += "\n" if idx > 0
+                        cell += sfr.equality.to_s if sf_cell.with_equality
+                        cell += sfr.value.to_s
+                      end
+                    when SfCell::CHECKBOX, SfCell::DROPDOWN, SfCell::RADIO, SfCell::SELECT_ONE, SfCell::SELECT_MULTIPLE
+                      sfrs.each_with_index do |sfr, idx|
+                        cell += "\n" if idx.positive?
+                        sfo = sfos.select { |sfo| sfo.name == sfr.value }.first
+                        cell += "#{sfr.value}"
+                        cell += ": #{sfr.followup}" if sfo&.with_followup
+                      end
+                    end
+                    columns << cell
+                  end
+                end
+              end
+            end
+          end
+          sheet.add_row(
+            columns.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
+          )
+        end
 
 #        srs = case screening_type
 #              when 'AS'
@@ -697,7 +793,7 @@ class ScreeningDataExportJob < ApplicationJob
       'SRDR Citation ID',
       'Accession Number',
       'PMID',
-      'Refman',
+      'RefId',
       'Publication String',
       'DOI',
       'Keywords',
@@ -773,7 +869,7 @@ class ScreeningDataExportJob < ApplicationJob
   # return { :citations_project_id => consensus_label }
   def build_consensus_dict(project)
     consensus_dict = {}
-    ['AS', 'FS'].each do |screening_type|
+    %w[AS FS].each do |screening_type|
       consensus_dict[screening_type] = {}
       project.citations_projects.each do |citations_project|
         consensus_dict[screening_type][citations_project.id] = nil
@@ -791,23 +887,35 @@ class ScreeningDataExportJob < ApplicationJob
           consensus_dict[screening_type][citations_project.id] = priv_sr.label
         # If no privileged label exists then we check privileged: false labels.
         else
-          srs = AbstractScreeningResult.where(citations_project:, privileged: false)
+          srs =
+            case screening_type
+            when 'AS'
+              AbstractScreeningResult.where(citations_project:, privileged: false)
+            when 'FS'
+              FulltextScreeningResult.where(citations_project:, privileged: false)
+            end
           case srs.size
           when 0
             consensus_dict[screening_type][citations_project.id] = nil
           when 1
             sr = srs.first
-            as = sr.abstract_screening
+            screening =
+              case screening_type
+              when 'AS'
+                sr.abstract_screening
+              when 'FS'
+                sr.fulltext_screening
+              end
             consensus_dict[screening_type][citations_project.id] =
-              case as.screening_type
+              case screening.screening_type
               when /single/i
                 sr.label
               when /double|expert/i
                 'o'
               when /pilot/i
                 # Check how many users are assigned in case of exclusive_users.
-                if as.exclusive_users
-                  as.users.size.eql?(1) ? sr.label : 'o'
+                if screening.exclusive_users
+                  screening.users.size.eql?(1) ? sr.label : 'o'
                 # Otherwise look for project.members size to determine 'o' status.
                 else
                   project.members.size.eql?(1) ? sr.label : 'o'
