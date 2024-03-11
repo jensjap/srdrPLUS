@@ -37,7 +37,7 @@ class AbstractScreeningsController < ApplicationController
     else
       ww.update(weight:, word:)
     end
-    render json: WordWeight.word_weights_object(current_user, @abstract_screening)
+    render json: WordGroup.word_weights_object(current_user, @abstract_screening)
   end
 
   def citation_lifecycle_management

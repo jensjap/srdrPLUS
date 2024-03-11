@@ -78,7 +78,7 @@
               <span
                 :id="word.id"
                 :class="if (terms_and_phrases_settings) {
-                  if (word.type != 'nonWord') return `cursor-pointer hover:bg-yellow-200 ${cssWordClass[word.weight]}`
+                  if (word.type != 'nonWord') return `cursor-pointer hover:bg-yellow-200 ${word.color} ${word.color !== '' ? 'font-black' : ''}`
                 }"
                 x-text="word.content"
                 @click="if (terms_and_phrases_settings) {
@@ -106,7 +106,7 @@
             <span
               :id="word.id"
               :class="if (terms_and_phrases_settings) {
-                if (word.type != 'nonWord') return `cursor-pointer hover:bg-yellow-200 ${cssWordClass[word.weight]}`
+                if (word.type != 'nonWord') return `cursor-pointer hover:bg-yellow-200 ${word.color} ${word.color !== '' ? 'font-black' : ''}`
               }"
               x-text="word.content"
               @click="if (terms_and_phrases_settings) {
@@ -378,13 +378,6 @@
       cps: [],
       word_weights: {},
       wordWeight: "",
-      cssWordClass: {
-        2: "text-blue-500 font-black",
-        1: "text-green-500 font-black",
-        0: "",
-        "-1": "text-purple-500 font-black",
-        "-2": "text-red-500 font-black",
-      },
       textarea_keywords_and_phrases: "",
       newCustomValue: "",
       updateCustomId: null,
@@ -728,7 +721,7 @@
           for (let i = match.index; i < match.index + match[0].length; i++) {
             sourceTextArray[i] = {
               id: `word:${match.index}-${match.index + match[0].length}`,
-              weight: 0,
+              color: '',
               phrase: sourceText.slice(
                 match.index,
                 match.index + match[0].length
@@ -743,7 +736,7 @@
           for (let i = match.index; i < match.index + match[0].length; i++) {
             sourceTextArray[i] = {
               id: `nonWord:${match.index}-${match.index + match[0].length}`,
-              weight: 0,
+              color: '',
               phrase: sourceText.slice(
                 match.index,
                 match.index + match[0].length
@@ -765,7 +758,7 @@
               head: match.index,
               tail: match.index + match[0].length,
               id: `match:${match.index}-${match.index + match[0].length}`,
-              weight: word_weight.weight,
+              color: word_weight.text_color,
               phrase: phrase,
             });
           }
@@ -776,12 +769,13 @@
           if (a.tail - a.head < b.tail - b.head) return -1;
           return 0;
         });
+
         for (let i = 0; i < matches.length; i++) {
           let match = matches[i];
           for (let ii = match.head; ii < match.tail; ii++) {
             sourceTextArray[ii] = {
               id: match.id,
-              weight: match.weight,
+              color: match.color,
               phrase: match.phrase,
               type: "match",
             };
@@ -795,7 +789,7 @@
           if (currentElement == undefined || currentElement.id != currentId) {
             this[destinationKey].push({
               id: sourceTextArray[i - 1].id,
-              weight: sourceTextArray[i - 1].weight,
+              color: sourceTextArray[i - 1].color,
               phrase: sourceTextArray[i - 1].phrase,
               type: sourceTextArray[i - 1].type,
               content: sourceText.slice(head, i),
