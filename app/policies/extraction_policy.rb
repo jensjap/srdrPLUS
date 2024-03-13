@@ -63,4 +63,12 @@ class ExtractionPolicy < ApplicationPolicy
 
     record.assigned_to?(user) || project_leader?
   end
+
+  def approve?
+    project_leader?
+  end
+
+  def disapprove?
+    project_leader?
+  end
 end
