@@ -85,7 +85,7 @@ class CitationsProject < ApplicationRecord
 
   def self.dedupe_update_associations(master_cp, cp_to_remove)
     cp_to_remove.extractions.each do |e|
-      e.dup.update_attributes(citations_project_id: master_cp.id)
+      e.dup.update(citations_project_id: master_cp.id)
     end
   end
 

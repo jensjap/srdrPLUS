@@ -1,6 +1,7 @@
 module ImportJobs::RisCitationImporter
   def import_citations_from_ris(imported_file, preview = false)
     key_counter = 0
+    @project = imported_file.project
 
     # creates a new parser of type RIS
     parser = RefParsers::RISParser.new
@@ -30,7 +31,14 @@ module ImportJobs::RisCitationImporter
           if preview
             preview_citations += h_arr.dup
           else
-            imported_file.project.citations << Citation.create!(h_arr)
+            # Refman is incorrectly present in Citation model.
+            # We must add refman information to the correct CitationsProject object.
+            citation = Citation.create!(h_arr)
+            @project.citations << citation
+            if h_arr.first['refman'].present?
+              cp = @project.citations_projects.where(citation:).first
+              cp.update_attribute(:refman, h_arr.first['refman'])
+            end
           end
           successful_refman_arr << h_arr.map { |h| h[:refman] }
         rescue StandardError
@@ -40,7 +48,6 @@ module ImportJobs::RisCitationImporter
       end
       cit_h.clear
     end
-    # imported_file.project.citations << Citation.create(h_arr)
     if preview
       { count: preview_citations.length, citations: preview_citations[0..2] }
     else

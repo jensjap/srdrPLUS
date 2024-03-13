@@ -8,6 +8,7 @@ document.addEventListener 'extractionSectionLoaded', ->
 
 documentCode = () ->
   timers = {}
+  error_timers = {}
 
   submitForm = ( form ) ->
     ->
@@ -62,7 +63,9 @@ documentCode = () ->
 
       # Mark form as 'dirty'.
       $form.addClass( 'dirty' )
-      setTimeoutError({ duration: 10000 })
+
+      # Set error_timers.
+      setTimeoutError({ duration: 10000, formId: formId })
 
       if formId of timers
         clearTimeout( timers[formId] )
@@ -78,6 +81,10 @@ documentCode = () ->
 
   setTimeoutError = ( params ) ->
     duration = params.duration
+    formId = params.formId
     element = event.target
-    setTimeout(checkDirty.bind( null, element ), duration)
-    
+
+    if formId of error_timers
+      clearTimeout( error_timers[formId] )
+
+    error_timers[formId] = setTimeout(checkDirty.bind( null, element ), duration)

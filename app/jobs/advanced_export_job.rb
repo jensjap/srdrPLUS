@@ -214,10 +214,11 @@ class AdvancedExportJob < ApplicationJob
       efpss = @efp.extraction_forms_projects_sections
       @type1_efpss = efpss.select { |efps| efps.extraction_forms_projects_section_type_id == 1 }
       @linked_type2_efpss = efpss.select do |efps|
-        efps.extraction_forms_projects_section_type_id == 2 && efps.link_to_type1.present?
+        efps.extraction_forms_projects_section_type_id == 2 && efps.link_to_type1.present? && efps.extraction_forms_projects_section_option.by_type1
       end
       @unlinked_type2_efpss = efpss.select do |efps|
-        efps.extraction_forms_projects_section_type_id == 2 && efps.link_to_type1.blank?
+        (efps.extraction_forms_projects_section_type_id == 2 && efps.link_to_type1.blank?) ||
+        (efps.extraction_forms_projects_section_type_id == 2 && efps.link_to_type1.present? && !efps.extraction_forms_projects_section_option.by_type1)
       end
       @outcomes_efps = efpss.find do |efps|
         efps.extraction_forms_projects_section_type_id == 1 && efps.section.name == 'Outcomes'
