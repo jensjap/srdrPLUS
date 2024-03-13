@@ -4,7 +4,7 @@ class AbstractScreeningResultPolicy < ApplicationPolicy
   end
 
   def update?
-    project_contributor? && (@record.user == @user || (record.privileged && project_consolidator?))
+    project_contributor? && (@record.user == @user || (record.privileged && project_consolidator?) || project_leader?)
   end
 
   def destroy?

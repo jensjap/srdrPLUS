@@ -133,7 +133,10 @@ class AbstractScreeningsController < ApplicationController
         return render json: { asr_id: nil } unless asr && (asr.user == current_user ||
                                                    (asr.privileged && ProjectsUser.find_by(
                                                      project: asr.project, user: current_user
-                                                   ).project_consolidator?))
+                                                   ).project_consolidator?) ||
+                                                    ProjectsUser.find_by(
+                                                      project: asr.project, user: current_user
+                                                    ).project_leader?)
 
         render json: { asr_id: asr&.id }
       end
