@@ -134,7 +134,6 @@ class ProjectsController < ApplicationController
     end
   end
 
-
   # DELETE /projects/1
   # DELETE /projects/1.json
   def destroy
@@ -149,7 +148,10 @@ class ProjectsController < ApplicationController
   end
 
   def export
-    authenticate_user! unless current_user || email = helpers.valid_email(params[:email])
+    authenticate_user! unless export_type_name_params == '.xlsx' || export_type_name_params == '.xlsx legacy'
+
+    email = params[:email]
+    authenticate_user! unless current_user || ((email =~ URI::MailTo::EMAIL_REGEXP) == 0)
 
     if @project.public? || authorize(@project)
       if @project.extraction_forms_projects.first.extraction_forms_project_type_id != 1
