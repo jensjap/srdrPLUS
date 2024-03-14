@@ -158,7 +158,10 @@ class CitationsProject < ApplicationRecord
       'consolidation_qualification' => qualification('c-'),
       'abstract_screening_objects' => abstract_screening_objects,
       'fulltext_screening_objects' => fulltext_screening_objects,
-      'abstract' => citation.abstract
+      'abstract' => citation.abstract,
+      'pmid' => citation.pmid,
+      'refman' => refman,
+      'accession_number' => citation.accession_number
     }
   end
 
