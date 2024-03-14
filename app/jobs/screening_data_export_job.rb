@@ -542,7 +542,7 @@ class ScreeningDataExportJob < ApplicationJob
                       cell += ": #{sfr.followup}" if sfo&.with_followup
                     end
                   end
-                  row << cell
+                  row << cell&.strip
                 end
               end
             end
@@ -555,7 +555,13 @@ class ScreeningDataExportJob < ApplicationJob
 
       # New label export structure: Sheet 2
       wb.add_worksheet(name: "#{ screening_type } Wide Brief") do |sheet|
-        sheet = build_headers_and_add_to_sheet(sheet, project, 'sheet2')
+        sf = case screening_type
+             when 'AS'
+               ScreeningForm.find_or_create_by(project:, form_type: 'abstract')
+             when 'FS'
+               ScreeningForm.find_or_create_by(project:, form_type: 'fulltext')
+             end
+        sheet = build_headers_and_add_to_sheet(sheet, project, 'sheet2', sf)
         CitationsProject.search(where: { project_id: project.id }, load: false).each do |cp|
           cp_id = cp.id.to_i
           columns = [
@@ -591,6 +597,13 @@ class ScreeningDataExportJob < ApplicationJob
                     mh.dig(cp_id, :notes)&.uniq&.join('||')
                   end
           columns << notes
+
+          # Add screening form answers to row compressed layout:
+          #   If consolidated sr exists and answer value is present,
+          #   then use it, else use all other non-consolidated unique
+          #   answer values.
+          columns += add_compressed_screening_form_answers(cp, screening_type, sf)
+
           sheet.add_row(
             columns.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
           )
@@ -598,110 +611,110 @@ class ScreeningDataExportJob < ApplicationJob
       end
 
       # new label export structure: Sheet 3
-      wb.add_worksheet(name: "#{ screening_type } Wide Screening Form") do |sheet|
-        sf = case screening_type
-             when 'AS'
-               ScreeningForm.find_or_create_by(project:, form_type: 'abstract')
-             when 'FS'
-               ScreeningForm.find_or_create_by(project:, form_type: 'fulltext')
-             end
-        sheet = build_headers_and_add_to_sheet(sheet, project, 'sheet3', sf)
-        CitationsProject.search(where: { project_id: project.id }, load: false).each do |cp|
-          cp_id = cp.id.to_i
-          columns = [
-            cp['citation_id'],
-            cp['accession_number'],
-            cp['pmid'],
-            cp['refman'],
-            cp['publication'],
-            cp['doi'],
-            cp['keywords'],
-          ]
-          last_label_time = mh.dig(cp_id, :sr_label_dates)&.max&.in_time_zone(@desired_time_zone)
-          columns << last_label_time
-          tmp_users = [[0, 'Adjudicator']] + @users
-          tmp_users.each do |user|
-            sr = case screening_type
-                 when 'AS'
-                   srs = if user[0].eql?(0)
-                           AbstractScreeningResult.where(
-                             citations_project_id: cp_id,
-                             privileged: true
-                           )
-                         else
-                           AbstractScreeningResult.where(
-                             user_id: user[0],
-                             citations_project_id: cp_id,
-                             privileged: false
-                           )
-                         end
-                   raise 'Too many consolidated labels found!' if srs.size > 1
+      # wb.add_worksheet(name: "#{ screening_type } Wide Screening Form") do |sheet|
+      #   sf = case screening_type
+      #        when 'AS'
+      #          ScreeningForm.find_or_create_by(project:, form_type: 'abstract')
+      #        when 'FS'
+      #          ScreeningForm.find_or_create_by(project:, form_type: 'fulltext')
+      #        end
+      #   sheet = build_headers_and_add_to_sheet(sheet, project, 'sheet3', sf)
+      #   CitationsProject.search(where: { project_id: project.id }, load: false).each do |cp|
+      #     cp_id = cp.id.to_i
+      #     columns = [
+      #       cp['citation_id'],
+      #       cp['accession_number'],
+      #       cp['pmid'],
+      #       cp['refman'],
+      #       cp['publication'],
+      #       cp['doi'],
+      #       cp['keywords'],
+      #     ]
+      #     last_label_time = mh.dig(cp_id, :sr_label_dates)&.max&.in_time_zone(@desired_time_zone)
+      #     columns << last_label_time
+      #     tmp_users = [[0, 'Adjudicator']] + @users
+      #     tmp_users.each do |user|
+      #       sr = case screening_type
+      #            when 'AS'
+      #              srs = if user[0].eql?(0)
+      #                      AbstractScreeningResult.where(
+      #                        citations_project_id: cp_id,
+      #                        privileged: true
+      #                      )
+      #                    else
+      #                      AbstractScreeningResult.where(
+      #                        user_id: user[0],
+      #                        citations_project_id: cp_id,
+      #                        privileged: false
+      #                      )
+      #                    end
+      #              raise 'Too many consolidated labels found!' if srs.size > 1
 
-                   srs.blank? ? nil : srs.first
-                 when 'FS'
-                   srs = if user[0].eql?(0)
-                           FulltextScreeningResult.where(
-                             citations_project_id: cp_id,
-                             privileged: true
-                           )
-                         else
-                           FulltextScreeningResult.where(
-                             user_id: user[0],
-                             citations_project_id: cp_id,
-                             privileged: false
-                           )
-                         end
-                   raise 'Too many consolidated labels found!' if srs.size > 1
+      #              srs.blank? ? nil : srs.first
+      #            when 'FS'
+      #              srs = if user[0].eql?(0)
+      #                      FulltextScreeningResult.where(
+      #                        citations_project_id: cp_id,
+      #                        privileged: true
+      #                      )
+      #                    else
+      #                      FulltextScreeningResult.where(
+      #                        user_id: user[0],
+      #                        citations_project_id: cp_id,
+      #                        privileged: false
+      #                      )
+      #                    end
+      #              raise 'Too many consolidated labels found!' if srs.size > 1
 
-                   srs.blank? ? nil : srs.first
-                 end
-            # Add screening form answers to row.
-            sf.sf_questions.each_with_index do |sf_question, _q_index|
-              sf_question.sf_rows.each_with_index do |sf_row, _r_index|
-                sf_question.sf_columns.each_with_index do |sf_column, _c_index|
-                  sf_cell = SfCell.find_by(sf_row:, sf_column:)
-                  if sf_cell.nil?
-                    columns << nil
-                  else
-                    if sr.nil?
-                      columns << ''
-                      next
-                    end
-                    cell = ''
-                    sfrs = case screening_type
-                           when 'AS'
-                             SfAbstractRecord.where(sf_cell:, abstract_screening_result: sr)
-                           when 'FS'
-                             SfFulltextRecord.where(sf_cell:, fulltext_screening_result: sr)
-                           end
-                    sfos = sf_cell.sf_options
-                    case sf_cell.cell_type
-                    when SfCell::TEXT
-                      cell += sfrs.map(&:value).join('\n')
-                    when SfCell::NUMERIC
-                      sfrs.each_with_index do |sfr, idx|
-                        cell += "\n" if idx > 0
-                        cell += sfr.equality.to_s if sf_cell.with_equality
-                        cell += sfr.value.to_s
-                      end
-                    when SfCell::CHECKBOX, SfCell::DROPDOWN, SfCell::RADIO, SfCell::SELECT_ONE, SfCell::SELECT_MULTIPLE
-                      sfrs.each_with_index do |sfr, idx|
-                        cell += "\n" if idx.positive?
-                        sfo = sfos.select { |sfo| sfo.name == sfr.value }.first
-                        cell += "#{sfr.value}"
-                        cell += ": #{sfr.followup}" if sfo&.with_followup
-                      end
-                    end
-                    columns << cell
-                  end
-                end
-              end
-            end
-          end
-          sheet.add_row(
-            columns.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
-          )
-        end
+      #              srs.blank? ? nil : srs.first
+      #            end
+      #       # Add screening form answers to row.
+      #       sf.sf_questions.each_with_index do |sf_question, _q_index|
+      #         sf_question.sf_rows.each_with_index do |sf_row, _r_index|
+      #           sf_question.sf_columns.each_with_index do |sf_column, _c_index|
+      #             sf_cell = SfCell.find_by(sf_row:, sf_column:)
+      #             if sf_cell.nil?
+      #               columns << nil
+      #             else
+      #               if sr.nil?
+      #                 columns << ''
+      #                 next
+      #               end
+      #               cell = ''
+      #               sfrs = case screening_type
+      #                      when 'AS'
+      #                        SfAbstractRecord.where(sf_cell:, abstract_screening_result: sr)
+      #                      when 'FS'
+      #                        SfFulltextRecord.where(sf_cell:, fulltext_screening_result: sr)
+      #                      end
+      #               sfos = sf_cell.sf_options
+      #               case sf_cell.cell_type
+      #               when SfCell::TEXT
+      #                 cell += sfrs.map(&:value).join('\n')
+      #               when SfCell::NUMERIC
+      #                 sfrs.each_with_index do |sfr, idx|
+      #                   cell += "\n" if idx > 0
+      #                   cell += sfr.equality.to_s if sf_cell.with_equality
+      #                   cell += sfr.value.to_s
+      #                 end
+      #               when SfCell::CHECKBOX, SfCell::DROPDOWN, SfCell::RADIO, SfCell::SELECT_ONE, SfCell::SELECT_MULTIPLE
+      #                 sfrs.each_with_index do |sfr, idx|
+      #                   cell += "\n" if idx.positive?
+      #                   sfo = sfos.select { |sfo| sfo.name == sfr.value }.first
+      #                   cell += "#{sfr.value}"
+      #                   cell += ": #{sfr.followup}" if sfo&.with_followup
+      #                 end
+      #               end
+      #               columns << cell
+      #             end
+      #           end
+      #         end
+      #       end
+      #     end
+      #     sheet.add_row(
+      #       columns.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
+      #     )
+      #   end
 
 #        srs = case screening_type
 #              when 'AS'
@@ -777,7 +790,7 @@ class ScreeningDataExportJob < ApplicationJob
 #            row.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
 #          )
 #        end
-      end
+#      end
     end
 
     p
@@ -787,6 +800,74 @@ class ScreeningDataExportJob < ApplicationJob
   end
 
   private
+
+  def add_compressed_screening_form_answers(cp, screening_type, sf)
+    citations_project = CitationsProject.find(cp.id.to_i)
+    sf_answers = {}
+    sf_answers[:cells] = {}
+    columns = []
+    srs = case screening_type
+          when 'AS'
+            AbstractScreeningResult
+          .includes(:tags, :reasons, user: :profile)
+          .joins(:citations_project)
+          .where(citations_project:)
+          .order(privileged: :asc)
+          when 'FS'
+            FulltextScreeningResult
+          .includes(:tags, :reasons, user: :profile)
+          .joins(:citations_project)
+          .where(citations_project:)
+          .order(privileged: :asc)
+          end
+    sf.sf_questions.each_with_index do |sf_question, _q_index|
+      sf_question.sf_rows.each_with_index do |sf_row, _r_index|
+        sf_question.sf_columns.each_with_index do |sf_column, _c_index|
+          sf_cell = SfCell.find_by(sf_row:, sf_column:)
+          if sf_cell.nil?
+            columns << nil
+          else
+            sf_answers[:cells][sf_cell.id] = [] unless sf_answers[:cells].keys.include?(sf_cell.id)
+            srs.each do |sr|
+              cell = ''
+              sfrs = case screening_type
+                     when 'AS'
+                       SfAbstractRecord.where(sf_cell:, abstract_screening_result: sr)
+                     when 'FS'
+                       SfFulltextRecord.where(sf_cell:, fulltext_screening_result: sr)
+                     end
+              sfos = sf_cell.sf_options
+              case sf_cell.cell_type
+              when SfCell::TEXT
+                sf_answers[:cells][sf_cell.id] += sfrs.map(&:value) if sfrs.map(&:value).any?(&:present?)
+                sf_answers[:cells][sf_cell.id] = sfrs.map(&:value) if sr.privileged && sfrs.map(&:value).any?(&:present?)
+
+              when SfCell::NUMERIC
+                sfrs.each_with_index do |sfr, idx|
+                  cell += sfr.equality.to_s if sf_cell.with_equality
+                  cell += sfr.value.to_s
+                end
+                sf_answers[:cells][sf_cell.id] += [cell] if cell.present?
+                sf_answers[:cells][sf_cell.id] = [cell] if sr.privileged && cell.present?
+              when SfCell::CHECKBOX, SfCell::DROPDOWN, SfCell::RADIO, SfCell::SELECT_ONE, SfCell::SELECT_MULTIPLE
+                sfrs.each_with_index do |sfr, idx|
+                  sfo = sfos.select { |sfo| sfo.name == sfr.value }.first
+                  cell += "#{sfr.value}"
+                  cell += ": #{sfr.followup}" if sfo&.with_followup
+                end
+                sf_answers[:cells][sf_cell.id] += [cell] if cell.present?
+                sf_answers[:cells][sf_cell.id] = [cell] if sr.privileged && cell.present?
+              end
+            end
+          end
+
+          columns << sf_answers[:cells][sf_cell.id].flatten(1).reject(&:empty?).map(&:strip).uniq.join('||')
+        end
+      end
+    end
+
+    columns
+  end
 
   def build_headers_and_add_to_sheet(sheet, project, style, sf=nil)
     headers = [
@@ -833,20 +914,16 @@ class ScreeningDataExportJob < ApplicationJob
       headers << 'Tags'
       headers << 'Reasons'
       headers << 'Notes'
-    when 'sheet3'
-      tmp_users = [[0, 'Adjudicator']] + @users
-      tmp_users.each do |user|
-        sf.sf_questions.each_with_index do |sf_question, q_index|
-          question_name = sf_question.name.blank? ? "Question #{q_index}" : sf_question.name
-          if sf_question.sf_rows.size.eql?(1) && sf_question.sf_columns.size.eql?(1)
-            headers << "#{ question_name.to_s }: #{ user[1] }"
-          else
-            sf_question.sf_rows.each_with_index do |sf_row, r_index|
-              row_name = sf_row.name.blank? ? "Row #{r_index}" : sf_row.name
-              sf_question.sf_columns.each_with_index do |sf_column, c_index|
-                column_name = sf_column.name.blank? ? "Column #{c_index}" : sf_column.name
-                headers << "#{question_name}: #{row_name} / #{column_name}: #{ user[1] }"
-              end
+      sf.sf_questions.each_with_index do |sf_question, q_index|
+        question_name = sf_question.name.blank? ? "Question #{q_index}" : sf_question.name
+        if sf_question.sf_rows.size.eql?(1) && sf_question.sf_columns.size.eql?(1)
+          headers << "#{ question_name.to_s }"
+        else
+          sf_question.sf_rows.each_with_index do |sf_row, r_index|
+            row_name = sf_row.name.blank? ? "Row #{r_index}" : sf_row.name
+            sf_question.sf_columns.each_with_index do |sf_column, c_index|
+              column_name = sf_column.name.blank? ? "Column #{c_index}" : sf_column.name
+              headers << "#{question_name}: #{row_name} / #{column_name}"
             end
           end
         end
@@ -880,7 +957,10 @@ class ScreeningDataExportJob < ApplicationJob
           when 'FS'
             FulltextScreeningResult.where(citations_project:, privileged: true)
           end
-        debugger if Rails.env.development? && priv_srs.size > 1
+        if priv_srs.size > 1
+          Sentry.capture_exception('Screening Data Export Error: priv_srs.size > 1') if Rails.env.production?
+          debugger if Rails.env.development?
+        end
         priv_sr = priv_srs.first
         # Privileged label is prioritized.
         if priv_sr.present? && [-1, 1].include?(priv_sr.label)
