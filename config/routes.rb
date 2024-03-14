@@ -422,4 +422,7 @@ Rails.application.routes.draw do
   get 'check_role/:screenings_type/:project_id', to: 'role_check#check_role', as: 'check_role'
 
   get '/projects_reasons/:screening_type/rejection_reasons', to: 'projects_reasons#get_default_rejection_reasons'
+
+  post '/extractions/:id/approve', to: 'extractions#approve'
+  post '/extractions/:id/disapprove', to: 'extractions#disapprove'
 end

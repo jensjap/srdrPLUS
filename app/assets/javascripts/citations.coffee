@@ -55,12 +55,12 @@ document.addEventListener 'DOMContentLoaded', ->
     #### FILE DROPZONE
     Dropzone.options.fileDropzone = {
       url: $('#fileDropzone').attr('dropzone-path'),
-      autoProcessQueue: true,
+      autoProcessQueue: false,
       uploadMultiple: false,
 
       init: ()->
         wrapperThis = this
-        this.on('sending', (file, xhr, formData) ->
+        this.on('addedfile', (file) ->
           ris_type_id = $( "#dropzone-div input#ris-file-type-id" ).val()
           csv_type_id = $( "#dropzone-div input#csv-file-type-id" ).val()
           endnote_type_id = $( "#dropzone-div input#endnote-file-type-id" ).val()
@@ -89,8 +89,24 @@ document.addEventListener 'DOMContentLoaded', ->
               wrapperThis.removeFile(file)
               return
 
-          if not confirm("This looks like a " + file_type_name + ". Do you wish to continue?")
-            wrapperThis.removeFile(file)
+          file.file_type_id = file_type_id
+
+          showModalEvent = new CustomEvent('show-modal', { detail: "This looks like a " + file_type_name + ". Do you wish to continue?" })
+          window.dispatchEvent(showModalEvent)
+
+          modalDecisionPromise = new Promise((resolve, reject) ->
+            window.modalResolve = resolve
+          )
+
+          modalDecisionPromise.then((confirmed) ->
+            if confirmed
+              wrapperThis.processQueue()
+            else
+              wrapperThis.removeFile(file)
+          )
+        )
+        this.on('sending', (file, xhr, formData) ->
+          file_type_id = file.file_type_id
 
           formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val())
           formData.append("projects_user_id", $("#dropzone-div").find("#import_projects_user_id").val())

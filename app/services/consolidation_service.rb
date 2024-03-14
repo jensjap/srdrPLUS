@@ -1045,6 +1045,7 @@ class ConsolidationService
     citations_projects =
       project
       .citations_projects
+      .not_disqualified
       .includes(
         citation: :journal
       )

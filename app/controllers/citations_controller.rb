@@ -38,7 +38,13 @@ class CitationsController < ApplicationController
         end
         format.json { render :show, status: :ok, location: @citation }
       else
-        format.html { redirect_to(edit_citation_path(@citation), alert: 'There was an issue') }
+        format.html do
+          if project_id
+            redirect_to(edit_citation_path(@citation, project_id:), alert: @citation.errors.full_messages.join(', '))
+          else
+            redirect_to(edit_citation_path(@citation), alert: @citation.errors.full_messages.join(', '))
+          end
+        end
         format.json { render json: @citation.errors, status: :unprocessable_entity }
       end
     end

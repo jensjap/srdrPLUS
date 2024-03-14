@@ -134,6 +134,8 @@ en:
     show:
       edit: Edit Profile
   projects:
+    destroy:
+      removed: Project successfully removed
     edit:
       tab_links:
         project_information: Project Information

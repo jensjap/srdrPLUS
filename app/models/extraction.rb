@@ -32,8 +32,15 @@ class Extraction < ApplicationRecord
     ExtractionChecksum.create! extraction:
   end
 
+  default_scope { not_disqualified }
+
   scope :consolidated,   -> { where(consolidated: true) }
   scope :unconsolidated, -> { where(consolidated: false) }
+  scope :not_disqualified, lambda {
+                             joins(:citations_project)
+                               .where
+                               .not(citations_project: { screening_status: CitationsProject::REJECTED })
+                           }
 
   belongs_to :project,             inverse_of: :extractions # , touch: true
   belongs_to :citations_project,   inverse_of: :extractions
@@ -226,6 +233,7 @@ class Extraction < ApplicationRecord
   def evaluate_screening_status_citations_project
     return if citations_project.marked_for_destruction?
 
+    citations_project.try(:evaluate_extraction_qualification_status, consolidated)
     citations_project.try(:evaluate_screening_status)
   end
 end

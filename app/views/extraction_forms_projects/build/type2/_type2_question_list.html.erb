@@ -1,4 +1,5 @@
 <div x-data="type_2_question_list">
+  <%= render 'shared/alert_modal' %>
   <div
     class="bg-blue-800 text-white rounded-md p-2 cursor-pointer text-center mt-2 w-48"
     @click="preview_modal = true; fetchPreviewContent();"
@@ -113,7 +114,7 @@
                 <span>Duplicate</span>
               </div>
               <div
-                @click="destroyResource(`/questions/${q.id}`, 'question')"
+                @click="showAlertModal(`/questions/${q.id}`, 'question')"
                 class="flex items-center justify-center space-x-1 cursor-pointer hover:underline"
               >
                 <svg
@@ -164,6 +165,10 @@
       question_table: "",
       dependencies_table: "",
       preview_content: "",
+      isAlertModalOpen: false,
+      alertModalContent: "",
+      pendingDeleteUrl: "",
+      pendingResourceType: "",
 
       init() {
         this.fetch_questions();
@@ -206,41 +211,55 @@
         this.loading = false;
       },
 
-      async destroyResource(url, resourceType) {
-        if (confirm("Are you sure?")) {
-          this.loading = true;
-          if (
-            [
-              "question_row",
-              "question_row_column",
-              "question_row_column_option",
-            ].some((rt) => rt === resourceType)
-          ) {
-            await this.updateQuestionTable(
-              this.edit_question_id,
-              document.getElementById(`edit_question_${this.edit_question_id}`)
-            );
-          }
-          const response = await fetch(url, {
-            method: "DELETE",
-            headers: {
-              Accept: "application/json",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
-          });
+      showAlertModal(url, resourceType) {
+        this.pendingDeleteUrl = url;
+        this.pendingResourceType = resourceType;
+        this.alertModalContent = "Are you sure?";
+        this.isAlertModalOpen = true;
+      },
 
-          if (resourceType === "question") {
-            await this.fetch_questions();
-            this.question_modal = false;
-          } else {
-            await this.fetchQuestionTable();
-          }
-          toastr.success("Successfully deleted", null, {
-            timeOut: 1000,
-          });
-          this.loading = false;
+      modalConfirmAction() {
+        this.destroyResource(this.pendingDeleteUrl, this.pendingResourceType);
+        this.closeAlertModal();
+      },
+
+      closeAlertModal() {
+        this.isAlertModalOpen = false;
+      },
+
+      async destroyResource(url, resourceType) {
+        this.loading = true;
+        if (
+          [
+            "question_row",
+            "question_row_column",
+            "question_row_column_option",
+          ].some((rt) => rt === resourceType)
+        ) {
+          await this.updateQuestionTable(
+            this.edit_question_id,
+            document.getElementById(`edit_question_${this.edit_question_id}`)
+          );
         }
+        const response = await fetch(url, {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+        });
+
+        if (resourceType === "question") {
+          await this.fetch_questions();
+          this.question_modal = false;
+        } else {
+          await this.fetchQuestionTable();
+        }
+        toastr.success("Successfully deleted", null, {
+          timeOut: 1000,
+        });
+        this.loading = false;
       },
 
       async duplicateRow(questionRowId) {

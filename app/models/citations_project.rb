@@ -17,6 +17,9 @@
 class CitationsProject < ApplicationRecord
   searchkick callbacks: :async
 
+  scope :not_disqualified,
+        -> { where.not(screening_status: CitationsProject::REJECTED) }
+
   belongs_to :citation, inverse_of: :citations_projects
   belongs_to :project, inverse_of: :citations_projects # , touch: true
 
@@ -40,6 +43,10 @@ class CitationsProject < ApplicationRecord
   E_IN_PROGRESS = 'eip'.freeze
   E_REJECTED = 'er'.freeze
   E_COMPLETE = 'ec'.freeze
+  C_NEED_CONSOLIDATION = 'cnc'.freeze
+  C_IN_PROGRESS = 'cip'.freeze
+  C_REJECTED = 'cr'.freeze
+  C_COMPLETE = 'cc'.freeze
   ALL = [
     AS_UNSCREENED,
     AS_PARTIALLY_SCREENED,
@@ -53,6 +60,11 @@ class CitationsProject < ApplicationRecord
     E_IN_PROGRESS,
     E_REJECTED,
     E_COMPLETE
+  ]
+  REJECTED = [
+    AS_REJECTED,
+    FS_REJECTED,
+    E_REJECTED
   ]
 
   # We find all CitationsProject entries that have the exact same citation_id
@@ -140,59 +152,49 @@ class CitationsProject < ApplicationRecord
       'tags' => abstract_screening_results.map(&:tags).flatten.map(&:name).join(', '),
       'note' => abstract_screening_results.map(&:notes),
       'screening_status' => screening_status,
-      'abstract_qualification' => abstract_qualification,
-      'fulltext_qualification' => fulltext_qualification,
-      'extraction_qualification' => extraction_qualification,
+      'abstract_qualification' => qualification('as'),
+      'fulltext_qualification' => qualification('fs'),
+      'extraction_qualification' => qualification('e-'),
+      'consolidation_qualification' => qualification('c-'),
       'abstract_screening_objects' => abstract_screening_objects,
       'fulltext_screening_objects' => fulltext_screening_objects,
       'abstract' => citation.abstract
     }
   end
 
-  def abstract_qualification
-    as_qualification = screening_qualifications.find { |sq| sq.qualification_type[0..1] == 'as' }
-    return '.....' unless as_qualification
+  def qualification(prefix)
+    qualification = screening_qualifications.find { |sq| sq.qualification_type[0..1] == prefix }
+    return '.....' unless qualification
 
-    manually_qualified_by = as_qualification.user&.handle
+    manually_qualified_by = qualification.user&.handle
+    qualification_text =
+      if qualification.qualification_type.ends_with?('accepted')
+        'Passed'
+      elsif qualification.qualification_type.ends_with?('rejected')
+        'Rejected'
+      end
+    qualification_text += ": #{manually_qualified_by}" if manually_qualified_by
 
-    if as_qualification.qualification_type == ScreeningQualification::AS_ACCEPTED && manually_qualified_by
-      "Passed: #{manually_qualified_by}"
-    elsif as_qualification.qualification_type == ScreeningQualification::AS_ACCEPTED
-      'Passed'
-    elsif as_qualification.qualification_type == ScreeningQualification::AS_REJECTED && manually_qualified_by
-      "Rejected: #{manually_qualified_by}"
-    elsif as_qualification.qualification_type == ScreeningQualification::AS_REJECTED
-      'Rejected'
-    end
+    qualification_text
   end
 
-  def fulltext_qualification
-    fs_qualification = screening_qualifications.find { |sq| sq.qualification_type[0..1] == 'fs' }
-    return '.....' unless fs_qualification
-
-    manually_qualified_by = fs_qualification.user&.handle
-
-    if fs_qualification.qualification_type == ScreeningQualification::FS_ACCEPTED && manually_qualified_by
-      "Passed: #{manually_qualified_by}"
-    elsif fs_qualification.qualification_type == ScreeningQualification::FS_ACCEPTED
-      'Passed'
-    elsif fs_qualification.qualification_type == ScreeningQualification::FS_REJECTED && manually_qualified_by
-      "Rejected: #{manually_qualified_by}"
-    elsif fs_qualification.qualification_type == ScreeningQualification::FS_REJECTED
-      'Rejected'
+  def evaluate_extraction_qualification_status(consolidated)
+    qualification_type = consolidated ? ScreeningQualification::C_ACCEPTED : ScreeningQualification::E_ACCEPTED
+    undestroyed_extractions = extractions.where(consolidated:).reject(&:destroyed?)
+    all_complete = undestroyed_extractions.present? && undestroyed_extractions.all? do |extraction|
+      extraction.extractions_extraction_forms_projects_sections.present? && extraction.extractions_extraction_forms_projects_sections.all? do |eefps|
+        eefps.status.name == 'Completed'
+      end
     end
-  end
 
-  def extraction_qualification
-    e_qualification = screening_qualifications.find { |sq| sq.qualification_type[0..1] == 'e-' }
-    return '.....' unless e_qualification
+    sqs_extraction_accepted = screening_qualifications.where(qualification_type:)
 
-    manually_qualified_by = e_qualification.user&.handle
-
-    if e_qualification.qualification_type == ScreeningQualification::E_REJECTED && manually_qualified_by
-      "Rejected: #{manually_qualified_by}"
-    elsif e_qualification.qualification_type == ScreeningQualification::E_REJECTED
-      'Rejected'
+    if all_complete && sqs_extraction_accepted.blank?
+      screening_qualifications.create(qualification_type:)
+    elsif !all_complete
+      screening_qualifications.where(
+        qualification_type:, user_id: nil
+      ).destroy_all
     end
   end
 
@@ -204,22 +206,18 @@ class CitationsProject < ApplicationRecord
                   .includes(extractions_extraction_forms_projects_sections: :status)
                   .where(citations_project: self)
 
-    if consolidated_extraction &&
-       consolidated_extraction.extractions_extraction_forms_projects_sections.present? &&
-       consolidated_extraction.extractions_extraction_forms_projects_sections.all? do |eefps|
-         eefps.status.name == 'Completed'
-       end
-      update(screening_status: E_COMPLETE)
-    elsif extractions.present? && extractions.all? do |extraction|
-            extraction.extractions_extraction_forms_projects_sections.present? && extraction.extractions_extraction_forms_projects_sections.all? do |eefps|
-              eefps.status.name == 'Completed'
-            end
-          end
-      update(screening_status: E_COMPLETE)
-    elsif extractions.present?
-      update(screening_status: E_IN_PROGRESS)
+    if screening_qualifications.where(qualification_type: ScreeningQualification::C_REJECTED).present?
+      update(screening_status: C_REJECTED)
+    elsif screening_qualifications.where(qualification_type: ScreeningQualification::C_ACCEPTED).present?
+      update(screening_status: C_COMPLETE)
+    elsif consolidated_extraction.present?
+      update(screening_status: C_IN_PROGRESS)
     elsif screening_qualifications.where(qualification_type: ScreeningQualification::E_REJECTED).present?
       update(screening_status: E_REJECTED)
+    elsif screening_qualifications.where(qualification_type: ScreeningQualification::E_ACCEPTED).present?
+      update(screening_status: C_NEED_CONSOLIDATION)
+    elsif extractions.present?
+      update(screening_status: E_IN_PROGRESS)
     elsif screening_qualifications.where(qualification_type: ScreeningQualification::FS_REJECTED).present?
       update(screening_status: FS_REJECTED)
     elsif screening_qualifications.where(qualification_type: ScreeningQualification::FS_ACCEPTED).present?
