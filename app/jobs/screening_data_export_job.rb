@@ -99,6 +99,7 @@ class ScreeningDataExportJob < ApplicationJob
             citation.doi,
             citation.keywords.map(&:name).join(', '),
             sr.updated_at,
+            cp.screening_status,
             @consensus_dict[screening_type][cp.id],
             sr.privileged ? 'Adjudicator' : sr.user.handle,
             sr.label,
@@ -173,6 +174,7 @@ class ScreeningDataExportJob < ApplicationJob
           ]
           last_label_time = mh.dig(cp_id, :sr_label_dates)&.max&.in_time_zone(@desired_time_zone)
           columns << last_label_time
+          columns << cp['screening_status']
           columns << @consensus_dict[screening_type][cp_id]
           @users.each do |user|
             columns << mh.dig(cp_id, :user_labels, user[0])
@@ -295,6 +297,7 @@ class ScreeningDataExportJob < ApplicationJob
       'DOI',
       'Keywords',
       'Last Label Time',
+      'Sub Status',
     ]
     case style
     when 'sheet1'
