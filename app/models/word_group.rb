@@ -34,6 +34,8 @@ class WordGroup < ApplicationRecord
           bg_color: "bg-".concat(wg.color),
           text_color: "text-".concat(wg.color),
           id: ww.id,
+          group_name: wg.name,
+          group_id: wg.id
         }
       end
       hash

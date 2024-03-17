@@ -631,20 +631,17 @@
         this.weighWord(selection);
       },
 
-      update_word_weight(event, id, weight) {
-        const word = event.target.value;
+      update_group(event, group_id) {
+        const newGroupName = event.target.value.trim();
 
-        if (
-          word.length == 0 ||
-          (word in this.word_weights && this.word_weights[word].id != id)
-        ) {
+        if (newGroupName.length === 0 || newGroupName.length > 50) {
           event.target.classList.add("!bg-red-500");
           return;
         } else {
           event.target.classList.remove("!bg-red-500");
         }
-        this.sendWw(word, weight, id);
-        setTimeout(() => this.$focus.focus(event.target), 500);
+
+        this.sendWw(null, 0, null, false, group_id, null, newGroupName);
       },
 
       weighWord(word) {
@@ -660,36 +657,6 @@
       checkLengthRestriction(event, maxLength) {
         if (event.target.value.length >= maxLength) {
           toastr.warning(`The input limit is ${maxLength}`);
-        }
-      },
-
-      async process_textarea_keywords_and_phrases() {
-        this.disable_textarea_keywords_and_phrases = true;
-        const lines = this.textarea_keywords_and_phrases
-          .split("\n")
-          .map((line) => line.trim());
-        const unprocessable = [];
-        for (const line of lines) {
-          const lineParts = line.split(" ");
-          const wordParts = lineParts.slice(0, -1);
-          const weight = parseInt(lineParts.slice(-1));
-          const word = wordParts.join(" ");
-          if (
-            word.length < 1 ||
-            word.length > 50 ||
-            weight === NaN ||
-            [2, 1, 0, -1, -2].indexOf(weight) === -1
-          ) {
-            unprocessable.push(line);
-            continue;
-          }
-
-          await this.sendWw(word, weight, null, weight === 0);
-        }
-        this.textarea_keywords_and_phrases = unprocessable.join("\n");
-        this.disable_textarea_keywords_and_phrases = false;
-        if (unprocessable.length > 0) {
-          toastr.error("Some words or phrases could not be processed.");
         }
       },
 
@@ -819,7 +786,7 @@
         );
       },
 
-      async sendWw(word, weight, id, destroy) {
+      async sendWw(word, weight, id, destroy, group_id, color, group_name) {
         const response = await fetch(
           "/abstract_screenings/<%= params[:abstract_screening_id] %>/update_word_weight",
           {
@@ -830,6 +797,9 @@
               weight,
               id,
               destroy,
+              group_id,
+              color,
+              group_name,
             }),
           }
         );
@@ -1036,6 +1006,18 @@
         } else {
           this.updateAsr("label", originalLabel);
         }
+      },
+
+      getGroups() {
+        const groups = {};
+        Object.entries(this.word_weights).forEach(([word, info]) => {
+          const { group_id, group_name, bg_color, text_color } = info;
+          if (!groups[group_id]) {
+            groups[group_id] = { id: group_id, name: group_name, bgColor: bg_color, textColor: text_color, words: [] };
+          }
+          groups[group_id].words.push(word);
+        });
+        return Object.values(groups);
       },
     }));
   });

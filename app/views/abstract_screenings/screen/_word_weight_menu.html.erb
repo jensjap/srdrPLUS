@@ -82,103 +82,26 @@
             </div>
             <hr class="m-0" />
           </div>
-          <template x-if="Object.keys(word_weights).length == 0">
-            <div class="text-gray-400">
-              No terms or phrases yet. Fill in the box below or click on the
-              abstract to get started.
-            </div>
-          </template>
-          <template
-            x-for="word_weight in Object.keys(word_weights).sort()"
-            :key="word_weights[word_weight].id"
-          >
-            <div class="grid grid-flow-row-dense grid-cols-8 mb-2 gap-2">
+          <template x-for="group in getGroups()" :key="group.id">
+            <div class="flex flex-col mb-8">
               <input
-                class="col-span-3 box-border !p-2"
+                class="col-span-3 box-border p-2"
                 type="text"
                 maxlength="50"
-                :value="word_weight"
-                x-on:input.debounce.500ms="checkLengthRestriction($event, 50); update_word_weight($event, word_weights[word_weight].id, word_weights[word_weight].weight)"
+                :value="group.name"
+                @input.debounce.500="update_group($event, group.id)"
+                placeholder="Enter new group name"
               />
-              <div
-                class="flex justify-center items-center rounded text-white cursor-pointer bg-blue-600 hover:bg-blue-700"
-                :class="word_weights[word_weight] && word_weights[word_weight].weight == 2 ? '' : 'opacity-25'"
-                @click="sendWw(word_weight, 2, word_weights[word_weight].id)"
-              >
-                2
+              <div class="mb-2">
+                <span :class="group.textColor" x-text="group.name"></span>
               </div>
-              <div
-                class="flex justify-center items-center rounded text-white cursor-pointer bg-green-400 hover:bg-green-500"
-                :class="word_weights[word_weight] && word_weights[word_weight].weight == 1 ? '' : 'opacity-25'"
-                @click="sendWw(word_weight, 1, word_weights[word_weight].id)"
-              >
-                1
-              </div>
-              <div
-                class="flex justify-center items-center rounded text-white cursor-pointer bg-gray-600 hover:bg-gray-700"
-                :class="word_weights[word_weight] && word_weights[word_weight].weight == 0 ? '' : 'opacity-25'"
-                @click="sendWw(word_weight, 0, word_weights[word_weight].id, true)"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-4 h-4"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                  />
-                </svg>
-              </div>
-              <div
-                class="flex justify-center items-center rounded text-white cursor-pointer bg-purple-400 hover:bg-purple-500"
-                :class="word_weights[word_weight] && word_weights[word_weight].weight == -1 ? '' : 'opacity-25'"
-                @click="sendWw(word_weight, -1, word_weights[word_weight].id)"
-              >
-                -1
-              </div>
-              <div
-                class="flex justify-center items-center rounded text-white cursor-pointer bg-red-600 hover:bg-red-700"
-                :class="word_weights[word_weight] && word_weights[word_weight].weight == -2 ? '' : 'opacity-25'"
-                @click="sendWw(word_weight, -2, word_weights[word_weight].id)"
-              >
-                -2
+              <div class="flex flex-wrap">
+                <template x-for="word in group.words" :key="word">
+                  <span class="m-1 p-1" :class="group.bgColor" x-text="word"></span>
+                </template>
               </div>
             </div>
           </template>
-          <hr class="my-6 !text-red-600" />
-          <div class="mb-4">
-            <h2 class="text-base flex items-center">
-              Paste keyword or phrase (up to 50 characters long) with integer
-              values 2 to -2 (one per line, e.g. "clinical trial 2")
-            </h2>
-          </div>
-          <textarea
-            name="keywords_and_phrases"
-            rows="3"
-            class="box-border !p-2"
-            x-model="textarea_keywords_and_phrases"
-            @keyup.shift.enter.prevent="process_textarea_keywords_and_phrases"
-            :disabled="disable_textarea_keywords_and_phrases"
-          ></textarea>
-          <div class="flex justify-end">
-            <button
-              class="cursor-pointer bg-gray-400 text-white rounded p-2 my-4 mr-4"
-              @click="paste_textarea_keywords_and_phrases"
-            >
-              Paste terms and phrases into text area
-            </button>
-            <button
-              class="cursor-pointer bg-srdrpurple text-white rounded p-2 my-4"
-              @click="process_textarea_keywords_and_phrases"
-            >
-              Add or Update Terms and Phrases
-            </button>
-          </div>
         </div>
       </div>
     </div>

@@ -27,16 +27,39 @@ class AbstractScreeningsController < ApplicationController
   def update_word_weight
     authorize(@abstract_screening)
     weight = params[:weight]
-    word = params[:word].downcase
-    id = params[:id]
+    word = params[:word]&.downcase
+    group_id = params[:group_id]
+    color = params[:color]
+    group_name = params[:group_name]
 
-    ww = WordWeight.find_by(id:) || WordWeight.find_or_initialize_by(word:, user: current_user,
-                                                                     abstract_screening: @abstract_screening)
-    if params[:destroy]
-      ww.destroy
+    if group_id.present?
+      word_group = WordGroup.find_by(id: group_id, user: current_user, abstract_screening: @abstract_screening)
+      unless word_group
+        render json: { error: "WordGroup not found" }, status: :not_found
+        return
+      end
+
+      if group_name.present? || color.present?
+        word_group.update(name: group_name.presence || word_group.name, color: color.presence || word_group.color)
+      end
+    elsif color.present? && group_name.present?
+      word_group = WordGroup.create!(color: color, name: group_name, user: current_user, abstract_screening: @abstract_screening)
     else
-      ww.update(weight:, word:)
+      render json: { error: "Missing color or group name for new WordGroup" }, status: :bad_request
+      return
     end
+
+    if word.present?
+      ww = WordWeight.find_by(id: params[:id]) ||
+          WordWeight.find_or_initialize_by(word: word, user: current_user,
+                                          abstract_screening: @abstract_screening, word_group: word_group)
+      if params[:destroy]
+        ww.destroy
+      else
+        ww.update(weight: weight, word: word, word_group: word_group)
+      end
+    end
+
     render json: WordGroup.word_weights_object(current_user, @abstract_screening)
   end
 

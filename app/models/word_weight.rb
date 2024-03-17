@@ -13,4 +13,5 @@
 class WordWeight < ApplicationRecord
   belongs_to :user
   belongs_to :abstract_screening
+  belongs_to :word_group
 end
