@@ -66078,13 +66078,13 @@ function __guardMethod__(obj, methodName, transform) {
       });
       Dropzone.options.fileDropzone = {
         url: $('#fileDropzone').attr('dropzone-path'),
-        autoProcessQueue: true,
+        autoProcessQueue: false,
         uploadMultiple: false,
         init: function() {
           var wrapperThis;
           wrapperThis = this;
-          this.on('sending', function(file, xhr, formData) {
-            var csv_type_id, endnote_type_id, file_extension, file_type_id, file_type_name, json_type_id, pubmed_type_id, ris_type_id;
+          this.on('addedfile', function(file) {
+            var csv_type_id, endnote_type_id, file_extension, file_type_id, file_type_name, json_type_id, modalDecisionPromise, pubmed_type_id, ris_type_id, showModalEvent;
             ris_type_id = $("#dropzone-div input#ris-file-type-id").val();
             csv_type_id = $("#dropzone-div input#csv-file-type-id").val();
             endnote_type_id = $("#dropzone-div input#endnote-file-type-id").val();
@@ -66117,9 +66117,25 @@ function __guardMethod__(obj, methodName, transform) {
                 wrapperThis.removeFile(file);
                 return;
             }
-            if (!confirm("This looks like a " + file_type_name + ". Do you wish to continue?")) {
-              wrapperThis.removeFile(file);
-            }
+            file.file_type_id = file_type_id;
+            showModalEvent = new CustomEvent('show-modal', {
+              detail: "This looks like a " + file_type_name + ". Do you wish to continue?"
+            });
+            window.dispatchEvent(showModalEvent);
+            modalDecisionPromise = new Promise(function(resolve, reject) {
+              return window.modalResolve = resolve;
+            });
+            return modalDecisionPromise.then(function(confirmed) {
+              if (confirmed) {
+                return wrapperThis.processQueue();
+              } else {
+                return wrapperThis.removeFile(file);
+              }
+            });
+          });
+          this.on('sending', function(file, xhr, formData) {
+            var file_type_id;
+            file_type_id = file.file_type_id;
             formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val());
             formData.append("projects_user_id", $("#dropzone-div").find("#import_projects_user_id").val());
             formData.append("import_type_id", $("#dropzone-div").find("#import_import_type_id").val());
@@ -66829,6 +66845,12 @@ function __guardMethod__(obj, methodName, transform) {
         }
       });
       dt.draw();
+      $(document).on('click', 'table.extractions-list .delete-btn', function(event) {
+        var url;
+        event.preventDefault();
+        url = $(this).data('delete-url');
+        return Alpine.store('deleteConfirmation').openModal(url);
+      });
       last_col = 6;
       $('table.extractions-list').on('click', '.table-sortable', function(e) {
         var col, element;
