@@ -635,6 +635,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_10_000000) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "user_id"
+    t.datetime "approved_on"
     t.index ["citations_project_id"], name: "index_extractions_on_citations_project_id"
     t.index ["project_id", "citations_project_id", "projects_users_role_id"], name: "index_e_on_p_id_cp_id_pur_id_uniq"
     t.index ["projects_users_role_id"], name: "index_extractions_on_projects_users_role_id"
@@ -2106,8 +2107,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_10_000000) do
   create_table "word_groups", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "color"
-    t.bigint "abstract_screening_id", null: false
-    t.bigint "user_id", null: false
+    t.bigint "project_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

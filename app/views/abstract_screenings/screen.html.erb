@@ -78,8 +78,9 @@
               <span
                 :id="word.id"
                 :class="if (terms_and_phrases_settings) {
-                  if (word.type != 'nonWord') return `cursor-pointer hover:bg-yellow-200 ${word.color} ${word.color !== '' ? 'font-black' : ''}`
+                  if (word.type != 'nonWord') return `cursor-pointer hover:bg-yellow-200 ${word.color !== '' ? 'font-black' : ''}`
                 }"
+                :style="terms_and_phrases_settings && word.color !== '' ? `color: ${word.color}` : ''"
                 x-text="word.content"
                 @click="if (terms_and_phrases_settings) {
                   if (word.type != 'nonWord') weighWord(word.phrase)
@@ -106,8 +107,9 @@
             <span
               :id="word.id"
               :class="if (terms_and_phrases_settings) {
-                if (word.type != 'nonWord') return `cursor-pointer hover:bg-yellow-200 ${word.color} ${word.color !== '' ? 'font-black' : ''}`
+                if (word.type != 'nonWord') return `cursor-pointer hover:bg-yellow-200 ${word.color !== '' ? 'font-black' : ''}`
               }"
+              :style="terms_and_phrases_settings && word.color !== '' ? `color: ${word.color}` : ''"
               x-text="word.content"
               @click="if (terms_and_phrases_settings) {
                 if (word.type != 'nonWord') weighWord(word.phrase)
@@ -631,7 +633,7 @@
         this.weighWord(selection);
       },
 
-      update_group(event, group_id) {
+      updateGroupName(event, group_id) {
         const newGroupName = event.target.value.trim();
 
         if (newGroupName.length === 0 || newGroupName.length > 50) {
@@ -725,7 +727,7 @@
               head: match.index,
               tail: match.index + match[0].length,
               id: `match:${match.index}-${match.index + match[0].length}`,
-              color: word_weight.text_color,
+              color: word_weight.color,
               phrase: phrase,
             });
           }
@@ -1011,9 +1013,9 @@
       getGroups() {
         const groups = {};
         Object.entries(this.word_weights).forEach(([word, info]) => {
-          const { group_id, group_name, bg_color, text_color } = info;
+          const { group_id, group_name, color } = info;
           if (!groups[group_id]) {
-            groups[group_id] = { id: group_id, name: group_name, bgColor: bg_color, textColor: text_color, words: [] };
+            groups[group_id] = { id: group_id, name: group_name, color: color, words: [] };
           }
           groups[group_id].words.push(word);
         });

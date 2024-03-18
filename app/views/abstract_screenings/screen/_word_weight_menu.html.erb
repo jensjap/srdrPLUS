@@ -89,15 +89,15 @@
                 type="text"
                 maxlength="50"
                 :value="group.name"
-                @input.debounce.500="update_group($event, group.id)"
+                @input.debounce.500="updateGroupName($event, group.id)"
                 placeholder="Enter new group name"
               />
               <div class="mb-2">
-                <span :class="group.textColor" x-text="group.name"></span>
+                <span :style="`color: ${group.color}`" x-text="group.name"></span>
               </div>
               <div class="flex flex-wrap">
                 <template x-for="word in group.words" :key="word">
-                  <span class="m-1 p-1" :class="group.bgColor" x-text="word"></span>
+                  <span class="m-1 p-1" :style="`background-color: ${group.color}`" x-text="word"></span>
                 </template>
               </div>
             </div>

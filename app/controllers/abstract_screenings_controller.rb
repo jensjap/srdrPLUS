@@ -33,7 +33,7 @@ class AbstractScreeningsController < ApplicationController
     group_name = params[:group_name]
 
     if group_id.present?
-      word_group = WordGroup.find_by(id: group_id, user: current_user, abstract_screening: @abstract_screening)
+      word_group = WordGroup.find_by(id: group_id, project: @abstract_screening.project)
       unless word_group
         render json: { error: "WordGroup not found" }, status: :not_found
         return
@@ -43,7 +43,7 @@ class AbstractScreeningsController < ApplicationController
         word_group.update(name: group_name.presence || word_group.name, color: color.presence || word_group.color)
       end
     elsif color.present? && group_name.present?
-      word_group = WordGroup.create!(color: color, name: group_name, user: current_user, abstract_screening: @abstract_screening)
+      word_group = WordGroup.create!(color: color, name: group_name, project: @abstract_screening.project)
     else
       render json: { error: "Missing color or group name for new WordGroup" }, status: :bad_request
       return
@@ -60,7 +60,7 @@ class AbstractScreeningsController < ApplicationController
       end
     end
 
-    render json: WordGroup.word_weights_object(current_user, @abstract_screening)
+    render json: WordGroup.word_weights_object(@abstract_screening.project)
   end
 
   def citation_lifecycle_management
