@@ -277,9 +277,9 @@ class ScreeningDataExportJob < ApplicationJob
                 sf_answers[:cells][sf_cell.id] = [cell] if sr.privileged && cell.present?
               end
             end
-          end
 
-          columns << sf_answers[:cells][sf_cell.id].flatten(1).reject(&:empty?).map(&:strip).uniq.join('||')
+            columns << sf_answers[:cells][sf_cell.id].flatten(1).reject(&:empty?).map(&:strip).uniq.join('||') if sf_cell.present?
+          end
         end
       end
     end
