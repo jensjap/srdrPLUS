@@ -9,13 +9,14 @@
   <%= render 'abstract_screenings/screen/weighing_screen' %>
   <%= render 'abstract_screenings/screen/confirmation_modal' %>
   <%= render 'abstract_screenings/screen/history_panel' %>
+  <%= render 'abstract_screenings/screen/word_weight_menu' %>
   <div
     :class="desktop ? 'top-0 bottom-24 border-l border-b border-gray-600 fixed p-4 left-2/3 right-0 overflow-y-scroll overflow-x-hidden bg-white' : ''"
   >
     <!-- prettier-ignore -->
     <%= render 'abstract_screenings/screen/reasoning_menu' %>
     <%= render 'abstract_screenings/screen/screening_form' %>
-    <%= render 'abstract_screenings/screen/word_weight_menu' %>
+    <%= render 'abstract_screenings/screen/word_group_menu' %>
   </div>
   <div
     class="mx-auto lg:mx-0 lg:w-2/3 h-24 absolute inset-0 overflow-y-hidden flex flex-col justify-center"
@@ -33,7 +34,7 @@
     <button
       type="button"
       :class="desktop ? 'hidden' : 'cursor-pointer z-[5] absolute top-14 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-black'"
-      @click="word_weight_menu = !word_weight_menu"
+      @click="word_group_menu = !word_group_menu"
     >
       <span class="sr-only">Word weights</span>
       Terms & Phrases
@@ -330,6 +331,11 @@
     Alpine.data("screenStore", () => ({
       desktop: false,
       weighingScreen: false,
+      selectedGroup: null,
+      groups: [],
+      newWordName: null,
+      newGroupName: null,
+      word_group_menu: false,
       word_weight_menu: false,
       reasoningMenu: false,
       addReasonModal: { on: false, type: "", action: "" },
@@ -379,6 +385,7 @@
       asr_in_asic_count: null,
       cps: [],
       word_weights: {},
+      word_weights_by_group: {},
       wordWeight: "",
       textarea_keywords_and_phrases: "",
       newCustomValue: "",
@@ -435,6 +442,12 @@
 
       toggleWeighingScreen() {
         this.weighingScreen = !this.weighingScreen;
+      },
+
+      toggleWordWeightMenu(group) {
+        this.selectedGroup = group;
+        this.word_weight_menu = !this.word_weight_menu;
+        console.log(this.selectedGroup)
       },
 
       requireReasoning() {
@@ -624,6 +637,7 @@
         } else {
           this.weighingScreen = false;
           this.reasoningMenu = false;
+          this.word_group_menu = false;
           this.word_weight_menu = false;
         }
       },
@@ -643,7 +657,12 @@
           event.target.classList.remove("!bg-red-500");
         }
 
-        this.sendWw(null, 0, null, false, group_id, null, newGroupName);
+        this.sendWw(null, 0, null, false, group_id, null, newGroupName, false);
+      },
+
+      updateGroupColor(event, group_id) {
+        const newGroupColor = event.target.value.trim();
+        this.sendWw(null, 0, null, false, group_id, newGroupColor, null, false);
       },
 
       weighWord(word) {
@@ -788,7 +807,7 @@
         );
       },
 
-      async sendWw(word, weight, id, destroy, group_id, color, group_name) {
+      async sendWw(word, weight, id, destroy_ww, group_id, color, group_name, destroy_wg) {
         const response = await fetch(
           "/abstract_screenings/<%= params[:abstract_screening_id] %>/update_word_weight",
           {
@@ -798,17 +817,28 @@
               word,
               weight,
               id,
-              destroy,
+              destroy_ww,
               group_id,
               color,
               group_name,
+              destroy_wg,
             }),
           }
         );
+
         const data = await response.json();
-        this.word_weights = data;
+        this.word_weights_by_group = data;
+        this.word_weights = this.convertGroupedDataToWordKeyedObject(data);
+
         this.processWeights("title", "processedTitle");
         this.processWeights("abstract", "processedAbstract");
+
+        if (response.ok) {
+          this.groups = this.getGroups();
+          if (this.selectedGroup) {
+            this.selectedGroup = this.groups.find(group => group.id === group_id);
+          }
+        }
       },
 
       async updateReasonsSelection(reason) {
@@ -953,12 +983,14 @@
           this.all_labels = data.all_labels;
           this.citation = data.citation;
           this.options = data.options;
-          this.word_weights = data.word_weights;
+          this.word_weights_by_group = data.word_weights;
+          this.word_weights = this.convertGroupedDataToWordKeyedObject(data.word_weights);
           this.cps = data.cps;
           this.asr_in_asic_count = data.asr_in_asic_count;
           this.processWeights("title", "processedTitle");
           this.processWeights("abstract", "processedAbstract");
           this.project_id = data.project_id;
+          this.groups = this.getGroups();
         } else {
           if (
             submissionType !== "notes" &&
@@ -1012,15 +1044,38 @@
 
       getGroups() {
         const groups = {};
-        Object.entries(this.word_weights).forEach(([word, info]) => {
-          const { group_id, group_name, color } = info;
-          if (!groups[group_id]) {
-            groups[group_id] = { id: group_id, name: group_name, color: color, words: [] };
-          }
-          groups[group_id].words.push(word);
+        Object.entries(this.word_weights_by_group).forEach(([groupId, words]) => {
+          words.forEach(wordInfo => {
+            const { word, color, id, group_name } = wordInfo;
+            if (!groups[groupId]) {
+              groups[groupId] = { id: groupId, name: group_name, color: color, words: [] };
+            }
+            groups[groupId].words.push({ name: word, id: id });
+          });
         });
+
         return Object.values(groups);
       },
+
+      convertGroupedDataToWordKeyedObject(groupedData) {
+        if (!groupedData || !Object.keys(groupedData).every(key => !isNaN(parseInt(key)))) {
+          return groupedData;
+        }
+
+        let wordKeyedObject = {};
+        for (const groupId in groupedData) {
+          const groupItems = groupedData[groupId];
+          groupItems.forEach(item => {
+            wordKeyedObject[item.word] = {
+              color: item.color,
+              id: item.id,
+              group_name: item.group_name,
+              group_id: item.group_id,
+            };
+          });
+        }
+        return wordKeyedObject;
+      }
     }));
   });
 </script>

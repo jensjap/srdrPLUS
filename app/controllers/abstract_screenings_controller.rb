@@ -32,6 +32,7 @@ class AbstractScreeningsController < ApplicationController
     color = params[:color]
     group_name = params[:group_name]
 
+    word_group = nil
     if group_id.present?
       word_group = WordGroup.find_by(id: group_id, project: @abstract_screening.project)
       unless word_group
@@ -39,24 +40,28 @@ class AbstractScreeningsController < ApplicationController
         return
       end
 
-      if group_name.present? || color.present?
+      if params[:destroy_wg].to_s == "true"
+        word_group.destroy
+        render json: WordGroup.word_weights_object(@abstract_screening.project)
+        return
+      elsif group_name.present? || color.present?
         word_group.update(name: group_name.presence || word_group.name, color: color.presence || word_group.color)
       end
-    elsif color.present? && group_name.present?
+    elsif color.present? && group_name.present? && params[:destroy_wg].to_s != "true"
       word_group = WordGroup.create!(color: color, name: group_name, project: @abstract_screening.project)
-    else
-      render json: { error: "Missing color or group name for new WordGroup" }, status: :bad_request
+    elsif params[:destroy_wg].to_s != "true"
+      render json: { error: "Missing color or group name for new WordGroup or invalid destroy_wg flag" }, status: :bad_request
       return
     end
 
-    if word.present?
+    if word.present? && word_group
       ww = WordWeight.find_by(id: params[:id]) ||
-          WordWeight.find_or_initialize_by(word: word, user: current_user,
+          WordWeight.find_or_initialize_by(weight: weight, word: word, user: current_user,
                                           abstract_screening: @abstract_screening, word_group: word_group)
-      if params[:destroy]
+      if params[:destroy_ww]
         ww.destroy
       else
-        ww.update(weight: weight, word: word, word_group: word_group)
+        ww.update(word: word, word_group: word_group)
       end
     end
 

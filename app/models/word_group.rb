@@ -1,7 +1,7 @@
 class WordGroup < ApplicationRecord
   belongs_to :project
 
-  has_many :word_weights
+  has_many :word_weights, dependent: :destroy
 
   def self.import_from_word_weights
     weight_map = {
@@ -27,17 +27,21 @@ class WordGroup < ApplicationRecord
   end
 
   def self.word_weights_object(project)
-    word_groups = WordGroup.where(project:)
+    word_groups = WordGroup.where(project: project)
     word_groups.each_with_object({}) do |wg, hash|
+      hash[wg.id] ||= [{color: wg.color, group_name: wg.name, group_id: wg.id, word: nil, id: nil}]
+
       wg.word_weights.each do |ww|
-        hash[ww.word] = {
+        hash[wg.id] << {
+          word: ww.word,
           color: wg.color,
           id: ww.id,
           group_name: wg.name,
           group_id: wg.id
-        }
+        } unless ww.nil?
       end
-      hash
+
+      hash[wg.id].shift if hash[wg.id].size > 1
     end
   end
 end
