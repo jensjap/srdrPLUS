@@ -106,13 +106,13 @@
                   @input="updateGroupColor($event, group.id)"
                 />
                 <button @click="toggleWordWeightMenu(group)" class="!w-1/4 cursor-pointer hover:underline text-purple-900 text-sm">Edit Members</button>
-                <button @click="sendWw(null, null, null, false, group.id, null, null, true)" class="p-2">
+                <button @click="openAlertModal(group.id)" class="p-2">
                   <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
               </div>
             </template>
             <div class="mt-4">
-              <input class="box-border p-2 w-full" type="text" placeholder="Add new group" x-model="newGroupName" @keyup.enter="sendWw('default word', 0, null, false, null, '#3b82f6', newGroupName, false)">
+              <input class="box-border p-2 w-full" type="text" placeholder="Add new group" x-model="newGroupName" @keyup.enter="sendWw(null, null, null, false, null, '#3b82f6', newGroupName, false); newGroupName = null;">
             </div>
           </div>
         </div>

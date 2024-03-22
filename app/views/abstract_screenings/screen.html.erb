@@ -10,6 +10,7 @@
   <%= render 'abstract_screenings/screen/confirmation_modal' %>
   <%= render 'abstract_screenings/screen/history_panel' %>
   <%= render 'abstract_screenings/screen/word_weight_menu' %>
+  <%= render 'shared/alert_modal' %>
   <div
     :class="desktop ? 'top-0 bottom-24 border-l border-b border-gray-600 fixed p-4 left-2/3 right-0 overflow-y-scroll overflow-x-hidden bg-white' : ''"
   >
@@ -402,6 +403,9 @@
       as_allow_adding_reasons: false,
       as_allow_adding_tags: false,
       as_limit_one_reason: false,
+      isAlertModalOpen: false,
+      alertModalContent: '',
+      groupToDelete: null,
 
       async init() {
         const url = new URL(window.location.href);
@@ -1075,7 +1079,25 @@
           });
         }
         return wordKeyedObject;
-      }
+      },
+
+      openAlertModal(groupId) {
+        this.groupToDelete = groupId;
+        this.alertModalContent = 'Are you sure you want to delete this group? This can not be undone and will delete related terms.';
+        this.isAlertModalOpen = true;
+      },
+
+      closeAlertModal() {
+        this.isAlertModalOpen = false;
+        this.groupToDelete = null;
+      },
+
+      modalConfirmAction() {
+        if (this.groupToDelete) {
+          this.sendWw(null, null, null, false, this.groupToDelete, null, null, true);
+        }
+        this.closeAlertModal();
+      },
     }));
   });
 </script>
