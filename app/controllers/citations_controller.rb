@@ -62,14 +62,55 @@ class CitationsController < ApplicationController
   end
 
   def index
-    @nav_buttons.push('citation_pool', 'my_projects')
-    @citations = @project
-                 .citations
-                 .select(:id, :name, :pmid, :registry_number, :accession_number, :doi, :other, :authors)
-                 .order(:id)
-    @citations_projects_dict = @project.citations_projects.map { |cp| [cp.citation_id, cp] }.to_h
-    @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
-    @project.citations.build
+    respond_to do |format|
+      format.html do
+        @nav_buttons.push('citation_pool', 'my_projects')
+        @citations = @project
+                     .citations
+                     .select(:id, :name, :pmid, :registry_number, :accession_number, :doi, :other, :authors)
+                     .order(:id)
+        @key_questions_projects_array_for_select = @project.key_questions_projects_array_for_select
+        @project.citations.build
+      end
+      format.json do
+        @draw = params[:draw]
+        @length = params[:length].to_i
+        @start = params[:start].to_i
+        @citations_projects = @project
+                              .citations_projects
+                              .joins(:citation)
+        order_by = case params.dig(:order, '0', :column)
+                   when '0'
+                     'citations.pmid'
+                   when '1'
+                     'citations.refman'
+                   when '2'
+                     'citations.authors'
+                   when '3'
+                     'citations.name'
+                   else
+                     'citations_projects.id'
+                   end
+
+        @citations_projects = @citations_projects.order("#{order_by} #{if params.dig(:order, '0', 'dir') == 'desc'
+                                                                         'desc'
+                                                                       else
+                                                                         'asc'
+                                                                       end}")
+        unless params.dig(:search, :value).blank?
+          @citations_projects = @citations_projects.where(
+            '(lower(citations.name) LIKE :like OR
+            lower(citations.authors) LIKE :like OR
+            lower(citations.pmid) LIKE :like OR
+            lower(citations.registry_number) LIKE :like OR
+            lower(citations.accession_number) LIKE :like OR
+            lower(citations.doi) LIKE :like OR
+            lower(citations.other) LIKE :like
+            )', like: "%#{params[:search][:value]}%"
+          )
+        end
+      end
+    end
   end
 
   private
