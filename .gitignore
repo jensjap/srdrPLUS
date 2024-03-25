@@ -26,6 +26,7 @@
 *.swn
 *.swm
 
+private.env
 .env
 
 # DS_Store files.
