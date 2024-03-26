@@ -167,14 +167,13 @@ class ScreeningDataExportJob < ApplicationJob
         sheet = build_headers_and_add_to_sheet(sheet, project, 'sheet2', sf)
         CitationsProject.search(where: { project_id: project.id }, load: false).each do |cp|
           cp_id = cp.id.to_i
-          citation = Citation.find(cp_id)
           columns = [
             cp['citation_id'],
             cp['accession_number'],
             cp['pmid'],
             cp['refman'],
             cp['author_map_string'],
-            citation.journal&.publication_date,
+            cp['publication_date'],
             cp['name'],
             cp['abstract'],
             cp['publication'],
