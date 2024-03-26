@@ -121,6 +121,12 @@
         }
       });
       dt.draw();
+      $(document).on('click', 'table.extractions-list .delete-btn', function(event) {
+        var url;
+        event.preventDefault();
+        url = $(this).data('delete-url');
+        return Alpine.store('deleteConfirmation').openModal(url);
+      });
       last_col = 6;
       $('table.extractions-list').on('click', '.table-sortable', function(e) {
         var col, element;

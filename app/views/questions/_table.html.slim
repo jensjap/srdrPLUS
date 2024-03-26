@@ -10,10 +10,6 @@
             th style='min-width: 350px;'
               = qrc_f.input :name, label: 'Column Header', wrapper_html: { style: 'margin-bottom: 0;' }
               div @click='destroyResource("/question_row_columns/#{qrc_f.object.id}/destroy_entire_column", "question_row_column")' class='cursor-pointer float-right' style='font-weight: normal;' Remove
-              / = link_to 'Remove', destroy_entire_column_question_row_column_path(qrc_f.object),
-              /                     method: :delete, data: { confirm: t('confirm') },
-              /                     class: 'float-right',
-              /                     style: 'font-weight: normal;'
 
     tbody
       = f.simple_fields_for(:question_rows) do |qr_f|
@@ -21,23 +17,24 @@
           td
             = qr_f.input :name, label: 'Row Header', wrapper_html: { style: 'margin-bottom: 0;' }
             div @click='destroyResource("/question_rows/#{qr_f.object.id}", "question_row")' class='cursor-pointer float-right' Remove
-            / = link_to 'Remove', qr_f.object, method: :delete, data: { confirm: t('confirm') }, class: 'float-right'
 
           = qr_f.simple_fields_for(:question_row_columns) do |qrc_f|
+            / - extracted_data = qrc_f.object.extracted_data?
 
             td
 
               fieldset.fieldset
                 legend Options
 
+                div.text-sm.text-red-800.mb-2 Please note: Changing the question field type may result in loss of data if extractions have begun. Modify forms after data extraction started with caution.
+
                 / Let's disable some question types for now...they are unstable.
                 = qrc_f.association :question_row_column_type, label: 'Field Type',
                                                                       include_blank: false,
                                                                       collection: QuestionRowColumnType::DEFAULT_QRC_TYPES,
-                                                                      wrapper: 'horizontal_form',
-                                                                      disabled: qrc_f.object.extracted_data?,
-                                                                      input_html: { title: qrc_f.object.extracted_data? ? "Extracted data detected! Modifying question type is not allowed when extracted data for this question exist. Please create a new question instead and transfer data or delete the question if it is no longer needed. WARNING: All associated data will be removed when the question is deleted." : "" }
-
+                                                                      wrapper: 'horizontal_form'
+                                                                      / disabled: extracted_data,
+                                                                      / input_html: { title: extracted_data ? "Extracted data detected! Modifying question field type is not allowed when extracted data for this question exist. Please create a new question field instead and transfer data or delete the question if it is no longer needed. WARNING: All associated data will be removed when the question is deleted." : "" }
 
                 = qrc_f.simple_fields_for(:question_row_columns_question_row_column_options) do |qrcqrco_f|
 
@@ -60,9 +57,6 @@
                             .select{|qrcqrco| qrcqrco.question_row_column_option == QuestionRowColumnOption::ANSWER_CHOICE_QRCO}.length > 1)
                             .float-right
                               div @click='destroyResource("/question_row_columns_question_row_column_options/#{option.id}", "question_row_column_option")' class='cursor-pointer float-right' style='font-weight:bold; color:#cc4b37 !important;' Remove
-                              / = link_to 'Remove', option, method: :delete, data: { confirm: t('confirm') },
-                              /                           class: 'float-right',
-                              /                           style: 'font-weight:bold; color:#cc4b37 !important;'
                           .float-left.followup_container
                             = qrcqrco_f.input :includes_followup, as: :boolean, :input_html => { :checked => qrcqrco_f.object.includes_followup }, label: 'Include Followup Question', wrapper_html: { class: 'followup-checkbox' }
 
