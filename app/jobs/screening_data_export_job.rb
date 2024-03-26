@@ -95,6 +95,10 @@ class ScreeningDataExportJob < ApplicationJob
             citation.accession_number,
             citation.pmid,
             cp.refman,
+            citation.authors,
+            citation.journal&.publication_date,
+            citation.name,
+            citation.abstract,
             "#{ citation.journal&.name } #{ citation.journal&.volume }(#{ citation.journal&.issue }):#{ citation&.page_number_start }-#{ citation&.page_number_end }",
             citation.doi,
             citation.keywords.map(&:name).join(', '),
@@ -163,11 +167,16 @@ class ScreeningDataExportJob < ApplicationJob
         sheet = build_headers_and_add_to_sheet(sheet, project, 'sheet2', sf)
         CitationsProject.search(where: { project_id: project.id }, load: false).each do |cp|
           cp_id = cp.id.to_i
+          citation = Citation.find(cp_id)
           columns = [
             cp['citation_id'],
             cp['accession_number'],
             cp['pmid'],
             cp['refman'],
+            cp['author_map_string'],
+            citation.journal&.publication_date,
+            cp['name'],
+            cp['abstract'],
             cp['publication'],
             cp['doi'],
             cp['keywords'],
@@ -293,6 +302,10 @@ class ScreeningDataExportJob < ApplicationJob
       'Accession Number',
       'PMID',
       'RefId',
+      'Authors',
+      'Publication Date',
+      'Title',
+      'Abstract',
       'Publication String',
       'DOI',
       'Keywords',
