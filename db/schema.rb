@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_04_104255) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_04_104254) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -2104,14 +2104,26 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_04_104255) do
     t.index ["wac_id"], name: "index_wacs_bacs_rssms_on_wac_id"
   end
 
+  create_table "word_groups", charset: "utf8mb3", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "color"
+    t.bigint "project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "word_weights", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "abstract_screening_id"
     t.integer "weight", limit: 1, null: false
     t.string "word", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "project_id"
-    t.index ["project_id", "word"], name: "project_id_word", unique: true
+    t.index ["abstract_screening_id"], name: "ww_on_as"
     t.index ["project_id"], name: "index_word_weights_on_project_id"
+    t.index ["user_id", "abstract_screening_id", "word"], name: "u_as_w", unique: true
+    t.index ["user_id"], name: "ww_on_u"
   end
 
   add_foreign_key "abstrackr_settings", "profiles"
@@ -2279,5 +2291,4 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_04_104255) do
   add_foreign_key "training_data_infos", "ml_models"
   add_foreign_key "users", "user_types"
   add_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures"
-  add_foreign_key "word_weights", "projects"
 end
