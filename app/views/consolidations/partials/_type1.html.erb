@@ -475,10 +475,13 @@
             x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
             :key="eefps.id"
           >
-            <th
-              class="text-center"
-              x-text="`ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
-            ></th>
+            <th class="text-center">
+              <a
+                :href="`/extractions/${eefps.extraction_id}/work?panel-tab=${mh?.current_citations_project?.efps_id}`"
+                x-text="`ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+                target="_blank"
+              ></a>
+            </th>
           </template>
         </tr>
       </thead>
