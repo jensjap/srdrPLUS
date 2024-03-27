@@ -121,9 +121,24 @@
         </div>
         <hr />
         <div
-          class="px-8 break-all leading-none"
-          x-text="citation.keywords"
-        ></div>
+          class="px-8 leading-5"
+          @mouseup="if (terms_and_phrases_settings) checkSelection()"
+          @touchend="if (terms_and_phrases_settings) checkSelection()"
+        >
+          <template x-for="word in processedKeyWord">
+            <span
+              :id="word.id"
+              :class="if (terms_and_phrases_settings) {
+                if (word.type != 'nonWord') return `cursor-pointer hover:bg-yellow-200 ${word.color !== '' ? 'font-black' : ''}`
+              }"
+              :style="terms_and_phrases_settings && word.color !== '' ? `color: ${word.color}` : ''"
+              x-text="word.content"
+              @click="if (terms_and_phrases_settings) {
+                if (word.type != 'nonWord') weighWord(word.phrase)
+              }"
+            ></span>
+          </template>
+        </div>
         <div class="px-8 break-all leading-none" x-text="citation.id"></div>
         <div
           class="px-8 break-all leading-none"
@@ -393,6 +408,7 @@
       updateCustomId: null,
       processedTitle: [],
       processedAbstract: "",
+      processedKeyWord: "",
       disable_textarea_keywords_and_phrases: false,
       resolutionMode:
         new URL(window.location.href).searchParams.get("resolution_mode") ==
@@ -836,6 +852,7 @@
 
         this.processWeights("title", "processedTitle");
         this.processWeights("abstract", "processedAbstract");
+        this.processWeights("keywords", "processedKeyWord");
 
         if (response.ok) {
           this.groups = this.getGroups();
@@ -993,6 +1010,7 @@
           this.asr_in_asic_count = data.asr_in_asic_count;
           this.processWeights("title", "processedTitle");
           this.processWeights("abstract", "processedAbstract");
+          this.processWeights("keywords", "processedKeyWord");
           this.project_id = data.project_id;
           this.groups = this.getGroups();
         } else {
