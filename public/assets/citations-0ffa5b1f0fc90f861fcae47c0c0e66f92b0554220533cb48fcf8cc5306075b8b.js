@@ -1,9 +1,43 @@
 (function() {
   document.addEventListener('DOMContentLoaded', function() {
     return (function() {
-      var fetch_from_pubmed, list_options, populate_citation_fields, tableKey;
+      var fetch_from_pubmed, id_counter, list_options, populate_citation_fields, tableKey;
+      id_counter = -1;
       tableKey = window.location.pathname;
       $('#citations-table').DataTable({
+        ajax: "/projects/" + ($('#citations-table').data('project_id')) + "/citations",
+        processing: true,
+        serverSide: true,
+        "columns": [
+          {
+            "data": "accession_number_alts"
+          }, {
+            "data": "refman"
+          }, {
+            render: function(data, type, row, meta) {
+              return '<div style="overflow: hidden; height: 18px;" title="' + row['authors'] + '">' + row['authors_short'] + '</div>';
+            }
+          }, {
+            render: function(data, type, row, meta) {
+              return '<div style="overflow: hidden; height: 18px;">' + row['name'] + '</div>';
+            }
+          }, {
+            render: function(data, type, row, meta) {
+              if ($('#project_consolidator').data('project-consolidator') !== true) {
+                return '';
+              }
+              return '<a href="/citations/' + row['citation_id'] + '/edit?project_id=' + row['project_id'] + '">Edit</a>';
+            }
+          }, {
+            render: function(data, type, row, meta) {
+              if ($('#project_leader').data('project-leader') !== true) {
+                return '';
+              }
+              id_counter += 1;
+              return '<input name="project[citations_projects_attributes][' + id_counter + '][_destroy]" type="hidden" value="0" autocomplete="off"> <input id="sf_cp-' + row['citation_id'] + '" type="checkbox" value="1" name="project[citations_projects_attributes][' + id_counter + '][_destroy]"> <input autocomplete="off" type="hidden" value="' + row['citations_project_id'] + '" name="project[citations_projects_attributes][' + id_counter + '][id]" id="project_citations_projects_attributes_' + id_counter + '_id">';
+            }
+          }
+        ],
         "columnDefs": [
           {
             "orderable": false,
@@ -11,7 +45,8 @@
           }
         ],
         "": "",
-        "paging": false,
+        "pagingType": "full_numbers",
+        "paging": true,
         "stateSave": true,
         "stateSaveParams": function(settings, data) {
           return data.search.search = "";
