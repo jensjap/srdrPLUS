@@ -13,7 +13,7 @@
             <div class="flex items-center mb-2 gap-4">
               <input class="box-border p-2" type="text" x-model="wordObj.name" @keyup.enter="sendWw(wordObj.name, null, wordObj.id, false, selectedGroup.id, null, null, false)" @blur="sendWw(wordObj.name, null, wordObj.id, false, selectedGroup.id, null, null, false)">
               <button @click="sendWw(wordObj.name, null, wordObj.id, true, selectedGroup.id, null, null, false)" class="p-2">
-                <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <i class="fi-trash cursor-pointer hover:underline"></i>
               </button>
             </div>
           </template>
