@@ -349,6 +349,20 @@ class ExtractionsController < ApplicationController
     end
   end
 
+  def approve(approved_on = Time.now)
+    @extraction = Extraction.find(params[:id])
+    authorize(@extraction)
+    if @extraction.update(approved_on:)
+      render json: @extraction, status: 200
+    else
+      render json: {}, status: 400
+    end
+  end
+
+  def disapprove
+    approve(nil)
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.

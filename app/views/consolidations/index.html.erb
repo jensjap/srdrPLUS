@@ -15,83 +15,144 @@
       </p>
     </div>
   </div>
+  <template x-if="citationsHash == null"><div>Loading...</div></template>
   <div class="mt-8 flex flex-col">
     <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
       <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-        <template x-if="citationsHash == null"><div>Loading...</div></template>
+        <div class="flex space-x-2">
+          <h2 class="text-lg font-bold">Consolidations</h2>
+          <input
+            class="!text-xs indent-1"
+            type="text"
+            x-model="consolidationSearchString"
+            placeholder="Search..."
+          />
+        </div>
+        <div
+          class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg mb-4 overflow-y-auto max-h-80"
+        >
+          <table
+            class="min-w-full divide-y divide-gray-300 overflow-y-scroll max-h-80 block"
+          >
+            <thead>
+              <tr>
+                <th></th>
+                <th data-sort-direction="asc">Citation (Sorted by Title)</th>
+                <th>Status</th>
+                <th>Approved</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template
+                x-for="c_extraction in consolidated_extractions.filter(c_extraction => (new RegExp(consolidationSearchString, 'i')).test(c_extraction.citation_name + c_extraction.citation_handle))"
+                :key="c_extraction.id"
+              >
+                <tr>
+                  <td>
+                    <a
+                      :href="`/extractions/${c_extraction.id}/work`"
+                      class="font-bold px-2"
+                      >Work</a
+                    >
+                  </td>
+                  <td class="inline-block">
+                    <a :href="`/citations/${c_extraction.citation_id}`">
+                      <div x-text="c_extraction.citation_handle"></div>
+                      <div x-text="c_extraction.citation_name"></div>
+                    </a>
+                  </td>
+                  <td class="text-center">
+                    <button
+                      @click="toggleSectionCompletionStatus(c_extraction)"
+                      x-text="c_extraction.status"
+                      class="p-2 w-32 cursor-pointer text-white"
+                      :class="{
+                        'bg-green-900': c_extraction.status_id === 2,
+                        'bg-yellow-600': c_extraction.status_id === 1,
+                      }"
+                    ></button>
+                  </td>
+                  <td>
+                    <button
+                      @click="toggleApproval(c_extraction)"
+                      x-text="c_extraction.approved_on === null ? 'Unapproved' : 'Approved'"
+                      class="p-2 w-32 cursor-pointer text-white"
+                      :class="{
+                        'bg-green-900': c_extraction.approved_on !== null,
+                        'bg-yellow-600': c_extraction.approved_on === null
+                      }"
+                    ></button>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+        <div class="flex space-x-2">
+          <h2 class="text-lg font-bold">Citations</h2>
+          <input
+            class="!text-xs indent-1"
+            type="text"
+            x-model="citationSearchString"
+            placeholder="Search..."
+          />
+        </div>
         <template x-if="citationsHash != null">
           <div
             class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
           >
             <table
-              class="min-w-full divide-y divide-gray-300 overflow-y-scroll h-[30vw] block"
+              class="min-w-full divide-y divide-gray-300 overflow-y-scroll max-h-80 block"
             >
-              <thead class="bg-gray-50 !sticky top-0 z-[5]">
+              <thead class="bg-gray-50">
                 <tr>
-                  <th
-                    scope="col"
-                    class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
-                  >
+                  <th class="text-center text-sm font-semibold text-gray-900">
                     Year
                   </th>
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900"
-                  >
+                  <th class="text-center text-sm font-semibold text-gray-900">
                     Citation
                   </th>
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900"
-                  >
+                  <th class="text-center text-sm font-semibold text-gray-900">
                     No. of Extractions
                   </th>
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900"
-                  >
+                  <th class="text-center text-sm font-semibold text-gray-900">
                     Differences Found
                   </th>
-                  <th
-                    scope="col"
-                    class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900"
-                  >
+                  <th class="text-center text-sm font-semibold text-gray-900">
                     Consolidated Extraction Exists?
                   </th>
-                  <th scope="col" class="text-center py-3.5 pl-3 pr-4 sm:pr-6">
-                    Consolidated Extraction
-                  </th>
+                  <th class="text-center">Consolidated Extraction</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
                 <template
-                  x-for="citations_project_id in Object.keys(citationsHash)"
+                  x-for="citations_project_id in Object.keys(citationsHash).filter(citations_project_id => (new RegExp(citationSearchString, 'i')).test(citationsHash[citations_project_id].citation_year + citationsHash[citations_project_id].citation_title))"
                   :key="citations_project_id"
                 >
                   <tr>
                     <td
-                      class="overflow-hidden py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                      class="overflow-hidden text-sm font-medium text-gray-900"
                     >
                       <div
                         x-text="citationsHash[citations_project_id].citation_year"
                       ></div>
                     </td>
                     <td
-                      class="overflow-hidden py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                      class="overflow-hidden text-sm font-medium text-gray-900"
                     >
                       <div
                         x-text="citationsHash[citations_project_id].citation_title"
                       ></div>
                     </td>
                     <td
-                      class="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                      class="text-center whitespace-nowrap text-sm text-gray-500"
                     >
                       <div
                         x-text="citationsHash[citations_project_id].extractions && citationsHash[citations_project_id].extractions.length"
                       ></div>
                     </td>
                     <td
-                      class="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                      class="text-center whitespace-nowrap text-sm text-gray-500"
                     >
                       <div
                         class="p-1"
@@ -100,7 +161,7 @@
                       ></div>
                     </td>
                     <td
-                      class="text-center whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                      class="text-center whitespace-nowrap text-sm text-gray-500"
                     >
                       <div
                         class="p-1"
@@ -121,7 +182,7 @@
                       ></div>
                     </td>
                     <td
-                      class="text-center whitespace-nowrap py-4 pl-3 pr-4 text-sm font-medium sm:pr-6"
+                      class="text-center whitespace-nowrap text-sm font-medium"
                     >
                       <template
                         x-if="citationsHash[citations_project_id].consolidated_extraction_status == null"
@@ -161,6 +222,9 @@
   document.addEventListener("alpine:init", () => {
     Alpine.data("consolidations", () => ({
       citationsHash: null,
+      consolidated_extractions: [],
+      consolidationSearchString: "",
+      citationSearchString: "",
 
       init() {
         this.fetch_results();
@@ -175,7 +239,65 @@
           },
         });
         const data = await response.json();
-        this.citationsHash = data;
+        this.citationsHash = data.pcgh;
+        this.consolidated_extractions = data.consolidated_extractions;
+      },
+
+      async toggleSectionCompletionStatus(c_extraction) {
+        let newStatusId;
+        if (c_extraction.status_id === 1) {
+          newStatusId = 2;
+        } else {
+          newStatusId = 1;
+        }
+
+        const response = await fetch(
+          `/statusings/${c_extraction.statusing_id}`,
+          {
+            method: "PATCH",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+            credentials: "same-origin",
+            body: JSON.stringify({
+              status_id: newStatusId,
+            }),
+          }
+        );
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Saved successfully", null, { timeOut: 1000 });
+          this.fetch_results();
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
+      },
+
+      async toggleApproval(extraction) {
+        let url =
+          extraction.approved_on === null
+            ? `/extractions/${extraction.id}/approve`
+            : `/extractions/${extraction.id}/disapprove`;
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+          credentials: "same-origin",
+        });
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Saved successfully", null, { timeOut: 1000 });
+          this.fetch_results();
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
       },
 
       async createConsolidatedExtraction(citations_project_id) {
@@ -193,11 +315,7 @@
           }),
         });
         const data = await response.json();
-        this.citationsHash[
-          data.citations_project_id
-        ].consolidated_extraction_status = "Draft";
-        this.citationsHash[data.citations_project_id].consolidated_extraction =
-          data;
+        this.fetch_results();
       },
     }));
   });

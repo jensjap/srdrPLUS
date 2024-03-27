@@ -85,7 +85,7 @@ class CitationsProject < ApplicationRecord
 
   def self.dedupe_update_associations(master_cp, cp_to_remove)
     cp_to_remove.extractions.each do |e|
-      e.dup.update_attributes(citations_project_id: master_cp.id)
+      e.dup.update(citations_project_id: master_cp.id)
     end
   end
 
@@ -143,6 +143,7 @@ class CitationsProject < ApplicationRecord
       'name' => citation.name.to_s,
       'year' => citation.year.to_s,
       'publication' => "#{citation.journal&.name} #{citation.journal&.volume}(#{citation.journal&.issue}):#{citation&.page_number_start}-#{citation&.page_number_end}",
+      'publication_date' => citation.journal&.publication_date,
       'doi' => citation.doi.to_s,
       'keywords' => citation.keywords.map(&:name).join(', '),
       'users' => abstract_screening_results.map(&:user).uniq.map(&:handle).join(', '),
@@ -158,7 +159,10 @@ class CitationsProject < ApplicationRecord
       'consolidation_qualification' => qualification('c-'),
       'abstract_screening_objects' => abstract_screening_objects,
       'fulltext_screening_objects' => fulltext_screening_objects,
-      'abstract' => citation.abstract
+      'abstract' => citation.abstract,
+      'pmid' => citation.pmid,
+      'refman' => refman,
+      'accession_number' => citation.accession_number
     }
   end
 

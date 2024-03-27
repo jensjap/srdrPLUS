@@ -41,6 +41,7 @@
           <th class="text-left">Publication Year</th>
           <th class="text-left">Refman</th>
           <th class="text-left">PMID</th>
+          <th class="text-left">DOI</th>
           <th class="text-left">Abstract</th>
         </tr>
       </thead>
@@ -56,6 +57,7 @@
           <td><%= citation['journal_attributes']&.dig('publication_date') %></td>
           <td><%= citation['refman'] %></td>
           <td><%= citation['pmid'] %></td>
+          <td><%= citation['doi'] %></td>
           <td><%= citation['abstract'] %></td>
         </tr>
         <% end %>

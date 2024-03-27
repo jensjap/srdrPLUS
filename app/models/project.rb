@@ -14,9 +14,9 @@
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
 #  authors_of_report          :text(65535)
-#  exclude_personal_conflicts :boolean          default(TRUE), not null
-#  as_limit_one_reason        :boolean          default(FALSE), not null
-#  fs_limit_one_reason        :boolean          default(FALSE), not null
+#  exclude_personal_conflicts :boolean          default(FALSE), not null
+#  as_limit_one_reason        :boolean          default(TRUE), not null
+#  fs_limit_one_reason        :boolean          default(TRUE), not null
 #  as_allow_adding_reasons    :boolean          default(TRUE), not null
 #  as_allow_adding_tags       :boolean          default(TRUE), not null
 #  fs_allow_adding_reasons    :boolean          default(TRUE), not null
@@ -106,6 +106,8 @@ class Project < ApplicationRecord
 
   has_many :ml_models_projects
   has_many :ml_models, through: :ml_models_projects
+
+  has_many :word_weights, dependent: :destroy
 
   validates :name, presence: true
 

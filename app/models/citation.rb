@@ -39,6 +39,8 @@ class Citation < ApplicationRecord
   accepts_nested_attributes_for :journal, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :citations_projects, reject_if: :all_blank
 
+  validates :name, length: { maximum: 500 }
+
   # Redundant?
   def abstract_utf8
     abstract = read_attribute(:abstract)

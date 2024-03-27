@@ -30,14 +30,15 @@ class AbstractScreeningsController < ApplicationController
     word = params[:word].downcase
     id = params[:id]
 
-    ww = WordWeight.find_by(id:) || WordWeight.find_or_initialize_by(word:, user: current_user,
-                                                                     abstract_screening: @abstract_screening)
+    ww = WordWeight.find_by(id:) ||
+         WordWeight.find_or_initialize_by(word:, project: @abstract_screening.project)
+
     if params[:destroy]
       ww.destroy
     else
-      ww.update(weight:, word:)
+      ww.update!(weight:, word:)
     end
-    render json: WordWeight.word_weights_object(current_user, @abstract_screening)
+    render json: WordWeight.word_weights_object(@abstract_screening.project)
   end
 
   def citation_lifecycle_management
@@ -133,7 +134,10 @@ class AbstractScreeningsController < ApplicationController
         return render json: { asr_id: nil } unless asr && (asr.user == current_user ||
                                                    (asr.privileged && ProjectsUser.find_by(
                                                      project: asr.project, user: current_user
-                                                   ).project_consolidator?))
+                                                   ).project_consolidator?) ||
+                                                    ProjectsUser.find_by(
+                                                      project: asr.project, user: current_user
+                                                    ).project_leader?)
 
         render json: { asr_id: asr&.id }
       end

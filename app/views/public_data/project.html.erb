@@ -336,6 +336,7 @@
                         <% else %>
                         <form
                           method="POST"
+                          class="flex justify-center items-center"
                           action="<%= "/projects/#{@project.id}/export" %>"
                         >
                           <input
@@ -351,8 +352,9 @@
                           <input
                             name="email"
                             placeholder="your@email.com"
-                            class="border border-gray-200 rounded-md px-4 py-3 mx-4"
-                            pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$"
+                            type="email"
+                            class="border border-gray-200 rounded-md !px-4 !py-3 !mx-4 !h-10 "
+                            pattern="\A[a-zA-Z0-9.!\#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\z"
                             required="true"
                           />
                           <input

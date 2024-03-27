@@ -2,7 +2,7 @@ json.extract! extraction, :project_id, :citations_project_id
 
 json.sections extraction.extractions_extraction_forms_projects_sections.order(:extraction_forms_projects_section_id) do |eefps|
   # Switch on ExtractionFormsProjectsSectionType.
-  case eefps.extraction_forms_projects_section.extraction_forms_projects_section_type_id
+  case eefps.extraction_forms_projects_section&.extraction_forms_projects_section_type_id
   when 1, 4
     json.name eefps.extraction_forms_projects_section.section.name.to_s
     json.type1s eefps.extractions_extraction_forms_projects_sections_type1s.order(:type1_id) do |eefpst1|
@@ -124,6 +124,7 @@ json.sections extraction.extractions_extraction_forms_projects_sections.order(:e
         end
 
   else
-    raise RuntimeError, 'Unknown ExtractionFormsProjectsSectionType'
+    # raise RuntimeError, 'Unknown ExtractionFormsProjectsSectionType'
+    next
   end
 end

@@ -40,7 +40,7 @@
     </button>
     <button
       @click="historyPanel = !historyPanel"
-      class="absolute top-0 left-0 bg-gray-100 p-1 px-2 text-xs rounded-full z-[9] flex flex-row items-center cursor-pointer"
+      class="p-1 px-2 text-xs z-[9] inline-flex items-center cursor-pointer"
       :class="resolutionMode ? 'bg-srdrpurple text-white' : ''"
     >
       <span x-text="resolutionMode ? 'Conflicts' : 'Your Labels'"></span>
@@ -67,7 +67,7 @@
     >
       Continue Screening
     </button>
-    <div class="h-24 mr-56 overflow-y-auto flex items-center">
+    <div class="h-24 mr-56 overflow-y-auto items-center">
       <div
         @mouseup="if (terms_and_phrases_settings) checkSelection()"
         @touchend="if (terms_and_phrases_settings) checkSelection()"
@@ -756,7 +756,10 @@
         let matches = [];
         for (const phrase of Object.keys(this.word_weights)) {
           const word_weight = this.word_weights[phrase];
-          var regex = new RegExp(phrase, "gi");
+          const escapedPhrase = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const regex = new RegExp(escapedPhrase, "gi");
+
+          let match;
           while ((match = regex.exec(this.citation[sourceKey])) != null) {
             matches.push({
               head: match.index,
