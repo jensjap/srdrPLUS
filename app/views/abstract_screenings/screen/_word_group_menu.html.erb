@@ -89,8 +89,8 @@
               </div>
             </div>
 
-            <template x-for="group in groups" :key="group.id">
-              <div class="flex items-center mb-2 gap-4">
+            <template x-for="(group, index) in groups" :key="group.id">
+              <div :class="{'bg-gray-100': index % 2 === 0, 'bg-white': index % 2 !== 0}" class="flex items-center gap-4">
                 <input
                   class="box-border p-2 !w-1/4"
                   type="text"
