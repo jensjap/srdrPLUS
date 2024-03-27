@@ -1028,6 +1028,7 @@ class ConsolidationService
       section_name: efps.section.name,
       current_section_eefpst1s:,
       current_section_eefpss:,
+      consolidated_eefps: current_section_eefpss.last,
       by_arms:
         efps.link_to_type1.present? &&
         (mh[:efps][efps.id][:efpso][:by_type1] || mh[:efps][efps.id][:efpso][:include_total]).present?,
