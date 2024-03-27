@@ -668,8 +668,8 @@
         this.weighWord(selection);
       },
 
-      updateGroupName(event, group_id) {
-        const newGroupName = event.target.value.trim();
+      updateGroupName(newGroupName, group_id) {
+        newGroupName = newGroupName.trim();
 
         if (newGroupName.length === 0 || newGroupName.length > 50) {
           event.target.classList.add("!bg-red-500");
@@ -1130,6 +1130,18 @@
         this.processWeights("title", "processedTitle");
         this.processWeights("abstract", "processedAbstract");
         this.processWeights("keywords", "processedKeyWord");
+      },
+
+      startGroupNameEditing(group) {
+        group.editing = true;
+        group.tempName = group.name;
+      },
+
+      finishGroupNameEditing(group) {
+        group.editing = false;
+        group.name = group.tempName;
+        this.updateGroupName(group.tempName, group.id);
+        delete group.tempName;
       },
     }));
   });

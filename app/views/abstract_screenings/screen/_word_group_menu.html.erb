@@ -94,14 +94,23 @@
 
             <template x-for="(group, index) in groups" :key="group.id">
               <div :class="{'bg-gray-100': index % 2 === 0, 'bg-white': index % 2 !== 0}" class="flex items-center gap-4">
-                <input
-                  class="box-border p-2 !w-1/4"
-                  type="text"
-                  maxlength="50"
-                  :value="group.name"
-                  @input.debounce.500="updateGroupName($event, group.id)"
-                  placeholder="Enter new group name"
-                />
+                <div class="flex items-center !w-1/4">
+                  <span x-show="!group.editing" x-text="group.name" class="pr-2"></span>
+                  <button x-show="!group.editing" @click="startGroupNameEditing(group)" class="p-1">
+                    <i class="fi-pencil"></i>
+                  </button>
+                  <div x-show="group.editing" class="flex items-center">
+                    <input
+                      class="box-border p-2"
+                      type="text"
+                      maxlength="50"
+                      x-model="group.tempName"
+                      @keydown.enter="finishGroupNameEditing(group)"
+                      placeholder="Enter new group name"
+                    />
+                    <button @click="finishGroupNameEditing(group)" class="p-1">✔️</button>
+                  </div>
+                </div>
                 <input
                   type="color"
                   class="!w-1/4 h-10 p-0 border-none"
