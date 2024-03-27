@@ -27,7 +27,7 @@ class AbstractScreeningsController < ApplicationController
   def update_word_weight
     authorize(@abstract_screening)
     weight = params[:weight]
-    word = params[:word]&.downcase
+    word = params[:word]
     group_id = params[:group_id]
     color = params[:color]
     group_name = params[:group_name]

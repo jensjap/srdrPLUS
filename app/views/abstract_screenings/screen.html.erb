@@ -348,6 +348,7 @@
       desktop: false,
       weighingScreen: false,
       selectedGroup: null,
+      caseSensitive: false,
       groups: [],
       newWordName: null,
       newGroupName: null,
@@ -723,6 +724,7 @@
         if (sourceText.length == 0) return;
 
         let sourceTextArray = Array(sourceText.length).fill(null);
+        const caseSensitive = this.caseSensitive;
 
         var regex = /(\w+)/gi;
         while ((match = regex.exec(this.citation[sourceKey])) != null) {
@@ -758,7 +760,14 @@
         for (const phrase of Object.keys(this.word_weights)) {
           const word_weight = this.word_weights[phrase];
           const escapedPhrase = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-          const regex = new RegExp(escapedPhrase, "gi");
+
+          let regex;
+
+          if (caseSensitive) {
+            regex = new RegExp(escapedPhrase, "g");
+          } else {
+            regex = new RegExp(escapedPhrase, "gi");
+          }
 
           let match;
           while ((match = regex.exec(this.citation[sourceKey])) != null) {
@@ -1115,6 +1124,12 @@
           this.sendWw(null, null, null, false, this.groupToDelete, null, null, true);
         }
         this.closeAlertModal();
+      },
+
+      caseSensitiveChanged() {
+        this.processWeights("title", "processedTitle");
+        this.processWeights("abstract", "processedAbstract");
+        this.processWeights("keywords", "processedKeyWord");
       },
     }));
   });
