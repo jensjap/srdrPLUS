@@ -475,10 +475,13 @@
             x-for="(eefps, eefps_index) in mh?.current_citations_project?.current_section_eefpss"
             :key="eefps.id"
           >
-            <th
-              class="text-center"
-              x-text="`ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
-            ></th>
+            <th class="text-center">
+              <a
+                :href="`/extractions/${eefps.extraction_id}/work?panel-tab=${mh?.current_citations_project?.efps_id}`"
+                x-text="`ID: ${eefps.extraction_id} by ${mh?.current_citations_project?.extractions_lookup[eefps.extraction_id]}`"
+                target="_blank"
+              ></a>
+            </th>
           </template>
         </tr>
       </thead>
@@ -518,7 +521,7 @@
                           >
                             <span
                               class="ml-2 bg-srdr-primary text-xs text-white p-1 rounded-md cursor-pointer"
-                              @click="createArm(eefps.id, section_eefpst1.name, section_eefpst1.description, isOutcome ? (section_eefpst1.type1_type_name === 'Categorical' ? 1 : 2) : null)"
+                              @click="createArm(eefps.id, section_eefpst1.name, section_eefpst1.description, section_eefpst1.type1_type_name === 'Categorical' ? 1 : 2)"
                             >
                               Create
                             </span>
@@ -593,6 +596,39 @@
                         </ul>
                       </td>
                     </tr>
+                    <template
+                      x-if="section_eefpst1?.eefpst1_lookups[eefps.id] !== undefined"
+                    >
+                      <tr>
+                        <td colspan="2">
+                          <a
+                            class="my-1 text-xs"
+                            :href="`/extractions_extraction_forms_projects_sections_type1s/${section_eefpst1?.eefpst1_lookups[eefps.id]}/edit`"
+                            target="_blank"
+                          >
+                            Change Populations & Timepoints
+                          </a>
+                          <template
+                            x-if="section_eefpst1?.eefpst1_lookups[mh?.current_citations_project?.consolidated_eefps?.id] === undefined"
+                          >
+                            <button
+                              class="cursor-pointer px-1 my-1 bg-green-700 text-xs text-white"
+                              @click="createArm(
+                                mh?.current_citations_project?.consolidated_eefps?.id,
+                                section_eefpst1.name,
+                                section_eefpst1.description,
+                                section_eefpst1.type1_type_name === 'Categorical' ? 1 : 2,
+                                true,
+                                section_eefpst1.population_lookups[eefps.id],
+                                section_eefpst1.timepoint_lookups[eefps.id]
+                              )"
+                            >
+                              Copy to Consolidated Extraction
+                            </button>
+                          </template>
+                        </td>
+                      </tr>
+                    </template>
                   </table>
                 </template>
                 <template x-if="!isOutcome()">
