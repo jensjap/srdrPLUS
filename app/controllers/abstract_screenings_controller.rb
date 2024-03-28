@@ -27,18 +27,51 @@ class AbstractScreeningsController < ApplicationController
   def update_word_weight
     authorize(@abstract_screening)
     weight = params[:weight]
-    word = params[:word].downcase
-    id = params[:id]
+    word = params[:word]
+    group_id = params[:group_id]
+    color = params[:color]
+    group_name = params[:group_name]
+    project = @abstract_screening.project
 
-    ww = WordWeight.find_by(id:) ||
-         WordWeight.find_or_initialize_by(word:, project: @abstract_screening.project)
+    word_group = nil
+    if group_id.present?
+      word_group = WordGroup.find_by(id: group_id, project:)
+      unless word_group
+        render json: { error: 'WordGroup not found' }, status: :not_found
+        return
+      end
 
-    if params[:destroy]
-      ww.destroy
-    else
-      ww.update!(weight:, word:)
+      if params[:destroy_wg].to_s == 'true'
+        word_group.destroy
+        render json: WordGroup.word_weights_object(project)
+        return
+      elsif group_name.present? || color.present?
+        word_group.update(name: group_name.presence || word_group.name, color: color.presence || word_group.color)
+      end
+    elsif color.present? && group_name.present? && params[:destroy_wg].to_s != 'true'
+      word_group = WordGroup.create!(color:, name: group_name, project:)
+    elsif params[:destroy_wg].to_s != 'true'
+      render json: { error: 'Missing color or group name for new WordGroup or invalid destroy_wg flag' },
+             status: :bad_request
+      return
     end
-    render json: WordWeight.word_weights_object(@abstract_screening.project)
+
+    if word.present? && word_group
+      ww = WordWeight.find_by(id: params[:id]) ||
+           WordWeight.find_or_initialize_by(
+             weight:,
+             word:,
+             project:,
+             word_group:
+           )
+      if params[:destroy_ww]
+        ww.destroy
+      else
+        ww.update(word:, word_group:)
+      end
+    end
+
+    render json: WordGroup.word_weights_object(project)
   end
 
   def citation_lifecycle_management
