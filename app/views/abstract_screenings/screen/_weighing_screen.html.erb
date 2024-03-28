@@ -71,51 +71,17 @@
             />
           </div>
         </div>
-        <div class="mt-1 sm:mt-6">
-          <button
-            @click="toggleWeighingScreen(); sendWw(wordWeight, 2)"
-            type="button"
-            class="cursor-pointer inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
-          >
-            2
-          </button>
-        </div>
-        <div class="mt-1 sm:mt-6">
-          <button
-            @click="toggleWeighingScreen(); sendWw(wordWeight, 1)"
-            type="button"
-            class="cursor-pointer inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-400 text-base font-medium text-white hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-300 sm:text-sm"
-          >
-            1
-          </button>
-        </div>
-        <div class="mt-1 sm:mt-6">
-          <button
-            @click="toggleWeighingScreen(); sendWw(wordWeight, 0, null, true)"
-            type="button"
-            class="cursor-pointer inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-600 text-base font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:text-sm"
-          >
-            Cancel (Remove Highlighting)
-          </button>
-        </div>
-        <div class="mt-1 sm:mt-6">
-          <button
-            @click="toggleWeighingScreen(); sendWw(wordWeight, -1)"
-            type="button"
-            class="cursor-pointer inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-purple-400 text-base font-medium text-white hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-300 sm:text-sm"
-          >
-            -1
-          </button>
-        </div>
-        <div class="mt-1 sm:mt-6">
-          <button
-            @click="toggleWeighingScreen(); sendWw(wordWeight, -2)"
-            type="button"
-            class="cursor-pointer inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:text-sm"
-          >
-            -2
-          </button>
-        </div>
+        <template x-for="group in getGroups()" :key="group.id">
+          <div class="mt-1 sm:mt-6">
+            <button
+              @click="toggleWeighingScreen(); sendWw(wordWeight, 0, null, false, group.id, null, null, false)"
+              type="button"
+              class="cursor-pointer inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:text-sm"
+              :style="`background-color: ${group.color}`"
+              x-text="group.name"
+            ></button>
+          </div>
+        </template>
       </div>
     </div>
   </div>
