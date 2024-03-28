@@ -13,13 +13,17 @@ class WordGroup < ApplicationRecord
 
     WordWeight.all.each do |ww|
       ww.word_group_id = nil
-      next if ww.abstract_screening.nil?
+      next if ww.project.nil?
 
       if weight_map.has_key?(ww.weight)
         name = weight_map[ww.weight][:name]
         color = weight_map[ww.weight][:color]
 
-        word_group = WordGroup.find_or_create_by(name: name, color: color, project_id: ww.abstract_screening.project_id)
+        word_group = WordGroup.find_or_create_by(
+                       name:,
+                       color:,
+                       project_id: ww.project_id
+                     )
 
         ww.update(word_group_id: word_group.id)
       end
