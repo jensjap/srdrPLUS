@@ -1,4 +1,4 @@
-json.pcgh ConsolidationService.project_citations_grouping_hash(@project)
+json.pcg ConsolidationService.project_citations_grouping(@project)
 json.consolidated_extractions @project.extractions.includes({ statusing: :status, citations_project: { citation: :journal } }).where(consolidated: true) do |extraction|
   json.id extraction.id
   json.citation_id extraction.citation.id

@@ -15,7 +15,7 @@
       </p>
     </div>
   </div>
-  <template x-if="citationsHash == null"><div>Loading...</div></template>
+  <template x-if="citationsArray == null"><div>Loading...</div></template>
   <div class="mt-8 flex flex-col">
     <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
       <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
@@ -34,12 +34,27 @@
           <table
             class="min-w-full divide-y divide-gray-300 overflow-y-scroll max-h-80 block"
           >
-            <thead>
+            <thead class="!sticky top-0 z-[1]">
               <tr>
                 <th></th>
-                <th data-sort-direction="asc">Citation (Sorted by Title)</th>
-                <th>Status</th>
-                <th>Approved</th>
+                <th
+                  class="cursor-pointer"
+                  @click="sort('ce_sort_by', 'citation_handle', 'ce_sort_direction', 'consolidated_extractions')"
+                >
+                  Citation (Sorted by Title)
+                </th>
+                <th
+                  class="cursor-pointer"
+                  @click="sort('ce_sort_by', 'status', 'ce_sort_direction', 'consolidated_extractions')"
+                >
+                  Status
+                </th>
+                <th
+                  class="cursor-pointer"
+                  @click="sort('ce_sort_by', 'approved_on', 'ce_sort_direction', 'consolidated_extractions')"
+                >
+                  Approved
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -97,58 +112,74 @@
             placeholder="Search..."
           />
         </div>
-        <template x-if="citationsHash != null">
+        <template x-if="citationsArray != null">
           <div
             class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
           >
             <table
               class="min-w-full divide-y divide-gray-300 overflow-y-scroll max-h-80 block"
             >
-              <thead class="bg-gray-50">
+              <thead class="bg-gray-50 !sticky top-0 z-[1]">
                 <tr>
-                  <th class="text-center text-sm font-semibold text-gray-900">
+                  <th
+                    class="text-center text-sm font-semibold text-gray-900 cursor-pointer"
+                    @click="sort('cp_sort_by', 'citation_year', 'cp_sort_direction', 'citationsArray')"
+                  >
                     Year
                   </th>
-                  <th class="text-center text-sm font-semibold text-gray-900">
+                  <th
+                    class="text-center text-sm font-semibold text-gray-900 cursor-pointer"
+                    @click="sort('cp_sort_by', 'citation_title', 'cp_sort_direction', 'citationsArray')"
+                  >
                     Citation
                   </th>
-                  <th class="text-center text-sm font-semibold text-gray-900">
+                  <th
+                    class="text-center text-sm font-semibold text-gray-900 cursor-pointer"
+                    @click="sort('cp_sort_by', 'no_of_extractions', 'cp_sort_direction', 'citationsArray')"
+                  >
                     No. of Extractions
                   </th>
-                  <th class="text-center text-sm font-semibold text-gray-900">
+                  <th
+                    class="text-center text-sm font-semibold text-gray-900 cursor-pointer"
+                    @click="sort('cp_sort_by', 'differences', 'cp_sort_direction', 'citationsArray')"
+                  >
                     Differences Found
                   </th>
-                  <th class="text-center text-sm font-semibold text-gray-900">
+                  <th
+                    class="text-center text-sm font-semibold text-gray-900 cursor-pointer"
+                    @click="sort('cp_sort_by', 'consolidated_extraction_status', 'cp_sort_direction', 'citationsArray')"
+                  >
                     Consolidated Extraction Exists?
                   </th>
-                  <th class="text-center">Consolidated Extraction</th>
+                  <th
+                    class="text-center cursor-pointer"
+                    @click="sort('cp_sort_by', 'consolidated_extraction', 'cp_sort_direction', 'citationsArray')"
+                  >
+                    Consolidated Extraction
+                  </th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
                 <template
-                  x-for="citations_project_id in Object.keys(citationsHash).filter(citations_project_id => (new RegExp(citationSearchString, 'i')).test(citationsHash[citations_project_id].citation_year + citationsHash[citations_project_id].citation_title))"
-                  :key="citations_project_id"
+                  x-for="cp_obj in citationsArray.filter(cp_obj => (new RegExp(citationSearchString, 'i')).test(cp_obj.citation_year + cp_obj.citation_title))"
+                  :key="cp_obj.citations_project_id"
                 >
                   <tr>
                     <td
                       class="overflow-hidden text-sm font-medium text-gray-900"
                     >
-                      <div
-                        x-text="citationsHash[citations_project_id].citation_year"
-                      ></div>
+                      <div x-text="cp_obj.citation_year"></div>
                     </td>
                     <td
                       class="overflow-hidden text-sm font-medium text-gray-900"
                     >
-                      <div
-                        x-text="citationsHash[citations_project_id].citation_title"
-                      ></div>
+                      <div x-text="cp_obj.citation_title"></div>
                     </td>
                     <td
                       class="text-center whitespace-nowrap text-sm text-gray-500"
                     >
                       <div
-                        x-text="citationsHash[citations_project_id].extractions && citationsHash[citations_project_id].extractions.length"
+                        x-text="cp_obj.extractions && cp_obj.extractions.length"
                       ></div>
                     </td>
                     <td
@@ -156,8 +187,8 @@
                     >
                       <div
                         class="p-1"
-                        x-text="citationsHash[citations_project_id].differences ? 'Yes' : 'No'"
-                        :class="citationsHash[citations_project_id].differences ? 'text-red-800' : 'text-green-800'"
+                        x-text="cp_obj.differences ? 'Yes' : 'No'"
+                        :class="cp_obj.differences ? 'text-red-800' : 'text-green-800'"
                       ></div>
                     </td>
                     <td
@@ -166,17 +197,17 @@
                       <div
                         class="p-1"
                         x-text="
-                          if (citationsHash[citations_project_id].consolidated_extraction_status == null) {
+                          if (cp_obj.consolidated_extraction_status == null) {
                             return 'No'
                           } else {
-                            return citationsHash[citations_project_id].consolidated_extraction_status
+                            return cp_obj.consolidated_extraction_status
                           }
                         "
                         :class="
                           {
-                            'text-red-800': citationsHash[citations_project_id].consolidated_extraction_status == null,
-                            'text-yellow-800': citationsHash[citations_project_id].consolidated_extraction_status == 'Draft',
-                            'text-green-800': citationsHash[citations_project_id].consolidated_extraction_status == 'Complete'
+                            'text-red-800': cp_obj.consolidated_extraction_status == null,
+                            'text-yellow-800': cp_obj.consolidated_extraction_status == 'Draft',
+                            'text-green-800': cp_obj.consolidated_extraction_status == 'Complete'
                           }
                         "
                       ></div>
@@ -185,20 +216,20 @@
                       class="text-center whitespace-nowrap text-sm font-medium"
                     >
                       <template
-                        x-if="citationsHash[citations_project_id].consolidated_extraction_status == null"
+                        x-if="cp_obj.consolidated_extraction_status == null"
                       >
                         <div
                           class="p-1 drop-shadow rounded bg-green-800 text-white cursor-pointer"
-                          @click="createConsolidatedExtraction(citations_project_id)"
+                          @click="createConsolidatedExtraction(cp_obj.citations_project_id)"
                         >
                           Create
                         </div>
                       </template>
                       <template
-                        x-if="citationsHash[citations_project_id].consolidated_extraction_status != null"
+                        x-if="cp_obj.consolidated_extraction_status != null"
                       >
                         <a
-                          :href="`/consolidations/null?citations_project_id=${citations_project_id}`"
+                          :href="`/consolidations/null?citations_project_id=${cp_obj.citations_project_id}`"
                         >
                           <div
                             class="p-1 drop-shadow rounded bg-srdrpurple text-white cursor-pointer"
@@ -221,13 +252,31 @@
 <script>
   document.addEventListener("alpine:init", () => {
     Alpine.data("consolidations", () => ({
-      citationsHash: null,
+      citationsArray: null,
       consolidated_extractions: [],
       consolidationSearchString: "",
       citationSearchString: "",
+      cp_sort_by: null,
+      cp_sort_direction: 1,
+      ce_sort_by: null,
+      ce_sort_direction: 1,
 
       init() {
         this.fetch_results();
+      },
+
+      sort(sort, new_sort, sort_direction, array) {
+        if (this[sort] !== new_sort) {
+          this[sort_direction] = 1;
+        } else {
+          this[sort_direction] = this[sort_direction] * -1;
+        }
+        this[sort] = new_sort;
+        this[array] = this[array].sort(
+          (a, b) =>
+            ("" + a[new_sort]).localeCompare("" + b[new_sort]) *
+            this[sort_direction]
+        );
       },
 
       async fetch_results() {
@@ -239,7 +288,7 @@
           },
         });
         const data = await response.json();
-        this.citationsHash = data.pcgh;
+        this.citationsArray = data.pcg;
         this.consolidated_extractions = data.consolidated_extractions;
       },
 
