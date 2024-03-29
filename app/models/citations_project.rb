@@ -143,7 +143,7 @@ class CitationsProject < ApplicationRecord
       'name' => citation.name.to_s,
       'year' => citation.year.to_s,
       'publication' => "#{citation.journal&.name} #{citation.journal&.volume}(#{citation.journal&.issue}):#{citation&.page_number_start}-#{citation&.page_number_end}",
-      'publication_date' => citation.journal&.publication_date,
+      'publication_date' => formatted_publication_date(citation.journal&.publication_date),
       'doi' => citation.doi.to_s,
       'keywords' => citation.keywords.map(&:name).join(', '),
       'users' => abstract_screening_results.map(&:user).uniq.map(&:handle).join(', '),
@@ -164,6 +164,15 @@ class CitationsProject < ApplicationRecord
       'refman' => refman,
       'accession_number' => citation.accession_number
     }
+  end
+
+  def formatted_publication_date(date)
+    return nil unless date
+    if date.match(/\A\d{4}-\d{2}-\d{2}\z/)
+      date
+    else
+      nil
+    end
   end
 
   def qualification(prefix)
