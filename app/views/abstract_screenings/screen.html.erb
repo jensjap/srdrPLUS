@@ -423,6 +423,7 @@
       isAlertModalOpen: false,
       alertModalContent: '',
       groupToDelete: null,
+      isEditingGroupName: false,
 
       async init() {
         const url = new URL(window.location.href);
@@ -1133,12 +1134,17 @@
       },
 
       startGroupNameEditing(group) {
+        if(this.isEditingGroupName) {
+          return;
+        }
+        this.isEditingGroupName = true;
         group.editing = true;
         group.tempName = group.name;
       },
 
       finishGroupNameEditing(group) {
         group.editing = false;
+        this.isEditingGroupName = false;
         group.name = group.tempName;
         this.updateGroupName(group.tempName, group.id);
         delete group.tempName;

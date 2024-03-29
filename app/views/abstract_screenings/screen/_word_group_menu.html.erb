@@ -95,10 +95,7 @@
             <template x-for="(group, index) in groups" :key="group.id">
               <div :class="{'bg-gray-100': index % 2 === 0, 'bg-white': index % 2 !== 0}" class="flex items-center gap-4">
                 <div class="flex items-center !w-1/4">
-                  <span x-show="!group.editing" x-text="group.name" class="pr-2"></span>
-                  <button x-show="!group.editing" @click="startGroupNameEditing(group)" class="p-1">
-                    <i class="fi-pencil"></i>
-                  </button>
+                  <span x-show="!group.editing" x-text="group.name" class="pr-2" @dblclick="startGroupNameEditing(group)"></span>
                   <div x-show="group.editing" class="flex items-center">
                     <input
                       class="box-border p-2"
