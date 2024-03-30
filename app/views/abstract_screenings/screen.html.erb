@@ -12,7 +12,7 @@
   <%= render 'abstract_screenings/screen/word_weight_menu' %>
   <%= render 'shared/alert_modal' %>
   <div
-    :class="desktop ? 'top-0 bottom-24 border-l border-b border-gray-600 fixed p-4 left-2/3 right-0 overflow-y-scroll overflow-x-hidden bg-white' : ''"
+    :class="desktop ? 'top-0 bottom-24 border-l border-b border-gray-600 fixed p-4 left-2/3 right-0 overflow-y-scroll overflow-x-hidden bg-white' : 'hidden'"
   >
     <!-- prettier-ignore -->
     <%= render 'abstract_screenings/screen/reasoning_menu' %>
@@ -20,61 +20,16 @@
     <%= render 'abstract_screenings/screen/word_group_menu' %>
   </div>
   <div
-    class="mx-auto lg:mx-0 lg:w-2/3 h-24 absolute inset-0 overflow-y-hidden flex flex-col justify-center"
+    class="lg:mx-0 lg:w-2/3 h-24 inset-0 overflow-y-hidden flex justify-between items-center"
     :class="resolutionMode ? 'bg-purple-100' : 'bg-gray-300'"
   >
-    <a
-      id="dynamic-link"
-      href="<%= abstract_screening_path(params[:abstract_screening_id]) %>"
-      class="cursor-pointer z-[5] absolute top-4 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-black hover:no-underline hover:text-black"
-    >
-      <span class="sr-only">Close menu</span>
-      <!-- Heroicon name: outline/x -->
-      Exit
-    </a>
-    <button
-      type="button"
-      :class="desktop ? 'hidden' : 'cursor-pointer z-[5] absolute top-14 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-black'"
-      @click="word_group_menu = !word_group_menu"
-    >
-      <span class="sr-only">Word weights</span>
-      Terms & Phrases
-    </button>
-    <button
-      @click="historyPanel = !historyPanel"
-      class="p-1 px-2 text-xs z-[9] inline-flex items-center cursor-pointer"
-      :class="resolutionMode ? 'bg-srdrpurple text-white' : ''"
-    >
-      <span x-text="resolutionMode ? 'Conflicts' : 'Your Labels'"></span>
-      &nbsp;
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1"
-        stroke="currentColor"
-        class="w-3 h-3 pt-1"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5"
-        />
-      </svg>
-    </button>
-    <button
-      @click="getAsrId()"
-      class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-black"
-      x-show="!resolutionMode"
-    >
-      Continue Screening
-    </button>
     <div class="h-24 mr-56 overflow-y-auto items-center">
       <div
+        class="h-full"
         @mouseup="if (terms_and_phrases_settings) checkSelection()"
         @touchend="if (terms_and_phrases_settings) checkSelection()"
       >
-        <div class="flex items-center">
+        <div class="flex items-center h-full">
           <h1 class="px-8 text-base font-bold leading-none">
             <template x-for="word in processedTitle">
               <span
@@ -92,6 +47,38 @@
           </h1>
         </div>
       </div>
+    </div>
+    <div class="flex flex-col justify-evenly h-24 text-xs">
+      <button
+        type="button"
+        :class="desktop ? 'hidden' : 'cursor-pointer bg-gray-100 rounded-md p-1 inline-flex items-center justify-center text-black'"
+        @click="word_group_menu = !word_group_menu"
+      >
+        <span class="sr-only">Word weights</span>
+        Terms & Phrases
+      </button>
+      <button
+        @click="historyPanel = !historyPanel"
+        class="cursor-pointer bg-gray-100 rounded-md p-1 inline-flex items-center justify-center text-black"
+        :class="resolutionMode ? 'bg-srdrpurple text-white' : ''"
+      >
+        <span x-text="resolutionMode ? 'Conflicts' : 'Your Labels'"></span>
+      </button>
+      <button
+        @click="getAsrId()"
+        class="cursor-pointer bg-gray-100 rounded-md p-1 inline-flex items-center justify-center text-black"
+        x-show="!resolutionMode"
+      >
+        Continue Screening
+      </button>
+      <a
+        id="dynamic-link"
+        href="<%= abstract_screening_path(params[:abstract_screening_id]) %>"
+        class="cursor-pointer bg-gray-100 rounded-md p-1 inline-flex items-center justify-center text-black hover:no-underline hover:text-black"
+      >
+        <span class="sr-only">Close menu</span>
+        Exit
+      </a>
     </div>
   </div>
   <div
