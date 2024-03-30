@@ -5,10 +5,10 @@ class WordGroup < ApplicationRecord
 
   def self.import_from_word_weights
     weight_map = {
-      2 => { name: "default 2", color: "#3b82f6" },
-      1 => { name: "default 1", color: "#22c55e" },
-      -1 => { name: "default -1", color: "#a855f7" },
-      -2 => { name: "default -2", color: "#ef4444" },
+      2 => { name: "Group 4", color: "#3b82f6" },
+      1 => { name: "Group 3", color: "#22c55e" },
+      -1 => { name: "Group 2", color: "#a855f7" },
+      -2 => { name: "Group 1", color: "#ef4444" },
     }
 
     WordWeight.all.each do |ww|
