@@ -335,7 +335,6 @@
       desktop: false,
       weighingScreen: false,
       selectedGroup: null,
-      caseSensitive: false,
       groups: [],
       newWordName: null,
       newGroupName: null,
@@ -456,7 +455,6 @@
       toggleWordWeightMenu(group) {
         this.selectedGroup = group;
         this.word_weight_menu = !this.word_weight_menu;
-        console.log(this.selectedGroup)
       },
 
       requireReasoning() {
@@ -666,7 +664,7 @@
           event.target.classList.remove("!bg-red-500");
         }
 
-        this.sendWw(null, 0, null, false, group_id, null, newGroupName, false);
+        this.sendWw(null, 0, null, false, group_id, null, newGroupName, null, false);
       },
 
       updateGroupColor(event, group_id) {
@@ -712,7 +710,6 @@
         if (sourceText.length == 0) return;
 
         let sourceTextArray = Array(sourceText.length).fill(null);
-        const caseSensitive = this.caseSensitive;
 
         var regex = /(\w+)/gi;
         while ((match = regex.exec(this.citation[sourceKey])) != null) {
@@ -751,7 +748,7 @@
 
           let regex;
 
-          if (caseSensitive) {
+          if (word_weight.case_sensitive) {
             regex = new RegExp(escapedPhrase, "g");
           } else {
             regex = new RegExp(escapedPhrase, "gi");
@@ -824,7 +821,7 @@
         );
       },
 
-      async sendWw(word, weight, id, destroy_ww, group_id, color, group_name, destroy_wg) {
+      async sendWw(word, weight, id, destroy_ww, group_id, color, group_name, case_sensitive, destroy_wg) {
         const response = await fetch(
           "/abstract_screenings/<%= params[:abstract_screening_id] %>/update_word_weight",
           {
@@ -838,6 +835,7 @@
               group_id,
               color,
               group_name,
+              case_sensitive,
               destroy_wg,
             }),
           }
@@ -1065,9 +1063,9 @@
         const groups = {};
         Object.entries(this.word_weights_by_group).forEach(([groupId, words]) => {
           words.forEach(wordInfo => {
-            const { word, color, id, group_name } = wordInfo;
+            const { word, color, id, group_name, case_sensitive } = wordInfo;
             if (!groups[groupId]) {
-              groups[groupId] = { id: groupId, name: group_name, color: color, words: [] };
+              groups[groupId] = { id: groupId, name: group_name, color: color, case_sensitive: case_sensitive, words: [] };
             }
             groups[groupId].words.push({ name: word, id: id });
           });
@@ -1090,6 +1088,7 @@
               id: item.id,
               group_name: item.group_name,
               group_id: item.group_id,
+              case_sensitive: item.case_sensitive,
             };
           });
         }
@@ -1109,15 +1108,9 @@
 
       modalConfirmAction() {
         if (this.groupToDelete) {
-          this.sendWw(null, null, null, false, this.groupToDelete, null, null, true);
+          this.sendWw(null, null, null, false, this.groupToDelete, null, null, null, true);
         }
         this.closeAlertModal();
-      },
-
-      caseSensitiveChanged() {
-        this.processWeights("title", "processedTitle");
-        this.processWeights("abstract", "processedAbstract");
-        this.processWeights("keywords", "processedKeyWord");
       },
 
       startGroupNameEditing(group) {
@@ -1135,6 +1128,11 @@
         group.name = group.tempName;
         this.updateGroupName(group.tempName, group.id);
         delete group.tempName;
+      },
+
+      updateCaseSensitive($event) {
+        this.selectedGroup.case_sensitive = $event.target.checked;
+        this.sendWw(null, null, null, false, this.selectedGroup.id, null, null, $event.target.checked, false);
       },
     }));
   });

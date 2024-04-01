@@ -31,6 +31,7 @@ class AbstractScreeningsController < ApplicationController
     group_id = params[:group_id]
     color = params[:color]
     group_name = params[:group_name]
+    case_sensitive = params[:case_sensitive]
     project = @abstract_screening.project
 
     word_group = nil
@@ -45,8 +46,12 @@ class AbstractScreeningsController < ApplicationController
         word_group.destroy
         render json: WordGroup.word_weights_object(project)
         return
-      elsif group_name.present? || color.present?
-        word_group.update(name: group_name.presence || word_group.name, color: color.presence || word_group.color)
+      elsif group_name.present? || color.present? || !case_sensitive.nil?
+        word_group.update(
+          name: group_name.presence || word_group.name,
+          color: color.presence || word_group.color,
+          case_sensitive: case_sensitive.nil? ? word_group.case_sensitive : case_sensitive,
+        )
       end
     elsif color.present? && group_name.present? && params[:destroy_wg].to_s != 'true'
       word_group = WordGroup.create!(color:, name: group_name, project:)

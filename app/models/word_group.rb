@@ -33,7 +33,7 @@ class WordGroup < ApplicationRecord
   def self.word_weights_object(project)
     word_groups = WordGroup.where(project: project)
     word_groups.each_with_object({}) do |wg, hash|
-      hash[wg.id] ||= [{color: wg.color, group_name: wg.name, group_id: wg.id, word: nil, id: nil}]
+      hash[wg.id] ||= [{color: wg.color, group_name: wg.name, group_id: wg.id, case_sensitive: wg.case_sensitive, word: nil, id: nil}]
 
       wg.word_weights.each do |ww|
         hash[wg.id] << {
@@ -41,7 +41,8 @@ class WordGroup < ApplicationRecord
           color: wg.color,
           id: ww.id,
           group_name: wg.name,
-          group_id: wg.id
+          group_id: wg.id,
+          case_sensitive: wg.case_sensitive,
         } unless ww.nil?
       end
 
