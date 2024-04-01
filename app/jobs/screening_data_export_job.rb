@@ -337,7 +337,7 @@ class ScreeningDataExportJob < ApplicationJob
       end
     when 'sheet2'
       headers.concat [
-        'Concensus Label',
+        'Consensus Label',
       ]
       @users.each do |user|
         headers << "\"#{user[1]}\" Label"
