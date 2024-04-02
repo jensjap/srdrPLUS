@@ -107,8 +107,6 @@ class Project < ApplicationRecord
   has_many :ml_models_projects
   has_many :ml_models, through: :ml_models_projects
 
-  has_many :word_weights, dependent: :destroy
-
   validates :name, presence: true
 
   accepts_nested_attributes_for :key_questions

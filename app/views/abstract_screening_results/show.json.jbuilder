@@ -1,4 +1,4 @@
-json.word_weights WordWeight.word_weights_object(@abstract_screening.project)
+json.word_weights WordWeight.word_weights_object(current_user, @abstract_screening)
 json.asr do
   json.id @abstract_screening_result.id
   json.user_id @abstract_screening_result.user_id

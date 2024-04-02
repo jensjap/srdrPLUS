@@ -10,13 +10,11 @@
 #  project_id :integer
 #
 class WordWeight < ApplicationRecord
-  belongs_to :user, optional: true # TO DO: DELETE AFTER MIGRATING
-  belongs_to :abstract_screening, optional: true # TO DO: DELETE AFTER MIGRATING
+  belongs_to :user, optional: true
+  belongs_to :abstract_screening, optional: true
 
-  belongs_to :project
-
-  def self.word_weights_object(project)
-    word_weights = WordWeight.where(project:)
+  def self.word_weights_object(user, abstract_screening)
+    word_weights = WordWeight.where(user:, abstract_screening:)
     word_weights.each_with_object({}) do |ww, hash|
       hash[ww.word] = { weight: ww.weight, id: ww.id }
       hash

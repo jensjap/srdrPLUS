@@ -31,14 +31,19 @@ class AbstractScreeningsController < ApplicationController
     id = params[:id]
 
     ww = WordWeight.find_by(id:) ||
-         WordWeight.find_or_initialize_by(word:, project: @abstract_screening.project)
+         WordWeight.find_or_initialize_by(
+           word:,
+           user: current_user,
+           abstract_screening: @abstract_screening
+         )
 
     if params[:destroy]
       ww.destroy
     else
       ww.update!(weight:, word:)
     end
-    render json: WordWeight.word_weights_object(@abstract_screening.project)
+
+    render json: WordWeight.word_weights_object(current_user, @abstract_screening)
   end
 
   def citation_lifecycle_management

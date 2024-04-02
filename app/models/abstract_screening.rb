@@ -30,6 +30,7 @@ class AbstractScreening < ApplicationRecord
   validates_presence_of :abstract_screening_type
 
   belongs_to :project
+
   has_many :abstract_screenings_users
   has_many :users, through: :abstract_screenings_users
 
@@ -40,7 +41,7 @@ class AbstractScreening < ApplicationRecord
 
   has_many :abstract_screening_results, dependent: :destroy, inverse_of: :abstract_screening
 
-  has_many :word_weights # TO DO: DELETE AFTER MIGRATING
+  has_many :word_weights
 
   def screening_type
     abstract_screening_type
