@@ -1041,7 +1041,7 @@ class ConsolidationService
     mh
   end
 
-  def self.project_citations_grouping_hash(project)
+  def self.project_citations_grouping(project)
     citations_grouping_hash = {}
     citations_projects =
       project
@@ -1085,7 +1085,11 @@ class ConsolidationService
         end
       end
     end
-    citations_grouping_hash
+    citations_grouping_hash.map do |cp_id, obj|
+      obj[:citations_project_id] = cp_id
+      obj[:no_of_extractions] = obj[:extractions].length
+      obj
+    end
   end
 
   def self.preload_eefpss(extractions, section_names)
