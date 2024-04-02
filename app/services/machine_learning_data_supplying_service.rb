@@ -16,16 +16,20 @@ class MachineLearningDataSupplyingService
     return [] unless project.abstract_screening_results.exists?
 
     project_data = project.abstract_screening_results
-                          .includes(citations_project: :citation)
+                          .includes(citations_project: [:citation, :screening_qualifications])
                           .map do |asr|
       citation = asr.citation
+      screening_qualifications = asr.citations_project.screening_qualifications
+      next if screening_qualifications.any? { |sq| sq.qualification_type == 'as-rejected' }
+      as_accepted = screening_qualifications.any? { |sq| sq.qualification_type == 'as-accepted' }
       next if citation.name.blank? || citation.abstract.blank? || asr.label.nil?
+      next if as_accepted && asr.label != 1
 
       label_data = {
         'ti' => citation.name.gsub('"', "'"),
         'abs' => citation.abstract.gsub('"', "'"),
-        'label' => asr.label == 1 ? '1' : (asr.label == -1 ? '0' : next),
-        'privileged' => asr.privileged
+        'label' => asr.label == 1 ? '1' : '0',
+        'privileged' => asr.privileged || as_accepted
       }
     end.compact
 
