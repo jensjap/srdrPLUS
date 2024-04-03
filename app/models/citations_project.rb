@@ -255,4 +255,29 @@ class CitationsProject < ApplicationRecord
 
     reindex(mode: :async)
   end
+
+  private
+
+  def formatted_publication_date(date)
+    return nil unless date
+    case date
+    # 2010-04-30
+    when /\d{4}-\d{2}-\d{2}/
+      $1.to_s
+    # 2023
+    when /\d{4}/
+      $1.to_s
+    # 2001 Sep 15-23
+    when /\d{4}[\s-]?\w{3}[\s-]?\d{1,2}([-\s]?\d+)?/
+      $1.to_s
+    # 2001 Sep
+    when /\d{4}[\s-]?\w{3}/
+      $1.to_s
+    # 1985 Jul-Aug
+    when /\d{4}[\s-]?\w{3}-\w{3}/
+      $1.to_s
+    else
+      nil
+    end
+  end
 end

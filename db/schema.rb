@@ -10,8 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_01_000000) do
-  create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
+ActiveRecord::Schema[7.0].define(version: 2024_04_01_155845) do
+  create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
     t.boolean "journal_visible", default: true
@@ -2119,9 +2119,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_01_000000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "project_id"
+    t.integer "user_id", default: 1, null: false
+    t.bigint "abstract_screening_id", default: 1, null: false
+    t.index ["abstract_screening_id"], name: "index_word_weights_on_abstract_screening_id"
     t.bigint "word_group_id"
     t.index ["project_id", "word"], name: "project_id_word", unique: true
     t.index ["project_id"], name: "index_word_weights_on_project_id"
+    t.index ["user_id"], name: "index_word_weights_on_user_id"
     t.index ["word_group_id"], name: "index_word_weights_on_word_group_id"
   end
 
@@ -2290,6 +2294,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_01_000000) do
   add_foreign_key "training_data_infos", "ml_models"
   add_foreign_key "users", "user_types"
   add_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures"
+  add_foreign_key "word_weights", "abstract_screenings"
   add_foreign_key "word_weights", "projects"
+  add_foreign_key "word_weights", "users"
   add_foreign_key "word_weights", "word_groups"
 end
