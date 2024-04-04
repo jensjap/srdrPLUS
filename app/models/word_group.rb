@@ -1,5 +1,6 @@
 class WordGroup < ApplicationRecord
-  belongs_to :project
+  belongs_to :abstract_screening
+  belongs_to :user
 
   has_many :word_weights, dependent: :destroy
 
@@ -13,7 +14,7 @@ class WordGroup < ApplicationRecord
 
     WordWeight.all.each do |ww|
       ww.word_group_id = nil
-      next if ww.project.nil?
+      next if ww.abstract_screening.nil?
 
       if weight_map.has_key?(ww.weight)
         name = weight_map[ww.weight][:name]
@@ -22,7 +23,9 @@ class WordGroup < ApplicationRecord
         word_group = WordGroup.find_or_create_by(
                        name:,
                        color:,
-                       project_id: ww.project_id
+                       case_sensitive: false,
+                       abstract_screening_id: ww.abstract_screening_id,
+                       user_id: ww.user_id
                      )
 
         ww.update(word_group_id: word_group.id)
@@ -30,8 +33,8 @@ class WordGroup < ApplicationRecord
     end
   end
 
-  def self.word_weights_object(project)
-    word_groups = WordGroup.where(project: project)
+  def self.word_weights_object(user, abstract_screening)
+    word_groups = WordGroup.where(user:, abstract_screening:)
     word_groups.each_with_object({}) do |wg, hash|
       hash[wg.id] ||= [{color: wg.color, group_name: wg.name, group_id: wg.id, case_sensitive: wg.case_sensitive, word: nil, id: nil}]
 

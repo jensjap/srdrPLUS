@@ -32,11 +32,10 @@ class AbstractScreeningsController < ApplicationController
     color = params[:color]
     group_name = params[:group_name]
     case_sensitive = params[:case_sensitive]
-    project = @abstract_screening.project
 
     word_group = nil
     if group_id.present?
-      word_group = WordGroup.find_by(id: group_id, project:)
+      word_group = WordGroup.find_by(id: group_id, user: current_user, abstract_screening: @abstract_screening)
       unless word_group
         render json: { error: 'WordGroup not found' }, status: :not_found
         return
@@ -44,7 +43,7 @@ class AbstractScreeningsController < ApplicationController
 
       if params[:destroy_wg].to_s == 'true'
         word_group.destroy
-        render json: WordGroup.word_weights_object(project)
+        render json: WordGroup.word_weights_object(current_user, @abstract_screening)
         return
       elsif group_name.present? || color.present? || !case_sensitive.nil?
         word_group.update(
@@ -54,7 +53,7 @@ class AbstractScreeningsController < ApplicationController
         )
       end
     elsif color.present? && group_name.present? && params[:destroy_wg].to_s != 'true'
-      word_group = WordGroup.create!(color:, name: group_name, project:)
+      word_group = WordGroup.create!(color:, name: group_name, user: current_user, abstract_screening: @abstract_screening)
     elsif params[:destroy_wg].to_s != 'true'
       render json: { error: 'Missing color or group name for new WordGroup or invalid destroy_wg flag' },
              status: :bad_request
@@ -66,7 +65,8 @@ class AbstractScreeningsController < ApplicationController
            WordWeight.find_or_initialize_by(
              weight:,
              word:,
-             project:,
+             user: current_user,
+             abstract_screening: @abstract_screening,
              word_group:
            )
       if params[:destroy_ww]
@@ -76,7 +76,7 @@ class AbstractScreeningsController < ApplicationController
       end
     end
 
-    render json: WordGroup.word_weights_object(project)
+    render json: WordGroup.word_weights_object(current_user, @abstract_screening)
   end
 
   def citation_lifecycle_management
