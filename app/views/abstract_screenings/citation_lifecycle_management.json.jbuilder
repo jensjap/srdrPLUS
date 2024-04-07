@@ -15,6 +15,7 @@ json.results @citations_projects do |citations_project|
   json.abstract_qualification     citations_project['abstract_qualification']
   json.fulltext_qualification     citations_project['fulltext_qualification']
   json.extraction_qualification   citations_project['extraction_qualification']
+  json.consolidation_qualification citations_project['consolidation_qualification']
   json.abstract_screening_objects citations_project['abstract_screening_objects']
   json.fulltext_screening_objects citations_project['fulltext_screening_objects']
   json.abstract                   citations_project['abstract']

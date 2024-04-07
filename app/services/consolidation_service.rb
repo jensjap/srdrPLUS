@@ -1028,6 +1028,7 @@ class ConsolidationService
       section_name: efps.section.name,
       current_section_eefpst1s:,
       current_section_eefpss:,
+      consolidated_eefps: current_section_eefpss.last,
       by_arms:
         efps.link_to_type1.present? &&
         (mh[:efps][efps.id][:efpso][:by_type1] || mh[:efps][efps.id][:efpso][:include_total]).present?,
@@ -1040,11 +1041,12 @@ class ConsolidationService
     mh
   end
 
-  def self.project_citations_grouping_hash(project)
+  def self.project_citations_grouping(project)
     citations_grouping_hash = {}
     citations_projects =
       project
       .citations_projects
+      .not_disqualified
       .includes(
         citation: :journal
       )
@@ -1083,7 +1085,11 @@ class ConsolidationService
         end
       end
     end
-    citations_grouping_hash
+    citations_grouping_hash.map do |cp_id, obj|
+      obj[:citations_project_id] = cp_id
+      obj[:no_of_extractions] = obj[:extractions].length
+      obj
+    end
   end
 
   def self.preload_eefpss(extractions, section_names)

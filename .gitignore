@@ -26,6 +26,7 @@
 *.swn
 *.swm
 
+private.env
 .env
 
 # DS_Store files.
@@ -66,3 +67,6 @@ public/packs/
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+
+git_commit_csv.py
+

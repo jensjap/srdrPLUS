@@ -22,6 +22,10 @@
 
       .form-inputs
         = f.input :email, required: true, hint: 'Email must have the following format: example@domain.edu', autofocus: true
+        = f.simple_fields_for :profile do |p|
+          = p.input :first_name, required: true
+          = p.input :middle_name, required: false
+          = p.input :last_name, required: true
         = f.input :password, label: "Password (Must contain a minium of #{@minimum_password_length} characters.)", required: true,
                              input_html: { minlength: @minimum_password_length }
         /= f.input :password_confirmation, required: true

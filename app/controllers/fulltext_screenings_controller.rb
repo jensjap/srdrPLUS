@@ -71,7 +71,10 @@ class FulltextScreeningsController < ApplicationController
         return render json: { fsr_id: nil } unless fsr && (fsr.user == current_user ||
                                                    (fsr.privileged && ProjectsUser.find_by(
                                                      project: fsr.project, user: current_user
-                                                   ).project_consolidator?))
+                                                   ).project_consolidator?) ||
+                                                   ProjectsUser.find_by(
+                                                     project: fsr.project, user: current_user
+                                                   ).project_leader?)
 
         render json: { fsr_id: fsr&.id }
       end

@@ -18,9 +18,6 @@ class FulltextScreeningResultsController < ApplicationController
           @fulltext_screening_result.reindex
         end
 
-        if @fulltext_screening_result.privileged && @fulltext_screening_result.user != current_user
-          @fulltext_screening_result.update(user: current_user)
-        end
         render json: @fulltext_screening_result
       end
     end

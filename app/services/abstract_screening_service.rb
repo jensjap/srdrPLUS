@@ -128,6 +128,7 @@ class AbstractScreeningService < BaseScreeningService
   def self.count_recent_consecutive_rejects(project)
     last_reject_streak = 0
     previous_result_rejected = true
+    original_labels = {}
 
     grouped_results = project.abstract_screenings
                              .includes(:abstract_screening_results)
@@ -136,21 +137,39 @@ class AbstractScreeningService < BaseScreeningService
                                  [result.citations_project_id, screening]
                                end
                              end
-
     filtered_grouped_results = grouped_results.reject { |group| group.empty? }
 
-    sorted_results = filtered_grouped_results.flat_map do |group|
+    adjusted_results = filtered_grouped_results.flat_map do |group|
       group.map do |(_citation_project_id, screening), results|
         next if results.nil? || results.empty?
 
-        earliest_result = results.min_by(&:created_at)
-        [earliest_result, screening]
+        results.each do |result|
+          qualification = ScreeningQualification.find_by(citations_project_id: result.citations_project_id)
+          if qualification.present?
+            original_labels[result] = result.label unless original_labels.key?(result)
+            result.label = qualification.qualification_type == 'as-accepted' ? 1 : -1
+          end
+        end
+
+        if results.any?(&:privileged)
+          privileged_label = results.find(&:privileged).label
+          results.each do |result|
+            original_labels[result] = result.label unless original_labels.key?(result)
+            result.label = privileged_label
+          end
+        end
+
+        [results, screening]
       end
-    end.compact.sort_by { |result, _| result.created_at }.reverse
+    end.compact
 
-    sorted_results.each do |result, screening|
-      next if result.label.nil?
+    adjusted_and_filtered_results = adjusted_results.reject do |results, _screening|
+      results.all? { |result| result.label.nil? }
+    end
 
+    sorted_and_adjusted_results = adjusted_and_filtered_results.sort_by { |results, _| results.map(&:created_at).min }.reverse
+
+    sorted_and_adjusted_results.each do |results, screening|
       screening_type = if screening.single_screening?
                          :single_screening
                        elsif screening.double_screening?
@@ -161,12 +180,10 @@ class AbstractScreeningService < BaseScreeningService
 
       is_rejected = case screening_type
                     when :single_screening
-                      result.label == -1
+                      results.any? { |result| result.label == -1 }
                     when :double_screening, :all_screenings
-                      results_with_same_citation_project_id = screening.abstract_screening_results.select do |r|
-                        r.citations_project_id == result.citations_project_id
-                      end
-                      results_with_same_citation_project_id.all? { |r| r.label == -1 }
+                      non_nil_labels = results.map(&:label).compact
+                      non_nil_labels.present? && non_nil_labels.all? { |label| label == -1 }
                     else
                       false
                     end
@@ -179,6 +196,10 @@ class AbstractScreeningService < BaseScreeningService
         last_reject_streak = 1
         previous_result_rejected = true
       end
+    end
+
+    original_labels.each do |result, original_label|
+      result.label = original_label
     end
 
     last_reject_streak

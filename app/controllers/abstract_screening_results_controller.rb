@@ -16,13 +16,10 @@ class AbstractScreeningResultsController < ApplicationController
             @abstract_screening_result.touch
           end
         when 'notes', 'form_complete'
-          @abstract_screening_result.update_column(params[:submissionType], params[:asr][params[:submissionType]])  
+          @abstract_screening_result.update_column(params[:submissionType], params[:asr][params[:submissionType]])
           @abstract_screening_result.reindex
         end
 
-        if @abstract_screening_result.privileged && @abstract_screening_result.user != current_user
-          @abstract_screening_result.update(user: current_user)
-        end
         render json: @abstract_screening_result
       end
     end

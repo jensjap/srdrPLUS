@@ -1,14 +1,43 @@
 document.addEventListener 'DOMContentLoaded', ->
   do ->
+    id_counter = -1
     tableKey = window.location.pathname
 
     $('#citations-table').DataTable({
+      ajax: "/projects/#{$('#citations-table').data('project_id')}/citations",
+      processing: true,
+      serverSide: true
+      "columns": [
+        { "data" : "accession_number_alts" },
+        { "data" : "refman" },
+        {
+          render: (data, type, row, meta) ->
+            '<div style="overflow: hidden; height: 18px;" title="' + row['authors'] + '">' + row['authors_short'] + '</div>'
+        },
+        {
+          render: (data, type, row, meta) ->
+            '<div style="overflow: hidden; height: 18px;">' + row['name'] + '</div>'
+        },
+        {
+          render: (data, type, row, meta) ->
+            return '' if $('#project_consolidator').data('project-consolidator') != true
+            '<a href="/citations/' + row['citation_id'] + '/edit?project_id=' + row['project_id'] + '">Edit</a>'
+        },
+        {
+          render: (data, type, row, meta) ->
+            return '' if $('#project_leader').data('project-leader') != true
+            id_counter += 1
+            '<input name="project[citations_projects_attributes][' + id_counter + '][_destroy]" type="hidden" value="0" autocomplete="off">
+            <input id="sf_cp-' + row['citation_id'] + '" type="checkbox" value="1" name="project[citations_projects_attributes][' + id_counter + '][_destroy]">
+            <input autocomplete="off" type="hidden" value="' + row['citations_project_id'] + '" name="project[citations_projects_attributes][' + id_counter + '][id]" id="project_citations_projects_attributes_' + id_counter + '_id">'
+        }
+      ],
       "columnDefs": [{ "orderable": false, "targets": [4, 5] }],
       ""
       # "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
       # "pageLength": -1,
-      # "pagingType": "full_numbers",
-      "paging": false,
+      "pagingType": "full_numbers",
+      "paging": true,
       "stateSave": true,
       "stateSaveParams": (settings, data) ->
         data.search.search = ""

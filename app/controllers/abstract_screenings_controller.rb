@@ -27,17 +27,56 @@ class AbstractScreeningsController < ApplicationController
   def update_word_weight
     authorize(@abstract_screening)
     weight = params[:weight]
-    word = params[:word].downcase
-    id = params[:id]
+    word = params[:word]
+    group_id = params[:group_id]
+    color = params[:color]
+    group_name = params[:group_name]
+    case_sensitive = params[:case_sensitive]
 
-    ww = WordWeight.find_by(id:) || WordWeight.find_or_initialize_by(word:, user: current_user,
-                                                                     abstract_screening: @abstract_screening)
-    if params[:destroy]
-      ww.destroy
-    else
-      ww.update(weight:, word:)
+    word_group = nil
+    if group_id.present?
+      word_group = WordGroup.find_by(id: group_id, user: current_user, abstract_screening: @abstract_screening)
+      unless word_group
+        render json: { error: 'WordGroup not found' }, status: :not_found
+        return
+      end
+
+      if params[:destroy_wg].to_s == 'true'
+        word_group.destroy
+        render json: WordGroup.word_weights_object(current_user, @abstract_screening)
+        return
+      elsif group_name.present? || color.present? || !case_sensitive.nil?
+        word_group.update(
+          name: group_name.presence || word_group.name,
+          color: color.presence || word_group.color,
+          case_sensitive: case_sensitive.nil? ? word_group.case_sensitive : case_sensitive,
+        )
+      end
+    elsif color.present? && group_name.present? && params[:destroy_wg].to_s != 'true'
+      word_group = WordGroup.create!(color:, name: group_name, user: current_user, abstract_screening: @abstract_screening)
+    elsif params[:destroy_wg].to_s != 'true'
+      render json: { error: 'Missing color or group name for new WordGroup or invalid destroy_wg flag' },
+             status: :bad_request
+      return
     end
-    render json: WordWeight.word_weights_object(current_user, @abstract_screening)
+
+    if word.present? && word_group
+      ww = WordWeight.find_by(id: params[:id]) ||
+           WordWeight.find_or_initialize_by(
+             weight:,
+             word:,
+             user: current_user,
+             abstract_screening: @abstract_screening,
+             word_group:
+           )
+      if params[:destroy_ww]
+        ww.destroy
+      else
+        ww.update(word:, word_group:)
+      end
+    end
+
+    render json: WordGroup.word_weights_object(current_user, @abstract_screening)
   end
 
   def citation_lifecycle_management
@@ -134,7 +173,10 @@ class AbstractScreeningsController < ApplicationController
         return render json: { asr_id: nil } unless asr && (asr.user == current_user ||
                                                    (asr.privileged && ProjectsUser.find_by(
                                                      project: asr.project, user: current_user
-                                                   ).project_consolidator?))
+                                                   ).project_consolidator?) ||
+                                                    ProjectsUser.find_by(
+                                                      project: asr.project, user: current_user
+                                                    ).project_leader?)
 
         render json: { asr_id: asr&.id }
       end

@@ -105,7 +105,7 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def update?
-    project_leader?
+    project_contributor?
   end
 
   def destroy?
@@ -180,12 +180,40 @@ class ProjectPolicy < ApplicationPolicy
     if project_leader?
       FULL_PARAMS
     elsif project_contributor?
-      [
-        { projects_users_attributes: %i[id user_id permissions] },
-        { citations_projects_attributes: %i[id citation_id] },
-        { citations_attributes: [:id, :name, :authors, :abstract, :accession_number, :pmid, :refman, :registry_number, :doi,
-                                 :other, :citation_type_id, :page_number_start, :page_number_end, { keyword_ids: [], journal_attributes: %i[id name volume issue publication_date] }] }
-      ]
+      [{
+        citations_projects_attributes: [
+          :id,
+          :citation_id,
+          :project_id,
+          :refman,
+          :other_reference,
+          {
+            citation_attributes: [
+              :id,
+              :name,
+              :authors,
+              :abstract,
+              :accession_number,
+              :registry_number,
+              :doi,
+              :other,
+              :pmid,
+              :refman,
+              :citation_type_id,
+              :page_number_start,
+              :page_number_end,
+              { keyword_ids: [],
+                journal_attributes: %i[
+                  id
+                  name
+                  volume
+                  issue
+                  publication_date
+                ] }
+            ]
+          }
+        ]
+      }]
     end
   end
 end

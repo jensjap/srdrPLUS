@@ -226,6 +226,7 @@ GEM
       request_store (>= 1.0)
     groupdate (6.4.0)
       activesupport (>= 6.1)
+    hana (1.3.7)
     hashie (5.0.0)
     htmlentities (4.3.4)
     httparty (0.21.0)
@@ -242,6 +243,10 @@ GEM
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
+    json_schemer (2.1.1)
+      hana (~> 1.3)
+      regexp_parser (~> 2.0)
+      simpleidn (~> 0.2)
     kaminari (1.2.2)
       activesupport (>= 4.1.0)
       kaminari-actionview (= 1.2.2)
@@ -289,6 +294,8 @@ GEM
     net-smtp (0.4.0)
       net-protocol
     nio4r (2.5.9)
+    nokogiri (1.15.4-arm64-darwin)
+      racc (~> 1.4)
     nokogiri (1.15.4-x86_64-linux)
       racc (~> 1.4)
     orm_adapter (0.5.0)
@@ -344,6 +351,7 @@ GEM
       redis-client (>= 0.9.0)
     redis-client (0.17.0)
       connection_pool
+    regexp_parser (2.9.0)
     request_store (1.5.1)
       rack (>= 1.4)
     responders (3.1.0)
@@ -405,6 +413,8 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
+    simpleidn (0.2.1)
+      unf (~> 0.1.4)
     slim (5.1.1)
       temple (~> 0.10.0)
       tilt (>= 2.1.0)
@@ -428,6 +438,8 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
+    tailwindcss-rails (2.0.30-arm64-darwin)
+      railties (>= 6.0.0)
     tailwindcss-rails (2.0.30-x86_64-linux)
       railties (>= 6.0.0)
     temple (0.10.2)
@@ -442,6 +454,9 @@ GEM
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
     unaccent (0.4.0)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.9.1)
     uniform_notifier (1.16.0)
     warden (1.2.9)
       rack (>= 2.0.9)
@@ -458,6 +473,7 @@ GEM
       rubyzip (>= 1.0.0)
 
 PLATFORMS
+  arm64-darwin-22
   x86_64-linux
   x86_64-linux-musl
 
@@ -496,6 +512,7 @@ DEPENDENCIES
   jbuilder
   jquery-datatables
   jquery-rails
+  json_schemer
   kaminari
   mysql2
   net-ftp
