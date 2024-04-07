@@ -159,7 +159,7 @@ class CitationsProject < ApplicationRecord
       'consolidation_qualification' => qualification('c-'),
       'abstract_screening_objects' => abstract_screening_objects,
       'fulltext_screening_objects' => fulltext_screening_objects,
-      'abstract' => citation.abstract,
+      'abstract' => citation.abstract.force_encoding("ISO-8859-1").encode("UTF-8"),
       'pmid' => citation.pmid,
       'refman' => refman,
       'accession_number' => citation.accession_number
