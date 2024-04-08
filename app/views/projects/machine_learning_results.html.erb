@@ -8,7 +8,7 @@
       style="display: none;">
   </div>
 
-  <div x-data="{ threshold: 0.5 }" class="bg-gray-100 p-8">
+  <div x-data="{ threshold: 0.5, showConfusionMatrix: false }" class="bg-gray-100 p-8">
     <h1 class="text-3xl font-bold mb-4">Machine Learning Results</h1>
 
     <p class="text-xl mb-2">Total Number of Citations: <span class="font-semibold"><%= @total_citation_number %></span></p>
@@ -35,7 +35,7 @@
         </p>
 
         <h2 class="text-3xl font-bold mt-8 mb-4">Top 20 Unscreened Citations</h2>
-        <table class="w-full divide-y divide-gray-300">
+        <table class="w-full divide-y divide-gray-300 mb-4">
           <thead class="bg-gray-50">
             <tr>
               <th
@@ -129,6 +129,13 @@
             </template>
           </tbody>
         </table>
+        <button @click="showConfusionMatrix = !showConfusionMatrix" class="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Toggle Confusion Matrix
+        </button>
+        <div class="flex-1" x-show="showConfusionMatrix" x-cloak>
+          <h2 class="text-3xl font-bold mb-4">Predictions vs. Real Labels</h2>
+          <div id="confusionMatrix" style="width: 600px;height:400px;"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -156,7 +163,7 @@
         if (score >= threshold) {
           label == "1" ? TP++ : FP++;
         } else {
-          label == "-1" ? TN++ : FN++;
+          label == "0" ? TN++ : FN++;
         }
       });
     });
@@ -179,12 +186,14 @@
   });
 
   const barChart = echarts.init(document.getElementById('barChart'));
+  const matrixChart = echarts.init(document.getElementById('confusionMatrix'));
 
   const dataContainer = document.getElementById('dataContainer');
   const scores = JSON.parse(dataContainer.getAttribute('data-scores'));
   const labelsWithScores = JSON.parse(dataContainer.getAttribute('data-labels-with-scores'));
 
   const barData = calculateBins(scores);
+  const { TP, FP, TN, FN } = calculateConfusionMatrix(labelsWithScores, 0.5);
 
   const barOption = {
     title: {
@@ -205,5 +214,51 @@
     }]
   };
 
+  const matrixOption = {
+    title: {
+      text: 'Confusion Matrix'
+    },
+    tooltip: {
+      trigger: 'item',
+      formatter: function (params) {
+        return params.value[2];
+      }
+    },
+    visualMap: {
+      show: false,
+      min: 0,
+      max: Math.max(TP, FP, TN, FN),
+      calculable: true,
+      orient: 'horizontal',
+      left: 'center',
+      bottom: '15%',
+      inRange: {
+        color: ['#f2f2f2', '#D9E6F2', '#a2c4c9']
+      }
+    },
+    xAxis: {
+      type: 'category',
+      data: ['Predicted Accept', 'Predicted Reject']
+    },
+    yAxis: {
+      type: 'category',
+      data: ['Reject', 'Accept']
+    },
+    series: [{
+      name: 'Confusion Matrix',
+      type: 'heatmap',
+      data: [
+        [0, 0, FP],
+        [0, 1, TP],
+        [1, 0, TN],
+        [1, 1, FN]
+      ],
+      label: {
+        show: true
+      }
+    }]
+  };
+
   barChart.setOption(barOption);
+  matrixChart.setOption(matrixOption);
 </script>
