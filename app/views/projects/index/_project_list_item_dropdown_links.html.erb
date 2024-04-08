@@ -219,6 +219,7 @@
 
     <!-- Dropdown for Extractions -->
     <div class="relative inline-block text-left"
+         title="* Number of citations with one or more extractions"
          x-data="{ isOpen: false }"
          @click.away="isOpen = false"
          :id="'extractionsDropdownProjectId_' + <%= project.id %>">
@@ -229,8 +230,8 @@
               id="extractionsDropdown"
               aria-haspopup="true"
               aria-expanded="true">
-        <% e_count = @projects.present? ? @projects_extraction_counts[project.id] : project.extractions.size %>
-        <% e_title = "Extractions (#{e_count || 0})" %>
+        <% e_count = @projects.present? ? @projects_extracted_citations_counts[project.id] : project.extractions.map(&:citations_project_id).uniq.size %>
+        <% e_title = "Extractions* (#{e_count || 0})" %>
         <i class='fi-wrench'> <%= e_title %></i>
         <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>

@@ -595,6 +595,13 @@ class ProjectsController < ApplicationController
                              .group_by(&:project_id)
                              .count
 
+      @projects_extracted_citations_counts = CitationsProject
+                                             .joins(:extractions)
+                                             .distinct
+                                             .where(project_id: project_ids)
+                                             .group(:project_id)
+                                             .count
+
     elsif @project_status == 'draft'
       @projects = policy_scope(Project)
                   .draft
@@ -657,6 +664,13 @@ class ProjectsController < ApplicationController
                              .where(project_id: project_ids)
                              .group_by(&:project_id)
                              .count
+
+      @projects_extracted_citations_counts = CitationsProject
+                                             .joins(:extractions)
+                                             .distinct
+                                             .where(project_id: project_ids)
+                                             .group(:project_id)
+                                             .count
 
     elsif @project_status == 'pending'
       @unapproved_publishings = Publishing
