@@ -83,7 +83,7 @@ div class="p-4 lg:p-8" x-data="$store.deleteConfirmation"
             td = link_to 'Reassign', reassign_extraction_extraction_path(extraction)
             td
               - delete_url = extraction_path(extraction)
-              a href="#" @click.prevent="$store.deleteConfirmation.openModal(delete_url)" data-delete-url="#{delete_url}" class="delete-btn" style='font-weight:bold;color:#cc4b37 !important;'
+              a href="#" data-delete-url="#{delete_url}" data-extraction-id="#{extraction.id}" data-extraction-name="#{extraction.name}" class="delete-btn" style='font-weight:bold;color:#cc4b37 !important;'
                 = t('destroy')
 
   div
@@ -100,10 +100,15 @@ javascript:
   document.addEventListener('alpine:init', () => {
     Alpine.store('deleteConfirmation', {
       isAlertModalOpen: false,
-      alertModalContent: 'Warning! You are about to delete an Extraction and any associated data with it. \nThis action cannot be undone. Please confirm to proceed.',
+      alertModalContent: '',
       deleteUrl: '',
-      openModal(url) {
+      openAlertModal(url, extraction_id, extraction_name) {
         this.deleteUrl = url;
+        if (extraction_name) {
+          this.alertModalContent = `Warning! You are about to delete an Extraction with ID ${extraction_id}: "${extraction_name}" and any associated data with it. \nThis action cannot be undone. Please confirm to proceed.`;
+        } else {
+          this.alertModalContent = `Warning! You are about to delete an Extraction with ID ${extraction_id} and any associated data with it. \nThis action cannot be undone. Please confirm to proceed.`;
+        }
         this.isAlertModalOpen = true;
       },
       closeAlertModal() {
