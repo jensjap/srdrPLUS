@@ -1134,6 +1134,18 @@
         this.selectedGroup.case_sensitive = $event.target.checked;
         this.sendWw(null, null, null, false, this.selectedGroup.id, null, null, $event.target.checked, false);
       },
+
+      addDefaultGroups() {
+        const defaults = [
+          { name: "Group 1", color: "#ef4444" },
+          { name: "Group 2", color: "#a855f7" },
+          { name: "Group 3", color: "#22c55e" },
+          { name: "Group 4", color: "#3b82f6" }
+        ];
+        defaults.forEach(({ name, color }) => {
+          this.sendWw(null, null, null, false, null, color, name, null, false);
+        });
+      },
     }));
   });
 </script>

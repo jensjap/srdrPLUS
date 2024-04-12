@@ -111,6 +111,11 @@
                 </button>
               </div>
             </template>
+            <template x-if="groups.length === 0">
+              <button @click="addDefaultGroups" class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Add Default Groups
+              </button>
+            </template>
             <div class="mt-4">
               <input class="box-border p-2 w-full" type="text" placeholder="Add new group" x-model="newGroupName" @keyup.enter="sendWw(null, null, null, false, null, '#3b82f6', newGroupName, null, false); newGroupName = null;">
             </div>
