@@ -1,5 +1,40 @@
 class QuestionRowColumnsController < ApplicationController
-  before_action :set_question_row_column, :skip_policy_scope, only: [:destroy_entire_column, :answer_choices]
+  before_action :set_question_row_column, :skip_policy_scope,
+                only: %i[destroy update destroy_entire_column answer_choices]
+
+  def update
+    respond_to do |format|
+      format.json do
+        if params.dig(:question_row_column_type, :name)
+          question_row_column_type = QuestionRowColumnType.find_by(name: params[:question_row_column_type][:name])
+          render json: {},
+                 status: @question_row_column.update(question_row_column_type:) ? 200 : 422
+        else
+          render json: {},
+                 status: @question_row_column.update(params.require(:question_row_column).permit(:name)) ? 200 : 422
+        end
+      end
+    end
+  end
+
+  def create
+    authorize(QuestionRow.find(params[:question_row_id]).question_row_columns.new)
+    respond_to do |format|
+      format.json do
+        render json: {},
+               status: QuestionRow.find(params[:question_row_id]).add_columns_to_all_siblings ? 200 : 422
+      end
+    end
+  end
+
+  def destroy
+    respond_to do |format|
+      format.json do
+        render json: {},
+               status: @question_row_column.remove_column_from_all_siblings ? 200 : 422
+      end
+    end
+  end
 
   def destroy_entire_column
     @question = @question_row_column.question
@@ -56,9 +91,10 @@ class QuestionRowColumnsController < ApplicationController
     # destroy/remove request was triggered.
     @question.question_rows.first.question_row_columns.each do |qrc|
       break if qrc == @question_row_column
+
       question_row_column_index_to_nuke += 1
     end
 
-    return question_row_column_index_to_nuke
+    question_row_column_index_to_nuke
   end
 end
