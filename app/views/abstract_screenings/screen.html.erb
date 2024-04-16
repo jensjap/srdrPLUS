@@ -10,6 +10,9 @@
   <%= render 'abstract_screenings/screen/confirmation_modal' %>
   <%= render 'abstract_screenings/screen/history_panel' %>
   <%= render 'abstract_screenings/screen/word_weight_menu' %>
+  <div x-show="word_group_menu">
+    <%= render 'abstract_screenings/screen/word_group_menu' %>
+  </div>
   <%= render 'shared/alert_modal' %>
   <div
     :class="desktop ? 'top-0 bottom-24 border-l border-b border-gray-600 fixed p-4 left-2/3 right-0 overflow-y-scroll overflow-x-hidden bg-white' : 'hidden'"
