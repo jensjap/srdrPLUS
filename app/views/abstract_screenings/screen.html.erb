@@ -1149,6 +1149,71 @@
           this.sendWw(null, null, null, false, null, color, name, null, false);
         });
       },
+
+      downloadGroupsJson() {
+        const filteredData = this.groups.map(group => ({
+          name: group.name,
+          color: group.color,
+          words: group.words.map(word => word.name).filter(name => name != null)
+        }));
+        const jsonData = JSON.stringify(filteredData, null, 2);
+        const blob = new Blob([jsonData], { type: 'application/json' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'groups.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      },
+
+      async handleAndProcessGroupFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const groups = JSON.parse(e.target.result);
+          for (const group of groups) {
+            if (!group.name || !group.color) {
+              alert('Missing required fields!');
+              continue;
+            }
+
+            if (!/^[a-zA-Z0-9\s]+$/.test(group.name) || !/^#[0-9a-fA-F]{6}$/.test(group.color)) {
+              alert('Invalid data format!');
+              continue;
+            }
+
+            const newGroupId = await this.updateAndFetchNewGroupId(group);
+            if (!newGroupId) continue;
+
+            if (group.words && group.words.length > 0) {
+              for (const word of group.words) {
+                if (word) {
+                  await this.sendWw(word, 0, null, false, newGroupId, group.color, group.name, null, false);
+                }
+              }
+            }
+          }
+        };
+        reader.readAsText(file);
+        this.resetState();
+      },
+
+      async updateAndFetchNewGroupId(group) {
+        const oldGroups = this.groups.slice();
+
+        await this.sendWw(null, null, null, false, null, group.color, group.name, null, false);
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        const newGroups = this.groups;
+        const newGroup = newGroups.find(g => !oldGroups.some(og => og.id === g.id));
+
+        return newGroup ? newGroup.id : null;
+      },
     }));
   });
 </script>

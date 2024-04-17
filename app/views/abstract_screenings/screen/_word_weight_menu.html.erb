@@ -12,7 +12,7 @@
           <input class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
                 type="checkbox"
                 id="caseSensitiveCheckbox"
-                :checked="selectedGroup.case_sensitive"
+                :checked="selectedGroup ? selectedGroup.case_sensitive : false"
                 @change="updateCaseSensitive($event)"
                 x-show="selectedGroup">
           <label class="form-check-label inline-block text-gray-800" for="caseSensitiveCheckbox">
@@ -24,7 +24,7 @@
         <template x-if="selectedGroup && selectedGroup.words && selectedGroup.words.length > 0 && !selectedGroup.words.every(wordObj => wordObj.name === null && wordObj.id === null)">
           <template x-for="(wordObj, index) in selectedGroup.words" :key="wordObj.id">
             <div :class="{'bg-gray-100': index % 2 === 0, 'bg-white': index % 2 !== 0}" class="flex items-center gap-4">
-              <input class="box-border p-2" type="text" x-model="wordObj.name" @keyup.enter="sendWw(wordObj.name, null, wordObj.id, false, selectedGroup.id, null, null, null, false)" @blur="sendWw(wordObj.name, null, wordObj.id, false, selectedGroup.id, null, null, null, false)">
+              <input class="box-border p-2" type="text" x-model="wordObj.name" @keyup.enter="sendWw(wordObj.name, 0, wordObj.id, false, selectedGroup.id, null, null, null, false)" @blur="sendWw(wordObj.name, null, wordObj.id, false, selectedGroup.id, null, null, null, false)">
               <button @click="sendWw(wordObj.name, null, wordObj.id, true, selectedGroup.id, null, null, null, false)" class="p-2">
                 <i class="fi-trash cursor-pointer hover:underline"></i>
               </button>

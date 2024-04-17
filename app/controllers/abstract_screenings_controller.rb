@@ -61,18 +61,18 @@ class AbstractScreeningsController < ApplicationController
     end
 
     if word.present? && word_group
-      ww = WordWeight.find_by(id: params[:id]) ||
-           WordWeight.find_or_initialize_by(
-             weight:,
-             word:,
-             user: current_user,
-             abstract_screening: @abstract_screening,
-             word_group:
-           )
-      if params[:destroy_ww]
-        ww.destroy
-      else
-        ww.update(word:, word_group:)
+      ww = WordWeight.find_by(word: word, user: current_user, abstract_screening: @abstract_screening)
+      if ww.nil?
+        if params[:id].present?
+          ww = WordWeight.find_by(id: params[:id])
+          ww.update(word: word, word_group: word_group)
+        else
+          WordWeight.create!(word: word, weight: weight, user: current_user, abstract_screening: @abstract_screening, word_group: word_group)
+        end
+      elsif params[:id].present? && ww.id == params[:id]
+        if params[:destroy_ww].to_s == 'true'
+          ww.destroy
+        end
       end
     end
 
