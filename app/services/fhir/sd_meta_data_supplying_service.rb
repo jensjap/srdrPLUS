@@ -31,7 +31,11 @@ class SdMetaDataSupplyingService
     combination_full_url.unshift(nil)
     combination = sd_picod_in_fhir.dup + sd_key_questions_in_fhir.dup + sd_search_strategy_in_fhir.dup + sd_outcome_in_fhir.dup
     combination.unshift(sd_meta_data_in_fhir)
-    FhirResourceService.get_bundle(fhir_objs: combination, type: 'document', full_urls: combination_full_url)
+    bundle = FhirResourceService.get_bundle(fhir_objs: combination, type: 'document', full_urls: combination_full_url)
+    bundle['identifier'] = FhirResourceService.build_identifier('SdMetaData', sd_meta_data_id)[0]
+    bundle['id'] = "7-#{sd_meta_data_id}"
+
+    bundle
   end
 
   private
@@ -63,9 +67,11 @@ class SdMetaDataSupplyingService
       'Stakeholders Involved - Peer Reviewers' => raw.stakeholders_peer_reviewers,
       'Stakeholders Involved - Others' => raw.stakeholders_others,
       'Overall Purpose of Review' => raw.overall_purpose_of_review,
-      'Type of Review' => raw.review_type['name'],
       'Grey Literature Searches' => raw.sd_grey_literature_searches&.map { |source| source['name'] }
     }
+    if !raw.review_type.blank?
+      sections['Type of Review'] = raw.review_type['name']
+    end
 
     sections.each do |title, value|
       next if value.blank?
@@ -235,8 +241,6 @@ class SdMetaDataSupplyingService
     {
       'resourceType' => 'Composition',
       'status' => sr360_status,
-      'id' => "7-#{raw.id}",
-      'identifier' => FhirResourceService.build_identifier('SdMetaData', raw.id),
       'type' => { 'text' => 'EvidenceReport' },
       'date' => sr360_updated_date,
       'author' => { 'display' => 'SRDR+' },

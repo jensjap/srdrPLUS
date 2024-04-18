@@ -46,6 +46,7 @@ class ExtractionSupplyingService
       }
     ]
     bundle = FhirResourceService.get_bundle(fhir_objs: fhir_extraction_sections, type: 'collection', link_info: link_info)
+    bundle['identifier'] = FhirResourceService.build_identifier('Extraction', id)[0]
 
     bundle
   end
@@ -699,7 +700,7 @@ class ExtractionSupplyingService
       end
 
       description_for_exposure = arm_names_combined.first
-      comparator_category = arm_names_combined[1..].join("; ")
+      comparator_category = (arm_names_combined[1..] || []).join("; ")
       comparator_display = arm_names_combined.join(" vs ")
 
       evidence['variableDefinition'] << FhirResourceService.build_evidence_variable_definition(description: description_for_exposure, variable_role: 'exposure', comparator_category: comparator_category, comparator_display: comparator_display)

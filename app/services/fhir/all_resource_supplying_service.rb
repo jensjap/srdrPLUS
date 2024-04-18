@@ -3,46 +3,126 @@ class AllResourceSupplyingService
   def find_by_project_id(id)
     project = Project.find(id)
     project_info = {
-      'project_name' => project.name,
-      'project_attribution' => project.attribution,
-      'project_authors_of_report' => project.authors_of_report,
-      'project_methodology_description' => project.methodology_description,
-      'project_prospero_registration_id' => project.prospero,
-      'project_doi' => project.doi,
-      'project_note' => project.notes,
-      'project_funding_source' => project.funding_source,
+      'Project Attribution' => project.attribution,
+      'Project Authors of Report' => project.authors_of_report,
+      'Project Methodology Description' => project.methodology_description,
+      'Project Prospero Registration Id' => project.prospero,
+      'Project Doi' => project.doi,
+      'Project Note' => project.notes,
+      'Project Funding Source' => project.funding_source,
     }
 
-    project_info['project_description'] = project.description if !project.description.blank?
+    project_info['Project Description'] = project.description if !project.description.blank?
 
     if !project.mesh_descriptors.blank?
-      project_info['project_mesh'] ||= []
+      project_info['Project Mesh'] ||= []
       project.mesh_descriptors.each do |mesh|
-        project_info['project_mesh'] << mesh.name
+        project_info['Project Mesh'] << mesh.name
       end
     end
 
-    efpss = []
-    project.extraction_forms_projects.each do |efp|
-      efpss.append(ExtractionFormsProjectsSectionSupplyingService.new.find_by_extraction_forms_project_id(efp.id))
+    project_composition = build_composition(project)
+
+    project_info.each do |title, value|
+      next if value.blank?
+
+      value = [value] unless value.is_a? Array
+      value.each do |v|
+        add_section(project_composition, title, v)
+      end
     end
-    forms = FhirResourceService.get_bundle(fhir_objs: efpss, type: 'collection')
-    citations = CitationSupplyingService.new.find_by_project_id(id)
-    key_questions = KeyQuestionSupplyingService.new.find_by_project_id(id)
-    extractions = ExtractionSupplyingService.new.find_by_project_id(id)
 
-    link_info = [
-      {
-        'relation' => 'tag',
-        'url' => 'api/v3/projects/' + id.to_s
+    citations = project.citations.includes(:journal).all
+    citations_in_fhir = citations.map { |citation| CitationSupplyingService.new.find_by_citation_id(citation.id) }
+    key_questions = project.key_questions_projects.all
+    key_questions_in_fhir = key_questions.map { |key_question| KeyQuestionSupplyingService.new.find_by_key_question_id(key_question.id) }
+    forms = []
+    efpss_in_fhir = []
+    project.extraction_forms_projects.each do |efp|
+      efp.extraction_forms_projects_sections.each do |efps|
+        efps_in_fhir = ExtractionFormsProjectsSectionSupplyingService.new.find_by_extraction_forms_projects_section_id(efps.id)
+        if !efps_in_fhir.blank?
+          efpss_in_fhir << efps_in_fhir
+          forms << efps
+        end
+      end
+    end
+    extractions = project.extractions
+    extractions_in_fhir = project.extractions.map { |extraction| ExtractionSupplyingService.new.find_by_extraction_id(extraction.id) }
+    sd_meta_data = project.sd_meta_data
+    sd_meta_data_in_fhir = sd_meta_data.map { |sd_meta_data| SdMetaDataSupplyingService.new.find_by_sd_meta_data_id(sd_meta_data.id) }
+
+    add_reference_section(project_composition, 'Citations', citations, 'Citation', 'Citation') if !citations.blank?
+    add_reference_section(project_composition, 'KeyQuestions', key_questions, 'KeyQuestion', 'EvidenceVariable') if !key_questions.blank?
+    add_reference_section(project_composition, 'ExtractionFormsProjectsSections', forms, 'ExtractionFormsProjectsSection', 'Questionnaire') if !forms.blank?
+    add_reference_section(project_composition, 'Extractions', extractions, 'Extraction', 'Bundle') if !extractions.blank?
+    add_reference_section(project_composition, 'SdMetaData', sd_meta_data, 'SdMetaData', 'Bundle') if !sd_meta_data.blank?
+
+    citation_full_url = get_identifier_values(citations, 'Citation')
+    kq_full_url = get_identifier_values(key_questions, 'KeyQuestion')
+    efps_full_url = get_identifier_values(forms, 'ExtractionFormsProjectsSection')
+    extraction_full_url = get_identifier_values(extractions, 'Extraction')
+    sd_meta_data_full_url = get_identifier_values(sd_meta_data, 'SdMetaData')
+
+    combination_full_url = citation_full_url.dup + kq_full_url.dup + efps_full_url.dup + extraction_full_url.dup + sd_meta_data_full_url.dup
+    combination_full_url.unshift(nil)
+    combination = citations_in_fhir.dup + key_questions_in_fhir.dup + efpss_in_fhir.dup + extractions_in_fhir.dup + sd_meta_data_in_fhir.dup
+    combination.unshift(project_composition)
+    bundle = FhirResourceService.get_bundle(fhir_objs: combination, type: 'document', full_urls: combination_full_url)
+
+    bundle
+  end
+
+  private
+
+  def build_composition(project)
+    project_title = project.name || 'No project title'
+    project_updated_date = project.updated_at.strftime("%Y-%m-%dT%H:%M:%S%:z")
+
+    {
+      'resourceType' => 'Composition',
+      'status' => 'unknown',
+      'id' => "12-#{project.id}",
+      'identifier' => FhirResourceService.build_identifier('Project', project.id),
+      'type' => { 'text' => 'Project' },
+      'date' => project_updated_date,
+      'author' => { 'display' => 'SRDR+' },
+      'title' => project_title
+    }
+  end
+
+  def add_section(array_or_hash, title=nil, value=nil, entrys=nil)
+    code = { 'coding' => [{ 'code' => title }] } if title
+    section = {
+      'title' => title,
+      'code' => code,
+      'text' => {
+        'status' => 'generated',
+        'div' => "<div xmlns=\"http://www.w3.org/1999/xhtml\">#{value}</div>"
       },
-      {
-        'relation' => 'service-doc',
-        'url' => 'doc/fhir/project.txt'
-      }
-    ]
-    project_info['bundle'] = FhirResourceService.get_bundle(fhir_objs: [forms, citations, key_questions, extractions], type: 'collection', link_info: link_info)
+      'entry' => entrys
+    }.compact
 
-    FhirResourceService.deep_clean(project_info)
+    if array_or_hash.is_a?(Hash)
+      array_or_hash['section'] = (array_or_hash['section'] || []) << section
+    else
+      array_or_hash << { 'section' => [section] }
+    end
+    section
+  end
+
+  def add_reference_section(composition, title, raw_data, prefix, type)
+    id_values = get_identifier_values(raw_data, prefix)
+
+    entrys = id_values.map { |id_value| {'reference' => id_value, 'type' => type} }
+    add_section(composition, title, nil, entrys)
+  end
+
+  def get_identifier_values(raw_data, prefix)
+    if raw_data.is_a?(ActiveRecord::Relation)
+      raw_data.ids.map { |id| "#{prefix}/#{id}" }
+    else
+      raw_data.map { |raw| "#{prefix}/#{raw.id}" }
+    end
   end
 end
