@@ -74,22 +74,27 @@ class Extraction < ApplicationRecord
   end
 
   def ensure_extraction_form_structure
-    # self.project.extraction_forms_projects.includes([:extraction_forms_projects_sections, :extraction_form]).each do |efp|
     # NOTE This method assumes that self is not a mini-extraction
     efp = project.extraction_forms_projects.includes([:extraction_form]).first
     efp.extraction_forms_projects_sections.includes([:link_to_type1]).each do |efps|
-      ExtractionsExtractionFormsProjectsSection.find_or_create_by!(
+      # We should ensure that there is only 1 EEFPS per extraction per efps.
+      eefps = ExtractionsExtractionFormsProjectsSection.find_or_create_by!(
         extraction: self,
-        extraction_forms_projects_section: efps,
-        link_to_type1: if efps.link_to_type1.nil?
-                         nil
-                       else
-                         ExtractionsExtractionFormsProjectsSection.find_or_create_by!(
-                           extraction: self,
-                           extraction_forms_projects_section: efps.link_to_type1
-                         )
-                       end
+        extraction_forms_projects_section: efps
       )
+
+      if efps.link_to_type1.nil?
+        eefps.update(link_to_type1: nil)
+      else
+        eefps.update(
+          link_to_type1: ExtractionsExtractionFormsProjectsSection.find_or_create_by!(
+            extraction: self,
+            extraction_forms_projects_section: efps.link_to_type1,
+            link_to_type1: nil
+          )
+        )
+      end
+      eefps.save
     end
   end
 

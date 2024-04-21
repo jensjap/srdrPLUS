@@ -152,70 +152,68 @@
     </div>
 
     <!-- Dropdown for "Screening" -->
-    <% if BaseScreeningService.screening_user?(current_user) %>
-      <div class="relative inline-block text-left"
-           x-data="{ isOpen: false }"
-           @click.away="isOpen = false"
-           :id="'screeningDropdownProjectId_' + <%= project.id %>">
-        <button @click="isOpen = !isOpen"
-                type="button"
-                class="text-xl cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
-                :class="screening_dropdown && 'bg-srdr-tertiary !text-white'"
-                id="screeningDropdown"
-                aria-haspopup="true"
-                aria-expanded="true">
-          <% c_count = @projects.present? ? @projects_citations_project_counts[project.id] : project.citations.size %>
-          <% c_title = "Screening (#{ c_count || 0 })" %>
-          <i class='fi-page-search'> <%= c_title %></i>
-          <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-          </svg>
-        </button>
+    <div class="relative inline-block text-left"
+         x-data="{ isOpen: false }"
+         @click.away="isOpen = false"
+         :id="'screeningDropdownProjectId_' + <%= project.id %>">
+      <button @click="isOpen = !isOpen"
+              type="button"
+              class="text-xl cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
+              :class="screening_dropdown && 'bg-srdr-tertiary !text-white'"
+              id="screeningDropdown"
+              aria-haspopup="true"
+              aria-expanded="true">
+        <% c_count = @projects.present? ? @projects_citations_project_counts[project.id] : project.citations.size %>
+        <% c_title = "Screening (#{ c_count || 0 })" %>
+        <i class='fi-page-search'> <%= c_title %></i>
+        <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
 
-        <!-- Dropdown items -->
-        <div x-cloak
-             x-show="isOpen"
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="transform opacity-0 scale-95"
-             x-transition:enter-end="transform opacity-100 scale-100"
-             x-transition:leave="transition ease-in duration-75"
-             x-transition:leave-start="transform opacity-100 scale-100"
-             x-transition:leave-end="transform opacity-0 scale-95"
-             style="min-width: max-content;"
-             class="shadow-lg custom-shadow-dropdown z-10 origin-top-right absolute mt-0 w-46 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 border border-black"
-             role="menu"
-             aria-orientation="vertical"
-             aria-labelledby="screeningDropdownProjectId_<%= project.id %>">
-          <% projects_user = ProjectsUser.find_by(project_id: project.id, user_id: current_user.id) %>
-          <% if projects_user&.project_leader? || projects_user&.project_consolidator? %>
-            <%= link_to "Abstract Screening",
-                        project_abstract_screenings_path(project),
-                        title: 'Abstract Screening',
-                        class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                        'x-bind:class': "{ 'bg-srdr-tertiary': abstract_screening, '!text-white': abstract_screening }" %>
-            <%= link_to "Full-text Screening",
-                        project_fulltext_screenings_path(project),
-                        title: 'Full-text Screening',
-                        class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                        'x-bind:class': "{ 'bg-srdr-tertiary': fulltext_screening, '!text-white': fulltext_screening }" %>
-          <% elsif projects_user&.project_contributor? && !projects_user&.project_leader? && !projects_user&.project_consolidator? %>
-            <%= link_to "Abstract Screening",
-                        work_selection_project_abstract_screenings_path(project),
-                        title: 'Abstract Screening Work Selection',
-                        class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                        'x-bind:class': "{ 'bg-srdr-tertiary': abstract_screening, '!text-white': abstract_screening }" %>
-            <%= link_to "Full-text Screening",
-                        work_selection_project_fulltext_screenings_path(project),
-                        title: 'Full-text Screening Work Selection',
-                        class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                        'x-bind:class': "{ 'bg-srdr-tertiary': fulltext_screening, '!text-white': fulltext_screening }" %>
-          <% else %>
-            <div style="opacity: 0.3; cursor: not-allowed" class="block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white">Abstract Screening</div>
-            <div style="opacity: 0.3; cursor: not-allowed" class="block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white">Full-text Screening</div>
-          <% end %>
-        </div>
+      <!-- Dropdown items -->
+      <div x-cloak
+           x-show="isOpen"
+           x-transition:enter="transition ease-out duration-200"
+           x-transition:enter-start="transform opacity-0 scale-95"
+           x-transition:enter-end="transform opacity-100 scale-100"
+           x-transition:leave="transition ease-in duration-75"
+           x-transition:leave-start="transform opacity-100 scale-100"
+           x-transition:leave-end="transform opacity-0 scale-95"
+           style="min-width: max-content;"
+           class="shadow-lg custom-shadow-dropdown z-10 origin-top-right absolute mt-0 w-46 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 border border-black"
+           role="menu"
+           aria-orientation="vertical"
+           aria-labelledby="screeningDropdownProjectId_<%= project.id %>">
+        <% projects_user = ProjectsUser.find_by(project_id: project.id, user_id: current_user.id) %>
+        <% if projects_user&.project_leader? || projects_user&.project_consolidator? %>
+          <%= link_to "Abstract Screening",
+                      project_abstract_screenings_path(project),
+                      title: 'Abstract Screening',
+                      class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
+                      'x-bind:class': "{ 'bg-srdr-tertiary': abstract_screening, '!text-white': abstract_screening }" %>
+          <%= link_to "Full-text Screening",
+                      project_fulltext_screenings_path(project),
+                      title: 'Full-text Screening',
+                      class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
+                      'x-bind:class': "{ 'bg-srdr-tertiary': fulltext_screening, '!text-white': fulltext_screening }" %>
+        <% elsif projects_user&.project_contributor? && !projects_user&.project_leader? && !projects_user&.project_consolidator? %>
+          <%= link_to "Abstract Screening",
+                      work_selection_project_abstract_screenings_path(project),
+                      title: 'Abstract Screening Work Selection',
+                      class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
+                      'x-bind:class': "{ 'bg-srdr-tertiary': abstract_screening, '!text-white': abstract_screening }" %>
+          <%= link_to "Full-text Screening",
+                      work_selection_project_fulltext_screenings_path(project),
+                      title: 'Full-text Screening Work Selection',
+                      class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
+                      'x-bind:class': "{ 'bg-srdr-tertiary': fulltext_screening, '!text-white': fulltext_screening }" %>
+        <% else %>
+          <div style="opacity: 0.3; cursor: not-allowed" class="block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white">Abstract Screening</div>
+          <div style="opacity: 0.3; cursor: not-allowed" class="block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white">Full-text Screening</div>
+        <% end %>
       </div>
-    <% end %>
+    </div>
 
     <!-- Dropdown for Extractions -->
     <div class="relative inline-block text-left"
