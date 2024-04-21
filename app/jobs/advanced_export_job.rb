@@ -16,6 +16,7 @@ class AdvancedExportJob < ApplicationJob
 
   rescue_from(StandardError) do |exception|
     Sentry.capture_exception(exception) if Rails.env.production?
+    debugger if Rails.env.development?
     ExportMailer.notify_simple_export_failure(arguments.first, arguments.second).deliver_later
   end
 
@@ -226,6 +227,8 @@ class AdvancedExportJob < ApplicationJob
       @arms_efps = efpss.find do |efps|
         efps.extraction_forms_projects_section_type_id == 1 && efps.section.name == 'Arms'
       end
+
+      @project.extractions&.each(&:ensure_extraction_form_structure)
       @extractions = @project.extractions
 
       filename = generate_xlsx_and_filename
@@ -390,7 +393,10 @@ class AdvancedExportJob < ApplicationJob
       extractions_lookups = {}
       records_lookups = {}
 
-      linked_eefpss = efps.extractions_extraction_forms_projects_sections.map { |eefps| [eefps.link_to_type1, eefps] }
+      linked_eefpss = efps.extractions_extraction_forms_projects_sections.map do |eefps|
+        eefps.reload
+        [eefps.link_to_type1, eefps]
+      end
       raise 'must be linked, inconsistent data' if linked_eefpss.any? do |link_to_type1, eefps|
                                                      link_to_type1.nil? || eefps.nil?
                                                    end
