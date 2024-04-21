@@ -33,17 +33,12 @@ class MachineLearningStatisticService
                              .order(created_at: :desc)
                              .limit(1)
                              .first
-
     return {} unless latest_ml_model
 
-    scores_with_labels = MlPrediction.joins("LEFT JOIN citations_projects ON citations_projects.id = ml_predictions.citations_project_id")
-                                     .joins("LEFT JOIN abstract_screening_results ON abstract_screening_results.citations_project_id = citations_projects.id")
-                                     .where("ml_predictions.ml_model_id = ?", latest_ml_model.id)
-                                     .where.not("abstract_screening_results.label" => nil)
-                                     .select("abstract_screening_results.label, ml_predictions.score")
+    model_performances = ModelPerformance.where(ml_model_id: latest_ml_model.id)
 
-    label_score_map = scores_with_labels.each_with_object(Hash.new { |h, k| h[k] = [] }) do |prediction, hash|
-      hash[prediction.label] << prediction.score
+    label_score_map = model_performances.each_with_object(Hash.new { |h, k| h[k] = [] }) do |performance, hash|
+      hash[performance.label] << performance.score
     end
 
     label_score_map
