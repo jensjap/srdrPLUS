@@ -20,18 +20,27 @@ class MachineLearningDataSupplyingService
                           .map do |asr|
       citation = asr.citation
       screening_qualifications = asr.citations_project.screening_qualifications
-      next if screening_qualifications.any? { |sq| sq.qualification_type == 'as-rejected' }
+      as_rejected = screening_qualifications.any? { |sq| sq.qualification_type == 'as-rejected' }
       as_accepted = screening_qualifications.any? { |sq| sq.qualification_type == 'as-accepted' }
       next if citation.name.blank? || citation.abstract.blank? || asr.label.nil?
-      next if as_accepted && asr.label != 1
+
+      label_value = if as_rejected
+                      '0'
+                    elsif as_accepted
+                      '1'
+                    else
+                      asr.label == 1 ? '1' : '0'
+                    end
 
       label_data = {
         'ti' => citation.name.gsub('"', "'"),
         'abs' => citation.abstract.gsub('"', "'"),
-        'label' => asr.label == 1 ? '1' : '0',
-        'privileged' => asr.privileged || as_accepted
+        'label' => label_value,
+        'privileged' => asr.privileged || as_accepted || as_rejected
       }
     end.compact
+
+    return project_data
 
     filtered_data = {}
     unique_data = []

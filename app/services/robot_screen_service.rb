@@ -45,14 +45,23 @@ class RobotScreenService
     end
   end
 
-  def predict(timestamp)
+  def get_predictions(timestamp)
     data = MachineLearningDataSupplyingService.get_unlabel_abstract(@project_id)
-
     predict_url = "#{@url}/predict/#{@method}/#{@project_id}"
     response_hash = send_post_request(predict_url, { input_citations: data, timestamp: timestamp })
     predictions = response_hash['predictions']
     ml_model = @project.ml_models.find_by(timestamp: timestamp)
+    return data, predictions, ml_model
+  end
 
+  def check_predictions(predictions, score_threshold, percentage_threshold)
+    total_predictions = predictions.size
+    high_score_count = predictions.count { |score| score >= score_threshold }
+    percentage = (high_score_count.to_f / total_predictions) * 100
+    percentage < percentage_threshold
+  end
+
+  def save_predictions(data, predictions, ml_model)
     data.each_with_index do |citation, index|
       citation_id = citation['citation_id']
       score = predictions[index]

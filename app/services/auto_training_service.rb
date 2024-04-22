@@ -6,32 +6,47 @@ class AutoTrainingService
     Project.all.each do |project|
       next unless project.abstract_screening_results.exists?
 
-      labeled_data = MachineLearningDataSupplyingService.get_labeled_abstract_since_last_train(project.id)
+      all_labeled_data = MachineLearningDataSupplyingService.get_labeled_abstract(project.id)
+      new_labeled_data = MachineLearningDataSupplyingService.get_labeled_abstract_since_last_train(project.id)
+      total_citations_count = project.citations.count
 
       retries = 0
 
       begin
-        new_labels_count = labeled_data.size
+        new_labels_count = new_labeled_data.size
+        all_labels_count = all_labeled_data.size
         last_train_time = project.ml_models_projects.order(created_at: :desc).first&.created_at
         days_since_last_train = (Time.zone.now - (last_train_time || Time.zone.at(0))) / 1.day
+        labeled_percentage = all_labels_count.to_f / total_citations_count
 
         if new_labels_count >= x || (new_labels_count > 0 && days_since_last_train >= 7)
-          robot_service = RobotScreenService.new(project.id, URL)
-          train_result = robot_service.partial_train_and_predict(80)
+          while retries < MAX_RETRIES
+            robot_service = RobotScreenService.new(project.id, URL)
+            train_result = robot_service.partial_train_and_predict(80)
 
-          if train_result.include? "Training complete"
-            timestamp = train_result.match(/model timestamp: (\S+)\)/)[1]
-            robot_service.predict(timestamp)
+            if train_result.include? "Training complete"
+              timestamp = train_result.match(/model timestamp: (\S+)\)/)[1]
+              data, predictions, ml_model = robot_service.get_predictions(timestamp)
+
+              if labeled_percentage < 0.1
+                robot_service.save_predictions(timestamp)
+                break
+              else
+                if robot_service.check_predictions(predictions, 0.9, 20)
+                  robot_service.save_predictions(data, predictions, ml_model)
+                  break
+                else
+                  retries += 1
+                end
+              end
+            else
+              retries += 1
+            end
           end
         end
 
       rescue => e
-        retries += 1
-        if retries < MAX_RETRIES
-          retry
-        else
-          raise StandardError.new("Error for project #{project.id}: #{e.message}")
-        end
+        raise StandardError.new("Error for project #{project.id}: #{e.message}")
       end
     end
   end
