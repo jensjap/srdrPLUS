@@ -66881,10 +66881,12 @@ function __guardMethod__(obj, methodName, transform) {
       });
       dt.draw();
       $(document).on('click', 'table.extractions-list .delete-btn', function(event) {
-        var url;
+        var extraction_id, extraction_name, url;
         event.preventDefault();
         url = $(this).data('delete-url');
-        return Alpine.store('deleteConfirmation').openModal(url);
+        extraction_id = $(this).data('extraction-id') || '';
+        extraction_name = $(this).data('extraction-name') || '';
+        return Alpine.store('deleteConfirmation').openAlertModal(url, extraction_id, extraction_name);
       });
       last_col = 6;
       $('table.extractions-list').on('click', '.table-sortable', function(e) {
