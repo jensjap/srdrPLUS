@@ -114,7 +114,9 @@ documentCode = ->
     $(document).on 'click', 'table.extractions-list .delete-btn', (event) ->
       event.preventDefault()
       url = $(this).data('delete-url')
-      Alpine.store('deleteConfirmation').openModal(url)
+      extraction_id = $(this).data('extraction-id') || ''
+      extraction_name = $(this).data('extraction-name') || ''
+      Alpine.store('deleteConfirmation').openAlertModal(url, extraction_id, extraction_name)
 
     last_col = 6
     $('table.extractions-list').on('click', '.table-sortable', (e) ->
