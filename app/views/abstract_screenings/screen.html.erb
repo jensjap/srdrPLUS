@@ -1175,6 +1175,8 @@
         const reader = new FileReader();
         reader.onload = async (e) => {
           const groups = JSON.parse(e.target.result);
+          const updatePromises = [];
+
           for (const group of groups) {
             if (!group.name || !group.color) {
               alert('Missing required fields!');
@@ -1188,18 +1190,39 @@
 
             const newGroupId = await this.updateAndFetchNewGroupId(group);
             if (!newGroupId) continue;
+            group.id = newGroupId;
 
             if (group.words && group.words.length > 0) {
               for (const word of group.words) {
                 if (word) {
-                  await this.sendWw(word, 0, null, false, newGroupId, group.color, group.name, null, false);
+                  const updatePromise = this.sendWw(word, 0, null, false, newGroupId, group.color, group.name, null, false);
+                  updatePromises.push(updatePromise);
                 }
               }
             }
           }
+
+          await Promise.all(updatePromises);
+          const missingWords = this.collectMissingWords(groups);
+          if (missingWords.length > 0) {
+            alert(`Some terms were not updated successfully. The terms that failed to update may already exist in another group: ${missingWords.join(', ')}`);
+          }
         };
         reader.readAsText(file);
-        this.resetState();
+        event.target.value = '';
+      },
+
+      collectMissingWords(groups) {
+        const missingWords = [];
+        groups.forEach(group => {
+          const groupInState = this.groups.find(g => g.id === group.id);
+          group.words.forEach(word => {
+            if (!groupInState || !groupInState.words.some(w => w.name === word)) {
+              missingWords.push(word);
+            }
+          });
+        });
+        return missingWords;
       },
 
       async updateAndFetchNewGroupId(group) {
