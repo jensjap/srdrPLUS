@@ -1111,8 +1111,7 @@ class ConsolidationService
                     :records,
                     { timepoint: :timepoint_name,
                       extractions_extraction_forms_projects_sections_type1: [
-                        :type1,
-                        { extractions_extraction_forms_projects_section: :extraction }
+                        :type1
                       ] }
                   ] }
                 ] }
