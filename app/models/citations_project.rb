@@ -166,15 +166,6 @@ class CitationsProject < ApplicationRecord
     }
   end
 
-  def formatted_publication_date(date)
-    return nil unless date
-    if date.match(/\A\d{4}-\d{2}-\d{2}\z/)
-      date
-    else
-      nil
-    end
-  end
-
   def qualification(prefix)
     qualification = screening_qualifications.find { |sq| sq.qualification_type[0..1] == prefix }
     return '.....' unless qualification
