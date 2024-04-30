@@ -143,14 +143,6 @@ class AbstractScreeningService < BaseScreeningService
       group.map do |(_citation_project_id, screening), results|
         next if results.nil? || results.empty?
 
-        # results.each do |result|
-        #   qualification = ScreeningQualification.find_by(citations_project_id: result.citations_project_id)
-        #   if qualification.present?
-        #     original_labels[result] = result.label unless original_labels.key?(result)
-        #     result.label = qualification.qualification_type == 'as-accepted' ? 1 : -1
-        #   end
-        # end
-
         # Fetch all ScreeningQualification records for the citations_project_ids in results
         qualifications_map = ScreeningQualification
                              .where(citations_project_id: results.pluck(:citations_project_id))

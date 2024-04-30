@@ -391,13 +391,6 @@ class ProjectsController < ApplicationController
     @latest_model_time = MachineLearningStatisticService.latest_model_time(@project.id)
     @rejection_counter = AbstractScreeningService.count_recent_consecutive_rejects(@project)
     @total_citation_number = @project.citations.count()
-    # @unscreened_citation_number = @project
-    #                               .citations
-    #                               .includes(:citations_projects)
-    #                               .reject do |citation|
-    #                                 CitationsProject.find_by(citation_id: citation.id, project_id: @project.id)
-    #                                 .abstract_screening_results.present?
-    #                               end.count
     @unscreened_citation_number = Citation
                                   .joins(:citations_projects)
                                   .where(citations_projects: { project_id: @project.id })
