@@ -20,6 +20,34 @@ class FhirResourceService
       }]
     end
 
+    def build_full_url(resources:, relative_path:)
+      base_url = 'https://srdrplus.ahrq.gov/api/v3/'
+      urls = resources.map do |resource|
+        id = resource['id']
+        extracted_id = id.split('-').last
+        "#{base_url}#{relative_path}#{extracted_id}"
+      end
+      urls
+    end
+
+    def get_list(fhir_objs:)
+      fhir_list = {
+        'resourceType' => 'List',
+        'contained' => [],
+        'status' => 'current',
+        'mode' => 'snapshot',
+        'entry' => []
+      }
+
+      fhir_objs.each do |fhir_obj|
+        next if fhir_obj.blank?
+        fhir_list['contained'] << fhir_obj
+        fhir_list['entry'] << { 'item' => { 'reference' => "##{fhir_obj['id']}" } }
+      end
+
+      fhir_list
+    end
+
     def get_bundle(fhir_objs:, type:, link_info: nil, full_urls: nil)
       full_urls ||= []
 
@@ -150,8 +178,7 @@ class FhirResourceService
       srdrplus_type:,
       status:,
       type1_id:,
-      contained_items:,
-      questionnaire:,
+      questionnaire_url:,
       items:,
       type1_display: nil
     )
@@ -160,8 +187,7 @@ class FhirResourceService
         'status' => status,
         'id' => "#{id_prefix}-#{srdrplus_id}-type1id-#{type1_id}",
         'identifier' => build_identifier(srdrplus_type, srdrplus_id),
-        'contained' => contained_items,
-        'questionnaire' => questionnaire,
+        'questionnaire' => questionnaire_url,
         'item' => items,
       }
 

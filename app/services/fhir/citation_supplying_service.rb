@@ -18,7 +18,8 @@ class CitationSupplyingService
     ]
 
     citations = citations.map { |citation| create_fhir_obj(citation) }
-    bundle = FhirResourceService.get_bundle(fhir_objs: citations, type: 'collection', link_info: link_info)
+    full_urls = FhirResourceService.build_full_url(resources: citations, relative_path: 'citations/')
+    bundle = FhirResourceService.get_bundle(fhir_objs: citations, type: 'collection', link_info: link_info, full_urls: full_urls)
 
     bundle
   end

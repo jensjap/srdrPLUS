@@ -9,17 +9,13 @@ class SdMetaDataSupplyingService
     ]
 
     sd_meta_data_in_fhir = sd_meta_data_ids.map { |id| find_by_sd_meta_data_id(id) }
-    FhirResourceService.get_bundle(fhir_objs: sd_meta_data_in_fhir, type: 'collection', link_info: link_info)
+    full_urls = FhirResourceService.build_full_url(resources: sd_meta_data_in_fhir, relative_path: 'sd_meta_data/')
+    FhirResourceService.get_bundle(fhir_objs: sd_meta_data_in_fhir, type: 'collection', link_info: link_info, full_urls: full_urls)
   end
 
   def find_by_sd_meta_data_id(sd_meta_data_id)
     sd_meta_data = SdMetaDatum.find(sd_meta_data_id)
     sd_outcomes = get_sd_outcomes(sd_meta_data)
-
-    kq_full_url = get_identifier_values(sd_meta_data.sd_key_questions, 'SdKeyQuestion')
-    pico_full_url = get_identifier_values(sd_meta_data.sd_picods, 'SdPicod')
-    ss_full_url = get_identifier_values(sd_meta_data.sd_search_strategies, 'SdSearchStrategy')
-    outcome_full_url = get_identifier_values(sd_outcomes, 'SdOutcome')
 
     sd_key_questions_in_fhir = sd_meta_data.sd_key_questions.map {|kq| create_key_question_fhir_obj(kq)}
     sd_picod_in_fhir = sd_meta_data.sd_picods.map {|pico| create_picodts_fhir_obj(pico)}
@@ -27,8 +23,13 @@ class SdMetaDataSupplyingService
     sd_outcome_in_fhir = sd_outcomes.map {|outcome| create_outcome_fhir_obj(outcome)}
     sd_meta_data_in_fhir = create_composition_fhir_obj(sd_meta_data)
 
+    kq_full_url = FhirResourceService.build_full_url(resources: sd_picod_in_fhir, relative_path: "sd_meta_data/#{sd_meta_data_id}/sd_key_questions/")
+    pico_full_url = FhirResourceService.build_full_url(resources: sd_picod_in_fhir, relative_path: "sd_meta_data/#{sd_meta_data_id}/sd_picods/")
+    ss_full_url = FhirResourceService.build_full_url(resources: sd_picod_in_fhir, relative_path: "sd_meta_data/#{sd_meta_data_id}/sd_search_strategies/")
+    outcome_full_url = FhirResourceService.build_full_url(resources: sd_picod_in_fhir, relative_path: "sd_meta_data/#{sd_meta_data_id}/sd_outcomes/")
+
     combination_full_url = pico_full_url.dup + kq_full_url.dup + ss_full_url.dup + outcome_full_url.dup
-    combination_full_url.unshift(nil)
+    combination_full_url.unshift("https://srdrplus.ahrq.gov/api/v3/sd_meta_data/#{sd_meta_data_id}/composition")
     combination = sd_picod_in_fhir.dup + sd_key_questions_in_fhir.dup + sd_search_strategy_in_fhir.dup + sd_outcome_in_fhir.dup
     combination.unshift(sd_meta_data_in_fhir)
     bundle = FhirResourceService.get_bundle(fhir_objs: combination, type: 'document', full_urls: combination_full_url)
