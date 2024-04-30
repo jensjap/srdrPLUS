@@ -75,6 +75,62 @@ class AllResourceSupplyingService
     bundle
   end
 
+  def get_composition_by_project_id(id)
+    project = Project.find(id)
+    project_info = {
+      'Project Attribution' => project.attribution,
+      'Project Authors of Report' => project.authors_of_report,
+      'Project Methodology Description' => project.methodology_description,
+      'Project Prospero Registration Id' => project.prospero,
+      'Project Doi' => project.doi,
+      'Project Note' => project.notes,
+      'Project Funding Source' => project.funding_source,
+    }
+
+    project_info['Project Description'] = project.description if !project.description.blank?
+
+    if !project.mesh_descriptors.blank?
+      project_info['Project Mesh'] ||= []
+      project.mesh_descriptors.each do |mesh|
+        project_info['Project Mesh'] << mesh.name
+      end
+    end
+
+    project_composition = build_composition(project)
+
+    project_info.each do |title, value|
+      next if value.blank?
+
+      value = [value] unless value.is_a? Array
+      value.each do |v|
+        add_section(project_composition, title, v)
+      end
+    end
+
+    citations = project.citations.includes(:journal).all
+    key_questions = project.key_questions_projects.all
+    extractions = project.extractions
+    sd_meta_data = project.sd_meta_data
+
+    forms = []
+    project.extraction_forms_projects.each do |efp|
+      efp.extraction_forms_projects_sections.each do |efps|
+        efps_in_fhir = ExtractionFormsProjectsSectionSupplyingService.new.find_by_extraction_forms_projects_section_id(efps.id)
+        if !efps_in_fhir.blank?
+          forms << efps
+        end
+      end
+    end
+
+    add_reference_section(project_composition, 'Citations', citations, 'Citation', 'Citation') if !citations.blank?
+    add_reference_section(project_composition, 'KeyQuestions', key_questions, 'KeyQuestion', 'EvidenceVariable') if !key_questions.blank?
+    add_reference_section(project_composition, 'ExtractionFormsProjectsSections', forms, 'ExtractionFormsProjectsSection', 'Questionnaire') if !forms.blank?
+    add_reference_section(project_composition, 'Extractions', extractions, 'Extraction', 'Bundle') if !extractions.blank?
+    add_reference_section(project_composition, 'SdMetaData', sd_meta_data, 'SdMetaData', 'Bundle') if !sd_meta_data.blank?
+
+    project_composition
+  end
+
   private
 
   def build_composition(project)

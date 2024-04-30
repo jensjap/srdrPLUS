@@ -114,6 +114,7 @@ Rails.application.routes.draw do
       resources :projects, shallow: true, only: [:show] do
         member do
           get 'process_and_email'
+          get 'composition'
         end
         resources :citations, only: %i[index show]
         resources :key_questions, only: %i[index show]
