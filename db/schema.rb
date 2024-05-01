@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_03_000000) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_01_065524) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -30,6 +30,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_03_000000) do
     t.datetime "updated_at", null: false
     t.boolean "privileged", default: false
     t.boolean "form_complete", default: false, null: false
+    t.index ["abstract_screening_id", "user_id", "citations_project_id", "privileged"], name: "unique_abstract_screening_results", unique: true
     t.index ["abstract_screening_id"], name: "index_abstract_screening_results_on_abstract_screening_id"
     t.index ["citations_project_id"], name: "asr_on_cp"
     t.index ["user_id"], name: "asr_on_u"
@@ -737,6 +738,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_03_000000) do
     t.boolean "privileged", default: false
     t.boolean "form_complete", default: false, null: false
     t.index ["citations_project_id"], name: "fsr_on_cp"
+    t.index ["fulltext_screening_id", "user_id", "citations_project_id", "privileged"], name: "unique_fulltext_screening_results", unique: true
     t.index ["fulltext_screening_id"], name: "index_fulltext_screening_results_on_fulltext_screening_id"
     t.index ["user_id"], name: "fsr_on_u"
   end
@@ -2104,7 +2106,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_03_000000) do
     t.index ["wac_id"], name: "index_wacs_bacs_rssms_on_wac_id"
   end
 
-  create_table "word_groups", charset: "utf8mb3", force: :cascade do |t|
+  create_table "word_groups", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "color"
     t.bigint "abstract_screening_id", null: false
