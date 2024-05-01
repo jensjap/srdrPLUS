@@ -26,6 +26,11 @@ class Api::V3::SdMetaDataController < Api::V3::BaseController
     end
   end
 
+  def composition
+    @composition_data = SdMetaDataSupplyingService.new.get_composition_by_sd_meta_data_id(params[:id])
+    render json: @composition_data
+  end
+
   private
 
   def set_project

@@ -124,6 +124,10 @@ class ProjectPolicy < ApplicationPolicy
     project_leader?
   end
 
+  def composition?
+    project_leader?
+  end
+
   def export_assignments_and_mappings?
     project_leader?
   end

@@ -16,7 +16,8 @@ class KeyQuestionSupplyingService
       }
     ]
     key_questions = key_questions.map { |key_question| create_fhir_obj(key_question) }
-    bundle = FhirResourceService.get_bundle(fhir_objs: key_questions, type: 'collection', link_info: link_info)
+    full_urls = FhirResourceService.build_full_url(resources: key_questions, relative_path: 'key_questions/')
+    bundle = FhirResourceService.get_bundle(fhir_objs: key_questions, type: 'collection', link_info: link_info, full_urls: full_urls)
 
     bundle
   end

@@ -2,7 +2,7 @@ class ExtractionFormsProjectsSectionSupplyingService
 
   def find_by_extraction_forms_project_id(id)
     efp = ExtractionFormsProject.find(id)
-    efpss = efp.extraction_forms_projects_sections.map { |efps| create_fhir_obj(efps) }
+    efpss = efp.extraction_forms_projects_sections.map { |efps| create_fhir_obj(efps) }.compact
     link_info = [
       {
         'relation' => 'tag',
@@ -13,7 +13,8 @@ class ExtractionFormsProjectsSectionSupplyingService
         'url' => 'doc/fhir/extraction_form.txt'
       }
     ]
-    bundle = FhirResourceService.get_bundle(fhir_objs: efpss, type: 'collection', link_info: link_info)
+    full_urls = FhirResourceService.build_full_url(resources: efpss, relative_path: 'extraction_forms_projects_sections/')
+    bundle = FhirResourceService.get_bundle(fhir_objs: efpss, type: 'collection', link_info: link_info, full_urls: full_urls)
 
     bundle
   end
