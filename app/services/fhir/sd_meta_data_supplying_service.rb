@@ -23,10 +23,10 @@ class SdMetaDataSupplyingService
     sd_outcome_in_fhir = sd_outcomes.map {|outcome| create_outcome_fhir_obj(outcome)}
     sd_meta_data_in_fhir = create_composition_fhir_obj(sd_meta_data)
 
-    kq_full_url = FhirResourceService.build_full_url(resources: sd_picod_in_fhir, relative_path: "sd_meta_data/#{sd_meta_data_id}/sd_key_questions/")
-    pico_full_url = FhirResourceService.build_full_url(resources: sd_picod_in_fhir, relative_path: "sd_meta_data/#{sd_meta_data_id}/sd_picods/")
-    ss_full_url = FhirResourceService.build_full_url(resources: sd_picod_in_fhir, relative_path: "sd_meta_data/#{sd_meta_data_id}/sd_search_strategies/")
-    outcome_full_url = FhirResourceService.build_full_url(resources: sd_picod_in_fhir, relative_path: "sd_meta_data/#{sd_meta_data_id}/sd_outcomes/")
+    kq_full_url = FhirResourceService.build_full_url(resources: sd_key_questions_in_fhir, relative_path: "sd_key_questions/")
+    pico_full_url = FhirResourceService.build_full_url(resources: sd_picod_in_fhir, relative_path: "sd_picods/")
+    ss_full_url = FhirResourceService.build_full_url(resources: sd_search_strategy_in_fhir, relative_path: "sd_search_strategies/")
+    outcome_full_url = FhirResourceService.build_full_url(resources: sd_outcome_in_fhir, relative_path: "sd_outcomes/")
 
     combination_full_url = pico_full_url.dup + kq_full_url.dup + ss_full_url.dup + outcome_full_url.dup
     combination_full_url.unshift("https://srdrplus.ahrq.gov/api/v3/sd_meta_data/#{sd_meta_data_id}/composition")
@@ -37,6 +37,41 @@ class SdMetaDataSupplyingService
     bundle['id'] = "7-#{sd_meta_data_id}"
 
     bundle
+  end
+
+  def get_composition_by_sd_meta_data_id(id)
+    sd_meta_data = SdMetaDatum.find(id)
+    composition = create_composition_fhir_obj(sd_meta_data)
+
+    composition
+  end
+
+  def get_sd_key_question_by_id(id)
+    sd_key_question = SdKeyQuestion.find(id)
+    sd_key_question_in_fhir = create_key_question_fhir_obj(sd_key_question)
+
+    sd_key_question_in_fhir
+  end
+
+  def get_sd_picod_by_id(id)
+    sd_picod = SdPicod.find(id)
+    sd_picod_in_fhir = create_picodts_fhir_obj(sd_picod)
+
+    sd_picod_in_fhir
+  end
+
+  def get_sd_search_strategy_by_id(id)
+    sd_search_strategy = SdSearchStrategy.find(id)
+    sd_search_strategy_in_fhir = create_search_strategy_fhir_obj(sd_search_strategy)
+
+    sd_search_strategy_in_fhir
+  end
+
+  def get_sd_outcome_by_id(id)
+    sd_outcome = SdOutcome.find(id)
+    sd_outcome_in_fhir = create_outcome_fhir_obj(sd_outcome)
+
+    sd_outcome_in_fhir
   end
 
   private

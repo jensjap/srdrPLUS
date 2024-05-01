@@ -119,10 +119,20 @@ Rails.application.routes.draw do
         resources :citations, only: %i[index show]
         resources :key_questions, only: %i[index show]
         resources :extractions, only: %i[index show]
-        resources :sd_meta_data, only: %i[index show]
+        resources :sd_meta_data, only: %i[index]
       end
       resources :extraction_forms_projects, shallow: true, only: [] do
         resources :extraction_forms_projects_sections, only: %i[index show]
+      end
+
+      resources :sd_meta_data, shallow: true, only: [:show] do
+        resources :sd_key_questions, only: %i[show]
+        resources :sd_picods, only: %i[show]
+        resources :sd_search_strategies, only: %i[show]
+        resources :sd_outcomes, only: %i[show]
+        member do
+          get 'composition'
+        end
       end
     end # END namespace :v3 do
 
