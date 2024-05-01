@@ -3,6 +3,7 @@ class ExtractionSupplyingService
   def find_by_project_id(id)
     project = Project.includes(:extractions).find(id)
     extractions = project.extractions.map { |extraction| find_by_extraction_id(extraction.id) }
+    extractions = extractions.select { |element| !element["entry"].empty? }
 
     link_info = [
       {
@@ -14,7 +15,8 @@ class ExtractionSupplyingService
         'url' => 'doc/fhir/extraction.txt'
       }
     ]
-    bundle = FhirResourceService.get_bundle(fhir_objs: extractions, type: 'collection', link_info: link_info)
+    full_urls = FhirResourceService.build_full_url(resources: extractions, relative_path: 'extractions/')
+    bundle = FhirResourceService.get_bundle(fhir_objs: extractions, type: 'collection', link_info: link_info, full_urls: full_urls)
 
     bundle
   end
@@ -33,22 +35,13 @@ class ExtractionSupplyingService
       efps.extractions_extraction_forms_projects_sections.select { |eefps| eefps.extraction_id == id.to_i }
     end
 
-    fhir_extraction_sections = extraction_sections.map { |extraction_section| create_fhir_obj(extraction_section) }
+    fhir_extraction_sections = extraction_sections.map { |extraction_section| create_fhir_obj(extraction_section) }.flatten
 
-    link_info = [
-      {
-        'relation' => 'tag',
-        'url' => "api/v3/extractions/#{id}"
-      },
-      {
-        'relation' => 'service-doc',
-        'url' => 'doc/fhir/extraction.txt'
-      }
-    ]
-    bundle = FhirResourceService.get_bundle(fhir_objs: fhir_extraction_sections, type: 'collection', link_info: link_info)
-    bundle['identifier'] = FhirResourceService.build_identifier('Extraction', id)[0]
+    fhir_list = FhirResourceService.get_list(fhir_objs: fhir_extraction_sections)
+    fhir_list['identifier'] = FhirResourceService.build_identifier('Extraction', id)[0]
+    fhir_list['id'] = "13-#{id}"
 
-    bundle
+    fhir_list
   end
 
   private
@@ -57,8 +50,6 @@ class ExtractionSupplyingService
     form = ExtractionFormsProjectsSection.find(raw.extraction_forms_projects_section_id)
 
     case form.extraction_forms_projects_section_type_id
-    #when 1
-    #  create_evidence_variables(form, raw)
     when 2
       case raw.status['name']
       when 'Draft'
@@ -66,9 +57,6 @@ class ExtractionSupplyingService
       when 'Completed'
         status = 'completed'
       end
-
-      question = ExtractionFormsProjectsSectionSupplyingService.new.find_by_extraction_forms_projects_section_id(form.id)
-      return if question.blank?
 
       eefpss = []
       eefpsqrcf_grouped_by_type1 = raw.extractions_extraction_forms_projects_sections_question_row_column_fields.group_by { |item| item["extractions_extraction_forms_projects_sections_type1_id"] }
@@ -135,7 +123,7 @@ class ExtractionSupplyingService
         next if eefps_items.empty?
 
         merged_items = merge_questionnaire_response_items(eefps_items)
-        eefps = create_eefps(form, raw, status, eefps_type1_id, eefpsqrcf_grouped_by_type1, question, merged_items)
+        eefps = create_eefps(form, raw, status, eefps_type1_id, eefpsqrcf_grouped_by_type1, form.id, merged_items)
         next if eefps.nil?
 
         eefpss << eefps
@@ -145,13 +133,7 @@ class ExtractionSupplyingService
         return
       end
 
-      link_info = [
-        {
-          'relation' => 'service-doc',
-          'url' => 'doc/fhir/questionnaire_response_group_by_type1.txt'
-        }
-      ]
-      return FhirResourceService.get_bundle(fhir_objs: eefpss, type: 'collection', link_info: link_info)
+      return eefpss
 
     when 3
       extraction = Extraction.find(raw.extraction_id)
@@ -338,11 +320,8 @@ class ExtractionSupplyingService
           merged_evidences = merge_evidence_by_variable_definition(evidences)
           merged_evidences = merge_statistics(merged_evidences)
           merged_evidences = FhirResourceService.deep_clean(merged_evidences)
-          link_info_evidence = [{
-            'relation' => 'service-doc',
-            'url' => 'doc/fhir/extraction.txt'
-          }]
-          return FhirResourceService.get_bundle(fhir_objs: merged_evidences, type: 'collection', link_info: link_info_evidence)
+
+          return merged_evidences
         end
 
       else
@@ -417,11 +396,8 @@ class ExtractionSupplyingService
           merged_evidences = merge_evidence_by_variable_definition(evidences)
           merged_evidences = merge_statistics(merged_evidences)
           merged_evidences = FhirResourceService.deep_clean(merged_evidences)
-          link_info_evidence = [{
-            'relation' => 'service-doc',
-            'url' => 'doc/fhir/extraction.txt'
-          }]
-          return FhirResourceService.get_bundle(fhir_objs: merged_evidences, type: 'collection', link_info: link_info_evidence)
+
+          return merged_evidences
         end
       end
     end
@@ -748,7 +724,8 @@ class ExtractionSupplyingService
     evidence
   end
 
-  def create_eefps(form, raw, status, eefps_type1_id, eefpsqrcf_grouped_by_type1, question, items)
+  def create_eefps(form, raw, status, eefps_type1_id, eefpsqrcf_grouped_by_type1, question_id, items)
+    base_url = 'https://srdrplus.ahrq.gov/api/v3/extraction_forms_projects_sections/'
     all_blank = eefpsqrcf_grouped_by_type1.keys.all?(&:blank?)
     return nil if eefps_type1_id.blank? && !all_blank
 
@@ -764,40 +741,10 @@ class ExtractionSupplyingService
       srdrplus_type: 'ExtractionsExtractionFormsProjectsSection',
       status: status,
       type1_id: type1_id,
-      contained_items: [question],
-      questionnaire: "##{question['id']}",
+      questionnaire_url: "#{base_url}#{question_id}",
       items: items,
       type1_display: type1_display
     )
-  end
-
-  def create_evidence_variables(form, raw)
-    status_mapping = { 'Draft' => 'draft', 'Completed' => 'active' }
-    status = status_mapping[raw.status['name']]
-    return unless status
-
-    evidence_variables = raw.extractions_extraction_forms_projects_sections_type1s.map do |row|
-      type1 = Type1.find(row['type1_id'])
-      FhirResourceService.get_evidence_variable(
-        title: type1.name,
-        description: type1.description,
-        id_prefix: '6',
-        srdrplus_id: row['type1_id'].to_s,
-        srdrplus_type: 'Type1',
-        status: status
-      )
-    end
-
-    return if evidence_variables.empty?
-
-    link_info = [
-      {
-        'relation' => 'service-doc',
-        'url' => 'doc/fhir/evidence_variable.txt'
-      }
-    ]
-
-    FhirResourceService.get_bundle(fhir_objs: evidence_variables, type: 'collection', link_info: link_info)
   end
 
   def get_followups(raw)

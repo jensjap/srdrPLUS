@@ -1,5 +1,5 @@
 class Api::V3::ProjectsController < Api::V3::BaseController
-  before_action :set_project, only: [:show, :process_and_email]
+  before_action :set_project, only: [:show, :process_and_email, :composition]
 
   def show
     authorize(@project)
@@ -18,6 +18,12 @@ class Api::V3::ProjectsController < Api::V3::BaseController
     authorize(@project)
     ProcessAndEmailFhirJob.perform_later(@project.id, current_user.email)
     render 'process_and_email'
+  end
+
+  def composition
+    authorize(@project)
+    @composition_data = AllResourceSupplyingService.new.get_composition_by_project_id(@project.id)
+    render json: @composition_data
   end
 
   private
