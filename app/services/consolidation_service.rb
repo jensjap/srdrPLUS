@@ -1236,7 +1236,68 @@ class ConsolidationService
           )
         end
       when 2
+        lookup = {}
+        eefpsqrcfs = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField
+                     .includes(
+                       :extractions_extraction_forms_projects_section,
+                       { question_row_column_field: { question_row_column: { question_row: :question } } }
+                     )
+                     .where(extractions_extraction_forms_projects_sections: { id: eefpss2.map(&:id) })
+        linked_efps_id = linked_eefps.extraction_forms_projects_section_id
+        linked_eefps = eefpss2.first.link_to_type1
+        eefpsqrcfs.each do |eefpsqrcf|
+          record = eefpsqrcf.records.order(id: :desc).first
+          next if record.nil? || record.name.nil?
+
+          next if linked_eefps.nil?
+
+          linked_eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+            type1 = eefpst1.type1
+            comparison_array = []
+            comparison_array << eefpst1.type1_type_id # 0
+            comparison_array << eefpst1.units # 1
+            comparison_array << type1.name # 2
+            comparison_array << type1.description # 3
+            comparison_array << linked_efps_id # 4
+            comparison_array << eefpsqrcf.question_row_column_field_id # 5
+            comparison_array << record.name # 6
+
+            lookup[comparison_array] ||= 0
+            lookup[comparison_array] += 1
+          end
+        end
+        lookup.each do |comparison_array, count|
+          next unless count == eefpss2.count
+
+          type1_type_id = comparison_array[0]
+          units = comparison_array[1]
+          type1 = Type1.find_by(name: comparison_array[2], description: comparison_array[3])
+          ceefps =
+            ExtractionsExtractionFormsProjectsSection
+            .find_by(extraction_forms_projects_section_id: efps_id, extraction: consolidated_extraction)
+          linked_ceefps =
+            ExtractionsExtractionFormsProjectsSection
+            .find_by(extraction_forms_projects_section_id: comparison_array[4], extraction: consolidated_extraction)
+          eefpst1 =
+            ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by(
+              type1_type_id:,
+              extractions_extraction_forms_projects_section: linked_ceefps,
+              type1:,
+              units:
+            )
+          eefpsqrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(
+            extractions_extraction_forms_projects_sections_type1_id: eefpst1,
+            extractions_extraction_forms_projects_section_id: ceefps,
+            question_row_column_field_id: comparison_array[5]
+          )
+          record = Record.find_or_create_by(
+            recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField',
+            recordable_id: eefpsqrcf.id
+          )
+          record.update(name: comparison_array[6]) if record.name != comparison_array[6]
+        end
       when 3
+        # TODO
       end
     end
 
