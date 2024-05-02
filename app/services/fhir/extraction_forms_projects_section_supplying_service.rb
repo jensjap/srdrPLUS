@@ -23,11 +23,13 @@ class ExtractionFormsProjectsSectionSupplyingService
     efps = ExtractionFormsProjectsSection.includes(
       questions: [{
         question_rows: [{
-          question_row_columns: [{
-            question_row_columns_question_row_column_options: [
-              :followup_field, :dependencies
-            ]
-          }]
+          question_row_columns: [
+            :question_row_column_type,
+            {
+              question_row_columns_question_row_column_options:
+                %i[followup_field dependencies]
+            }
+          ]
         }]
       }]
     ).find(id)

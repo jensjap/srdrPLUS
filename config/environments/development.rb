@@ -2,6 +2,10 @@ Rails.application.configure do
   # config.after_initialize do
   #   Bullet.enable = true
   #   Bullet.bullet_logger = true
+  #   Bullet.unused_eager_loading_enable = false
+  #   Bullet.counter_cache_enable        = false
+  #   Bullet.add_footer = true
+  #   Bullet.raise = true
   # end
 
   # Settings specified here will take precedence over those in config/application.rb.

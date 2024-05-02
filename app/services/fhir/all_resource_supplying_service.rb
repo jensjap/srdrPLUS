@@ -1,7 +1,14 @@
 class AllResourceSupplyingService
 
   def find_by_project_id(id)
-    project = Project.find(id)
+    project = Project
+              .includes(:mesh_descriptors)
+              .includes(:citations)
+              .includes(:key_questions_projects)
+              .includes(:extractions)
+              .includes(:sd_meta_data)
+              .includes(extraction_forms_projects: :extraction_forms_projects_sections)
+              .find(id)
     project_info = {
       'Project Attribution' => project.attribution,
       'Project Authors of Report' => project.authors_of_report,
