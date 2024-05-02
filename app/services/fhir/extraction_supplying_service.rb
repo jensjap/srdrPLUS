@@ -25,17 +25,20 @@ class ExtractionSupplyingService
     extraction = Extraction.includes(
       extractions_extraction_forms_projects_sections: [
         :extraction_forms_projects_section,
-        { extractions_extraction_forms_projects_sections_type1s: :type1 },
-        { extractions_extraction_forms_projects_sections_question_row_column_fields: :question_row_column_field },
-        { extractions_extraction_forms_projects_sections_followup_fields: :followup_field }
+        { status: :statusings },
+        { extractions_extraction_forms_projects_sections_type1s:
+          [:type1, :extractions_extraction_forms_projects_sections_type1_rows, { status: :statusings }] },
+        { extractions_extraction_forms_projects_sections_followup_fields: :followup_field },
+        { extractions_extraction_forms_projects_sections_question_row_column_fields:
+          %i[extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options question_row_column_field records] }
       ]
     ).find(id)
 
-    extraction_sections = extraction.extraction_forms_projects_sections.first.extraction_forms_project.extraction_forms_projects_sections.flat_map do |efps|
-      efps.extractions_extraction_forms_projects_sections.select { |eefps| eefps.extraction_id == id.to_i }
-    end
+    # extraction_sections = extraction.extraction_forms_projects_sections.first.extraction_forms_project.extraction_forms_projects_sections.flat_map do |efps|
+    #   efps.extractions_extraction_forms_projects_sections.select { |eefps| eefps.extraction_id == id.to_i }
+    # end
 
-    fhir_extraction_sections = extraction_sections.map { |extraction_section| create_fhir_obj(extraction_section) }.flatten
+    fhir_extraction_sections = extraction.extractions_extraction_forms_projects_sections.map { |extraction_section| create_fhir_obj(extraction_section) }.flatten
 
     fhir_list = FhirResourceService.get_list(fhir_objs: fhir_extraction_sections)
     fhir_list['identifier'] = FhirResourceService.build_identifier('Extraction', id)[0]
@@ -58,6 +61,7 @@ class ExtractionSupplyingService
         status = 'completed'
       end
 
+      linkid_hash = build_linkid_hash(raw)
       eefpss = []
       eefpsqrcf_grouped_by_type1 = raw.extractions_extraction_forms_projects_sections_question_row_column_fields.group_by { |item| item["extractions_extraction_forms_projects_sections_type1_id"] }
       eefpsqrcf_grouped_by_type1.each do |eefps_type1_id, eefpsqrcfs|
@@ -67,7 +71,7 @@ class ExtractionSupplyingService
           question_row_column = eefpsqrcf.question_row_column_field.question_row_column
           ans_form = question_row_column.question_row_columns_question_row_column_options
           type = question_row_column.question_row_column_type.id
-          eefps_item_linkid = generate_linkid(question_row_column)
+          eefps_item_linkid = linkid_hash[eefpsqrcf.id]
 
           value = eefpsqrcf.records.present? ? eefpsqrcf.records[0]['name'] : ''
           value = nil if value.is_a?(String) && value.empty?
@@ -774,5 +778,24 @@ class ExtractionSupplyingService
     question = question_row.question
 
     "#{question.pos}-#{question.id}-#{question_row.id}-#{question_row_column.id}"
+  end
+
+  def build_linkid_hash(extractions_extraction_forms_projects_section)
+    records = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField
+              .joins(:extractions_extraction_forms_projects_section)
+              .joins(question_row_column_field: { question_row_column: { question_row: :question } })
+              .where(extractions_extraction_forms_projects_section:)
+              .select(
+                'eefps_qrcfs.id as eefpsqrcf_id',
+                'questions.pos as question_pos',
+                'questions.id as question_id',
+                'question_rows.id as question_row_id',
+                'question_row_columns.id as question_row_column_id'
+              )
+
+    records.each_with_object({}) do |record, hash|
+      linkid = "#{record.question_pos}-#{record.question_id}-#{record.question_row_id}-#{record.question_row_column_id}"
+      hash[record.eefpsqrcf_id] = linkid
+    end
   end
 end

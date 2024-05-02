@@ -452,7 +452,7 @@ class ProjectsController < ApplicationController
   def set_project
     @project = Project
                .includes(publishing: :approval)
-               .includes(projects_users: :user)
+               .includes(projects_users: [user: :profile])
                .find(params[:id])
   end
 

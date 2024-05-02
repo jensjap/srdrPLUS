@@ -33,7 +33,7 @@ class ExtractionsController < ApplicationController
         ]
       )
     @extractions = ExtractionDecorator.decorate_collection(@extractions)
-    @users = @project.users if @project.leaders.include? current_user
+    @users = @project.users.includes([:profile]) if @project.leaders.include? current_user
   end
 
   def reassign_extraction
