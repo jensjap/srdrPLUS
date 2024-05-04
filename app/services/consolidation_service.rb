@@ -1129,7 +1129,10 @@ class ConsolidationService
   # results
 
   def self.test
-    clone_extractions(Extraction.where(id: [63_790, 63_791]), Extraction.find(63_794), 2_751_984)
+    citations_project = CitationsProject.find(2_751_984)
+    non_consolidated = citations_project.extractions.reject { |extraction| extraction.consolidated }
+    consolidated = citations_project.extractions.find { |extraction| extraction.consolidated }
+    clone_extractions(non_consolidated, consolidated, citations_project.id)
   end
 
   def self.clone_extractions(extractions, consolidated_extraction, citations_project_id)
@@ -1237,6 +1240,7 @@ class ConsolidationService
         end
       when 2
         lookup = {}
+        ff_lookup = {}
         eefpsqrcfs = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField
                      .includes(
                        :extractions_extraction_forms_projects_section,
@@ -1278,6 +1282,35 @@ class ConsolidationService
             lookup[comparison_array] += 1
           end
         end
+        eefpsffs =
+          ExtractionsExtractionFormsProjectsSectionsFollowupField
+          .includes(followup_field: {
+                      question_row_columns_question_row_column_option: {
+                        question_row_column: {
+                          question_row: {
+                            question: :extraction_forms_projects_section
+                          }
+                        }
+                      }
+                    })
+          .where(extraction_forms_projects_sections: { id: efps_id })
+        eefpsffs.each do |eefpsff|
+          next if eefpsff.extractions_extraction_forms_projects_section.extraction_id == consolidated_extraction.id
+
+          eefpst1 = eefpsff&.extractions_extraction_forms_projects_sections_type1
+          type1 = eefpst1&.type1
+          comparison_array = []
+          comparison_array << eefpst1&.type1_type_id # 0
+          comparison_array << eefpst1&.units # 1
+          comparison_array << type1&.name # 2
+          comparison_array << type1&.description # 3
+          comparison_array << linked_eefps&.extraction_forms_projects_section_id # 4
+          comparison_array << eefpsff&.followup_field_id # 5
+          comparison_array << eefpsff.records.first.name # 6
+
+          ff_lookup[comparison_array] ||= 0
+          ff_lookup[comparison_array] += 1
+        end
         lookup.each do |comparison_array, count|
           next unless count == eefpss2.count
 
@@ -1300,7 +1333,7 @@ class ConsolidationService
               )
             eefpsqrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(
               extractions_extraction_forms_projects_sections_type1_id: eefpst1,
-              extractions_extraction_forms_projects_section_id: ceefps,
+              extractions_extraction_forms_projects_section_id: ceefps.id,
               question_row_column_field_id: comparison_array[5]
             )
             record = Record.find_or_create_by(
@@ -1313,7 +1346,7 @@ class ConsolidationService
               ExtractionsExtractionFormsProjectsSection
               .find_by(extraction_forms_projects_section_id: efps_id, extraction: consolidated_extraction)
             eefpsqrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(
-              extractions_extraction_forms_projects_section_id: ceefps,
+              extractions_extraction_forms_projects_section_id: ceefps.id,
               question_row_column_field_id: comparison_array[0]
             )
             record = Record.find_or_create_by(
@@ -1322,6 +1355,40 @@ class ConsolidationService
             )
             record.update(name: comparison_array[1]) if record.name != comparison_array[1]
           end
+        end
+        ff_lookup.each do |comparison_array, count|
+          next unless count == eefpss2.count
+
+          ceefps =
+            ExtractionsExtractionFormsProjectsSection
+            .find_by(extraction_forms_projects_section_id: efps_id, extraction: consolidated_extraction)
+          eefpst1 = nil
+          if linked_eefps
+            type1_type_id = comparison_array[0]
+            units = comparison_array[1]
+            type1 = Type1.find_by(name: comparison_array[2], description: comparison_array[3])
+            linked_ceefps =
+              ExtractionsExtractionFormsProjectsSection
+              .find_by(extraction_forms_projects_section_id: comparison_array[4], extraction: consolidated_extraction)
+            eefpst1 =
+              ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by(
+                type1_type_id:,
+                extractions_extraction_forms_projects_section: linked_ceefps,
+                type1:,
+                units:
+              )
+          end
+          eefpsff =
+            ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by(
+              extractions_extraction_forms_projects_section_id: ceefps.id,
+              followup_field_id: comparison_array[5],
+              extractions_extraction_forms_projects_sections_type1_id: eefpst1&.id
+            )
+          record = Record.find_or_create_by(
+            recordable_type: 'ExtractionsExtractionFormsProjectsSectionsFollowupField',
+            recordable_id: eefpsff.id
+          )
+          record.update(name: comparison_array[6]) if record.name != comparison_array[6]
         end
       when 3
         # TODO

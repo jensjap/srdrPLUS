@@ -138,7 +138,7 @@ class Project < ApplicationRecord
 
   def duplicate_key_question?
     kqps = key_questions_projects
-    return kqps.map(&:key_question).map(&:id).uniq.length < kqps.length if kqps.present?
+    kqps.map(&:key_question).map(&:id).uniq.length < kqps.length if kqps.present?
   end
 
   def duplicate_extraction_form?
@@ -183,14 +183,17 @@ class Project < ApplicationRecord
   end
 
   def consolidated_extraction(citations_project_id, current_user_id)
+    non_consolidated_extractions = extractions.reject { |extraction| extraction.consolidated }
     consolidated_extraction = extractions.consolidated.find_by(citations_project_id:)
     return consolidated_extraction if consolidated_extraction.present?
 
-    extractions.create(
+    consolidated_extraction = extractions.create(
       citations_project_id:,
       user_id: current_user_id,
       consolidated: true
     )
+    ConsolidationService.clone_extractions(non_consolidated_extractions, consolidated_extraction, citations_project_id)
+    consolidated_extraction
   end
 
   # returns nested hash:
