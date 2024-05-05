@@ -30,7 +30,13 @@ class ExtractionSupplyingService
           [:type1, :extractions_extraction_forms_projects_sections_type1_rows, { status: :statusings }] },
         { extractions_extraction_forms_projects_sections_followup_fields: :followup_field },
         { extractions_extraction_forms_projects_sections_question_row_column_fields:
-          %i[extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options question_row_column_field records] }
+          [
+            :extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options,
+            { question_row_column_field:
+              { question_row_column: [:question_row_columns_question_row_column_options, :question_row_column_type] } },
+            :records
+          ]
+        }
       ]
     ).find(id)
 
@@ -140,16 +146,45 @@ class ExtractionSupplyingService
       return eefpss
 
     when 3
-      extraction = Extraction.find(raw.extraction_id)
+      extraction = Extraction.includes(
+        :project,
+        extraction_forms_projects_sections: {
+          extraction_forms_project: :extraction_forms_project_type
+        }
+      ).find(raw.extraction_id)
       project = Project.find(extraction.project_id)
       efp_type_id = extraction.extraction_forms_projects_sections.first.extraction_forms_project.extraction_forms_project_type_id
       if efp_type_id == 1
-        outcomes = ExtractionsExtractionFormsProjectsSectionsType1
-          .by_section_name_and_extraction_id_and_extraction_forms_project_id(
-            'Outcomes',
-            raw.extraction_id,
-            project.extraction_forms_projects.first.id
-          )
+        outcomes = ExtractionsExtractionFormsProjectsSectionsType1.includes(
+          :type1,
+          extractions_extraction_forms_projects_sections_type1_rows:[
+            :population_name,
+            result_statistic_sections: {
+              result_statistic_sections_measures: [
+                :measure,
+                tps_arms_rssms: [:records, :timepoint],
+                tps_comparisons_rssms: [
+                  :records,
+                  :timepoint,
+                  comparison: { comparate_groups: :comparable_elements }
+                ],
+                comparisons_arms_rssms: [
+                  :records,
+                  comparison: { comparate_groups: :comparable_elements }
+                ],
+                wacs_bacs_rssms: [
+                  :records,
+                  wac: { comparate_groups: :comparable_elements },
+                  bac: { comparate_groups: :comparable_elements }
+                ]
+              ]
+            }
+          ]
+        ).by_section_name_and_extraction_id_and_extraction_forms_project_id(
+          'Outcomes',
+          raw.extraction_id,
+          project.extraction_forms_projects.first.id
+        )
         evidences = []
 
         outcomes.each do |outcome|
@@ -160,18 +195,18 @@ class ExtractionSupplyingService
             outcome_status = 'active'
           end
 
-          outcome_name = Type1.find(outcome.type1_id)['name']
+          outcome_name = outcome.type1['name']
           populations = outcome.extractions_extraction_forms_projects_sections_type1_rows
 
           populations.each do |population|
-            population_name = PopulationName.find(population.population_name_id)['name']
+            population_name = population.population_name['name']
             result_statistic_sections = population.result_statistic_sections
 
             [0, 1, 2, 3].each do |sec_num|
               case sec_num
               when 0
                 result_statistic_sections[sec_num].result_statistic_sections_measures.each do |result_statistic_sections_measure|
-                  measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
+                  measure_name = result_statistic_sections_measure.measure['name']
                   result_statistic_sections_measure.tps_arms_rssms.each do |tps_arms_rssm|
                     record, record_id = get_record_and_id(tps_arms_rssm)
                     next if record.nil?
@@ -198,7 +233,7 @@ class ExtractionSupplyingService
                 end
               when  1
                 result_statistic_sections[sec_num].result_statistic_sections_measures.each do |result_statistic_sections_measure|
-                  measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
+                  measure_name = result_statistic_sections_measure.measure['name']
                   result_statistic_sections_measure.tps_comparisons_rssms.each do |tps_comparisons_rssm|
                     record, record_id = get_record_and_id(tps_comparisons_rssm)
                     next if record.nil?
@@ -206,7 +241,7 @@ class ExtractionSupplyingService
                     time_point_name = get_time_point_name(tps_comparisons_rssm.timepoint_id)
                     next if time_point_name.nil?
 
-                    comparison = Comparison.find_by(id: tps_comparisons_rssm.comparison_id)
+                    comparison = tps_comparisons_rssm.comparison
                     next if comparison.blank?
 
                     arm_names = []
@@ -236,12 +271,12 @@ class ExtractionSupplyingService
                 end
               when 2
                 result_statistic_sections[sec_num].result_statistic_sections_measures.each do |result_statistic_sections_measure|
-                  measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
+                  measure_name = result_statistic_sections_measure.measure['name']
                   result_statistic_sections_measure.comparisons_arms_rssms.each do |comparisons_arms_rssm|
                     record, record_id = get_record_and_id(comparisons_arms_rssm)
                     next if record.nil?
 
-                    comparison = Comparison.find_by(id: comparisons_arms_rssm.comparison_id)
+                    comparison = comparisons_arms_rssm.comparison
                     next if comparison.blank?
 
                     time_point_names = []
@@ -270,12 +305,12 @@ class ExtractionSupplyingService
                 end
               when 3
                 result_statistic_sections[sec_num].result_statistic_sections_measures.each do |result_statistic_sections_measure|
-                  measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
+                  measure_name = result_statistic_sections_measure.measure['name']
                   result_statistic_sections_measure.wacs_bacs_rssms.each do |wacs_bacs_rssm|
                     record, record_id = get_record_and_id(wacs_bacs_rssm)
                     next if record.nil?
 
-                    comparison_arm = Comparison.find_by(id: wacs_bacs_rssm.bac_id)
+                    comparison_arm = wacs_bacs_rssm.bac
                     next if comparison_arm.blank?
 
                     arm_names = []
@@ -289,7 +324,7 @@ class ExtractionSupplyingService
                       arm_names << arm_name_in_same_comparate_group
                     end
 
-                    comparison_time_point = Comparison.find_by(id: wacs_bacs_rssm.wac_id)
+                    comparison_time_point = wacs_bacs_rssm.wac
                     next if comparison_time_point.blank?
 
                     time_point_names = []
@@ -329,12 +364,36 @@ class ExtractionSupplyingService
         end
 
       else
-        outcomes = ExtractionsExtractionFormsProjectsSectionsType1
-          .by_section_name_and_extraction_id_and_extraction_forms_project_id(
-            'Diagnoses',
-            raw.extraction_id,
-            project.extraction_forms_projects.first.id
-          )
+        outcomes = ExtractionsExtractionFormsProjectsSectionsType1.includes(
+          :type1,
+          extractions_extraction_forms_projects_sections_type1_rows:[
+            :population_name,
+            result_statistic_sections: {
+              result_statistic_sections_measures: [
+                :measure,
+                tps_arms_rssms: [:records, :timepoint],
+                tps_comparisons_rssms: [
+                  :records,
+                  :timepoint,
+                  comparison: { comparate_groups: :comparable_elements }
+                ],
+                comparisons_arms_rssms: [
+                  :records,
+                  comparison: { comparate_groups: :comparable_elements }
+                ],
+                wacs_bacs_rssms: [
+                  :records,
+                  wac: { comparate_groups: :comparable_elements },
+                  bac: { comparate_groups: :comparable_elements }
+                ]
+              ]
+            }
+          ]
+        ).by_section_name_and_extraction_id_and_extraction_forms_project_id(
+          'Diagnoses',
+          raw.extraction_id,
+          project.extraction_forms_projects.first.id
+        )
         evidences = []
 
         outcomes.each do |outcome|
@@ -345,16 +404,16 @@ class ExtractionSupplyingService
             outcome_status = 'active'
           end
 
-          outcome_name = Type1.find(outcome.type1_id)['name']
+          outcome_name = outcome.type1['name']
           populations = outcome.extractions_extraction_forms_projects_sections_type1_rows
 
           populations.each do |population|
-            population_name = PopulationName.find(population.population_name_id)['name']
+            population_name = population.population_name['name']
             result_statistic_sections = population.result_statistic_sections
 
             [4, 5, 6, 7].each do |sec_num|
               result_statistic_sections[sec_num].result_statistic_sections_measures.each do |result_statistic_sections_measure|
-                measure_name = Measure.find(result_statistic_sections_measure.measure_id)['name']
+                measure_name = result_statistic_sections_measure.measure['name']
                 result_statistic_sections_measure.tps_comparisons_rssms.each do |tps_comparisons_rssm|
                   record, record_id = get_record_and_id(tps_comparisons_rssm)
                   next if record.nil?
