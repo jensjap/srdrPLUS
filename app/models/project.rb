@@ -193,7 +193,7 @@ class Project < ApplicationRecord
       consolidated: true
     )
     ConsolidationService.clone_extractions(non_consolidated_extractions, consolidated_extraction, citations_project_id)
-    consolidated_extraction
+    consolidated_extraction.reload
   end
 
   # returns nested hash:
