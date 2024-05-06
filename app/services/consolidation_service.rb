@@ -1123,17 +1123,10 @@ class ConsolidationService
       .where(extractions:, extraction_forms_projects_sections: { sections: { name: section_names } })
   end
 
-  # arms: eefpst1s
-  # outcomes: eefpst1s -> eefpst1r -> population_name  eefpst1r -> eefpst1rc -> timepoint_name
-  # dd, armdetails, sample, outcome details, risk (linked/linked): (eefpst1s) -> q -> qr -> qrc -> qrcf
-  # results
-
-  def self.test
-    citations_project = CitationsProject.find(2_751_984)
-    non_consolidated = citations_project.extractions.reject { |extraction| extraction.consolidated }
-    consolidated = citations_project.extractions.find { |extraction| extraction.consolidated }
-    clone_extractions(non_consolidated, consolidated, citations_project.id)
-  end
+  # DONE: arms: eefpst1s
+  # DONE: outcomes: eefpst1s -> eefpst1r -> population_name  eefpst1r -> eefpst1rc -> timepoint_name
+  # DONE: dd, armdetails, sample, outcome details, risk (linked/linked): (eefpst1s) -> q -> qr -> qrc -> qrcf + FF
+  # TBD: results
 
   def self.clone_extractions(extractions, consolidated_extraction, citations_project_id)
     eefpss =
@@ -1159,6 +1152,9 @@ class ConsolidationService
       )
       .where(citations_projects: { id: citations_project_id })
       .where(extractions:)
+    eefpss = eefpss.sort_by do |eefps|
+      eefps.extraction_forms_projects_section.extraction_forms_projects_section_type_id
+    end
     groups = {}
     eefpss.each do |eefps|
       groups[[eefps.extraction_forms_projects_section_id,
@@ -1332,7 +1328,7 @@ class ConsolidationService
                 units:
               )
             eefpsqrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(
-              extractions_extraction_forms_projects_sections_type1_id: eefpst1,
+              extractions_extraction_forms_projects_sections_type1_id: eefpst1.id,
               extractions_extraction_forms_projects_section_id: ceefps.id,
               question_row_column_field_id: comparison_array[5]
             )
