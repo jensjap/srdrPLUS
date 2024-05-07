@@ -64,7 +64,7 @@ class AllResourceSupplyingService
     add_reference_section(project_composition, 'Citations', citations, 'Citation', 'Citation') if !citations.blank?
     add_reference_section(project_composition, 'KeyQuestions', key_questions, 'KeyQuestion', 'EvidenceVariable') if !key_questions.blank?
     add_reference_section(project_composition, 'ExtractionFormsProjectsSections', forms, 'ExtractionFormsProjectsSection', 'Questionnaire') if !forms.blank?
-    add_reference_section(project_composition, 'Extractions', extractions, 'Extraction', 'Bundle') if !extractions.blank?
+    add_reference_section(project_composition, 'Extractions', extractions, 'Extraction', 'List') if !extractions.blank?
     add_reference_section(project_composition, 'SdMetaData', sd_meta_data, 'SdMetaData', 'Bundle') if !sd_meta_data.blank?
 
     citation_full_url = FhirResourceService.build_full_url(resources: citations_in_fhir, relative_path: 'citations/')
@@ -179,15 +179,27 @@ class AllResourceSupplyingService
   def add_reference_section(composition, title, raw_data, prefix, type)
     id_values = get_identifier_values(raw_data, prefix)
 
-    entrys = id_values.map { |id_value| {'reference' => id_value, 'type' => type} }
+    entrys = id_values.map { |id_value| {'reference' => { 'identifier' => id_value }, 'type' => type} }
     add_section(composition, title, nil, entrys)
   end
 
   def get_identifier_values(raw_data, prefix)
     if raw_data.is_a?(ActiveRecord::Relation)
-      raw_data.ids.map { |id| "#{prefix}/#{id}" }
+      raw_data.ids.map do |id|
+        {
+          'type' => { 'text' => 'SRDR+ Object Identifier' },
+          'system' => 'https://srdrplus.ahrq.gov/',
+          'value' => "#{prefix}/#{id}"
+        }
+      end
     else
-      raw_data.map { |raw| "#{prefix}/#{raw.id}" }
+      raw_data.map do |raw|
+        {
+          'type' => { 'text' => 'SRDR+ Object Identifier' },
+          'system' => 'https://srdrplus.ahrq.gov/',
+          'value' => "#{prefix}/#{raw.id}"
+        }
+      end
     end
   end
 end

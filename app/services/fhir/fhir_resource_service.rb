@@ -55,9 +55,12 @@ class FhirResourceService
         array << { 'fullUrl' => url, 'resource' => obj }
       end
 
+      timestamp = DateTime.now.iso8601(3)
+
       bundle = {
         'resourceType' => 'Bundle',
         'type' => type,
+        'timestamp' => timestamp,
         'link' => link_info,
         'entry' => fhir_objs
       }

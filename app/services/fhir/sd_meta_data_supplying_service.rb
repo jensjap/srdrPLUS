@@ -263,9 +263,21 @@ class SdMetaDataSupplyingService
 
   def get_identifier_values(raw_data, prefix)
     if raw_data.is_a?(ActiveRecord::Relation)
-      raw_data.ids.map { |id| "#{prefix}/#{id}" }
+      raw_data.ids.map do |id|
+        {
+          'type' => { 'text' => 'SRDR+ Object Identifier' },
+          'system' => 'https://srdrplus.ahrq.gov/',
+          'value' => "#{prefix}/#{id}"
+        }
+      end
     else
-      raw_data.map { |raw| "#{prefix}/#{raw.id}" }
+      raw_data.map do |raw|
+        {
+          'type' => { 'text' => 'SRDR+ Object Identifier' },
+          'system' => 'https://srdrplus.ahrq.gov/',
+          'value' => "#{prefix}/#{raw.id}"
+        }
+      end
     end
   end
 
@@ -304,7 +316,7 @@ class SdMetaDataSupplyingService
   def add_reference_section(composition, title, raw_data, prefix, type)
     id_values = get_identifier_values(raw_data, prefix)
 
-    entrys = id_values.map { |id_value| {'reference' => id_value, 'type' => type} }
+    entrys = id_values.map { |id_value| {'reference' => { 'identifier' => id_value }, 'type' => type} }
     add_section(composition, title, nil, entrys)
   end
 

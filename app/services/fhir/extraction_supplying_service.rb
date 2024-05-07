@@ -282,8 +282,10 @@ class ExtractionSupplyingService
                     time_point_names = []
                     comparison.comparate_groups.each do |comparate_group|
                       comparable_elements = comparate_group.comparable_elements
-                      time_point_name = get_time_point_name(comparable_elements[0].comparable_id)
-                      time_point_names << time_point_name
+                      if !comparable_elements.blank?
+                        time_point_name = get_time_point_name(comparable_elements[0].comparable_id)
+                        time_point_names << time_point_name
+                      end
                     end
 
                     arm_name = get_arm_name(comparisons_arms_rssm.extractions_extraction_forms_projects_sections_type1_id)
@@ -330,8 +332,10 @@ class ExtractionSupplyingService
                     time_point_names = []
                     comparison_time_point.comparate_groups.each do |comparate_group|
                       comparable_elements = comparate_group.comparable_elements
-                      time_point_name = get_time_point_name(comparable_elements[0].comparable_id)
-                      time_point_names << time_point_name
+                      if !comparable_elements.blank?
+                        time_point_name = get_time_point_name(comparable_elements[0].comparable_id)
+                        time_point_names << time_point_name
+                      end
                     end
 
                     evidence = get_evidence_obj(
