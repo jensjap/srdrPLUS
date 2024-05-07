@@ -1,62 +1,40 @@
 <div x-data="type_2_question_list">
   <%= render 'shared/alert_modal' %>
   <div
-    class="bg-blue-800 text-white rounded-md p-2 cursor-pointer text-center mt-2 w-48"
+    class="bg-blue-800 text-white text-sm rounded-md p-1 cursor-pointer text-center mt-2 w-32"
     @click="preview_modal = true; fetchPreviewContent();"
   >
     Preview Section
   </div>
+  <hr />
   <div
     @click="createQuestion()"
-    class="bg-srdrpurple text-white rounded-md p-2 cursor-pointer text-center mt-2 w-48"
+    class="bg-srdrpurple text-white text-sm rounded-md p-1 cursor-pointer text-center mt-2 w-32"
   >
     Add Question
   </div>
-  <table class="my-4">
-    <thead>
-      <tr>
-        <th>Position</th>
-        <th>Dependency</th>
-        <th>Key Questions</th>
-        <th>Question Text</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <template x-for="(q, q_index) in questions" :key="q.id">
-        <tr>
-          <td>
-            <select @change="updatePositions(q_index, $el.value - 1)">
-              <template x-for="qq_index in questions.length">
-                <option
-                  :selected="q_index == (qq_index - 1)"
-                  :value="qq_index"
-                  x-text="qq_index"
-                ></option>
-              </template>
-            </select>
-          </td>
-          <td>
-            <template x-for="dependency in q.dependencies">
-              <div x-text="dependency"></div>
-            </template>
-          </td>
-          <td>
-            <ul>
-              <template x-for="key_question in q?.key_questions">
-                <li x-text="key_question.name"></li>
-              </template>
-            </ul>
-          </td>
-          <td x-text="q.name"></td>
-          <td>
-            <div
-              class="flex flex-col items-start justify-center space-y-2 text-purple-900"
-            >
-              <div
-                class="flex items-center justify-center space-x-1 cursor-pointer hover:underline"
-                @click="edit_question_id = null; edit_question_id = q.id; question_modal = true; fetchQuestionTable();"
+  <div class="flex flex-col gap-y-2 my-2">
+    <template
+      x-for="(question, question_index) in questions"
+      :key="question.id"
+    >
+      <div class="bg-gray-100 p-2 rounded-md flex overflow-x-auto">
+        <div class="flex-grow">
+          <div class="mb-1 mr-2">
+            <div class="mb-1 flex">
+              <div class="mr-2 text-sm">Position</div>
+              <select
+                class="p-[2px] text-xs"
+                @change="updateOrderings(question_index, $el.value - 1, 'questions')"
               >
+                <template x-for="(q, q_index) in questions" :key="q.id">
+                  <option
+                    :selected="q_index == question_index"
+                    :value="q_index + 1"
+                    x-text="q_index + 1"
+                  ></option>
+                </template>
+              </select>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -134,35 +112,861 @@
                 <span>Remove</span>
               </div>
             </div>
-          </td>
-        </tr>
-      </template>
-    </tbody>
-  </table>
+            <div class="bg-gray-100 p-1 rounded-md">
+              <input
+                placeholder="Question text"
+                class="!text-base !px-1"
+                @input.debounce.500ms="updateQuestion(question, { name: $el.value })"
+                x-model="question.name"
+                type="text"
+              />
+            </div>
+            <div class="bg-gray-100 p-1 rounded-md">
+              <input
+                placeholder="Question description"
+                class="!text-base !px-1"
+                @input.debounce.500ms="updateQuestion(question, { description: $el.value })"
+                x-model="question.description"
+                type="text"
+              />
+            </div>
+          </div>
+          <div>
+            <table class="h-0 w-0 table-auto border-separate border-spacing-1">
+              <thead>
+                <tr>
+                  <td class="bg-white"></td>
+                  <template
+                    x-for="(column, column_index) in question.columns"
+                    :key="column.id"
+                  >
+                    <th>
+                      <div class="flex justify-center items-center">
+                        <input
+                          placeholder="Column header"
+                          class="!text-xs p-2 w-auto grow whitespace-nowrap text-center"
+                          @input.debounce.500ms="updateColumn(column, { name: $el.value })"
+                          x-model="question.columns[column_index].name"
+                          type="text"
+                        />
+                        <div
+                          @click="deleteColumn(column)"
+                          class="text-red-900 cursor-pointer p-2 border-l border-gray-300 hover:bg-red-100"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="w-4 h-4"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </th>
+                  </template>
+                  <th
+                    class="whitespace-nowrap cursor-pointer flex justify-between items-center h-full"
+                    @click="addColumn(question.rows[0])"
+                  >
+                    <div class="p-2">Click to add column</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <template
+                  x-for="(row, row_index) in (question.rows)"
+                  :key="row.id"
+                >
+                  <tr>
+                    <th>
+                      <div class="h-full flex justify-center items-center">
+                        <input
+                          placeholder="Row header"
+                          class="!text-xs p-2 w-auto grow whitespace-nowrap text-center"
+                          @input.debounce.500ms="updateRow(row, { name: $el.value })"
+                          x-model="question.rows[row_index].name"
+                          type="text"
+                        />
+                        <div class="h-full border-l border-gray-300">
+                          <div
+                            class="text-red-900 cursor-pointer hover:bg-red-100 p-2"
+                            @click="deleteRow(row)"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke-width="1.5"
+                              stroke="currentColor"
+                              class="w-4 h-4"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                              />
+                            </svg>
+                          </div>
+                          <div
+                            class="text-green-900 cursor-pointer hover:bg-green-100 p-2"
+                            @click="duplicateRow(row)"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke-width="1.5"
+                              stroke="currentColor"
+                              class="w-4 h-4"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"
+                              />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </th>
+
+                    <template
+                      x-for="(column, column_index) in question.columns"
+                      :key="column.id"
+                    >
+                      <td>
+                        <template
+                          x-if="question.cells[row_index] !== undefined && question.cells[row_index][column_index] !== undefined && (question.cells[row_index][column_index] !== undefined || question.cells[row_index][column_index] !== null)"
+                        >
+                          <div
+                            class="flex justify-center items-stretch h-full"
+                            style="min-width: 0"
+                          >
+                            <div class="p-2 grow">
+                              <template
+                                x-if="question.cells[row_index][column_index]?.cell_type === 'text'"
+                              >
+                                <div>
+                                  <div
+                                    class="whitespace-nowrap border-b-2 border-gray-300"
+                                  >
+                                    Text Field
+                                  </div>
+                                  <label class="whitespace-nowrap"
+                                    >Min character length
+                                    <input
+                                      name="min_length"
+                                      type="number"
+                                      x-model="question.cells[row_index][column_index].min_length.name"
+                                      x-on:change.debounce.500ms="updateCellOption(question.cells[row_index][column_index].min_length.id, { name: $el.value })"
+                                  /></label>
+                                  <label class="whitespace-nowrap"
+                                    >Max character length
+                                    <input
+                                      name="max_length"
+                                      type="number"
+                                      x-model="question.cells[row_index][column_index].max_length.name"
+                                      x-on:change.debounce.500ms="updateCellOption(question.cells[row_index][column_index].max_length.id, { name: $el.value })"
+                                  /></label>
+                                </div>
+                              </template>
+                              <template
+                                x-if="question.cells[row_index][column_index]?.cell_type === 'numeric'"
+                              >
+                                <div>
+                                  <div
+                                    class="whitespace-nowrap border-b-2 border-gray-300"
+                                  >
+                                    Numeric Field
+                                  </div>
+                                  <div
+                                    class="flex justify-between items-center"
+                                  >
+                                    <label class="whitespace-nowrap"
+                                      >Allow ~, <, >, ≤, ≥
+                                      <input
+                                        name="additional_char"
+                                        type="checkbox"
+                                        class="!m-0 cursor-pointer"
+                                        :checked="question.cells[row_index][column_index].additional_char.name === 't'"
+                                        x-model="question.cells[row_index][column_index].additional_char.name"
+                                        @click="updateCellOption(question.cells[row_index][column_index].additional_char.id, { name: $el.checked })"
+                                    /></label>
+                                  </div>
+                                  <label
+                                    >Min value allowed
+                                    <input
+                                      name="min_value"
+                                      type="number"
+                                      x-model="question.cells[row_index][column_index].min_value.name"
+                                      x-on:change.debounce.500ms="updateCellOption(question.cells[row_index][column_index].min_value.id, { name: $el.value })"
+                                  /></label>
+                                  <label
+                                    >Max value allowed
+                                    <input
+                                      name="max_value"
+                                      type="number"
+                                      x-model="question.cells[row_index][column_index].max_value.name"
+                                      x-on:change.debounce.500ms="updateCellOption(question.cells[row_index][column_index].max_value.id, { name: $el.value })"
+                                  /></label>
+                                </div>
+                              </template>
+                              <template
+                                x-if="question.cells[row_index][column_index]?.cell_type === 'checkbox'"
+                              >
+                                <div
+                                  class="h-full flex flex-col justify-between"
+                                >
+                                  <div
+                                    class="whitespace-nowrap border-b-2 border-gray-300"
+                                  >
+                                    Checkbox (multi-choice)
+                                  </div>
+                                  <div
+                                    class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
+                                  >
+                                    <template
+                                      x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
+                                      :key="option.id"
+                                      ><div
+                                        class="flex justify-between items-center"
+                                      >
+                                        <div
+                                          class="min-w-[3rem]"
+                                          x-text="option.name"
+                                        ></div>
+                                        <div
+                                          class="flex justify-center items-center mx-2"
+                                        >
+                                          <label
+                                            class="cursor-pointer text-gray-700 text-xs"
+                                            >with follow-up
+                                            <input
+                                              class="!m-0 cursor-pointer"
+                                              type="checkbox"
+                                              x-model="option.followup_field.value"
+                                              x-on:change="updateFollowupField(option.id, option.followup_field.id, $el.checked)"
+                                          /></label>
+                                          <div
+                                            class="flex justify-center items-center mx-2"
+                                          >
+                                            <div class="w-6 cursor-pointer">
+                                              <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke-width="1.5"
+                                                stroke="currentColor"
+                                                class="w-6 h-6"
+                                                @click="moveOption(option, option_index - 1)"
+                                              >
+                                                <path
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                />
+                                              </svg>
+                                            </div>
+                                            <div class="w-6 cursor-pointer">
+                                              <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke-width="1.5"
+                                                stroke="currentColor"
+                                                class="w-6 h-6"
+                                                @click="moveOption(option, option_index + 1)"
+                                              >
+                                                <path
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                />
+                                              </svg>
+                                            </div>
+                                          </div>
+                                          <div
+                                            @click="deleteOption(option.id)"
+                                            class="text-red-900 cursor-pointer"
+                                          >
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              fill="none"
+                                              viewBox="0 0 24 24"
+                                              stroke-width="1.5"
+                                              stroke="currentColor"
+                                              class="w-4 h-4"
+                                            >
+                                              <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                              />
+                                            </svg>
+                                          </div>
+                                        </div></div
+                                    ></template>
+                                  </div>
+                                  <div>
+                                    <label class="text-xs"
+                                      >Add answer choice option
+                                      <input
+                                        name="option"
+                                        type="text"
+                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
+                                    /></label>
+                                  </div>
+                                </div>
+                              </template>
+                              <template
+                                x-if="question.cells[row_index][column_index]?.cell_type === 'dropdown'"
+                              >
+                                <div
+                                  class="h-full flex flex-col justify-between"
+                                >
+                                  <div
+                                    class="whitespace-nowrap border-b-2 border-gray-300"
+                                  >
+                                    Dropdown (single-choice)
+                                  </div>
+                                  <div
+                                    class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
+                                  >
+                                    <template
+                                      x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
+                                      :key="option.id"
+                                      ><div
+                                        class="flex justify-between items-center"
+                                      >
+                                        <div
+                                          class="min-w-[3rem]"
+                                          x-text="option.name"
+                                        ></div>
+                                        <div
+                                          class="flex justify-center items-center mx-2"
+                                        >
+                                          <div
+                                            class="flex justify-center items-center mx-2"
+                                          >
+                                            <div class="w-6 cursor-pointer">
+                                              <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke-width="1.5"
+                                                stroke="currentColor"
+                                                class="w-6 h-6"
+                                                @click="moveOption(option, option_index - 1)"
+                                              >
+                                                <path
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                />
+                                              </svg>
+                                            </div>
+                                            <div class="w-6 cursor-pointer">
+                                              <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke-width="1.5"
+                                                stroke="currentColor"
+                                                class="w-6 h-6"
+                                                @click="moveOption(option, option_index + 1)"
+                                              >
+                                                <path
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                />
+                                              </svg>
+                                            </div>
+                                          </div>
+                                          <div
+                                            @click="deleteOption(option.id)"
+                                            class="text-red-900 cursor-pointer"
+                                          >
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              fill="none"
+                                              viewBox="0 0 24 24"
+                                              stroke-width="1.5"
+                                              stroke="currentColor"
+                                              class="w-4 h-4"
+                                            >
+                                              <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                              />
+                                            </svg>
+                                          </div>
+                                        </div></div
+                                    ></template>
+                                  </div>
+                                  <div>
+                                    <label class="text-xs"
+                                      >Add answer choice option
+                                      <input
+                                        name="option"
+                                        type="text"
+                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
+                                    /></label>
+                                  </div>
+                                </div>
+                              </template>
+                              <template
+                                x-if="question.cells[row_index][column_index]?.cell_type === 'radio'"
+                              >
+                                <div
+                                  class="h-full flex flex-col justify-between"
+                                >
+                                  <div
+                                    class="whitespace-nowrap border-b-2 border-gray-300"
+                                  >
+                                    Radio (single-choice)
+                                  </div>
+                                  <div
+                                    class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
+                                  >
+                                    <template
+                                      x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
+                                      :key="option.id"
+                                      ><div
+                                        class="flex justify-between items-center"
+                                      >
+                                        <div
+                                          class="min-w-[3rem]"
+                                          x-text="option.name"
+                                        ></div>
+                                        <div
+                                          class="flex justify-center items-center mx-2"
+                                        >
+                                          <label
+                                            class="cursor-pointer text-gray-700 text-xs"
+                                            >with follow-up
+                                            <input
+                                              class="!m-0 cursor-pointer"
+                                              type="checkbox"
+                                              x-model="option.followup_field.value"
+                                              x-on:change="updateFollowupField(option.id, option.followup_field.id, $el.checked)"
+                                          /></label>
+                                          <div
+                                            class="flex justify-center items-center mx-2"
+                                          >
+                                            <div class="w-6 cursor-pointer">
+                                              <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke-width="1.5"
+                                                stroke="currentColor"
+                                                class="w-6 h-6"
+                                                @click="moveOption(option, option_index - 1)"
+                                              >
+                                                <path
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                />
+                                              </svg>
+                                            </div>
+                                            <div class="w-6 cursor-pointer">
+                                              <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke-width="1.5"
+                                                stroke="currentColor"
+                                                class="w-6 h-6"
+                                                @click="moveOption(option, option_index + 1)"
+                                              >
+                                                <path
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                />
+                                              </svg>
+                                            </div>
+                                          </div>
+                                          <div
+                                            @click="deleteOption(option.id)"
+                                            class="text-red-900 cursor-pointer"
+                                          >
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              fill="none"
+                                              viewBox="0 0 24 24"
+                                              stroke-width="1.5"
+                                              stroke="currentColor"
+                                              class="w-4 h-4"
+                                            >
+                                              <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                              />
+                                            </svg>
+                                          </div>
+                                        </div></div
+                                    ></template>
+                                  </div>
+                                  <div>
+                                    <label class="text-xs"
+                                      >Add answer choice option
+                                      <input
+                                        name="option"
+                                        type="text"
+                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
+                                    /></label>
+                                  </div>
+                                </div>
+                              </template>
+                              <template
+                                x-if="question.cells[row_index][column_index]?.cell_type === 'select2_single'"
+                              >
+                                <div
+                                  class="h-full flex flex-col justify-between"
+                                >
+                                  <div
+                                    class="whitespace-nowrap border-b-2 border-gray-300"
+                                  >
+                                    Select-One (with write-in)
+                                  </div>
+                                  <div
+                                    class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
+                                  >
+                                    <template
+                                      x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
+                                      :key="option.id"
+                                      ><div
+                                        class="flex justify-between items-center"
+                                      >
+                                        <div
+                                          class="min-w-[3rem]"
+                                          x-text="option.name"
+                                        ></div>
+                                        <div
+                                          class="flex justify-center items-center mx-2"
+                                        >
+                                          <div
+                                            class="flex justify-center items-center mx-2"
+                                          >
+                                            <div class="w-6 cursor-pointer">
+                                              <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke-width="1.5"
+                                                stroke="currentColor"
+                                                class="w-6 h-6"
+                                                @click="moveOption(option, option_index - 1)"
+                                              >
+                                                <path
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                />
+                                              </svg>
+                                            </div>
+                                            <div class="w-6 cursor-pointer">
+                                              <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke-width="1.5"
+                                                stroke="currentColor"
+                                                class="w-6 h-6"
+                                                @click="moveOption(option, option_index + 1)"
+                                              >
+                                                <path
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                />
+                                              </svg>
+                                            </div>
+                                          </div>
+                                          <div
+                                            @click="deleteOption(option.id)"
+                                            class="text-red-900 cursor-pointer"
+                                          >
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              fill="none"
+                                              viewBox="0 0 24 24"
+                                              stroke-width="1.5"
+                                              stroke="currentColor"
+                                              class="w-4 h-4"
+                                            >
+                                              <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                              />
+                                            </svg>
+                                          </div>
+                                        </div></div
+                                    ></template>
+                                  </div>
+                                  <div>
+                                    <label class="text-xs"
+                                      >Add answer choice option
+                                      <input
+                                        name="option"
+                                        type="text"
+                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
+                                    /></label>
+                                  </div>
+                                </div>
+                              </template>
+                              <template
+                                x-if="question.cells[row_index][column_index]?.cell_type === 'select2_multi'"
+                              >
+                                <div
+                                  class="h-full flex flex-col justify-between"
+                                >
+                                  <div
+                                    class="whitespace-nowrap border-b-2 border-gray-300"
+                                  >
+                                    Select-Multiple (with write-in)
+                                  </div>
+                                  <div
+                                    class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
+                                  >
+                                    <template
+                                      x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
+                                      :key="option.id"
+                                      ><div
+                                        class="flex justify-between items-center"
+                                      >
+                                        <div
+                                          class="min-w-[3rem]"
+                                          x-text="option.name"
+                                        ></div>
+                                        <div
+                                          class="flex justify-center items-center mx-2"
+                                        >
+                                          <div
+                                            class="flex justify-center items-center mx-2"
+                                          >
+                                            <div class="w-6 cursor-pointer">
+                                              <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke-width="1.5"
+                                                stroke="currentColor"
+                                                class="w-6 h-6"
+                                                @click="moveOption(option, option_index - 1)"
+                                              >
+                                                <path
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                />
+                                              </svg>
+                                            </div>
+                                            <div class="w-6 cursor-pointer">
+                                              <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke-width="1.5"
+                                                stroke="currentColor"
+                                                class="w-6 h-6"
+                                                @click="moveOption(option, option_index + 1)"
+                                              >
+                                                <path
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                                />
+                                              </svg>
+                                            </div>
+                                          </div>
+                                          <div
+                                            @click="deleteOption(option.id)"
+                                            class="text-red-900 cursor-pointer"
+                                          >
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              fill="none"
+                                              viewBox="0 0 24 24"
+                                              stroke-width="1.5"
+                                              stroke="currentColor"
+                                              class="w-4 h-4"
+                                            >
+                                              <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                              />
+                                            </svg>
+                                          </div>
+                                        </div></div
+                                    ></template>
+                                  </div>
+                                  <div>
+                                    <label class="text-xs"
+                                      >Add answer choice option
+                                      <input
+                                        name="option"
+                                        type="text"
+                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
+                                    /></label>
+                                  </div>
+                                </div>
+                              </template>
+                            </div>
+                            <div class="border-l border-gray-300">
+                              <div
+                                @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'text' } })"
+                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
+                                :class="{
+                                  'font-bold': 'text' === question.cells[row_index][column_index].cell_type,
+                                  'bg-gray-100': 'text' === question.cells[row_index][column_index].cell_type
+                                }"
+                              >
+                                Text
+                              </div>
+                              <div
+                                @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'numeric' } })"
+                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
+                                :class="{
+                                  'font-bold': 'numeric' === question.cells[row_index][column_index].cell_type,
+                                  'bg-gray-100': 'numeric' === question.cells[row_index][column_index].cell_type
+                                }"
+                              >
+                                Numeric
+                              </div>
+                              <div
+                                @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'checkbox' } })"
+                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
+                                :class="{
+                                  'font-bold': 'checkbox' === question.cells[row_index][column_index].cell_type,
+                                  'bg-gray-100': 'checkbox' === question.cells[row_index][column_index].cell_type
+                                }"
+                              >
+                                Checkbox
+                              </div>
+                              <div
+                                @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'dropdown' } })"
+                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
+                                :class="{
+                                  'font-bold': 'dropdown' === question.cells[row_index][column_index].cell_type,
+                                  'bg-gray-100': 'dropdown' === question.cells[row_index][column_index].cell_type
+                                }"
+                              >
+                                Dropdown
+                              </div>
+                              <div
+                                @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'radio' } })"
+                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
+                                :class="{
+                                  'font-bold': 'radio' === question.cells[row_index][column_index].cell_type,
+                                  'bg-gray-100': 'radio' === question.cells[row_index][column_index].cell_type
+                                }"
+                              >
+                                Radio
+                              </div>
+                              <div
+                                @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'select2_single' } })"
+                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
+                                :class="{
+                                  'font-bold': 'select2_single' === question.cells[row_index][column_index].cell_type,
+                                  'bg-gray-100': 'select2_single' === question.cells[row_index][column_index].cell_type
+                                }"
+                              >
+                                Select One
+                              </div>
+                              <div
+                                @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'select2_multi' } })"
+                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
+                                :class="{
+                                  'font-bold': 'select2_multi' === question.cells[row_index][column_index].cell_type,
+                                  'bg-gray-100': 'select2_multi' === question.cells[row_index][column_index].cell_type
+                                }"
+                              >
+                                Select Multiple
+                              </div>
+                            </div>
+                          </div>
+                        </template>
+                      </td>
+                    </template>
+                  </tr>
+                </template>
+                <tr>
+                  <th
+                    class="whitespace-nowrap cursor-pointer flex justify-between items-center h-full"
+                    @click="addRow(question)"
+                  >
+                    <div class="p-2">Click to add row</div>
+                  </th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div
+          class="w-8 px-2 pt-4 border-l border-gray-300 cursor-pointer text-red-900 p-2 hover:bg-red-100"
+          @click="deleteQuestion(question)"
+          draggable="true"
+          @dragstart.prevent.stop=""
+        >
+          <svg
+            class="w-4 h-4"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </template>
+  </div>
   <div
     @click="createQuestion()"
-    class="bg-srdrpurple text-white rounded-md p-2 cursor-pointer text-center w-48"
+    class="bg-srdrpurple text-white text-sm rounded-md p-1 cursor-pointer text-center w-32"
   >
     Add Question
   </div>
 
   <!-- prettier-ignore -->
   <%= render 'extraction_forms_projects/build/type2/loading_modal' %>
-  <%= render 'extraction_forms_projects/build/type2/question_modal' %>
   <%= render 'extraction_forms_projects/build/type2/dependencies_modal' %>
   <%= render 'extraction_forms_projects/build/type2/preview_modal' %>
 </div>
 
 <script>
   document.addEventListener("alpine:init", () => {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+    };
     Alpine.data("type_2_question_list", () => ({
       loading: false,
       questions: [],
-      question_modal: false,
       dependencies_modal: false,
       preview_modal: false,
-      edit_question_id: null,
-      question_table: "",
       dependencies_table: "",
       preview_content: "",
       isAlertModalOpen: false,
@@ -170,29 +974,219 @@
       pendingDeleteUrl: "",
       pendingResourceType: "",
 
-      init() {
-        this.fetch_questions();
+      async init() {
+        this.loading = true;
+        await this.fetch_questions();
+        console.log(this.questions);
+        this.loading = false;
       },
 
-      async fetchQuestionTable() {
+      async updateRow(question_row, params) {
+        const response = await fetch(`/question_rows/${question_row.id}`, {
+          method: "PATCH",
+          headers,
+          credentials: "same-origin",
+          body: JSON.stringify(params),
+        });
+        this.report(response.status);
+      },
+      async updateColumn(question_row_column, params) {
+        const response = await fetch(
+          `/question_row_columns/${question_row_column.id}`,
+          {
+            method: "PATCH",
+            headers,
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+        this.report(response.status);
+      },
+      async addRow(question) {
         this.loading = true;
-        this.question_table = await (
-          await fetch(`/questions/${this.edit_question_id}/edit?partial=true`)
-        ).text();
-        this.$nextTick(() => {
-          questionsCoffeeScript();
+        const response = await fetch(
+          `/questions/${question.id}/question_rows`,
+          {
+            method: "POST",
+            headers,
+            credentials: "same-origin",
+          }
+        );
+        this.report(response.status);
+        await this.fetch_questions();
+        this.loading = false;
+      },
+      async addColumn(row) {
+        this.loading = true;
+        const response = await fetch(
+          `/question_rows/${row.id}/question_row_columns`,
+          {
+            method: "POST",
+            headers,
+            credentials: "same-origin",
+          }
+        );
+        this.report(response.status);
+        await this.fetch_questions();
+        this.loading = false;
+      },
+      async duplicateRow(question_row) {
+        this.loading = true;
+        const response = await fetch(
+          `/question_rows/${question_row.id}/duplicate`,
+          {
+            method: "POST",
+            headers,
+            credentials: "same-origin",
+          }
+        );
+        this.report(response.status);
+        await this.fetch_questions();
+        this.loading = false;
+      },
+      async deleteRow(question_row) {
+        this.loading = true;
+        const response = await fetch(`/question_rows/${question_row.id}`, {
+          method: "DELETE",
+          headers,
+          credentials: "same-origin",
+        });
+        this.report(response.status);
+        await this.fetch_questions();
+        this.loading = false;
+      },
+      async deleteColumn(question_row_column) {
+        this.loading = true;
+        const response = await fetch(
+          `/question_row_columns/${question_row_column.id}`,
+          {
+            method: "DELETE",
+            headers,
+            credentials: "same-origin",
+          }
+        );
+        this.report(response.status);
+        await this.fetch_questions();
+        this.loading = false;
+      },
+      async updateCellType(question_row_column, params) {
+        this.loading = true;
+        const response = await fetch(
+          `/question_row_columns/${question_row_column.id}`,
+          {
+            method: "PATCH",
+            headers,
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+        this.report(response.status);
+        await this.fetch_questions();
+        this.loading = false;
+      },
+      async updateCellOption(qrcqrco_id, params) {
+        const response = await fetch(
+          `/question_row_columns_question_row_column_options/${qrcqrco_id}`,
+          {
+            method: "PATCH",
+            headers,
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+        this.report(response.status);
+      },
+      async createOption(question_row_column_id, params) {
+        this.loading = true;
+        const response = await fetch(
+          `/question_row_columns/${question_row_column_id}/question_row_columns_question_row_column_options`,
+          {
+            method: "POST",
+            headers,
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+        this.report(response.status);
+        await this.fetch_questions();
+        this.loading = false;
+      },
+      async deleteOption(qrcqrco_id) {
+        this.loading = true;
+        const response = await fetch(
+          `/question_row_columns_question_row_column_options/${qrcqrco_id}`,
+          {
+            method: "DELETE",
+            headers,
+            credentials: "same-origin",
+          }
+        );
+        this.report(response.status);
+        await this.fetch_questions();
+        this.loading = false;
+      },
+      async updateFollowupField(
+        question_row_cquestion_row_columns_question_row_column_option_id,
+        followup_field_id,
+        checked
+      ) {
+        this.loading = true;
+        const url = checked
+          ? `/question_row_columns_question_row_column_options/${question_row_cquestion_row_columns_question_row_column_option_id}/followup_fields`
+          : `/followup_fields/${followup_field_id}`;
+        const response = await fetch(url, {
+          method: checked ? "POST" : "DELETE",
+          headers,
+          credentials: "same-origin",
+        });
+        this.report(response.status);
+        await this.fetch_questions();
+        this.loading = false;
+      },
+      async deleteQuestion(q) {
+        this.loading = true;
+        await this.destroyResource(`/questions/${q.id}`, "question");
+        await this.fetch_questions();
+        this.loading = false;
+      },
+      async updateQuestion(question, params) {
+        const response = await fetch(`/questions/${question.id}`, {
+          method: "PATCH",
+          headers,
+          credentials: "same-origin",
+          body: JSON.stringify(params),
+        });
+        this.report(response.status);
+      },
+      async updateOrderings(dragPos, dropPos, table) {
+        this.loading = true;
+        const temp = this.questions[dropPos];
+        this.questions[dropPos] = this.questions[dragPos];
+        this.questions[dragPos] = temp;
+        const tempOrderableElements = this.questions;
+        this.questions = [];
+        await this.$nextTick(async () => {
+          this.questions = tempOrderableElements;
+          const orderings = {};
+          tempOrderableElements.forEach(
+            (oe, index) => (orderings[index] = { id: oe.id, table })
+          );
+          await fetch("/api/v1/orderings/update_positions", {
+            method: "PATCH",
+            headers,
+            body: JSON.stringify({ orderings }),
+          });
+          this.questions.forEach((el, index) => (el.pos = index + 1));
         });
         this.loading = false;
       },
 
-      async updateDependenciesTable() {
-        this.loading = true;
-        this.dependencies_table = await (
-          await fetch(
-            `/questions/${this.edit_question_id}/dependencies?partial=true`
-          )
-        ).text();
-        this.loading = false;
+      async report(responseStatus) {
+        if (responseStatus >= 200 && responseStatus < 300) {
+          toastr.success("Updated succesfully!", null, { timeOut: 1000 });
+        } else {
+          toastr.error("We've encountered an error", null, { timeOut: 1000 });
+        }
       },
 
       async fetchPreviewContent() {
@@ -262,169 +1256,33 @@
         this.loading = false;
       },
 
-      async duplicateRow(questionRowId) {
-        this.loading = true;
-        await this.updateQuestionTable(
-          this.edit_question_id,
-          document.getElementById(`edit_question_${this.edit_question_id}`)
-        );
-        const response = await fetch(
-          `/question_rows/${questionRowId}/duplicate`,
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
-          }
-        );
-        await this.fetchQuestionTable();
-        toastr.success("Row was succesfully duplicated!", null, {
-          timeOut: 1000,
-        });
-        this.loading = false;
-      },
-
-      async addRowOrColumn(type) {
-        this.loading = true;
-        await this.updateQuestionTable(
-          this.edit_question_id,
-          document.getElementById(`edit_question_${this.edit_question_id}`)
-        );
-        const response = await fetch(
-          `/questions/${this.edit_question_id}/${type}`,
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
-          }
-        );
-        await this.fetchQuestionTable();
-        this.loading = false;
-      },
-
-      async updateQuestionTable(questionId, form) {
-        const formData = new FormData(form);
-
-        const response = await fetch(`/questions/${questionId}`, {
-          method: "PATCH",
-          headers: {
-            Accept: "application/json",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
-          body: formData,
-        });
-        const data = await response.json();
-        this.fetch_questions();
-      },
-
-      array_move(arr, old_index, new_index) {
-        if (new_index >= arr.length) {
-          var k = new_index - arr.length + 1;
-          while (k--) {
-            arr.push(undefined);
-          }
-        }
-        arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-      },
-
-      async updatePositions(old_index, new_index) {
-        this.loading = true;
-        this.array_move(this.questions, old_index, new_index);
-
-        const orderings = {};
-        this.questions.forEach((question, questionIndex) => {
-          orderings[questionIndex] = {
-            id: question.id,
-            position: questionIndex,
-            table: "questions",
-          };
-        });
-
-        const response = await fetch("/api/v1/orderings/update_positions", {
-          method: "PATCH",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
-          body: JSON.stringify({ orderings }),
-        });
-        this.questions = [];
-        await this.fetch_questions();
-        this.loading = false;
-        toastr.success("Positions updated!", null, {
-          timeOut: 1000,
-        });
-      },
-
-      async createDuplicateQuestion(questionId) {
-        this.loading = true;
-        const response = await fetch(`/questions/${questionId}/duplicate`, {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
-        });
-        await this.fetch_questions();
-        toastr.success("Question was succesfully duplicated!", null, {
-          timeOut: 1000,
-        });
-        this.loading = false;
-      },
-
       async createQuestion() {
         this.loading = true;
         const response = await fetch(
           `/extraction_forms_projects_sections/<%= efps.id %>/questions`,
           {
             method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
+            headers,
             body: JSON.stringify({
-              question: { name: "New Question", description: "Description" },
+              question: { name: "", description: "" },
             }),
           }
         );
+        this.report(response.status);
         await this.fetch_questions();
-        toastr.success("Question was added!", null, {
-          timeOut: 1000,
-        });
-        const resp = await response.json();
-        this.edit_question_id = resp.id;
-        this.fetchQuestionTable();
-        this.question_modal = true;
         this.loading = false;
       },
 
       async fetch_questions() {
-        this.loading = true;
         const response = await fetch(
           "/extraction_forms_projects/<%= @extraction_forms_project.id %>/build?panel-tab=<%= params['panel-tab'] %>",
           {
             method: "GET",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
+            headers,
           }
         );
         const questions = await response.json();
         this.questions = questions;
-        this.loading = false;
       },
     }));
   });
