@@ -7,13 +7,6 @@
 - efps = eefps.extraction_forms_projects_section
 - extraction_forms_project_type = efp.extraction_forms_project_type
 
-/ If at least one Outcome is present, make extraction form type selector available.
-/- if @eefpst1
-  = simple_form_for(efp, remote: true) do |f|
-    = f.association :extraction_forms_project_type,
-      collection: ExtractionFormsProjectType.where(id: [1, 2])
-    = f.submit 'Update Extraction Form Type', class: 'button'
-
 / Standard extraction and there are at least one Arm and one Outcome.
 - if extraction_forms_project_type.id.eql?(1) && @extraction.results_section_ready_for_extraction?
   #results-panel
@@ -26,6 +19,12 @@
       = render 'shared/statusing_form', statusing: eefps.statusing, status_name: eefps.statusing.status.name
     blockquote
       | #{efps.helper_message.present? ? efps.helper_message : "The results section is where you enter numerical data, comparisons, etc."}
+
+    = render 'extractions/shared/section_instructions',
+      extraction: @extraction,
+      section_name: section_name,
+      eefps: eefps,
+      efps: eefps.extraction_forms_projects_section
 
     = render 'shared/extractions/work/results/outcome_selector'
 
