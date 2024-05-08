@@ -1,5 +1,3 @@
-/h5 #{ section_name } that are included in this Extraction
-
 #outcomes-table.table-scroll
   - if section_name.eql? 'Diagnostic Tests'
     = render 'extractions/shared/type_1/type_1_included_list/diagnostic_tests_table', eefps: eefps
@@ -17,9 +15,10 @@
         col style="width: 10%;"
 
       - else
-        col style="width:45%"
-        col style="width:45%"
-        col style="width:9%"
+        col
+        col
+        col
+        col
 
       thead style="background: initial; border: none;"
         tr
@@ -28,6 +27,7 @@
             th style="border: none;" Type
           th style="border: none;" = section_name.eql?('Outcomes') ? 'Domain' : "#{section_name.singularize} Name"
           th style="border: none;" = section_name.eql?('Outcomes') ? 'Specific measurement (i.e., tool/definition/specific outcome)' : "#{section_name.singularize} Description"
+          th style="border: none;" Instructions by Lead
           - if ['Outcomes', 'Diagnoses'].include? section_name
             th style="border: none;" Populations
             th style="border: none;" Timepoints
@@ -52,6 +52,12 @@
               td = eefpst1.type1.name
 
             td = eefpst1.type1.description
+            td = eefps\
+                   .extraction_forms_projects_section\
+                   .extraction_forms_projects_sections_type1s\
+                   .where("type1_type_id IS NULL OR type1_type_id = ?", eefpst1.type1_type_id)\
+                   .find_by(type1: eefpst1.type1)\
+                   &.instructions
             - confirmation_message = "Deleting this data point will potentially remove any data associated with it as well. Are you sure you would like to delete: '#{eefpst1.type1.name}'?"
             - if ['Outcomes', 'Diagnoses'].include? section_name
               - populations = []

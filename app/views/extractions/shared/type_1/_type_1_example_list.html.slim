@@ -9,14 +9,15 @@
 
       thead
         tr
-        - if section_name == 'Outcome'
-          th Type of Outcome
-          th Domain
-          th Specific measurement (i.e., tool/definition/specific outcome)
-          th Timepoint(s)
-        - else
-          th Name
-          th Description
+          - if section_name == 'Outcome'
+            th Type of Outcome
+            th Domain
+            th Specific measurement (i.e., tool/definition/specific outcome)
+            th Timepoint(s)
+          - else
+            th Name
+            th Description
+          th #{ section_name } Specific Instructions by Lead
 
       tbody
         / #!!! Add profject lead info if project lead.
@@ -36,6 +37,8 @@
             - else
               td[data-t1-name] = t1.name
               td[data-t1-description] = t1.description
+
+            td[data-t1-instructions] = efpst1.instructions
 
   button.close-button data-close='' aria-label='Close modal' type='button'
     span aria-hidden='true'

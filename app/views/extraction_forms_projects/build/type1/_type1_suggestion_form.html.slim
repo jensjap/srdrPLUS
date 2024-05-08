@@ -29,5 +29,7 @@ h4 Add #{ section_name } Suggestion
           label: "Suggest Timepoint(s) to associate with this #{ section_name }. If you cannot find an existing Timepoint to associate, #{ link_to_add_association('click here', sf_efpst1, :timepoint_names, partial: 'extraction_forms_projects/build/type1/timepoint_name_fields') } to create a new one.".html_safe,
           label_method: :select_label
 
+      = sf_efpst1.input :instructions, label: "(optional) Please enter specific instructions for this suggested #{ section_name }", input_html: { rows: 4, maxlength: 1024 }
+
   .form-actions
     = f.button :submit, "Submit #{ section_name } Suggestion"

@@ -6,17 +6,6 @@ blockquote
     These instructions will be visible during data extraction but will not appear in the exported data.
   cite Friendly Helper
 
-= simple_form_for efps, remote: true, html: { id: 'efps-instructions-form', class: 'pb-5' } do |f|
-  = f.input :instructions, label: 'Please enter the instruction text below:', input_html: { rows: 4, maxlength: 1024 }
-  = f.button :submit, 'Save Instructions', class: 'btn btn-primary', id: 'save-instructions-btn'
-
-javascript:
-  $(document).ready(function() {
-    $('#efps-instructions-form').on('ajax:beforeSend', function() {
-      $('#save-instructions-btn').prop('disabled', true);
-    });
-
-    $('#efps-instructions-form').on('ajax:success', function() {
-      $('#save-instructions-btn').prop('disabled', false);
-    });
-  });
+= simple_form_for efps, remote: true, html: { class: 'pb-5' } do |f|
+  = f.input :instructions, label: 'Please enter the instructions for this section below:', input_html: { rows: 4, maxlength: 1024 }
+  = f.button :submit, 'Save Instructions', class: 'btn btn-primary', data: { disable_with: 'Saving...' }

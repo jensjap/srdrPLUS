@@ -26,7 +26,9 @@ class ExtractionFormsProjectsSectionsType1sController < ApplicationController
 
   def extraction_forms_projects_sections_type1_params
     params.require(:extraction_forms_projects_sections_type1)
-          .permit(:type1_type_id, timepoint_name_ids: [], type1_attributes: %i[id name
-                                                                               description], timepoint_names_attributes: %i[id name unit])
+          .permit(:type1_type_id, :instructions,
+                  timepoint_name_ids: [],
+                  type1_attributes: %i[id name description],
+                  timepoint_names_attributes: %i[id name unit])
   end
 end
