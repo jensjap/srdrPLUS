@@ -62,13 +62,15 @@ class RobotScreenService
   end
 
   def save_predictions(data, predictions, ml_model)
-    data.each_with_index do |citation, index|
+    prediction_records = data.map.with_index do |citation, index|
       citation_id = citation['citation_id']
       score = predictions[index]
       citations_project = CitationsProject.find_by(citation_id: citation_id, project_id: @project_id)
-      ml_prediction = MlPrediction.new(citations_project_id: citations_project.id, ml_model_id: ml_model.id, score: score)
-      ml_prediction.save
+      { citations_project_id: citations_project.id, ml_model_id: ml_model.id, score: score }
     end
+
+    MlPrediction.insert_all(prediction_records)
+
     'Predictions saved'
   end
 
@@ -102,9 +104,10 @@ class RobotScreenService
 
     human_labels = predict_data.map { |data| data['label'] }
 
-    human_labels.zip(predictions).each do |label, prediction|
-      ml_model.model_performances.create(label: label, score: prediction)
+    performance_data = human_labels.zip(predictions).map do |label, prediction|
+      { ml_model_id: ml_model.id, label: label, score: prediction, created_at: Time.current, updated_at: Time.current }
     end
+    ModelPerformance.insert_all(performance_data)
 
     "Training complete (model timestamp: #{timestamp})"
   end
