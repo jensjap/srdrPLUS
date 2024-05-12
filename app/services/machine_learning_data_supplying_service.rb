@@ -80,18 +80,19 @@ class MachineLearningDataSupplyingService
     project = Project.find(project_id)
 
     project_data = project.citations
-                          .includes(:citations_projects)
-                          .reject do |citation|
-      citation.name.blank? || citation.abstract.blank? ||
-      CitationsProject.find_by(citation_id: citation.id, project_id: project_id)
-                       .abstract_screening_results.present?
-    end.map do |citation|
-      {
-        'citation_id' => citation.id,
-        'ti' => citation.name.gsub('"', "'"),
-        'abs' => citation.abstract.gsub('"', "'")
-      }
-    end
+                          .joins("LEFT OUTER JOIN citations_projects AS cp1 ON cp1.citation_id = citations.id AND cp1.project_id = #{project_id}")
+                          .joins("LEFT OUTER JOIN abstract_screening_results ON abstract_screening_results.citations_project_id = cp1.id")
+                          .where("abstract_screening_results.id IS NULL OR cp1.id IS NULL")
+                          .where.not(name: [nil, ''], abstract: [nil, ''])
+                          .pluck(:id, :name, :abstract)
+                          .reject { |id, name, abstract| name.nil? || abstract.nil? }
+                          .map do |id, name, abstract|
+                            {
+                              'citation_id' => id,
+                              'ti' => name.gsub('"', "'"),
+                              'abs' => abstract.gsub('"', "'")
+                            }
+                          end
 
     project_data
   end
