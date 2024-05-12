@@ -1122,4 +1122,275 @@ class ConsolidationService
       )
       .where(extractions:, extraction_forms_projects_sections: { sections: { name: section_names } })
   end
+
+  # DONE: arms: eefpst1s
+  # DONE: outcomes: eefpst1s -> eefpst1r -> population_name  eefpst1r -> eefpst1rc -> timepoint_name
+  # DONE: dd, armdetails, sample, outcome details, risk (linked/linked): (eefpst1s) -> q -> qr -> qrc -> qrcf + FF
+  # TBD: results
+
+  def self.clone_extractions(extractions, consolidated_extraction, citations_project_id)
+    eefpss =
+      ExtractionsExtractionFormsProjectsSection
+      .includes(
+        extraction: [
+          :citations_project,
+          {
+            extractions_extraction_forms_projects_sections:
+              {
+                link_to_type1: :extractions_extraction_forms_projects_sections_type1s,
+                extractions_extraction_forms_projects_sections_type1s: [
+                  :type1, {
+                    extractions_extraction_forms_projects_sections_type1_rows: :extractions_extraction_forms_projects_sections_type1_row_columns
+                  }
+                ],
+                extraction_forms_projects_section: {
+                  questions: { question_rows: { question_row_columns: :question_row_column_fields } }
+                }
+              }
+          }
+        ]
+      )
+      .where(citations_projects: { id: citations_project_id })
+      .where(extractions:)
+    eefpss = eefpss.sort_by do |eefps|
+      eefps.extraction_forms_projects_section.extraction_forms_projects_section_type_id
+    end
+    groups = {}
+    eefpss.each do |eefps|
+      groups[[eefps.extraction_forms_projects_section_id,
+              eefps.extraction_forms_projects_section.extraction_forms_projects_section_type_id]] ||= []
+      groups[[eefps.extraction_forms_projects_section_id,
+              eefps.extraction_forms_projects_section.extraction_forms_projects_section_type_id]] << eefps
+    end
+    groups.each do |efps_id_efps_type_id, eefpss2|
+      efps_id, efps_type_id = efps_id_efps_type_id
+      case efps_type_id
+      when 1
+        lookup = {}
+        eefpss2.each do |eefps2|
+          eefps2.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+            type1 = eefpst1.type1
+            if eefpst1.extractions_extraction_forms_projects_sections_type1_rows.count.zero?
+              comparison_array = []
+              comparison_array << eefpst1.type1_type_id # 0
+              comparison_array << eefpst1.units # 1
+              comparison_array << type1.name # 2
+              comparison_array << type1.description # 3
+              lookup[comparison_array] ||= 0
+              lookup[comparison_array] += 1
+            else
+              eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+                population_name = eefpst1r.population_name.name
+                population_description = eefpst1r.population_name.description
+                eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.each do |eefpst1rc|
+                  comparison_array = []
+                  comparison_array << eefpst1.type1_type_id # 0
+                  comparison_array << eefpst1.units # 1
+                  comparison_array << type1.name # 2
+                  comparison_array << type1.description # 3
+                  population_name = eefpst1r.population_name.name
+                  population_description = eefpst1r.population_name.description
+                  comparison_array << population_name # 4
+                  comparison_array << population_description # 5
+                  timepoint_name = eefpst1rc.timepoint_name.name
+                  timepoint_unit = eefpst1rc.timepoint_name.unit
+                  comparison_array << timepoint_name # 6
+                  comparison_array << timepoint_unit # 7
+                  lookup[comparison_array] ||= 0
+                  lookup[comparison_array] += 1
+                end
+              end
+            end
+          end
+        end
+        lookup.each do |comparison_array, count|
+          next unless count == eefpss2.count
+
+          type1_type_id = comparison_array[0]
+          units = comparison_array[1]
+          type1 = Type1.find_by(name: comparison_array[2], description: comparison_array[3])
+          ceefps = ExtractionsExtractionFormsProjectsSection
+                   .find_by(extraction_forms_projects_section_id: efps_id, extraction: consolidated_extraction)
+          eefpst1 = ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by(
+            type1_type_id:,
+            extractions_extraction_forms_projects_section: ceefps,
+            type1:,
+            units:
+          )
+          next unless comparison_array.count > 4
+
+          eefpst1r = ExtractionsExtractionFormsProjectsSectionsType1Row.find_or_create_by(
+            extractions_extraction_forms_projects_sections_type1: eefpst1,
+            population_name: PopulationName.find_by(
+              name: comparison_array[4],
+              description: comparison_array[5]
+            )
+          )
+          ExtractionsExtractionFormsProjectsSectionsType1RowColumn.find_or_create_by(
+            extractions_extraction_forms_projects_sections_type1_row: eefpst1r,
+            timepoint_name: TimepointName.find_by(
+              name: comparison_array[6],
+              unit: comparison_array[7]
+            )
+          )
+        end
+      when 2
+        lookup = {}
+        ff_lookup = {}
+        eefpsqrcfs = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField
+                     .includes(
+                       :extractions_extraction_forms_projects_section,
+                       { question_row_column_field: { question_row_column: { question_row: :question } } }
+                     )
+                     .where(extractions_extraction_forms_projects_sections: { id: eefpss2.map(&:id) })
+        linked_eefps = eefpss2.first.link_to_type1
+        if linked_eefps
+          linked_efps_id = linked_eefps.extraction_forms_projects_section_id
+          eefpsqrcfs.each do |eefpsqrcf|
+            record = eefpsqrcf.records.order(id: :desc).first
+            next if record.nil?
+
+            linked_eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
+              type1 = eefpst1.type1
+              comparison_array = []
+              comparison_array << eefpst1.type1_type_id # 0
+              comparison_array << eefpst1.units # 1
+              comparison_array << type1.name # 2
+              comparison_array << type1.description # 3
+              comparison_array << linked_efps_id # 4
+              comparison_array << eefpsqrcf.question_row_column_field_id # 5
+              comparison_array << record.name # 6
+
+              lookup[comparison_array] ||= 0
+              lookup[comparison_array] += 1
+            end
+          end
+        else
+          eefpsqrcfs.each do |eefpsqrcf|
+            record = eefpsqrcf.records.order(id: :desc).first
+            next if record.nil?
+
+            comparison_array = []
+            comparison_array << eefpsqrcf.question_row_column_field_id # 1
+            comparison_array << record.name # 2
+
+            lookup[comparison_array] ||= 0
+            lookup[comparison_array] += 1
+          end
+        end
+        eefpsffs =
+          ExtractionsExtractionFormsProjectsSectionsFollowupField
+          .includes(followup_field: {
+                      question_row_columns_question_row_column_option: {
+                        question_row_column: {
+                          question_row: {
+                            question: :extraction_forms_projects_section
+                          }
+                        }
+                      }
+                    })
+          .where(extraction_forms_projects_sections: { id: efps_id })
+        eefpsffs.each do |eefpsff|
+          next if eefpsff.extractions_extraction_forms_projects_section.extraction_id == consolidated_extraction.id
+
+          eefpst1 = eefpsff&.extractions_extraction_forms_projects_sections_type1
+          type1 = eefpst1&.type1
+          comparison_array = []
+          comparison_array << eefpst1&.type1_type_id # 0
+          comparison_array << eefpst1&.units # 1
+          comparison_array << type1&.name # 2
+          comparison_array << type1&.description # 3
+          comparison_array << linked_eefps&.extraction_forms_projects_section_id # 4
+          comparison_array << eefpsff&.followup_field_id # 5
+          comparison_array << eefpsff.records.first.name # 6
+
+          ff_lookup[comparison_array] ||= 0
+          ff_lookup[comparison_array] += 1
+        end
+        lookup.each do |comparison_array, count|
+          next unless count == eefpss2.count
+
+          if linked_eefps
+            type1_type_id = comparison_array[0]
+            units = comparison_array[1]
+            type1 = Type1.find_by(name: comparison_array[2], description: comparison_array[3])
+            ceefps =
+              ExtractionsExtractionFormsProjectsSection
+              .find_by(extraction_forms_projects_section_id: efps_id, extraction: consolidated_extraction)
+            linked_ceefps =
+              ExtractionsExtractionFormsProjectsSection
+              .find_by(extraction_forms_projects_section_id: comparison_array[4], extraction: consolidated_extraction)
+            eefpst1 =
+              ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by(
+                type1_type_id:,
+                extractions_extraction_forms_projects_section: linked_ceefps,
+                type1:,
+                units:
+              )
+            eefpsqrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(
+              extractions_extraction_forms_projects_sections_type1_id: eefpst1.id,
+              extractions_extraction_forms_projects_section_id: ceefps.id,
+              question_row_column_field_id: comparison_array[5]
+            )
+            record = Record.find_or_create_by(
+              recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField',
+              recordable_id: eefpsqrcf.id
+            )
+            record.update(name: comparison_array[6]) if record.name != comparison_array[6]
+          else
+            ceefps =
+              ExtractionsExtractionFormsProjectsSection
+              .find_by(extraction_forms_projects_section_id: efps_id, extraction: consolidated_extraction)
+            eefpsqrcf = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField.find_or_create_by(
+              extractions_extraction_forms_projects_section_id: ceefps.id,
+              question_row_column_field_id: comparison_array[0]
+            )
+            record = Record.find_or_create_by(
+              recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField',
+              recordable_id: eefpsqrcf.id
+            )
+            record.update(name: comparison_array[1]) if record.name != comparison_array[1]
+          end
+        end
+        ff_lookup.each do |comparison_array, count|
+          next unless count == eefpss2.count
+
+          ceefps =
+            ExtractionsExtractionFormsProjectsSection
+            .find_by(extraction_forms_projects_section_id: efps_id, extraction: consolidated_extraction)
+          eefpst1 = nil
+          if linked_eefps
+            type1_type_id = comparison_array[0]
+            units = comparison_array[1]
+            type1 = Type1.find_by(name: comparison_array[2], description: comparison_array[3])
+            linked_ceefps =
+              ExtractionsExtractionFormsProjectsSection
+              .find_by(extraction_forms_projects_section_id: comparison_array[4], extraction: consolidated_extraction)
+            eefpst1 =
+              ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by(
+                type1_type_id:,
+                extractions_extraction_forms_projects_section: linked_ceefps,
+                type1:,
+                units:
+              )
+          end
+          eefpsff =
+            ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by(
+              extractions_extraction_forms_projects_section_id: ceefps.id,
+              followup_field_id: comparison_array[5],
+              extractions_extraction_forms_projects_sections_type1_id: eefpst1&.id
+            )
+          record = Record.find_or_create_by(
+            recordable_type: 'ExtractionsExtractionFormsProjectsSectionsFollowupField',
+            recordable_id: eefpsff.id
+          )
+          record.update(name: comparison_array[6]) if record.name != comparison_array[6]
+        end
+      when 3
+        # TODO
+      end
+    end
+
+    nil
+  end
 end
