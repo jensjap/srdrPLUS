@@ -47,7 +47,7 @@ class ExtractionSupplyingService
     fhir_extraction_sections = extraction.extractions_extraction_forms_projects_sections.map { |extraction_section| create_fhir_obj(extraction_section) }.flatten
 
     fhir_list = FhirResourceService.get_list(fhir_objs: fhir_extraction_sections)
-    fhir_list['identifier'] = FhirResourceService.build_identifier('Extraction', id)[0]
+    fhir_list['identifier'] = FhirResourceService.build_identifier('Extraction', id)
     fhir_list['id'] = "13-#{id}"
 
     fhir_list
