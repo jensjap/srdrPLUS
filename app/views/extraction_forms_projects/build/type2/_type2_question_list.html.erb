@@ -18,140 +18,170 @@
       x-for="(question, question_index) in questions"
       :key="question.id"
     >
-      <div class="bg-gray-100 p-2 rounded-md flex overflow-x-auto">
-        <div class="flex-grow">
-          <div class="mb-1 mr-2">
-            <div class="mb-1 flex">
-              <div class="mr-2 text-sm">Position</div>
-              <select
-                class="p-[2px] text-xs"
-                @change="updateOrderings(question_index, $el.value - 1, 'questions')"
+      <div class="bg-gray-100 p-2 rounded-md">
+        <div class="mb-1">
+          <div class="mr-2 text-sm">Position</div>
+          <select
+            class="p-[2px] text-xs"
+            @change="updateOrderings(question_index, $el.value - 1, 'questions')"
+          >
+            <template x-for="(q, q_index) in questions" :key="q.id">
+              <option
+                :selected="q_index == question_index"
+                :value="q_index + 1"
+                x-text="q_index + 1"
+              ></option>
+            </template>
+          </select>
+          <div class="flex space-x-4 m-2">
+            <div
+              class="flex cursor-pointer hover:underline"
+              @click="edit_question_id = null; edit_question_id = question.id; dependencies_modal = true; updateDependenciesTable();"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5 cursor-pointer"
               >
-                <template x-for="(q, q_index) in questions" :key="q.id">
-                  <option
-                    :selected="q_index == question_index"
-                    :value="q_index + 1"
-                    x-text="q_index + 1"
-                  ></option>
-                </template>
-              </select>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-5 h-5 cursor-pointer"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                  />
-                </svg>
-                <span>Edit</span>
-              </div>
-              <div
-                class="flex items-center justify-center space-x-1 cursor-pointer hover:underline"
-                @click="edit_question_id = null; edit_question_id = q.id; dependencies_modal = true; updateDependenciesTable();"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-5 h-5 cursor-pointer"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"
-                  />
-                </svg>
-                <span>Dependencies</span>
-              </div>
-              <div
-                class="flex items-center justify-center space-x-1 cursor-pointer hover:underline"
-                @click="createDuplicateQuestion(q.id)"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-5 h-5 cursor-pointer"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
-                  />
-                </svg>
-                <span>Duplicate</span>
-              </div>
-              <div
-                @click="showAlertModal(`/questions/${q.id}`, 'question')"
-                class="flex items-center justify-center space-x-1 cursor-pointer hover:underline"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-5 h-5 cursor-pointer"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                  />
-                </svg>
-                <span>Remove</span>
-              </div>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"
+                />
+              </svg>
+              <span>Dependencies</span>
             </div>
-            <div class="bg-gray-100 p-1 rounded-md">
-              <input
-                placeholder="Question text"
-                class="!text-base !px-1"
-                @input.debounce.500ms="updateQuestion(question, { name: $el.value })"
-                x-model="question.name"
-                type="text"
-              />
+            <div
+              class="flex cursor-pointer hover:underline"
+              @click="createDuplicateQuestion(question.id)"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5 cursor-pointer"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
+                />
+              </svg>
+              <span>Duplicate</span>
             </div>
-            <div class="bg-gray-100 p-1 rounded-md">
-              <input
-                placeholder="Question description"
-                class="!text-base !px-1"
-                @input.debounce.500ms="updateQuestion(question, { description: $el.value })"
-                x-model="question.description"
-                type="text"
-              />
+            <div
+              @click="showAlertModal(`/questions/${question.id}`, 'question')"
+              class="flex cursor-pointer hover:underline"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5 cursor-pointer"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                />
+              </svg>
+              <span>Remove</span>
             </div>
           </div>
-          <div>
-            <table class="h-0 w-0 table-auto border-separate border-spacing-1">
-              <thead>
+          <div class="bg-gray-100 p-1 rounded-md">
+            <input
+              placeholder="Question text"
+              class="!text-base !px-1"
+              @input.debounce.500ms="updateQuestion(question, { name: $el.value })"
+              x-model="question.name"
+              type="text"
+            />
+          </div>
+          <div class="bg-gray-100 p-1 rounded-md">
+            <input
+              placeholder="Question description"
+              class="!text-base !px-1"
+              @input.debounce.500ms="updateQuestion(question, { description: $el.value })"
+              x-model="question.description"
+              type="text"
+            />
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="h-0 w-0 table-auto border-separate border-spacing-1">
+            <thead>
+              <tr>
+                <td class="bg-white"></td>
+                <template
+                  x-for="(column, column_index) in question.columns"
+                  :key="column.id"
+                >
+                  <th>
+                    <div class="flex justify-center items-center">
+                      <input
+                        placeholder="Column header"
+                        class="!text-xs p-2 w-auto grow whitespace-nowrap text-center"
+                        @input.debounce.500ms="updateColumn(column, { name: $el.value })"
+                        x-model="question.columns[column_index].name"
+                        type="text"
+                      />
+                      <div
+                        @click="deleteColumn(column)"
+                        class="text-red-900 cursor-pointer p-2 border-l border-gray-300 hover:bg-red-100"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="w-4 h-4"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </th>
+                </template>
+                <th
+                  class="whitespace-nowrap cursor-pointer flex justify-between items-center h-full"
+                  @click="addColumn(question.rows[0])"
+                >
+                  <div class="p-2">Click to add column</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <template
+                x-for="(row, row_index) in (question.rows)"
+                :key="row.id"
+              >
                 <tr>
-                  <td class="bg-white"></td>
-                  <template
-                    x-for="(column, column_index) in question.columns"
-                    :key="column.id"
-                  >
-                    <th>
-                      <div class="flex justify-center items-center">
-                        <input
-                          placeholder="Column header"
-                          class="!text-xs p-2 w-auto grow whitespace-nowrap text-center"
-                          @input.debounce.500ms="updateColumn(column, { name: $el.value })"
-                          x-model="question.columns[column_index].name"
-                          type="text"
-                        />
+                  <th>
+                    <div class="h-full flex justify-center items-center">
+                      <input
+                        placeholder="Row header"
+                        class="!text-xs p-2 w-auto grow whitespace-nowrap text-center"
+                        @input.debounce.500ms="updateRow(row, { name: $el.value })"
+                        x-model="question.rows[row_index].name"
+                        type="text"
+                      />
+                      <div class="h-full border-l border-gray-300">
                         <div
-                          @click="deleteColumn(column)"
-                          class="text-red-900 cursor-pointer p-2 border-l border-gray-300 hover:bg-red-100"
+                          class="text-red-900 cursor-pointer hover:bg-red-100 p-2"
+                          @click="deleteRow(row)"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -168,775 +198,695 @@
                             />
                           </svg>
                         </div>
-                      </div>
-                    </th>
-                  </template>
-                  <th
-                    class="whitespace-nowrap cursor-pointer flex justify-between items-center h-full"
-                    @click="addColumn(question.rows[0])"
-                  >
-                    <div class="p-2">Click to add column</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <template
-                  x-for="(row, row_index) in (question.rows)"
-                  :key="row.id"
-                >
-                  <tr>
-                    <th>
-                      <div class="h-full flex justify-center items-center">
-                        <input
-                          placeholder="Row header"
-                          class="!text-xs p-2 w-auto grow whitespace-nowrap text-center"
-                          @input.debounce.500ms="updateRow(row, { name: $el.value })"
-                          x-model="question.rows[row_index].name"
-                          type="text"
-                        />
-                        <div class="h-full border-l border-gray-300">
-                          <div
-                            class="text-red-900 cursor-pointer hover:bg-red-100 p-2"
-                            @click="deleteRow(row)"
+                        <div
+                          class="text-green-900 cursor-pointer hover:bg-green-100 p-2"
+                          @click="duplicateRow(row)"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="w-4 h-4"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke-width="1.5"
-                              stroke="currentColor"
-                              class="w-4 h-4"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                              />
-                            </svg>
-                          </div>
-                          <div
-                            class="text-green-900 cursor-pointer hover:bg-green-100 p-2"
-                            @click="duplicateRow(row)"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke-width="1.5"
-                              stroke="currentColor"
-                              class="w-4 h-4"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"
-                              />
-                            </svg>
-                          </div>
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"
+                            />
+                          </svg>
                         </div>
                       </div>
-                    </th>
+                    </div>
+                  </th>
 
-                    <template
-                      x-for="(column, column_index) in question.columns"
-                      :key="column.id"
-                    >
-                      <td>
-                        <template
-                          x-if="question.cells[row_index] !== undefined && question.cells[row_index][column_index] !== undefined && (question.cells[row_index][column_index] !== undefined || question.cells[row_index][column_index] !== null)"
+                  <template
+                    x-for="(column, column_index) in question.columns"
+                    :key="column.id"
+                  >
+                    <td>
+                      <template
+                        x-if="question.cells[row_index] !== undefined && question.cells[row_index][column_index] !== undefined && (question.cells[row_index][column_index] !== undefined || question.cells[row_index][column_index] !== null)"
+                      >
+                        <div
+                          class="flex justify-center items-stretch h-full"
+                          style="min-width: 0"
                         >
-                          <div
-                            class="flex justify-center items-stretch h-full"
-                            style="min-width: 0"
-                          >
-                            <div class="p-2 grow">
-                              <template
-                                x-if="question.cells[row_index][column_index]?.cell_type === 'text'"
-                              >
-                                <div>
-                                  <div
-                                    class="whitespace-nowrap border-b-2 border-gray-300"
-                                  >
-                                    Text Field
-                                  </div>
+                          <div class="p-2 grow">
+                            <template
+                              x-if="question.cells[row_index][column_index]?.cell_type === 'text'"
+                            >
+                              <div>
+                                <div
+                                  class="whitespace-nowrap border-b-2 border-gray-300"
+                                >
+                                  Text Field
+                                </div>
+                                <label class="whitespace-nowrap"
+                                  >Min character length
+                                  <input
+                                    name="min_length"
+                                    type="number"
+                                    x-model="question.cells[row_index][column_index].min_length.name"
+                                    x-on:change.debounce.500ms="updateCellOption(question.cells[row_index][column_index].min_length.id, { name: $el.value })"
+                                /></label>
+                                <label class="whitespace-nowrap"
+                                  >Max character length
+                                  <input
+                                    name="max_length"
+                                    type="number"
+                                    x-model="question.cells[row_index][column_index].max_length.name"
+                                    x-on:change.debounce.500ms="updateCellOption(question.cells[row_index][column_index].max_length.id, { name: $el.value })"
+                                /></label>
+                              </div>
+                            </template>
+                            <template
+                              x-if="question.cells[row_index][column_index]?.cell_type === 'numeric'"
+                            >
+                              <div>
+                                <div
+                                  class="whitespace-nowrap border-b-2 border-gray-300"
+                                >
+                                  Numeric Field
+                                </div>
+                                <div class="flex justify-between items-center">
                                   <label class="whitespace-nowrap"
-                                    >Min character length
+                                    >Allow ~, <, >, ≤, ≥
                                     <input
-                                      name="min_length"
-                                      type="number"
-                                      x-model="question.cells[row_index][column_index].min_length.name"
-                                      x-on:change.debounce.500ms="updateCellOption(question.cells[row_index][column_index].min_length.id, { name: $el.value })"
-                                  /></label>
-                                  <label class="whitespace-nowrap"
-                                    >Max character length
-                                    <input
-                                      name="max_length"
-                                      type="number"
-                                      x-model="question.cells[row_index][column_index].max_length.name"
-                                      x-on:change.debounce.500ms="updateCellOption(question.cells[row_index][column_index].max_length.id, { name: $el.value })"
+                                      name="additional_char"
+                                      type="checkbox"
+                                      class="!m-0 cursor-pointer"
+                                      :checked="question.cells[row_index][column_index].additional_char.name === 't'"
+                                      x-model="question.cells[row_index][column_index].additional_char.name"
+                                      @click="updateCellOption(question.cells[row_index][column_index].additional_char.id, { name: $el.checked })"
                                   /></label>
                                 </div>
-                              </template>
-                              <template
-                                x-if="question.cells[row_index][column_index]?.cell_type === 'numeric'"
-                              >
+                                <label
+                                  >Min value allowed
+                                  <input
+                                    name="min_value"
+                                    type="number"
+                                    x-model="question.cells[row_index][column_index].min_value.name"
+                                    x-on:change.debounce.500ms="updateCellOption(question.cells[row_index][column_index].min_value.id, { name: $el.value })"
+                                /></label>
+                                <label
+                                  >Max value allowed
+                                  <input
+                                    name="max_value"
+                                    type="number"
+                                    x-model="question.cells[row_index][column_index].max_value.name"
+                                    x-on:change.debounce.500ms="updateCellOption(question.cells[row_index][column_index].max_value.id, { name: $el.value })"
+                                /></label>
+                              </div>
+                            </template>
+                            <template
+                              x-if="question.cells[row_index][column_index]?.cell_type === 'checkbox'"
+                            >
+                              <div class="h-full flex flex-col justify-between">
+                                <div
+                                  class="whitespace-nowrap border-b-2 border-gray-300"
+                                >
+                                  Checkbox (multi-choice)
+                                </div>
+                                <div
+                                  class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
+                                >
+                                  <template
+                                    x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
+                                    :key="option.id"
+                                    ><div
+                                      class="flex justify-between items-center"
+                                    >
+                                      <div
+                                        class="min-w-[3rem]"
+                                        x-text="option.name"
+                                      ></div>
+                                      <div
+                                        class="flex justify-center items-center mx-2"
+                                      >
+                                        <label
+                                          class="cursor-pointer text-gray-700 text-xs"
+                                          >with follow-up
+                                          <input
+                                            class="!m-0 cursor-pointer"
+                                            type="checkbox"
+                                            x-model="option.followup_field.value"
+                                            x-on:change="updateFollowupField(option.id, option.followup_field.id, $el.checked)"
+                                        /></label>
+                                        <div
+                                          class="flex justify-center items-center mx-2"
+                                        >
+                                          <div class="w-6 cursor-pointer">
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              fill="none"
+                                              viewBox="0 0 24 24"
+                                              stroke-width="1.5"
+                                              stroke="currentColor"
+                                              class="w-6 h-6"
+                                              @click="moveOption(option, option_index - 1)"
+                                            >
+                                              <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                              />
+                                            </svg>
+                                          </div>
+                                          <div class="w-6 cursor-pointer">
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              fill="none"
+                                              viewBox="0 0 24 24"
+                                              stroke-width="1.5"
+                                              stroke="currentColor"
+                                              class="w-6 h-6"
+                                              @click="moveOption(option, option_index + 1)"
+                                            >
+                                              <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                              />
+                                            </svg>
+                                          </div>
+                                        </div>
+                                        <div
+                                          @click="deleteOption(option.id)"
+                                          class="text-red-900 cursor-pointer"
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                            class="w-4 h-4"
+                                          >
+                                            <path
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                            />
+                                          </svg>
+                                        </div>
+                                      </div></div
+                                  ></template>
+                                </div>
                                 <div>
-                                  <div
-                                    class="whitespace-nowrap border-b-2 border-gray-300"
-                                  >
-                                    Numeric Field
-                                  </div>
-                                  <div
-                                    class="flex justify-between items-center"
-                                  >
-                                    <label class="whitespace-nowrap"
-                                      >Allow ~, <, >, ≤, ≥
-                                      <input
-                                        name="additional_char"
-                                        type="checkbox"
-                                        class="!m-0 cursor-pointer"
-                                        :checked="question.cells[row_index][column_index].additional_char.name === 't'"
-                                        x-model="question.cells[row_index][column_index].additional_char.name"
-                                        @click="updateCellOption(question.cells[row_index][column_index].additional_char.id, { name: $el.checked })"
-                                    /></label>
-                                  </div>
-                                  <label
-                                    >Min value allowed
+                                  <label class="text-xs"
+                                    >Add answer choice option
                                     <input
-                                      name="min_value"
-                                      type="number"
-                                      x-model="question.cells[row_index][column_index].min_value.name"
-                                      x-on:change.debounce.500ms="updateCellOption(question.cells[row_index][column_index].min_value.id, { name: $el.value })"
-                                  /></label>
-                                  <label
-                                    >Max value allowed
-                                    <input
-                                      name="max_value"
-                                      type="number"
-                                      x-model="question.cells[row_index][column_index].max_value.name"
-                                      x-on:change.debounce.500ms="updateCellOption(question.cells[row_index][column_index].max_value.id, { name: $el.value })"
+                                      name="option"
+                                      type="text"
+                                      @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
                                   /></label>
                                 </div>
-                              </template>
-                              <template
-                                x-if="question.cells[row_index][column_index]?.cell_type === 'checkbox'"
-                              >
+                              </div>
+                            </template>
+                            <template
+                              x-if="question.cells[row_index][column_index]?.cell_type === 'dropdown'"
+                            >
+                              <div class="h-full flex flex-col justify-between">
                                 <div
-                                  class="h-full flex flex-col justify-between"
+                                  class="whitespace-nowrap border-b-2 border-gray-300"
                                 >
-                                  <div
-                                    class="whitespace-nowrap border-b-2 border-gray-300"
-                                  >
-                                    Checkbox (multi-choice)
-                                  </div>
-                                  <div
-                                    class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
-                                  >
-                                    <template
-                                      x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
-                                      :key="option.id"
-                                      ><div
-                                        class="flex justify-between items-center"
+                                  Dropdown (single-choice)
+                                </div>
+                                <div
+                                  class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
+                                >
+                                  <template
+                                    x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
+                                    :key="option.id"
+                                    ><div
+                                      class="flex justify-between items-center"
+                                    >
+                                      <div
+                                        class="min-w-[3rem]"
+                                        x-text="option.name"
+                                      ></div>
+                                      <div
+                                        class="flex justify-center items-center mx-2"
                                       >
-                                        <div
-                                          class="min-w-[3rem]"
-                                          x-text="option.name"
-                                        ></div>
                                         <div
                                           class="flex justify-center items-center mx-2"
                                         >
-                                          <label
-                                            class="cursor-pointer text-gray-700 text-xs"
-                                            >with follow-up
-                                            <input
-                                              class="!m-0 cursor-pointer"
-                                              type="checkbox"
-                                              x-model="option.followup_field.value"
-                                              x-on:change="updateFollowupField(option.id, option.followup_field.id, $el.checked)"
-                                          /></label>
-                                          <div
-                                            class="flex justify-center items-center mx-2"
-                                          >
-                                            <div class="w-6 cursor-pointer">
-                                              <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="w-6 h-6"
-                                                @click="moveOption(option, option_index - 1)"
-                                              >
-                                                <path
-                                                  stroke-linecap="round"
-                                                  stroke-linejoin="round"
-                                                  d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                                />
-                                              </svg>
-                                            </div>
-                                            <div class="w-6 cursor-pointer">
-                                              <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="w-6 h-6"
-                                                @click="moveOption(option, option_index + 1)"
-                                              >
-                                                <path
-                                                  stroke-linecap="round"
-                                                  stroke-linejoin="round"
-                                                  d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                                />
-                                              </svg>
-                                            </div>
-                                          </div>
-                                          <div
-                                            @click="deleteOption(option.id)"
-                                            class="text-red-900 cursor-pointer"
-                                          >
+                                          <div class="w-6 cursor-pointer">
                                             <svg
                                               xmlns="http://www.w3.org/2000/svg"
                                               fill="none"
                                               viewBox="0 0 24 24"
                                               stroke-width="1.5"
                                               stroke="currentColor"
-                                              class="w-4 h-4"
+                                              class="w-6 h-6"
+                                              @click="moveOption(option, option_index - 1)"
                                             >
                                               <path
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
-                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                                d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                                               />
                                             </svg>
                                           </div>
-                                        </div></div
-                                    ></template>
-                                  </div>
-                                  <div>
-                                    <label class="text-xs"
-                                      >Add answer choice option
-                                      <input
-                                        name="option"
-                                        type="text"
-                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
-                                    /></label>
-                                  </div>
-                                </div>
-                              </template>
-                              <template
-                                x-if="question.cells[row_index][column_index]?.cell_type === 'dropdown'"
-                              >
-                                <div
-                                  class="h-full flex flex-col justify-between"
-                                >
-                                  <div
-                                    class="whitespace-nowrap border-b-2 border-gray-300"
-                                  >
-                                    Dropdown (single-choice)
-                                  </div>
-                                  <div
-                                    class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
-                                  >
-                                    <template
-                                      x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
-                                      :key="option.id"
-                                      ><div
-                                        class="flex justify-between items-center"
-                                      >
-                                        <div
-                                          class="min-w-[3rem]"
-                                          x-text="option.name"
-                                        ></div>
-                                        <div
-                                          class="flex justify-center items-center mx-2"
-                                        >
-                                          <div
-                                            class="flex justify-center items-center mx-2"
-                                          >
-                                            <div class="w-6 cursor-pointer">
-                                              <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="w-6 h-6"
-                                                @click="moveOption(option, option_index - 1)"
-                                              >
-                                                <path
-                                                  stroke-linecap="round"
-                                                  stroke-linejoin="round"
-                                                  d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                                />
-                                              </svg>
-                                            </div>
-                                            <div class="w-6 cursor-pointer">
-                                              <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="w-6 h-6"
-                                                @click="moveOption(option, option_index + 1)"
-                                              >
-                                                <path
-                                                  stroke-linecap="round"
-                                                  stroke-linejoin="round"
-                                                  d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                                />
-                                              </svg>
-                                            </div>
-                                          </div>
-                                          <div
-                                            @click="deleteOption(option.id)"
-                                            class="text-red-900 cursor-pointer"
-                                          >
+                                          <div class="w-6 cursor-pointer">
                                             <svg
                                               xmlns="http://www.w3.org/2000/svg"
                                               fill="none"
                                               viewBox="0 0 24 24"
                                               stroke-width="1.5"
                                               stroke="currentColor"
-                                              class="w-4 h-4"
+                                              class="w-6 h-6"
+                                              @click="moveOption(option, option_index + 1)"
                                             >
                                               <path
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
-                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                                d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                                               />
                                             </svg>
                                           </div>
-                                        </div></div
-                                    ></template>
-                                  </div>
-                                  <div>
-                                    <label class="text-xs"
-                                      >Add answer choice option
-                                      <input
-                                        name="option"
-                                        type="text"
-                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
-                                    /></label>
-                                  </div>
-                                </div>
-                              </template>
-                              <template
-                                x-if="question.cells[row_index][column_index]?.cell_type === 'radio'"
-                              >
-                                <div
-                                  class="h-full flex flex-col justify-between"
-                                >
-                                  <div
-                                    class="whitespace-nowrap border-b-2 border-gray-300"
-                                  >
-                                    Radio (single-choice)
-                                  </div>
-                                  <div
-                                    class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
-                                  >
-                                    <template
-                                      x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
-                                      :key="option.id"
-                                      ><div
-                                        class="flex justify-between items-center"
-                                      >
+                                        </div>
                                         <div
-                                          class="min-w-[3rem]"
-                                          x-text="option.name"
-                                        ></div>
+                                          @click="deleteOption(option.id)"
+                                          class="text-red-900 cursor-pointer"
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                            class="w-4 h-4"
+                                          >
+                                            <path
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                            />
+                                          </svg>
+                                        </div>
+                                      </div></div
+                                  ></template>
+                                </div>
+                                <div>
+                                  <label class="text-xs"
+                                    >Add answer choice option
+                                    <input
+                                      name="option"
+                                      type="text"
+                                      @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
+                                  /></label>
+                                </div>
+                              </div>
+                            </template>
+                            <template
+                              x-if="question.cells[row_index][column_index]?.cell_type === 'radio'"
+                            >
+                              <div class="h-full flex flex-col justify-between">
+                                <div
+                                  class="whitespace-nowrap border-b-2 border-gray-300"
+                                >
+                                  Radio (single-choice)
+                                </div>
+                                <div
+                                  class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
+                                >
+                                  <template
+                                    x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
+                                    :key="option.id"
+                                    ><div
+                                      class="flex justify-between items-center"
+                                    >
+                                      <div
+                                        class="min-w-[3rem]"
+                                        x-text="option.name"
+                                      ></div>
+                                      <div
+                                        class="flex justify-center items-center mx-2"
+                                      >
+                                        <label
+                                          class="cursor-pointer text-gray-700 text-xs"
+                                          >with follow-up
+                                          <input
+                                            class="!m-0 cursor-pointer"
+                                            type="checkbox"
+                                            x-model="option.followup_field.value"
+                                            x-on:change="updateFollowupField(option.id, option.followup_field.id, $el.checked)"
+                                        /></label>
                                         <div
                                           class="flex justify-center items-center mx-2"
                                         >
-                                          <label
-                                            class="cursor-pointer text-gray-700 text-xs"
-                                            >with follow-up
-                                            <input
-                                              class="!m-0 cursor-pointer"
-                                              type="checkbox"
-                                              x-model="option.followup_field.value"
-                                              x-on:change="updateFollowupField(option.id, option.followup_field.id, $el.checked)"
-                                          /></label>
-                                          <div
-                                            class="flex justify-center items-center mx-2"
-                                          >
-                                            <div class="w-6 cursor-pointer">
-                                              <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="w-6 h-6"
-                                                @click="moveOption(option, option_index - 1)"
-                                              >
-                                                <path
-                                                  stroke-linecap="round"
-                                                  stroke-linejoin="round"
-                                                  d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                                />
-                                              </svg>
-                                            </div>
-                                            <div class="w-6 cursor-pointer">
-                                              <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="w-6 h-6"
-                                                @click="moveOption(option, option_index + 1)"
-                                              >
-                                                <path
-                                                  stroke-linecap="round"
-                                                  stroke-linejoin="round"
-                                                  d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                                />
-                                              </svg>
-                                            </div>
-                                          </div>
-                                          <div
-                                            @click="deleteOption(option.id)"
-                                            class="text-red-900 cursor-pointer"
-                                          >
+                                          <div class="w-6 cursor-pointer">
                                             <svg
                                               xmlns="http://www.w3.org/2000/svg"
                                               fill="none"
                                               viewBox="0 0 24 24"
                                               stroke-width="1.5"
                                               stroke="currentColor"
-                                              class="w-4 h-4"
+                                              class="w-6 h-6"
+                                              @click="moveOption(option, option_index - 1)"
                                             >
                                               <path
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
-                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                                d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                                               />
                                             </svg>
                                           </div>
-                                        </div></div
-                                    ></template>
-                                  </div>
-                                  <div>
-                                    <label class="text-xs"
-                                      >Add answer choice option
-                                      <input
-                                        name="option"
-                                        type="text"
-                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
-                                    /></label>
-                                  </div>
-                                </div>
-                              </template>
-                              <template
-                                x-if="question.cells[row_index][column_index]?.cell_type === 'select2_single'"
-                              >
-                                <div
-                                  class="h-full flex flex-col justify-between"
-                                >
-                                  <div
-                                    class="whitespace-nowrap border-b-2 border-gray-300"
-                                  >
-                                    Select-One (with write-in)
-                                  </div>
-                                  <div
-                                    class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
-                                  >
-                                    <template
-                                      x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
-                                      :key="option.id"
-                                      ><div
-                                        class="flex justify-between items-center"
-                                      >
-                                        <div
-                                          class="min-w-[3rem]"
-                                          x-text="option.name"
-                                        ></div>
-                                        <div
-                                          class="flex justify-center items-center mx-2"
-                                        >
-                                          <div
-                                            class="flex justify-center items-center mx-2"
-                                          >
-                                            <div class="w-6 cursor-pointer">
-                                              <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="w-6 h-6"
-                                                @click="moveOption(option, option_index - 1)"
-                                              >
-                                                <path
-                                                  stroke-linecap="round"
-                                                  stroke-linejoin="round"
-                                                  d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                                />
-                                              </svg>
-                                            </div>
-                                            <div class="w-6 cursor-pointer">
-                                              <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="w-6 h-6"
-                                                @click="moveOption(option, option_index + 1)"
-                                              >
-                                                <path
-                                                  stroke-linecap="round"
-                                                  stroke-linejoin="round"
-                                                  d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                                />
-                                              </svg>
-                                            </div>
-                                          </div>
-                                          <div
-                                            @click="deleteOption(option.id)"
-                                            class="text-red-900 cursor-pointer"
-                                          >
+                                          <div class="w-6 cursor-pointer">
                                             <svg
                                               xmlns="http://www.w3.org/2000/svg"
                                               fill="none"
                                               viewBox="0 0 24 24"
                                               stroke-width="1.5"
                                               stroke="currentColor"
-                                              class="w-4 h-4"
+                                              class="w-6 h-6"
+                                              @click="moveOption(option, option_index + 1)"
                                             >
                                               <path
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
-                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                                d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                                               />
                                             </svg>
                                           </div>
-                                        </div></div
-                                    ></template>
-                                  </div>
-                                  <div>
-                                    <label class="text-xs"
-                                      >Add answer choice option
-                                      <input
-                                        name="option"
-                                        type="text"
-                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
-                                    /></label>
-                                  </div>
-                                </div>
-                              </template>
-                              <template
-                                x-if="question.cells[row_index][column_index]?.cell_type === 'select2_multi'"
-                              >
-                                <div
-                                  class="h-full flex flex-col justify-between"
-                                >
-                                  <div
-                                    class="whitespace-nowrap border-b-2 border-gray-300"
-                                  >
-                                    Select-Multiple (with write-in)
-                                  </div>
-                                  <div
-                                    class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
-                                  >
-                                    <template
-                                      x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
-                                      :key="option.id"
-                                      ><div
-                                        class="flex justify-between items-center"
-                                      >
+                                        </div>
                                         <div
-                                          class="min-w-[3rem]"
-                                          x-text="option.name"
-                                        ></div>
+                                          @click="deleteOption(option.id)"
+                                          class="text-red-900 cursor-pointer"
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                            class="w-4 h-4"
+                                          >
+                                            <path
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                            />
+                                          </svg>
+                                        </div>
+                                      </div></div
+                                  ></template>
+                                </div>
+                                <div>
+                                  <label class="text-xs"
+                                    >Add answer choice option
+                                    <input
+                                      name="option"
+                                      type="text"
+                                      @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
+                                  /></label>
+                                </div>
+                              </div>
+                            </template>
+                            <template
+                              x-if="question.cells[row_index][column_index]?.cell_type === 'select2_single'"
+                            >
+                              <div class="h-full flex flex-col justify-between">
+                                <div
+                                  class="whitespace-nowrap border-b-2 border-gray-300"
+                                >
+                                  Select-One (with write-in)
+                                </div>
+                                <div
+                                  class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
+                                >
+                                  <template
+                                    x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
+                                    :key="option.id"
+                                    ><div
+                                      class="flex justify-between items-center"
+                                    >
+                                      <div
+                                        class="min-w-[3rem]"
+                                        x-text="option.name"
+                                      ></div>
+                                      <div
+                                        class="flex justify-center items-center mx-2"
+                                      >
                                         <div
                                           class="flex justify-center items-center mx-2"
                                         >
-                                          <div
-                                            class="flex justify-center items-center mx-2"
-                                          >
-                                            <div class="w-6 cursor-pointer">
-                                              <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="w-6 h-6"
-                                                @click="moveOption(option, option_index - 1)"
-                                              >
-                                                <path
-                                                  stroke-linecap="round"
-                                                  stroke-linejoin="round"
-                                                  d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                                />
-                                              </svg>
-                                            </div>
-                                            <div class="w-6 cursor-pointer">
-                                              <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                                class="w-6 h-6"
-                                                @click="moveOption(option, option_index + 1)"
-                                              >
-                                                <path
-                                                  stroke-linecap="round"
-                                                  stroke-linejoin="round"
-                                                  d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                                />
-                                              </svg>
-                                            </div>
-                                          </div>
-                                          <div
-                                            @click="deleteOption(option.id)"
-                                            class="text-red-900 cursor-pointer"
-                                          >
+                                          <div class="w-6 cursor-pointer">
                                             <svg
                                               xmlns="http://www.w3.org/2000/svg"
                                               fill="none"
                                               viewBox="0 0 24 24"
                                               stroke-width="1.5"
                                               stroke="currentColor"
-                                              class="w-4 h-4"
+                                              class="w-6 h-6"
+                                              @click="moveOption(option, option_index - 1)"
                                             >
                                               <path
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
-                                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                                d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                                               />
                                             </svg>
                                           </div>
-                                        </div></div
-                                    ></template>
-                                  </div>
-                                  <div>
-                                    <label class="text-xs"
-                                      >Add answer choice option
-                                      <input
-                                        name="option"
-                                        type="text"
-                                        @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
-                                    /></label>
-                                  </div>
+                                          <div class="w-6 cursor-pointer">
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              fill="none"
+                                              viewBox="0 0 24 24"
+                                              stroke-width="1.5"
+                                              stroke="currentColor"
+                                              class="w-6 h-6"
+                                              @click="moveOption(option, option_index + 1)"
+                                            >
+                                              <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                              />
+                                            </svg>
+                                          </div>
+                                        </div>
+                                        <div
+                                          @click="deleteOption(option.id)"
+                                          class="text-red-900 cursor-pointer"
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                            class="w-4 h-4"
+                                          >
+                                            <path
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                            />
+                                          </svg>
+                                        </div>
+                                      </div></div
+                                  ></template>
                                 </div>
-                              </template>
+                                <div>
+                                  <label class="text-xs"
+                                    >Add answer choice option
+                                    <input
+                                      name="option"
+                                      type="text"
+                                      @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
+                                  /></label>
+                                </div>
+                              </div>
+                            </template>
+                            <template
+                              x-if="question.cells[row_index][column_index]?.cell_type === 'select2_multi'"
+                            >
+                              <div class="h-full flex flex-col justify-between">
+                                <div
+                                  class="whitespace-nowrap border-b-2 border-gray-300"
+                                >
+                                  Select-Multiple (with write-in)
+                                </div>
+                                <div
+                                  class="grow border-b-2 border-gray-300 whitespace-nowrap min-h-[96px]"
+                                >
+                                  <template
+                                    x-for="(option, option_index) in question.cells[row_index][column_index].answer_choice"
+                                    :key="option.id"
+                                    ><div
+                                      class="flex justify-between items-center"
+                                    >
+                                      <div
+                                        class="min-w-[3rem]"
+                                        x-text="option.name"
+                                      ></div>
+                                      <div
+                                        class="flex justify-center items-center mx-2"
+                                      >
+                                        <div
+                                          class="flex justify-center items-center mx-2"
+                                        >
+                                          <div class="w-6 cursor-pointer">
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              fill="none"
+                                              viewBox="0 0 24 24"
+                                              stroke-width="1.5"
+                                              stroke="currentColor"
+                                              class="w-6 h-6"
+                                              @click="moveOption(option, option_index - 1)"
+                                            >
+                                              <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                              />
+                                            </svg>
+                                          </div>
+                                          <div class="w-6 cursor-pointer">
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              fill="none"
+                                              viewBox="0 0 24 24"
+                                              stroke-width="1.5"
+                                              stroke="currentColor"
+                                              class="w-6 h-6"
+                                              @click="moveOption(option, option_index + 1)"
+                                            >
+                                              <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                              />
+                                            </svg>
+                                          </div>
+                                        </div>
+                                        <div
+                                          @click="deleteOption(option.id)"
+                                          class="text-red-900 cursor-pointer"
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke-width="1.5"
+                                            stroke="currentColor"
+                                            class="w-4 h-4"
+                                          >
+                                            <path
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round"
+                                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                            />
+                                          </svg>
+                                        </div>
+                                      </div></div
+                                  ></template>
+                                </div>
+                                <div>
+                                  <label class="text-xs"
+                                    >Add answer choice option
+                                    <input
+                                      name="option"
+                                      type="text"
+                                      @keyup.enter="if ($el.value === '') { return }; createOption(question.cells[row_index][column_index].id, { question_row_column_option_id: 1, name: $el.value }); $el.value = ''"
+                                  /></label>
+                                </div>
+                              </div>
+                            </template>
+                          </div>
+                          <div class="border-l border-gray-300">
+                            <div
+                              @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'text' } })"
+                              class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
+                              :class="{
+                                'font-bold': 'text' === question.cells[row_index][column_index].cell_type,
+                                'bg-gray-100': 'text' === question.cells[row_index][column_index].cell_type
+                              }"
+                            >
+                              Text
                             </div>
-                            <div class="border-l border-gray-300">
-                              <div
-                                @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'text' } })"
-                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
-                                :class="{
-                                  'font-bold': 'text' === question.cells[row_index][column_index].cell_type,
-                                  'bg-gray-100': 'text' === question.cells[row_index][column_index].cell_type
-                                }"
-                              >
-                                Text
-                              </div>
-                              <div
-                                @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'numeric' } })"
-                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
-                                :class="{
-                                  'font-bold': 'numeric' === question.cells[row_index][column_index].cell_type,
-                                  'bg-gray-100': 'numeric' === question.cells[row_index][column_index].cell_type
-                                }"
-                              >
-                                Numeric
-                              </div>
-                              <div
-                                @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'checkbox' } })"
-                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
-                                :class="{
-                                  'font-bold': 'checkbox' === question.cells[row_index][column_index].cell_type,
-                                  'bg-gray-100': 'checkbox' === question.cells[row_index][column_index].cell_type
-                                }"
-                              >
-                                Checkbox
-                              </div>
-                              <div
-                                @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'dropdown' } })"
-                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
-                                :class="{
-                                  'font-bold': 'dropdown' === question.cells[row_index][column_index].cell_type,
-                                  'bg-gray-100': 'dropdown' === question.cells[row_index][column_index].cell_type
-                                }"
-                              >
-                                Dropdown
-                              </div>
-                              <div
-                                @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'radio' } })"
-                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
-                                :class="{
-                                  'font-bold': 'radio' === question.cells[row_index][column_index].cell_type,
-                                  'bg-gray-100': 'radio' === question.cells[row_index][column_index].cell_type
-                                }"
-                              >
-                                Radio
-                              </div>
-                              <div
-                                @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'select2_single' } })"
-                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
-                                :class="{
-                                  'font-bold': 'select2_single' === question.cells[row_index][column_index].cell_type,
-                                  'bg-gray-100': 'select2_single' === question.cells[row_index][column_index].cell_type
-                                }"
-                              >
-                                Select One
-                              </div>
-                              <div
-                                @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'select2_multi' } })"
-                                class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
-                                :class="{
-                                  'font-bold': 'select2_multi' === question.cells[row_index][column_index].cell_type,
-                                  'bg-gray-100': 'select2_multi' === question.cells[row_index][column_index].cell_type
-                                }"
-                              >
-                                Select Multiple
-                              </div>
+                            <div
+                              @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'numeric' } })"
+                              class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
+                              :class="{
+                                'font-bold': 'numeric' === question.cells[row_index][column_index].cell_type,
+                                'bg-gray-100': 'numeric' === question.cells[row_index][column_index].cell_type
+                              }"
+                            >
+                              Numeric
+                            </div>
+                            <div
+                              @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'checkbox' } })"
+                              class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
+                              :class="{
+                                'font-bold': 'checkbox' === question.cells[row_index][column_index].cell_type,
+                                'bg-gray-100': 'checkbox' === question.cells[row_index][column_index].cell_type
+                              }"
+                            >
+                              Checkbox
+                            </div>
+                            <div
+                              @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'dropdown' } })"
+                              class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
+                              :class="{
+                                'font-bold': 'dropdown' === question.cells[row_index][column_index].cell_type,
+                                'bg-gray-100': 'dropdown' === question.cells[row_index][column_index].cell_type
+                              }"
+                            >
+                              Dropdown
+                            </div>
+                            <div
+                              @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'radio' } })"
+                              class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
+                              :class="{
+                                'font-bold': 'radio' === question.cells[row_index][column_index].cell_type,
+                                'bg-gray-100': 'radio' === question.cells[row_index][column_index].cell_type
+                              }"
+                            >
+                              Radio
+                            </div>
+                            <div
+                              @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'select2_single' } })"
+                              class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
+                              :class="{
+                                'font-bold': 'select2_single' === question.cells[row_index][column_index].cell_type,
+                                'bg-gray-100': 'select2_single' === question.cells[row_index][column_index].cell_type
+                              }"
+                            >
+                              Select One
+                            </div>
+                            <div
+                              @click="updateCellType(question.cells[row_index][column_index], { question_row_column_type: { name: 'select2_multi' } })"
+                              class="cursor-pointer p-2 text-[10px] hover:bg-gray-100"
+                              :class="{
+                                'font-bold': 'select2_multi' === question.cells[row_index][column_index].cell_type,
+                                'bg-gray-100': 'select2_multi' === question.cells[row_index][column_index].cell_type
+                              }"
+                            >
+                              Select Multiple
                             </div>
                           </div>
-                        </template>
-                      </td>
-                    </template>
-                  </tr>
-                </template>
-                <tr>
-                  <th
-                    class="whitespace-nowrap cursor-pointer flex justify-between items-center h-full"
-                    @click="addRow(question)"
-                  >
-                    <div class="p-2">Click to add row</div>
-                  </th>
+                        </div>
+                      </template>
+                    </td>
+                  </template>
                 </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div
-          class="w-8 px-2 pt-4 border-l border-gray-300 cursor-pointer text-red-900 p-2 hover:bg-red-100"
-          @click="deleteQuestion(question)"
-          draggable="true"
-          @dragstart.prevent.stop=""
-        >
-          <svg
-            class="w-4 h-4"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-            ></path>
-          </svg>
+              </template>
+              <tr>
+                <th
+                  class="whitespace-nowrap cursor-pointer flex justify-between items-center h-full"
+                  @click="addRow(question)"
+                >
+                  <div class="p-2">Click to add row</div>
+                </th>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </template>
@@ -977,7 +927,6 @@
       async init() {
         this.loading = true;
         await this.fetch_questions();
-        console.log(this.questions);
         this.loading = false;
       },
 
@@ -1208,7 +1157,8 @@
       showAlertModal(url, resourceType) {
         this.pendingDeleteUrl = url;
         this.pendingResourceType = resourceType;
-        this.alertModalContent = "Deleting this Question will result in the removal of any extracted data for this question in all Extractions. Please confirm deletion.";
+        this.alertModalContent =
+          "Deleting this Question will result in the removal of any extracted data for this question in all Extractions. Please confirm deletion.";
         this.isAlertModalOpen = true;
       },
 
@@ -1223,18 +1173,18 @@
 
       async destroyResource(url, resourceType) {
         this.loading = true;
-        if (
-          [
-            "question_row",
-            "question_row_column",
-            "question_row_column_option",
-          ].some((rt) => rt === resourceType)
-        ) {
-          await this.updateQuestionTable(
-            this.edit_question_id,
-            document.getElementById(`edit_question_${this.edit_question_id}`)
-          );
-        }
+        // if (
+        //   [
+        //     "question_row",
+        //     "question_row_column",
+        //     "question_row_column_option",
+        //   ].some((rt) => rt === resourceType)
+        // ) {
+        //   await this.updateQuestionTable(
+        //     this.edit_question_id,
+        //     document.getElementById(`edit_question_${this.edit_question_id}`)
+        //   );
+        // }
         const response = await fetch(url, {
           method: "DELETE",
           headers: {
@@ -1270,6 +1220,23 @@
         );
         this.report(response.status);
         await this.fetch_questions();
+        this.loading = false;
+      },
+
+      async createDuplicateQuestion(questionId) {
+        this.loading = true;
+        const response = await fetch(`/questions/${questionId}/duplicate`, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+              .content,
+          },
+        });
+        await this.fetch_questions();
+        toastr.success("Question was succesfully duplicated!", null, {
+          timeOut: 1000,
+        });
         this.loading = false;
       },
 
