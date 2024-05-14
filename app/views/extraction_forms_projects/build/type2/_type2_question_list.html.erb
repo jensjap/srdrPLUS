@@ -36,7 +36,7 @@
           <div class="flex space-x-4 m-2">
             <div
               class="flex cursor-pointer hover:underline"
-              @click="edit_question_id = null; edit_question_id = question.id; dependencies_modal = true; updateDependenciesTable();"
+              @click="dependencies_modal = true; updateDependenciesTable(question.id);"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -1173,18 +1173,6 @@
 
       async destroyResource(url, resourceType) {
         this.loading = true;
-        // if (
-        //   [
-        //     "question_row",
-        //     "question_row_column",
-        //     "question_row_column_option",
-        //   ].some((rt) => rt === resourceType)
-        // ) {
-        //   await this.updateQuestionTable(
-        //     this.edit_question_id,
-        //     document.getElementById(`edit_question_${this.edit_question_id}`)
-        //   );
-        // }
         const response = await fetch(url, {
           method: "DELETE",
           headers: {
@@ -1250,6 +1238,16 @@
         );
         const questions = await response.json();
         this.questions = questions;
+      },
+
+      async updateDependenciesTable(edit_question_id) {
+        this.loading = true;
+        this.dependencies_table = await (
+          await fetch(
+            `/questions/${edit_question_id}/dependencies?partial=true`
+          )
+        ).text();
+        this.loading = false;
       },
     }));
   });
