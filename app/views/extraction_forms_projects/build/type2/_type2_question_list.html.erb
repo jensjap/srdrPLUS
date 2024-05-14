@@ -75,7 +75,7 @@
               <span>Duplicate</span>
             </div>
             <div
-              @click="showAlertModal(`/questions/${question.id}`, 'question')"
+              @click="showAlertModal(`/questions/${question.id}`)"
               class="flex cursor-pointer hover:underline"
             >
               <svg
@@ -134,7 +134,7 @@
                         type="text"
                       />
                       <div
-                        @click="deleteColumn(column)"
+                        @click="showAlertModal(`/question_row_columns/${column.id}`)"
                         class="text-red-900 cursor-pointer p-2 border-l border-gray-300 hover:bg-red-100"
                       >
                         <svg
@@ -181,7 +181,7 @@
                       <div class="h-full border-l border-gray-300">
                         <div
                           class="text-red-900 cursor-pointer hover:bg-red-100 p-2"
-                          @click="deleteRow(row)"
+                          @click="showAlertModal(`/question_rows/${row.id}`)"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -374,7 +374,7 @@
                                           </div>
                                         </div>
                                         <div
-                                          @click="deleteOption(option.id)"
+                                          @click="showAlertModal(`/question_row_columns_question_row_column_options/${option.id}`)"
                                           class="text-red-900 cursor-pointer"
                                         >
                                           <svg
@@ -471,7 +471,7 @@
                                           </div>
                                         </div>
                                         <div
-                                          @click="deleteOption(option.id)"
+                                          @click="showAlertModal(`/question_row_columns_question_row_column_options/${option.id}`)"
                                           class="text-red-900 cursor-pointer"
                                         >
                                           <svg
@@ -577,7 +577,7 @@
                                           </div>
                                         </div>
                                         <div
-                                          @click="deleteOption(option.id)"
+                                          @click="showAlertModal(`/question_row_columns_question_row_column_options/${option.id}`)"
                                           class="text-red-900 cursor-pointer"
                                         >
                                           <svg
@@ -674,7 +674,7 @@
                                           </div>
                                         </div>
                                         <div
-                                          @click="deleteOption(option.id)"
+                                          @click="showAlertModal(`/question_row_columns_question_row_column_options/${option.id}`)"
                                           class="text-red-900 cursor-pointer"
                                         >
                                           <svg
@@ -771,7 +771,7 @@
                                           </div>
                                         </div>
                                         <div
-                                          @click="deleteOption(option.id)"
+                                          @click="showAlertModal(`/question_row_columns_question_row_column_options/${option.id}`)"
                                           class="text-red-900 cursor-pointer"
                                         >
                                           <svg
@@ -927,7 +927,6 @@
       isAlertModalOpen: false,
       alertModalContent: "",
       pendingDeleteUrl: "",
-      pendingResourceType: "",
 
       async init() {
         this.loading = true;
@@ -998,31 +997,6 @@
         await this.fetch_questions();
         this.loading = false;
       },
-      async deleteRow(question_row) {
-        this.loading = true;
-        const response = await fetch(`/question_rows/${question_row.id}`, {
-          method: "DELETE",
-          headers,
-          credentials: "same-origin",
-        });
-        this.report(response.status);
-        await this.fetch_questions();
-        this.loading = false;
-      },
-      async deleteColumn(question_row_column) {
-        this.loading = true;
-        const response = await fetch(
-          `/question_row_columns/${question_row_column.id}`,
-          {
-            method: "DELETE",
-            headers,
-            credentials: "same-origin",
-          }
-        );
-        this.report(response.status);
-        await this.fetch_questions();
-        this.loading = false;
-      },
       async updateCellType(question_row_column, params) {
         this.loading = true;
         const response = await fetch(
@@ -1059,20 +1033,6 @@
             headers,
             credentials: "same-origin",
             body: JSON.stringify(params),
-          }
-        );
-        this.report(response.status);
-        await this.fetch_questions();
-        this.loading = false;
-      },
-      async deleteOption(qrcqrco_id) {
-        this.loading = true;
-        const response = await fetch(
-          `/question_row_columns_question_row_column_options/${qrcqrco_id}`,
-          {
-            method: "DELETE",
-            headers,
-            credentials: "same-origin",
           }
         );
         this.report(response.status);
@@ -1159,16 +1119,15 @@
         this.loading = false;
       },
 
-      showAlertModal(url, resourceType) {
+      showAlertModal(url) {
         this.pendingDeleteUrl = url;
-        this.pendingResourceType = resourceType;
         this.alertModalContent =
-          "Deleting this Question will result in the removal of any extracted data for this question in all Extractions. Please confirm deletion.";
+          "Deleting this resource will result in the removal of any extracted data for this resource in all Extractions. Please confirm deletion.";
         this.isAlertModalOpen = true;
       },
 
       modalConfirmAction() {
-        this.destroyResource(this.pendingDeleteUrl, this.pendingResourceType);
+        this.destroyResource(this.pendingDeleteUrl);
         this.closeAlertModal();
       },
 
@@ -1176,7 +1135,7 @@
         this.isAlertModalOpen = false;
       },
 
-      async destroyResource(url, resourceType) {
+      async destroyResource(url) {
         this.loading = true;
         const response = await fetch(url, {
           method: "DELETE",
@@ -1187,12 +1146,7 @@
           },
         });
 
-        if (resourceType === "question") {
-          await this.fetch_questions();
-          this.question_modal = false;
-        } else {
-          await this.fetchQuestionTable();
-        }
+        await this.fetch_questions();
         toastr.success("Successfully deleted", null, {
           timeOut: 1000,
         });
