@@ -318,10 +318,11 @@
                                     ><div
                                       class="flex justify-between items-center"
                                     >
-                                      <div
-                                        class="min-w-[3rem]"
-                                        x-text="option.name"
-                                      ></div>
+                                      <input
+                                        class="min-w-[3rem] border"
+                                        :value="option.name"
+                                        @input.debounce.500ms="updateQRCQRCO(option.id, { name: $el.value })"
+                                      />
                                       <div
                                         class="flex justify-center items-center mx-2"
                                       >
@@ -423,10 +424,11 @@
                                     ><div
                                       class="flex justify-between items-center"
                                     >
-                                      <div
-                                        class="min-w-[3rem]"
-                                        x-text="option.name"
-                                      ></div>
+                                      <input
+                                        class="min-w-[3rem] border"
+                                        :value="option.name"
+                                        @input.debounce.500ms="updateQRCQRCO(option.id, { name: $el.value })"
+                                      />
                                       <div
                                         class="flex justify-center items-center mx-2"
                                       >
@@ -519,10 +521,11 @@
                                     ><div
                                       class="flex justify-between items-center"
                                     >
-                                      <div
-                                        class="min-w-[3rem]"
-                                        x-text="option.name"
-                                      ></div>
+                                      <input
+                                        class="min-w-[3rem] border"
+                                        :value="option.name"
+                                        @input.debounce.500ms="updateQRCQRCO(option.id, { name: $el.value })"
+                                      />
                                       <div
                                         class="flex justify-center items-center mx-2"
                                       >
@@ -624,10 +627,11 @@
                                     ><div
                                       class="flex justify-between items-center"
                                     >
-                                      <div
-                                        class="min-w-[3rem]"
-                                        x-text="option.name"
-                                      ></div>
+                                      <input
+                                        class="min-w-[3rem] border"
+                                        :value="option.name"
+                                        @input.debounce.500ms="updateQRCQRCO(option.id, { name: $el.value })"
+                                      />
                                       <div
                                         class="flex justify-center items-center mx-2"
                                       >
@@ -720,10 +724,11 @@
                                     ><div
                                       class="flex justify-between items-center"
                                     >
-                                      <div
-                                        class="min-w-[3rem]"
-                                        x-text="option.name"
-                                      ></div>
+                                      <input
+                                        class="min-w-[3rem] border"
+                                        :value="option.name"
+                                        @input.debounce.500ms="updateQRCQRCO(option.id, { name: $el.value })"
+                                      />
                                       <div
                                         class="flex justify-center items-center mx-2"
                                       >
@@ -1248,6 +1253,19 @@
           )
         ).text();
         this.loading = false;
+      },
+
+      async updateQRCQRCO(qrcqrco_id, params) {
+        const response = await fetch(
+          `/question_row_columns_question_row_column_options/${qrcqrco_id}`,
+          {
+            method: "PATCH",
+            headers,
+            credentials: "same-origin",
+            body: JSON.stringify(params),
+          }
+        );
+        this.report(response.status);
       },
     }));
   });
