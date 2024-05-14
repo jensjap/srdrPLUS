@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_08_055656) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_14_094624) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1370,6 +1370,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_08_055656) do
     t.text "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "pos", default: 999999
+    t.index ["pos"], name: "index_question_row_columns_question_row_column_options_on_pos"
     t.index ["question_row_column_id", "question_row_column_option_id"], name: "index_qrcqrco_on_qrc_id_qrco_id"
     t.index ["question_row_column_option_id"], name: "fk_rails_dd7bf341f1"
   end

@@ -324,7 +324,7 @@
                                         @input.debounce.500ms="updateQRCQRCO(option.id, { name: $el.value })"
                                       />
                                       <div
-                                        class="flex justify-center items-center mx-2"
+                                        class="flex justify-center items-center mx-2 space-x-2"
                                       >
                                         <label
                                           class="cursor-pointer text-gray-700 text-xs"
@@ -335,44 +335,21 @@
                                             x-model="option.followup_field.value"
                                             x-on:change="updateFollowupField(option.id, option.followup_field.id, $el.checked)"
                                         /></label>
-                                        <div
-                                          class="flex justify-center items-center mx-2"
+                                        <select
+                                          class="w-auto pl-2 !text-xs"
+                                          @change="updateOptionOrderings(row_index, column_index, option_index, $el.value - 1, 'question_row_columns_question_row_column_options')"
                                         >
-                                          <div class="w-6 cursor-pointer">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              fill="none"
-                                              viewBox="0 0 24 24"
-                                              stroke-width="1.5"
-                                              stroke="currentColor"
-                                              class="w-6 h-6"
-                                              @click="moveOption(option, option_index - 1)"
-                                            >
-                                              <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                              />
-                                            </svg>
-                                          </div>
-                                          <div class="w-6 cursor-pointer">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              fill="none"
-                                              viewBox="0 0 24 24"
-                                              stroke-width="1.5"
-                                              stroke="currentColor"
-                                              class="w-6 h-6"
-                                              @click="moveOption(option, option_index + 1)"
-                                            >
-                                              <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                              />
-                                            </svg>
-                                          </div>
-                                        </div>
+                                          <template
+                                            x-for="(option, ooption_index) in question.cells[row_index][column_index].answer_choice"
+                                            :key="option.id"
+                                          >
+                                            <option
+                                              :selected="ooption_index == option_index"
+                                              :value="ooption_index + 1"
+                                              x-text="ooption_index + 1"
+                                            ></option>
+                                          </template>
+                                        </select>
                                         <div
                                           @click="showAlertModal(`/question_row_columns_question_row_column_options/${option.id}`)"
                                           class="text-red-900 cursor-pointer"
@@ -430,46 +407,23 @@
                                         @input.debounce.500ms="updateQRCQRCO(option.id, { name: $el.value })"
                                       />
                                       <div
-                                        class="flex justify-center items-center mx-2"
+                                        class="flex justify-center items-center mx-2 space-x-2"
                                       >
-                                        <div
-                                          class="flex justify-center items-center mx-2"
+                                        <select
+                                          class="w-auto pl-2 !text-xs"
+                                          @change="updateOptionOrderings(row_index, column_index, option_index, $el.value - 1, 'question_row_columns_question_row_column_options')"
                                         >
-                                          <div class="w-6 cursor-pointer">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              fill="none"
-                                              viewBox="0 0 24 24"
-                                              stroke-width="1.5"
-                                              stroke="currentColor"
-                                              class="w-6 h-6"
-                                              @click="moveOption(option, option_index - 1)"
-                                            >
-                                              <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                              />
-                                            </svg>
-                                          </div>
-                                          <div class="w-6 cursor-pointer">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              fill="none"
-                                              viewBox="0 0 24 24"
-                                              stroke-width="1.5"
-                                              stroke="currentColor"
-                                              class="w-6 h-6"
-                                              @click="moveOption(option, option_index + 1)"
-                                            >
-                                              <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                              />
-                                            </svg>
-                                          </div>
-                                        </div>
+                                          <template
+                                            x-for="(option, ooption_index) in question.cells[row_index][column_index].answer_choice"
+                                            :key="option.id"
+                                          >
+                                            <option
+                                              :selected="ooption_index == option_index"
+                                              :value="ooption_index + 1"
+                                              x-text="ooption_index + 1"
+                                            ></option>
+                                          </template>
+                                        </select>
                                         <div
                                           @click="showAlertModal(`/question_row_columns_question_row_column_options/${option.id}`)"
                                           class="text-red-900 cursor-pointer"
@@ -527,7 +481,7 @@
                                         @input.debounce.500ms="updateQRCQRCO(option.id, { name: $el.value })"
                                       />
                                       <div
-                                        class="flex justify-center items-center mx-2"
+                                        class="flex justify-center items-center mx-2 space-x-2"
                                       >
                                         <label
                                           class="cursor-pointer text-gray-700 text-xs"
@@ -538,44 +492,21 @@
                                             x-model="option.followup_field.value"
                                             x-on:change="updateFollowupField(option.id, option.followup_field.id, $el.checked)"
                                         /></label>
-                                        <div
-                                          class="flex justify-center items-center mx-2"
+                                        <select
+                                          class="w-auto pl-2 !text-xs"
+                                          @change="updateOptionOrderings(row_index, column_index, option_index, $el.value - 1, 'question_row_columns_question_row_column_options')"
                                         >
-                                          <div class="w-6 cursor-pointer">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              fill="none"
-                                              viewBox="0 0 24 24"
-                                              stroke-width="1.5"
-                                              stroke="currentColor"
-                                              class="w-6 h-6"
-                                              @click="moveOption(option, option_index - 1)"
-                                            >
-                                              <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                              />
-                                            </svg>
-                                          </div>
-                                          <div class="w-6 cursor-pointer">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              fill="none"
-                                              viewBox="0 0 24 24"
-                                              stroke-width="1.5"
-                                              stroke="currentColor"
-                                              class="w-6 h-6"
-                                              @click="moveOption(option, option_index + 1)"
-                                            >
-                                              <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                              />
-                                            </svg>
-                                          </div>
-                                        </div>
+                                          <template
+                                            x-for="(option, ooption_index) in question.cells[row_index][column_index].answer_choice"
+                                            :key="option.id"
+                                          >
+                                            <option
+                                              :selected="ooption_index == option_index"
+                                              :value="ooption_index + 1"
+                                              x-text="ooption_index + 1"
+                                            ></option>
+                                          </template>
+                                        </select>
                                         <div
                                           @click="showAlertModal(`/question_row_columns_question_row_column_options/${option.id}`)"
                                           class="text-red-900 cursor-pointer"
@@ -633,46 +564,23 @@
                                         @input.debounce.500ms="updateQRCQRCO(option.id, { name: $el.value })"
                                       />
                                       <div
-                                        class="flex justify-center items-center mx-2"
+                                        class="flex justify-center items-center mx-2 space-x-2"
                                       >
-                                        <div
-                                          class="flex justify-center items-center mx-2"
+                                        <select
+                                          class="w-auto pl-2 !text-xs"
+                                          @change="updateOptionOrderings(row_index, column_index, option_index, $el.value - 1, 'question_row_columns_question_row_column_options')"
                                         >
-                                          <div class="w-6 cursor-pointer">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              fill="none"
-                                              viewBox="0 0 24 24"
-                                              stroke-width="1.5"
-                                              stroke="currentColor"
-                                              class="w-6 h-6"
-                                              @click="moveOption(option, option_index - 1)"
-                                            >
-                                              <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                              />
-                                            </svg>
-                                          </div>
-                                          <div class="w-6 cursor-pointer">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              fill="none"
-                                              viewBox="0 0 24 24"
-                                              stroke-width="1.5"
-                                              stroke="currentColor"
-                                              class="w-6 h-6"
-                                              @click="moveOption(option, option_index + 1)"
-                                            >
-                                              <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                              />
-                                            </svg>
-                                          </div>
-                                        </div>
+                                          <template
+                                            x-for="(option, ooption_index) in question.cells[row_index][column_index].answer_choice"
+                                            :key="option.id"
+                                          >
+                                            <option
+                                              :selected="ooption_index == option_index"
+                                              :value="ooption_index + 1"
+                                              x-text="ooption_index + 1"
+                                            ></option>
+                                          </template>
+                                        </select>
                                         <div
                                           @click="showAlertModal(`/question_row_columns_question_row_column_options/${option.id}`)"
                                           class="text-red-900 cursor-pointer"
@@ -730,46 +638,23 @@
                                         @input.debounce.500ms="updateQRCQRCO(option.id, { name: $el.value })"
                                       />
                                       <div
-                                        class="flex justify-center items-center mx-2"
+                                        class="flex justify-center items-center mx-2 space-x-2"
                                       >
-                                        <div
-                                          class="flex justify-center items-center mx-2"
+                                        <select
+                                          class="w-auto pl-2 !text-xs"
+                                          @change="updateOptionOrderings(row_index, column_index, option_index, $el.value - 1, 'question_row_columns_question_row_column_options')"
                                         >
-                                          <div class="w-6 cursor-pointer">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              fill="none"
-                                              viewBox="0 0 24 24"
-                                              stroke-width="1.5"
-                                              stroke="currentColor"
-                                              class="w-6 h-6"
-                                              @click="moveOption(option, option_index - 1)"
-                                            >
-                                              <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M15 11.25l-3-3m0 0l-3 3m3-3v7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                              />
-                                            </svg>
-                                          </div>
-                                          <div class="w-6 cursor-pointer">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              fill="none"
-                                              viewBox="0 0 24 24"
-                                              stroke-width="1.5"
-                                              stroke="currentColor"
-                                              class="w-6 h-6"
-                                              @click="moveOption(option, option_index + 1)"
-                                            >
-                                              <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                              />
-                                            </svg>
-                                          </div>
-                                        </div>
+                                          <template
+                                            x-for="(option, ooption_index) in question.cells[row_index][column_index].answer_choice"
+                                            :key="option.id"
+                                          >
+                                            <option
+                                              :selected="ooption_index == option_index"
+                                              :value="ooption_index + 1"
+                                              x-text="ooption_index + 1"
+                                            ></option>
+                                          </template>
+                                        </select>
                                         <div
                                           @click="showAlertModal(`/question_row_columns_question_row_column_options/${option.id}`)"
                                           class="text-red-900 cursor-pointer"
@@ -1085,12 +970,50 @@
           tempOrderableElements.forEach(
             (oe, index) => (orderings[index] = { id: oe.id, table })
           );
-          await fetch("/api/v1/orderings/update_positions", {
+          const response = await fetch("/api/v1/orderings/update_positions", {
             method: "PATCH",
             headers,
             body: JSON.stringify({ orderings }),
           });
           this.questions.forEach((el, index) => (el.pos = index + 1));
+          this.report(response.status);
+        });
+        this.loading = false;
+      },
+
+      async updateOptionOrderings(
+        row_index,
+        column_index,
+        dragPos,
+        dropPos,
+        table
+      ) {
+        this.loading = true;
+        const temp =
+          this.question.cells[row_index][column_index].answer_choice[dropPos];
+        this.question.cells[row_index][column_index].answer_choice[dropPos] =
+          this.question.cells[row_index][column_index].answer_choice[dragPos];
+        this.question.cells[row_index][column_index].answer_choice[dragPos] =
+          temp;
+        const tempOrderableElements =
+          this.question.cells[row_index][column_index].answer_choice;
+        this.question.cells[row_index][column_index].answer_choice = [];
+        await this.$nextTick(async () => {
+          this.question.cells[row_index][column_index].answer_choice =
+            tempOrderableElements;
+          const orderings = {};
+          tempOrderableElements.forEach(
+            (oe, index) => (orderings[index] = { id: oe.id, table })
+          );
+          const response = await fetch("/api/v1/orderings/update_positions", {
+            method: "PATCH",
+            headers,
+            body: JSON.stringify({ orderings }),
+          });
+          this.question.cells[row_index][column_index].answer_choice.forEach(
+            (el, index) => (el.pos = index + 1)
+          );
+          this.report(response.status);
         });
         this.loading = false;
       },
