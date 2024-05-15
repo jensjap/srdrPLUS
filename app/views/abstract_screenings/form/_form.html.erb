@@ -12,7 +12,7 @@
     </div>
   </div>
 
-  <div class="flex flex-col w-full">
+  <div class="flex flex-col">
     <!-- prettier-ignore -->
     <%= simple_form_for([action_name == 'edit' ? nil : @project, @abstract_screening]) do |f| %>
     <div
@@ -21,7 +21,7 @@
     >
       <div class="flex items-center">
         <div>
-          Abstract Screening Type
+          Select Abstract Screening Type
           <i
             class="fi-info cursor-pointer"
             @click="exportDefinitionModal = true"
@@ -58,433 +58,479 @@
       </div>
     </template>
 
-    <div class="mt-4">
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.exclusive_users = !abstract_screening.exclusive_users"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="abstract_screening[exclusive_users]"
-        />
-        <input
-          type="checkbox"
-          name="abstract_screening[exclusive_users]"
-          :value="abstract_screening.exclusive_users"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900">Exclusive Users</span>
-          <span class="text-sm text-gray-500"
-            >Limit screening participants to a pre-defined list of users
-          </span>
-        </span>
-      </div>
-    </div>
+    <table class="shadow-lg unstriped">
+      <tr>
+        <td class="align-middle">Rejection Reason</td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.all_reason = !abstract_screening.all_reason; abstract_screening.yes_reason = abstract_screening.all_reason; abstract_screening.no_reason = abstract_screening.all_reason; abstract_screening.maybe_reason = abstract_screening.all_reason"
+          >
+            <input
+              type="checkbox"
+              :value="abstract_screening.all_reason"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-blue-700">
+                Required for "Reject" and "Maybe"
+              </span>
+            </span>
+          </div>
+        </td>
+        <td></td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.no_reason = !abstract_screening.no_reason; abstract_screening.all_reason = (abstract_screening.no_reason && abstract_screening.maybe_reason)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[no_reason_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[no_reason_required]"
+              :value="abstract_screening.no_reason"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-red-500">
+                Required for "Reject"
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.maybe_reason = !abstract_screening.maybe_reason; abstract_screening.all_reason = (abstract_screening.no_reason && abstract_screening.maybe_reason)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[maybe_reason_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[maybe_reason_required]"
+              :value="abstract_screening.maybe_reason"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-srdrpurple">
+                Required for "Maybe"
+              </span>
+            </span>
+          </div>
+        </td>
+      </tr>
 
-    <template x-if="abstract_screening.exclusive_users">
-      <div
-        x-data="{ pns: 'abstract_screening', cns: 'user_ids', customInput: false, open: false }"
-      >
-        <div>Users</div>
-        <%= render 'components/multi_select' %>
-      </div>
-    </template>
+      <tr>
+        <td class="align-middle">Tag</td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.all_tag = !abstract_screening.all_tag; abstract_screening.yes_tag = abstract_screening.all_tag; abstract_screening.no_tag = abstract_screening.all_tag; abstract_screening.maybe_tag = abstract_screening.all_tag"
+          >
+            <input
+              type="checkbox"
+              :value="abstract_screening.all_tag"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-blue-700">
+                Always Required
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.yes_tag = !abstract_screening.yes_tag; abstract_screening.all_tag = (abstract_screening.yes_tag && abstract_screening.no_tag && abstract_screening.maybe_tag)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[yes_tag_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[yes_tag_required]"
+              :value="abstract_screening.yes_tag"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-green-600">
+                Required for 'Include'
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.no_tag = !abstract_screening.no_tag; abstract_screening.all_tag = (abstract_screening.yes_tag && abstract_screening.no_tag && abstract_screening.maybe_tag)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[no_tag_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[no_tag_required]"
+              :value="abstract_screening.no_tag"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-red-500">
+                Required for 'Reject'
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.maybe_tag = !abstract_screening.maybe_tag; abstract_screening.all_tag = (abstract_screening.yes_tag && abstract_screening.no_tag && abstract_screening.maybe_tag)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[maybe_tag_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[maybe_tag_required]"
+              :value="abstract_screening.maybe_tag"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-srdrpurple">
+                Required for 'Maybe'
+              </span>
+            </span>
+          </div>
+        </td>
+      </tr>
 
-    <div class="grid grid-rows lg:grid-cols-4 gap-8 gap-x-12 mt-4">
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.all_reason = !abstract_screening.all_reason; abstract_screening.yes_reason = abstract_screening.all_reason; abstract_screening.no_reason = abstract_screening.all_reason; abstract_screening.maybe_reason = abstract_screening.all_reason"
-      >
-        <input
-          type="checkbox"
-          :value="abstract_screening.all_reason"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >Reason required: All
-          </span>
-          <span class="text-sm text-gray-500"
-            >Require the user to provide a Reason for labeling 'Reject' or
-            'Maybe'
-          </span>
-        </span>
-      </div>
-      <div class="flex items-center justify-between cursor-pointer"></div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.no_reason = !abstract_screening.no_reason; abstract_screening.all_reason = (abstract_screening.no_reason && abstract_screening.maybe_reason)"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="abstract_screening[no_reason_required]"
-        />
-        <input
-          type="checkbox"
-          name="abstract_screening[no_reason_required]"
-          :value="abstract_screening.no_reason"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >Reason required: 'Reject'</span
+      <tr>
+        <td class="align-middle">Notes</td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.all_note = !abstract_screening.all_note; abstract_screening.yes_note = abstract_screening.all_note; abstract_screening.no_note = abstract_screening.all_note; abstract_screening.maybe_note = abstract_screening.all_note"
           >
-          <span class="text-sm text-gray-500"
-            >Require the user to provide a Reason for labeling 'Reject'
-          </span>
-        </span>
-      </div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.maybe_reason = !abstract_screening.maybe_reason; abstract_screening.all_reason = (abstract_screening.no_reason && abstract_screening.maybe_reason)"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="abstract_screening[maybe_reason_required]"
-        />
-        <input
-          type="checkbox"
-          name="abstract_screening[maybe_reason_required]"
-          :value="abstract_screening.maybe_reason"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >Reason required: 'Maybe'</span
+            <input
+              type="checkbox"
+              :value="abstract_screening.all_note"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-blue-700">
+                Always Required
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.yes_note = !abstract_screening.yes_note; abstract_screening.all_note = (abstract_screening.yes_note && abstract_screening.no_note && abstract_screening.maybe_note)"
           >
-          <span class="text-sm text-gray-500"
-            >Required the user to provide a Reason when labeling 'Maybe'
-          </span>
-        </span>
-      </div>
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[yes_note_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[yes_note_required]"
+              :value="abstract_screening.yes_note"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-green-600">
+                Required for 'Include'
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.no_note = !abstract_screening.no_note; abstract_screening.all_note = (abstract_screening.yes_note && abstract_screening.no_note && abstract_screening.maybe_note)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[no_note_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[no_note_required]"
+              :value="abstract_screening.no_note"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-red-500">
+                Required for 'Reject'
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.maybe_note = !abstract_screening.maybe_note; abstract_screening.all_note = (abstract_screening.yes_note && abstract_screening.no_note && abstract_screening.maybe_note)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[maybe_note_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[maybe_note_required]"
+              :value="abstract_screening.maybe_note"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-srdrpurple">
+                Required for 'Maybe'
+              </span>
+            </span>
+          </div>
+        </td>
+      </tr>
 
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.all_tag = !abstract_screening.all_tag; abstract_screening.yes_tag = abstract_screening.all_tag; abstract_screening.no_tag = abstract_screening.all_tag; abstract_screening.maybe_tag = abstract_screening.all_tag"
-      >
-        <input
-          type="checkbox"
-          :value="abstract_screening.all_tag"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >Tag required: All
-          </span>
-          <span class="text-sm text-gray-500"
-            >Require the user to provide a tag when labeling 'Include',
-            'Reject', or 'Maybe'
-          </span>
-        </span>
-      </div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.yes_tag = !abstract_screening.yes_tag; abstract_screening.all_tag = (abstract_screening.yes_tag && abstract_screening.no_tag && abstract_screening.maybe_tag)"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="abstract_screening[yes_tag_required]"
-        />
-        <input
-          type="checkbox"
-          name="abstract_screening[yes_tag_required]"
-          :value="abstract_screening.yes_tag"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >Tag required: 'Include'</span
+      <tr>
+        <td class="align-middle">Screening Form</td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.all_form = !abstract_screening.all_form; abstract_screening.yes_form = abstract_screening.all_form; abstract_screening.no_form = abstract_screening.all_form; abstract_screening.maybe_form = abstract_screening.all_form"
           >
-          <span class="text-sm text-gray-500"
-            >Require the user provide a tag when labeling 'Include'
-          </span>
-        </span>
-      </div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.no_tag = !abstract_screening.no_tag; abstract_screening.all_tag = (abstract_screening.yes_tag && abstract_screening.no_tag && abstract_screening.maybe_tag)"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="abstract_screening[no_tag_required]"
-        />
-        <input
-          type="checkbox"
-          name="abstract_screening[no_tag_required]"
-          :value="abstract_screening.no_tag"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >Tag required: 'Reject'</span
+            <input
+              type="checkbox"
+              :value="abstract_screening.all_form"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-blue-700">
+                Always Required
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.yes_form = !abstract_screening.yes_form; abstract_screening.all_form = (abstract_screening.yes_form && abstract_screening.no_form && abstract_screening.maybe_form)"
           >
-          <span class="text-sm text-gray-500"
-            >Require the user provide a tag when labeling 'Reject'
-          </span>
-        </span>
-      </div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.maybe_tag = !abstract_screening.maybe_tag; abstract_screening.all_tag = (abstract_screening.yes_tag && abstract_screening.no_tag && abstract_screening.maybe_tag)"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="abstract_screening[maybe_tag_required]"
-        />
-        <input
-          type="checkbox"
-          name="abstract_screening[maybe_tag_required]"
-          :value="abstract_screening.maybe_tag"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >Tag required: 'Maybe'</span
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[yes_form_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[yes_form_required]"
+              :value="abstract_screening.yes_form"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-green-600">
+                Required for 'Include'
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.no_form = !abstract_screening.no_form; abstract_screening.all_form = (abstract_screening.yes_form && abstract_screening.no_form && abstract_screening.maybe_form)"
           >
-          <span class="text-sm text-gray-500"
-            >Require the user provide a tag when labeling 'Maybe'
-          </span>
-        </span>
-      </div>
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[no_form_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[no_form_required]"
+              :value="abstract_screening.no_form"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-red-500">
+                Required for 'Reject'
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.maybe_form = !abstract_screening.maybe_form; abstract_screening.all_form = (abstract_screening.yes_form && abstract_screening.no_form && abstract_screening.maybe_form)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[maybe_form_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[maybe_form_required]"
+              :value="abstract_screening.maybe_form"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-srdrpurple">
+                Required for 'Maybe'
+              </span>
+            </span>
+          </div>
+        </td>
+      </tr>
+    </table>
 
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.all_note = !abstract_screening.all_note; abstract_screening.yes_note = abstract_screening.all_note; abstract_screening.no_note = abstract_screening.all_note; abstract_screening.maybe_note = abstract_screening.all_note"
-      >
-        <input
-          type="checkbox"
-          :value="abstract_screening.all_note"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >Notes required: All
-          </span>
-          <span class="text-sm text-gray-500"
-            >Require the user provide notes when labeling 'Include', 'Reject',
-            or 'Maybe'
-          </span>
-        </span>
-      </div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.yes_note = !abstract_screening.yes_note; abstract_screening.all_note = (abstract_screening.yes_note && abstract_screening.no_note && abstract_screening.maybe_note)"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="abstract_screening[yes_note_required]"
-        />
-        <input
-          type="checkbox"
-          name="abstract_screening[yes_note_required]"
-          :value="abstract_screening.yes_note"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >Notes required: 'Include'</span
+    <hr>
+
+    <table class="shadow-lg">
+      <tr>
+        <th colspan="2">
+          Additional Options
+        </th>
+      </tr>
+
+      <tr>
+        <td colspan="2">
+          <div class="mt-4">
+            <div
+              class="flex items-center justify-between cursor-pointer"
+              @click="abstract_screening.exclusive_users = !abstract_screening.exclusive_users"
+            >
+              <input
+                type="hidden"
+                value="false"
+                name="abstract_screening[exclusive_users]"
+              />
+              <input
+                type="checkbox"
+                name="abstract_screening[exclusive_users]"
+                :value="abstract_screening.exclusive_users"
+                class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              />
+              <span class="flex-grow flex flex-col">
+                <span class="text-sm font-medium text-gray-900">Exclusive Users</span>
+                <span class="text-sm text-gray-500"
+                  >Limit screening participants to a pre-defined list of users
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <template x-if="abstract_screening.exclusive_users">
+            <div
+              x-data="{ pns: 'abstract_screening', cns: 'user_ids', customInput: false, open: false }"
+            >
+              <div>Users</div>
+              <%= render 'components/multi_select' %>
+            </div>
+          </template>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.hide_author = !abstract_screening.hide_author"
           >
-          <span class="text-sm text-gray-500"
-            >Require the user provide notes when labeling 'Include'
-          </span>
-        </span>
-      </div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.no_note = !abstract_screening.no_note; abstract_screening.all_note = (abstract_screening.yes_note && abstract_screening.no_note && abstract_screening.maybe_note)"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="abstract_screening[no_note_required]"
-        />
-        <input
-          type="checkbox"
-          name="abstract_screening[no_note_required]"
-          :value="abstract_screening.no_note"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >Notes required: 'Reject'</span
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[hide_author]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[hide_author]"
+              :value="abstract_screening.hide_author"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900"
+                >Hide Author Information
+              </span>
+              <span class="text-sm text-gray-500"
+                >Screeners will not be shown author information of citations
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.hide_journal = !abstract_screening.hide_journal"
           >
-          <span class="text-sm text-gray-500"
-            >Require the user provide notes when labeling 'Reject'
-          </span>
-        </span>
-      </div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.maybe_note = !abstract_screening.maybe_note; abstract_screening.all_note = (abstract_screening.yes_note && abstract_screening.no_note && abstract_screening.maybe_note)"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="abstract_screening[maybe_note_required]"
-        />
-        <input
-          type="checkbox"
-          name="abstract_screening[maybe_note_required]"
-          :value="abstract_screening.maybe_note"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >Notes required: 'Maybe'</span
-          >
-          <span class="text-sm text-gray-500"
-            >Require the user provide notes when labeling 'Maybe'
-          </span>
-        </span>
-      </div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.all_form = !abstract_screening.all_form; abstract_screening.yes_form = abstract_screening.all_form; abstract_screening.no_form = abstract_screening.all_form; abstract_screening.maybe_form = abstract_screening.all_form"
-      >
-        <input
-          type="checkbox"
-          :value="abstract_screening.all_form"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >Screening form required: All
-          </span>
-          <span class="text-sm text-gray-500"
-            >Require the user complete screening form when labeling 'Include',
-            'Reject', or 'Maybe'
-          </span>
-        </span>
-      </div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.yes_form = !abstract_screening.yes_form; abstract_screening.all_form = (abstract_screening.yes_form && abstract_screening.no_form && abstract_screening.maybe_form)"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="abstract_screening[yes_form_required]"
-        />
-        <input
-          type="checkbox"
-          name="abstract_screening[yes_form_required]"
-          :value="abstract_screening.yes_form"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >Screening form required: 'Include'</span
-          >
-          <span class="text-sm text-gray-500"
-            >Require the user complete screening form when labeling 'Include'
-          </span>
-        </span>
-      </div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.no_form = !abstract_screening.no_form; abstract_screening.all_form = (abstract_screening.yes_form && abstract_screening.no_form && abstract_screening.maybe_form)"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="abstract_screening[no_form_required]"
-        />
-        <input
-          type="checkbox"
-          name="abstract_screening[no_form_required]"
-          :value="abstract_screening.no_form"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >Screening form required: 'Reject'</span
-          >
-          <span class="text-sm text-gray-500"
-            >Require the user complete screening form when labeling 'Reject'
-          </span>
-        </span>
-      </div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.maybe_form = !abstract_screening.maybe_form; abstract_screening.all_form = (abstract_screening.yes_form && abstract_screening.no_form && abstract_screening.maybe_form)"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="abstract_screening[maybe_form_required]"
-        />
-        <input
-          type="checkbox"
-          name="abstract_screening[maybe_form_required]"
-          :value="abstract_screening.maybe_form"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >Screening form required: 'Maybe'</span
-          >
-          <span class="text-sm text-gray-500"
-            >Require the user complete screening form when labeling 'Maybe'
-          </span>
-        </span>
-      </div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.hide_author = !abstract_screening.hide_author"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="abstract_screening[hide_author]"
-        />
-        <input
-          type="checkbox"
-          name="abstract_screening[hide_author]"
-          :value="abstract_screening.hide_author"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >Hide Author Information
-          </span>
-          <span class="text-sm text-gray-500"
-            >Screeners will not be shown author information of citations
-          </span>
-        </span>
-      </div>
-      <div
-        class="flex items-center justify-between cursor-pointer"
-        @click="abstract_screening.hide_journal = !abstract_screening.hide_journal"
-      >
-        <input
-          type="hidden"
-          value="false"
-          name="abstract_screening[hide_journal]"
-        />
-        <input
-          type="checkbox"
-          name="abstract_screening[hide_journal]"
-          :value="abstract_screening.hide_journal"
-          class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-        />
-        <span class="flex-grow flex flex-col">
-          <span class="text-sm font-medium text-gray-900"
-            >Hide Journal Information
-          </span>
-          <span class="text-sm text-gray-500"
-            >Screeners will not be shown journal information of citations
-          </span>
-        </span>
-      </div>
-    </div>
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[hide_journal]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[hide_journal]"
+              :value="abstract_screening.hide_journal"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900"
+                >Hide Journal Information
+              </span>
+              <span class="text-sm text-gray-500"
+                >Screeners will not be shown journal information of citations
+              </span>
+            </span>
+          </div>
+        </td>
+      </tr>
+    </table>
+
     <!-- prettier-ignore -->
     <%= f.button :submit, params[:action] == 'new' ? 'Create Abstract Screening' : 'Update Abstract Screening', class: '!my-8' %>
     <% end %>
@@ -551,3 +597,10 @@
     }));
   });
 </script>
+
+<style>
+  td {
+    border: 1px solid black;
+    padding: 4px;
+  }
+</style>
