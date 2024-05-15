@@ -62,7 +62,7 @@ class ScreeningDataExportJob < ApplicationJob
           mh[sr.citations_project_id][:tags] += sr.tags.map(&:name)
           mh[sr.citations_project_id][:user_reasons] += sr.reasons.map(&:name)
           mh[sr.citations_project_id][:notes] += [sr.notes] unless sr.notes.blank?
-          mh[sr.citations_project_id][:sr_label_dates] << sr.updated_at
+          mh[sr.citations_project_id][:sr_label_dates] << sr.created_at
         end
       end
 
@@ -102,7 +102,7 @@ class ScreeningDataExportJob < ApplicationJob
             "#{ citation.journal&.name } #{ citation.journal&.volume }(#{ citation.journal&.issue }):#{ citation&.page_number_start }-#{ citation&.page_number_end }",
             citation.doi,
             citation.keywords.map(&:name).join(', '),
-            sr.updated_at,
+            sr.created_at,
             cp.screening_status,
             @consensus_dict[screening_type][cp.id],
             sr.privileged ? 'Adjudicator' : sr.user.handle,
@@ -180,7 +180,7 @@ class ScreeningDataExportJob < ApplicationJob
             cp['doi'],
             cp['keywords'],
           ]
-          last_label_time = mh.dig(cp_id, :sr_label_dates)&.max&.in_time_zone(@desired_time_zone)
+          last_label_time = mh.dig(cp_id, :sr_label_dates)&.min&.in_time_zone(@desired_time_zone)
           columns << last_label_time
           columns << cp['screening_status']
           columns << @consensus_dict[screening_type][cp_id]
@@ -308,7 +308,7 @@ class ScreeningDataExportJob < ApplicationJob
       'Publication String',
       'DOI',
       'Keywords',
-      'Last Label Time',
+      'First Label Time',
       'Sub Status',
     ]
     case style
