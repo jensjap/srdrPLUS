@@ -34,7 +34,7 @@ document.addEventListener 'DOMContentLoaded', ->
       ],
       "columnDefs": [{ "orderable": false, "targets": [4, 5] }],
       ""
-      # "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
+      "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
       # "pageLength": -1,
       "pagingType": "full_numbers",
       "paging": true,

@@ -1,7 +1,8 @@
 json.draw @draw
 json.recordsTotal @project.citations_projects.length
 json.recordsFiltered @citations_projects.length
-json.data(@citations_projects.includes(:citation).offset(@start).limit(@length).map do |cp|
+query = @length.positive? ? @citations_projects.includes(:citation).offset(@start).limit(@length) : @citations_projects.includes(:citation).offset(@start)
+json.data(query.map do |cp|
   {
     accession_number_alts: cp.citation.accession_number_alts,
     refman: cp.citation.refman,
