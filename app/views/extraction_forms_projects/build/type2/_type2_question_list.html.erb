@@ -802,6 +802,8 @@
       "X-Requested-With": "XMLHttpRequest",
       "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
     };
+    const no_extractions_exist = <%= @extractions.count.zero? %>;
+
     Alpine.data("type_2_question_list", () => ({
       loading: false,
       questions: [],
@@ -883,19 +885,21 @@
         this.loading = false;
       },
       async updateCellType(question_row_column, params) {
-        this.loading = true;
-        const response = await fetch(
-          `/question_row_columns/${question_row_column.id}`,
-          {
-            method: "PATCH",
-            headers,
-            credentials: "same-origin",
-            body: JSON.stringify(params),
-          }
-        );
-        this.report(response.status);
-        await this.fetch_questions();
-        this.loading = false;
+        if (no_extractions_exist || confirm('Changing field types while extractions exist may lead to data loss.  Would you like to proceed anyway?')) {
+          this.loading = true;
+          const response = await fetch(
+            `/question_row_columns/${question_row_column.id}`,
+            {
+              method: "PATCH",
+              headers,
+              credentials: "same-origin",
+              body: JSON.stringify(params),
+            }
+          );
+          this.report(response.status);
+          await this.fetch_questions();
+          this.loading = false;
+        }
       },
       async updateCellOption(qrcqrco_id, params) {
         const response = await fetch(

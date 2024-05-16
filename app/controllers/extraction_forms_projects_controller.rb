@@ -10,7 +10,7 @@ class ExtractionFormsProjectsController < ApplicationController
     @extraction_forms_projects_sections = @extraction_forms_project
                                           .extraction_forms_projects_sections
                                           .includes(%i[section])
-    extraction_forms_projects_section = ExtractionFormsProjectsSection.find(params["panel-tab"])
+    extraction_forms_projects_section = ExtractionFormsProjectsSection.find(params['panel-tab'])
     render '/extraction_forms_projects_sections/_preview',
            layout: !(params[:partial] == 'true'),
            locals: { extraction_forms_projects_section: }
@@ -88,6 +88,7 @@ class ExtractionFormsProjectsController < ApplicationController
     @extraction_forms_projects_sections = @extraction_forms_project
                                           .extraction_forms_projects_sections
                                           .includes(:section)
+    @extractions = @extraction_forms_project.project.extractions
     respond_to do |format|
       format.html do
       end
