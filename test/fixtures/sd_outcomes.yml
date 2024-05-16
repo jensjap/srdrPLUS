@@ -1,0 +1,5 @@
+one:
+  id: 1
+  name: "Outcome 1"
+  sd_outcomeable_id: 1
+  sd_outcomeable_type: "SdPairwiseMetaAnalyticResult"

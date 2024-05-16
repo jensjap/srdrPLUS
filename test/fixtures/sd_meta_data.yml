@@ -1,0 +1,40 @@
+one:
+  id: 1
+  project: one
+  report_title: "Report Title 1"
+  date_of_last_search: <%= Time.zone.now %>
+  date_of_publication_to_srdr: <%= Time.zone.now %>
+  date_of_publication_full_report: <%= Time.zone.now %>
+  authors_conflict_of_interest_of_full_report: "No conflict of interest"
+  protocol_link: "http://example.com/protocol1"
+  full_report_link: "http://example.com/full_report1"
+  structured_abstract_link: "http://example.com/abstract1"
+  key_messages_link: "http://example.com/key_messages1"
+  abstract_summary_link: "http://example.com/summary1"
+  evidence_summary_link: "http://example.com/evidence1"
+  disposition_of_comments_link: "http://example.com/comments1"
+  srdr_data_link: "http://example.com/srdr1"
+  most_previous_version_srdr_link: "http://example.com/prev_srdr1"
+  most_previous_version_full_report_link: "http://example.com/prev_report1"
+  overall_purpose_of_review: "Purpose 1"
+  state: "DRAFT"
+  created_at: <%= Time.zone.now %>
+  updated_at: <%= Time.zone.now %>
+  section_flag_0: false
+  section_flag_1: false
+  section_flag_2: false
+  section_flag_3: false
+  section_flag_4: false
+  section_flag_5: false
+  section_flag_6: false
+  report_accession_id: "ID1"
+  authors: "Author 1"
+  section_flag_7: false
+  prospero_link: "http://example.com/prospero1"
+  review_type_id: 1
+  stakeholders_key_informants: "Informants 1"
+  stakeholders_technical_experts: "Experts 1"
+  stakeholders_peer_reviewers: "Reviewers 1"
+  stakeholders_others: "Others 1"
+  section_flag_8: false
+  organization: "Organization 1"

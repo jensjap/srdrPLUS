@@ -1,0 +1,9 @@
+one:
+  id: 1
+  sd_meta_datum: one
+  sd_key_question_id: null
+  key_question_id: 1
+  includes_meta_analysis: true
+  pos: 1
+  created_at: <%= Time.zone.now %>
+  updated_at: <%= Time.zone.now %>
