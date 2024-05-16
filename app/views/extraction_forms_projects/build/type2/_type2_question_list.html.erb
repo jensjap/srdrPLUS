@@ -925,13 +925,13 @@
         this.loading = false;
       },
       async updateFollowupField(
-        question_row_cquestion_row_columns_question_row_column_option_id,
+        qrcqrco_id,
         followup_field_id,
         checked
       ) {
         this.loading = true;
         const url = checked
-          ? `/question_row_columns_question_row_column_options/${question_row_cquestion_row_columns_question_row_column_option_id}/followup_fields`
+          ? `/question_row_columns_question_row_column_options/${qrcqrco_id}/followup_fields`
           : `/followup_fields/${followup_field_id}`;
         const response = await fetch(url, {
           method: checked ? "POST" : "DELETE",
