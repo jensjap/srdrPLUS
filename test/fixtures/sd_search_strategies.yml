@@ -1,0 +1,10 @@
+one:
+  id: 1
+  sd_meta_datum: one
+  sd_search_database_id: 1
+  date_of_search: "2024-01-01"
+  search_limits: "Limitations 1"
+  search_terms: "Terms 1"
+  pos: 1
+  created_at: <%= Time.zone.now %>
+  updated_at: <%= Time.zone.now %>

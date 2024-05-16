@@ -1,0 +1,16 @@
+one:
+  id: 1
+  sd_meta_datum: one
+  name: "PICOD 1"
+  population: "Population 1"
+  interventions: "Interventions 1"
+  comparators: "Comparators 1"
+  outcomes: "Outcomes 1"
+  study_designs: "Study Designs 1"
+  settings: "Settings 1"
+  data_analysis_level_id: 1
+  timing: "Timing 1"
+  other_elements: "Other Elements 1"
+  pos: 1
+  created_at: <%= Time.zone.now %>
+  updated_at: <%= Time.zone.now %>
