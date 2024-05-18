@@ -395,8 +395,43 @@ class ScreeningDataExportJob < ApplicationJob
     consensus_dict = {}
     %w[AS FS].each do |screening_type|
       consensus_dict[screening_type] = {}
-      project.citations_projects.each do |citations_project|
+      skip_outer_iteration = false
+
+      project.citations_projects.includes(:screening_qualifications).each do |citations_project|
         consensus_dict[screening_type][citations_project.id] = nil
+        skip_outer_iteration = false
+
+        # When Screening Qualification exists, we can base the label on it in some cases.
+        citations_project.screening_qualifications.each do |sq|
+          case screening_type
+          when 'AS'
+            case sq.qualification_type
+            when 'as-accepted'
+              consensus_dict[screening_type][citations_project.id] = 1
+              skip_outer_iteration = true
+              break
+            when 'as-rejected'
+              consensus_dict[screening_type][citations_project.id] = -1
+              skip_outer_iteration = true
+              break
+            end
+          when 'FS'
+            case sq.qualification_type
+            when 'fs-accepted'
+              consensus_dict[screening_type][citations_project.id] = 1
+              skip_outer_iteration = true
+              break
+            when 'fs-rejected'
+              consensus_dict[screening_type][citations_project.id] = -1
+              skip_outer_iteration = true
+              break
+            end
+          end
+        end
+
+        next if skip_outer_iteration
+
+        # We look for presence of privileged label.
         priv_srs =
           case screening_type
           when 'AS'
@@ -409,20 +444,7 @@ class ScreeningDataExportJob < ApplicationJob
           debugger if Rails.env.development?
         end
         priv_sr = priv_srs.first
-
-        # When Screening Qualification exists, we can base the label on it.
-        if citations_project.screening_qualifications.present?
-          citations_project.screening_qualifications.each do |sq|
-            case sq.qualification_type
-            when 'as-rejected'
-              consensus_dict[screening_type][citations_project.id] = -1
-            else
-              consensus_dict[screening_type][citations_project.id] = 1
-            end
-          end
-
-        # Next we look for presence of privileged label.
-        elsif priv_sr.present? && [-1, 1].include?(priv_sr.label)
+        if priv_sr.present? && [-1, 1].include?(priv_sr.label)
           consensus_dict[screening_type][citations_project.id] = priv_sr.label
 
         # If no privileged label exists then we check privileged: false labels.
