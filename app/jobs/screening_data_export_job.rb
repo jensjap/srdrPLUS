@@ -373,8 +373,24 @@ class ScreeningDataExportJob < ApplicationJob
   #   1 -> accepted
   #   0 -> maybe
   #  -1 -> rejected
+  # nil -> no labels
   #
-  # return { :citations_project_id => consensus_label }
+  #  System prioritizes in the following order:
+  #  1. Screening Qualifications
+  #  2. [A,F]SR (where privileged: true) also known as Consensus Label
+  #  3. [A,F]SR (where privileged: false) also known as Labels
+  #
+  # return
+  # {
+  #   "AS": {
+  #     citation_id: label,
+  #     ...
+  #   },
+  #   "FS": {
+  #     citation_id: label,
+  #     ...
+  #   }
+  # }
   def build_consensus_dict(project)
     consensus_dict = {}
     %w[AS FS].each do |screening_type|
@@ -393,9 +409,22 @@ class ScreeningDataExportJob < ApplicationJob
           debugger if Rails.env.development?
         end
         priv_sr = priv_srs.first
-        # Privileged label is prioritized.
-        if priv_sr.present? && [-1, 1].include?(priv_sr.label)
+
+        # When Screening Qualification exists, we can base the label on it.
+        if citations_project.screening_qualifications.present?
+          citations_project.screening_qualifications.each do |sq|
+            case sq.qualification_type
+            when 'as-rejected'
+              consensus_dict[screening_type][citations_project.id] = -1
+            else
+              consensus_dict[screening_type][citations_project.id] = 1
+            end
+          end
+
+        # Next we look for presence of privileged label.
+        elsif priv_sr.present? && [-1, 1].include?(priv_sr.label)
           consensus_dict[screening_type][citations_project.id] = priv_sr.label
+
         # If no privileged label exists then we check privileged: false labels.
         else
           srs =
@@ -447,68 +476,5 @@ class ScreeningDataExportJob < ApplicationJob
     end
 
     consensus_dict
-  end
-
-  # Consensus label key:
-  #   x -> unresolved conflict
-  #   o -> incomplete
-  #   1 -> accepted
-  #  -1 -> rejected
-  #
-  #  System prioritizes in the following order:
-  #  1. Screening Qualifications
-  #  2. [A,F]SR (where privileged: true) also known as Consensus Label
-  #  3. [A,F]SR (where privileged: false) also known as Labels
-  #
-  # return { :user_id => :label }
-  def _calculate_consensus_column_value(consensus_label, user_labels, screening_qualification)
-    dict_screening_qualification = { 'Passed' => 1, 'Rejected' => -1 }
-    labels = user_labels&.values
-
-    # If no labels exist at all then we return 'o' unless manual pro/de-motion occurred.
-    # If there was a manual pro/de-motion then we use it instead to populate consensus
-    # label column.
-    if labels.blank?
-      if dict_screening_qualification.keys.include?(screening_qualification)
-        return dict_screening_qualification[screening_qualification]
-      else
-        return 'o'
-      end
-    end
-
-    # If consensus label exists that is not 'x', then we return it to populate consensus
-    # label column.
-    return consensus_label if consensus_label.present? && !consensus_label.eql?('x')
-
-    # Screening Qualification exists.
-    if dict_screening_qualification.keys.include?(screening_qualification)
-      # The system considers this citation to be done with the current
-      # phase (i.e. 'AS', 'FS', 'Extraction'). This means that 'o' incomplete
-      # is not an option.
-      if labels.size.eql?(1)
-        labels[0]
-      elsif labels.uniq.length.eql?(1)
-        labels[0]
-      else
-        'x'
-      end
-
-    # No Screening Qualification exists.
-    else
-      # Since no Screening Qualification exists, the presence of a single label must
-      # mean that we are waiting for a second opinion. Thus screening is incomplete.
-      if labels.size.eql?(1)
-        'o'
-      elsif labels.uniq.length.eql?(1)
-        labels[0]
-      elsif labels.any?(&:blank?)
-        'o'
-      else
-        'x'
-      end
-    end
-  rescue StandardError => e
-    Sentry.capture_exception(e) if Rails.env.production?
-    debugger if Rails.env.development?
   end
 end
