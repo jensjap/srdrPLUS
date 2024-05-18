@@ -444,7 +444,20 @@ class ScreeningDataExportJob < ApplicationJob
           debugger if Rails.env.development?
         end
         priv_sr = priv_srs.first
-        if priv_sr.present? && [-1, 1].include?(priv_sr.label)
+
+        # When Screening Qualification exists, we can base the label on it.
+        if citations_project.screening_qualifications.present?
+          citations_project.screening_qualifications.each do |sq|
+            case sq.qualification_type
+            when 'as-rejected'
+              consensus_dict[screening_type][citations_project.id] = -1
+            else
+              consensus_dict[screening_type][citations_project.id] = 1
+            end
+          end
+
+        # Next we look for presence of privileged label.
+        elsif priv_sr.present? && [-1, 1].include?(priv_sr.label)
           consensus_dict[screening_type][citations_project.id] = priv_sr.label
 
         # If no privileged label exists then we check privileged: false labels.
