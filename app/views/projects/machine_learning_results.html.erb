@@ -13,7 +13,14 @@
 
     <p class="text-xl mb-2">Total Number of Citations: <span class="font-semibold"><%= @total_citation_number %></span></p>
     <p class="text-xl mb-2">Latest Model Time: <span class="font-semibold"><%= @latest_model_time %></span></p>
-    <p class="text-xl mb-2">Rejection Counter: <span class="font-semibold"><%= @rejection_counter %></span></p>
+    <p class="text-xl mb-2">Rejection Streak Counter
+      <i class='fi-info text-blue-500'
+         title='Number of rejections since the last time citation was accepted.
+Please note that the ordering of citations is based on first
+time labeled.'>
+      </i>
+      : <span class="font-semibold"><%= @rejection_counter %></span>
+    </p>
 
     <div class="flex">
       <div class="flex-1 p-8 bg-gray-100">
