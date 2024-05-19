@@ -43,7 +43,7 @@ h4 List of Suggested #{ section_name }s
                   - efpst1.timepoint_names.each do |tn|
                     li = tn.pretty_print_export_header
 
-          td = efpst1.instructions
+          td.text-red-500 = efpst1.instructions
 
           td
             .utilities
