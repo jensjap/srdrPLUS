@@ -11,6 +11,7 @@ module ScreeningModule
   N_SIZE_ONLY_EXPERT_NOVICE_MIXED = 'n-size-only-expert-novice-mixed'.freeze
   PILOT = 'pilot'.freeze
   SCREENINGTYPES = {
+    PILOT => 'Pilot',
     SINGLE_PERPETUAL => 'Perpetual (Single)',
     DOUBLE_PERPETUAL => 'Perpetual (Double)',
     EXPERT_NEEDED_PERPETUAL => 'Perpetual (Expert Needed)',
@@ -18,8 +19,7 @@ module ScreeningModule
     N_SIZE_SINGLE => 'Fixed N Size (Single)',
     N_SIZE_DOUBLE => 'Fixed N Size (Double)',
     N_SIZE_EXPERT_NEEDED => 'Fixed N Size (Expert Needed)',
-    N_SIZE_ONLY_EXPERT_NOVICE_MIXED => 'Fixed N Size (Only Mixed With Expert)',
-    PILOT => 'Pilot'
+    N_SIZE_ONLY_EXPERT_NOVICE_MIXED => 'Fixed N Size (Only Mixed With Expert)'
   }.freeze
   NON_PERPETUAL = [
     PILOT,
