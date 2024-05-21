@@ -1,32 +1,68 @@
-- provide(:title, t(".extract_data"))
+div x-data="$store.deleteConfirmation"
+  = render 'shared/alert_modal'
+  - provide(:title, t(".extract_data"))
 
-div style='margin-left: 34px;'
-  h5
-    = "Assigned to "
-    span style="font-weight: bold"
-      = @extraction.user.handle
+  div style='margin-left: 34px;'
+    h5
+      = "Assigned to "
+      span style="font-weight: bold"
+        = @extraction.user.handle
 
-div style='margin: 0 34px; border-color: #bbb6dd; padding: 0; width: auto;'
-  h6 style='margin: 0;'
-    = @extraction.citation.handle.split("\n").join(" - ")
-  span Refman ID: #{ @extraction.citations_project.refman.to_s }
+  div style='margin: 0 34px; border-color: #bbb6dd; padding: 0; width: auto;'
+    h6 style='margin: 0;'
+      = @extraction.citation.handle.split("\n").join(" - ")
+    span Refman ID: #{ @extraction.citations_project.refman.to_s }
 
-- unless @panel_tab_id == 'keyquestions'
-  div style='display: none;'
-    ul.key-question-selector class="accordion" data-toggle='' data-accordion='' data-allow-all-closed='true'
-      li class="accordion-item" data-accordion-item=''
-        a href="#" class="accordion-title" style="padding: 10px;" Select Key Question(s):
-        div class="accordion-content" data-tab-content=''
-          .grid-y
-            = render 'extractions/extractions_key_questions_projects_selections'
+  - unless @panel_tab_id == 'keyquestions'
+    div style='display: none;'
+      ul.key-question-selector class="accordion" data-toggle='' data-accordion='' data-allow-all-closed='true'
+        li class="accordion-item" data-accordion-item=''
+          a href="#" class="accordion-title" style="padding: 10px;" Select Key Question(s):
+          div class="accordion-content" data-tab-content=''
+            .grid-y
+              = render 'extractions/extractions_key_questions_projects_selections'
 
-hr
+  hr
 
-#preview.work
-  = render 'extractions/shared/extraction_forms_project_tab_links'
+  #preview.work
+    = render 'extractions/shared/extraction_forms_project_tab_links'
 
-  = render 'extractions/shared/extraction_forms_project_tab_content'
+    = render 'extractions/shared/extraction_forms_project_tab_content'
 
-= link_to 'Back to Extractions',
-  project_extractions_path(@extraction.project),
-  title: t('manage_extractions')
+  = link_to 'Back to Extractions',
+    project_extractions_path(@extraction.project),
+    title: t('manage_extractions')
+
+javascript:
+  document.addEventListener('alpine:init', () => {
+    Alpine.store('deleteConfirmation', {
+      isAlertModalOpen: false,
+      alertModalContent: 'Warning! You are about to delete an outcome and any associated data with it. \nThis action cannot be undone. Please confirm to proceed.',
+      deleteUrl: '',
+      openAlertModal(url) {
+        this.deleteUrl = url;
+        this.isAlertModalOpen = true;
+      },
+      closeAlertModal() {
+        this.isAlertModalOpen = false;
+      },
+      modalConfirmAction() {
+        fetch(this.deleteUrl, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").getAttribute('content'),
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include'
+        })
+          .then(response => {
+            if (response.ok || response.status === 204) {
+              window.location.reload();
+            }
+          })
+          .catch(error => console.error('Error:', error))
+          .finally(() => this.closeAlertModal());
+      }
+    });
+  });
