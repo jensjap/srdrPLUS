@@ -389,7 +389,8 @@ class ProjectsController < ApplicationController
     @scores = MachineLearningStatisticService.get_unscreened_prediction_scores(@project.id)
     @labels_with_scores = MachineLearningStatisticService.get_labels_with_scores(@project.id)
     @latest_model_time = MachineLearningStatisticService.latest_model_time(@project.id)
-    @rejection_counter = AbstractScreeningService.count_recent_consecutive_rejects(@project)
+    @rejection_counter = MachineLearningStatisticService.count_recent_consecutive_rejects(@project.id)
+    @estimated_coverage = MachineLearningStatisticService.get_estimated_coverage_to_total_size(@project.id)
     @total_citation_number = @project.citations.count()
     @unscreened_citation_number = Citation
                                   .joins(:citations_projects)
