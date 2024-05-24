@@ -45,20 +45,27 @@ class MachineLearningStatisticService
   end
 
   def self.get_estimated_coverage_to_total_size(project_id)
-    total_size = Project.find(project_id).citations.count()
+    total_size = Project.find(project_id).citations.count
     label_array = get_rejection_array(project_id)
 
     label_size = label_array.size
     label_statistic = []
     threshold_ratio = label_size.to_f / total_size
 
+    fixed_number = 100
+    back_segment_size = [fixed_number, (total_size * 0.1).ceil].max
+
     (1..10).each do |i|
       ratio = i / 10.0
-      front_segment_size = (label_size * ratio).ceil
-      back_segment_size = label_size - front_segment_size
+      front_segment_size = (total_size * ratio).ceil
 
       front_segment = label_array[0...front_segment_size]
-      back_segment = label_array[front_segment_size..-1]
+
+      if front_segment_size < back_segment_size
+        back_segment = front_segment
+      else
+        back_segment = front_segment[-back_segment_size..-1]
+      end
 
       front_count = front_segment.count(1)
       back_count = back_segment.count(1)
@@ -81,11 +88,14 @@ class MachineLearningStatisticService
       }
     end
 
-    threshold_front_segment_size = (label_size * threshold_ratio).ceil
-    threshold_back_segment_size = label_size - threshold_front_segment_size
-
+    threshold_front_segment_size = (total_size * threshold_ratio).ceil
     threshold_front_segment = label_array[0...threshold_front_segment_size]
-    threshold_back_segment = label_array[threshold_front_segment_size..-1]
+
+    if threshold_front_segment_size < back_segment_size
+      threshold_back_segment = threshold_front_segment
+    else
+      threshold_back_segment = threshold_front_segment[-back_segment_size..-1]
+    end
 
     threshold_front_count = threshold_front_segment.count(1)
     threshold_back_count = threshold_back_segment.count(1)
