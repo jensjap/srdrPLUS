@@ -140,9 +140,40 @@ time labeled.'>
         <button @click="showConfusionMatrix = !showConfusionMatrix" class="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
           Toggle Confusion Matrix
         </button>
-        <div class="flex-1" x-show="showConfusionMatrix" x-cloak>
-          <h2 class="text-3xl font-bold mb-4">Predictions vs. Real Labels</h2>
-          <div id="confusionMatrix" style="width: 600px;height:400px;"></div>
+        <div class="flex" x-show="showConfusionMatrix" x-cloak>
+          <div class="flex-1">
+            <h2 class="text-3xl font-bold mb-4">Predictions vs. Real Labels</h2>
+            <div id="confusionMatrix" style="width: 600px;height:400px;"></div>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-3xl font-bold mb-4">Performance Metrics</h2>
+            <table class="w-full divide-y divide-gray-300 mb-4">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Metric</th>
+                  <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900">Value</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <tr>
+                  <td class="py-3.5 pl-4 pr-3 text-sm text-gray-500">Precision</td>
+                  <td id="precision" class="py-3.5 px-3 text-sm text-gray-500"></td>
+                </tr>
+                <tr>
+                  <td class="py-3.5 pl-4 pr-3 text-sm text-gray-500">Recall</td>
+                  <td id="recall" class="py-3.5 px-3 text-sm text-gray-500"></td>
+                </tr>
+                <tr>
+                  <td class="py-3.5 pl-4 pr-3 text-sm text-gray-500">F1 Score</td>
+                  <td id="f1-score" class="py-3.5 px-3 text-sm text-gray-500"></td>
+                </tr>
+                <tr>
+                  <td class="py-3.5 pl-4 pr-3 text-sm text-gray-500">Accuracy</td>
+                  <td id="accuracy" class="py-3.5 px-3 text-sm text-gray-500"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -203,6 +234,15 @@ time labeled.'>
 
   const barData = calculateBins(scores);
   const { TP, FP, TN, FN } = calculateConfusionMatrix(labelsWithScores, 0.5);
+  const precision = TP + FP === 0 ? 0 : (TP / (TP + FP));
+  const recall = TP + FN === 0 ? 0 : (TP / (TP + FN));
+  const f1 = precision + recall === 0 ? 0 : (2 * (precision * recall) / (precision + recall));
+  const accuracy = TP + FP + TN + FN === 0 ? 0 : (TP + TN) / (TP + FP + TN + FN)
+
+  document.getElementById('precision').innerText = precision.toFixed(2);
+  document.getElementById('recall').innerText = recall.toFixed(2);
+  document.getElementById('f1-score').innerText = f1.toFixed(2);
+  document.getElementById('accuracy').innerText = accuracy.toFixed(2);
 
   const barOption = {
     title: {
