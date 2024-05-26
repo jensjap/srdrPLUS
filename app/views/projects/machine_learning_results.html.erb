@@ -13,7 +13,7 @@
 
     <p class="text-xl mb-2">Total Number of Citations: <span class="font-semibold"><%= @total_citation_number %></span></p>
     <p class="text-xl mb-2">Latest Model Time: <span class="font-semibold"><%= @latest_model_time %></span></p>
-    <p class="text-xl mb-2">Rejection Streak Counter
+    <p class="text-xl mb-4">Rejection Streak Counter
       <i class='fi-info text-blue-500'
          title='Number of rejections since the last time citation was accepted.
 Please note that the ordering of citations is based on first
@@ -21,6 +21,7 @@ time labeled.'>
       </i>
       : <span class="font-semibold"><%= @rejection_counter %></span>
     </p>
+    <div id="scatterChart" style="width: 550px; height: 400px;"></div>
 
     <div class="flex">
       <div class="flex-1 p-8 bg-gray-100">
@@ -139,9 +140,40 @@ time labeled.'>
         <button @click="showConfusionMatrix = !showConfusionMatrix" class="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
           Toggle Confusion Matrix
         </button>
-        <div class="flex-1" x-show="showConfusionMatrix" x-cloak>
-          <h2 class="text-3xl font-bold mb-4">Predictions vs. Real Labels</h2>
-          <div id="confusionMatrix" style="width: 600px;height:400px;"></div>
+        <div class="flex" x-show="showConfusionMatrix" x-cloak>
+          <div class="flex-1">
+            <h2 class="text-3xl font-bold mb-4">Predictions vs. Real Labels</h2>
+            <div id="confusionMatrix" style="width: 600px;height:400px;"></div>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-3xl font-bold mb-4">Performance Metrics</h2>
+            <table class="w-full divide-y divide-gray-300 mb-4">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Metric</th>
+                  <th class="py-3.5 px-3 text-left text-sm font-semibold text-gray-900">Value</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <tr>
+                  <td class="py-3.5 pl-4 pr-3 text-sm text-gray-500">Precision</td>
+                  <td id="precision" class="py-3.5 px-3 text-sm text-gray-500"></td>
+                </tr>
+                <tr>
+                  <td class="py-3.5 pl-4 pr-3 text-sm text-gray-500">Sensitivity</td>
+                  <td id="recall" class="py-3.5 px-3 text-sm text-gray-500"></td>
+                </tr>
+                <tr>
+                  <td class="py-3.5 pl-4 pr-3 text-sm text-gray-500">F1 Score</td>
+                  <td id="f1-score" class="py-3.5 px-3 text-sm text-gray-500"></td>
+                </tr>
+                <tr>
+                  <td class="py-3.5 pl-4 pr-3 text-sm text-gray-500">Accuracy</td>
+                  <td id="accuracy" class="py-3.5 px-3 text-sm text-gray-500"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -194,6 +226,7 @@ time labeled.'>
 
   const barChart = echarts.init(document.getElementById('barChart'));
   const matrixChart = echarts.init(document.getElementById('confusionMatrix'));
+  const scatterChart = echarts.init(document.getElementById('scatterChart'));
 
   const dataContainer = document.getElementById('dataContainer');
   const scores = JSON.parse(dataContainer.getAttribute('data-scores'));
@@ -201,6 +234,15 @@ time labeled.'>
 
   const barData = calculateBins(scores);
   const { TP, FP, TN, FN } = calculateConfusionMatrix(labelsWithScores, 0.5);
+  const precision = TP + FP === 0 ? 0 : (TP / (TP + FP));
+  const recall = TP + FN === 0 ? 0 : (TP / (TP + FN));
+  const f1 = precision + recall === 0 ? 0 : (2 * (precision * recall) / (precision + recall));
+  const accuracy = TP + FP + TN + FN === 0 ? 0 : (TP + TN) / (TP + FP + TN + FN)
+
+  document.getElementById('precision').innerText = precision.toFixed(2);
+  document.getElementById('recall').innerText = recall.toFixed(2);
+  document.getElementById('f1-score').innerText = f1.toFixed(2);
+  document.getElementById('accuracy').innerText = accuracy.toFixed(2);
 
   const barOption = {
     title: {
@@ -266,6 +308,36 @@ time labeled.'>
     }]
   };
 
+  const scatterData = <%= @estimated_coverage.map { |data| [data[:ratio], data[:estimated_coverage]] }.to_json %>;
+
+  const scatterOption = {
+    title: {
+      text: 'Estimated Coverage',
+    },
+    xAxis: {
+      name: 'Percentage of studies screened',
+      nameLocation: 'middle',
+      nameGap: 30,
+      min: 0,
+      max: 1,
+      type: 'value'
+    },
+    yAxis: {
+      name: 'Percentage of relevant studies found',
+      nameLocation: 'middle',
+      nameGap: 40,
+      min: 0,
+      max: 1,
+      type: 'value'
+    },
+    series: [{
+      data: scatterData,
+      type: 'line',
+      smooth: true
+    }]
+  };
+
   barChart.setOption(barOption);
   matrixChart.setOption(matrixOption);
+  scatterChart.setOption(scatterOption);
 </script>
