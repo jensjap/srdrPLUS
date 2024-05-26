@@ -40,8 +40,6 @@ class MachineLearningDataSupplyingService
       }
     end.compact
 
-    return project_data
-
     filtered_data = {}
     unique_data = []
 
