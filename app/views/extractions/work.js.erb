@@ -4,3 +4,5 @@ $("#ajax-section-loading-index-<%= @ajax_section_loading_index %>").replaceWith(
   event.initEvent('extractionSectionLoaded', true, true);
   document.dispatchEvent(event);
 <% end %>
+
+Alpine.start();
