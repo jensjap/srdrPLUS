@@ -58,9 +58,8 @@ class MachineLearningStatisticService
     (1..10).each do |i|
       ratio = i / 10.0
       front_segment_size = (total_size * ratio).ceil
-      front_segment = label_array[0...front_segment_size]
 
-      break if front_segment_size > front_segment.size
+      front_segment = label_array[0...front_segment_size]
 
       if front_segment_size < back_segment_size
         back_segment = front_segment
