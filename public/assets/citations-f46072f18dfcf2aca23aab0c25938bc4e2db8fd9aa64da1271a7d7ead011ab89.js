@@ -45,6 +45,7 @@
           }
         ],
         "": "",
+        "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
         "pagingType": "full_numbers",
         "paging": true,
         "stateSave": true,

@@ -66054,6 +66054,7 @@ function __guardMethod__(obj, methodName, transform) {
           }
         ],
         "": "",
+        "lengthMenu": [[50, 100, 500, -1], [50, 100, 500, "All"]],
         "pagingType": "full_numbers",
         "paging": true,
         "stateSave": true,
@@ -69328,20 +69329,6 @@ function autoResize(el) {
   $(el).height(el.scrollHeight);
 }
 
-// Attach NIH autocomplete for UCUM (Unified Code for Units of Measure) to any input field with class 'ucum'.
-$(document).on(
-  "cocoon:after-insert",
-  function (e, insertedItem, originalEvent) {
-    $(".ucum").each(function () {
-      new Def.Autocompleter.Search(
-        this,
-        "https://clinicaltables.nlm.nih.gov/api/ucum/v3/search",
-        { tableFormat: true, valueCols: [0], colHeaders: ["Code", "Name"] }
-      );
-    });
-  }
-);
-
 // Wait for DOM ready:
 document.addEventListener("DOMContentLoaded", function () {
   // Initialize foundation for navbar and any non-section foundation JS
@@ -69375,15 +69362,6 @@ let documentCode = function () {
     }
     return;
   };
-
-  // Attach NIH autocomplete for UCUM (Unified Code for Units of Measure) to any input field with class 'ucum'.
-  $(".ucum").each(function () {
-    new Def.Autocompleter.Search(
-      this,
-      "https://clinicaltables.nlm.nih.gov/api/ucum/v3/search",
-      { tableFormat: true, valueCols: [0], colHeaders: ["Code", "Name"] }
-    );
-  });
 
   // Find all orderable-lists: create Sortable object and prepare for saving to server.
   $(".orderable-list").each((idx, ol_el) => {
