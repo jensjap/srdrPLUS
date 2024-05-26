@@ -1,0 +1,51 @@
+<div x-data="{
+  option_descriptions: {
+    'pilot': 'Continue screening until N citations are labeled. Every participant in this Abstract Screening will provide a label.',
+    'single-perpetual': 'Continue screening until citation pool is exhausted. 1 label is required to determine status of citation as included, excluded or in conflict. A \'maybe\' label is treated as in conflict and requires conflict resolution.',
+    'double-perpetual': 'Continue screening until citation pool is exhausted. 2 labels are required to determine status of citation as included, excluded or in conflict. 2 \'maybe\' labels are treated as in conflict and require conflict resolution.',
+    'expert-needed-perpetual': 'Continue screening until citation pool is exhausted. 2 labels are required to determine status of citation as included, excluded or in conflict. At least 1 Expert label must be provided (two are permitted). 2 \'maybe\' labels are treated as in conflict and require conflict resolution.',
+    'only-expert-novice-mixed-perpetual': 'Continue screening until citation pool is exhausted. 2 labels are required to determine status of citation as included, excluded or in conflict. Exactly 1 Expert label and 1 Novice label are desired. 2 Expert or 2 Novice labels are not desired. 2 \'maybe\' labels are treated as in conflict and require conflict resolution.',
+    'n-size-single': 'Continue screening until N citations are labeled. 1 label is required to determine status of citation as included, excluded or in conflict. A \'maybe\' label is treated as in conflict and requires conflict resolution.',
+    'n-size-double': 'Continue screening until N citations are labeled. 2 labels are required to determine status of citation as included, excluded or in conflict. 2 \'maybe\' labels are treated as in conflict and require conflict resolution.',
+    'n-size-expert-needed': 'Continue screening until N citations are labeled. 2 labels are required to determine status of citation as included, excluded or in conflict. At least 1 Expert label must be provided (two are permitted). 2 \'maybe\' labels are treated as in conflict and require conflict resolution.',
+    'n-size-only-expert-novice-mixed': 'Continue screening until N citations are labeled. 2 labels are required to determine status of citation as included, excluded or in conflict. Exactly 1 Expert label and 1 Novice label are desired. 2 Expert or 2 Novice labels are not desired. 2 \'maybe\' labels are treated as in conflict and require conflict resolution.'
+  }
+}" class="w-full flex flex-col items-center mx-auto mb-4">
+  <div class="w-full">
+    <div class="flex flex-col items-center relative">
+      <div class="w-full">
+        <div class="border border-black bg-white shadow-md">
+          <table class="w-full border-collapse unstriped">
+            <thead>
+              <tr>
+                <th class="border-b border-gray-500 px-4 py-2">Option</th>
+                <th class="border-b border-gray-500 px-4 py-2">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="option in $data[pns][cns].options" :key="option.key">
+                <tr class="border-b border-gray-500">
+                  <td class="border-r border-gray-500 px-4 py-2 min-w-80">
+                    <label class="flex justify-start items-center cursor-pointer">
+                      <input
+                        type="radio"
+                        :name="`${pns}[${cns}]`"
+                        :value="option.key"
+                        class="form-radio h-4 w-4 text-gray-600"
+                        x-model="$data[pns][cns].selection.key"
+                      />
+                      <span class="ml-2 text-gray-600" x-text="option.value"></span>
+                    </label>
+                  </td>
+                  <td class="px-4 py-2">
+                    <p class="text-gray-600 mb-0" x-text="option_descriptions[option.key]"></p>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
