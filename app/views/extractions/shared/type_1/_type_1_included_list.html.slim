@@ -88,9 +88,11 @@
               div = link_to edit_extractions_extraction_forms_projects_sections_type1_path(eefpst1) do
                 i.fi-pencil>
                 | Edit
-              div = link_to eefpst1, data: { confirm: confirmation_message }, method: :delete do
-                i.fi-trash>
-                | Remove
+              div
+                - delete_url = extractions_extraction_forms_projects_sections_type1_path(eefpst1)
+                a href="#" @click.prevent="$store.deleteConfirmation.openAlertModal('#{delete_url}')"
+                  i.fi-trash>
+                  | Remove
 
             - if ['Outcomes', 'Diagnoses'].include? section_name
               td
