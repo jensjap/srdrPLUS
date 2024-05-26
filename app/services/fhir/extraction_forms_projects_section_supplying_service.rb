@@ -178,6 +178,7 @@ class ExtractionFormsProjectsSectionSupplyingService
 
   def determine_qrc_properties(row_column, options)
     qrc_type = qrc_repeats = qrc_max_length = qrc_extension = qrc_answer_constraint = nil
+    return if row_column.question_row_column_type.nil?
 
     case row_column.question_row_column_type.id
     when 1

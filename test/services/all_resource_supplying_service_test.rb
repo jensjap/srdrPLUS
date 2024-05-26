@@ -6,15 +6,10 @@ class AllResourceSupplyingServiceTest < ActiveSupport::TestCase
     @service = AllResourceSupplyingService.new
   end
 
-  test 'should get project info in JSON format' do
+  test 'should get project info in Bundle format' do
     result = @service.find_by_project_id(@project.id)
-    assert result.is_a? String
 
-    json_result = JSON.parse(result)
-
-    assert_equal @project.name, json_result['project_name']
-    assert_equal @project.description, json_result['project_description']
-
-    assert json_result['bundle'].present?
+    assert result['entry'].present?
+    assert_equal result['resourceType'], 'Bundle'
   end
 end

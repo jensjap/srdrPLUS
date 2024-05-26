@@ -2,6 +2,7 @@
 
 one:
   extractions_extraction_forms_projects_section: one
+  extractions_extraction_forms_projects_sections_type1: one
   question_row_column_field: one
   name: MyText
 #  active: true

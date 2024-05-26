@@ -3,10 +3,9 @@
 one:
   name: MyString
   recordable: one
-  recordable_type: Recordable
+  recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
 
 two:
   name: MyString
   recordable: two
-  recordable_type: Recordable
-
+  recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'

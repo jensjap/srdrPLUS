@@ -11,3 +11,8 @@ two:
   field_type: numeric
   description: MyString
 #  deleted_at:
+
+three:
+  name: max_length
+  field_type: numeric
+  description: MyString
