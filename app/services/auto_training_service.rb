@@ -29,7 +29,7 @@ class AutoTrainingService
               data, predictions, ml_model = robot_service.get_predictions(timestamp)
 
               if labeled_percentage < 0.1
-                robot_service.save_predictions(timestamp)
+                robot_service.save_predictions(data, predictions, ml_model)
                 break
               else
                 if robot_service.check_predictions(predictions, 0.9, 20)
