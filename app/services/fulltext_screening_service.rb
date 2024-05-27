@@ -71,12 +71,34 @@ class FulltextScreeningService < BaseScreeningService
 
   def self.get_next_singles_citation_id(fulltext_screening)
     project_screened_citation_ids = project_screened_citation_ids(fulltext_screening.project)
-    puts project_screened_citation_ids
-    CitationsProject
-      .joins(:screening_qualifications)
-      .where(screening_qualifications: { qualification_type: ScreeningQualification::AS_ACCEPTED })
-      .where(project: fulltext_screening.project)
-      .where.not(citation_id: project_screened_citation_ids)
-      .sample&.citation_id
+
+    # Define the qualification types
+    accepted_type = ScreeningQualification::AS_ACCEPTED
+    excluded_types = [
+      ScreeningQualification::FS_ACCEPTED,
+      ScreeningQualification::FS_REJECTED,
+      ScreeningQualification::E_ACCEPTED,
+      ScreeningQualification::E_REJECTED,
+      ScreeningQualification::C_ACCEPTED,
+      ScreeningQualification::C_REJECTED
+    ]
+    project_id = fulltext_screening.project.id
+
+    # Step 1: Find CitationsProject IDs with any of the excluded qualification types
+    excluded_citations_project_ids = CitationsProject
+                                     .joins(:screening_qualifications)
+                                     .where(screening_qualifications: { qualification_type: excluded_types })
+                                     .pluck(:id)
+
+    # Step 2: Find CitationsProject records with AS_ACCEPTED qualifications and exclude the disqualified ones
+    result = CitationsProject
+             .joins(:screening_qualifications)
+             .where(screening_qualifications: { qualification_type: accepted_type })
+             .where(project_id:)
+             .where.not(id: excluded_citations_project_ids)
+             .where.not(citation_id: project_screened_citation_ids)
+             .distinct
+
+    result.sample&.citation_id
   end
 end
