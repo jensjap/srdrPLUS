@@ -118,9 +118,9 @@ class ProjectsController < ApplicationController
 
       format.json do
         if @project.update(project_params)
-          render :show, status: :ok, location: @project
+          render json: { success: true, project: @project }, status: :ok
         else
-          render json: @project.errors, status: :unprocessable_entity
+          render json: { success: false, errors: @project.errors }, status: :unprocessable_entity
         end
       end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_08_055656) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_27_000000) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1200,6 +1200,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_08_055656) do
     t.boolean "as_allow_adding_tags", default: true, null: false
     t.boolean "fs_allow_adding_reasons", default: true, null: false
     t.boolean "fs_allow_adding_tags", default: true, null: false
+    t.boolean "force_training", default: false, null: false
   end
 
   create_table "projects_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
