@@ -35,6 +35,25 @@
       focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto hover:no-underline
       hover:text-white focus:no-underline focus:text-white") %>
       <% end %>
+      <div class="pt-4 flex justify-between items-center">
+        <h2 class="text-sm font-bold">Force Training</h1>
+        <button
+          type="button"
+          class="ml-2 group relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          role="switch"
+          @click="force_training = !force_training; saveForceTraining()"
+        >
+          <span class="pointer-events-none absolute h-full w-full rounded-md bg-white"></span>
+          <span
+            class="pointer-events-none absolute mx-auto h-4 w-9 rounded-full transition-colors duration-200 ease-in-out"
+            :class="force_training ? 'bg-indigo-600' : 'bg-gray-200'"
+          ></span>
+          <span
+            class="pointer-events-none absolute left-0 inline-block h-5 w-5 transform rounded-full border border-gray-200 bg-white shadow ring-0 transition-transform duration-200 ease-in-out"
+            :class="force_training ? 'translate-x-5' : 'translate-x-0'"
+          ></span>
+        </button>
+      </div>
     </div>
   </div>
   <div class="px-4 sm:px-6 lg:px-8">
@@ -230,12 +249,14 @@
       limit_one_reason: false,
       isAlertModalOpen: false,
       alertModalContent: '',
+      force_training: false,
 
       async init() {
         this.project_id = <%= @project.id %>;
         this.allow_adding_reasons = <%= @project.as_allow_adding_reasons %>;
         this.allow_adding_tags = <%= @project.as_allow_adding_tags %>;
         this.limit_one_reason = <%= @project.as_limit_one_reason %>;
+        this.force_training = <%= @project.force_training %>;
         this.fetchReasons();
         this.fetchTags();
       },
@@ -433,6 +454,30 @@
 
       closeAlertModal() {
         this.isAlertModalOpen = false;
+      },
+
+      saveForceTraining() {
+        fetch('/projects/<%= @project.id %>', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-Token': document.querySelector('meta[name=csrf-token]').content
+          },
+          body: JSON.stringify({ project: { force_training: this.force_training } })
+        })
+        .then(response => {
+          if (!response.ok) throw new Error('Network response was not ok.');
+          return response.json();
+        })
+        .then(data => {
+          if (data.success) {
+            toastr.success('Force training updated successfully');
+          } else {
+            toastr.error('Error updating force training');
+          }
+        })
+        .catch(error => toastr.error('Request failed', error));
       }
     }));
   });
