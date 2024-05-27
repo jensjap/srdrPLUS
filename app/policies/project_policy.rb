@@ -18,6 +18,7 @@ class ProjectPolicy < ApplicationPolicy
     :fs_allow_adding_tags,
     :as_limit_one_reason,
     :fs_limit_one_reason,
+    :force_training,
     {
       mesh_descriptor_ids: []
     },
