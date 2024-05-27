@@ -19,7 +19,7 @@ class AutoTrainingService
         days_since_last_train = (Time.zone.now - (last_train_time || Time.zone.at(0))) / 1.day
         labeled_percentage = all_labels_count.to_f / total_citations_count
 
-        if new_labels_count >= x || (new_labels_count > 0 && days_since_last_train >= 7)
+        if project.force_training || new_labels_count >= x || (new_labels_count > 0 && days_since_last_train >= 7)
           while retries < MAX_RETRIES
             robot_service = RobotScreenService.new(project.id, URL)
             train_result = robot_service.partial_train_and_predict(80)
@@ -43,6 +43,8 @@ class AutoTrainingService
               retries += 1
             end
           end
+
+          project.update(force_training: false)
         end
 
       rescue => e
