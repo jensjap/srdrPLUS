@@ -88,6 +88,7 @@ class FulltextScreeningService < BaseScreeningService
     excluded_citations_project_ids = CitationsProject
                                      .joins(:screening_qualifications)
                                      .where(screening_qualifications: { qualification_type: excluded_types })
+                                     .where(project_id:)
                                      .pluck(:id)
 
     # Step 2: Find CitationsProject records with AS_ACCEPTED qualifications and exclude the disqualified ones
