@@ -29,7 +29,7 @@ json.fulltext_screening do
   json.hide_author @fulltext_screening.hide_author
   json.hide_journal @fulltext_screening.hide_journal
   json.user_ids do
-    json.selections(@fulltext_screening.fulltext_screenings_users.map { |asu| { key: asu.id, value: asu.handle } })
+    json.selections(@fulltext_screening.fulltext_screenings_users.map(&:user).map { |user| { key: user.id, value: user.handle } })
     json.options(@fulltext_screening.project.users.map { |u| { key: u.id, value: u.handle } })
   end
   json.reason_ids do
