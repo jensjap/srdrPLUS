@@ -98,7 +98,7 @@ class ExtractionFormsProject < ApplicationRecord
 
   def create_default_sections
     if extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: 'Standard'))
-      Section.default_sections.each do |section|
+      Section.e_ordered_default_sections.each do |section|
         ExtractionFormsProjectsSection.create(
           {
             extraction_forms_project: self,
