@@ -77,7 +77,7 @@ class ExtractionFormsProject < ApplicationRecord
            -> { joins(:extraction_forms_projects_sections) },
            through: :extraction_forms_projects_sections, dependent: :destroy
 
-  accepts_nested_attributes_for :extraction_form, reject_if: :extraction_form_name_exists?
+  # accepts_nested_attributes_for :extraction_form, reject_if: :extraction_form_name_exists?
 
   def get_extraction_forms_project_extraction_form_information_markup
     extraction_form.name
