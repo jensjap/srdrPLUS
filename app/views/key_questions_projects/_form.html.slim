@@ -8,7 +8,11 @@
 .form-inputs
   = f.simple_fields_for(:key_question, f.object.key_question || f.object.build_key_question) do |kq_f|
 
-    = kq_f.input :name, label: t('question_text'), required: true, hint: 'Name can\'t be blank'
+    = kq_f.input :name,
+                 label: t('question_text'),
+                 required: true,
+                 hint: 'Name can\'t be blank',
+                 input_html: { rows: 4 }
 
 div class="mt-4"
   = f.button :submit, t('.save'), style: 'float: left;'
