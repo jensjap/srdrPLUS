@@ -48,6 +48,13 @@ class ExtractionFormsProject < ApplicationRecord
   after_create :create_default_arms, unless: :create_empty
   after_update :ensure_proper_sections
 
+  amoeba do
+    enable
+    customize(lambda { |_original, copy|
+      copy.create_empty = true
+    })
+  end
+
   # Since has_many :extraction_forms_projects_sections uses lambda function to
   # scope efps by efp.extraction_forms_project_type declaring dependent: :destroy
   # on the has_many relationship will not find and destroy all of the efps.
@@ -55,8 +62,8 @@ class ExtractionFormsProject < ApplicationRecord
   before_destroy :destroy_extraction_forms_projects_sections
 
   belongs_to :extraction_forms_project_type, inverse_of: :extraction_forms_projects, optional: true
-  belongs_to :extraction_form,               inverse_of: :extraction_forms_projects
-  belongs_to :project,                       inverse_of: :extraction_forms_projects # , touch: true
+  belongs_to :extraction_form, inverse_of: :extraction_forms_projects
+  belongs_to :project, inverse_of: :extraction_forms_projects # , touch: true
 
   has_many :extraction_forms_projects_sections,
            lambda { |extraction_forms_project|
@@ -177,7 +184,11 @@ class ExtractionFormsProject < ApplicationRecord
   end
 
   def ensure_proper_sections
-    sections_for_efp_type2 if extraction_forms_project_type_id.eql?(2)
+    if extraction_forms_project_type.eql?(
+      ExtractionFormsProjectType.find_by(name: ExtractionFormsProjectType::STANDARD)
+    )
+      sections_for_efp_type2
+    end
   end
 
   def sections_for_efp_type2

@@ -14,6 +14,10 @@
 class ExtractionFormsProjectsSectionsType1 < ApplicationRecord
   default_scope { order(:pos, :id) }
 
+  amoeba do
+    enable
+  end
+
   belongs_to :extraction_forms_projects_section, inverse_of: :extraction_forms_projects_sections_type1s
   belongs_to :type1,                             inverse_of: :extraction_forms_projects_sections_type1s
   belongs_to :type1_type,                        inverse_of: :extraction_forms_projects_sections_type1s, optional: true

@@ -29,7 +29,7 @@ class Project < ApplicationRecord
   include SharedPublishableMethods
   include SharedQueryableMethods
 
-  attr_accessor :create_empty
+  attr_accessor :create_empty, :is_amoeba_copy, :amoeba_copy_extractions
 
   searchkick callbacks: :async
 
@@ -47,6 +47,14 @@ class Project < ApplicationRecord
   after_create :create_default_extraction_form, unless: :create_empty
   after_create :create_empty_extraction_form, if: :create_empty
   after_create :create_default_member
+
+  amoeba do
+    include_association :extraction_forms_projects
+    include_association :key_questions_projects
+    include_association :citations_projects
+    include_association :extractions, if: :amoeba_copy_extractions
+    prepend name: 'Copy of '
+  end
 
   has_many :extractions, dependent: :destroy, inverse_of: :project
   has_many :exported_items, dependent: :destroy
@@ -382,9 +390,13 @@ class Project < ApplicationRecord
   end
 
   def create_empty_extraction_form
-    efp = ExtractionFormsProject.new(project: self,
-                                     extraction_forms_project_type: ExtractionFormsProjectType.first,
-                                     extraction_form: ExtractionForm.first)
+    return if is_amoeba_copy
+
+    efp = ExtractionFormsProject.new(
+      project: self,
+      extraction_forms_project_type: ExtractionFormsProjectType.find_by(name: 'Standard'),
+      extraction_form: ExtractionForm.find_by(name: 'ef1')
+    )
     efp.create_empty = true
     efp.save!
   end

@@ -17,3 +17,23 @@ three:
   extraction_forms_project_type: three
   project: one
   public: false
+
+amoeba_efp_standard:
+  extraction_form: standard
+  extraction_forms_project_type: one
+  project: copy_project_original
+
+amoeba_efp_diagnostic:
+  extraction_form: diagnostic
+  extraction_forms_project_type: two
+  project: copy_project_original
+
+amoeba_efp_abstract_screening_form:
+  extraction_form: abstract_screening_form
+  extraction_forms_project_type: three
+  project: copy_project_original
+
+amoeba_efp_fulltext_screening_form:
+  extraction_form: fulltext_screening_form
+  extraction_forms_project_type: three
+  project: copy_project_original

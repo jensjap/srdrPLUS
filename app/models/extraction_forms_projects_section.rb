@@ -31,7 +31,15 @@ class ExtractionFormsProjectsSection < ApplicationRecord
     joins(:extraction_forms_project)
       .where(extraction_forms_projects: { extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::MINI_EXTRACTION) })
   }
+
   after_create :create_extraction_forms_projects_section_option
+
+  amoeba do
+    include_association :extraction_forms_projects_section_option
+    include_association :extraction_forms_projects_sections_type1s
+    include_association :key_questions_projects
+    include_association :questions
+  end
 
   belongs_to :extraction_forms_project,                inverse_of: :extraction_forms_projects_sections
   belongs_to :extraction_forms_projects_section_type,  inverse_of: :extraction_forms_projects_sections

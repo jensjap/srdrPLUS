@@ -14,3 +14,28 @@ three:
   citations_project: one
   project: one
   user: two
+
+copy_project_extraction_one:
+  citations_project: copy_project_cp_one
+  project: copy_project_original
+  user: one
+
+copy_project_extraction_two:
+  citations_project: copy_project_cp_two
+  project: copy_project_original
+  user: one
+
+copy_project_extraction_three:
+  citations_project: copy_project_cp_three
+  project: copy_project_original
+  user: one
+
+copy_project_extraction_four:
+  citations_project: copy_project_cp_four
+  project: copy_project_original
+  user: one
+
+copy_project_extraction_five:
+  citations_project: copy_project_cp_one
+  project: copy_project_original
+  user: two

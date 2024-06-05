@@ -8,3 +8,15 @@ two:
 
 three:
   name: ef3
+
+standard:
+  name: Standard
+
+diagnostic:
+  name: Diagnostic Test
+
+abstract_screening_form:
+  name: Citation Screening Extraction Form
+
+fulltext_screening_form:
+  name: Fulltext Screening Extraction Form

@@ -15,21 +15,32 @@
 class Extraction < ApplicationRecord
   include ConsolidationHelper
 
+  attr_accessor :is_amoeba_copy
+
   # !!! We can't implement this without ensuring integrity of the extraction form. It is possible that the database
   #    is rendered inconsistent if a project lead changes links between type1 and type2 after this hook is called.
   #    We need something that ensures consistency when linking is changed.
   #
   # Note: 6/25/2018 - We call ensure_extraction_form_structure in work and consolidate action. this might be enough
   #                   to ensure consistency?
-  after_create :ensure_extraction_form_structure
-  after_create :create_default_arms
-  after_create :create_default_status
+  after_create :ensure_extraction_form_structure, unless: :is_amoeba_copy
+  after_create :create_default_arms, unless: :is_amoeba_copy
+  after_create :create_default_status, unless: :is_amoeba_copy
   after_save :evaluate_screening_status_citations_project
   after_destroy :evaluate_screening_status_citations_project
 
   # create checksums without delay after create and update, since extractions/index would be incorrect.
   after_create do |extraction|
     ExtractionChecksum.create! extraction:
+  end
+
+  amoeba do
+    include_association :statusing
+    include_association :extractions_extraction_forms_projects_sections
+    include_association :extractions_key_questions_projects_selections
+    customize(lambda { |_original, copy|
+      copy.is_amoeba_copy = true
+    })
   end
 
   default_scope { not_disqualified }
