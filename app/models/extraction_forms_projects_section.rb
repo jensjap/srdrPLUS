@@ -79,8 +79,8 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
   delegate :project, to: :extraction_forms_project
 
-  validate :child_type
-  validate :parent_type
+  validate :child_type_must_be_type2
+  validate :parent_type_must_be_type1
 
   # !!! This code is repeated in model/ExtractionsExtractionFormsProjectsSection.
   #    We should move it somewhere to share.
@@ -122,15 +122,25 @@ class ExtractionFormsProjectsSection < ApplicationRecord
     section.name
   end
 
-  # !!! this isn't working.
-  def child_type
-    #    errors[:base] << 'Child Type must be of Type 2' unless self.link_to_type1.present? &&
-    #      self.extraction_forms_projects_section_type_id != 2
+  def child_type_must_be_type2
+    type2 = ExtractionFormsProjectsSectionType.find_by(name: ExtractionFormsProjectsSectionType::TYPE2)
+
+    invalid_types = extraction_forms_projects_section_type2s.any? do |section|
+      !section.extraction_forms_projects_section_type.eql?(type2)
+    end
+
+    return unless invalid_types
+
+    errors.add(:base, 'All associated types must be of Type 2')
   end
 
-  def parent_type
-    errors[:base] << 'Parent Type must be of Type 1' unless link_to_type1.nil? ||
-                                                            link_to_type1.extraction_forms_projects_section_type_id == 1
+  def parent_type_must_be_type1
+    if link_to_type1.present? &&
+       link_to_type1.extraction_forms_projects_section_type.eql?(
+         ExtractionFormsProjectsSectionType.find_by(name: ExtractionFormsProjectsSectionType::TYPE1)
+       )
+      errors[:base] << 'Parent Type must be of Type 1'
+    end
   end
 
   def extraction_forms_projects_sections_type1s_without_total_arm
