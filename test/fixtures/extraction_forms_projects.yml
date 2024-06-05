@@ -2,14 +2,18 @@
 
 one:
   extraction_form: one
+  extraction_forms_project_type: one
   project: one
   public: false
-#  deleted_at:
-#  active: true
 
 two:
   extraction_form: two
+  extraction_forms_project_type: two
   project: two
   public: false
-#  deleted_at:
-#  active: true
+
+three:
+  extraction_form: three
+  extraction_forms_project_type: three
+  project: one
+  public: false

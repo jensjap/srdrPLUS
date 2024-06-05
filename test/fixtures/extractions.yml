@@ -3,9 +3,14 @@
 one:
   citations_project: one
   project: one
+  user: one
 
 two:
   citations_project: two
+  project: one
+  user: one
 
 three:
   citations_project: one
+  project: one
+  user: two

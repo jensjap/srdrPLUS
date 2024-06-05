@@ -8,3 +8,10 @@ two:
   citation_type: two
   name: MyString
 
+three:
+  citation_type: one
+  name: MyString
+
+four:
+  citation_type: one
+  name: MyString

@@ -1,9 +1,10 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: Extraction Form One
-#  deleted_at:
+  name: ef1
 
 two:
-  name: Extraction Form Two
-#  deleted_at:
+  name: ef2
+
+three:
+  name: ef3

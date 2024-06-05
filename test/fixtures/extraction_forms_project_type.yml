@@ -1,10 +1,10 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: Primary
+  name: Standard
 
 two:
-  name: Secondary
+  name: Diagnostic Test
 
 three:
-  name: Abstrackr
+  name: Citation Screening Extraction Form
