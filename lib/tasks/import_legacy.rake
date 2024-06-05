@@ -876,9 +876,9 @@ namespace(:db) do
           begin
             ExtractionsExtractionFormsProjectsSectionsType1Row.find(eefpst1r.id)
           rescue => exception
-            debugger
+            debugger if Rails.env.development?
           end
-          debugger if eefpst1r.id.eql?(94791)
+
           results_data_queue << [subgroup, outcome, eefpst1r]
         end
 
@@ -901,7 +901,7 @@ namespace(:db) do
         begin
           ExtractionsExtractionFormsProjectsSectionsType1Row.find(eefpst1r.id)
         rescue => exception
-          debugger
+          debugger if Rails.env.development?
         end
         migrate_results_data subgroup, outcome, eefpst1r
       end
@@ -962,13 +962,13 @@ namespace(:db) do
       begin
         ExtractionsExtractionFormsProjectsSectionsType1Row.find(eefpst1r.id)
       rescue => exception
-        debugger
+        debugger if Rails.env.development?
       end
 
       begin
         rss_d = eefpst1r.result_statistic_sections.find_or_create_by!(result_statistic_section_type: @rss_type_descriptive)
       rescue => exception
-        debugger
+        debugger if Rails.env.development?
       end
 
       rss_d = eefpst1r.result_statistic_sections.find_or_create_by!(result_statistic_section_type: @rss_type_descriptive)
