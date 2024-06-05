@@ -62,28 +62,11 @@ class Project < ApplicationRecord
   has_many :abstract_screening_results, through: :abstract_screenings
   has_many :fulltext_screenings, dependent: :destroy, inverse_of: :project
   has_many :fulltext_screening_results, through: :fulltext_screenings
-  has_one :screening_form, dependent: :destroy, inverse_of: :project
 
   has_many :projects_tags, dependent: :destroy
   has_many :tags, through: :projects_tags
   has_many :projects_reasons, dependent: :destroy
   has_many :reasons, through: :projects_reasons
-
-  has_one :data_audit, dependent: :destroy
-  has_one :publishing, as: :publishable, dependent: :destroy
-  # NOTE
-  # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one
-  # publishing, therefore:
-  #
-  #   belongs_to :publishing, polymorphic: true
-  #
-  # and on the publishing:
-  #
-  #   has_many :publishable, as: :publishing
-  #
-  # is actually what we want.
-  #
-  # Birol
 
   has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project
   has_many :extraction_forms, through: :extraction_forms_projects, dependent: :destroy
@@ -113,6 +96,23 @@ class Project < ApplicationRecord
 
   has_many :ml_models_projects
   has_many :ml_models, through: :ml_models_projects
+
+  has_one :data_audit, dependent: :destroy
+  has_one :publishing, as: :publishable, dependent: :destroy
+  has_one :screening_form, dependent: :destroy, inverse_of: :project
+  # NOTE
+  # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one
+  # publishing, therefore:
+  #
+  #   belongs_to :publishing, polymorphic: true
+  #
+  # and on the publishing:
+  #
+  #   has_many :publishable, as: :publishing
+  #
+  # is actually what we want.
+  #
+  # Birol
 
   validates :name, presence: true
 
