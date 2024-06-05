@@ -101,6 +101,8 @@ class QuestionRowColumn < ApplicationRecord
 
   def create_default_question_row_column_options
     QuestionRowColumnOption.all.each do |opt|
+      next if opt.name == 'answer_choice'
+
       question_row_columns_question_row_column_options.create(
         question_row_column: self,
         question_row_column_option: opt
@@ -113,7 +115,7 @@ class QuestionRowColumn < ApplicationRecord
   end
 
   def ensure_question_row_column_fields
-    return unless question_row_column_type.name == QuestionRowColumnType::NUMERIC  # Numeric requires 2 fields.
+    return unless question_row_column_type.name == QuestionRowColumnType::NUMERIC # Numeric requires 2 fields.
 
     question_row_column_fields.create! while question_row_column_fields.length < 2
   end
