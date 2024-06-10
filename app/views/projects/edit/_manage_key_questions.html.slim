@@ -15,7 +15,6 @@ div class="mx-auto p-4 lg:p-8" x-data="$store.deleteConfirmation"
           - if ProjectPolicy.new(current_user, @project).project_leader?
             th style="min-width: 0; width: 10px;"
           th = t('key_question_text')
-          th = t('assigned')
           th = t('date_created')
           th = t('date_updated')
 
@@ -27,9 +26,6 @@ div class="mx-auto p-4 lg:p-8" x-data="$store.deleteConfirmation"
               td.sort-handle style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"
                 i class="fa fa-arrows"
             td = kqp.key_question.name
-            td
-              - if kqp.extraction_forms_projects_section.present?
-                i.fi-check style='color: green;'
             td = kqp.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
             td = kqp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P')
             - if ProjectPolicy.new(current_user, @project).project_leader?

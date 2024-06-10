@@ -7,33 +7,98 @@ class ProjectCloningServiceTest < ActiveSupport::TestCase
     @user2 = users(:two)
   end
 
-  test 'cloning project should create the correct number of new records' do
+  test 'cloning project should create the correct number of new db records' do
     p_cnt = Project.all.size
     pu_cnt = ProjectsUser.all.size
     kqp_cnt = KeyQuestionsProject.all.size
     efp_cnt = ExtractionFormsProject.all.size
     cp_cnt = CitationsProject.all.size
     ex_cnt = Extraction.all.size
+    pt_cnt = ProjectsTag.all.size
+    pr_cnt = ProjectsReason.all.size
+    mdp_cnt = MeshDescriptorsProject.all.size
 
-    ProjectCloningService.clone_project(@original_project, leaders: [@user1, @user2])
+    leaders = [@user1, @user2]
+
+    # Just a sanity check to ensure we start with known counts of the :through associations.
+    assert_equal(2, @original_project.key_questions.size)
+    assert_equal(4, @original_project.citations.size)
+    assert_equal(2, @original_project.tags.size)
+    assert_equal(3, @original_project.reasons.size)
+    assert_equal(3, @original_project.mesh_descriptors.size)
+    assert_equal(5, @original_project.extractions.size)
+    assert_equal(4, @original_project.extraction_forms_projects.size)
+
+    opts = {
+      include_citations: true,
+      include_extractions: false,
+      include_labels: false
+    }
+    ProjectCloningService.clone_project(@original_project, leaders, opts)
 
     assert_equal(p_cnt + 1, Project.all.size)
+    assert_equal(cp_cnt + CitationsProject.where(project: @original_project).size, CitationsProject.all.size)
     assert_equal(pu_cnt + 2, ProjectsUser.all.size)
     assert_equal(kqp_cnt + KeyQuestionsProject.where(project: @original_project).size, KeyQuestionsProject.all.size)
-    assert_equal(efp_cnt + ExtractionFormsProject.where(project: @original_project).size, ExtractionFormsProject.all.size)
-    assert_equal(cp_cnt + CitationsProject.where(project: @original_project).size, CitationsProject.all.size)
+    assert_equal(pt_cnt + ProjectsTag.where(project: @original_project).size, ProjectsTag.all.size)
+    assert_equal(pr_cnt + ProjectsReason.where(project: @original_project).size, ProjectsReason.all.size)
+    assert_equal(mdp_cnt + MeshDescriptorsProject.where(project: @original_project).size, MeshDescriptorsProject.all.size)
     assert_equal(ex_cnt, Extraction.all.size)
-    assert_equal(2, @original_project.key_questions.size)
-    assert_equal(4, @original_project.extraction_forms_projects.size)
-    assert_equal(4, @original_project.citations.size)
-    assert_equal(5, @original_project.extractions.size)
+    assert_equal(efp_cnt + ExtractionFormsProject.where(project: @original_project).size, ExtractionFormsProject.all.size)
   end
 
   test 'cloning project with extractions should create new extraction records' do
     ex_cnt = Extraction.all.size
 
-    ProjectCloningService.clone_project(@original_project, copy_extractions: true, leaders: [@user1, @user2])
+    # Just a sanity check to ensure we start with known counts of the :through associations.
+    assert_equal(5, @original_project.extractions.size)
+
+    opts = {
+      include_citations: true,
+      include_extractions: true,
+      include_labels: false
+    }
+    ProjectCloningService.clone_project(@original_project, [@user1, @user2], opts)
 
     assert_equal(ex_cnt + Extraction.where(project: @original_project).size, Extraction.all.size)
+  end
+
+  test 'cloning project should copy ExtractionFormsProjectsSection' do
+    efps_cnt = ExtractionFormsProjectsSection.all.size
+
+    opts = {
+      include_citations: true,
+      include_extractions: false
+    }
+    cloned_prj = ProjectCloningService.clone_project(@original_project, [@user1, @user2], opts)
+    cloned_std_efp = cloned_prj
+                     .extraction_forms_projects
+                     .joins(:extraction_form)
+                     .find_by(extraction_forms: { name: 'Standard' })
+    cloned_std_efp_efps = cloned_std_efp.extraction_forms_projects_sections
+    original_std_efp = @original_project
+                       .extraction_forms_projects
+                       .joins(:extraction_form)
+                       .find_by(extraction_forms: { name: 'Standard' })
+    original_std_efp_efps = original_std_efp.extraction_forms_projects_sections
+    assert_equal(
+      original_std_efp_efps.size,
+      cloned_std_efp_efps.size
+    )
+    assert_equal(
+      efps_cnt + original_std_efp_efps.size,
+      ExtractionFormsProjectsSection.all.size
+    )
+
+    original_std_efp_efps.each do |orig_efps|
+      name = orig_efps.section.name
+      assert_equal(
+        cloned_std_efp_efps
+        .joins(:section)
+        .find_by(sections: { name: })
+        .extraction_forms_projects_section_option.by_type1,
+        orig_efps.extraction_forms_projects_section_option.by_type1
+      )
+    end
   end
 end

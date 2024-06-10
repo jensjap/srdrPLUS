@@ -48,18 +48,18 @@ class ExtractionFormsProject < ApplicationRecord
   after_create :create_default_arms, unless: :create_empty
   after_update :ensure_proper_sections
 
-  amoeba do
-    enable
-    customize(lambda { |_original, copy|
-      copy.create_empty = true
-    })
-  end
-
   # Since has_many :extraction_forms_projects_sections uses lambda function to
   # scope efps by efp.extraction_forms_project_type declaring dependent: :destroy
   # on the has_many relationship will not find and destroy all of the efps.
   # We need to destroy them manually using pure sql to find all the relevant efps.
   before_destroy :destroy_extraction_forms_projects_sections
+
+  amoeba do
+    include_association :extraction_forms_projects_sections
+    customize(lambda { |_original, copy|
+      copy.create_empty = true
+    })
+  end
 
   belongs_to :extraction_forms_project_type, inverse_of: :extraction_forms_projects, optional: true
   belongs_to :extraction_form, inverse_of: :extraction_forms_projects
@@ -69,13 +69,12 @@ class ExtractionFormsProject < ApplicationRecord
            lambda { |extraction_forms_project|
              case extraction_forms_project.extraction_forms_project_type_id
              when 1
-               where(section: [Section.where('sections.name NOT IN (?)',
-                                             DIAGNOSTIC_TEST_SECTIONS)])
+               joins(:section).where.not(sections: { name: DIAGNOSTIC_TEST_SECTIONS })
              when 2
-               where(section: [Section.where('sections.name NOT IN (?)',
-                                             STANDARD_SECTIONS)])
+               joins(:section).where.not(sections: { name: STANDARD_SECTIONS })
              end
            },
+           dependent: :destroy,
            inverse_of: :extraction_forms_project
   has_many :key_questions_projects,
            -> { joins(:extraction_forms_projects_section) },
@@ -104,6 +103,7 @@ class ExtractionFormsProject < ApplicationRecord
   end
 
   def create_default_sections
+    debugger
     if extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: 'Standard'))
       Section.e_ordered_default_sections.each do |section|
         ExtractionFormsProjectsSection.create(
@@ -166,6 +166,7 @@ class ExtractionFormsProject < ApplicationRecord
   end
 
   def create_default_arms
+    debugger
     if extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: 'Standard'))
       extraction_forms_projects_sections.find_by(
         section: Section.find_by(name: 'Arms')
@@ -184,6 +185,7 @@ class ExtractionFormsProject < ApplicationRecord
   end
 
   def ensure_proper_sections
+    debugger
     if extraction_forms_project_type.eql?(
       ExtractionFormsProjectType.find_by(name: ExtractionFormsProjectType::STANDARD)
     )

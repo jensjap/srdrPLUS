@@ -1,0 +1,9 @@
+one:
+  project: copy_project_original
+  tag: one
+  screening_type: abstract
+
+two:
+  project: copy_project_original
+  tag: two
+  screening_type: abstract

@@ -15,9 +15,11 @@
 #
 
 class ExtractionFormsProjectsSection < ApplicationRecord
-  default_scope { order(:pos, :id) }
-
   include SharedProcessTokenMethods
+
+  attr_accessor :is_amoeba_copy
+
+  default_scope { order(:pos, :id) }
 
   scope :in_standard_extraction, lambda {
     joins(:extraction_forms_project)
@@ -32,13 +34,16 @@ class ExtractionFormsProjectsSection < ApplicationRecord
       .where(extraction_forms_projects: { extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::MINI_EXTRACTION) })
   }
 
-  after_create :create_extraction_forms_projects_section_option
+  after_create :create_extraction_forms_projects_section_option, unless: :is_amoeba_copy
 
   amoeba do
     include_association :extraction_forms_projects_section_option
-    include_association :extraction_forms_projects_sections_type1s
-    include_association :key_questions_projects
-    include_association :questions
+    # include_association :extraction_forms_projects_sections_type1s
+    # include_association :questions
+    customize(lambda { |original, copy|
+      copy.is_amoeba_copy = true
+      debugger if original.link_to_type1.present?
+    })
   end
 
   belongs_to :extraction_forms_project,                inverse_of: :extraction_forms_projects_sections
@@ -67,8 +72,8 @@ class ExtractionFormsProjectsSection < ApplicationRecord
            inverse_of: :extraction_forms_projects_section
   has_many :extractions, through: :extractions_extraction_forms_projects_sections, dependent: :destroy
 
-  has_many :key_questions_projects, dependent: :nullify, inverse_of: :extraction_forms_projects_section
-  has_many :key_questions, through: :key_questions_projects, dependent: :destroy
+  # has_many :key_questions_projects, dependent: :nullify, inverse_of: :extraction_forms_projects_section
+  # has_many :key_questions, through: :key_questions_projects, dependent: :destroy
 
   has_many :questions,
            dependent: :destroy, inverse_of: :extraction_forms_projects_section

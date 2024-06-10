@@ -1,0 +1,11 @@
+one:
+  name: Oncogene Protein tpr-met
+  resource_uri: "http://id.nlm.nih.gov/mesh/D050490"
+
+two:
+  name: Proto-Oncogene Proteins c-met
+  resource_uri: "http://id.nlm.nih.gov/mesh/D019859"
+
+three:
+  name: RNA, Transfer, Met
+  resource_uri: "http://id.nlm.nih.gov/mesh/D012358"

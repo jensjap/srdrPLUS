@@ -1,21 +1,17 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  extraction_forms_projects_section: four
   key_question: one
   project: one
 
 two:
-  extraction_forms_projects_section: four
   key_question: two
   project: one
 
 three:
-  extraction_forms_projects_section: four
   key_question: one
   project: copy_project_original
 
 four:
-  extraction_forms_projects_section: four
   key_question: two
   project: copy_project_original

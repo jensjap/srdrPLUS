@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_27_000000) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_06_144812) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -929,13 +929,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_27_000000) do
   end
 
   create_table "key_questions_projects", id: :integer, charset: "utf8", force: :cascade do |t|
-    t.integer "extraction_forms_projects_section_id"
     t.integer "key_question_id"
     t.integer "project_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "pos", default: 999999
-    t.index ["extraction_forms_projects_section_id", "key_question_id", "project_id"], name: "index_kqp_on_efps_id_kq_id_p_id"
+    t.index ["key_question_id", "project_id"], name: "index_kqp_on_efps_id_kq_id_p_id"
     t.index ["key_question_id", "project_id"], name: "index_kqp_on_kq_id_p_id"
     t.index ["pos"], name: "index_key_questions_projects_on_pos"
     t.index ["project_id"], name: "index_kqp_on_p_id"
@@ -1398,8 +1397,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_27_000000) do
     t.string "name", limit: 1000, collation: "utf8mb4_bin"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.integer "label_type_id"
-    t.index ["label_type_id"], name: "index_reasons_on_label_type_id"
   end
 
   create_table "records", id: :integer, charset: "utf8", force: :cascade do |t|
@@ -2199,7 +2196,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_27_000000) do
   add_foreign_key "imported_files", "sections"
   add_foreign_key "invitations", "roles"
   add_foreign_key "journals", "citations"
-  add_foreign_key "key_questions_projects", "extraction_forms_projects_sections"
   add_foreign_key "key_questions_projects", "key_questions"
   add_foreign_key "key_questions_projects", "projects"
   add_foreign_key "key_questions_projects_questions", "key_questions_projects"
@@ -2245,7 +2241,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_27_000000) do
   add_foreign_key "question_row_columns_question_row_column_options", "question_row_columns"
   add_foreign_key "question_rows", "questions"
   add_foreign_key "questions", "extraction_forms_projects_sections"
-  add_foreign_key "reasons", "label_types"
   add_foreign_key "result_statistic_section_types_measures", "measures"
   add_foreign_key "result_statistic_section_types_measures", "result_statistic_section_types"
   add_foreign_key "result_statistic_section_types_measures", "result_statistic_section_types_measures"

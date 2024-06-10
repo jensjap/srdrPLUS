@@ -1,8 +1,14 @@
 class ProjectCloningService
-  def self.clone_project(project, copy_extractions: false, leaders: [])
+  def self.clone_project(project, leaders, opts)
     leaders << User.find(2) if leaders.blank?
 
-    project.amoeba_copy_extractions = copy_extractions
+    amoeba_copy_citations = opts[:include_citations]
+    amoeba_copy_extractions = opts[:include_extractions]
+    amoeba_copy_labels = opts[:include_labels]
+
+    project.amoeba_copy_citations = amoeba_copy_citations
+    project.amoeba_copy_extractions = amoeba_copy_extractions
+    project.amoeba_copy_labels = amoeba_copy_labels
     copied_project = project.amoeba_dup
     copied_project.create_empty = true
     copied_project.is_amoeba_copy = true
