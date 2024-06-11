@@ -111,7 +111,7 @@ class AbstractScreeningResult < ApplicationRecord
     {
       id:,
       abstract_screening_id:,
-      accession_number_alts: citation.accession_number_alts,
+      accession_number_alts: citation.accession_number_alts.to_s,
       author_map_string: citation.authors,
       name: citation.name,
       year: citation.year,
