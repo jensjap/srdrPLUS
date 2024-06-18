@@ -1,0 +1,20 @@
+<section class="max-w-2xl px-6 py-8 mx-auto bg-white dark:bg-gray-900">
+  <header></header>
+
+  <main class="mt-8">
+    <h2 class="text-gray-700 dark:text-gray-200">Greetings!</h2>
+
+    <p class="mt-2 leading-loose text-gray-600 dark:text-gray-300">
+      You've received the following messages:
+    </p>
+
+    <!-- prettier-ignore -->
+    <% @messages.each do |message| %>
+    <p class="mt-8 text-gray-600 dark:text-gray-300 whitespace-pre-wrap">
+      <%= message %>
+    </p>
+    <% end %>
+  </main>
+
+  <footer class="mt-8"></footer>
+</section>

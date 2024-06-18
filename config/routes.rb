@@ -436,4 +436,12 @@ Rails.application.routes.draw do
 
   post '/extractions/:id/approve', to: 'extractions#approve'
   post '/extractions/:id/disapprove', to: 'extractions#disapprove'
+  get '/rooms/:room_id/messages', to: 'messages#index'
+  resources :messages, shallow: true, only: %i[index create update destroy] do
+    resources :message_unreads, only: %i[destroy]
+  end
+
+  resources :rooms, shallow: true, only: %i[create] do
+    resources :memberships, only: %i[index destroy create]
+  end
 end

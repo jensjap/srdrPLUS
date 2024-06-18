@@ -1,0 +1,966 @@
+<div
+  x-cloak
+  x-show="modal"
+  @keyup.escape.window="modal = !modal"
+  x-trap.noscroll="modal"
+  x-data="chat"
+  class="inset-0 fixed z-50"
+  x-transition:enter="ease-out duration-300"
+  x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+  x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+  x-transition:leave="ease-in duration-200"
+  x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+  x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+>
+  <div class="flex flex-row h-screen antialiased text-gray-800">
+    <div class="flex flex-row w-72 flex-shrink-0 bg-gray-100 p-4">
+      <div
+        class="flex flex-col items-center py-4 flex-shrink-0 w-12 bg-srdrpurple rounded-tl-2xl rounded-bl-2xl"
+      >
+        <ul class="flex flex-col space-y-8 mt-12 list-none m-0">
+          <li>
+            <a href="#" class="flex items-center">
+              <span
+                class="flex items-center justify-center text-indigo-100 hover:bg-srdrpurple-light h-8 w-8 rounded-md"
+                :class="{
+                  'bg-srdrpurple-light': selected_room_type === 'projects'
+                }"
+                @click="selected_room_type = 'projects'; selected_rooms = project_rooms; openRoom(project_rooms[0]); threadMessageId = null;"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                  />
+                </svg>
+                <span
+                  class="absolute flex items-center justify-center h-4 w-4 bg-red-500 text-white text-xs rounded-full -right-1 -bottom-1"
+                  x-cloak
+                  x-show="project_rooms.filter(room => messages[room.id]?.some(message => !message.read))?.length > 0"
+                  x-text="project_rooms.filter(room => messages[room.id]?.some(message => !message.read))?.length"
+                ></span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center">
+              <span
+                class="flex items-center justify-center text-indigo-100 hover:bg-srdrpurple-light h-8 w-8 rounded-md"
+                :class="{
+                  'bg-srdrpurple-light': selected_room_type === 'chats'
+                }"
+                @click="selected_room_type = 'chats'; selected_rooms = chat_rooms; openRoom(chat_rooms[0]); threadMessageId = null;"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"
+                  />
+                </svg>
+                <span
+                  class="absolute flex items-center justify-center h-4 w-4 bg-red-500 text-white text-xs rounded-full -right-1 -bottom-1"
+                  x-cloak
+                  x-show="chat_rooms.filter(room => messages[room.id]?.some(message => !message.read))?.length > 0"
+                  x-text="chat_rooms.filter(room => messages[room.id]?.some(message => !message.read))?.length"
+                ></span>
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="flex flex-col w-full h-full pl-4 pr-4 py-4 -mr-4">
+        <div class="flex flex-row items-center">
+          <div class="flex flex-row items-center">
+            <div class="text-xl font-semibold">Messages</div>
+          </div>
+        </div>
+        <div class="mt-5 flex justify-between items-center">
+          <div
+            class="text-xs text-gray-400 font-semibold uppercase"
+            x-text="`${selected_room_type.toUpperCase()} (${selected_rooms.length})`"
+          ></div>
+          <button
+            class="text-xs cursor-pointer !px-1 rounded-md bg-srdrpurple text-white"
+            x-cloak
+            x-show="selected_room_type === 'chats'"
+            @click="createRoom()"
+          >
+            Create Chat
+          </button>
+        </div>
+        <div class="mt-2 overflow-y-auto overflow-x-hidden">
+          <div class="flex flex-col space-y-1">
+            <template x-for="room in selected_rooms" :key="room.id">
+              <div
+                class="relative flex flex-row items-center pr-2 pl-0 cursor-pointer"
+                @click="openRoom(room); threadMessageId = null;"
+              >
+                <div
+                  class="flex flex-col flex-1 p-2 rounded-md"
+                  :class="{
+                    'bg-srdrpurple': selected_room === room,
+                    'text-white': selected_room === room,
+                    'bg-gray-200': selected_room !== room,
+                    'text-black': selected_room !== room,
+                  }"
+                >
+                  <div
+                    class="text-sm font-medium"
+                    x-text="room.name"
+                    :class="{
+                      'text-gray-400': (!messages[room.id] || messages[room.id].length === 0)
+                    }"
+                  ></div>
+                  <div
+                    class="text-xs truncate w-40"
+                    :class="{
+                      'text-gray-400': (!messages[room.id] || messages[room.id].length === 0),
+                      'italic': (messages[room.id] && messages[room.id].length > 0)
+                    }"
+                    x-text="(messages[room.id] && messages[room.id].length > 0 && `...${messages[room.id][0].text}`) || 'no messages'"
+                  ></div>
+                </div>
+                <div
+                  class="flex-shrink-0 ml-2 mr-4 self-end mb-1 absolute right-0 bottom-0"
+                  x-show="(messages[room.id] || []).some(message => !message.read)"
+                >
+                  <span
+                    class="flex items-center justify-center h-5 w-5 bg-red-500 text-white text-xs rounded-full"
+                    x-text="(messages[room.id] || []).filter(x => !x.read)?.length"
+                  ></span>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col h-full w-full bg-white px-4 py-6">
+      <div class="h-6 flex justify-between mb-1">
+        <h1
+          class="flex-1 text-base font-bold overflow-hidden"
+          x-text="selected_room?.name"
+        ></h1>
+        <div class="flex">
+          <div
+            class="flex justify-center items-center cursor-pointer w-auto"
+            @click="pinnedMenu = !pinnedMenu"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              :fill="pinnedMenu ? 'black' : 'none'"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+              />
+            </svg>
+            <div class="px-1 text-sm">
+              Pinned (<span
+                x-text="selected_messages.filter(m => m.pinned).length"
+              ></span
+              >)
+            </div>
+          </div>
+          <div
+            class="flex justify-center items-center cursor-pointer w-auto"
+            @click="userMenu = !userMenu"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              :fill="userMenu ? 'black' : 'none'"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"
+              />
+            </svg>
+            <div class="px-1 text-sm">
+              Users (<span x-text="roomUsers.length"></span>)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex flex-col-reverse flex-1 w-full gap-y-2 overflow-y-scroll bg-gray-200 border border-gray-100"
+        x-show="pinnedMenu"
+      >
+        <template
+          x-for="message in selected_messages.filter(message => message.pinned)"
+          :key="message.id"
+        >
+          <div
+            class="p-3 rounded-lg"
+            :class="{
+                'col-start-1': message.user_id !== current_user_id,
+                'col-end-8': message.user_id !== current_user_id,
+                'col-start-6': message.user_id === current_user_id,
+                'col-end-13': message.user_id === current_user_id,
+              }"
+          >
+            <div
+              class="flex"
+              :class="{
+                  'flex-row': message.user_id !== current_user_id,
+                  'items-center': message.user_id !== current_user_id,
+                  'items-center': message.user_id === current_user_id,
+                  'justify-start': message.user_id === current_user_id,
+                  'flex-row-reverse': message.user_id === current_user_id,
+                }"
+            >
+              <div
+                class="relative ml-3 text-sm py-2 px-4 shadow rounded-xl"
+                :class="{
+                    'bg-white': message.user_id !== current_user_id,
+                    'bg-indigo-100': message.user_id === current_user_id,
+                  }"
+              >
+                <div
+                  x-text="message.text"
+                  class="whitespace-pre-wrap"
+                  @click="destroyMessageUnread(message)"
+                ></div>
+                <div class="flex space-x-1">
+                  <div
+                    class="text-xs text-gray-500 text-nowrap text-right"
+                    x-text="`${message.handle} wrote at ${new Date(message.created_at).toLocaleString()}`"
+                  ></div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    :fill="message.pinned ? 'gray' : 'none'"
+                    viewBox="0 0 24 24"
+                    stroke-width="0.5"
+                    stroke="currentColor"
+                    class="w-4 h-4 cursor-pointer"
+                    @click="togglePin(message)"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+                    />
+                  </svg>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="0.5"
+                    stroke="currentColor"
+                    class="w-4 h-4 cursor-pointer"
+                    @click="destroyMessage(message, selected_messages)"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+      <div
+        class="flex flex-1 overflow-hidden"
+        x-cloak
+        x-show="(selected_messages && selected_messages.length > 0) && !pinnedMenu"
+      >
+        <div
+          x-cloak
+          x-show="(selected_messages && selected_messages.length > 0) && !pinnedMenu"
+          class="overflow-y-scroll flex flex-col-reverse flex-1 w-full gap-y-2 bg-gray-50 border border-gray-100"
+        >
+          <template
+            x-for="message in selected_messages.filter(m => m.message_id === null)"
+            :key="message.id"
+          >
+            <div
+              class="p-3 rounded-lg"
+              :class="{
+                'col-start-1': message.user_id !== current_user_id,
+                'col-end-8': message.user_id !== current_user_id,
+                'col-start-6': message.user_id === current_user_id,
+                'col-end-13': message.user_id === current_user_id,
+              }"
+            >
+              <div
+                class="flex"
+                :class="{
+                  'flex-row': message.user_id !== current_user_id,
+                  'items-center': message.user_id !== current_user_id,
+                  'items-center': message.user_id === current_user_id,
+                  'justify-start': message.user_id === current_user_id,
+                  'flex-row-reverse': message.user_id === current_user_id,
+                }"
+              >
+                <div
+                  class="relative ml-3 text-sm py-2 px-4 shadow rounded-xl"
+                  :class="{
+                    'bg-white': message.user_id !== current_user_id,
+                    'bg-indigo-100': message.user_id === current_user_id,
+                  }"
+                >
+                  <div
+                    x-text="message.text"
+                    class="whitespace-pre-wrap"
+                    @click="destroyMessageUnread(message)"
+                  ></div>
+                  <div class="flex space-x-1">
+                    <div
+                      class="text-xs text-gray-500 text-nowrap text-right"
+                      x-text="`${message.handle} wrote at ${new Date(message.created_at).toLocaleString()}`"
+                    ></div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      :fill="message.pinned ? 'gray' : 'none'"
+                      viewBox="0 0 24 24"
+                      stroke-width="0.5"
+                      stroke="currentColor"
+                      class="w-4 h-4 cursor-pointer"
+                      @click="togglePin(message)"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+                      />
+                    </svg>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="0.5"
+                      stroke="currentColor"
+                      class="w-4 h-4 cursor-pointer"
+                      @click="destroyMessage(message, selected_messages)"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                      />
+                    </svg>
+                    <div
+                      class="flex cursor-pointer"
+                      @click="if (threadMessageId === message.id) {
+                        threadMessages = [];
+                        threadMessageId = null;
+                      } else {
+                        threadMessages = message.messages;
+                        threadMessageId = message.id
+                        message.messages.forEach((message) => {
+                          destroyMessageUnread(message);
+                        });
+                      }"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        :fill="threadMessageId === message.id ? 'purple' : 'none'"
+                        viewBox="0 0 24 24"
+                        stroke-width="0.5"
+                        stroke="currentColor"
+                        class="w-4 h-4"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"
+                        />
+                      </svg>
+                      <span
+                        class="text-xs text-gray-500"
+                        x-text="message.messages.length === 0 ? '' : `+${message.messages.length}`"
+                      ></span>
+                      <span
+                        class="absolute flex items-center justify-center h-4 w-4 bg-red-500 text-white text-xs rounded-full right-1 top-1"
+                        x-cloak
+                        x-show="message.messages.filter(message => !message.read)?.length > 0"
+                        x-text="message.messages.filter(message => !message.read)?.length"
+                      ></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+        <div
+          x-cloak
+          x-show="(selected_messages && selected_messages.length > 0) && !pinnedMenu && threadMessageId !== null"
+          class="overflow-y-scroll flex flex-col-reverse flex-1 w-full gap-y-2 bg-gray-50 border border-gray-100"
+        >
+          <template x-for="message in threadMessages" :key="message.id">
+            <div
+              class="p-3 rounded-lg"
+              :class="{
+                'col-start-1': message.user_id !== current_user_id,
+                'col-end-8': message.user_id !== current_user_id,
+                'col-start-6': message.user_id === current_user_id,
+                'col-end-13': message.user_id === current_user_id,
+              }"
+            >
+              <div
+                class="flex"
+                :class="{
+                  'flex-row': message.user_id !== current_user_id,
+                  'items-center': message.user_id !== current_user_id,
+                  'items-center': message.user_id === current_user_id,
+                  'justify-start': message.user_id === current_user_id,
+                  'flex-row-reverse': message.user_id === current_user_id,
+                }"
+              >
+                <div
+                  class="relative ml-3 text-sm py-2 px-4 shadow rounded-xl"
+                  :class="{
+                    'bg-white': message.user_id !== current_user_id,
+                    'bg-indigo-100': message.user_id === current_user_id,
+                  }"
+                >
+                  <div
+                    x-text="message.text"
+                    class="whitespace-pre-wrap"
+                    @click="destroyMessageUnread(message)"
+                  ></div>
+                  <div class="flex space-x-1">
+                    <div
+                      class="text-xs text-gray-500 text-nowrap text-right"
+                      x-text="`${message.handle} wrote at ${new Date(message.created_at).toLocaleString()}`"
+                    ></div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="0.5"
+                      stroke="currentColor"
+                      class="w-4 h-4 cursor-pointer"
+                      @click="destroyMessage(message, selected_messages)"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+      <template x-if="selected_messages.length === 0 && !pinnedMenu">
+        <div class="flex-1 w-full flex justify-center items-center">
+          <div>No Messages</div>
+        </div>
+      </template>
+
+      <div class="flex flex-row items-center w-full h-32">
+        <div class="w-full flex">
+          <textarea
+            maxlength="65000"
+            rows="5"
+            type="text"
+            class="w-full !text-sm !p-2 !resize-none"
+            placeholder="Type message..."
+            x-model="chat_text[selected_room]"
+            @keydown.shift="shiftPressed = true"
+            @keyup.shift="shiftPressed = false"
+            @keydown.enter.prevent="if (shiftPressed) {
+                return $event.target.value = $event.target.value + '\n'
+              }
+              sendMessage()
+              "
+          ></textarea>
+          <textarea
+            x-cloak
+            x-show="threadMessageId"
+            maxlength="65000"
+            rows="5"
+            type="text"
+            class="w-full !text-sm !p-2 !resize-none"
+            placeholder="Type message..."
+            x-model="thread_chat_text[selected_room]"
+            @keydown.shift="shiftPressed = true"
+            @keyup.shift="shiftPressed = false"
+            @keydown.enter.prevent="if (shiftPressed) {
+                return $event.target.value = $event.target.value + '\n'
+              }
+              sendMessage(true)
+              "
+          ></textarea>
+        </div>
+      </div>
+    </div>
+    <div
+      x-cloak
+      x-show="userMenu"
+      class="flex flex-col h-full w-64 bg-gray-100 p-2"
+    >
+      <div><h1 class="text-xl font-semibold my-2">Users</h1></div>
+      <div class="flex-1 overflow-y-scroll">
+        <div class="flex flex-col space-y-2 text-sm">
+          <template x-for="user in roomUsers">
+            <div class="flex justify-between items-center">
+              <div class="flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-4 h-4 mr-2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                </svg>
+                <div
+                  class="w-24 overflow-hidden whitespace-nowrap text-ellipsis text-xs"
+                  x-text="user.username"
+                ></div>
+              </div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-4 h-4 cursor-pointer"
+                @click="destroyMembership(user.membership_id)"
+                x-cloak
+                x-show="!user.projects_user"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M6 18 18 6M6 6l12 12"
+                />
+              </svg>
+            </div>
+          </template>
+        </div>
+      </div>
+      <div>
+        <div
+          class="h-24 flex flex-col space-y-2 text-sm flex-1 overflow-y-scroll"
+        >
+          <template
+            x-for="user in allUsers.filter(user => (new RegExp(userSearchString, 'i')).test(user.username) && !roomUsers.some(uuser => uuser.user_id === user.user_id))"
+          >
+            <div class="flex justify-between items-center">
+              <div class="flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-4 h-4 mr-2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                </svg>
+                <div
+                  class="w-24 overflow-hidden whitespace-nowrap text-ellipsis text-xs"
+                  x-text="user.username"
+                ></div>
+              </div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-4 h-4 cursor-pointer"
+                @click="createMembership(user.user_id)"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+            </div>
+          </template>
+        </div>
+        <input
+          class="!mt-2 !text-xs"
+          type="text"
+          x-model="userSearchString"
+          placeholder="Search for user..."
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+    };
+    Alpine.data("chat", () => ({
+      modal: true,
+      selected_room_type: "projects",
+      selected_room: null,
+      selected_rooms: [],
+      selected_messages: [],
+      messages: {},
+      project_rooms: [],
+      chat_rooms: [],
+      current_user_id: null,
+      chat_text: {},
+      shiftPressed: false,
+      userMenu: true,
+      pinnedMenu: false,
+      userSearchString: "",
+      roomUsers: [],
+      allUsers: [],
+      threadMessages: [],
+      threadMessageId: null,
+      thread_chat_text: {},
+
+      async init() {
+        await this.fetchRooms();
+        this.selected_rooms = this.project_rooms;
+        this.sortRooms();
+        this.openRoom(this.selected_rooms[0]);
+        await this.setupWS();
+      },
+
+      async openRoom(room) {
+        this.selected_room = room;
+        this.selected_messages = this.messages[room?.id] || [];
+        this.selected_messages.forEach((message) => {
+          if (message.message_id === null) {
+            this.destroyMessageUnread(message);
+          }
+        });
+        await this.fetchRoomUsers(room);
+      },
+
+      async fetchRoomUsers(room) {
+        this.roomUsers = [];
+        if (!room) {
+          return;
+        }
+
+        const response = await fetch(`/rooms/${room.id}/memberships`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.roomUsers = data;
+      },
+
+      sortRooms() {
+        this.selected_rooms = this.selected_rooms.sort((a, b) => {
+          const x =
+            (this.messages[a.id] && this.messages[a.id][0]?.created_at) || 0;
+          const y =
+            (this.messages[b.id] && this.messages[b.id][0]?.created_at) || 0;
+          return new Date(y) - new Date(x);
+        });
+      },
+
+      async togglePin(message) {
+        const response = await fetch(`/messages/${message.id}`, {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify({
+            pinned: !message.pinned,
+          }),
+        });
+        if (response.status >= 200 && response.status < 300) {
+          message.pinned = !message.pinned;
+        }
+      },
+
+      async destroyRoom(room_id) {
+        if (!confirm("Are you sure you want to remove this user?")) return;
+
+        const response = await fetch(`/rooms/${room_id}`, {
+          method: "DELETE",
+          headers,
+        });
+        if (response.status >= 200 && response.status < 300) {
+          const data = await response.json();
+        }
+      },
+
+      async createRoom() {
+        const name =
+          prompt("Please give your chat a name", "Unnamed") || "Unnamed";
+        const response = await fetch("/rooms/", {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            name,
+          }),
+        });
+        if (response.status >= 200 && response.status < 300) {
+          const data = await response.json();
+          this.chat_rooms.push(data);
+          this.messages[data.id] = [];
+          this.openRoom(data);
+        }
+      },
+
+      async destroyMembership(membership_id) {
+        if (!confirm("Are you sure you want to remove this user?")) return;
+
+        const response = await fetch(`/memberships/${membership_id}`, {
+          method: "DELETE",
+          headers,
+        });
+        if (response.status >= 200 && response.status < 300) {
+          const data = await response.json();
+          this.roomUsers = data;
+        }
+      },
+
+      async createMembership(user_id) {
+        const response = await fetch(
+          `/rooms/${this.selected_room.id}/memberships`,
+          {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+              room_id: this.selected_room.id,
+              user_id,
+            }),
+          }
+        );
+        if (response.status >= 200 && response.status < 300) {
+          const data = await response.json();
+          this.roomUsers = data;
+        }
+      },
+
+      async destroyMessageUnread(message) {
+        if (message.read) return;
+
+        const response = await fetch(
+          `/message_unreads/${message.message_unread_id}`,
+          {
+            method: "DELETE",
+            headers,
+          }
+        );
+        if (response.status >= 200 && response.status < 300) {
+          message.read = true;
+          message.unread_message_id = null;
+        }
+      },
+
+      async destroyMessage(message, messages) {
+        if (!confirm("Are you sure you want to delete this message?")) return;
+
+        const response = await fetch(`/messages/${message.id}`, {
+          method: "DELETE",
+          headers,
+        });
+        if (response.status >= 200 && response.status < 300) {
+          const index = messages.indexOf(message);
+          if (index > -1) {
+            messages.splice(index, 1);
+          }
+        }
+      },
+
+      async sendMessage(threadMessage = false) {
+        if (
+          !threadMessage &&
+          (!this.chat_text[this.selected_room] ||
+            this.chat_text[this.selected_room].trim().length === 0)
+        )
+          return;
+
+        if (
+          threadMessage &&
+          (!this.thread_chat_text[this.selected_room] ||
+            this.thread_chat_text[this.selected_room].trim().length === 0)
+        )
+          return;
+
+        const response = await fetch("/messages", {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            room_id: this.selected_room.id,
+            text: threadMessage
+              ? this.thread_chat_text[this.selected_room]
+              : this.chat_text[this.selected_room],
+            message_id: threadMessage ? this.threadMessageId : null,
+          }),
+        });
+        if (response.status >= 200 && response.status < 300) {
+          if (threadMessage) {
+            this.thread_chat_text[this.selected_room] = "";
+          } else {
+            this.chat_text[this.selected_room] = "";
+          }
+        }
+      },
+
+      async fetchRooms() {
+        const response = await fetch("/messages", {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.project_rooms = data.project_rooms;
+        this.chat_rooms = data.chat_rooms;
+        this.messages = data.messages;
+        this.current_user_id = data.current_user_id;
+        this.allUsers = data.all_users;
+      },
+
+      async getMessages(room) {
+        const response = await fetch(`/rooms/${room.id}/messages`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.messages = {
+          ...this.messages,
+          ...data.messages,
+        };
+      },
+
+      async setupWS() {
+        const socket = new WebSocket("ws://localhost:3000/cable");
+
+        socket.onopen = () => {
+          console.log("WS connected");
+          const msg = {
+            command: "subscribe",
+            identifier: JSON.stringify({
+              channel: "ChatChannel",
+            }),
+          };
+          socket.send(JSON.stringify(msg));
+        };
+
+        socket.onclose = () => {
+          console.log("WS disconnected");
+        };
+
+        socket.onmessage = async (event) => {
+          const data = JSON.parse(event.data);
+          const message = data.message;
+          if (data.type === "ping" || message === undefined) {
+            return;
+          }
+
+          if (message.message_type === "add-membership") {
+            if (message.room.project_id) {
+              this.project_rooms.push(message.room);
+            } else {
+              this.chat_rooms.push(message.room);
+            }
+            this.getMessages(message.room);
+            return;
+          }
+
+          if (message.message_type === "remove-membership") {
+            this.messages[message.room.id] = [];
+
+            if (message.room.project_id) {
+              this.project_rooms = this.project_rooms.filter(
+                (room) => room.id !== message.room.id
+              );
+            } else {
+              this.chat_rooms = this.chat_rooms.filter(
+                (room) => room.id !== message.room.id
+              );
+            }
+            if (this.selected_room_type === "projects") {
+              this.selected_rooms = this.project_rooms;
+            } else {
+              this.selected_rooms = this.chat_rooms;
+            }
+            if (this.selected_room.id === message.room.id) {
+              this.selected_room = null;
+              this.selected_messages = [];
+            }
+            return;
+          }
+
+          if (message.message_type === "message") {
+            if (
+              message.room.id === this.selected_room.id &&
+              (message.message_id === null ||
+                message.message_id === this.threadMessageId)
+            ) {
+              await this.destroyMessageUnread(message);
+            }
+            this.messages[message.room.id]
+              ? this.messages[message.room.id].unshift(message)
+              : (this.messages[message.room.id] = [message]);
+            if (message.message_id) {
+              for (const m of this.messages[message.room.id]) {
+                if (m.id === message.message_id) {
+                  m.messages.unshift(message);
+                }
+              }
+            }
+
+            if (message.room.id === this.selected_room.id) {
+              this.selected_messages = this.messages[message.room.id];
+            }
+            this.sortRooms();
+            return;
+          }
+        };
+        socket.onerror = (error) => {
+          console.log("WS error: ", error);
+        };
+      },
+    }));
+  });
+</script>

@@ -2,26 +2,55 @@
 #
 # Table name: messages
 #
-#  id              :integer          not null, primary key
-#  message_type_id :integer
-#  name            :string(255)
-#  description     :text(65535)
-#  start_at        :datetime
-#  end_at          :datetime
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  active          :boolean          default(TRUE)
+#  id         :bigint           not null, primary key
+#  message_id :bigint
+#  user_id    :bigint           not null
+#  text       :text(65535)      not null
+#  pinned     :boolean          default(FALSE), not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  room_id    :bigint
 #
-
 class Message < ApplicationRecord
-  include SharedDispatchableMethods
-  include SharedQueryableMethods
+  belongs_to :user
+  belongs_to :room
+  belongs_to :message, optional: true
+  has_many :messages
 
-  belongs_to :message_type, inverse_of: :messages
+  has_many :message_unreads, dependent: :destroy
 
-  has_one :frequency, through: :message_type
-
-  has_many :dispatches, as: :dispatchable, dependent: :destroy
-
-  validates :message_type, presence: true
+  def broadcast_message
+    room_type = room.project_id.nil? ? 'chat' : 'project'
+    online_users = ActionCable.server.connections.map(&:current_user)
+    broadcast_users =
+      case room_type
+      when 'project'
+        room.project.users
+      when 'chat'
+        room.users
+      end
+    MessageUnread.insert_all(broadcast_users.reject { |bu| bu == user }.map { |bu| { user_id: bu.id, message_id: id } })
+    (broadcast_users & online_users).each do |broadcast_user|
+      message_unread = message_unreads.find do |mu|
+        mu.user_id == broadcast_user.id
+      end
+      ActionCable.server.broadcast(
+        "user_#{broadcast_user.id}",
+        {
+          message_type: 'message',
+          id:,
+          room:,
+          user_id:,
+          handle: user.handle,
+          text:,
+          created_at:,
+          read: message_unread.blank?,
+          message_unread_id: message_unread&.id,
+          pinned:,
+          message_id:,
+          messages:
+        }
+      )
+    end
+  end
 end
