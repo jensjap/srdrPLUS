@@ -29,7 +29,8 @@ class Message < ApplicationRecord
       when 'chat'
         room.users
       end
-    MessageUnread.insert_all(broadcast_users.reject { |bu| bu == user }.map { |bu| { user_id: bu.id, message_id: id } })
+    bus = broadcast_users.reject { |bu| bu == user }.map { |bu| { user_id: bu.id, message_id: id } }
+    MessageUnread.insert_all(bus) unless bus.empty?
     (broadcast_users & online_users).each do |broadcast_user|
       message_unread = message_unreads.find do |mu|
         mu.user_id == broadcast_user.id
