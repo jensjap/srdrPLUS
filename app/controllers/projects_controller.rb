@@ -408,6 +408,7 @@ class ProjectsController < ApplicationController
                                           .joins(citations_projects: :ml_predictions)
                                           .where(citations_projects: { project_id: @project.id })
                                           .where.not(citations_projects: { id: AbstractScreeningResult.select(:citations_project_id) })
+                                          .where.not(citations_projects: { id: ScreeningQualification.select(:citations_project_id) })
                                           .where(ml_predictions: { ml_model_id: latest_ml_model.id })
                                           .select('citations.*', 'ml_predictions.score', 'citations_projects.id AS citations_project_id')
                                           .order('ml_predictions.score DESC')
