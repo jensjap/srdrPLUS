@@ -228,7 +228,7 @@ class AdvancedExportJob < ApplicationJob
         efps.extraction_forms_projects_section_type_id == 1 && efps.section.name == 'Arms'
       end
 
-      @project.extractions&.each(&:ensure_extraction_form_structure)
+      # @project.extractions&.each(&:ensure_extraction_form_structure)
       @extractions = @project.extractions
 
       filename = generate_xlsx_and_filename
