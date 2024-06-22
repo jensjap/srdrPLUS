@@ -50,33 +50,25 @@ div class="p-4 lg:p-8"
           td title=val[:citation_name_long] = link_to citation_handle.html_safe, citation_path(val[:citation_id])
           td = val[:extractions].length.to_s
 
-          - if val[:data_discrepancy]
-
-            - if val[:consolidated_status]
-              td
-                i.fi-asterisk<> style="color: #006aaa"
-                |Consolidation in Progress
-              td
-                - if @project.members.include?(current_user)
-                  = link_to('Resume',
-                    consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
-                    style: 'margin-bottom:0; color:#006aaa; font-weight:bold;')
-
-            - else
-              td
-                i.fi-alert> style="color: #c527c0;"
-                | Differences Detected
-              td
-                - if @project.members.include?(current_user)
-                  = link_to('Consolidate Extractions',
-                    consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
-                    style: 'margin-bottom:0; color:#c527c0; font-weight:bold;')
+          - if val[:consolidated_status]
+            td
+              i.fi-asterisk<> style="color: #006aaa"
+              |Consolidation in Progress
+            td
+              - if @project.members.include?(current_user)
+                = link_to('Resume',
+                  consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
+                  style: 'margin-bottom:0; color:#006aaa; font-weight:bold;')
 
           - else
             td
-              i.fi-check> style="color: green;"
-              | No Differences Detected
+              i.fi-alert> style="color: #c527c0;"
+              |Consolidation Missing
             td
+              - if @project.members.include?(current_user)
+                = link_to('Consolidate Extractions',
+                  consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
+                  style: 'margin-bottom:0; color:#c527c0; font-weight:bold;')
 
       - if @citation_groups[:citations_project_count] < 1
         tr

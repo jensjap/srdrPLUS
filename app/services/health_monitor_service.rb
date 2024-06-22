@@ -40,7 +40,6 @@ class HealthMonitorService
     ExportedFile,
     ExportedItem,
     Extraction,
-    ExtractionChecksum,
     ExtractionForm,
     ExtractionFormsProject,
     ExtractionFormsProjectType,

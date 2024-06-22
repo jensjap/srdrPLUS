@@ -14,8 +14,6 @@
 class ResultStatisticSectionsMeasure < ApplicationRecord
   default_scope { order(:pos, :id) }
 
-  after_commit :set_extraction_stale, on: %i[create update destroy]
-
   belongs_to :measure,                  inverse_of: :result_statistic_sections_measures
   belongs_to :result_statistic_section, inverse_of: :result_statistic_sections_measures
   belongs_to :provider_measure,
@@ -36,10 +34,4 @@ class ResultStatisticSectionsMeasure < ApplicationRecord
   delegate :extraction,                                    to: :result_statistic_section
   delegate :extractions_extraction_forms_projects_section, to: :result_statistic_section
   delegate :project, to: :extraction
-
-  private
-
-  def set_extraction_stale
-    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil?
-  end
 end

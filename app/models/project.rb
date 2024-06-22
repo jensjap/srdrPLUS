@@ -200,7 +200,6 @@ class Project < ApplicationRecord
   # {
   #   key: citations_project_id
   #   value: {
-  #     data_discrepancy: Bool,
   #     extraction_ids: Array,
   #   },
   #   ...
@@ -211,24 +210,13 @@ class Project < ApplicationRecord
     citation_groups[:consolidations]          = {}
     citation_groups[:citations_project_ids]   = []
     citation_groups[:citations_project_count] = 0
-    extractions.includes([{ citations_project: [{ citation: :journal }] }, :extraction_checksum]).each do |e|
+    extractions.includes([{ citations_project: [{ citation: :journal }] }]).each do |e|
       if citation_groups[:citations_projects].keys.include? e.citations_project_id
         citation_groups[:citations_projects][e.citations_project_id][:extractions] << e
 
-        # If data_discrepancy is true then check for the existence of a consolidated
-        # extraction and skip the discovery process.
-        # Else run the discovery process.
-        if citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy]
-
-          # We may skip this if we already determined that a consolidated extraction exists.
-          unless citation_groups[:citations_projects][e.citations_project_id][:consolidated_status]
-            citation_groups[:citations_projects][e.citations_project_id][:consolidated_status] = e.consolidated
-          end
-        else
-          citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy] =
-            discover_extraction_discrepancy(
-              citation_groups[:citations_projects][e.citations_project_id][:extractions].first, e
-            )
+        # We may skip this if we already determined that a consolidated extraction exists.
+        unless citation_groups[:citations_projects][e.citations_project_id][:consolidated_status]
+          citation_groups[:citations_projects][e.citations_project_id][:consolidated_status] = e.consolidated
         end
       else
         citation_groups[:citations_project_count] += 1
@@ -240,7 +228,6 @@ class Project < ApplicationRecord
           e.citation.name.to_s.truncate(32)
         citation_groups[:citations_projects][e.citations_project_id][:citation_name_long] = e.citation.name.to_s
         citation_groups[:citations_projects][e.citations_project_id][:citation_info] = e.citation.info_zinger
-        citation_groups[:citations_projects][e.citations_project_id][:data_discrepancy] = false
         citation_groups[:citations_projects][e.citations_project_id][:extractions] = [e]
         citation_groups[:citations_projects][e.citations_project_id][:consolidated_status] = e.consolidated
       end
@@ -387,33 +374,6 @@ class Project < ApplicationRecord
                                      extraction_form: ExtractionForm.first)
     efp.create_empty = true
     efp.save!
-  end
-
-  def discover_extraction_discrepancy(extraction1, extraction2)
-    #      e1 = Extraction.find(extraction1_id)
-    #      e1_json = ApplicationController.new.view_context.render(
-
-    #        locals: { extraction: e1 },
-    #        formats: [:json],
-    #        handlers: [:jbuilder]
-    #      )
-    #      e2 = Extraction.find(extraction2_id)
-    #      e2_json = ApplicationController.new.view_context.render(
-    #        partial: 'extractions/extraction_for_comparison_tool',
-    #        locals: { extraction: e2 },
-    #        formats: [:json],
-    #        handlers: [:jbuilder]
-    #      )
-    #      e1_json = e1.to_builder.target!
-    #      e2_json = e2.to_builder.target!
-
-    e1_checksum = extraction1.extraction_checksum
-    e2_checksum = extraction2.extraction_checksum
-
-    e1_checksum.update_hexdigest if e1_checksum.is_stale
-    e2_checksum.update_hexdigest if e2_checksum.is_stale
-
-    !e1_checksum.hexdigest.eql?(e2_checksum.hexdigest)
   end
 
   def create_default_member

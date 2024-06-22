@@ -13,9 +13,6 @@
 class Record < ApplicationRecord
   include SharedProcessTokenMethods
 
-  # after_commit :set_extraction_stale, on: [:create, :update, :destroy]
-  after_commit :set_extraction_stale, on: [:update]
-
   belongs_to :recordable, polymorphic: true
 
   validate :check_constraints
@@ -88,13 +85,5 @@ class Record < ApplicationRecord
     when 'ExtractionsExtractionFormsProjectsSectionsFollowupField'
       recordable.extractions_extraction_forms_projects_section.project
     end
-  end
-
-  private
-
-  def set_extraction_stale
-    recordable.extraction.extraction_checksum.update!(is_stale: true)
-  rescue => exception
-    Sentry.capture_exception(exception)
   end
 end

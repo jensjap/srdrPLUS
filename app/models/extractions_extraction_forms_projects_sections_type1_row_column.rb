@@ -15,7 +15,6 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
   default_scope { order(:pos, :id) }
 
   after_commit :ensure_timepoints_across_populations, on: %i[create update]
-  after_commit :set_extraction_stale, on: %i[create update destroy]
 
   after_destroy :remove_timepoints_across_populations
   before_destroy :remove_wac
@@ -63,10 +62,6 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
   end
 
   private
-
-  def set_extraction_stale
-    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil?
-  end
 
   def ensure_timepoints_across_populations
     extractions_extraction_forms_projects_sections_type1_row

@@ -21,8 +21,6 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   has_one :statusing, as: :statusable, dependent: :destroy
   has_one :status, through: :statusing
 
-  after_commit :set_extraction_stale, on: %i[create update destroy]
-
   paginates_per 1
 
   # !!! Implement this for type1 selection also.
@@ -203,10 +201,6 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   end
 
   private
-
-  def set_extraction_stale
-    extraction.set_stale(true)
-  end
 
   # Do not overwrite existing entries but associate to one that already exists or create a new one.
   #

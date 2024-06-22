@@ -27,11 +27,6 @@ class Extraction < ApplicationRecord
   after_save :evaluate_screening_status_citations_project
   after_destroy :evaluate_screening_status_citations_project
 
-  # create checksums without delay after create and update, since extractions/index would be incorrect.
-  after_create do |extraction|
-    ExtractionChecksum.create! extraction:
-  end
-
   default_scope { not_disqualified }
 
   scope :consolidated,   -> { where(consolidated: true) }
@@ -47,7 +42,6 @@ class Extraction < ApplicationRecord
   belongs_to :projects_users_role, optional: true
   belongs_to :user,                optional: true
 
-  has_one :extraction_checksum, dependent: :destroy, inverse_of: :extraction
   has_one :statusing, as: :statusable, dependent: :destroy
   has_one :status, through: :statusing
 
@@ -66,12 +60,6 @@ class Extraction < ApplicationRecord
   #      extraction.sections extractions_extraction_forms_projects_sections.map { |eefps| eefps.to_builder.attributes! }
   #    end
   #  end
-
-  def set_stale(state)
-    extraction_checksum.save
-    extraction_checksum.is_stale = state
-    extraction_checksum.save
-  end
 
   def ensure_extraction_form_structure
     # NOTE This method assumes that self is not a mini-extraction

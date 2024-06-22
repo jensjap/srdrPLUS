@@ -1054,7 +1054,6 @@ class ConsolidationService
       project
       .extractions
       .includes(
-        :extraction_checksum,
         statusing: :status,
         citations_project: { citation: :journal }
       )
@@ -1064,7 +1063,6 @@ class ConsolidationService
         consolidated_extraction: nil,
         citation_title: "#{citations_project.citation.authors}: #{citations_project.citation.name}",
         citation_year: citations_project.citation.journal&.get_publication_year,
-        reference_checksum: nil,
         differences: false,
         consolidated_extraction_status: nil
       }
@@ -1075,14 +1073,6 @@ class ConsolidationService
         citations_grouping_hash[extraction.citations_project_id][:consolidated_extraction] = extraction
         citations_grouping_hash[extraction.citations_project_id][:consolidated_extraction_status] =
           extraction.statusing.status.name
-      else
-        citations_grouping_hash[extraction.citations_project_id][:extractions] << extraction
-        checksum = extraction.extraction_checksum
-        checksum.update_hexdigest if checksum.is_stale
-        citations_grouping_hash[extraction.citations_project_id][:reference_checksum] ||= checksum.hexdigest
-        if citations_grouping_hash[extraction.citations_project_id][:reference_checksum] != checksum.hexdigest
-          citations_grouping_hash[extraction.citations_project_id][:differences] = true
-        end
       end
     end
     citations_grouping_hash.map do |cp_id, obj|
