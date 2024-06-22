@@ -44,12 +44,12 @@ class Citation < ApplicationRecord
   # Redundant?
   def abstract_utf8
     abstract = read_attribute(:abstract)
-    abstract.nil? ? '' : abstract.encode('utf-8', invalid: :replace, undef: :replace, replace: '_')
+    abstract.nil? ? '' : abstract.encode('utf-8', invalid: :replace, undef: :replace, replace: '')
   end
 
   # Without this Searchkick cannot create indices
   def abstract
-    (read_attribute(:abstract) || '').force_encoding('UTF-8')
+    (read_attribute(:abstract) || '').encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
   end
 
   def accession_number_alts
