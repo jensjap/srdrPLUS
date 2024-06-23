@@ -1,4 +1,4 @@
-:verbose: true
+:verbose: false
 :concurrency: 5
 staging:
   :concurrency: 3

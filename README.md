@@ -56,9 +56,7 @@
 * Start background jobs with
 
   ```
-  bundle exec sidekiq -q default
-  bundle exec sidekiq -q mailers
-  bundle exec sidekiq -q searchkick
+  bundle exec sidekiq -C config/sidekiq.yml
   ```
 
 * Deployment instructions
