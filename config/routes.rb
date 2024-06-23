@@ -54,7 +54,7 @@ Rails.application.routes.draw do
     post '/users/api_key_reset' => 'users/registrations#api_key_reset'
   end
 
-  authenticate :admin do
+  authenticate :user, lambda { |u| u.admin? } do
     mount Searchjoy::Engine, at: 'searchjoy'
     mount Sidekiq::Web => '/sidekiq'
   end
