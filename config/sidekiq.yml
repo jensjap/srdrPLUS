@@ -5,6 +5,7 @@ staging:
 production:
   :concurrency: 3
 :queues:
+  - searchkick
   - exports
   - default
   - low
