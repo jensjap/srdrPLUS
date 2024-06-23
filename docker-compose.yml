@@ -102,6 +102,7 @@ services:
     depends_on:
       - app
       - database
+      - elasticsearch
       - redis
     volumes:
       - .:/app
