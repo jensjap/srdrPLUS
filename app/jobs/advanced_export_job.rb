@@ -1,6 +1,7 @@
 class AdvancedExportJob < ApplicationJob
   require 'axlsx'
-  queue_as :default
+
+  queue_as :exports
 
   WORKSHEET_NAME_FORBIDDEN_CHARS = '[]*/\?:'.chars.freeze
   COLORS = %w[FFBABA FFF3BA C5B7F1 B3F6B3].freeze

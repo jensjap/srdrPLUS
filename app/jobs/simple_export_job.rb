@@ -1,7 +1,7 @@
 class SimpleExportJob < ApplicationJob
   require 'axlsx'
 
-  queue_as :default
+  queue_as :exports
 
   rescue_from(StandardError) do |exception|
     Sentry.capture_exception(exception) if Rails.env.production?

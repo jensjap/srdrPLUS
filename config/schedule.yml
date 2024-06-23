@@ -11,16 +11,16 @@
 #  queue: hard_worker_long
 #  args:
 #    hard: "stuff"
-
-update_extraction_checksums:
-  cron: "*/30 * * * *" # execute at every 30 minutes
-  class: "UpdateExtractionChecksumsJob"
-  queue: default
-
-searchkick_reindex:
-  cron: "0 1 * * *" # execute at 1am every day
-  class: "SearchkickReindexJob"
-  queue: default
+#
+#update_extraction_checksums:
+#  cron: "*/30 * * * *" # execute at every 30 minutes
+#  class: "UpdateExtractionChecksumsJob"
+#  queue: default
+#
+#searchkick_reindex:
+#  cron: "0 1 * * *" # execute at 1am every day
+#  class: "SearchkickReindexJob"
+#  queue: default
 
 auto_training_job:
   cron: "0 3 * * *" # execute at 3am every day

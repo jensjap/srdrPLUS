@@ -1,5 +1,11 @@
+:verbose: true
+:concurrency: 5
+staging:
+  :concurrency: 3
+production:
+  :concurrency: 3
 :queues:
-  - critical
+  - exports
   - default
   - low
   - mailers
