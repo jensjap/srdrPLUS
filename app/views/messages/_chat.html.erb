@@ -482,7 +482,21 @@
       </template>
 
       <div class="flex flex-row items-center w-full h-32">
-        <div class="w-full flex">
+        <div class="w-full flex relative">
+          <div
+            x-show="chat_text[selected_room]?.includes('@')"
+            class="absolute border border-black bg-slate-100 shadow-2xl rounded-md w-full !text-sm !p-2 -top-44 h-40 overflow-y-auto"
+          >
+            <ul class="list-none m-0">
+              <li class="p-2 rounded-md">@Assignment #35</li>
+              <li class="p-2 bg-slate-300 rounded-md">@Assignment #36</li>
+              <li class="p-2 rounded-md">@Assignment #37</li>
+              <li class="p-2 rounded-md">@Assignment #38</li>
+              <li class="p-2 rounded-md">@Assignment #39</li>
+              <li class="p-2 rounded-md">@Assignment #40</li>
+              <li class="p-2 rounded-md">@Assignment #41</li>
+            </ul>
+          </div>
           <textarea
             maxlength="65000"
             rows="5"
