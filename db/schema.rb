@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_27_000000) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_24_044321) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -256,6 +256,22 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_27_000000) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["approvable_type", "approvable_id", "user_id"], name: "index_approvals_on_approvable_type_and_approvable_id_and_user_id", unique: true
     t.index ["user_id"], name: "index_approvals_on_user_id"
+  end
+
+  create_table "assignments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "assignor_id"
+    t.integer "assignee_id"
+    t.string "assignment_type"
+    t.integer "assignment_id"
+    t.string "status"
+    t.text "link"
+    t.datetime "deadline"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignee_id"], name: "index_assignments_on_assignee_id"
+    t.index ["assignment_id"], name: "index_assignments_on_assignment_id"
+    t.index ["assignment_type"], name: "index_assignments_on_assignment_type"
+    t.index ["assignor_id"], name: "index_assignments_on_assignor_id"
   end
 
   create_table "authors", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -2148,6 +2164,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_27_000000) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "approvals", "users"
+  add_foreign_key "assignments", "users", column: "assignee_id"
+  add_foreign_key "assignments", "users", column: "assignor_id"
   add_foreign_key "citations", "citation_types"
   add_foreign_key "citations_projects", "citations"
   add_foreign_key "citations_projects", "consensus_types"
