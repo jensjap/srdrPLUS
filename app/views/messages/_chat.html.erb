@@ -12,8 +12,11 @@
   x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
   x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
 >
-  <div class="flex flex-row h-screen antialiased text-gray-800">
-    <div class="flex flex-row w-72 flex-shrink-0 bg-gray-100 p-4">
+  <div
+    x-show="tab_type === 'assignments';"
+    class="flex flex-row h-screen antialiased text-gray-800"
+  >
+    <div class="flex flex-row w-full flex-shrink-0 bg-gray-100 p-4">
       <div
         class="flex flex-col items-center py-4 flex-shrink-0 w-12 bg-srdrpurple rounded-tl-2xl rounded-bl-2xl"
       >
@@ -23,9 +26,9 @@
               <span
                 class="flex items-center justify-center text-indigo-100 hover:bg-srdrpurple-light h-8 w-8 rounded-md"
                 :class="{
-                  'bg-srdrpurple-light': selected_room_type === 'projects'
-                }"
-                @click="selected_room_type = 'projects'; selected_rooms = project_rooms; openRoom(project_rooms[0]); threadMessageId = null;"
+                'bg-srdrpurple-light': tab_type === 'assignments'
+              }"
+                @click="tab_type = 'assignments';"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -55,9 +58,191 @@
               <span
                 class="flex items-center justify-center text-indigo-100 hover:bg-srdrpurple-light h-8 w-8 rounded-md"
                 :class="{
-                  'bg-srdrpurple-light': selected_room_type === 'chats'
+                'bg-srdrpurple-light': tab_type === 'chats'
+              }"
+                @click="tab_type = 'chats'; selected_rooms = chat_rooms; openRoom(chat_rooms[0]); threadMessageId = null;"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"
+                  />
+                </svg>
+                <span
+                  class="absolute flex items-center justify-center h-4 w-4 bg-red-500 text-white text-xs rounded-full -right-1 -bottom-1"
+                  x-cloak
+                  x-show="chat_rooms.filter(room => messages[room.id]?.some(message => !message.read))?.length > 0"
+                  x-text="chat_rooms.filter(room => messages[room.id]?.some(message => !message.read))?.length"
+                ></span>
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="flex flex-col w-full">
+        <div
+          class="flex flex-col w-full h-full pl-4 pr-4 py-4 -mr-4 overflow-y-scroll space-y-1"
+        >
+          <template x-for="assignment in assignments">
+            <div class="bg-white shadow rounded-md p-2">
+              <div class="px-1 flex justify-between">
+                <div
+                  class="text-sm text-gray-900"
+                  x-text="assignment.title"
+                ></div>
+                <div
+                  class="text-sm text-gray-500"
+                  x-text="`Assignment #${assignment.id}`"
+                ></div>
+              </div>
+              <div class="border-t border-gray-100">
+                <div class="divide-y divide-gray-100">
+                  <div class="px-1 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <div class="text-xs font-medium text-gray-900">
+                      Assignor
+                    </div>
+                    <div class="text-xs leading-6 text-gray-700">User A</div>
+                  </div>
+                  <div class="px-1 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <div class="text-xs font-medium text-gray-900">
+                      Assignee
+                    </div>
+                    <div
+                      class="text-xs leading-6 text-gray-700 underline cursor-pointer"
+                    >
+                      User B
+                    </div>
+                  </div>
+                  <div class="px-1 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <div class="text-xs font-medium text-gray-900">
+                      Deadline
+                    </div>
+                    <div
+                      class="text-xs leading-6 text-red-700 underline cursor-pointer"
+                      x-text="assignment.deadline"
+                    ></div>
+                  </div>
+                  <div class="px-1 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <div class="text-xs font-medium text-gray-900">Status</div>
+                    <div
+                      class="text-xs leading-6 text-gray-700 underline cursor-pointer"
+                    >
+                      In Progress
+                    </div>
+                  </div>
+                  <div class="px-1 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <div class="text-xs font-medium text-gray-900">Link</div>
+                    <div
+                      class="text-xs leading-6 text-gray-700 underline cursor-pointer"
+                    >
+                      <a href="http://" x-text="assignment.link"></a>
+                    </div>
+                  </div>
+                  <div class="px-1 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <div class="text-xs font-medium leading-6 text-gray-900">
+                      Audit Log
+                    </div>
+                    <div class="mt-2 text-xs text-gray-900">
+                      <div class="flow-root">
+                        <ul role="list" class="p-0 m-0 list-none">
+                          <template x-for="log in logs">
+                            <li>
+                              <div class="relative">
+                                <div class="relative flex">
+                                  <div
+                                    class="flex min-w-0 flex-1 justify-between"
+                                  >
+                                    <div>
+                                      <p
+                                        class="text-xs text-gray-500 m-0"
+                                        x-text="log.text"
+                                      ></p>
+                                    </div>
+                                    <div
+                                      class="whitespace-nowrap text-right text-xs text-gray-500"
+                                      x-text="log.datetime"
+                                    ></div>
+                                  </div>
+                                </div>
+                              </div>
+                            </li>
+                          </template>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+        <div class="flex justify-center items-center">
+          <div
+            class="bg-srdrpurple rounded-md text-white p-1 cursor-pointer text-sm"
+          >
+            Create New Assignment
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    x-show="tab_type == 'chats';"
+    class="flex flex-row h-screen antialiased text-gray-800"
+  >
+    <div class="flex flex-row w-72 flex-shrink-0 bg-gray-100 p-4">
+      <div
+        class="flex flex-col items-center py-4 flex-shrink-0 w-12 bg-srdrpurple rounded-tl-2xl rounded-bl-2xl"
+      >
+        <ul class="flex flex-col space-y-8 mt-12 list-none m-0">
+          <li>
+            <a href="#" class="flex items-center">
+              <span
+                class="flex items-center justify-center text-indigo-100 hover:bg-srdrpurple-light h-8 w-8 rounded-md"
+                :class="{
+                  'bg-srdrpurple-light': tab_type === 'assignments'
                 }"
-                @click="selected_room_type = 'chats'; selected_rooms = chat_rooms; openRoom(chat_rooms[0]); threadMessageId = null;"
+                @click="tab_type = 'assignments';"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                  />
+                </svg>
+                <span
+                  class="absolute flex items-center justify-center h-4 w-4 bg-red-500 text-white text-xs rounded-full -right-1 -bottom-1"
+                  x-cloak
+                  x-show="project_rooms.filter(room => messages[room.id]?.some(message => !message.read))?.length > 0"
+                  x-text="project_rooms.filter(room => messages[room.id]?.some(message => !message.read))?.length"
+                ></span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center">
+              <span
+                class="flex items-center justify-center text-indigo-100 hover:bg-srdrpurple-light h-8 w-8 rounded-md"
+                :class="{
+                  'bg-srdrpurple-light': tab_type === 'chats'
+                }"
+                @click="tab_type = 'chats'; selected_rooms = chat_rooms; openRoom(chat_rooms[0]); threadMessageId = null;"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -93,12 +278,12 @@
         <div class="mt-5 flex justify-between items-center">
           <div
             class="text-xs text-gray-400 font-semibold uppercase"
-            x-text="`${selected_room_type.toUpperCase()} (${selected_rooms.length})`"
+            x-text="`${tab_type.toUpperCase()} (${selected_rooms.length})`"
           ></div>
           <button
             class="text-xs cursor-pointer !px-1 rounded-md bg-srdrpurple text-white"
             x-cloak
-            x-show="selected_room_type === 'chats'"
+            x-show="tab_type === 'chats'"
             @click="createRoom()"
           >
             Create Chat
@@ -650,7 +835,7 @@
     };
     Alpine.data("chat", () => ({
       modal: true,
-      selected_room_type: "projects",
+      tab_type: "assignments",
       selected_room: null,
       selected_rooms: [],
       selected_messages: [],
@@ -668,6 +853,43 @@
       threadMessages: [],
       threadMessageId: null,
       thread_chat_text: {},
+      logs: [
+        {
+          text: "Updated Deadline to 2024.06.25",
+          datetime: "2024.06.20 @ 12:25PM PST",
+        },
+        {
+          text: "User A assigned to User B",
+          datetime: "2024.06.19 @ 12:26PM PST",
+        },
+        { text: "Created by User A", datetime: "2024.06.19 @ 12:25PM PST" },
+      ],
+      assignments: [
+        {
+          id: 523,
+          title: "Screening #235",
+          deadline: "2024.06.28",
+          link: "Go to Screening #235",
+        },
+        {
+          id: 521,
+          title: "Extraction #233",
+          deadline: "2024.06.19",
+          link: "Go to Extraction #233",
+        },
+        {
+          id: 520,
+          title: "Extraction #352",
+          deadline: "2024.06.25",
+          link: "Go to Extraction #352",
+        },
+        {
+          id: 519,
+          title: "Screening #84",
+          deadline: "2024.06.25",
+          link: "Go to Screening #84",
+        },
+      ],
 
       async init() {
         await this.fetchRooms();
@@ -933,7 +1155,7 @@
                 (room) => room.id !== message.room.id
               );
             }
-            if (this.selected_room_type === "projects") {
+            if (this.tab_type === "projects") {
               this.selected_rooms = this.project_rooms;
             } else {
               this.selected_rooms = this.chat_rooms;
