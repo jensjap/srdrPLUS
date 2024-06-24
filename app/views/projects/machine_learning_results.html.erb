@@ -132,6 +132,16 @@ time labeled.'>
                   >
                     <div>See Details</div>
                   </td>
+                  <td
+                    class="cursor-pointer select-none px-3 text-sm text-gray-500 w-24 overflow-hidden text-ellipsis whitespace-nowrap"
+                    x-data="{ showLabelOptions: false }"
+                  >
+                    <div @click="showLabelOptions = !showLabelOptions">Label</div>
+                    <div x-show="showLabelOptions" @click.outside="showLabelOptions = false" class="mt-2">
+                      <button class="text-blue-500 cursor-pointer" @click="createScreeningQualification('as-accepted', result.citations_project_id)">Accept</button>
+                      <button class="text-red-500 ml-2 cursor-pointer" @click="createScreeningQualification('as-rejected', result.citations_project_id)">Reject</button>
+                    </div>
+                  </td>
                 </tr>
               </template>
             </template>
@@ -181,6 +191,32 @@ time labeled.'>
 </div>
 
 <script>
+  function createScreeningQualification(qualificationType, citationsProjectId) {
+    fetch('/screening_qualifications', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({
+        qualification_type: qualificationType,
+        citations_project_ids: [citationsProjectId]
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.error) {
+        toastr.error("We've encountered an error");
+      } else {
+        toastr.success('Qualification updated successfully');
+        window.location.reload();
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+  }
+
   function percentage_below_threshold(scores, threshold) {
     const below = scores.filter(score => score < threshold).length;
     return (below / scores.length) * 100;
