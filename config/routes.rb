@@ -115,6 +115,7 @@ Rails.application.routes.draw do
         member do
           get 'process_and_email'
           get 'composition'
+          get 'artifact_assessments', to: 'artifact_assessments#index'
         end
         resources :citations, only: %i[index show]
         resources :key_questions, only: %i[index show]

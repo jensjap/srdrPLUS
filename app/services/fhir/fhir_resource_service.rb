@@ -69,6 +69,21 @@ class FhirResourceService
       deep_clean(bundle)
     end
 
+    def get_artifact_assessment(
+      id_prefix:,
+      srdrplus_id:,
+      srdrplus_type:,
+      artifact_uri:
+    )
+      {
+        'resourceType' => 'ArtifactAssessment',
+        'id' => "#{id_prefix}-#{srdrplus_id}",
+        'identifier' => build_identifier(srdrplus_type, srdrplus_id),
+        'artifactUri' => artifact_uri,
+        'content' => []
+      }
+    end
+
     def get_citation(
       id_prefix:,
       srdrplus_id:,
@@ -327,6 +342,29 @@ class FhirResourceService
       end
 
       definition.compact
+    end
+
+    def build_artifact_assessment_content(informationType:, type:, user_ref:, quantity: nil, classifier: nil)
+      content = {
+        'informationType' => informationType,
+        'type' => { 'text' => type }
+      }
+      content['author'] = { 'reference' => user_ref } if !user_ref.blank?
+      content['quantity'] = { 'value' => quantity } if !quantity.blank?
+      content['classifier'] = [{ 'text' => classifier }] if !classifier.blank?
+
+      content
+    end
+
+    def build_contained_practitioner(id:, email:)
+      [{
+        'resourceType' => 'Practitioner',
+        'id' => id,
+        'telecom' => [{
+          'system' => 'email',
+          'value' => email
+        }]
+      }]
     end
 
     def deep_clean(item)
