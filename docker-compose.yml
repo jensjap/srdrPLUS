@@ -105,6 +105,7 @@ services:
       - database
       - elasticsearch
       - redis
+      - mailcatcher
     volumes:
       - .:/app
       - gem_cache:/usr/local/bundle/gems
