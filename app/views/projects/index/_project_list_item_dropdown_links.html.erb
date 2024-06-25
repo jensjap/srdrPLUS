@@ -136,14 +136,27 @@
            aria-orientation="vertical"
            aria-labelledby="editFormsDropdownProjectId_<%= project.id %>">
         <% if project.leaders.include?(current_user) %>
-          <%= link_to 'Screening Form Builder',
-                      project_screening_forms_path(project),
-                      class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                      'x-bind:class': "{ 'bg-srdr-tertiary': screening_form_builder, '!text-white': screening_form_builder }" %>
-          <%= link_to 'Extraction Form Builder',
-                      build_extraction_forms_project_path(project.extraction_forms_projects.first),
-                      class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                      'x-bind:class': "{ 'bg-srdr-tertiary': extraction_form_builder, '!text-white': extraction_form_builder }" %>
+          <% if project.key_questions.present? %>
+            <% efp = project.extraction_forms_projects.first %>
+            <%= link_to 'Screening Form Builder',
+                        project_screening_forms_path(project),
+                        class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
+                        'x-bind:class': "{ 'bg-srdr-tertiary': screening_form_builder, '!text-white': screening_form_builder }" %>
+            <%= link_to 'Extraction Form Builder',
+                        build_extraction_forms_project_path(efp, 'panel-tab': efp.default_section_id),
+                        class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
+                        'x-bind:class': "{ 'bg-srdr-tertiary': extraction_form_builder, '!text-white': extraction_form_builder }" %>
+          <% else %>
+            <%= link_to 'Screening Form Builder',
+                        project_screening_forms_path(project),
+                        class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
+                        'x-bind:class': "{ 'bg-srdr-tertiary': screening_form_builder, '!text-white': screening_form_builder }" %>
+            <%= link_to 'Extraction Form Builder',
+                        '#',
+                        class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
+                        'x-bind:class': "{ 'bg-srdr-tertiary': extraction_form_builder, '!text-white': extraction_form_builder }",
+                        onclick: "alert('Extraction Form Builder is unavailable. You must add at least one Key Question first.')"%>
+          <% end %>
         <% else %>
           <div style="opacity: 0.3; cursor: not-allowed" class="block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white">Screening Form Builder</div>
           <div style="opacity: 0.3; cursor: not-allowed" class="block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white">Extraction Form Builder</div>

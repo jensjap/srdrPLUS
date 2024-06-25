@@ -1,6 +1,7 @@
 class AdvancedExportJob < ApplicationJob
   require 'axlsx'
-  queue_as :default
+
+  queue_as :exports
 
   WORKSHEET_NAME_FORBIDDEN_CHARS = '[]*/\?:'.chars.freeze
   COLORS = %w[FFBABA FFF3BA C5B7F1 B3F6B3].freeze
@@ -228,7 +229,7 @@ class AdvancedExportJob < ApplicationJob
         efps.extraction_forms_projects_section_type_id == 1 && efps.section.name == 'Arms'
       end
 
-      @project.extractions&.each(&:ensure_extraction_form_structure)
+      # @project.extractions&.each(&:ensure_extraction_form_structure)
       @extractions = @project.extractions
 
       filename = generate_xlsx_and_filename

@@ -49,6 +49,17 @@ class MachineLearningStatisticService
     label_array = get_rejection_array(project_id)
 
     label_size = label_array.size
+    if label_size < 1000
+      return [{
+        ratio: 0.0,
+        front_size: 0,
+        front_count: 0,
+        back_ratio: 0,
+        estimated_positive: 0,
+        estimated_coverage: 0
+      }]
+    end
+
     label_statistic = []
     threshold_ratio = label_size.to_f / total_size
 
