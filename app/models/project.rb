@@ -55,6 +55,7 @@ class Project < ApplicationRecord
   after_create :create_default_member, unless: :create_empty
 
   amoeba do
+    include_association :key_questions_projects
     include_association :mesh_descriptors_projects
     include_association :projects_tags
     include_association :projects_reasons

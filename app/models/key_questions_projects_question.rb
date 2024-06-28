@@ -12,9 +12,4 @@
 class KeyQuestionsProjectsQuestion < ApplicationRecord
   belongs_to :key_questions_project, inverse_of: :key_questions_projects_questions
   belongs_to :question,              inverse_of: :key_questions_projects_questions
-
-  amoeba do
-    enable
-    clone [:key_questions_project]
-  end
 end
