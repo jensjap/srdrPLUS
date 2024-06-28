@@ -16,10 +16,11 @@ class Question < ApplicationRecord
 
   include SharedSuggestableMethods
 
-  attr_accessor :skip_callbacks
+  attr_accessor :skip_callbacks, :is_amoeba_copy, :source_question
 
   after_create :create_default_question_row, unless: :skip_callbacks
-  after_create :associate_kqs
+  after_create :associate_kqs, unless: :is_amoeba_copy
+  after_create :correct_kqs_and_followup, if: :is_amoeba_copy
   after_save :ensure_matrix_column_headers, unless: :skip_callbacks
 
   belongs_to :extraction_forms_projects_section, inverse_of: :questions
@@ -44,8 +45,10 @@ class Question < ApplicationRecord
     exclude_association :dependencies
     exclude_association :key_questions_projects_questions
 
-    customize(lambda { |_original, cloned|
+    customize(lambda { |original, cloned|
       cloned.skip_callbacks = true
+      cloned.is_amoeba_copy = true
+      cloned.source_question = original
     })
   end
 
@@ -148,6 +151,15 @@ class Question < ApplicationRecord
     rest_rows.each do |r|
       r.question_row_columns.each_with_index do |rc, idx|
         rc.update(name: column_headers[idx])
+      end
+    end
+  end
+
+  def correct_kqs_and_followup
+    key_questions = source_question.key_questions_projects.map(&:key_question)
+    key_questions.each do |kq|
+      project.key_questions_projects.each do |kqp|
+        kqp.questions << self if kqp.key_question.eql?(kq)
       end
     end
   end

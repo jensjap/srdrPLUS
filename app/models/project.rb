@@ -373,7 +373,7 @@ class Project < ApplicationRecord
     exported_items.where('created_at >= ?', 1.week.ago).order(created_at: :desc)
   end
 
-  def copied_project?
+  def project_copy?
     source_project_id.present?
   end
 
