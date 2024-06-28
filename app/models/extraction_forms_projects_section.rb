@@ -35,14 +35,15 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   }
 
   after_create :create_extraction_forms_projects_section_option, unless: :is_amoeba_copy
+  after_create :set_link_to_type1_associations, if: :is_amoeba_copy
 
   amoeba do
     include_association :extraction_forms_projects_section_option
-    # include_association :extraction_forms_projects_sections_type1s
-    # include_association :questions
-    customize(lambda { |original, copy|
+    include_association :extraction_forms_projects_sections_type1s
+    include_association :questions
+
+    customize(lambda { |_original, copy|
       copy.is_amoeba_copy = true
-      debugger if original.link_to_type1.present?
     })
   end
 
@@ -71,9 +72,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
            dependent: :destroy,
            inverse_of: :extraction_forms_projects_section
   has_many :extractions, through: :extractions_extraction_forms_projects_sections, dependent: :destroy
-
-  # has_many :key_questions_projects, dependent: :nullify, inverse_of: :extraction_forms_projects_section
-  # has_many :key_questions, through: :key_questions_projects, dependent: :destroy
 
   has_many :questions,
            dependent: :destroy, inverse_of: :extraction_forms_projects_section
@@ -242,5 +240,15 @@ class ExtractionFormsProjectsSection < ApplicationRecord
     questions.each_with_index do |question, idx|
       question.pos = idx + 1
     end
+  end
+
+  private
+
+  def set_link_to_type1_associations
+    return unless link_to_type1.present? && !project.eql?(link_to_type1.project)
+
+    section = link_to_type1.section
+    link_to_type1 = extraction_forms_project.extraction_forms_projects_sections.find_by(section:)
+    update(link_to_type1:)
   end
 end

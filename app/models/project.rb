@@ -29,8 +29,11 @@ class Project < ApplicationRecord
   include SharedPublishableMethods
   include SharedQueryableMethods
 
-  attr_accessor :create_empty, :is_amoeba_copy,
-    :amoeba_copy_citations, :amoeba_copy_extractions
+  attr_accessor :create_empty,
+                :is_amoeba_copy,
+                :amoeba_copy_citations,
+                :amoeba_copy_extractions,
+                :amoeba_copy_labels
 
   searchkick callbacks: :async
 
@@ -46,17 +49,22 @@ class Project < ApplicationRecord
   scope :lead_by_current_user, -> {}
 
   after_create :create_default_extraction_form, unless: :create_empty
+  # It seems that this is redundant for amoeba copy because we will skip this callback,
+  # However we need this because it is needed in case of Distiller import.
   after_create :create_empty_extraction_form, if: :create_empty
   after_create :create_default_member, unless: :create_empty
 
   amoeba do
     include_association :key_questions_projects
-    include_association :extraction_forms_projects
+    include_association :mesh_descriptors_projects
     include_association :projects_tags
     include_association :projects_reasons
-    include_association :mesh_descriptors_projects
+    include_association :extraction_forms_projects
     include_association :citations_projects, if: :amoeba_copy_citations
     include_association :extractions, if: :amoeba_copy_extractions
+    customize(lambda { |original, copy|
+      copy.source_project_id = original.id
+    })
     prepend name: 'Copy of '
   end
 
@@ -363,6 +371,16 @@ class Project < ApplicationRecord
 
   def recent_exported_items
     exported_items.where('created_at >= ?', 1.week.ago).order(created_at: :desc)
+  end
+
+  def copied_project?
+    source_project_id.present?
+  end
+
+  def source_project
+    return nil unless project_copy?
+
+    Project.find(source_project_id)
   end
 
   private

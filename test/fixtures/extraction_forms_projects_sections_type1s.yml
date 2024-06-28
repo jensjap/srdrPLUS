@@ -9,3 +9,13 @@ two:
   extraction_forms_projects_section: two
   type1: two
 #  active: true
+
+three:
+  extraction_forms_projects_section: amoeba_efps_arms
+  type1: one
+  type1_type: one
+
+four:
+  extraction_forms_projects_section: amoeba_efps_arms
+  type1: two
+  type1_type: one

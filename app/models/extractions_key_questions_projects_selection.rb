@@ -11,9 +11,11 @@
 class ExtractionsKeyQuestionsProjectsSelection < ApplicationRecord
   scope :not_disqualified,
         lambda {
-          joins(extraction: :citations_project)
-            .where
-            .not(citations_project: { screening_status: CitationsProject::REJECTED })
+          where.not(
+            extraction_id: CitationsProject.where(
+              screening_status: CitationsProject::REJECTED
+            ).select(:extraction_id)
+          )
         }
 
   belongs_to :extraction

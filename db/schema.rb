@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_06_144812) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_28_142310) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -321,6 +321,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_06_144812) do
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id"
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id"
     t.index ["project_id"], name: "index_citations_projects_on_project_id"
+    t.index ["screening_status"], name: "index_citations_projects_on_screening_status"
   end
 
   create_table "color_choices", id: :integer, charset: "utf8", force: :cascade do |t|
@@ -1200,6 +1201,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_06_144812) do
     t.boolean "fs_allow_adding_reasons", default: true, null: false
     t.boolean "fs_allow_adding_tags", default: true, null: false
     t.boolean "force_training", default: false, null: false
+    t.integer "source_project_id"
   end
 
   create_table "projects_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

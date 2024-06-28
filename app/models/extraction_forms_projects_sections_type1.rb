@@ -15,7 +15,7 @@ class ExtractionFormsProjectsSectionsType1 < ApplicationRecord
   default_scope { order(:pos, :id) }
 
   amoeba do
-    # enable
+    enable
   end
 
   belongs_to :extraction_forms_projects_section, inverse_of: :extraction_forms_projects_sections_type1s

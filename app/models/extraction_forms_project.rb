@@ -27,13 +27,6 @@ class ExtractionFormsProject < ApplicationRecord
 
   attr_accessor :create_empty
 
-  # Get all ExtractionFormsProject items that are linked to a particular Extraction.
-  # scope :by_extraction, -> (extraction_id) {
-  #  joins(extraction_forms_projects_sections: { key_questions_projects: :extractions })
-  #    .where(extractions: { id: extraction_id })
-  #    .distinct
-  # }
-
   scope :standard_types, lambda {
                            where(extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::STANDARD))
                          }
@@ -55,10 +48,10 @@ class ExtractionFormsProject < ApplicationRecord
   before_destroy :destroy_extraction_forms_projects_sections
 
   amoeba do
-    include_association :extraction_forms_projects_sections
     customize(lambda { |_original, copy|
       copy.create_empty = true
     })
+    include_association :extraction_forms_projects_sections
   end
 
   belongs_to :extraction_forms_project_type, inverse_of: :extraction_forms_projects, optional: true
@@ -76,9 +69,6 @@ class ExtractionFormsProject < ApplicationRecord
            },
            dependent: :destroy,
            inverse_of: :extraction_forms_project
-  has_many :key_questions_projects,
-           -> { joins(:extraction_forms_projects_section) },
-           through: :extraction_forms_projects_sections, dependent: :destroy
   has_many :sections,
            -> { joins(:extraction_forms_projects_sections) },
            through: :extraction_forms_projects_sections, dependent: :destroy
