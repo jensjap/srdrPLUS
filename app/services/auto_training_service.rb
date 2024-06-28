@@ -42,6 +42,10 @@ class AutoTrainingService
             else
               retries += 1
             end
+
+            if retries >= MAX_RETRIES && ml_model
+              ml_model.destroy
+            end
           end
 
           project.update(force_training: false)
