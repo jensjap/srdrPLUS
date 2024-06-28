@@ -42,7 +42,6 @@ class Question < ApplicationRecord
   amoeba do
     enable
     exclude_association :dependencies
-    exclude_association :key_questions_projects_questions
 
     customize(lambda { |_original, cloned|
       cloned.skip_callbacks = true
