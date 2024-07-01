@@ -272,6 +272,7 @@ Rails.application.routes.draw do
     end
 
     resources :citations, only: %i[new create update edit show index]
+    resources :citations_projects, only: %i[index]
 
     resources :extractions do
       collection do
