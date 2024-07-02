@@ -96,7 +96,10 @@
         <div
           class="flex flex-col w-full h-full pl-4 pr-4 py-4 -mr-4 overflow-y-scroll space-y-1 bg-white"
         >
-          <template x-for="assignment in assignments">
+          <template
+            x-for="(assignment, assignment_index) in assignments"
+            :key="assignment.id"
+          >
             <div
               class="bg-white shadow rounded-md p-2 flex"
               :class="assignment.id === 523 ? 'border border-srdrpurple drop-shadow-2xl' : ''"
@@ -125,6 +128,7 @@
                       class="!w-auto !text-xs"
                       type="date"
                       :value="assignment.formatted_deadline"
+                      @change="updateAssignment(assignment.id, assignment_index, $event.target.value, 'deadline')"
                     />
                   </div>
                 </div>
@@ -147,6 +151,7 @@
                         <select
                           class="text-xs"
                           :value="assignment.handles.assignee"
+                          @change="updateAssignment(assignment.id, assignment_index, $event.target.value, 'assignee_id')"
                         >
                           <option
                             :value="assignment.handles.assignee"
@@ -163,6 +168,7 @@
                         <select
                           class="text-xs"
                           :value="assignment.assignor_status"
+                          @change="updateAssignment(assignment.id, assignment_index, $event.target.value, 'assignor_status')"
                         >
                           <option value="awaiting_assignee">
                             awaiting_assignee
@@ -179,6 +185,7 @@
                         <select
                           class="text-xs"
                           :value="assignment.assignee_status"
+                          @change="updateAssignment(assignment.id, assignment_index, $event.target.value, 'assignee_status')"
                         >
                           <option value="pending">pending</option>
                           <option value="complete">complete</option>
@@ -202,7 +209,10 @@
                       <div class="text-xs text-gray-900 border border-gray-100">
                         <div class="flow-root h-16 overflow-y-scroll">
                           <ul role="list" class="p-0 m-0 list-none">
-                            <template x-for="log in assignment.logs.reverse()">
+                            <template
+                              x-for="log in assignment.logs.reverse()"
+                              :key="log.id"
+                            >
                               <li>
                                 <div class="relative">
                                   <div class="relative flex">
@@ -241,6 +251,7 @@
                   stroke-width="1"
                   stroke="currentColor"
                   class="size-6 cursor-pointer border border-gray-500 rounded-md p-1"
+                  @click="updateAssignment(assignment.id, assignment_index, !assignment.archived, 'archived')"
                 >
                   <path
                     stroke-linecap="round"
@@ -255,6 +266,7 @@
                   stroke-width="1"
                   stroke="currentColor"
                   class="size-6 cursor-pointer border border-gray-500 rounded-md p-1"
+                  @click="destroyAssignment(assignment.id)"
                 >
                   <path
                     stroke-linecap="round"
@@ -268,6 +280,7 @@
           <div class="flex justify-center items-center">
             <div
               class="bg-srdrpurple rounded-md text-white p-1 cursor-pointer text-sm fixed bottom-4"
+              @click="createAssignment()"
             >
               Create New Assignment
             </div>
@@ -949,7 +962,10 @@
             class="absolute border border-black bg-slate-100 shadow-2xl rounded-md w-full !text-sm !p-2 -top-44 h-40 overflow-y-auto"
           >
             <ul class="list-none m-0">
-              <template x-for="(assignment, assignment_index) in assignments">
+              <template
+                x-for="(assignment, assignment_index) in assignments"
+                :key="assignment.id"
+              >
                 <li
                   class="p-2 rounded-md cursor-pointer"
                   :class="assignment_index === assignment_selection_index ? 'bg-slate-200' : ''"
@@ -1035,7 +1051,7 @@
       <div><h1 class="text-xl font-semibold my-2">Users</h1></div>
       <div class="flex-1 overflow-y-scroll">
         <div class="flex flex-col space-y-2 text-sm">
-          <template x-for="user in roomUsers">
+          <template x-for="user in roomUsers" :key="user.user_id">
             <div class="flex justify-between items-center">
               <div class="flex items-center">
                 <svg
@@ -1084,6 +1100,7 @@
         >
           <template
             x-for="user in allUsers.filter(user => (new RegExp(userSearchString, 'i')).test(user.username) && !roomUsers.some(uuser => uuser.user_id === user.user_id))"
+            :key="user.user_id"
           >
             <div class="flex justify-between items-center">
               <div class="flex items-center">
@@ -1174,6 +1191,41 @@
         this.openRoom(this.selected_rooms[0]);
         this.getAssignments();
         await this.setupWS();
+      },
+
+      async updateAssignment(assignment_id, assignment_index, value, key) {
+        const response = await fetch(`/assignments/${assignment_id}`, {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify({
+            [key]: value,
+          }),
+        });
+        const data = await response.json();
+        if (response.status >= 200 && response.status < 300) {
+          this.assignments[assignment_index] = data;
+        }
+      },
+
+      async destroyAssignment(assignment_id) {
+        if (!confirm("Are you sure you want to remove this assignment?"))
+          return;
+
+        const response = await fetch(`/assignments/${assignment_id}`, {
+          method: "DELETE",
+          headers,
+        });
+        await this.getAssignments();
+      },
+
+      async createAssignment() {
+        const response = await fetch("/assignments/", {
+          method: "POST",
+          headers,
+          body: JSON.stringify({}),
+        });
+
+        this.getAssignments();
       },
 
       async getAssignments() {
