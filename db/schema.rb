@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_24_044321) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_25_063812) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -263,7 +263,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_044321) do
     t.integer "assignee_id"
     t.string "assignment_type"
     t.integer "assignment_id"
-    t.string "status"
+    t.string "assignor_status"
+    t.string "assignee_status"
     t.text "link"
     t.datetime "deadline"
     t.datetime "created_at", null: false
@@ -982,6 +983,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_24_044321) do
     t.index ["label_id"], name: "index_labels_reasons_on_label_id"
     t.index ["projects_users_role_id"], name: "index_labels_reasons_on_projects_users_role_id"
     t.index ["reason_id"], name: "index_labels_reasons_on_reason_id"
+  end
+
+  create_table "logs", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "assignment_id"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignment_id"], name: "index_logs_on_assignment_id"
   end
 
   create_table "measures", id: :integer, charset: "utf8mb3", force: :cascade do |t|

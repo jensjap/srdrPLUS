@@ -1,7 +1,11 @@
 <div
   x-cloak
   x-show="modal"
-  @keyup.escape.window="modal = !modal"
+  @keyup.escape.window="if (assignmentWindow) {
+    assignmentWindow = false;
+  } else {
+    modal = !modal
+  }"
   x-trap.noscroll="modal"
   x-data="chat"
   class="inset-0 fixed z-50"
@@ -87,12 +91,15 @@
           </li>
         </ul>
       </div>
-      <div class="flex flex-col w-full">
+      <div class="flex w-full">
         <div
           class="flex flex-col w-full h-full pl-4 pr-4 py-4 -mr-4 overflow-y-scroll space-y-1"
         >
           <template x-for="assignment in assignments">
-            <div class="bg-white shadow rounded-md p-2">
+            <div
+              class="bg-white shadow rounded-md p-2"
+              :class="assignment.id === 523 ? 'border border-srdrpurple drop-shadow-2xl' : ''"
+            >
               <div class="px-1 flex justify-between">
                 <div
                   class="text-sm text-gray-900"
@@ -105,52 +112,46 @@
               </div>
               <div class="border-t border-gray-100">
                 <div class="divide-y divide-gray-100">
-                  <div class="px-1 sm:grid sm:grid-cols-3 sm:gap-4">
+                  <div class="px-1">
                     <div class="text-xs font-medium text-gray-900">
                       Assignor
                     </div>
-                    <div class="text-xs leading-6 text-gray-700">User A</div>
+                    <div class="text-xs text-gray-700">User A</div>
                   </div>
-                  <div class="px-1 sm:grid sm:grid-cols-3 sm:gap-4">
+                  <div class="px-1">
                     <div class="text-xs font-medium text-gray-900">
                       Assignee
                     </div>
-                    <div
-                      class="text-xs leading-6 text-gray-700 underline cursor-pointer"
-                    >
+                    <div class="text-xs text-gray-700 underline cursor-pointer">
                       User B
                     </div>
                   </div>
-                  <div class="px-1 sm:grid sm:grid-cols-3 sm:gap-4">
+                  <div class="px-1">
                     <div class="text-xs font-medium text-gray-900">
                       Deadline
                     </div>
                     <div
-                      class="text-xs leading-6 text-red-700 underline cursor-pointer"
+                      class="text-xs text-red-700 underline cursor-pointer"
                       x-text="assignment.deadline"
                     ></div>
                   </div>
-                  <div class="px-1 sm:grid sm:grid-cols-3 sm:gap-4">
+                  <div class="px-1">
                     <div class="text-xs font-medium text-gray-900">Status</div>
-                    <div
-                      class="text-xs leading-6 text-gray-700 underline cursor-pointer"
-                    >
+                    <div class="text-xs text-gray-700 underline cursor-pointer">
                       In Progress
                     </div>
                   </div>
-                  <div class="px-1 sm:grid sm:grid-cols-3 sm:gap-4">
+                  <div class="px-1">
                     <div class="text-xs font-medium text-gray-900">Link</div>
-                    <div
-                      class="text-xs leading-6 text-gray-700 underline cursor-pointer"
-                    >
+                    <div class="text-xs text-gray-700 underline cursor-pointer">
                       <a href="http://" x-text="assignment.link"></a>
                     </div>
                   </div>
-                  <div class="px-1 sm:grid sm:grid-cols-3 sm:gap-4">
-                    <div class="text-xs font-medium leading-6 text-gray-900">
+                  <div class="px-1">
+                    <div class="text-xs font-medium text-gray-900">
                       Audit Log
                     </div>
-                    <div class="mt-2 text-xs text-gray-900">
+                    <div class="text-xs text-gray-900">
                       <div class="flow-root">
                         <ul role="list" class="p-0 m-0 list-none">
                           <template x-for="log in logs">
@@ -183,12 +184,204 @@
               </div>
             </div>
           </template>
+          <div class="flex justify-center items-center">
+            <div
+              class="bg-srdrpurple rounded-md text-white p-1 cursor-pointer text-sm fixed bottom-4"
+            >
+              Create New Assignment
+            </div>
+          </div>
         </div>
-        <div class="flex justify-center items-center">
+        <div
+          class="flex flex-col w-full h-full pl-4 pr-4 py-4 -mr-4 overflow-y-scroll space-y-1"
+        >
           <div
-            class="bg-srdrpurple rounded-md text-white p-1 cursor-pointer text-sm"
+            class="flex flex-1 overflow-hidden"
+            x-cloak
+            x-show="(selected_messages && selected_messages.length > 0) && !pinnedMenu"
           >
-            Create New Assignment
+            <div
+              x-cloak
+              x-show="(selected_messages && selected_messages.length > 0) && !pinnedMenu"
+              class="overflow-y-scroll flex flex-col-reverse flex-1 w-full gap-y-2 bg-gray-50 border border-gray-100"
+            >
+              <template
+                x-for="message in selected_messages.filter(m => m.message_id === null)"
+                :key="message.id"
+              >
+                <div
+                  class="p-3 rounded-lg"
+                  :class="{
+                'col-start-1': message.user_id !== current_user_id,
+                'col-end-8': message.user_id !== current_user_id,
+                'col-start-6': message.user_id === current_user_id,
+                'col-end-13': message.user_id === current_user_id,
+              }"
+                >
+                  <div
+                    class="flex"
+                    :class="{
+                  'flex-row': message.user_id !== current_user_id,
+                  'items-center': message.user_id !== current_user_id,
+                  'items-center': message.user_id === current_user_id,
+                  'justify-start': message.user_id === current_user_id,
+                  'flex-row-reverse': message.user_id === current_user_id,
+                }"
+                  >
+                    <div
+                      class="relative ml-3 text-sm py-2 px-4 shadow rounded-xl"
+                      :class="{
+                    'bg-white': message.user_id !== current_user_id,
+                    'bg-indigo-100': message.user_id === current_user_id,
+                  }"
+                    >
+                      <div
+                        x-text="message.text"
+                        class="whitespace-pre-wrap"
+                        @click="destroyMessageUnread(message)"
+                      ></div>
+                      <div class="flex space-x-1">
+                        <div
+                          class="text-xs text-gray-500 text-nowrap text-right"
+                          x-text="`${message.handle} wrote at ${new Date(message.created_at).toLocaleString()}`"
+                        ></div>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          :fill="message.pinned ? 'gray' : 'none'"
+                          viewBox="0 0 24 24"
+                          stroke-width="0.5"
+                          stroke="currentColor"
+                          class="w-4 h-4 cursor-pointer"
+                          @click="togglePin(message)"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+                          />
+                        </svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="0.5"
+                          stroke="currentColor"
+                          class="w-4 h-4 cursor-pointer"
+                          @click="destroyMessage(message, selected_messages)"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                          />
+                        </svg>
+                        <div
+                          class="flex cursor-pointer"
+                          @click="if (threadMessageId === message.id) {
+                            threadMessages = [];
+                            threadMessageId = null;
+                          } else {
+                            threadMessages = message.messages;
+                            threadMessageId = message.id;
+                            message.messages.forEach((message) => {
+                              destroyMessageUnread(message);
+                            });
+                          }"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            :fill="threadMessageId === message.id ? 'purple' : 'none'"
+                            viewBox="0 0 24 24"
+                            stroke-width="0.5"
+                            stroke="currentColor"
+                            class="w-4 h-4"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"
+                            />
+                          </svg>
+                          <span
+                            class="text-xs text-gray-500"
+                            x-text="message.messages.length === 0 ? '' : `+${message.messages.length}`"
+                          ></span>
+                          <span
+                            class="absolute flex items-center justify-center h-4 w-4 bg-red-500 text-white text-xs rounded-full right-1 top-1"
+                            x-cloak
+                            x-show="message.messages.filter(message => !message.read)?.length > 0"
+                            x-text="message.messages.filter(message => !message.read)?.length"
+                          ></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+            <div
+              x-cloak
+              x-show="(selected_messages && selected_messages.length > 0) && !pinnedMenu && threadMessageId !== null"
+              class="overflow-y-scroll flex flex-col-reverse flex-1 w-full gap-y-2 bg-gray-50 border border-gray-100"
+            >
+              <template x-for="message in threadMessages" :key="message.id">
+                <div
+                  class="p-3 rounded-lg"
+                  :class="{
+                'col-start-1': message.user_id !== current_user_id,
+                'col-end-8': message.user_id !== current_user_id,
+                'col-start-6': message.user_id === current_user_id,
+                'col-end-13': message.user_id === current_user_id,
+              }"
+                >
+                  <div
+                    class="flex"
+                    :class="{
+                  'flex-row': message.user_id !== current_user_id,
+                  'items-center': message.user_id !== current_user_id,
+                  'items-center': message.user_id === current_user_id,
+                  'justify-start': message.user_id === current_user_id,
+                  'flex-row-reverse': message.user_id === current_user_id,
+                }"
+                  >
+                    <div
+                      class="relative ml-3 text-sm py-2 px-4 shadow rounded-xl"
+                      :class="{
+                    'bg-white': message.user_id !== current_user_id,
+                    'bg-indigo-100': message.user_id === current_user_id,
+                  }"
+                    >
+                      <div
+                        x-text="message.text"
+                        class="whitespace-pre-wrap"
+                        @click="destroyMessageUnread(message)"
+                      ></div>
+                      <div class="flex space-x-1">
+                        <div
+                          class="text-xs text-gray-500 text-nowrap text-right"
+                          x-text="`${message.handle} wrote at ${new Date(message.created_at).toLocaleString()}`"
+                        ></div>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="0.5"
+                          stroke="currentColor"
+                          class="w-4 h-4 cursor-pointer"
+                          @click="destroyMessage(message, selected_messages)"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
           </div>
         </div>
       </div>
@@ -299,10 +492,10 @@
                 <div
                   class="flex flex-col flex-1 p-2 rounded-md"
                   :class="{
-                    'bg-srdrpurple': selected_room === room,
-                    'text-white': selected_room === room,
-                    'bg-gray-200': selected_room !== room,
-                    'text-black': selected_room !== room,
+                    'bg-srdrpurple': selected_room?.id === room.id,
+                    'text-white': selected_room?.id === room.id,
+                    'bg-gray-200': selected_room?.id !== room.id,
+                    'text-black': selected_room?.id !== room.id,
                   }"
                 >
                   <div
@@ -669,17 +862,28 @@
       <div class="flex flex-row items-center w-full h-32">
         <div class="w-full flex relative">
           <div
-            x-show="chat_text[selected_room]?.includes('@')"
+            x-show="assignmentWindow"
+            @click.outside="assignmentWindow=false"
             class="absolute border border-black bg-slate-100 shadow-2xl rounded-md w-full !text-sm !p-2 -top-44 h-40 overflow-y-auto"
           >
             <ul class="list-none m-0">
-              <li class="p-2 rounded-md">@Assignment #35</li>
-              <li class="p-2 bg-slate-300 rounded-md">@Assignment #36</li>
-              <li class="p-2 rounded-md">@Assignment #37</li>
-              <li class="p-2 rounded-md">@Assignment #38</li>
-              <li class="p-2 rounded-md">@Assignment #39</li>
-              <li class="p-2 rounded-md">@Assignment #40</li>
-              <li class="p-2 rounded-md">@Assignment #41</li>
+              <template x-for="(assignment, assignment_index) in assignments">
+                <li
+                  class="p-2 rounded-md cursor-pointer"
+                  :class="assignment_index === assignment_selection_index ? 'bg-slate-200' : ''"
+                  x-text="`@@assignment${assignment.id}@@ - ${assignment.assignment_type} ${assignment.assignment_id} assigned to user #${assignment.assignment_id}`"
+                  @mouseover="assignment_selection_index = assignment_index"
+                  @click="const insert = `@assignment${assignments[assignment_selection_index].id}@@`
+                  assignmentWindow = false;
+                  const start = $refs.chattextarea.selectionStart;
+                  const end = $refs.chattextarea.selectionEnd;
+                  const oldValue = $refs.chattextarea.value;
+                  const newValue = oldValue.slice(0, start) + insert + oldValue.slice(end)
+                  $refs.chattextarea.value = newValue;
+                  $refs.chattextarea.selectionStart = $refs.chattextarea.selectionEnd = start + insert.length;
+                  return"
+                ></li>
+              </template>
             </ul>
           </div>
           <textarea
@@ -688,14 +892,38 @@
             type="text"
             class="w-full !text-sm !p-2 !resize-none"
             placeholder="Type message..."
-            x-model="chat_text[selected_room]"
+            x-ref="chattextarea"
+            x-model="chat_text[selected_room?.id]"
+            @keydown.@="getAssignments($event.target.value);
+            assignmentWindow = true;"
             @keydown.shift="shiftPressed = true"
             @keyup.shift="shiftPressed = false"
-            @keydown.enter.prevent="if (shiftPressed) {
-                return $event.target.value = $event.target.value + '\n'
+            @keydown.enter.prevent="let insert;
+              if (shiftPressed) {
+                insert = '\n'
+              } else if (assignmentWindow) {
+                insert = `@assignment${assignments[assignment_selection_index].id}@@`
               }
-              sendMessage()
-              "
+              if (shiftPressed || assignmentWindow) {
+                assignmentWindow = false;
+                const start = $event.target.selectionStart;
+                const end = $event.target.selectionEnd;
+                const oldValue = $event.target.value;
+                const newValue = oldValue.slice(0, start) + insert + oldValue.slice(end)
+                chat_text[selected_room?.id] = newValue
+                $event.target.value = newValue;
+                $event.target.selectionStart = $event.target.selectionEnd = start + insert.length;
+              } else {
+                sendMessage()
+              }"
+            @keydown.up="if(assignmentWindow) {
+              $event.preventDefault();
+              if (assignment_selection_index > 0) assignment_selection_index -= 1
+            }"
+            @keydown.down="if (assignmentWindow) {
+              $event.preventDefault();
+              if (assignment_selection_index < assignments.length - 1) assignment_selection_index += 1
+            }"
           ></textarea>
           <textarea
             x-cloak
@@ -705,7 +933,7 @@
             type="text"
             class="w-full !text-sm !p-2 !resize-none"
             placeholder="Type message..."
-            x-model="thread_chat_text[selected_room]"
+            x-model="thread_chat_text[selected_room?.id]"
             @keydown.shift="shiftPressed = true"
             @keyup.shift="shiftPressed = false"
             @keydown.enter.prevent="if (shiftPressed) {
@@ -835,7 +1063,7 @@
     };
     Alpine.data("chat", () => ({
       modal: true,
-      tab_type: "assignments",
+      tab_type: "chats",
       selected_room: null,
       selected_rooms: [],
       selected_messages: [],
@@ -890,13 +1118,27 @@
           link: "Go to Screening #84",
         },
       ],
+      assignment_selection_index: 0,
+      assignmentWindow: false,
 
       async init() {
         await this.fetchRooms();
-        this.selected_rooms = this.project_rooms;
+        this.selected_rooms = this.chat_rooms;
         this.sortRooms();
         this.openRoom(this.selected_rooms[0]);
         await this.setupWS();
+      },
+
+      async getAssignments() {
+        const response = await fetch(`/assignments`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.assignments = data;
       },
 
       async openRoom(room) {
@@ -995,12 +1237,12 @@
 
       async createMembership(user_id) {
         const response = await fetch(
-          `/rooms/${this.selected_room.id}/memberships`,
+          `/rooms/${this.selected_room?.id}/memberships`,
           {
             method: "POST",
             headers,
             body: JSON.stringify({
-              room_id: this.selected_room.id,
+              room_id: this.selected_room?.id,
               user_id,
             }),
           }
@@ -1045,15 +1287,15 @@
       async sendMessage(threadMessage = false) {
         if (
           !threadMessage &&
-          (!this.chat_text[this.selected_room] ||
-            this.chat_text[this.selected_room].trim().length === 0)
+          (!this.chat_text[this.selected_room?.id] ||
+            this.chat_text[this.selected_room?.id].trim().length === 0)
         )
           return;
 
         if (
           threadMessage &&
-          (!this.thread_chat_text[this.selected_room] ||
-            this.thread_chat_text[this.selected_room].trim().length === 0)
+          (!this.thread_chat_text[this.selected_room?.id] ||
+            this.thread_chat_text[this.selected_room?.id].trim().length === 0)
         )
           return;
 
@@ -1061,18 +1303,18 @@
           method: "POST",
           headers,
           body: JSON.stringify({
-            room_id: this.selected_room.id,
+            room_id: this.selected_room?.id,
             text: threadMessage
-              ? this.thread_chat_text[this.selected_room]
-              : this.chat_text[this.selected_room],
+              ? this.thread_chat_text[this.selected_room?.id]
+              : this.chat_text[this.selected_room?.id],
             message_id: threadMessage ? this.threadMessageId : null,
           }),
         });
         if (response.status >= 200 && response.status < 300) {
           if (threadMessage) {
-            this.thread_chat_text[this.selected_room] = "";
+            this.thread_chat_text[this.selected_room?.id] = "";
           } else {
-            this.chat_text[this.selected_room] = "";
+            this.chat_text[this.selected_room?.id] = "";
           }
         }
       },
@@ -1160,7 +1402,7 @@
             } else {
               this.selected_rooms = this.chat_rooms;
             }
-            if (this.selected_room.id === message.room.id) {
+            if (this.selected_room?.id === message.room.id) {
               this.selected_room = null;
               this.selected_messages = [];
             }
@@ -1169,7 +1411,7 @@
 
           if (message.message_type === "message") {
             if (
-              message.room.id === this.selected_room.id &&
+              message.room.id === this.selected_room?.id &&
               (message.message_id === null ||
                 message.message_id === this.threadMessageId)
             ) {
@@ -1186,7 +1428,7 @@
               }
             }
 
-            if (message.room.id === this.selected_room.id) {
+            if (message.room.id === this.selected_room?.id) {
               this.selected_messages = this.messages[message.room.id];
             }
             this.sortRooms();
