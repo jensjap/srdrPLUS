@@ -102,6 +102,7 @@ services:
     depends_on:
       - app
       - database
+      - elasticsearch
       - redis
     volumes:
       - .:/app
@@ -114,6 +115,14 @@ services:
     environment:
       RAILS_ENV: development
     entrypoint: ./entrypoints/sidekiq-entrypoint.sh
+
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080"  # Web interface
+      - "1025:1025"  # SMTP server
+    environment:
+      - MAILCATCHER_IP=0.0.0.0  # Listen on all interfaces
 
 volumes:
   gem_cache:

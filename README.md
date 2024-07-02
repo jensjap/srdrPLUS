@@ -1,11 +1,11 @@
 # README
 
+## Running locally non-containerized. (See Docker instructions at the end)
 * Ruby version
-  * 2.4.1
+  * 3.1.2
 
 * System dependencies
-  * Bundler 1.16.0
-  * MariaDB 10.1.23 or equivalent
+  * Bundler 2.3.15
 
 * Configuration
   * To install all required libraries and dependent software use the following command inside the project folder
@@ -49,7 +49,15 @@
   ```
 
 * Services (job queues, cache servers, search engines, etc.)
-  * N/A
+  * ElastiCache
+  * Redis
+  * Sidekiq
+
+* Start background jobs with
+
+  ```
+  bundle exec sidekiq -C config/sidekiq.yml
+  ```
 
 * Deployment instructions
   * Ensure that the database user has access to the production database defined in /config/database.rb
@@ -86,9 +94,9 @@
     config.action_mailer.smtp_settings = {
       user_name:      Rails.application.secrets.mail_username,
       password:       Rails.application.secrets.mail_password,
-      domain:         'gmail.com',
-      address:       'smtp.gmail.com',
-      port:          '587',
+      domain:         'domain.com',
+      address:        'smtp.domain.com',
+      port:           '587',
       authentication: :plain,
       enable_starttls_auto: true
     }
@@ -99,3 +107,15 @@
   ```
   bundle exec rails add_quality_dimensions
   ```
+
+## Running locally containerized
+
+* Ensure environmental variables are set in docker.env
+
+* When running first time or if changes to Dockerfile are made use --build switch
+
+  ```
+  docker compose up --build
+  ```
+
+* If you do not require mailcatcher or you have your own mailserver on production you can comment out the mailcatcher service within docker-compose.yml

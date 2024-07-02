@@ -11,8 +11,10 @@ class MachineLearningStatisticService
 
     unscreened_scores = MlPrediction.joins("LEFT JOIN citations_projects ON citations_projects.id = ml_predictions.citations_project_id")
                                     .joins("LEFT JOIN abstract_screening_results ON abstract_screening_results.citations_project_id = citations_projects.id")
+                                    .joins("LEFT JOIN screening_qualifications ON screening_qualifications.citations_project_id = citations_projects.id")
                                     .where("ml_predictions.ml_model_id = ?", latest_ml_model.id)
                                     .where("abstract_screening_results.id IS NULL")
+                                    .where("screening_qualifications.id IS NULL")
                                     .pluck(:score)
 
     unscreened_scores
@@ -49,6 +51,17 @@ class MachineLearningStatisticService
     label_array = get_rejection_array(project_id)
 
     label_size = label_array.size
+    if label_size < 1000
+      return [{
+        ratio: 0.0,
+        front_size: 0,
+        front_count: 0,
+        back_ratio: 0,
+        estimated_positive: 0,
+        estimated_coverage: 0
+      }]
+    end
+
     label_statistic = []
     threshold_ratio = label_size.to_f / total_size
 

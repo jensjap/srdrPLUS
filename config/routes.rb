@@ -54,7 +54,7 @@ Rails.application.routes.draw do
     post '/users/api_key_reset' => 'users/registrations#api_key_reset'
   end
 
-  authenticate :admin do
+  authenticate :user, lambda { |u| u.admin? } do
     mount Searchjoy::Engine, at: 'searchjoy'
     mount Sidekiq::Web => '/sidekiq'
   end
@@ -115,6 +115,7 @@ Rails.application.routes.draw do
         member do
           get 'process_and_email'
           get 'composition'
+          get 'artifact_assessments', to: 'artifact_assessments#index'
         end
         resources :citations, only: %i[index show]
         resources :key_questions, only: %i[index show]

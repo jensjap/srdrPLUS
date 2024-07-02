@@ -1,5 +1,12 @@
+:verbose: false
+:concurrency: 5
+staging:
+  :concurrency: 3
+production:
+  :concurrency: 3
 :queues:
-  - critical
+  - searchkick
+  - exports
   - default
   - low
   - mailers

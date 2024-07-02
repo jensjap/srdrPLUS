@@ -93,11 +93,13 @@ class CitationsController < ApplicationController
                      'citations_projects.id'
                    end
 
-        @citations_projects = @citations_projects.order("#{order_by} #{if params.dig(:order, '0', 'dir') == 'desc'
-                                                                         'desc'
-                                                                       else
-                                                                         'asc'
-                                                                       end}")
+        @citations_projects = @citations_projects
+                              .order("#{order_by} #{if params.dig(:order, '0', 'dir') == 'desc'
+                                                      'desc'
+                                                    else
+                                                      'asc'
+                                                    end}")
+                              .limit(500)
         unless params.dig(:search, :value).blank?
           @citations_projects = @citations_projects.where(
             '(lower(citations.name) LIKE :like OR
@@ -108,7 +110,7 @@ class CitationsController < ApplicationController
             lower(citations.doi) LIKE :like OR
             lower(citations.other) LIKE :like
             )', like: "%#{params[:search][:value]}%"
-          )
+          ).limit(500)
         end
       end
     end

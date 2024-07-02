@@ -1,5 +1,5 @@
 class ExportAssignmentsAndMappingsJob < ApplicationJob
-  queue_as :default
+  queue_as :exports
 
   def perform(*args)
     project_id = args.first
