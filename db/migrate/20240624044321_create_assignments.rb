@@ -9,6 +9,7 @@ class CreateAssignments < ActiveRecord::Migration[7.0]
       t.string :assignee_status
       t.text :link
       t.datetime :deadline
+      t.boolean :archived
 
       t.timestamps
     end

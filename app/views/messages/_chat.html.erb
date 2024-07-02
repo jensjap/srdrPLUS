@@ -45,7 +45,7 @@
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                    d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z"
                   />
                 </svg>
                 <span
@@ -57,6 +57,7 @@
               </span>
             </a>
           </li>
+          <hr />
           <li>
             <a href="#" class="flex items-center">
               <span
@@ -93,94 +94,174 @@
       </div>
       <div class="flex w-full">
         <div
-          class="flex flex-col w-full h-full pl-4 pr-4 py-4 -mr-4 overflow-y-scroll space-y-1"
+          class="flex flex-col w-full h-full pl-4 pr-4 py-4 -mr-4 overflow-y-scroll space-y-1 bg-white"
         >
           <template x-for="assignment in assignments">
             <div
-              class="bg-white shadow rounded-md p-2"
+              class="bg-white shadow rounded-md p-2 flex"
               :class="assignment.id === 523 ? 'border border-srdrpurple drop-shadow-2xl' : ''"
             >
-              <div class="px-1 flex justify-between">
-                <div
-                  class="text-sm text-gray-900"
-                  x-text="assignment.title"
-                ></div>
-                <div
-                  class="text-sm text-gray-500"
-                  x-text="`Assignment #${assignment.id}`"
-                ></div>
-              </div>
-              <div class="border-t border-gray-100">
-                <div class="divide-y divide-gray-100">
-                  <div class="px-1">
-                    <div class="text-xs font-medium text-gray-900">
-                      Assignor
-                    </div>
-                    <div class="text-xs text-gray-700">User A</div>
+              <div class="flex-1">
+                <div class="px-1">
+                  <div class="text-xs text-gray-900">Assignment ID</div>
+                  <div
+                    class="text-xs text-gray-500"
+                    x-text="assignment.id"
+                  ></div>
+                </div>
+                <div class="flex justify-between">
+                  <div class="px-1 flex-1">
+                    <div class="text-xs text-gray-900">Created On</div>
+                    <div
+                      class="text-xs text-gray-500"
+                      x-text="assignment.created_at"
+                    ></div>
                   </div>
-                  <div class="px-1">
-                    <div class="text-xs font-medium text-gray-900">
-                      Assignee
-                    </div>
-                    <div class="text-xs text-gray-700 underline cursor-pointer">
-                      User B
-                    </div>
-                  </div>
-                  <div class="px-1">
+                  <div class="px-1 flex-1">
                     <div class="text-xs font-medium text-gray-900">
                       Deadline
                     </div>
-                    <div
-                      class="text-xs text-red-700 underline cursor-pointer"
-                      x-text="assignment.deadline"
-                    ></div>
+                    <input
+                      class="!w-auto !text-xs"
+                      type="date"
+                      :value="assignment.formatted_deadline"
+                    />
                   </div>
-                  <div class="px-1">
-                    <div class="text-xs font-medium text-gray-900">Status</div>
-                    <div class="text-xs text-gray-700 underline cursor-pointer">
-                      In Progress
+                </div>
+                <div class="border-t border-gray-100">
+                  <div class="divide-y divide-gray-100">
+                    <div class="flex">
+                      <div class="px-1 flex-1">
+                        <div class="text-xs font-medium text-gray-900">
+                          Assignor
+                        </div>
+                        <div
+                          class="text-xs text-gray-700"
+                          x-text="assignment.handles.assignor"
+                        ></div>
+                      </div>
+                      <div class="px-1 flex-1">
+                        <div class="text-xs font-medium text-gray-900">
+                          Assignee
+                        </div>
+                        <select
+                          class="text-xs"
+                          :value="assignment.handles.assignee"
+                        >
+                          <option
+                            :value="assignment.handles.assignee"
+                            x-text="assignment.handles.assignee"
+                          ></option>
+                        </select>
+                      </div>
                     </div>
-                  </div>
-                  <div class="px-1">
-                    <div class="text-xs font-medium text-gray-900">Link</div>
-                    <div class="text-xs text-gray-700 underline cursor-pointer">
-                      <a href="http://" x-text="assignment.link"></a>
+                    <div class="flex">
+                      <div class="px-1 flex-1">
+                        <div class="text-xs font-medium text-gray-900">
+                          Assignor Status
+                        </div>
+                        <select
+                          class="text-xs"
+                          :value="assignment.assignor_status"
+                        >
+                          <option value="awaiting_assignee">
+                            awaiting_assignee
+                          </option>
+                          <option value="pending">pending</option>
+                          <option value="rejected">rejected</option>
+                          <option value="approved">approved</option>
+                        </select>
+                      </div>
+                      <div class="px-1 flex-1">
+                        <div class="text-xs font-medium text-gray-900">
+                          Assignee Status
+                        </div>
+                        <select
+                          class="text-xs"
+                          :value="assignment.assignee_status"
+                        >
+                          <option value="pending">pending</option>
+                          <option value="complete">complete</option>
+                        </select>
+                      </div>
                     </div>
-                  </div>
-                  <div class="px-1">
-                    <div class="text-xs font-medium text-gray-900">
-                      Audit Log
+                    <div class="px-1">
+                      <div class="text-xs font-medium text-gray-900">Link</div>
+                      <div class="text-xs text-gray-700 underline">
+                        <a
+                          :href="assignment.link"
+                          x-text="assignment.link"
+                          target="_blank"
+                        ></a>
+                      </div>
                     </div>
-                    <div class="text-xs text-gray-900">
-                      <div class="flow-root">
-                        <ul role="list" class="p-0 m-0 list-none">
-                          <template x-for="log in logs">
-                            <li>
-                              <div class="relative">
-                                <div class="relative flex">
-                                  <div
-                                    class="flex min-w-0 flex-1 justify-between"
-                                  >
-                                    <div>
-                                      <p
-                                        class="text-xs text-gray-500 m-0"
-                                        x-text="log.text"
-                                      ></p>
-                                    </div>
+                    <div class="px-1">
+                      <div class="text-xs font-medium text-gray-900">
+                        Audit Log
+                      </div>
+                      <div class="text-xs text-gray-900 border border-gray-100">
+                        <div class="flow-root h-16 overflow-y-scroll">
+                          <ul role="list" class="p-0 m-0 list-none">
+                            <template x-for="log in assignment.logs.reverse()">
+                              <li>
+                                <div class="relative">
+                                  <div class="relative flex">
                                     <div
-                                      class="whitespace-nowrap text-right text-xs text-gray-500"
-                                      x-text="log.datetime"
-                                    ></div>
+                                      class="flex min-w-0 flex-1 justify-between"
+                                    >
+                                      <div>
+                                        <p
+                                          class="text-xs text-gray-500 m-0"
+                                          x-text="log.description"
+                                        ></p>
+                                      </div>
+                                      <div
+                                        class="whitespace-nowrap text-right text-xs text-gray-500"
+                                        x-text="log.created_at"
+                                      ></div>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </li>
-                          </template>
-                        </ul>
+                              </li>
+                            </template>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
+              </div>
+              <div
+                class="w-8 pl-2 flex flex-col justify-around border-l border-gray-400"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1"
+                  stroke="currentColor"
+                  class="size-6 cursor-pointer border border-gray-500 rounded-md p-1"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z"
+                  />
+                </svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1"
+                  stroke="currentColor"
+                  class="size-6 cursor-pointer border border-gray-500 rounded-md p-1"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                  />
+                </svg>
               </div>
             </div>
           </template>
@@ -193,7 +274,7 @@
           </div>
         </div>
         <div
-          class="flex flex-col w-full h-full pl-4 pr-4 py-4 -mr-4 overflow-y-scroll space-y-1"
+          class="flex flex-col w-full h-full pl-4 pr-4 py-4 -mr-4 overflow-y-scroll space-y-1 bg-white"
         >
           <div
             class="flex flex-1 overflow-hidden"
@@ -403,7 +484,7 @@
                 :class="{
                   'bg-srdrpurple-light': tab_type === 'assignments'
                 }"
-                @click="tab_type = 'assignments';"
+                @click="tab_type = 'assignments'; getAssignments();"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -416,7 +497,7 @@
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                    d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z"
                   />
                 </svg>
                 <span
@@ -428,6 +509,7 @@
               </span>
             </a>
           </li>
+          <hr />
           <li>
             <a href="#" class="flex items-center">
               <span
@@ -894,7 +976,7 @@
             placeholder="Type message..."
             x-ref="chattextarea"
             x-model="chat_text[selected_room?.id]"
-            @keydown.@="getAssignments($event.target.value);
+            @keydown.@="getAssignments();
             assignmentWindow = true;"
             @keydown.shift="shiftPressed = true"
             @keyup.shift="shiftPressed = false"
@@ -1063,7 +1145,7 @@
     };
     Alpine.data("chat", () => ({
       modal: true,
-      tab_type: "chats",
+      tab_type: "assignments",
       selected_room: null,
       selected_rooms: [],
       selected_messages: [],
@@ -1081,43 +1163,7 @@
       threadMessages: [],
       threadMessageId: null,
       thread_chat_text: {},
-      logs: [
-        {
-          text: "Updated Deadline to 2024.06.25",
-          datetime: "2024.06.20 @ 12:25PM PST",
-        },
-        {
-          text: "User A assigned to User B",
-          datetime: "2024.06.19 @ 12:26PM PST",
-        },
-        { text: "Created by User A", datetime: "2024.06.19 @ 12:25PM PST" },
-      ],
-      assignments: [
-        {
-          id: 523,
-          title: "Screening #235",
-          deadline: "2024.06.28",
-          link: "Go to Screening #235",
-        },
-        {
-          id: 521,
-          title: "Extraction #233",
-          deadline: "2024.06.19",
-          link: "Go to Extraction #233",
-        },
-        {
-          id: 520,
-          title: "Extraction #352",
-          deadline: "2024.06.25",
-          link: "Go to Extraction #352",
-        },
-        {
-          id: 519,
-          title: "Screening #84",
-          deadline: "2024.06.25",
-          link: "Go to Screening #84",
-        },
-      ],
+      assignments: [],
       assignment_selection_index: 0,
       assignmentWindow: false,
 
@@ -1126,6 +1172,7 @@
         this.selected_rooms = this.chat_rooms;
         this.sortRooms();
         this.openRoom(this.selected_rooms[0]);
+        this.getAssignments();
         await this.setupWS();
       },
 

@@ -267,6 +267,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_25_063812) do
     t.string "assignee_status"
     t.text "link"
     t.datetime "deadline"
+    t.boolean "archived"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["assignee_id"], name: "index_assignments_on_assignee_id"

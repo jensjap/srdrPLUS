@@ -1,35 +1,63 @@
+# == Schema Information
+#
+# Table name: assignments
+#
+#  id              :bigint           not null, primary key
+#  assignor_id     :integer
+#  assignee_id     :integer
+#  assignment_type :string(255)
+#  assignment_id   :integer
+#  assignor_status :string(255)
+#  assignee_status :string(255)
+#  link            :text(65535)
+#  deadline        :datetime
+#  archived        :boolean
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#
 class Assignment < ApplicationRecord
-  has_many :logs
+  has_many :logs, dependent: :destroy
   belongs_to :assignor, class_name: 'User', foreign_key: 'assignor_id'
   belongs_to :assignee, class_name: 'User', foreign_key: 'assignee_id'
-  # t.references :assignor, index: true, type: :int, foreign_key: { to_table: :users }
-  # t.references :assignee, index: true, type: :int, foreign_key: { to_table: :users }
-  # t.string :assignment_type, index: true
-  # t.integer :assignment_id, index: true
-  # t.string :assignor_status
-  # t.string :assignee_status
-  # t.text :link
-  # t.datetime :deadline
+  before_save :create_log_entries
+
   EXTRACTION = 'extraction'.freeze
-  PENDING = 'pending'.freeze
-  APPROVED = 'approved'.freeze
+
+  AWAITING_ASSIGNEE = 'awaiting_assignee'.freeze
   REJECTED = 'rejected'.freeze
-  IN_PROGRESS = 'in_progress'.freeze
+  APPROVED = 'approved'.freeze
+
+  PENDING = 'pending'.freeze
   COMPLETE = 'complete'.freeze
-  after_create :create_log
 
   def self.createdummy
     Assignment.create(assignor: User.first,
                       assignee: User.second,
                       assignment_type: EXTRACTION,
                       assignment_id: 334,
-                      assignor_status: PENDING,
-                      assignee_status: IN_PROGRESS,
+                      assignor_status: AWAITING_ASSIGNEE,
+                      assignee_status: PENDING,
                       link: 'http://localhost:3000/extractions/334',
                       deadline: 2.days.from_now)
   end
 
-  def create_log
-    logs.create(description: "User #{assignor.id} assigned User #{assignee.id} #{assignment_type} #{assignment_id} with deadline #{deadline}").save
+  def handles
+    {
+      assignee: assignee.handle,
+      assignor: assignor.handle
+    }
+  end
+
+  def formatted_deadline
+    deadline.strftime('%F')
+  end
+
+  def create_log_entries
+    logs.new(description: "Deadline set to #{deadline.strftime('%F')}") if deadline_changed?
+    logs.new(description: "Assignee set to #{assignee.handle}") if assignee_changed?
+    logs.new(description: "Assignor set to #{assignor.handle}") if assignor_changed?
+    logs.new(description: "Assignee status set to #{assignee_status}") if assignee_status_changed?
+    logs.new(description: "Assignor status set to #{assignor_status}") if assignor_status_changed?
+    logs.new(description: "Archived status set to #{archived}") if archived_changed?
   end
 end
