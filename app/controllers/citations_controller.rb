@@ -99,7 +99,6 @@ class CitationsController < ApplicationController
                                                     else
                                                       'asc'
                                                     end}")
-                              .limit(500)
         unless params.dig(:search, :value).blank?
           @citations_projects = @citations_projects.where(
             '(lower(citations.name) LIKE :like OR
@@ -110,7 +109,7 @@ class CitationsController < ApplicationController
             lower(citations.doi) LIKE :like OR
             lower(citations.other) LIKE :like
             )', like: "%#{params[:search][:value]}%"
-          ).limit(500)
+          )
         end
       end
     end
@@ -120,7 +119,7 @@ class CitationsController < ApplicationController
 
   # a helper method that sets the current citation from id to be used with callbacks
   def set_project
-    @project = Project.includes(citations_projects: :citation).find(params[:project_id])
+    @project = Project.find(params[:project_id])
   end
 
   def set_citation
