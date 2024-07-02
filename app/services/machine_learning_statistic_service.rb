@@ -11,8 +11,10 @@ class MachineLearningStatisticService
 
     unscreened_scores = MlPrediction.joins("LEFT JOIN citations_projects ON citations_projects.id = ml_predictions.citations_project_id")
                                     .joins("LEFT JOIN abstract_screening_results ON abstract_screening_results.citations_project_id = citations_projects.id")
+                                    .joins("LEFT JOIN screening_qualifications ON screening_qualifications.citations_project_id = citations_projects.id")
                                     .where("ml_predictions.ml_model_id = ?", latest_ml_model.id)
                                     .where("abstract_screening_results.id IS NULL")
+                                    .where("screening_qualifications.id IS NULL")
                                     .pluck(:score)
 
     unscreened_scores

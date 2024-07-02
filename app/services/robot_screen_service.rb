@@ -58,7 +58,15 @@ class RobotScreenService
     total_predictions = predictions.size
     high_score_count = predictions.count { |score| score >= score_threshold }
     percentage = (high_score_count.to_f / total_predictions) * 100
-    percentage < percentage_threshold
+
+    mean_score = predictions.sum.to_f / total_predictions
+    std_dev = Math.sqrt(predictions.map { |score| (score - mean_score) ** 2 }.sum / total_predictions)
+
+    if mean_score < 0.05
+      true
+    else
+      percentage < percentage_threshold && std_dev > 0.01
+    end
   end
 
   def save_predictions(data, predictions, ml_model)
