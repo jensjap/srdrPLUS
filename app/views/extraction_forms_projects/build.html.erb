@@ -1,0 +1,21 @@
+<!-- prettier-ignore -->
+<% provide(:title, t(".build_extraction_form")) %>
+
+<div class="p-4 lg:p-8">
+  <div class="flex justify-between">
+    <div>
+      <h1 class="text-xl font-bold">Extractions Form Builder</h1>
+    </div>
+    <div>
+      <!-- prettier-ignore -->
+      <%= link_to 'Go to extractions ->', project_extractions_path(@extraction_forms_project.project), class: 'float-right font-bold text-xs' %>
+    </div>
+  </div>
+  <div class="flex">
+    <div><%= render 'extraction_forms_projects/build/tab_links' %></div>
+
+    <div class="flex-grow min-w-0">
+      <%= render 'extraction_forms_projects/build/tab_content' %>
+    </div>
+  </div>
+</div>

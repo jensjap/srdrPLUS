@@ -984,7 +984,7 @@
       dropping: null,
       screening_form: {},
       isAlertModalOpen: false,
-      alertModalContent: '',
+      alertModalContent: "",
       init() {
         this.getData();
       },
@@ -1158,7 +1158,12 @@
         event.dataTransfer.dropEffect = "move";
       },
       async deleteQuestion(question) {
-        this.openModal(`Are you sure you want to delete question: "${question.name ? question.name : "unnamed"}".<br> This action cannot be undone and might result in data loss.`, () => this.confirmDeleteQuestion(question));
+        this.openModal(
+          `Are you sure you want to delete question: "${
+            question.name ? question.name : "unnamed"
+          }".<br> This action cannot be undone and might result in data loss.`,
+          () => this.confirmDeleteQuestion(question)
+        );
       },
       async confirmDeleteQuestion(question) {
         const response = await fetch(`/sf_questions/${question.id}`, {
@@ -1183,7 +1188,10 @@
         this.closeAlertModal();
       },
       async deleteColumn(column) {
-        this.openModal(`Are you sure you want to delete this column?<br> This action cannot be undone and might result in data loss.`, () => this.confirmDeleteColumn(column));
+        this.openModal(
+          `Are you sure you want to delete this column?<br> This action cannot be undone and might result in data loss.`,
+          () => this.confirmDeleteColumn(column)
+        );
       },
       async confirmDeleteColumn(column) {
         const response = await fetch(`/sf_columns/${column.id}`, {
@@ -1208,7 +1216,10 @@
         this.closeAlertModal();
       },
       async deleteRow(row) {
-        this.openModal(`Are you sure you want to delete this row?<br> This action cannot be undone and might result in data loss.`, () => this.confirmDeleteRow(row));
+        this.openModal(
+          `Are you sure you want to delete this row?<br> This action cannot be undone and might result in data loss.`,
+          () => this.confirmDeleteRow(row)
+        );
       },
       async confirmDeleteRow(row) {
         const response = await fetch(`/sf_rows/${row.id}`, {
@@ -1233,7 +1244,10 @@
         this.closeAlertModal();
       },
       async deleteCellField(cell) {
-        this.openModal(`Are you sure you want to delete this field?<br> This action cannot be undone and might result in data loss.`, () => this.confirmDeleteCellField(cell));
+        this.openModal(
+          `Are you sure you want to delete this field?<br> This action cannot be undone and might result in data loss.`,
+          () => this.confirmDeleteCellField(cell)
+        );
       },
       async confirmDeleteCellField(cell) {
         const response = await fetch(`/sf_cells/${cell.id}`, {
@@ -1284,7 +1298,10 @@
         return false;
       },
       async deleteExistingData(option) {
-        this.openModal(`This option has existing answer submissions. Are you sure you want to delete existing data?<br> This action cannot be undone and might result in data loss.`, () => this.confirmDeleteExistingData(option));
+        this.openModal(
+          `This option has existing answer submissions. Are you sure you want to delete existing data?<br> This action cannot be undone and might result in data loss.`,
+          () => this.confirmDeleteExistingData(option)
+        );
       },
       async confirmDeleteExistingData(option) {
         const response = await fetch(
@@ -1314,7 +1331,10 @@
       async deleteOption(option) {
         const hasExistingData = await this.checkExistingData(option);
         if (!hasExistingData) {
-          this.openModal(`Are you sure you want to delete this option?<br> This action cannot be undone and might result in data loss.`, () => this.confirmDeleteOption(option));
+          this.openModal(
+            `Are you sure you want to delete this option?<br> This action cannot be undone and might result in data loss.`,
+            () => this.confirmDeleteOption(option)
+          );
         }
       },
       async confirmDeleteOption(option) {
@@ -1456,11 +1476,11 @@
         this.alertModalContent = content;
         this.modalConfirmAction = () => deleteAction();
         this.isAlertModalOpen = true;
-        document.body.classList.add('overflow-hidden');
+        document.body.classList.add("overflow-hidden");
       },
       closeAlertModal() {
         this.isAlertModalOpen = false;
-        document.body.classList.remove('overflow-hidden');
+        document.body.classList.remove("overflow-hidden");
       },
     }));
   });

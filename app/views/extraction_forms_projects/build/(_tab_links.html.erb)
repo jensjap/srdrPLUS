@@ -1,0 +1,19 @@
+<div
+  class="flex grow flex-col overflow-y-auto border-r border-gray-200 bg-white"
+>
+  <nav class="flex flex-1 flex-col">
+    <ul role="list" class="flex flex-1 flex-col gap-y-1 m-0">
+      <!-- prettier-ignore -->
+      <% @extraction_forms_projects_sections.each do |efps| %>
+      <% section = efps.section.name %>
+      <li class="list-none mr-2">
+        <!-- Current: "bg-gray-50", Default: "hover:bg-gray-50" -->
+        <!-- prettier-ignore -->
+        <%= link_to build_extraction_forms_project_path(@extraction_forms_project, 'panel-tab': efps.id.to_s), title: section, class: 'bg-gray-50 block rounded-md p-2 text-sm font-semibold text-black' do %>
+          <%= section %>
+        <% end %>
+      </li>
+      <% end %>
+    </ul>
+  </nav>
+</div>

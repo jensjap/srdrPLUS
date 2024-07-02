@@ -1,4 +1,4 @@
-ul#vertical-tabs.tabs.vertical class=('orderable-list' if current_user.profile.advanced_mode) orderable-url=("#{ update_positions_api_v1_orderings_url }" if current_user.profile.advanced_mode)
+ul#vertical-tabs.tabs.vertical.w-64 class=('orderable-list' if current_user.profile.advanced_mode) orderable-url=("#{ update_positions_api_v1_orderings_url }" if current_user.profile.advanced_mode)
 
   - @extraction_forms_projects_sections.each do |efps|
     li.tabs-title.orderable-item.sort-handle table="extraction_forms_projects_sections" position="#{ efps.pos }" ordering-id="#{ efps.id }" style="background: #{efps.id.to_s == @panel_tab ? 'lightgrey' : 'initial'}"
