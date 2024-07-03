@@ -252,6 +252,26 @@ class FhirResourceService
       group.compact
     end
 
+    def get_practitioner(srdrplus_type:, id_prefix:, srdrplus_id:, first_name:, middle_name:, last_name:)
+      practitioner = {
+        'resourceType' => 'Practitioner',
+        'id' => "#{id_prefix}-#{srdrplus_id}",
+        'identifier' => build_identifier(srdrplus_type, srdrplus_id)
+      }
+
+      name = {}
+      name['family'] = last_name if !last_name.blank?
+      if first_name || middle_name
+        given_names = []
+        given_names << first_name if !first_name.blank?
+        given_names << middle_name if !middle_name.blank?
+        name['given'] = given_names.join(' ') unless given_names.empty?
+      end
+
+      practitioner['name'] = [name] unless name.empty?
+      practitioner
+    end
+
     def build_contained_group(group_content)
       group = {
         'resourceType' => 'Group',
