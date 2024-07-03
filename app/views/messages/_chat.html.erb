@@ -141,7 +141,7 @@
                         </div>
                         <div
                           class="text-xs text-gray-700"
-                          x-text="assignment.handles.assignor"
+                          x-text="assignment.handles.assignor.handle"
                         ></div>
                       </div>
                       <div class="px-1 flex-1">
@@ -150,13 +150,15 @@
                         </div>
                         <select
                           class="text-xs"
-                          :value="assignment.handles.assignee"
                           @change="updateAssignment(assignment.id, assignment_index, $event.target.value, 'assignee_id')"
                         >
-                          <option
-                            :value="assignment.handles.assignee"
-                            x-text="assignment.handles.assignee"
-                          ></option>
+                          <template x-for="member in members" :key="member.id">
+                            <option
+                              :value="member.id"
+                              :selected="member.id === assignment.handles.assignee.id"
+                              x-text="member.handle"
+                            ></option>
+                          </template>
                         </select>
                       </div>
                     </div>
@@ -1183,6 +1185,7 @@
       assignments: [],
       assignment_selection_index: 0,
       assignmentWindow: false,
+      members: [],
 
       async init() {
         await this.fetchRooms();
@@ -1237,7 +1240,9 @@
           },
         });
         const data = await response.json();
-        this.assignments = data;
+        this.assignments = data.assignments;
+        this.members = data.members;
+        console.log(this.members);
       },
 
       async openRoom(room) {

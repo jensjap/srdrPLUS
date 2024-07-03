@@ -43,8 +43,8 @@ class Assignment < ApplicationRecord
 
   def handles
     {
-      assignee: assignee.handle,
-      assignor: assignor.handle
+      assignee: { handle: assignee.handle, id: assignee.id },
+      assignor: { handle: assignor.handle, id: assignor.id }
     }
   end
 
