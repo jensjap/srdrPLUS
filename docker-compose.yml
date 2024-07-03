@@ -69,7 +69,6 @@ services:
     image: mysql:8.0.23
     volumes:
       - db_data:/var/lib/mysql
-      - /home/jensjap/Hive/dbBackups/srdrPLUS:/docker-entrypoint-initdb.d
     env_file:
       - docker.env
       - private.env
