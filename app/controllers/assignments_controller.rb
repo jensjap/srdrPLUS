@@ -1,5 +1,6 @@
 class AssignmentsController < ApplicationController
   def update
+    # TODO: authorize
     assignment = Assignment.find(params[:id])
     return unless assignment.update(strong_params)
 
@@ -7,6 +8,7 @@ class AssignmentsController < ApplicationController
   end
 
   def index
+    # TODO: authorize
     @assignments = Assignment.where(assignor: current_user).or(Assignment.where(assignee: current_user)).includes(
       :logs, :assignee, :assignor
     )
@@ -22,6 +24,7 @@ class AssignmentsController < ApplicationController
   end
 
   def destroy
+    # TODO: authorize
     assignment = Assignment.find(params[:id])
     return unless assignment.destroy
 
@@ -29,6 +32,7 @@ class AssignmentsController < ApplicationController
   end
 
   def create
+    # TODO: authorize
     Assignment.createdummy
   end
 
