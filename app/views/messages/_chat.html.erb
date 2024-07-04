@@ -970,18 +970,17 @@
               >
                 <li
                   class="p-2 rounded-md cursor-pointer"
-                  :class="assignment_index === assignment_selection_index ? 'bg-slate-200' : ''"
-                  x-text="`@@assignment${assignment.id}@@ - ${assignment.assignment_type} ${assignment.assignment_id} assigned to user #${assignment.assignment_id}`"
+                  :class="{
+                    'bg-slate-200': assignment_index === assignment_selection_index,
+                    'text-green-700': assignment.assignments_room_id
+                  }"
+                  x-text="`${assignment.assignment_type} ${assignment.assignment_id} assigned to ${assignment.handles.assignor.handle}`"
                   @mouseover="assignment_selection_index = assignment_index"
-                  @click="const insert = `@assignment${assignments[assignment_selection_index].id}@@`
-                  assignmentWindow = false;
-                  const start = $refs.chattextarea.selectionStart;
-                  const end = $refs.chattextarea.selectionEnd;
-                  const oldValue = $refs.chattextarea.value;
-                  const newValue = oldValue.slice(0, start) + insert + oldValue.slice(end)
-                  $refs.chattextarea.value = newValue;
-                  $refs.chattextarea.selectionStart = $refs.chattextarea.selectionEnd = start + insert.length;
-                  return"
+                  @click="if (assignment.assignments_room_id) {
+                    destroyAssignmentsRoom(assignment)
+                  } else {
+                    createAssignmentsRoom(assignment, selected_room?.id)
+                  }"
                 ></li>
               </template>
             </ul>
@@ -991,11 +990,16 @@
             rows="5"
             type="text"
             class="w-full !text-sm !p-2 !resize-none"
-            placeholder="Type message..."
+            placeholder="Type message... press ALT+T to tag assignment"
             x-ref="chattextarea"
             x-model="chat_text[selected_room?.id]"
-            @keydown.@="getAssignments();
-            assignmentWindow = true;"
+            @keydown.alt.t="
+            if (assignmentWindow) {
+              assignmentWindow = false;
+            } else {
+              getAssignments(selected_room?.id);
+              assignmentWindow = true;
+            }"
             @keydown.shift="shiftPressed = true"
             @keyup.shift="shiftPressed = false"
             @keydown.enter.prevent="let insert;
@@ -1004,7 +1008,15 @@
               } else if (assignmentWindow) {
                 insert = `@assignment${assignments[assignment_selection_index].id}@@`
               }
-              if (shiftPressed || assignmentWindow) {
+
+              if (assignmentWindow) {
+                if (assignments[assignment_selection_index].assignments_room_id) {
+                  destroyAssignmentsRoom(assignments[assignment_selection_index])
+                } else {
+                  createAssignmentsRoom(assignments[assignment_selection_index], selected_room?.id)
+                }
+              } else if (shiftPressed) {
+                const insert = '\n';
                 assignmentWindow = false;
                 const start = $event.target.selectionStart;
                 const end = $event.target.selectionEnd;
@@ -1231,8 +1243,8 @@
         this.getAssignments();
       },
 
-      async getAssignments() {
-        const response = await fetch(`/assignments`, {
+      async getAssignments(room_id) {
+        const response = await fetch(`/assignments?room_id=${room_id}`, {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -1242,7 +1254,31 @@
         const data = await response.json();
         this.assignments = data.assignments;
         this.members = data.members;
-        console.log(this.members);
+      },
+
+      async createAssignmentsRoom(assignment, room_id) {
+        const response = await fetch("/assignments_rooms/", {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            assignment_id: assignment.id,
+            room_id,
+          }),
+        });
+
+        const data = await response.json();
+        assignment.assignments_room_id = data.id;
+      },
+
+      async destroyAssignmentsRoom(assignment) {
+        const response = await fetch(
+          `/assignments_rooms/${assignment.assignments_room_id}`,
+          {
+            method: "DELETE",
+            headers,
+          }
+        );
+        assignment.assignments_room_id = null;
       },
 
       async openRoom(room) {

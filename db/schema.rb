@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_25_063812) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_04_091333) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -274,6 +274,16 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_25_063812) do
     t.index ["assignment_id"], name: "index_assignments_on_assignment_id"
     t.index ["assignment_type"], name: "index_assignments_on_assignment_type"
     t.index ["assignor_id"], name: "index_assignments_on_assignor_id"
+  end
+
+  create_table "assignments_rooms", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "assignment_id"
+    t.bigint "room_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignment_id", "room_id"], name: "index_assignments_rooms_on_assignment_id_and_room_id", unique: true
+    t.index ["assignment_id"], name: "index_assignments_rooms_on_assignment_id"
+    t.index ["room_id"], name: "index_assignments_rooms_on_room_id"
   end
 
   create_table "authors", id: :integer, charset: "utf8mb4", collation: "utf8mb4_bin", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
