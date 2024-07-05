@@ -43,6 +43,6 @@ class AssignmentsController < ApplicationController
   private
 
   def strong_params
-    params.permit(:assignor_status, :assignee_status, :assignee_id, :deadline, :archived)
+    params.permit(:status, :assignee_id, :deadline, :archived)
   end
 end

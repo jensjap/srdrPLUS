@@ -7,8 +7,7 @@
 #  assignee_id     :integer
 #  assignment_type :string(255)
 #  assignment_id   :integer
-#  assignor_status :string(255)
-#  assignee_status :string(255)
+#  status          :string(255)
 #  link            :text(65535)
 #  deadline        :datetime
 #  archived        :boolean
@@ -23,20 +22,17 @@ class Assignment < ApplicationRecord
 
   EXTRACTION = 'extraction'.freeze
 
-  AWAITING_ASSIGNEE = 'awaiting_assignee'.freeze
-  REJECTED = 'rejected'.freeze
-  APPROVED = 'approved'.freeze
-
-  PENDING = 'pending'.freeze
-  COMPLETE = 'complete'.freeze
+  AWAITING_WORK = 'awaiting_work'.freeze
+  AWAITING_REVIEW = 'awaiting_review'.freeze
+  WORK_APPROVED = 'work_approved'.freeze
+  WORK_REJECTED = 'work_rejected'.freeze
 
   def self.createdummy
     Assignment.create(assignor: User.first,
                       assignee: User.second,
                       assignment_type: EXTRACTION,
                       assignment_id: 334,
-                      assignor_status: AWAITING_ASSIGNEE,
-                      assignee_status: PENDING,
+                      status: AWAITING_WORK,
                       link: 'http://localhost:3000/extractions/334',
                       deadline: 2.days.from_now)
   end
@@ -56,8 +52,7 @@ class Assignment < ApplicationRecord
     logs.new(description: "Deadline set to #{deadline.strftime('%F')}") if deadline_changed?
     logs.new(description: "Assignee set to #{assignee.handle}") if assignee_changed?
     logs.new(description: "Assignor set to #{assignor.handle}") if assignor_changed?
-    logs.new(description: "Assignee status set to #{assignee_status}") if assignee_status_changed?
-    logs.new(description: "Assignor status set to #{assignor_status}") if assignor_status_changed?
+    logs.new(description: "Status set to #{status}") if status_changed?
     logs.new(description: "Archived status set to #{archived}") if archived_changed?
   end
 end

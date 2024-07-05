@@ -5,8 +5,7 @@ class CreateAssignments < ActiveRecord::Migration[7.0]
       t.references :assignee, index: true, type: :int, foreign_key: { to_table: :users }
       t.string :assignment_type, index: true
       t.integer :assignment_id, index: true
-      t.string :assignor_status
-      t.string :assignee_status
+      t.string :status
       t.text :link
       t.datetime :deadline
       t.boolean :archived
