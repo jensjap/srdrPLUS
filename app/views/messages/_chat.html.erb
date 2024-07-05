@@ -100,16 +100,17 @@
             x-for="(assignment, assignment_index) in assignments"
             :key="assignment.id"
           >
-            <div
-              class="bg-white shadow rounded-md p-2 flex"
-              :class="assignment.id === 523 ? 'border border-srdrpurple drop-shadow-2xl' : ''"
-            >
+            <div class="bg-white shadow rounded-md p-2 flex">
               <div class="flex-1">
                 <div class="px-1">
-                  <div class="text-xs text-gray-900">Assignment ID</div>
                   <div
-                    class="text-xs text-gray-500"
-                    x-text="assignment.id"
+                    class="text-md bg-purple-100 text-gray-500 rounded-t-md p-1 cursor-pointer"
+                    :class="{
+                      'bg-srdrpurple': assignment_selection_index === assignment_index,
+                      'text-white': assignment_selection_index === assignment_index,
+                    }"
+                    @click="assignment_selection_index = assignment_index"
+                    x-text="`Assignment ID ${assignment.id}`"
                   ></div>
                 </div>
                 <div class="flex justify-between">
