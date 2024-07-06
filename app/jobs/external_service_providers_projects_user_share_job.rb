@@ -19,7 +19,7 @@ class ExternalServiceProvidersProjectsUserShareJob < ApplicationJob
       resource_url = "#{@external_service_providers_projects_user.external_service_provider.url}/resources/#{response["resourcetype"]}/#{response["formstateid"]}"
       ExternalServiceProviderMailer.notify_share_success(*args, resource_url).deliver_later
     else
-      ExternalServiceProviderMailer.notify_share_failure(*arguments).deliver_later
+      ExternalServiceProviderMailer.notify_share_failure(*args, response).deliver_later
     end
   end
 end
