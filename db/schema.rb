@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_27_000000) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -527,6 +527,26 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_27_000000) do
     t.bigint "project_id"
     t.index ["export_type_id"], name: "index_exported_items_on_export_type_id"
     t.index ["project_id"], name: "index_exported_items_on_project_id"
+  end
+
+  create_table "external_service_providers", charset: "utf8mb3", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.string "url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "external_service_providers_projects_users", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "external_service_provider_id", null: false
+    t.integer "project_id", null: false
+    t.integer "user_id", null: false
+    t.string "api_token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_service_provider_id"], name: "index_esppu_on_esp_id"
+    t.index ["project_id"], name: "index_esppu_on_project_id"
+    t.index ["user_id"], name: "index_esppu_on_user_id"
   end
 
   create_table "extraction_checksums", charset: "utf8mb3", force: :cascade do |t|
@@ -2166,6 +2186,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_27_000000) do
   add_foreign_key "exported_files", "projects"
   add_foreign_key "exported_files", "users"
   add_foreign_key "exported_items", "export_types"
+  add_foreign_key "external_service_providers_projects_users", "external_service_providers"
+  add_foreign_key "external_service_providers_projects_users", "projects"
+  add_foreign_key "external_service_providers_projects_users", "users"
   add_foreign_key "extraction_forms_projects", "extraction_forms"
   add_foreign_key "extraction_forms_projects", "extraction_forms_project_types"
   add_foreign_key "extraction_forms_projects", "projects"
