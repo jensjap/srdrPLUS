@@ -16,4 +16,8 @@ class ExternalServiceProvidersProjectsUser < ApplicationRecord
   belongs_to :user
 
   validates :api_token, presence: true
+
+  def property_of_user?(member)
+    user.eql?(member)
+  end
 end

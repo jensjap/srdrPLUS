@@ -1,10 +1,10 @@
 class ExternalServiceProvidersProjectsUsersController < ApplicationController
-  #!!! authorize this!
-  # after_action :verify_authorized
+  after_action :verify_authorized
   before_action :set_external_service_providers_projects_user, only: %i[update destroy share]
 
   def create
     @external_service_providers_projects_user = ExternalServiceProvidersProjectsUser.new(external_service_providers_projects_user_params)
+    authorize(@external_service_providers_projects_user.project, policy_class: ExternalServiceProvidersProjectsUserPolicy)
     if @external_service_providers_projects_user.save
       flash.now[:success] = 'Record successfully saved.'
     else
@@ -24,6 +24,7 @@ class ExternalServiceProvidersProjectsUsersController < ApplicationController
   end
 
   def update
+    authorize(@external_service_providers_projects_user)
     if @external_service_providers_projects_user.update(external_service_providers_projects_user_params)
       flash.now[:success] = 'Record successfully saved.'
     else
@@ -37,6 +38,7 @@ class ExternalServiceProvidersProjectsUsersController < ApplicationController
   end
 
   def destroy
+    authorize(@external_service_providers_projects_user)
     if @external_service_providers_projects_user&.destroy
       flash.now[:success] = 'Record successfully deleted.'
     else
@@ -53,6 +55,7 @@ class ExternalServiceProvidersProjectsUsersController < ApplicationController
   end
 
   def share
+    authorize(@external_service_providers_projects_user)
     esp_name = @external_service_providers_projects_user.external_service_provider.name
     @project = @external_service_providers_projects_user.project
     ExternalServiceProvidersProjectsUserShareJob.perform_later(@external_service_providers_projects_user.id, @project.id, current_user.id)
