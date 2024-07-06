@@ -106,6 +106,8 @@ class Project < ApplicationRecord
   has_many :ml_models_projects
   has_many :ml_models, through: :ml_models_projects
 
+  has_many :external_service_providers_projects_users, dependent: :destroy
+
   validates :name, presence: true
 
   accepts_nested_attributes_for :key_questions

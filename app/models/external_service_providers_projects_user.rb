@@ -14,4 +14,6 @@ class ExternalServiceProvidersProjectsUser < ApplicationRecord
   belongs_to :external_service_provider
   belongs_to :project
   belongs_to :user
+
+  validates :api_token, presence: true
 end

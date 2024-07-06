@@ -1,0 +1,10 @@
+<% if flash[:success] %>
+  toastr.success('<%= flash[:success] %>')
+  const element = document.getElementById( 'export-import-share-partial' );
+  element.outerHTML = "<%= escape_javascript(
+    render partial: 'imports/share',
+    locals: { project: @project }
+  ) %>";
+<% else %>
+  toastr.error('<%= flash[:error] %>')
+<% end %>
