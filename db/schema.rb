@@ -321,7 +321,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id"
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id"
     t.index ["project_id"], name: "index_citations_projects_on_project_id"
-    t.index ["screening_status"], name: "index_citations_projects_on_screening_status"
   end
 
   create_table "color_choices", id: :integer, charset: "utf8", force: :cascade do |t|
@@ -530,7 +529,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
     t.index ["project_id"], name: "index_exported_items_on_project_id"
   end
 
-  create_table "external_service_providers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "external_service_providers", charset: "utf8", force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.string "url"
@@ -538,7 +537,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "external_service_providers_projects_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "external_service_providers_projects_users", charset: "utf8", force: :cascade do |t|
     t.bigint "external_service_provider_id", null: false
     t.integer "project_id", null: false
     t.integer "user_id", null: false
@@ -950,12 +949,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
   end
 
   create_table "key_questions_projects", id: :integer, charset: "utf8", force: :cascade do |t|
+    t.integer "extraction_forms_projects_section_id"
     t.integer "key_question_id"
     t.integer "project_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "pos", default: 999999
-    t.index ["key_question_id", "project_id"], name: "index_kqp_on_efps_id_kq_id_p_id"
+    t.index ["extraction_forms_projects_section_id", "key_question_id", "project_id"], name: "index_kqp_on_efps_id_kq_id_p_id"
     t.index ["key_question_id", "project_id"], name: "index_kqp_on_kq_id_p_id"
     t.index ["pos"], name: "index_key_questions_projects_on_pos"
     t.index ["project_id"], name: "index_kqp_on_p_id"
@@ -1221,7 +1221,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
     t.boolean "fs_allow_adding_reasons", default: true, null: false
     t.boolean "fs_allow_adding_tags", default: true, null: false
     t.boolean "force_training", default: false, null: false
-    t.integer "source_project_id"
   end
 
   create_table "projects_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -1421,6 +1420,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
     t.string "name", limit: 1000, collation: "utf8mb4_bin"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "label_type_id"
+    t.index ["label_type_id"], name: "index_reasons_on_label_type_id"
   end
 
   create_table "records", id: :integer, charset: "utf8", force: :cascade do |t|
@@ -2130,12 +2131,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
     t.index ["wac_id"], name: "index_wacs_bacs_rssms_on_wac_id"
   end
 
-  create_table "word_groups", charset: "utf8mb3", force: :cascade do |t|
+  create_table "word_groups", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "color"
-    t.bigint "project_id", null: false
+    t.bigint "abstract_screening_id", null: false
+    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "case_sensitive", default: false
   end
 
   create_table "word_weights", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -2145,9 +2148,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
     t.string "word", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "word_group_id"
     t.index ["abstract_screening_id"], name: "ww_on_as"
     t.index ["user_id", "abstract_screening_id", "word"], name: "u_as_w", unique: true
     t.index ["user_id"], name: "ww_on_u"
+    t.index ["word_group_id"], name: "index_word_weights_on_word_group_id"
   end
 
   add_foreign_key "abstrackr_settings", "profiles"
@@ -2219,6 +2224,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
   add_foreign_key "imported_files", "sections"
   add_foreign_key "invitations", "roles"
   add_foreign_key "journals", "citations"
+  add_foreign_key "key_questions_projects", "extraction_forms_projects_sections"
   add_foreign_key "key_questions_projects", "key_questions"
   add_foreign_key "key_questions_projects", "projects"
   add_foreign_key "key_questions_projects_questions", "key_questions_projects"
@@ -2264,6 +2270,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
   add_foreign_key "question_row_columns_question_row_column_options", "question_row_columns"
   add_foreign_key "question_rows", "questions"
   add_foreign_key "questions", "extraction_forms_projects_sections"
+  add_foreign_key "reasons", "label_types"
   add_foreign_key "result_statistic_section_types_measures", "measures"
   add_foreign_key "result_statistic_section_types_measures", "result_statistic_section_types"
   add_foreign_key "result_statistic_section_types_measures", "result_statistic_section_types_measures"
@@ -2316,4 +2323,5 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
   add_foreign_key "training_data_infos", "ml_models"
   add_foreign_key "users", "user_types"
   add_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures"
+  add_foreign_key "word_weights", "word_groups"
 end

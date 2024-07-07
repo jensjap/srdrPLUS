@@ -7,5 +7,11 @@ class CreateExternalServiceProviders < ActiveRecord::Migration[7.0]
 
       t.timestamps
     end
+
+    ExternalServiceProvider.create(
+      name: "FEvIR Platform",
+      description: "The FEvIR Platform includes many Builder Tools to create FHIR® Resources without requiring expertise in FHIR® or JSON, and Converter Tools to convert structured data to FHIR® Resources.",
+      url: "https://fevir.net"
+    )
   end
 end
