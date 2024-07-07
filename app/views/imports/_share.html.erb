@@ -19,6 +19,7 @@
             <%= f.hidden_field :user_id, value: esppu.user_id %>
 
             <div class="mr-4">
+              <label class="font-semibold">Actions:</label>
               <%= f.submit esppu.persisted? ? 'Save' : 'Create', class: "bg-srdr-tertiary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
             </div>
           <% end %>
@@ -26,13 +27,13 @@
           <% if esppu.persisted? %>
             <div class="mr-4">
               <%= form_with(url: share_external_service_providers_projects_user_path(esppu), method: :post, local: false, remote: true) do |f| %>
-                <%= f.submit "Share", class: "bg-srdrpurple hover:bg-srdrpurple-light text-white font-bold py-2 px-4 rounded" %>
+                <%= f.submit "Share", class: "bg-srdrpurple hover:bg-srdrpurple-light text-white font-bold py-2 px-4 mt-4 rounded" %>
               <% end %>
             </div>
 
             <div>
               <%= form_with(model: esppu, method: :delete, local: false, remote: true) do |f| %>
-                <%= f.submit "Delete", class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" %>
+                <%= f.submit "Delete", class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 mt-4 rounded" %>
               <% end %>
             </div>
           <% end %>
