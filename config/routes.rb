@@ -135,6 +135,8 @@ Rails.application.routes.draw do
           get 'composition'
         end
       end
+
+      resources :users, only: [:show]
     end # END namespace :v3 do
 
     namespace :v4 do
