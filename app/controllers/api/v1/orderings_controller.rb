@@ -15,6 +15,7 @@ module Api
         fulltext_screenings_tags
         fulltext_screenings_tags_users
         key_questions_projects
+        question_row_columns_question_row_column_options
         questions
         result_statistic_sections_measures
         sd_analytic_frameworks

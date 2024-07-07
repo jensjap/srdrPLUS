@@ -1392,6 +1392,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
     t.text "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "pos", default: 999999
+    t.index ["pos"], name: "index_question_row_columns_question_row_column_options_on_pos"
     t.index ["question_row_column_id", "question_row_column_option_id"], name: "index_qrcqrco_on_qrc_id_qrco_id"
     t.index ["question_row_column_option_id"], name: "fk_rails_dd7bf341f1"
   end
@@ -2128,14 +2130,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
     t.index ["wac_id"], name: "index_wacs_bacs_rssms_on_wac_id"
   end
 
-  create_table "word_groups", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "word_groups", charset: "utf8mb3", force: :cascade do |t|
     t.string "name", null: false
     t.string "color"
-    t.bigint "abstract_screening_id", null: false
-    t.bigint "user_id", null: false
+    t.bigint "project_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "case_sensitive", default: false
   end
 
   create_table "word_weights", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -2145,11 +2145,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
     t.string "word", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "word_group_id"
     t.index ["abstract_screening_id"], name: "ww_on_as"
     t.index ["user_id", "abstract_screening_id", "word"], name: "u_as_w", unique: true
     t.index ["user_id"], name: "ww_on_u"
-    t.index ["word_group_id"], name: "index_word_weights_on_word_group_id"
   end
 
   add_foreign_key "abstrackr_settings", "profiles"
@@ -2318,5 +2316,4 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
   add_foreign_key "training_data_infos", "ml_models"
   add_foreign_key "users", "user_types"
   add_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures"
-  add_foreign_key "word_weights", "word_groups"
 end
