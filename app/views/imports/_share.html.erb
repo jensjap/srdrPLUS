@@ -1,0 +1,44 @@
+<div id='export-import-share-partial' class='p-4 lg:p-8'>
+  <h1 class='text-lg font-bold mb-4'>Share with External Service Providers</h1>
+  <div class="flex flex-wrap -mx-4">
+    <% @project.external_service_providers_projects_users.each do |esppu| %>
+      <div id="esppu_<%= esppu.id %>" class="w-full px-4 mb-4">
+        <div class="bg-white p-4 rounded shadow-md flex items-center">
+          <%= form_with(model: esppu, local: false, remote: true, class: "flex items-center") do |f| %>
+            <div class="mr-4">
+              <%= f.label :external_service_provider_id, "External Service Provider", class: "font-semibold" %>
+              <%= f.collection_select :external_service_provider_id, ExternalServiceProvider.all, :id, :name, { prompt: "Select a provider" }, { class: "form-select mt-1 block w-full py-2 px-3 pr-8 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm custom-select" } %>
+            </div>
+
+            <div class="mr-4 flex-grow">
+              <%= f.label :api_token, "API Token", class: "font-semibold" %>
+              <%= f.text_field :api_token, class: "form-input mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm", style: "width: 400px;" %>
+            </div>
+
+            <%= f.hidden_field :project_id, value: esppu.project_id %>
+            <%= f.hidden_field :user_id, value: esppu.user_id %>
+
+            <div class="mr-4">
+              <label class="font-semibold">Actions:</label>
+              <%= f.submit esppu.persisted? ? 'Save' : 'Create', class: "bg-srdr-tertiary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+            </div>
+          <% end %>
+
+          <% if esppu.persisted? %>
+            <div class="mr-4">
+              <%= form_with(url: share_external_service_providers_projects_user_path(esppu), method: :post, local: false, remote: true) do |f| %>
+                <%= f.submit "Share", class: "bg-srdrpurple hover:bg-srdrpurple-light text-white font-bold py-2 px-4 mt-4 rounded" %>
+              <% end %>
+            </div>
+
+            <div>
+              <%= form_with(model: esppu, method: :delete, local: false, remote: true) do |f| %>
+                <%= f.submit "Delete", class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 mt-4 rounded" %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

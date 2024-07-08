@@ -125,6 +125,7 @@ class Project < ApplicationRecord
   # is actually what we want.
   #
   # Birol
+  has_many :external_service_providers_projects_users, dependent: :destroy
 
   validates :name, presence: true
 

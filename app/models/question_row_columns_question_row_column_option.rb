@@ -11,6 +11,8 @@
 #
 
 class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
+  default_scope { order(:pos, :id) }
+
   include SharedQueryableMethods
   include SharedSuggestableMethods
 

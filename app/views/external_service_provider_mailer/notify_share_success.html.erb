@@ -1,0 +1,22 @@
+<div>
+    Dear <%= @user.handle %>,
+</div>
+
+<div>
+    The request to share your project with <%= @external_service_providers_projects_user.external_service_provider.name %> has finished.
+</div>
+
+<div>
+    You may inspect the shared resource at &lbrack;<%= @resource_url %>&rbrack;
+</div>
+
+<div>
+    Respectfully,<br>
+    The SRDR Team
+</div>
+
+<style>
+    div {
+        padding: 1em;
+    }
+</style>

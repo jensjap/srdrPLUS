@@ -5,6 +5,7 @@ class ImportsController < ApplicationController
     authorize(@project, policy_class: ImportPolicy)
     @nav_buttons.push('export_import_dropdown', 'export_import', 'my_projects')
     @import = @projects_user.imports.build
+    @project.external_service_providers_projects_users.build(user: current_user)
     @imported_file = ImportedFile.new import: @import
   end
 

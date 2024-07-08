@@ -1,0 +1,5 @@
+<% if flash[:success] %>
+  toastr.success('<%= flash[:success] %>')
+<% else %>
+  toastr.error('<%= flash[:error] %>')
+<% end %>

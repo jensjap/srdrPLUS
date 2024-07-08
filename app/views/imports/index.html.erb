@@ -21,10 +21,18 @@
         >
           IMPORT
         </div>
+        <div
+          @click="tab = 'share'"
+          class="text-gray-500 w-1/2 py-2 px-1 text-center border-b-2 font-bold text-sm cursor-pointer"
+          :class="tab == 'share' && 'border-purple-900 text-srdr-primary'"
+        >
+          SHARE
+        </div>
       </nav>
     </div>
   </div>
 
   <div x-cloak x-show="tab == 'export'"><%= render 'export' %></div>
   <div x-cloak x-show="tab == 'import'"><%= render 'import' %></div>
+  <div x-cloak x-show="tab == 'share'"><%= render 'share' %></div>
 </div>

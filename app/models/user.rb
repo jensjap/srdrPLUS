@@ -70,6 +70,8 @@ class User < ApplicationRecord
 
   has_many :suggestions, dependent: :destroy, inverse_of: :user
 
+  has_many :external_service_providers_projects_users, dependent: :destroy
+
   delegate :username, to: :profile, allow_nil: true
   delegate :first_name, to: :profile, allow_nil: true
   delegate :middle_name, to: :profile, allow_nil: true

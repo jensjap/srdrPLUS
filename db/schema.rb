@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_28_142310) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -530,6 +530,26 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_28_142310) do
     t.index ["project_id"], name: "index_exported_items_on_project_id"
   end
 
+  create_table "external_service_providers", charset: "utf8", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.string "url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "external_service_providers_projects_users", charset: "utf8", force: :cascade do |t|
+    t.bigint "external_service_provider_id", null: false
+    t.integer "project_id", null: false
+    t.integer "user_id", null: false
+    t.string "api_token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_service_provider_id"], name: "index_esppu_on_esp_id"
+    t.index ["project_id"], name: "index_esppu_on_project_id"
+    t.index ["user_id"], name: "index_esppu_on_user_id"
+  end
+
   create_table "extraction_checksums", charset: "utf8", force: :cascade do |t|
     t.bigint "extraction_id"
     t.string "hexdigest"
@@ -930,6 +950,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_28_142310) do
   end
 
   create_table "key_questions_projects", id: :integer, charset: "utf8", force: :cascade do |t|
+    t.integer "extraction_forms_projects_section_id"
     t.integer "key_question_id"
     t.integer "project_id"
     t.datetime "created_at", precision: nil, null: false
@@ -1372,6 +1393,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_28_142310) do
     t.text "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "pos", default: 999999
+    t.index ["pos"], name: "index_question_row_columns_question_row_column_options_on_pos"
     t.index ["question_row_column_id", "question_row_column_option_id"], name: "index_qrcqrco_on_qrc_id_qrco_id"
     t.index ["question_row_column_option_id"], name: "fk_rails_dd7bf341f1"
   end
@@ -2165,6 +2188,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_28_142310) do
   add_foreign_key "exported_files", "projects"
   add_foreign_key "exported_files", "users"
   add_foreign_key "exported_items", "export_types"
+  add_foreign_key "external_service_providers_projects_users", "external_service_providers"
+  add_foreign_key "external_service_providers_projects_users", "projects"
+  add_foreign_key "external_service_providers_projects_users", "users"
   add_foreign_key "extraction_forms_projects", "extraction_forms"
   add_foreign_key "extraction_forms_projects", "extraction_forms_project_types"
   add_foreign_key "extraction_forms_projects", "projects"
