@@ -950,7 +950,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
   end
 
   create_table "key_questions_projects", id: :integer, charset: "utf8", force: :cascade do |t|
-    t.integer "extraction_forms_projects_section_id"
     t.integer "key_question_id"
     t.integer "project_id"
     t.datetime "created_at", precision: nil, null: false
