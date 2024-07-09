@@ -7,7 +7,7 @@ class AllResourceSupplyingServiceTest < ActiveSupport::TestCase
   end
 
   test 'should get project info in Bundle format' do
-    result = @service.find_by_project_id(@project.id)
+    result = @service.document_find_by_project_id(@project.id)
 
     assert result['entry'].present?
     assert_equal result['resourceType'], 'Bundle'

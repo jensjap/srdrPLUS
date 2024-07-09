@@ -4,7 +4,7 @@ class ProcessAndEmailFhirJob < ApplicationJob
   def perform(project_id, user_email)
     begin
       project = Project.find(project_id)
-      project_bundle = AllResourceSupplyingService.new.find_by_project_id(project.id)
+      project_bundle = AllResourceSupplyingService.new.document_find_by_project_id(project.id)
 
       file_path = 'tmp/fhir_data_export_project_' + project_id.to_s + '_' + Time.now.strftime('%s') + '.json'
       File.write(file_path, project_bundle.to_json)
