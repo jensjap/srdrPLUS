@@ -12,7 +12,7 @@ class AssignmentsController < ApplicationController
     @assignments = Assignment.where(assignor: current_user).or(Assignment.where(assignee: current_user)).includes(
       :logs, :assignee, :assignor
     )
-    assignments = @assignments.as_json(include: %i[logs], methods: %i[handles formatted_deadline])
+    assignments = @assignments.as_json(include: %i[logs], methods: %i[name handles formatted_deadline])
     projects = Project.joins(:projects_users).where(projects_users: { user: current_user })
     users = User.joins(projects_users: :project).where(projects:).includes(:profile).distinct
 

@@ -976,35 +976,9 @@
         </div>
       </template>
 
+      <%= render 'messages/combobox' %>
       <div class="flex flex-row items-center w-full h-32">
         <div class="w-full flex relative">
-          <div
-            x-show="assignmentWindow"
-            @click.outside="assignmentWindow=false"
-            class="absolute border border-black bg-slate-100 shadow-2xl rounded-md w-full !text-sm !p-2 -top-44 h-40 overflow-y-auto"
-          >
-            <ul class="list-none m-0">
-              <template
-                x-for="(assignment, assignment_index) in assignments"
-                :key="assignment.id"
-              >
-                <li
-                  class="p-2 rounded-md cursor-pointer"
-                  :class="{
-                    'bg-slate-200': assignment_index === assignment_selection_index,
-                    'text-green-700': assignment.assignments_room_id
-                  }"
-                  x-text="`${assignment.assignment_type} ${assignment.assignment_id} assigned to ${assignment.handles.assignor.handle}`"
-                  @mouseover="assignment_selection_index = assignment_index"
-                  @click="if (assignment.assignments_room_id) {
-                    destroyAssignmentsRoom(assignment)
-                  } else {
-                    createAssignmentsRoom(assignment, selected_room?.id)
-                  }"
-                ></li>
-              </template>
-            </ul>
-          </div>
           <textarea
             maxlength="65000"
             rows="5"
@@ -1176,7 +1150,7 @@
     };
     Alpine.data("chat", () => ({
       modal: true,
-      tab_type: "assignments",
+      tab_type: "chats",
       selected_room: null,
       selected_rooms: [],
       selected_messages: [],
@@ -1204,7 +1178,7 @@
         this.selected_rooms = this.chat_rooms;
         this.sortRooms();
         this.openRoom(this.selected_rooms[0]);
-        this.getAssignments();
+        this.getAssignments(this.selected_rooms[0]?.id);
         await this.setupWS();
       },
 
