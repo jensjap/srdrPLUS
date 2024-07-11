@@ -984,16 +984,10 @@
             rows="5"
             type="text"
             class="w-full !text-sm !p-2 !resize-none"
-            placeholder="Type message... press ALT+T to tag assignment"
+            placeholder="Type message... or press ALT+T to tag assignment"
             x-ref="chattextarea"
             x-model="chat_text[selected_room?.id]"
-            @keydown.alt.t.prevent="
-            if (assignmentWindow) {
-              assignmentWindow = false;
-            } else {
-              getAssignments(selected_room?.id);
-              assignmentWindow = true;
-            }"
+            @keydown.alt.t.prevent="$focus.focus($refs.assignmentsComboBox)"
             @keydown.shift="shiftPressed = true"
             @keyup.shift="shiftPressed = false"
             @keydown.enter.prevent="let insert;
