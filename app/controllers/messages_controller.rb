@@ -42,7 +42,7 @@ class MessagesController < ApplicationController
         message.user = current_user
         message.save!
         message.broadcast_message
-        render json: {}, status: 200
+        render json: message, status: 200
       end
     end
   end

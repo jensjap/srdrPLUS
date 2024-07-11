@@ -447,5 +447,5 @@ Rails.application.routes.draw do
   end
 
   resources :assignments
-  resources :assignments_rooms, only: %i[create destroy]
+  resources :assignments_messages, only: %i[create destroy]
 end

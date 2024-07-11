@@ -1,7 +1,7 @@
-<div x-data="assignmentComboBox" class="w-full">
+<div class="w-full">
   <div
     x-combobox
-    x-model="selected"
+    x-model="selectedAssignments"
     multiple
     by="id"
     class="bg-transparent border-none flex"
@@ -15,7 +15,7 @@
         >
           <input
             x-combobox:input
-            @change="query = $event.target.value;"
+            @change="comboBoxQuery = $event.target.value;"
             class="border-none p-0 focus:outline-none focus:ring-0"
             placeholder="Tag assignment(s)..."
           />
@@ -78,17 +78,17 @@
             x-show="filteredItems.length == 0"
             class="px-4 py-2 text-sm text-gray-600"
           >
-            No items match your query.
+            No items match your comboBoxQuery.
           </p>
         </div>
       </div>
     </div>
     <div
-      x-show="selected.length"
+      x-show="selectedAssignments.length"
       class="mt-1 mb-4 flex flex-wrap items-center gap-1.5"
     >
       <template
-        x-for="selectedAssignment in selected"
+        x-for="selectedAssignment in selectedAssignments"
         :key="selectedAssignment.id"
       >
         <button
@@ -112,33 +112,3 @@
     </div>
   </div>
 </div>
-
-<script>
-  document.addEventListener("alpine:init", () => {
-    const headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-Requested-With": "XMLHttpRequest",
-      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
-    };
-    Alpine.data("assignmentComboBox", () => ({
-      query: "",
-      selected: [],
-
-      async init() {},
-
-      get filteredItems() {
-        return this.query === ""
-          ? this.assignments
-          : this.assignments.filter((assignment) => {
-              return assignment.name
-                .toLowerCase()
-                .includes(this.query.toLowerCase());
-            });
-      },
-      remove(assignment) {
-        this.selected = this.selected.filter((i) => i !== assignment);
-      },
-    }));
-  });
-</script>

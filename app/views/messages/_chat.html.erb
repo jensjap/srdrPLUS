@@ -1172,6 +1172,8 @@
       assignment_selection_index: 0,
       assignmentWindow: false,
       members: [],
+      comboBoxQuery: "",
+      selectedAssignments: [],
 
       async init() {
         await this.fetchRooms();
@@ -1180,6 +1182,22 @@
         this.openRoom(this.selected_rooms[0]);
         this.getAssignments(this.selected_rooms[0]?.id);
         await this.setupWS();
+      },
+
+      get filteredItems() {
+        return this.comboBoxQuery === ""
+          ? this.assignments
+          : this.assignments.filter((assignment) => {
+              return assignment.name
+                .toLowerCase()
+                .includes(this.comboBoxQuery.toLowerCase());
+            });
+      },
+
+      remove(assignment) {
+        this.selectedAssignments = this.selectedAssignments.filter(
+          (i) => i !== assignment
+        );
       },
 
       async updateAssignment(assignment_id, assignment_index, value, key) {
@@ -1230,23 +1248,27 @@
         this.members = data.members;
       },
 
-      async createAssignmentsRoom(assignment, room_id) {
-        const response = await fetch("/assignments_rooms/", {
-          method: "POST",
-          headers,
-          body: JSON.stringify({
-            assignment_id: assignment.id,
-            room_id,
-          }),
-        });
+      async createAssignmentsMessage(message_id) {
+        const assignment_ids = this.selectedAssignments.map(
+          (assignment) => assignment.id
+        );
+        this.selectedAssignments = [];
 
-        const data = await response.json();
-        assignment.assignments_room_id = data.id;
+        assignment_ids.forEach((assignment_id) => {
+          fetch("/assignments_messages/", {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+              assignment_id,
+              message_id,
+            }),
+          });
+        });
       },
 
-      async destroyAssignmentsRoom(assignment) {
+      async destroyAssignmentsMessage(assignment) {
         const response = await fetch(
-          `/assignments_rooms/${assignment.assignments_room_id}`,
+          `/assignments_messages/${assignment.assignments_room_id}`,
           {
             method: "DELETE",
             headers,
@@ -1424,11 +1446,13 @@
             message_id: threadMessage ? this.threadMessageId : null,
           }),
         });
+        const data = await response.json();
         if (response.status >= 200 && response.status < 300) {
           if (threadMessage) {
             this.thread_chat_text[this.selected_room?.id] = "";
           } else {
             this.chat_text[this.selected_room?.id] = "";
+            this.createAssignmentsMessage(data.id);
           }
         }
       },

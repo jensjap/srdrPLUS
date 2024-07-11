@@ -20,9 +20,9 @@ class AssignmentsController < ApplicationController
     members = users.as_json(only: [:id], methods: %i[handle]).sort_by { |member| member['handle'] }
     ### Security: must only expose id and handle! ###
 
-    assignment_rooms_hash = AssignmentsRoom.where(room_id: params[:room_id]).map { |ar| [ar.assignment_id, ar.id] }.to_h
+    assignment_messages_hash = AssignmentsMessage.where(message_id: params[:message_id]).map { |ar| [ar.assignment_id, ar.id] }.to_h
     assignments.each do |assignment|
-      assignment['assignments_room_id'] = assignment_rooms_hash[assignment['id']]
+      assignment['assignments_message_id'] = assignment_messages_hash[assignment['id']]
     end
     render json: { assignments:, members: }, status: 200
   end
