@@ -1013,7 +1013,7 @@
             placeholder="Type message... press ALT+T to tag assignment"
             x-ref="chattextarea"
             x-model="chat_text[selected_room?.id]"
-            @keydown.alt.t="
+            @keydown.alt.t.prevent="
             if (assignmentWindow) {
               assignmentWindow = false;
             } else {
@@ -1024,18 +1024,6 @@
             @keyup.shift="shiftPressed = false"
             @keydown.enter.prevent="let insert;
               if (shiftPressed) {
-                insert = '\n'
-              } else if (assignmentWindow) {
-                insert = `@assignment${assignments[assignment_selection_index].id}@@`
-              }
-
-              if (assignmentWindow) {
-                if (assignments[assignment_selection_index].assignments_room_id) {
-                  destroyAssignmentsRoom(assignments[assignment_selection_index])
-                } else {
-                  createAssignmentsRoom(assignments[assignment_selection_index], selected_room?.id)
-                }
-              } else if (shiftPressed) {
                 const insert = '\n';
                 assignmentWindow = false;
                 const start = $event.target.selectionStart;
@@ -1048,14 +1036,6 @@
               } else {
                 sendMessage()
               }"
-            @keydown.up="if(assignmentWindow) {
-              $event.preventDefault();
-              if (assignment_selection_index > 0) assignment_selection_index -= 1
-            }"
-            @keydown.down="if (assignmentWindow) {
-              $event.preventDefault();
-              if (assignment_selection_index < assignments.length - 1) assignment_selection_index += 1
-            }"
           ></textarea>
           <textarea
             x-cloak
