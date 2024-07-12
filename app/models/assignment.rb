@@ -16,6 +16,8 @@
 #
 class Assignment < ApplicationRecord
   has_many :logs, dependent: :destroy
+  has_many :assignments_messages, dependent: :destroy
+  has_many :messages, through: :assignments_messages
   belongs_to :assignor, class_name: 'User', foreign_key: 'assignor_id'
   belongs_to :assignee, class_name: 'User', foreign_key: 'assignee_id'
   before_save :create_log_entries

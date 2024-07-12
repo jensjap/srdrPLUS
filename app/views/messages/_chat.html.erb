@@ -105,11 +105,6 @@
                 <div class="px-1">
                   <div
                     class="text-md bg-purple-100 text-gray-500 rounded-t-md p-1 cursor-pointer"
-                    :class="{
-                      'bg-srdrpurple': assignment_selection_index === assignment_index,
-                      'text-white': assignment_selection_index === assignment_index,
-                    }"
-                    @click="assignment_selection_index = assignment_index"
                     x-text="`Assignment ID ${assignment.id}`"
                   ></div>
                 </div>
@@ -226,30 +221,40 @@
                     </div>
                     <div class="px-1">
                       <div class="text-xs font-medium text-gray-900">
-                        Messages
+                        Tagged Messages
                       </div>
                       <div class="text-xs text-gray-900 border border-gray-100">
                         <div class="flow-root h-16 overflow-y-scroll">
+                          <template x-if="assignment.messages.length === 0">
+                            <div class="text-gray-500">No tagged messages</div>
+                          </template>
                           <ul role="list" class="p-0 m-0 list-none">
                             <template
-                              x-for="log in assignment.logs.reverse()"
-                              :key="log.id"
+                              x-for="message in assignment.messages.reverse()"
+                              :key="message.id"
                             >
-                              <li>
+                              <li
+                                :class="{
+                                  'bg-srdrpurple': message_selection_index === message.id,
+                                  '!text-white': message_selection_index === message.id,
+                                }"
+                                @click="message_selection_index = message.id"
+                              >
                                 <div class="relative">
                                   <div class="relative flex">
                                     <div
-                                      class="flex min-w-0 flex-1 justify-between"
+                                      class="flex min-w-0 flex-1 justify-between underline cursor-pointer"
+                                      @click="openRoom(chat_rooms.find(room => room.id == message.room_id))"
                                     >
                                       <div>
                                         <p
-                                          class="text-xs text-gray-500 m-0"
-                                          x-text="log.description"
+                                          class="text-xs m-0"
+                                          x-text="message.text"
                                         ></p>
                                       </div>
                                       <div
-                                        class="whitespace-nowrap text-right text-xs text-gray-500"
-                                        x-text="log.created_at"
+                                        class="whitespace-nowrap text-right text-xs"
+                                        x-text="message.created_at"
                                       ></div>
                                     </div>
                                   </div>
@@ -1144,7 +1149,7 @@
     };
     Alpine.data("chat", () => ({
       modal: true,
-      tab_type: "chats",
+      tab_type: "assignments",
       selected_room: null,
       selected_rooms: [],
       selected_messages: [],
@@ -1163,7 +1168,7 @@
       threadMessageId: null,
       thread_chat_text: {},
       assignments: [],
-      assignment_selection_index: 0,
+      message_selection_index: null,
       assignmentWindow: false,
       members: [],
       comboBoxQuery: "",
