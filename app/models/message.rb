@@ -9,7 +9,7 @@
 #  pinned     :boolean          default(FALSE), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  room_id    :bigint
+#  room_id    :bigint           not null
 #
 class Message < ApplicationRecord
   belongs_to :user

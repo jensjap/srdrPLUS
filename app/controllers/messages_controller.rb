@@ -15,9 +15,8 @@ class MessagesController < ApplicationController
               .map { |pu| { username: pu.user.username, user_id: pu.user_id } }
               .uniq
           rooms = ChatChannelService.generate_rooms(current_user)
-          @project_rooms = rooms[:project_rooms]
           @chat_rooms = rooms[:chat_rooms]
-          @messages = get_messages(@project_rooms | @chat_rooms)
+          @messages = get_messages(@chat_rooms)
         end
       end
     end

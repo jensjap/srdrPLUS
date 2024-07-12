@@ -1514,9 +1514,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_11_113146) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "project_id"
     t.index ["name"], name: "index_rooms_on_name"
-    t.index ["project_id"], name: "index_rooms_on_project_id", unique: true
   end
 
   create_table "screening_forms", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -2299,7 +2297,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_11_113146) do
   add_foreign_key "result_statistic_sections_measures", "result_statistic_sections_measures"
   add_foreign_key "result_statistic_sections_measures_comparisons", "comparisons"
   add_foreign_key "result_statistic_sections_measures_comparisons", "result_statistic_sections"
-  add_foreign_key "rooms", "projects"
   add_foreign_key "screening_options", "label_types"
   add_foreign_key "screening_options", "projects"
   add_foreign_key "screening_options", "screening_option_types"

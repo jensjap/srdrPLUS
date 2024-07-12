@@ -49,10 +49,10 @@
                   />
                 </svg>
                 <span
-                  class="absolute flex items-center justify-center h-4 w-4 bg-red-500 text-white text-xs rounded-full -right-1 -bottom-1"
+                  class="absolute flex items-center justify-center h-4 w-4 bg-gray-500 text-white text-xs rounded-full -right-1 -bottom-1"
                   x-cloak
-                  x-show="project_rooms.filter(room => messages[room.id]?.some(message => !message.read))?.length > 0"
-                  x-text="project_rooms.filter(room => messages[room.id]?.some(message => !message.read))?.length"
+                  x-show="assignments?.length > 0"
+                  x-text="assignments?.length"
                 ></span>
               </span>
             </a>
@@ -104,7 +104,7 @@
               <div class="flex-1">
                 <div class="px-1">
                   <div
-                    class="text-md bg-purple-100 text-gray-500 rounded-t-md p-1 cursor-pointer"
+                    class="text-md bg-srdrpurple text-white rounded-t-md p-1 cursor-pointer"
                     x-text="`Assignment ID ${assignment.id}`"
                   ></div>
                 </div>
@@ -541,10 +541,10 @@
                   />
                 </svg>
                 <span
-                  class="absolute flex items-center justify-center h-4 w-4 bg-red-500 text-white text-xs rounded-full -right-1 -bottom-1"
+                  class="absolute flex items-center justify-center h-4 w-4 bg-gray-500 text-white text-xs rounded-full -right-1 -bottom-1"
                   x-cloak
-                  x-show="project_rooms.filter(room => messages[room.id]?.some(message => !message.read))?.length > 0"
-                  x-text="project_rooms.filter(room => messages[room.id]?.some(message => !message.read))?.length"
+                  x-show="assignments?.length > 0"
+                  x-text="assignments?.length"
                 ></span>
               </span>
             </a>
@@ -1154,7 +1154,6 @@
       selected_rooms: [],
       selected_messages: [],
       messages: {},
-      project_rooms: [],
       chat_rooms: [],
       current_user_id: null,
       chat_text: {},
@@ -1465,7 +1464,6 @@
           },
         });
         const data = await response.json();
-        this.project_rooms = data.project_rooms;
         this.chat_rooms = data.chat_rooms;
         this.messages = data.messages;
         this.current_user_id = data.current_user_id;
@@ -1513,32 +1511,17 @@
           }
 
           if (message.message_type === "add-membership") {
-            if (message.room.project_id) {
-              this.project_rooms.push(message.room);
-            } else {
-              this.chat_rooms.push(message.room);
-            }
+            this.chat_rooms.push(message.room);
             this.getMessages(message.room);
             return;
           }
 
           if (message.message_type === "remove-membership") {
             this.messages[message.room.id] = [];
-
-            if (message.room.project_id) {
-              this.project_rooms = this.project_rooms.filter(
-                (room) => room.id !== message.room.id
-              );
-            } else {
-              this.chat_rooms = this.chat_rooms.filter(
-                (room) => room.id !== message.room.id
-              );
-            }
-            if (this.tab_type === "projects") {
-              this.selected_rooms = this.project_rooms;
-            } else {
-              this.selected_rooms = this.chat_rooms;
-            }
+            this.chat_rooms = this.chat_rooms.filter(
+              (room) => room.id !== message.room.id
+            );
+            this.selected_rooms = this.chat_rooms;
             if (this.selected_room?.id === message.room.id) {
               this.selected_room = null;
               this.selected_messages = [];
