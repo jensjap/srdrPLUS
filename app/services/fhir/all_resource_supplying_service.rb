@@ -274,7 +274,7 @@ class AllResourceSupplyingService
   def add_reference_section(composition, title, raw_data, prefix, type)
     id_values = get_identifier_values(raw_data, prefix)
 
-    entrys = id_values.map { |id_value| {'reference' => { 'identifier' => id_value }, 'type' => type} }
+    entrys = id_values.map { |id_value| { 'identifier' => id_value, 'type' => type } }
     add_section(composition, title, nil, entrys)
   end
 

@@ -49,6 +49,7 @@ class ExtractionSupplyingService
     fhir_list = FhirResourceService.get_list(fhir_objs: fhir_extraction_sections)
     fhir_list['identifier'] = FhirResourceService.build_identifier('Extraction', id)
     fhir_list['id'] = "13-#{id}"
+    fhir_list['title'] = 'Extraction Data'
 
     fhir_list
   end
