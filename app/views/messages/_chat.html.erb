@@ -64,8 +64,7 @@
         await this.fetchRooms();
         this.selected_rooms = this.chat_rooms;
         this.sortRooms();
-        this.openRoom(this.selected_rooms[0]);
-        this.getAssignments(this.selected_rooms[0]?.id);
+        this.getAssignments();
         await this.setupWS();
       },
 

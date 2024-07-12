@@ -10,7 +10,7 @@
             :class="{
               'bg-srdrpurple-light': tab_type === 'assignments'
             }"
-            @click="tab_type = 'assignments'; getAssignments();"
+            @click="selected_room = null; selected_messages = []; message_selection_index = null; tab_type = 'assignments'; getAssignments();"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
