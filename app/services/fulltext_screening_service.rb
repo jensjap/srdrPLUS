@@ -72,29 +72,33 @@ class FulltextScreeningService < BaseScreeningService
   def self.get_next_singles_citation_id(fulltext_screening)
     project_screened_citation_ids = project_screened_citation_ids(fulltext_screening.project)
 
-    # Define the qualification types
-    accepted_type = ScreeningQualification::AS_ACCEPTED
+    # Define the screening_status to exclude
     excluded_types = [
-      ScreeningQualification::FS_ACCEPTED,
-      ScreeningQualification::FS_REJECTED,
-      ScreeningQualification::E_ACCEPTED,
-      ScreeningQualification::E_REJECTED,
-      ScreeningQualification::C_ACCEPTED,
-      ScreeningQualification::C_REJECTED
+      CitationsProject::AS_UNSCREENED,
+      CitationsProject::AS_PARTIALLY_SCREENED,
+      CitationsProject::AS_IN_CONFLICT,
+      CitationsProject::AS_REJECTED,
+      CitationsProject::FS_IN_CONFLICT,
+      CitationsProject::FS_REJECTED,
+      CitationsProject::E_NEED_EXTRACTION,
+      CitationsProject::E_IN_PROGRESS,
+      CitationsProject::E_REJECTED,
+      CitationsProject::E_COMPLETE,
+      CitationsProject::C_NEED_CONSOLIDATION,
+      CitationsProject::C_IN_PROGRESS,
+      CitationsProject::C_REJECTED,
+      CitationsProject::C_COMPLETE
     ]
     project_id = fulltext_screening.project.id
 
     # Step 1: Find CitationsProject IDs with any of the excluded qualification types
     excluded_citations_project_ids = CitationsProject
-                                     .joins(:screening_qualifications)
-                                     .where(screening_qualifications: { qualification_type: excluded_types })
                                      .where(project_id:)
+                                     .where(screening_status: excluded_types)
                                      .pluck(:id)
 
     # Step 2: Find CitationsProject records with AS_ACCEPTED qualifications and exclude the disqualified ones
     result = CitationsProject
-             .joins(:screening_qualifications)
-             .where(screening_qualifications: { qualification_type: accepted_type })
              .where(project_id:)
              .where.not(id: excluded_citations_project_ids)
              .where.not(citation_id: project_screened_citation_ids)
