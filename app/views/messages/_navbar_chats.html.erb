@@ -1,0 +1,67 @@
+<div
+  class="flex flex-row flex-shrink-0 --100 p-4 w-56"
+  x-show="tab_type === 'chats'"
+>
+  <div class="flex flex-col w-full h-full py-4">
+    <div class="flex flex-row items-center">
+      <div class="flex flex-row items-center">
+        <div class="text-xl font-semibold">Messages</div>
+      </div>
+    </div>
+    <div class="mt-5 flex justify-between items-center">
+      <div class="text-xs text-gray-400 font-semibold uppercase">Chats</div>
+      <button
+        class="text-xs cursor-pointer !px-1 rounded-md bg-srdrpurple text-white"
+        x-cloak
+        @click="createRoom()"
+      >
+        Create Chat
+      </button>
+    </div>
+    <div class="mt-2 overflow-y-auto overflow-x-hidden">
+      <div class="flex flex-col space-y-1">
+        <template x-for="room in selected_rooms" :key="room.id">
+          <div
+            class="relative flex flex-row items-center pr-2 pl-0 cursor-pointer"
+            @click="openRoom(room); threadMessageId = null;"
+          >
+            <div
+              class="flex flex-col flex-1 p-2 rounded-md"
+              :class="{
+              'bg-srdrpurple': selected_room?.id === room.id,
+              'text-white': selected_room?.id === room.id,
+              '--200': selected_room?.id !== room.id,
+              'text-black': selected_room?.id !== room.id,
+            }"
+            >
+              <div
+                class="text-sm font-medium"
+                x-text="room.name"
+                :class="{
+                'text-gray-400': (!messages[room.id] || messages[room.id].length === 0)
+              }"
+              ></div>
+              <div
+                class="text-xs truncate w-40"
+                :class="{
+                'text-gray-400': (!messages[room.id] || messages[room.id].length === 0),
+                'italic': (messages[room.id] && messages[room.id].length > 0)
+              }"
+                x-text="(messages[room.id] && messages[room.id].length > 0 && `...${messages[room.id][0].text}`) || 'no messages'"
+              ></div>
+            </div>
+            <div
+              class="flex-shrink-0 ml-2 mr-4 self-end mb-1 absolute right-0 bottom-0"
+              x-show="(messages[room.id] || []).some(message => !message.read)"
+            >
+              <span
+                class="flex items-center justify-center h-5 w-5 bg-red-500 text-white text-xs rounded-full"
+                x-text="(messages[room.id] || []).filter(x => !x.read)?.length"
+              ></span>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </div>
+</div>

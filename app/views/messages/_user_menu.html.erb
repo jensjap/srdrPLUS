@@ -1,0 +1,106 @@
+<div
+  x-cloak
+  x-show="userMenu && tab_type == 'chats'"
+  class="flex flex-col h-full w-64 --100 p-2"
+>
+  <div><h1 class="text-xl font-semibold my-2">Users</h1></div>
+  <div class="flex-1 overflow-y-scroll">
+    <div class="flex flex-col space-y-2 text-sm">
+      <template x-for="user in roomUsers" :key="user.user_id">
+        <div class="flex justify-between items-center">
+          <div class="flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-4 h-4 mr-2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+              />
+            </svg>
+            <div
+              class="w-24 overflow-hidden whitespace-nowrap text-ellipsis text-xs"
+              x-text="user.username"
+            ></div>
+          </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-4 h-4 cursor-pointer"
+            @click="destroyMembership(user.membership_id)"
+            x-cloak
+            x-show="!user.projects_user"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18 18 6M6 6l12 12"
+            />
+          </svg>
+        </div>
+      </template>
+    </div>
+  </div>
+  <div>
+    <div
+      class="h-24 flex flex-col space-y-2 text-sm flex-1 overflow-y-scroll pr-4"
+    >
+      <template
+        x-for="user in allUsers.filter(user => (new RegExp(userSearchString, 'i')).test(user.username) && !roomUsers.some(uuser => uuser.user_id === user.user_id))"
+        :key="user.user_id"
+      >
+        <div class="flex justify-between items-center">
+          <div class="flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-4 h-4 mr-2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+              />
+            </svg>
+            <div
+              class="w-24 overflow-hidden whitespace-nowrap text-ellipsis text-xs"
+              x-text="user.username"
+            ></div>
+          </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-4 h-4 cursor-pointer"
+            @click="createMembership(user.user_id)"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+        </div>
+      </template>
+    </div>
+    <input
+      class="!mt-2 !text-xs"
+      type="text"
+      x-model="userSearchString"
+      placeholder="Search for user..."
+    />
+  </div>
+</div>
