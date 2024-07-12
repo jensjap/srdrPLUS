@@ -3,7 +3,7 @@
   x-show="tab_type == 'assignments' || tab_type == 'assignments_archived'"
 >
   <div
-    class="flex flex-col w-full my-4 h-full overflow-y-scroll space-y-1 bg-white"
+    class="flex flex-col w-full my-4 h-auto overflow-y-scroll space-y-1 bg-white"
   >
     <template
       x-for="(assignment, assignment_index) in assignments"
@@ -208,7 +208,7 @@
     </template>
   </div>
   <div
-    class="flex flex-col w-full h-full pl-4 pr-4 py-4 -mr-4 overflow-y-scroll space-y-1 bg-white"
+    class="flex flex-col w-full h-auto pl-4 pr-4 py-4 -mr-4 overflow-y-scroll space-y-1 bg-white"
   >
     <div
       class="flex flex-1 overflow-hidden"
@@ -227,28 +227,28 @@
           <div
             class="p-3 rounded-lg"
             :class="{
-      'col-start-1': message.user_id !== current_user_id,
-      'col-end-8': message.user_id !== current_user_id,
-      'col-start-6': message.user_id === current_user_id,
-      'col-end-13': message.user_id === current_user_id,
-    }"
+              'col-start-1': message.user_id !== current_user_id,
+              'col-end-8': message.user_id !== current_user_id,
+              'col-start-6': message.user_id === current_user_id,
+              'col-end-13': message.user_id === current_user_id,
+            }"
           >
             <div
               class="flex"
               :class="{
-        'flex-row': message.user_id !== current_user_id,
-        'items-center': message.user_id !== current_user_id,
-        'items-center': message.user_id === current_user_id,
-        'justify-start': message.user_id === current_user_id,
-        'flex-row-reverse': message.user_id === current_user_id,
-      }"
+                'flex-row': message.user_id !== current_user_id,
+                'items-center': message.user_id !== current_user_id,
+                'items-center': message.user_id === current_user_id,
+                'justify-start': message.user_id === current_user_id,
+                'flex-row-reverse': message.user_id === current_user_id,
+              }"
             >
               <div
                 class="relative ml-3 text-sm py-2 px-4 shadow rounded-xl"
                 :class="{
-          'bg-white': message.user_id !== current_user_id,
-          'bg-indigo-100': message.user_id === current_user_id,
-        }"
+                  'bg-white': message.user_id !== current_user_id,
+                  'bg-indigo-100': message.user_id === current_user_id,
+                }"
               >
                 <div
                   x-text="message.text"
@@ -293,15 +293,15 @@
                   <div
                     class="flex cursor-pointer"
                     @click="if (threadMessageId === message.id) {
-                  threadMessages = [];
-                  threadMessageId = null;
-                } else {
-                  threadMessages = message.messages;
-                  threadMessageId = message.id;
-                  message.messages.forEach((message) => {
-                    destroyMessageUnread(message);
-                  });
-                }"
+                      threadMessages = [];
+                      threadMessageId = null;
+                    } else {
+                      threadMessages = message.messages;
+                      threadMessageId = message.id;
+                      message.messages.forEach((message) => {
+                        destroyMessageUnread(message);
+                      });
+                    }"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -343,28 +343,28 @@
           <div
             class="p-3 rounded-lg"
             :class="{
-      'col-start-1': message.user_id !== current_user_id,
-      'col-end-8': message.user_id !== current_user_id,
-      'col-start-6': message.user_id === current_user_id,
-      'col-end-13': message.user_id === current_user_id,
-    }"
+              'col-start-1': message.user_id !== current_user_id,
+              'col-end-8': message.user_id !== current_user_id,
+              'col-start-6': message.user_id === current_user_id,
+              'col-end-13': message.user_id === current_user_id,
+            }"
           >
             <div
               class="flex"
               :class="{
-        'flex-row': message.user_id !== current_user_id,
-        'items-center': message.user_id !== current_user_id,
-        'items-center': message.user_id === current_user_id,
-        'justify-start': message.user_id === current_user_id,
-        'flex-row-reverse': message.user_id === current_user_id,
-      }"
+                'flex-row': message.user_id !== current_user_id,
+                'items-center': message.user_id !== current_user_id,
+                'items-center': message.user_id === current_user_id,
+                'justify-start': message.user_id === current_user_id,
+                'flex-row-reverse': message.user_id === current_user_id,
+              }"
             >
               <div
                 class="relative ml-3 text-sm py-2 px-4 shadow rounded-xl"
                 :class="{
-          'bg-white': message.user_id !== current_user_id,
-          'bg-indigo-100': message.user_id === current_user_id,
-        }"
+                  'bg-white': message.user_id !== current_user_id,
+                  'bg-indigo-100': message.user_id === current_user_id,
+                }"
               >
                 <div
                   x-text="message.text"
