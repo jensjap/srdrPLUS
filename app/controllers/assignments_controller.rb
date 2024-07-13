@@ -37,12 +37,19 @@ class AssignmentsController < ApplicationController
 
   def create
     # TODO: authorize
-    Assignment.createdummy
+    assignment = Assignment.new(strong_params)
+    assignment.assignor_id = current_user.id
+    assignment.status = Assignment::AWAITING_WORK,
+    assignment.link = "#{assignment.assignable_type.downcase.pluralize}/#{assignment.assignable_id}",
+    assignment.deadline = 2.days.from_now,
+    assignment.save
+
+    render json: assignment.as_json(include: { assignable: { include: { assignments: { methods: :name } } } }), status: 200
   end
 
   private
 
   def strong_params
-    params.permit(:status, :assignee_id, :deadline, :archived)
+    params.permit(:assignable_type, :assignable_id, :status, :assignee_id, :deadline, :archived)
   end
 end

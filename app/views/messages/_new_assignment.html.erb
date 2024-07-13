@@ -32,7 +32,10 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
-            <template x-for="extraction in newAssignments" :key="extraction.id">
+            <template
+              x-for="(extraction, extraction_index) in newAssignments"
+              :key="extraction.id"
+            >
               <tr>
                 <td
                   class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0"
@@ -52,8 +55,11 @@
                     </template>
                   </ul>
                 </td>
-                <td>
-                  <select class="text-xs" @change="">
+                <td x-data="{ selected_user_id: extraction.user_id }">
+                  <select
+                    class="text-xs w-auto"
+                    @change="selected_user_id = $event.target.value; console.log(selected_user_id)"
+                  >
                     <template x-for="member in members" :key="member.id">
                       <option
                         :value="member.id"
@@ -62,6 +68,12 @@
                       ></option>
                     </template>
                   </select>
+                  <button
+                    class="bg-srdrpurple text-white p-2 cursor-pointer"
+                    @click="createAssignment('Extraction', extraction.id, selected_user_id, extraction_index)"
+                  >
+                    Create Assignment
+                  </button>
                 </td>
               </tr>
             </template>

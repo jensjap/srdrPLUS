@@ -36,7 +36,7 @@
     };
     Alpine.data("chat", () => ({
       chatModal: true,
-      tab_type: "assignments",
+      tab_type: "new_assignment",
       selected_room: null,
       selected_rooms: [],
       selected_messages: [],
@@ -111,14 +111,27 @@
         await this.getAssignments();
       },
 
-      async createAssignment() {
+      async createAssignment(
+        assignable_type,
+        assignable_id,
+        assignee_id,
+        extraction_index
+      ) {
         const response = await fetch("/assignments/", {
           method: "POST",
           headers,
-          body: JSON.stringify({}),
+          body: JSON.stringify({
+            assignable_type,
+            assignable_id,
+            assignee_id,
+          }),
         });
 
-        this.getAssignments();
+        const data = await response.json();
+        console.log(data.assignable);
+        console.log(this.newAssignments);
+        console.log(extraction_index);
+        this.newAssignments[extraction_index] = data.assignable;
       },
 
       async getAssignments(room_id) {

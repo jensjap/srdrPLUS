@@ -30,18 +30,6 @@ class Assignment < ApplicationRecord
   WORK_APPROVED = 'work_approved'.freeze
   WORK_REJECTED = 'work_rejected'.freeze
 
-  def self.createdummy
-    Assignment.create(
-      assignor: User.first,
-      assignee: User.second,
-      assignable_type: 'Extraction',
-      assignable_id: 1637,
-      status: AWAITING_WORK,
-      link: 'http://localhost:3000/extractions/334',
-      deadline: 2.days.from_now,
-    )
-  end
-
   def handles
     {
       assignee: {
