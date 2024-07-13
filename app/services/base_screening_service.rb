@@ -128,12 +128,19 @@ class BaseScreeningService
   end
 
   def self.find_unfinished_sr(screening, user)
-    sr_model.find_by(
-      "#{sr_relation}": screening,
-      user:,
-      label: nil,
-      privileged: false
-    )
+    project_id = screening.project.id
+    # Exclude CitationsProject IDs with any of the excluded screening_status
+    excluded_types_by_screening_status = excluded_screening_statuses
+    excluded_citations_project_ids = CitationsProject
+                                     .where(project_id:)
+                                     .where(screening_status: excluded_types_by_screening_status)
+                                     .pluck(:id)
+    sr_model.where("#{sr_relation}": screening,
+                   user:,
+                   label: nil,
+                   privileged: false)
+            .where.not(citations_project_id: excluded_citations_project_ids)
+            .first
   end
 
   def self.find_or_create_unprivileged_sr(screening, user)
@@ -141,12 +148,14 @@ class BaseScreeningService
     return nil if citation_id.nil?
 
     cp = CitationsProject.find_by(project: screening.project, citation_id:)
-    sr_model.find_or_create_by!(
-      "#{sr_relation}": screening,
-      user:,
-      citations_project: cp,
-      privileged: false
-    )
+    sr_model.transaction do
+      sr_model.find_or_create_by!(
+        "#{sr_relation}": screening,
+        user:,
+        citations_project: cp,
+        privileged: false
+      )
+    end
   end
 
   def self.get_next_pilot_citation_id(screening, user)
@@ -213,19 +222,17 @@ class BaseScreeningService
     project_id = screening.project.id
     unscreened_citation_ids =
       other_users_screened_citation_ids(screening, user) - user_screened_citation_ids(screening, user)
-    # Exclude CitationsProject IDs with any of the excluded screening_statuses
+    # Exclude CitationsProject IDs with any of the excluded screening_status
     excluded_types_by_screening_status = excluded_screening_statuses
-    # Find CitationsProject IDs with any of the excluded qualification types
     excluded_citations_project_ids = CitationsProject
                                      .where(project_id:)
                                      .where(screening_status: excluded_types_by_screening_status)
                                      .pluck(:id)
-    unscreened_citation_ids =
-      CitationsProject
-      .where(project_id:)
-      .where(citation_id: unscreened_citation_ids)
-      .where.not(id: excluded_citations_project_ids)
-      .pluck(:citation_id)
+    unscreened_citation_ids = CitationsProject
+                              .where(project_id:)
+                              .where(citation_id: unscreened_citation_ids)
+                              .where.not(id: excluded_citations_project_ids)
+                              .pluck(:citation_id)
     citation_id = unscreened_citation_ids.tally.select { |_, v| v == 1 }.keys.sample
     citation_id || get_next_singles_citation_id(screening)
   end
@@ -277,7 +284,7 @@ class BaseScreeningService
     case name
     when 'AbstractScreeningService'
       [
-        CitationsProject::AS_UNSCREENED,
+        # CitationsProject::AS_UNSCREENED,
         # CitationsProject::AS_PARTIALLY_SCREENED,
         CitationsProject::AS_IN_CONFLICT,
         CitationsProject::AS_REJECTED,
@@ -300,7 +307,7 @@ class BaseScreeningService
         CitationsProject::AS_PARTIALLY_SCREENED,
         CitationsProject::AS_IN_CONFLICT,
         CitationsProject::AS_REJECTED,
-        CitationsProject::FS_UNSCREENED,
+        # CitationsProject::FS_UNSCREENED,
         # CitationsProject::FS_PARTIALLY_SCREENED,
         CitationsProject::FS_IN_CONFLICT,
         CitationsProject::FS_REJECTED,
