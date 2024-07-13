@@ -246,7 +246,7 @@ class AllResourceSupplyingService
       'identifier' => FhirResourceService.build_identifier('Project', project.id),
       'type' => { 'text' => 'Project' },
       'date' => project_updated_date,
-      'author' => { 'display' => 'SRDR+' },
+      'author' => [{ 'display' => 'SRDR+' }],
       'title' => project_title
     }
   end
