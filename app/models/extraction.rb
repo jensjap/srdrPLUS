@@ -59,6 +59,8 @@ class Extraction < ApplicationRecord
   has_many :extractions_key_questions_projects_selections, dependent: :destroy
   has_many :key_questions_projects, through: :extractions_key_questions_projects_selections
 
+  has_many :assignments, as: :assignable
+
   delegate :citation, to: :citations_project
   delegate :username, to: :user, allow_nil: true
 

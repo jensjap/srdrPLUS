@@ -59,12 +59,14 @@
       members: [],
       comboBoxQuery: "",
       selectedAssignments: [],
+      newAssignments: [],
 
       async init() {
         await this.fetchRooms();
         this.selected_rooms = this.chat_rooms;
         this.sortRooms();
         this.getAssignments();
+        this.getNewAssignments();
         await this.setupWS();
       },
 
@@ -130,6 +132,18 @@
         const data = await response.json();
         this.assignments = data.assignments;
         this.members = data.members;
+      },
+
+      async getNewAssignments() {
+        const response = await fetch(`/assignments/new`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.newAssignments = data;
       },
 
       async createAssignmentsMessage(message_id) {

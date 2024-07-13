@@ -1,5 +1,73 @@
 <div class="flex w-full bg-gray-50" x-show="tab_type == 'new_assignment'">
-  <div
-    class="flex flex-col w-full my-4 h-auto overflow-y-scroll space-y-1 bg-white"
-  ></div>
+  <div class="flow-root h-auto overflow-y-scroll my-4 p-2 w-full">
+    <div class="overflow-x-auto">
+      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        <table class="min-w-full divide-y divide-gray-300">
+          <thead>
+            <tr>
+              <th
+                scope="col"
+                class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
+              >
+                Type
+              </th>
+              <th
+                scope="col"
+                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              >
+                ID
+              </th>
+              <th
+                scope="col"
+                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              >
+                Assignments
+              </th>
+              <th
+                scope="col"
+                class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+              >
+                Assign To
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <template x-for="extraction in newAssignments" :key="extraction.id">
+              <tr>
+                <td
+                  class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0"
+                >
+                  Extraction
+                </td>
+                <td
+                  class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                  x-text="extraction.id"
+                ></td>
+                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                  <ul>
+                    <template x-for="assignment in extraction.assignments">
+                      <li>
+                        <div x-text="assignment.name"></div>
+                      </li>
+                    </template>
+                  </ul>
+                </td>
+                <td>
+                  <select class="text-xs" @change="">
+                    <template x-for="member in members" :key="member.id">
+                      <option
+                        :value="member.id"
+                        :selected="member.id === extraction.user_id"
+                        x-text="member.handle"
+                      ></option>
+                    </template>
+                  </select>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>

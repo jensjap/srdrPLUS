@@ -5,8 +5,8 @@
 #  id              :bigint           not null, primary key
 #  assignor_id     :integer
 #  assignee_id     :integer
-#  assignment_type :string(255)
-#  assignment_id   :integer
+#  assignable_type :string(255)      not null
+#  assignable_id   :bigint           not null
 #  status          :string(255)
 #  link            :text(65535)
 #  deadline        :datetime
@@ -20,6 +20,7 @@ class Assignment < ApplicationRecord
   has_many :messages, through: :assignments_messages
   belongs_to :assignor, class_name: 'User', foreign_key: 'assignor_id'
   belongs_to :assignee, class_name: 'User', foreign_key: 'assignee_id'
+  belongs_to :assignable, polymorphic: true
   before_save :create_log_entries
 
   EXTRACTION = 'extraction'.freeze
@@ -33,8 +34,8 @@ class Assignment < ApplicationRecord
     Assignment.create(
       assignor: User.first,
       assignee: User.second,
-      assignment_type: EXTRACTION,
-      assignment_id: 334,
+      assignable_type: 'Extraction',
+      assignable_id: 1637,
       status: AWAITING_WORK,
       link: 'http://localhost:3000/extractions/334',
       deadline: 2.days.from_now,
@@ -55,7 +56,7 @@ class Assignment < ApplicationRecord
   end
 
   def name
-    "Assignment# #{id}: #{assignment_type} #{assignment_id}"
+    "Assignment# #{id}: #{assignable_type} #{assignable_id}"
   end
 
   def formatted_deadline

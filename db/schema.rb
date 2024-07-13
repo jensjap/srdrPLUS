@@ -261,17 +261,16 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_11_113146) do
   create_table "assignments", charset: "utf8mb3", force: :cascade do |t|
     t.integer "assignor_id"
     t.integer "assignee_id"
-    t.string "assignment_type"
-    t.integer "assignment_id"
+    t.string "assignable_type", null: false
+    t.bigint "assignable_id", null: false
     t.string "status"
     t.text "link"
     t.datetime "deadline"
     t.boolean "archived"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["assignable_type", "assignable_id"], name: "index_assignments_on_assignable"
     t.index ["assignee_id"], name: "index_assignments_on_assignee_id"
-    t.index ["assignment_id"], name: "index_assignments_on_assignment_id"
-    t.index ["assignment_type"], name: "index_assignments_on_assignment_type"
     t.index ["assignor_id"], name: "index_assignments_on_assignor_id"
   end
 
