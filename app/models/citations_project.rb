@@ -15,7 +15,20 @@
 #
 
 class CitationsProject < ApplicationRecord
-  searchkick callbacks: :async
+  searchkick callbacks: :async,
+             mappings: {
+               properties: {
+                 accession_number_alts: { type: 'keyword' },
+                 author_map_string: { type: 'keyword' },
+                 name: { type: 'keyword' },
+                 year: { type: 'keyword' },
+                 abstract_qualification: { type: 'keyword' },
+                 fulltext_qualification: { type: 'keyword' },
+                 extraction_qualification: { type: 'keyword' },
+                 consolidation_qualification: { type: 'keyword' },
+                 screening_status: { type: 'keyword' },
+               }
+             }
 
   scope :not_disqualified,
         -> { where.not(screening_status: CitationsProject::REJECTED) }
@@ -59,12 +72,17 @@ class CitationsProject < ApplicationRecord
     E_NEED_EXTRACTION,
     E_IN_PROGRESS,
     E_REJECTED,
-    E_COMPLETE
+    E_COMPLETE,
+    C_NEED_CONSOLIDATION,
+    C_IN_PROGRESS,
+    C_REJECTED,
+    C_COMPLETE
   ]
   REJECTED = [
     AS_REJECTED,
     FS_REJECTED,
-    E_REJECTED
+    E_REJECTED,
+    C_REJECTED
   ]
 
   # We find all CitationsProject entries that have the exact same citation_id

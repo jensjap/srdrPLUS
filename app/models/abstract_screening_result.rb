@@ -14,7 +14,12 @@
 #  form_complete         :boolean          default(FALSE), not null
 #
 class AbstractScreeningResult < ApplicationRecord
-  searchkick
+  searchkick callbacks: :async,
+             mappings: {
+               properties: {
+                 name: { type: 'keyword' }
+               }
+             }
 
   belongs_to :abstract_screening
   belongs_to :citations_project
@@ -103,7 +108,7 @@ class AbstractScreeningResult < ApplicationRecord
     end
     return false unless relevant_asrs.all? { |asr| asr.label == 1 } || relevant_asrs.all? { |asr| asr.label == -1 }
 
-    (abstract_screening.double_screening? && relevant_asrs.count == 2) ||
+    (abstract_screening.double_screening? && relevant_asrs.count >= 2) ||
       (abstract_screening.all_screenings? && relevant_asrs.count == required_asrs_pilot_count)
   end
 

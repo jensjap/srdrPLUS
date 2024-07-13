@@ -21,6 +21,8 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen'
   gem 'web-console'
+  gem 'better_errors'
+  gem 'binding_of_caller'
 end
 
 gem 'amoeba' # for things like cloning questions (extraction forms maybe?)
