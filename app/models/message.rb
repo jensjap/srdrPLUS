@@ -20,15 +20,8 @@ class Message < ApplicationRecord
   has_many :message_unreads, dependent: :destroy
 
   def broadcast_message
-    room_type = room.project_id.nil? ? 'chat' : 'project'
     online_users = ActionCable.server.connections.map(&:current_user)
-    broadcast_users =
-      case room_type
-      when 'project'
-        room.project.users
-      when 'chat'
-        room.users
-      end
+    broadcast_users = room.users
     bus = broadcast_users.reject { |bu| bu == user }.map { |bu| { user_id: bu.id, message_id: id } }
     MessageUnread.insert_all(bus) unless bus.empty?
     (broadcast_users & online_users).each do |broadcast_user|
