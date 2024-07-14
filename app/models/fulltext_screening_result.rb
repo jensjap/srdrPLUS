@@ -108,7 +108,7 @@ class FulltextScreeningResult < ApplicationRecord
     end
     return false unless relevant_fsrs.all? { |fsr| fsr.label == 1 } || relevant_fsrs.all? { |fsr| fsr.label == -1 }
 
-    (fulltext_screening.double_screening? && relevant_fsrs.count == 2) ||
+    (fulltext_screening.double_screening? && relevant_fsrs.count >= 2) ||
       (fulltext_screening.all_screenings? && relevant_fsrs.count == required_fsrs_pilot_count)
   end
 
