@@ -78,6 +78,8 @@ class FulltextScreeningService < BaseScreeningService
       CitationsProject::AS_PARTIALLY_SCREENED,
       CitationsProject::AS_IN_CONFLICT,
       CitationsProject::AS_REJECTED,
+      # CitationsProject::FS_UNSCREENED,
+      CitationsProject::FS_PARTIALLY_SCREENED,
       CitationsProject::FS_IN_CONFLICT,
       CitationsProject::FS_REJECTED,
       CitationsProject::E_NEED_EXTRACTION,
@@ -91,7 +93,7 @@ class FulltextScreeningService < BaseScreeningService
     ]
     project_id = fulltext_screening.project.id
 
-    # Step 1: Find CitationsProject IDs with any of the excluded qualification types
+    # Step 1: Find CitationsProject IDs with any of the excluded screening_status types
     excluded_citations_project_ids = CitationsProject
                                      .where(project_id:)
                                      .where(screening_status: excluded_types)
