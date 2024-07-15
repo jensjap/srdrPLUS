@@ -148,14 +148,16 @@ class BaseScreeningService
     return nil if citation_id.nil?
 
     cp = CitationsProject.find_by(project: screening.project, citation_id:)
+    new_sr = nil
     sr_model.transaction do
-      sr_model.find_or_create_by!(
+      new_sr = sr_model.find_or_create_by!(
         "#{sr_relation}": screening,
         user:,
         citations_project: cp,
         privileged: false
       )
     end
+    new_sr
   end
 
   def self.get_next_pilot_citation_id(screening, user)
