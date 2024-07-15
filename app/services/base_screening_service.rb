@@ -288,7 +288,7 @@ class BaseScreeningService
       [
         # CitationsProject::AS_UNSCREENED,
         # CitationsProject::AS_PARTIALLY_SCREENED,
-        CitationsProject::AS_IN_CONFLICT,
+        # CitationsProject::AS_IN_CONFLICT,
         CitationsProject::AS_REJECTED,
         CitationsProject::FS_UNSCREENED,
         CitationsProject::FS_PARTIALLY_SCREENED,
@@ -311,7 +311,7 @@ class BaseScreeningService
         CitationsProject::AS_REJECTED,
         # CitationsProject::FS_UNSCREENED,
         # CitationsProject::FS_PARTIALLY_SCREENED,
-        CitationsProject::FS_IN_CONFLICT,
+        # CitationsProject::FS_IN_CONFLICT,
         CitationsProject::FS_REJECTED,
         CitationsProject::E_NEED_EXTRACTION,
         CitationsProject::E_IN_PROGRESS,
