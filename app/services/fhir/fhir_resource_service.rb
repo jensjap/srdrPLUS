@@ -33,6 +33,7 @@ class FhirResourceService
     def get_list(fhir_objs:)
       fhir_list = {
         'resourceType' => 'List',
+        'title' => 'List',
         'contained' => [],
         'status' => 'current',
         'mode' => 'snapshot',
@@ -93,6 +94,7 @@ class FhirResourceService
         'resourceType' => 'ArtifactAssessment',
         'id' => "#{id_prefix}-#{srdrplus_id}",
         'identifier' => build_identifier(srdrplus_type, srdrplus_id),
+        'title' => 'ArtifactAssessment: ' + "#{srdrplus_type}/#{srdrplus_id}",
         'artifactUri' => artifact_uri,
         'content' => []
       }
