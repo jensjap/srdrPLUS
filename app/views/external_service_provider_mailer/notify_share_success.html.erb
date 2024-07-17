@@ -10,7 +10,7 @@
     Below is the list of links to the resource(s) shared:<br />
     <% @lsof_fois.each do |foi| %>
         <% resource_foi_url = @resource_url + '/resources/' + foi.to_s %>
-        <a href="<%= resource_foi_url %>"><%= resource_foi_url %></a>
+        <a ses:no-track href="<%= resource_foi_url %>"><%= resource_foi_url %></a>
         <br />
     <% end %>
 </div>
