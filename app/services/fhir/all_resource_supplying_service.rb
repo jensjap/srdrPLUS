@@ -241,7 +241,7 @@ class AllResourceSupplyingService
 
     {
       'resourceType' => 'Composition',
-      'status' => 'unknown',
+      'status' => 'final',
       'id' => "12-#{project.id}",
       'identifier' => FhirResourceService.build_identifier('Project', project.id),
       'type' => { 'text' => 'Project' },
