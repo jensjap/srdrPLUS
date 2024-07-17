@@ -239,7 +239,7 @@ class AllResourceSupplyingService
     project_title = project.name || 'No project title'
     project_updated_date = project.updated_at.strftime("%Y-%m-%dT%H:%M:%S%:z")
 
-    status = if project.publishing&.approval&.approvable_type == 'Publishing'
+    status = if project.publishing&.approval.present?
                'final'
              else
                'unknown'
