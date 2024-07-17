@@ -239,9 +239,15 @@ class AllResourceSupplyingService
     project_title = project.name || 'No project title'
     project_updated_date = project.updated_at.strftime("%Y-%m-%dT%H:%M:%S%:z")
 
+    status = if project.publishing&.approval&.approvable_type == 'Publishing'
+               'final'
+             else
+               'unknown'
+             end
+
     {
       'resourceType' => 'Composition',
-      'status' => 'final',
+      'status' => status,
       'id' => "12-#{project.id}",
       'identifier' => FhirResourceService.build_identifier('Project', project.id),
       'type' => { 'text' => 'Project' },
