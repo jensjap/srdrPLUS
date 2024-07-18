@@ -1,40 +1,77 @@
-.row
-  .columns.small-12.medium-8.large-6.large-centered
-    h3 Start a new Project
+div x-data="$store.createConfirmation"
+  = render 'shared/alert_modal'
+  .row
+    .columns.small-12.medium-8.large-6.large-centered
+      h3 Start a new Project
 
-    = simple_form_for(@project, html: { data: { 'abide': '', 'live-validate': true } }) do |f|
-      = f.error_notification
+      = simple_form_for(@project, html: {  id: 'project-form' }) do |f|
+        = f.error_notification
 
-      .alert.callout data-abide-error='' style='display: none;'
-        p
-          i.fi-alert>
-          ' Please correct the errors below.
+        .alert.callout data-abide-error='' style='display: none;'
+          p
+            i.fi-alert>
+            ' Please correct the errors below.
 
-      .form-inputs
-        = f.input :name, required: true, hint: 'Project name cannot be blank', autofocus: true
-        = f.input :description, input_html: { rows: 4 }
+        .form-inputs
+          = f.input :name, required: true, hint: 'Project name cannot be blank', autofocus: true, input_html: { id: 'project-name' }
+          = f.input :description, input_html: { rows: 4 }
 
-        select#create-type
-          option value="empty" Create an empty project
-          /option value="json" Create project from an SRDR+ JSON export
-          option value="distiller" Create project from a Distiller SR .csv export
+          select#create-type
+            option value="empty" Create an empty project
+            /option value="json" Create project from an SRDR+ JSON export
+            option value="distiller" Create project from a Distiller SR .csv export
 
-        #projects-users-container
-        = f.simple_fields_for :projects_users do |g|
-          = render 'projects/new/projects_user_form', f:g
-        .hide
-          = link_to_add_association 'Add User', f, :projects_users,
-              partial: 'projects/new/projects_user_form',
-              id: 'add-projects-user',
-              "data-association-insertion-node" => '#projects-users-container',
-              "data-association-insertion-method" => 'append'
-          
-      .form-actions
-        .submit-with-confirmation.hide
-          = f.button :submit, data: { confirm: t('confirm') }
-        .submit
-          = f.button :submit
+          #projects-users-container
+          = f.simple_fields_for :projects_users do |g|
+            = render 'projects/new/projects_user_form', f:g
+          .hide
+            = link_to_add_association 'Add User', f, :projects_users,
+                partial: 'projects/new/projects_user_form',
+                id: 'add-projects-user',
+                "data-association-insertion-node" => '#projects-users-container',
+                "data-association-insertion-method" => 'append'
 
-.column.row
-  = link_to 'Back', projects_path
+        .form-actions
+          .submit-with-confirmation.hide
+            = f.button :submit, 'Submit', id: 'submit-btn'
+          .submit
+            = f.button :submit, 'Submit', id: 'direct-submit-btn'
 
+  .column.row
+    = link_to 'Back', projects_path
+
+javascript:
+  document.addEventListener('alpine:init', () => {
+    Alpine.store('createConfirmation', {
+      isAlertModalOpen: false,
+      alertModalContent: '',
+      confirmAction: null,
+      openModal(content, action) {
+        this.alertModalContent = content;
+        this.confirmAction = action;
+        this.isAlertModalOpen = true;
+      },
+      closeAlertModal() {
+        this.isAlertModalOpen = false;
+        this.confirmAction = null;
+      },
+      modalConfirmAction() {
+        if (this.confirmAction) {
+          this.confirmAction();
+        }
+        this.closeAlertModal();
+      }
+    });
+  });
+
+  document.getElementById('submit-btn').addEventListener('click', function(event) {
+    event.preventDefault();
+    var projectName = document.getElementById('project-name').value;
+    if (!projectName) {
+      alert('Project name cannot be blank');
+    } else {
+      Alpine.store('createConfirmation').openModal('Are you sure you want to submit?', function() {
+        document.getElementById('project-form').submit();
+      });
+    }
+  });

@@ -173,7 +173,6 @@ class ExtractionFormsProject < ApplicationRecord
   end
 
   def ensure_proper_sections
-    debugger
     if extraction_forms_project_type.eql?(
       ExtractionFormsProjectType.find_by(name: ExtractionFormsProjectType::STANDARD)
     )
