@@ -16,8 +16,9 @@ class ExternalServiceProvidersProjectsUserShareJob < ApplicationJob
     fps = FevirPlatformService.new(@project.id, @external_service_providers_projects_user.api_token)
     response = fps.submit_resource
     if response['success']
-      resource_url = "#{@external_service_providers_projects_user.external_service_provider.url}/resources/#{response["resourcetype"]}/#{response["formstateid"]}"
-      ExternalServiceProviderMailer.notify_share_success(*args, resource_url).deliver_later
+      lsof_fois = response['fois']
+      resource_url = "#{@external_service_providers_projects_user.external_service_provider.url}"
+      ExternalServiceProviderMailer.notify_share_success(*args, resource_url, lsof_fois).deliver_later
     else
       ExternalServiceProviderMailer.notify_share_failure(*args, response).deliver_later
     end

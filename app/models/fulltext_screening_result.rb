@@ -14,7 +14,12 @@
 #  form_complete         :boolean          default(FALSE), not null
 #
 class FulltextScreeningResult < ApplicationRecord
-  searchkick callbacks: :async
+  searchkick callbacks: :async,
+             mappings: {
+               properties: {
+                 name: { type: 'keyword' }
+               }
+             }
 
   belongs_to :fulltext_screening
   belongs_to :citations_project
@@ -104,7 +109,7 @@ class FulltextScreeningResult < ApplicationRecord
     end
     return false unless relevant_fsrs.all? { |fsr| fsr.label == 1 } || relevant_fsrs.all? { |fsr| fsr.label == -1 }
 
-    (fulltext_screening.double_screening? && relevant_fsrs.count == 2) ||
+    (fulltext_screening.double_screening? && relevant_fsrs.count >= 2) ||
       (fulltext_screening.all_screenings? && relevant_fsrs.count == required_fsrs_pilot_count)
   end
 

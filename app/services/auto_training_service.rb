@@ -1,5 +1,5 @@
 class AutoTrainingService
-  MAX_RETRIES = 3
+  MAX_RETRIES = 5
   URL = ENV['ML_SERVER']
 
   def self.check_and_train_and_predict(x)
@@ -26,7 +26,12 @@ class AutoTrainingService
 
             if train_result.include? "Training complete"
               timestamp = train_result.match(/model timestamp: (\S+)\)/)[1]
-              data, predictions, ml_model = robot_service.get_predictions(timestamp)
+              data = MachineLearningDataSupplyingService.get_unlabel_abstract(@project_id)
+              if data.empty?
+                break
+              end
+
+              predictions, ml_model = robot_service.get_predictions(timestamp, data)
 
               if labeled_percentage < 0.1
                 robot_service.save_predictions(data, predictions, ml_model)

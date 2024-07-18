@@ -49,6 +49,7 @@ class ExtractionSupplyingService
     fhir_list = FhirResourceService.get_list(fhir_objs: fhir_extraction_sections)
     fhir_list['identifier'] = FhirResourceService.build_identifier('Extraction', id)
     fhir_list['id'] = "13-#{id}"
+    fhir_list['title'] = 'Extraction Data'
 
     fhir_list
   end
@@ -650,6 +651,7 @@ class ExtractionSupplyingService
       'id' => "5-#{record_id}",
       'status' => outcome_status,
       'identifier' => FhirResourceService.build_identifier('Record', record_id),
+      'title' => 'Evidence: ' + 'Record/' + record_id.to_s,
       'variableDefinition' => [
         FhirResourceService.build_evidence_variable_definition(description: population_name, variable_role: 'population')
       ],

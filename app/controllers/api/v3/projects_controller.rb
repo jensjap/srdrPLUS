@@ -3,7 +3,7 @@ class Api::V3::ProjectsController < Api::V3::BaseController
 
   def show
     authorize(@project)
-    @project_bundle = AllResourceSupplyingService.new.find_by_project_id(@project.id)
+    @project_bundle = AllResourceSupplyingService.new.transaction_find_by_project_id(@project.id)
     respond_to do |format|
       format.fhir_xml { render xml: @project_bundle }
       format.fhir_json { render json: @project_bundle }

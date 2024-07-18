@@ -33,6 +33,7 @@ class FhirResourceService
     def get_list(fhir_objs:)
       fhir_list = {
         'resourceType' => 'List',
+        'title' => 'List',
         'contained' => [],
         'status' => 'current',
         'mode' => 'snapshot',
@@ -49,10 +50,24 @@ class FhirResourceService
     end
 
     def get_bundle(fhir_objs:, type:, link_info: nil, full_urls: nil)
-      full_urls ||= []
+      full_urls ||= Array.new(fhir_objs.size)
 
       fhir_objs = fhir_objs.zip(full_urls).each_with_object([]) do |(obj, url), array|
-        array << { 'fullUrl' => url, 'resource' => obj }
+        entry = { 'resource' => obj }
+        entry['fullUrl'] = url if url
+
+        if type == 'transaction'
+          resource_type = obj.dig('resourceType')
+          resource_id = obj.dig('id')
+          if resource_type && resource_id
+            entry['request'] = {
+              'method' => 'POST',
+              'url' => "#{resource_type}/#{resource_id}"
+            }
+          end
+        end
+
+        array << entry
       end
 
       timestamp = DateTime.now.iso8601(3)
@@ -79,6 +94,7 @@ class FhirResourceService
         'resourceType' => 'ArtifactAssessment',
         'id' => "#{id_prefix}-#{srdrplus_id}",
         'identifier' => build_identifier(srdrplus_type, srdrplus_id),
+        'title' => 'ArtifactAssessment: ' + "#{srdrplus_type}/#{srdrplus_id}",
         'artifactUri' => artifact_uri,
         'content' => []
       }

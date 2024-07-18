@@ -7,7 +7,12 @@
 </div>
 
 <div>
-    You may inspect the shared resource at &lbrack;<%= @resource_url %>&rbrack;
+    Below is the list of links to the resource(s) shared:<br />
+    <% @lsof_fois.each do |foi| %>
+        <% resource_foi_url = @resource_url + '/resources/' + foi.to_s %>
+        <a ses:no-track href="<%= resource_foi_url %>"><%= resource_foi_url %></a>
+        <br />
+    <% end %>
 </div>
 
 <div>

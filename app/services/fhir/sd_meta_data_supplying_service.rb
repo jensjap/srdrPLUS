@@ -291,7 +291,7 @@ class SdMetaDataSupplyingService
       'status' => sr360_status,
       'type' => { 'text' => 'EvidenceReport' },
       'date' => sr360_updated_date,
-      'author' => { 'display' => 'SRDR+' },
+      'author' => [{ 'display' => 'SRDR+' }],
       'title' => sr360_title
     }
   end

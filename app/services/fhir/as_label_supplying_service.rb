@@ -2,6 +2,11 @@ class AsLabelSupplyingService
   BASE_URL = 'https://srdrplus.ahrq.gov/api/v3/'
 
   def find_by_project_id(project_id)
+    artifact_assessments = get_fhir_objs_in_array_by_project_id(project_id)
+    FhirResourceService.get_list(fhir_objs: artifact_assessments)
+  end
+
+  def get_fhir_objs_in_array_by_project_id(project_id)
     project = load_project_with_associations(project_id)
     artifact_assessments = []
 
@@ -10,7 +15,7 @@ class AsLabelSupplyingService
       artifact_assessments.concat(process_screening_qualifications(citation))
     end
 
-    FhirResourceService.get_list(fhir_objs: artifact_assessments)
+    artifact_assessments
   end
 
   private

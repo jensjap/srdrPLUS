@@ -4,6 +4,7 @@ class ExternalServiceProviderMailer < ApplicationMailer
     @project = Project.find(args.second)
     @user = User.find(args.third)
     @resource_url = args.fourth
+    @lsof_fois = args.fifth
     mail(to: @user.email, subject: 'You have a notification from srdrPLUS')
   end
 

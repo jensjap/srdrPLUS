@@ -77,7 +77,7 @@ class AbstractScreeningService < BaseScreeningService
       .where.not(
         screening_status: CitationsProject::AS_UNSCREENED
       )
-      .map(&:citation_id)
+      .pluck(:citation_id)
     ineligible_citation_ids = (project_screened_citation_ids + non_asu_citation_ids).uniq
     preferred_citation = abstract_screening
                          .project
