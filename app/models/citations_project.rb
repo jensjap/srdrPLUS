@@ -221,6 +221,8 @@ class CitationsProject < ApplicationRecord
   end
 
   def evaluate_screening_status
+    return if destroyed?
+
     consolidated_extraction = Extraction.includes(extractions_extraction_forms_projects_sections: :status).where(
       citations_project: self, consolidated: true
     ).first

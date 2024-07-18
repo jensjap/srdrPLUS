@@ -80,6 +80,8 @@ class Extraction < ApplicationRecord
   #  end
 
   def set_stale(state)
+    return unless extraction_checksum
+
     extraction_checksum.save
     extraction_checksum.is_stale = state
     extraction_checksum.save

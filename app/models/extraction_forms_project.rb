@@ -93,7 +93,6 @@ class ExtractionFormsProject < ApplicationRecord
   end
 
   def create_default_sections
-    debugger
     if extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: 'Standard'))
       Section.e_ordered_default_sections.each do |section|
         ExtractionFormsProjectsSection.create(
@@ -156,7 +155,6 @@ class ExtractionFormsProject < ApplicationRecord
   end
 
   def create_default_arms
-    debugger
     if extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: 'Standard'))
       extraction_forms_projects_sections.find_by(
         section: Section.find_by(name: 'Arms')

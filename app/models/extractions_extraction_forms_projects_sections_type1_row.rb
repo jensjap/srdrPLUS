@@ -86,7 +86,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   private
 
   def set_extraction_stale
-    extraction.extraction_checksum.update(is_stale: true) unless extraction.nil?
+    extraction.extraction_checksum&.update(is_stale: true) unless extraction.nil?
   end
 
   def create_default_result_statistic_sections
