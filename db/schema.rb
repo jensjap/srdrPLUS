@@ -530,7 +530,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
     t.index ["project_id"], name: "index_exported_items_on_project_id"
   end
 
-  create_table "external_service_providers", charset: "utf8", force: :cascade do |t|
+  create_table "external_service_providers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.string "url"
@@ -538,7 +538,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_06_071433) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "external_service_providers_projects_users", charset: "utf8", force: :cascade do |t|
+  create_table "external_service_providers_projects_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "external_service_provider_id", null: false
     t.integer "project_id", null: false
     t.integer "user_id", null: false
