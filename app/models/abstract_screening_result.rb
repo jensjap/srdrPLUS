@@ -47,6 +47,7 @@ class AbstractScreeningResult < ApplicationRecord
   end
 
   def evaluate_screening_qualifications
+    return if citations_project.nil?
     return if citations_project.marked_for_destruction?
 
     manual_sqs = citations_project
