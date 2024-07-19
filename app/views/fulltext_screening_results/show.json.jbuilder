@@ -32,7 +32,7 @@ json.options do
   json.no_form_required @fulltext_screening.no_form_required
   json.maybe_form_required @fulltext_screening.maybe_form_required
 end
-cps = @screened_cps.reverse.map do |fsr|
+cps = @screened_cps.map do |fsr|
   {
     fsr_id: fsr.id,
     name: fsr.citation.name,
