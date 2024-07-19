@@ -26,7 +26,7 @@ class AutoTrainingService
 
             if train_result.include? "Training complete"
               timestamp = train_result.match(/model timestamp: (\S+)\)/)[1]
-              data = MachineLearningDataSupplyingService.get_unlabel_abstract(@project_id)
+              data = MachineLearningDataSupplyingService.get_unlabel_abstract(project.id)
               if data.empty?
                 break
               end
