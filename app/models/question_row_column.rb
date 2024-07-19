@@ -101,8 +101,6 @@ class QuestionRowColumn < ApplicationRecord
 
   def create_default_question_row_column_options
     QuestionRowColumnOption.all.each do |opt|
-      next if opt.name == 'answer_choice'
-
       question_row_columns_question_row_column_options.create(
         question_row_column: self,
         question_row_column_option: opt
