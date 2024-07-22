@@ -33,7 +33,7 @@ json.options do
   json.no_form_required @abstract_screening.no_form_required
   json.maybe_form_required @abstract_screening.maybe_form_required
 end
-cps = @screened_cps.reverse.map do |asr|
+cps = @screened_cps.map do |asr|
   {
     asr_id: asr.id,
     name: asr.citation.name,
