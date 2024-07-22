@@ -31,6 +31,7 @@ class ProjectCloningServiceTest < ActiveSupport::TestCase
 
     opts = {
       include_citations: true,
+      include_extraction_forms: true,
       include_extractions: false,
       include_labels: false
     }
@@ -68,6 +69,7 @@ class ProjectCloningServiceTest < ActiveSupport::TestCase
 
     opts = {
       include_citations: true,
+      include_extraction_forms: true,
       include_extractions: false,
       include_labels: false
     }
@@ -118,6 +120,7 @@ class ProjectCloningServiceTest < ActiveSupport::TestCase
 
     opts = {
       include_citations: true,
+      include_extraction_forms: true,
       include_extractions: false,
       include_labels: false
     }
