@@ -13,7 +13,7 @@ class ProjectCloningService
     project.amoeba_copy_labels = amoeba_copy_labels
 
     copied_project = project.amoeba_dup
-    copied_project.create_empty = true
+    copied_project.create_empty = false
     copied_project.is_amoeba_copy = true
     copied_project.save
 

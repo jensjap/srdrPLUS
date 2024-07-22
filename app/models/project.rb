@@ -53,7 +53,7 @@ class Project < ApplicationRecord
   # It seems that this is redundant for amoeba copy because we will skip this callback,
   # However we need this because it is needed in case of Distiller import.
   after_create :create_empty_extraction_form, if: :create_empty
-  after_create :create_default_member, unless: :create_empty
+  after_create :create_default_member
 
   amoeba do
     include_association :key_questions_projects
@@ -407,6 +407,8 @@ class Project < ApplicationRecord
   # end
 
   def create_default_extraction_form
+    return if amoeba_copy_extraction_forms
+
     extraction_forms_projects.create!(
       extraction_forms_project_type: ExtractionFormsProjectType.find_by(name: 'Standard'),
       extraction_form: ExtractionForm.find_by(name: 'ef1')
@@ -414,8 +416,6 @@ class Project < ApplicationRecord
   end
 
   def create_empty_extraction_form
-    return if is_amoeba_copy
-
     efp = ExtractionFormsProject.new(
       project: self,
       extraction_forms_project_type: ExtractionFormsProjectType.find_by(name: 'Standard'),
