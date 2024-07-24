@@ -22,7 +22,7 @@ class KeyQuestionsProject < ApplicationRecord
   has_many :sd_key_questions_projects, inverse_of: :key_questions_project
   has_many :sd_key_questions, through: :sd_key_questions_projects
 
-  has_many :extractions_key_questions_projects_selections, -> { not_disqualified }, dependent: :destroy
+  has_many :extractions_key_questions_projects_selections, dependent: :destroy, inverse_of: :key_questions_project
 
   accepts_nested_attributes_for :key_question, reject_if: :key_question_name_exists?
 

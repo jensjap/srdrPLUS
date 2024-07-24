@@ -9,15 +9,6 @@
 #  updated_at               :datetime         not null
 #
 class ExtractionsKeyQuestionsProjectsSelection < ApplicationRecord
-  scope :not_disqualified,
-        lambda {
-          where.not(
-            extraction_id: CitationsProject.where(
-              screening_status: CitationsProject::REJECTED
-            ).select(:extraction_id)
-          )
-        }
-
   belongs_to :extraction
   belongs_to :key_questions_project
 end

@@ -68,7 +68,6 @@ class ExtractionFormsProjectsSection < ApplicationRecord
                                                       dependent: :nullify
 
   has_many :extractions_extraction_forms_projects_sections,
-           -> { not_disqualified },
            dependent: :destroy,
            inverse_of: :extraction_forms_projects_section
   has_many :extractions, through: :extractions_extraction_forms_projects_sections, dependent: :destroy

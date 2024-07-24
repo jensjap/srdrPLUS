@@ -35,12 +35,13 @@ class Extraction < ApplicationRecord
   end
 
   amoeba do
-    # enable
-    # include_association :statusing
-    # include_association :extractions_extraction_forms_projects_sections
-    # include_association :extractions_key_questions_projects_selections
+    include_association :statusing
+    include_association :extractions_extraction_forms_projects_sections
+    include_association :extractions_key_questions_projects_selections
     customize(lambda { |_original, copy|
       copy.is_amoeba_copy = true
+      copy.projects_users_role = nil
+      copy.user = nil
     })
   end
 
@@ -49,10 +50,9 @@ class Extraction < ApplicationRecord
   scope :consolidated,   -> { where(consolidated: true) }
   scope :unconsolidated, -> { where(consolidated: false) }
   scope :not_disqualified, lambda {
-                             joins(:citations_project)
-                               .where
-                               .not(citations_project: { screening_status: CitationsProject::REJECTED })
-                           }
+    joins(:citations_project)
+      .where.not(citations_projects: { screening_status: CitationsProject::REJECTED })
+  }
 
   belongs_to :project,             inverse_of: :extractions # , touch: true
   belongs_to :citations_project,   inverse_of: :extractions

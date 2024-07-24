@@ -20,16 +20,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 
   after_create :create_default_draft_status
 
-  scope :not_disqualified,
-        lambda {
-          where.not(
-            extraction_id: CitationsProject.where(
-              screening_status: CitationsProject::REJECTED
-            ).select(:extraction_id)
-          )
-        }
-
-  belongs_to :extraction,                        inverse_of: :extractions_extraction_forms_projects_sections
+  belongs_to :extraction, inverse_of: :extractions_extraction_forms_projects_sections
   belongs_to :extraction_forms_projects_section, inverse_of: :extractions_extraction_forms_projects_sections
   belongs_to :link_to_type1, class_name: 'ExtractionsExtractionFormsProjectsSection',
                              foreign_key: 'extractions_extraction_forms_projects_section_id',
@@ -39,7 +30,6 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   has_one :status, through: :statusing
 
   has_many :link_to_type2s,
-           -> { not_disqualified },
            class_name: 'ExtractionsExtractionFormsProjectsSection',
            foreign_key: 'extractions_extraction_forms_projects_section_id',
            dependent: :nullify
