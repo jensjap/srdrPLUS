@@ -58,7 +58,10 @@ div class="p-4 lg:p-8" x-data="$store.deleteConfirmation"
       - else
         - @extractions.each do |extraction|
           tr
-            td data-sort="#{extraction.updated_at.to_i}" = link_to 'Extract Data', work_extraction_path(extraction), style: 'font-weight:bold; text-wrap: nowrap;'
+            - if extraction.user.present?
+              td data-sort="#{extraction.updated_at.to_i}" = link_to 'Extract Data', work_extraction_path(extraction), style: 'font-weight:bold; text-wrap: nowrap;'
+            - else
+              td data-sort="#{extraction.updated_at.to_i}" class='text-red-600' style='font-weight:bold; text-wrap: nowrap;' Requires Assigned User
             td title="#{extraction.citation.authors}" = extraction.citation.authors_short
             td = extraction.year
             td = extraction.pmid
@@ -72,7 +75,7 @@ div class="p-4 lg:p-8" x-data="$store.deleteConfirmation"
                     = extraction.user_handle
                   .projects-users-role-select.hide
                     = form_with model: extraction, html: { remote: true } do |e_f|
-                      = e_f.select :user_id, @users.map { |user| [user.handle, user.id] }, input_html: { class: "index-extractions-select2" }, selected: extraction.user.id
+                      = e_f.select :user_id, @users.map { |user| [user.handle, user.id] }, input_html: { class: "index-extractions-select2" }, selected: extraction.user&.id
             - else
               td = extraction.user_handle
 
