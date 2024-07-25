@@ -57,6 +57,6 @@ class ExtractionDecorator < Decorator
   end
 
   def user_handle
-    user.handle
+    user&.handle
   end
 end

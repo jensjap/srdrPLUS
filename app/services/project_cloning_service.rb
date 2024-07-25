@@ -1,5 +1,5 @@
 class ProjectCloningService
-  def self.clone_project(project, leaders, opts)
+  def self.clone_project(project, leaders = [], opts = {})
     leaders << User.find(2) if leaders.blank?
 
     amoeba_copy_citations = opts[:include_citations] || false
@@ -22,6 +22,13 @@ class ProjectCloningService
         user: leader,
         permissions: 1
       )
+    end
+
+    # Assign all extractions to the first leader.
+    if amoeba_copy_extractions
+      copied_project.extractions.each do |extraction|
+        extraction.update(user: leaders.first)
+      end
     end
 
     copied_project

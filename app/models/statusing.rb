@@ -11,6 +11,10 @@
 #
 
 class Statusing < ApplicationRecord
+  amoeba do
+    set status_id: Status.DRAFT.id
+  end
+
   belongs_to :statusable, polymorphic: true
   belongs_to :status, inverse_of: :statusings
 

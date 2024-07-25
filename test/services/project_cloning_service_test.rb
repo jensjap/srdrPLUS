@@ -171,4 +171,42 @@ class ProjectCloningServiceTest < ActiveSupport::TestCase
     assert_equal(ex_cnt, Extraction.all.size)
     assert_equal(efp_cnt, ExtractionFormsProject.all.size)
   end
+
+  test 'copied citations_projects should belong to copied project' do
+    opts = {
+      include_citations: true,
+      include_extraction_forms: true,
+      include_extractions: false,
+      include_labels: false
+    }
+    copied_project = ProjectCloningService.clone_project(@original_project, @leaders, opts)
+    assert_equal(copied_project.citations_projects.size, 4)
+    assert copied_project.citations_projects.include?(CitationsProject.unscoped.last), 'Last added CitationsProject should belong to project copy'
+  end
+
+  test "copied citations_projects should have screening_status 'asu'" do
+    opts = {
+      include_citations: true,
+      include_extraction_forms: true,
+      include_extractions: false,
+      include_labels: false
+    }
+    copied_project = ProjectCloningService.clone_project(@original_project, @leaders, opts)
+    copied_project.reload
+    assert copied_project.citations_projects.all? { |cp| cp.screening_status.eql?('asu') },
+           "All added CitationsProject should have 'asu' screening_status"
+  end
+
+  test "copied citations_projects should have screening_status 'eip' if extraction exists" do
+    opts = {
+      include_citations: true,
+      include_extraction_forms: true,
+      include_extractions: true,
+      include_labels: false
+    }
+    copied_project = ProjectCloningService.clone_project(@original_project, @leaders, opts)
+    copied_project.reload
+    assert copied_project.citations_projects.all? { |cp| cp.screening_status.eql?('eip') },
+           "All added CitationsProject should have 'eip' screening_status in the presence of extraction"
+  end
 end

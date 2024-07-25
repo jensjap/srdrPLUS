@@ -26,7 +26,11 @@ class Extraction < ApplicationRecord
   after_create :ensure_extraction_form_structure, unless: :is_amoeba_copy
   after_create :create_default_arms, unless: :is_amoeba_copy
   after_create :create_default_status, unless: :is_amoeba_copy
+
+  before_commit :fix_citations_project_association, if: :is_amoeba_copy
+
   after_save :evaluate_screening_status_citations_project
+
   after_destroy :evaluate_screening_status_citations_project
 
   # create checksums without delay after create and update, since extractions/index would be incorrect.
@@ -41,7 +45,6 @@ class Extraction < ApplicationRecord
     customize(lambda { |_original, copy|
       copy.is_amoeba_copy = true
       copy.projects_users_role = nil
-      copy.user = nil
     })
   end
 
@@ -254,5 +257,12 @@ class Extraction < ApplicationRecord
 
     citations_project.try(:evaluate_extraction_qualification_status, consolidated)
     citations_project.try(:evaluate_screening_status)
+  end
+
+  def fix_citations_project_association
+    return unless is_amoeba_copy
+
+    citation_id = citations_project.citation.id
+    update(citations_project: CitationsProject.find_by(citation_id:, project_id: project.id))
   end
 end

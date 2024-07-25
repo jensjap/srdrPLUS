@@ -33,6 +33,10 @@ class CitationsProject < ApplicationRecord
   scope :not_disqualified,
         -> { where.not(screening_status: CitationsProject::REJECTED) }
 
+  amoeba do
+    set screening_status: 'asu'
+  end
+
   belongs_to :citation, inverse_of: :citations_projects
   belongs_to :project, inverse_of: :citations_projects # , touch: true
 
