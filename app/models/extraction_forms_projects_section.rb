@@ -35,7 +35,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   }
 
   after_create :create_extraction_forms_projects_section_option, unless: :is_amoeba_copy
-  after_create :set_link_to_type1_associations, if: :is_amoeba_copy
+  after_create :correct_link_to_type1_association, if: :is_amoeba_copy
 
   amoeba do
     include_association :extraction_forms_projects_section_option
@@ -243,7 +243,7 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
   private
 
-  def set_link_to_type1_associations
+  def correct_link_to_type1_association
     return unless link_to_type1.present? && !project.eql?(link_to_type1.project)
 
     section = link_to_type1.section

@@ -27,7 +27,7 @@ class Extraction < ApplicationRecord
   after_create :create_default_arms, unless: :is_amoeba_copy
   after_create :create_default_status, unless: :is_amoeba_copy
 
-  before_commit :fix_citations_project_association, if: :is_amoeba_copy
+  before_commit :correct_cp_association, if: :is_amoeba_copy
 
   after_save :evaluate_screening_status_citations_project
 
@@ -259,7 +259,7 @@ class Extraction < ApplicationRecord
     citations_project.try(:evaluate_screening_status)
   end
 
-  def fix_citations_project_association
+  def correct_cp_association
     return unless is_amoeba_copy
 
     citation_id = citations_project.citation.id
