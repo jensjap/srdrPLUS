@@ -1,5 +1,6 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   before_action :configure_sign_up_params, only: [:create]
+  before_action :check_registration_status, only: [:new, :create]
   # before_action :configure_account_update_params, only: [:update]
 
   # GET /resource/sign_up
@@ -74,4 +75,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # def after_inactive_sign_up_path_for(resource)
   #   super(resource)
   # end
+
+  private
+
+  def check_registration_status
+    redirect_to root_path, alert: "New account registration is temporarily disabled."
+  end
 end
