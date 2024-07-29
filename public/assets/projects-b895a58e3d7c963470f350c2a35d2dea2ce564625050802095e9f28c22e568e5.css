@@ -1,0 +1,2087 @@
+/**
+ * Foundation for Sites
+ * Version 6.6.2
+ * https://get.foundation
+ * Licensed under MIT Open Source
+ */
+/* line 28, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.row {
+  max-width: 75rem;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* line 170, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/util/_mixins.scss */
+.row::before, .row::after {
+  display: table;
+  content: ' ';
+  -webkit-flex-basis: 0;
+      -ms-flex-preferred-size: 0;
+          flex-basis: 0;
+  -webkit-box-ordinal-group: 2;
+  -webkit-order: 1;
+      -ms-flex-order: 1;
+          order: 1;
+}
+
+/* line 181, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/util/_mixins.scss */
+.row::after {
+  clear: both;
+}
+
+/* line 33, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.row.collapse > .column, .row.collapse > .columns {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+/* line 39, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.row .row {
+  margin-right: -0.625rem;
+  margin-left: -0.625rem;
+}
+
+@media print, screen and (min-width: 40em) {
+  /* line 39, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .row .row {
+    margin-right: -0.9375rem;
+    margin-left: -0.9375rem;
+  }
+}
+
+@media print, screen and (min-width: 64em) {
+  /* line 39, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .row .row {
+    margin-right: -0.9375rem;
+    margin-left: -0.9375rem;
+  }
+}
+
+/* line 42, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.row .row.collapse {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+/* line 49, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.row.expanded {
+  max-width: none;
+}
+
+/* line 52, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.row.expanded .row {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* line 58, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.row:not(.expanded) .row {
+  max-width: none;
+}
+
+/* line 67, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.row.gutter-small > .column, .row.gutter-small > .columns {
+  padding-right: 0.625rem;
+  padding-left: 0.625rem;
+}
+
+/* line 67, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.row.gutter-medium > .column, .row.gutter-medium > .columns {
+  padding-right: 0.9375rem;
+  padding-left: 0.9375rem;
+}
+
+/* line 76, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.column, .columns {
+  width: 100%;
+  float: left;
+  padding-right: 0.625rem;
+  padding-left: 0.625rem;
+}
+
+@media print, screen and (min-width: 40em) {
+  /* line 76, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .column, .columns {
+    padding-right: 0.9375rem;
+    padding-left: 0.9375rem;
+  }
+}
+
+/* line 20, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_position.scss */
+.column, .columns, .column:last-child:not(:first-child) {
+  float: left;
+  clear: none;
+}
+
+/* line 27, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_position.scss */
+.column:last-child:not(:first-child), .columns:last-child:not(:first-child) {
+  float: right;
+}
+
+/* line 73, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_position.scss */
+.column.end:last-child:last-child, .end.columns:last-child:last-child {
+  float: left;
+}
+
+/* line 88, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.column.row.row, .row.row.columns {
+  float: none;
+}
+
+/* line 93, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.row .column.row.row, .row .row.row.columns {
+  margin-right: 0;
+  margin-left: 0;
+  padding-right: 0;
+  padding-left: 0;
+}
+
+/* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-1 {
+  width: 8.3333333333%;
+}
+
+/* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-push-1 {
+  position: relative;
+  left: 8.3333333333%;
+}
+
+/* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-pull-1 {
+  position: relative;
+  left: -8.3333333333%;
+}
+
+/* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-offset-0 {
+  margin-left: 0%;
+}
+
+/* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-2 {
+  width: 16.6666666667%;
+}
+
+/* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-push-2 {
+  position: relative;
+  left: 16.6666666667%;
+}
+
+/* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-pull-2 {
+  position: relative;
+  left: -16.6666666667%;
+}
+
+/* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-offset-1 {
+  margin-left: 8.3333333333%;
+}
+
+/* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-3 {
+  width: 25%;
+}
+
+/* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-push-3 {
+  position: relative;
+  left: 25%;
+}
+
+/* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-pull-3 {
+  position: relative;
+  left: -25%;
+}
+
+/* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-offset-2 {
+  margin-left: 16.6666666667%;
+}
+
+/* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-4 {
+  width: 33.3333333333%;
+}
+
+/* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-push-4 {
+  position: relative;
+  left: 33.3333333333%;
+}
+
+/* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-pull-4 {
+  position: relative;
+  left: -33.3333333333%;
+}
+
+/* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-offset-3 {
+  margin-left: 25%;
+}
+
+/* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-5 {
+  width: 41.6666666667%;
+}
+
+/* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-push-5 {
+  position: relative;
+  left: 41.6666666667%;
+}
+
+/* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-pull-5 {
+  position: relative;
+  left: -41.6666666667%;
+}
+
+/* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-offset-4 {
+  margin-left: 33.3333333333%;
+}
+
+/* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-6 {
+  width: 50%;
+}
+
+/* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-push-6 {
+  position: relative;
+  left: 50%;
+}
+
+/* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-pull-6 {
+  position: relative;
+  left: -50%;
+}
+
+/* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-offset-5 {
+  margin-left: 41.6666666667%;
+}
+
+/* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-7 {
+  width: 58.3333333333%;
+}
+
+/* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-push-7 {
+  position: relative;
+  left: 58.3333333333%;
+}
+
+/* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-pull-7 {
+  position: relative;
+  left: -58.3333333333%;
+}
+
+/* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-offset-6 {
+  margin-left: 50%;
+}
+
+/* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-8 {
+  width: 66.6666666667%;
+}
+
+/* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-push-8 {
+  position: relative;
+  left: 66.6666666667%;
+}
+
+/* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-pull-8 {
+  position: relative;
+  left: -66.6666666667%;
+}
+
+/* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-offset-7 {
+  margin-left: 58.3333333333%;
+}
+
+/* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-9 {
+  width: 75%;
+}
+
+/* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-push-9 {
+  position: relative;
+  left: 75%;
+}
+
+/* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-pull-9 {
+  position: relative;
+  left: -75%;
+}
+
+/* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-offset-8 {
+  margin-left: 66.6666666667%;
+}
+
+/* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-10 {
+  width: 83.3333333333%;
+}
+
+/* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-push-10 {
+  position: relative;
+  left: 83.3333333333%;
+}
+
+/* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-pull-10 {
+  position: relative;
+  left: -83.3333333333%;
+}
+
+/* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-offset-9 {
+  margin-left: 75%;
+}
+
+/* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-11 {
+  width: 91.6666666667%;
+}
+
+/* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-push-11 {
+  position: relative;
+  left: 91.6666666667%;
+}
+
+/* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-pull-11 {
+  position: relative;
+  left: -91.6666666667%;
+}
+
+/* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-offset-10 {
+  margin-left: 83.3333333333%;
+}
+
+/* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-12 {
+  width: 100%;
+}
+
+/* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-offset-11 {
+  margin-left: 91.6666666667%;
+}
+
+/* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-1 > .column, .small-up-1 > .columns {
+  float: left;
+  width: 100%;
+}
+
+/* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-1 > .column:nth-of-type(1n), .small-up-1 > .columns:nth-of-type(1n) {
+  clear: none;
+}
+
+/* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-1 > .column:nth-of-type(1n+1), .small-up-1 > .columns:nth-of-type(1n+1) {
+  clear: both;
+}
+
+/* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-1 > .column:last-child, .small-up-1 > .columns:last-child {
+  float: left;
+}
+
+/* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-2 > .column, .small-up-2 > .columns {
+  float: left;
+  width: 50%;
+}
+
+/* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-2 > .column:nth-of-type(1n), .small-up-2 > .columns:nth-of-type(1n) {
+  clear: none;
+}
+
+/* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-2 > .column:nth-of-type(2n+1), .small-up-2 > .columns:nth-of-type(2n+1) {
+  clear: both;
+}
+
+/* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-2 > .column:last-child, .small-up-2 > .columns:last-child {
+  float: left;
+}
+
+/* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-3 > .column, .small-up-3 > .columns {
+  float: left;
+  width: 33.3333333333%;
+}
+
+/* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-3 > .column:nth-of-type(1n), .small-up-3 > .columns:nth-of-type(1n) {
+  clear: none;
+}
+
+/* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-3 > .column:nth-of-type(3n+1), .small-up-3 > .columns:nth-of-type(3n+1) {
+  clear: both;
+}
+
+/* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-3 > .column:last-child, .small-up-3 > .columns:last-child {
+  float: left;
+}
+
+/* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-4 > .column, .small-up-4 > .columns {
+  float: left;
+  width: 25%;
+}
+
+/* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-4 > .column:nth-of-type(1n), .small-up-4 > .columns:nth-of-type(1n) {
+  clear: none;
+}
+
+/* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-4 > .column:nth-of-type(4n+1), .small-up-4 > .columns:nth-of-type(4n+1) {
+  clear: both;
+}
+
+/* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-4 > .column:last-child, .small-up-4 > .columns:last-child {
+  float: left;
+}
+
+/* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-5 > .column, .small-up-5 > .columns {
+  float: left;
+  width: 20%;
+}
+
+/* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-5 > .column:nth-of-type(1n), .small-up-5 > .columns:nth-of-type(1n) {
+  clear: none;
+}
+
+/* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-5 > .column:nth-of-type(5n+1), .small-up-5 > .columns:nth-of-type(5n+1) {
+  clear: both;
+}
+
+/* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-5 > .column:last-child, .small-up-5 > .columns:last-child {
+  float: left;
+}
+
+/* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-6 > .column, .small-up-6 > .columns {
+  float: left;
+  width: 16.6666666667%;
+}
+
+/* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-6 > .column:nth-of-type(1n), .small-up-6 > .columns:nth-of-type(1n) {
+  clear: none;
+}
+
+/* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-6 > .column:nth-of-type(6n+1), .small-up-6 > .columns:nth-of-type(6n+1) {
+  clear: both;
+}
+
+/* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-6 > .column:last-child, .small-up-6 > .columns:last-child {
+  float: left;
+}
+
+/* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-7 > .column, .small-up-7 > .columns {
+  float: left;
+  width: 14.2857142857%;
+}
+
+/* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-7 > .column:nth-of-type(1n), .small-up-7 > .columns:nth-of-type(1n) {
+  clear: none;
+}
+
+/* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-7 > .column:nth-of-type(7n+1), .small-up-7 > .columns:nth-of-type(7n+1) {
+  clear: both;
+}
+
+/* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-7 > .column:last-child, .small-up-7 > .columns:last-child {
+  float: left;
+}
+
+/* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-8 > .column, .small-up-8 > .columns {
+  float: left;
+  width: 12.5%;
+}
+
+/* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-8 > .column:nth-of-type(1n), .small-up-8 > .columns:nth-of-type(1n) {
+  clear: none;
+}
+
+/* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-8 > .column:nth-of-type(8n+1), .small-up-8 > .columns:nth-of-type(8n+1) {
+  clear: both;
+}
+
+/* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+.small-up-8 > .column:last-child, .small-up-8 > .columns:last-child {
+  float: left;
+}
+
+/* line 141, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-collapse > .column, .small-collapse > .columns {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+/* line 143, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-collapse .row {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+/* line 149, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.expanded.row .small-collapse.row {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+/* line 155, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-uncollapse > .column, .small-uncollapse > .columns {
+  padding-right: 0.625rem;
+  padding-left: 0.625rem;
+}
+
+/* line 160, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-centered {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* line 43, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_position.scss */
+.small-centered, .small-centered:last-child:not(:first-child) {
+  float: none;
+  clear: both;
+}
+
+/* line 172, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.small-uncentered, .small-push-0, .small-pull-0 {
+  position: static;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+/* line 20, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_position.scss */
+.small-uncentered, .small-uncentered:last-child:not(:first-child), .small-push-0, .small-push-0:last-child:not(:first-child), .small-pull-0, .small-pull-0:last-child:not(:first-child) {
+  float: left;
+  clear: none;
+}
+
+/* line 27, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_position.scss */
+.small-uncentered:last-child:not(:first-child), .small-push-0:last-child:not(:first-child), .small-pull-0:last-child:not(:first-child) {
+  float: right;
+}
+
+@media print, screen and (min-width: 40em) {
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-1 {
+    width: 8.3333333333%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-push-1 {
+    position: relative;
+    left: 8.3333333333%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-pull-1 {
+    position: relative;
+    left: -8.3333333333%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-offset-0 {
+    margin-left: 0%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-2 {
+    width: 16.6666666667%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-push-2 {
+    position: relative;
+    left: 16.6666666667%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-pull-2 {
+    position: relative;
+    left: -16.6666666667%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-offset-1 {
+    margin-left: 8.3333333333%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-3 {
+    width: 25%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-push-3 {
+    position: relative;
+    left: 25%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-pull-3 {
+    position: relative;
+    left: -25%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-offset-2 {
+    margin-left: 16.6666666667%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-4 {
+    width: 33.3333333333%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-push-4 {
+    position: relative;
+    left: 33.3333333333%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-pull-4 {
+    position: relative;
+    left: -33.3333333333%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-offset-3 {
+    margin-left: 25%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-5 {
+    width: 41.6666666667%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-push-5 {
+    position: relative;
+    left: 41.6666666667%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-pull-5 {
+    position: relative;
+    left: -41.6666666667%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-offset-4 {
+    margin-left: 33.3333333333%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-6 {
+    width: 50%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-push-6 {
+    position: relative;
+    left: 50%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-pull-6 {
+    position: relative;
+    left: -50%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-offset-5 {
+    margin-left: 41.6666666667%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-7 {
+    width: 58.3333333333%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-push-7 {
+    position: relative;
+    left: 58.3333333333%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-pull-7 {
+    position: relative;
+    left: -58.3333333333%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-offset-6 {
+    margin-left: 50%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-8 {
+    width: 66.6666666667%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-push-8 {
+    position: relative;
+    left: 66.6666666667%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-pull-8 {
+    position: relative;
+    left: -66.6666666667%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-offset-7 {
+    margin-left: 58.3333333333%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-9 {
+    width: 75%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-push-9 {
+    position: relative;
+    left: 75%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-pull-9 {
+    position: relative;
+    left: -75%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-offset-8 {
+    margin-left: 66.6666666667%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-10 {
+    width: 83.3333333333%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-push-10 {
+    position: relative;
+    left: 83.3333333333%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-pull-10 {
+    position: relative;
+    left: -83.3333333333%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-offset-9 {
+    margin-left: 75%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-11 {
+    width: 91.6666666667%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-push-11 {
+    position: relative;
+    left: 91.6666666667%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-pull-11 {
+    position: relative;
+    left: -91.6666666667%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-offset-10 {
+    margin-left: 83.3333333333%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-12 {
+    width: 100%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-offset-11 {
+    margin-left: 91.6666666667%;
+  }
+  /* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-1 > .column, .medium-up-1 > .columns {
+    float: left;
+    width: 100%;
+  }
+  /* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-1 > .column:nth-of-type(1n), .medium-up-1 > .columns:nth-of-type(1n) {
+    clear: none;
+  }
+  /* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-1 > .column:nth-of-type(1n+1), .medium-up-1 > .columns:nth-of-type(1n+1) {
+    clear: both;
+  }
+  /* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-1 > .column:last-child, .medium-up-1 > .columns:last-child {
+    float: left;
+  }
+  /* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-2 > .column, .medium-up-2 > .columns {
+    float: left;
+    width: 50%;
+  }
+  /* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-2 > .column:nth-of-type(1n), .medium-up-2 > .columns:nth-of-type(1n) {
+    clear: none;
+  }
+  /* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-2 > .column:nth-of-type(2n+1), .medium-up-2 > .columns:nth-of-type(2n+1) {
+    clear: both;
+  }
+  /* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-2 > .column:last-child, .medium-up-2 > .columns:last-child {
+    float: left;
+  }
+  /* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-3 > .column, .medium-up-3 > .columns {
+    float: left;
+    width: 33.3333333333%;
+  }
+  /* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-3 > .column:nth-of-type(1n), .medium-up-3 > .columns:nth-of-type(1n) {
+    clear: none;
+  }
+  /* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-3 > .column:nth-of-type(3n+1), .medium-up-3 > .columns:nth-of-type(3n+1) {
+    clear: both;
+  }
+  /* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-3 > .column:last-child, .medium-up-3 > .columns:last-child {
+    float: left;
+  }
+  /* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-4 > .column, .medium-up-4 > .columns {
+    float: left;
+    width: 25%;
+  }
+  /* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-4 > .column:nth-of-type(1n), .medium-up-4 > .columns:nth-of-type(1n) {
+    clear: none;
+  }
+  /* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-4 > .column:nth-of-type(4n+1), .medium-up-4 > .columns:nth-of-type(4n+1) {
+    clear: both;
+  }
+  /* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-4 > .column:last-child, .medium-up-4 > .columns:last-child {
+    float: left;
+  }
+  /* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-5 > .column, .medium-up-5 > .columns {
+    float: left;
+    width: 20%;
+  }
+  /* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-5 > .column:nth-of-type(1n), .medium-up-5 > .columns:nth-of-type(1n) {
+    clear: none;
+  }
+  /* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-5 > .column:nth-of-type(5n+1), .medium-up-5 > .columns:nth-of-type(5n+1) {
+    clear: both;
+  }
+  /* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-5 > .column:last-child, .medium-up-5 > .columns:last-child {
+    float: left;
+  }
+  /* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-6 > .column, .medium-up-6 > .columns {
+    float: left;
+    width: 16.6666666667%;
+  }
+  /* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-6 > .column:nth-of-type(1n), .medium-up-6 > .columns:nth-of-type(1n) {
+    clear: none;
+  }
+  /* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-6 > .column:nth-of-type(6n+1), .medium-up-6 > .columns:nth-of-type(6n+1) {
+    clear: both;
+  }
+  /* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-6 > .column:last-child, .medium-up-6 > .columns:last-child {
+    float: left;
+  }
+  /* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-7 > .column, .medium-up-7 > .columns {
+    float: left;
+    width: 14.2857142857%;
+  }
+  /* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-7 > .column:nth-of-type(1n), .medium-up-7 > .columns:nth-of-type(1n) {
+    clear: none;
+  }
+  /* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-7 > .column:nth-of-type(7n+1), .medium-up-7 > .columns:nth-of-type(7n+1) {
+    clear: both;
+  }
+  /* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-7 > .column:last-child, .medium-up-7 > .columns:last-child {
+    float: left;
+  }
+  /* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-8 > .column, .medium-up-8 > .columns {
+    float: left;
+    width: 12.5%;
+  }
+  /* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-8 > .column:nth-of-type(1n), .medium-up-8 > .columns:nth-of-type(1n) {
+    clear: none;
+  }
+  /* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-8 > .column:nth-of-type(8n+1), .medium-up-8 > .columns:nth-of-type(8n+1) {
+    clear: both;
+  }
+  /* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .medium-up-8 > .column:last-child, .medium-up-8 > .columns:last-child {
+    float: left;
+  }
+  /* line 141, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-collapse > .column, .medium-collapse > .columns {
+    padding-right: 0;
+    padding-left: 0;
+  }
+  /* line 143, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-collapse .row {
+    margin-right: 0;
+    margin-left: 0;
+  }
+  /* line 149, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .expanded.row .medium-collapse.row {
+    margin-right: 0;
+    margin-left: 0;
+  }
+  /* line 155, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-uncollapse > .column, .medium-uncollapse > .columns {
+    padding-right: 0.9375rem;
+    padding-left: 0.9375rem;
+  }
+  /* line 160, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-centered {
+    margin-right: auto;
+    margin-left: auto;
+  }
+  /* line 43, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_position.scss */
+  .medium-centered, .medium-centered:last-child:not(:first-child) {
+    float: none;
+    clear: both;
+  }
+  /* line 172, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .medium-uncentered, .medium-push-0, .medium-pull-0 {
+    position: static;
+    margin-right: 0;
+    margin-left: 0;
+  }
+  /* line 20, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_position.scss */
+  .medium-uncentered, .medium-uncentered:last-child:not(:first-child), .medium-push-0, .medium-push-0:last-child:not(:first-child), .medium-pull-0, .medium-pull-0:last-child:not(:first-child) {
+    float: left;
+    clear: none;
+  }
+  /* line 27, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_position.scss */
+  .medium-uncentered:last-child:not(:first-child), .medium-push-0:last-child:not(:first-child), .medium-pull-0:last-child:not(:first-child) {
+    float: right;
+  }
+}
+
+@media print, screen and (min-width: 64em) {
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-1 {
+    width: 8.3333333333%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-push-1 {
+    position: relative;
+    left: 8.3333333333%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-pull-1 {
+    position: relative;
+    left: -8.3333333333%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-offset-0 {
+    margin-left: 0%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-2 {
+    width: 16.6666666667%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-push-2 {
+    position: relative;
+    left: 16.6666666667%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-pull-2 {
+    position: relative;
+    left: -16.6666666667%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-offset-1 {
+    margin-left: 8.3333333333%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-3 {
+    width: 25%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-push-3 {
+    position: relative;
+    left: 25%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-pull-3 {
+    position: relative;
+    left: -25%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-offset-2 {
+    margin-left: 16.6666666667%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-4 {
+    width: 33.3333333333%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-push-4 {
+    position: relative;
+    left: 33.3333333333%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-pull-4 {
+    position: relative;
+    left: -33.3333333333%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-offset-3 {
+    margin-left: 25%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-5 {
+    width: 41.6666666667%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-push-5 {
+    position: relative;
+    left: 41.6666666667%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-pull-5 {
+    position: relative;
+    left: -41.6666666667%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-offset-4 {
+    margin-left: 33.3333333333%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-6 {
+    width: 50%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-push-6 {
+    position: relative;
+    left: 50%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-pull-6 {
+    position: relative;
+    left: -50%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-offset-5 {
+    margin-left: 41.6666666667%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-7 {
+    width: 58.3333333333%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-push-7 {
+    position: relative;
+    left: 58.3333333333%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-pull-7 {
+    position: relative;
+    left: -58.3333333333%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-offset-6 {
+    margin-left: 50%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-8 {
+    width: 66.6666666667%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-push-8 {
+    position: relative;
+    left: 66.6666666667%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-pull-8 {
+    position: relative;
+    left: -66.6666666667%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-offset-7 {
+    margin-left: 58.3333333333%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-9 {
+    width: 75%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-push-9 {
+    position: relative;
+    left: 75%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-pull-9 {
+    position: relative;
+    left: -75%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-offset-8 {
+    margin-left: 66.6666666667%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-10 {
+    width: 83.3333333333%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-push-10 {
+    position: relative;
+    left: 83.3333333333%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-pull-10 {
+    position: relative;
+    left: -83.3333333333%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-offset-9 {
+    margin-left: 75%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-11 {
+    width: 91.6666666667%;
+  }
+  /* line 110, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-push-11 {
+    position: relative;
+    left: 91.6666666667%;
+  }
+  /* line 116, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-pull-11 {
+    position: relative;
+    left: -91.6666666667%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-offset-10 {
+    margin-left: 83.3333333333%;
+  }
+  /* line 103, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-12 {
+    width: 100%;
+  }
+  /* line 126, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-offset-11 {
+    margin-left: 91.6666666667%;
+  }
+  /* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-1 > .column, .large-up-1 > .columns {
+    float: left;
+    width: 100%;
+  }
+  /* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-1 > .column:nth-of-type(1n), .large-up-1 > .columns:nth-of-type(1n) {
+    clear: none;
+  }
+  /* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-1 > .column:nth-of-type(1n+1), .large-up-1 > .columns:nth-of-type(1n+1) {
+    clear: both;
+  }
+  /* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-1 > .column:last-child, .large-up-1 > .columns:last-child {
+    float: left;
+  }
+  /* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-2 > .column, .large-up-2 > .columns {
+    float: left;
+    width: 50%;
+  }
+  /* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-2 > .column:nth-of-type(1n), .large-up-2 > .columns:nth-of-type(1n) {
+    clear: none;
+  }
+  /* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-2 > .column:nth-of-type(2n+1), .large-up-2 > .columns:nth-of-type(2n+1) {
+    clear: both;
+  }
+  /* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-2 > .column:last-child, .large-up-2 > .columns:last-child {
+    float: left;
+  }
+  /* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-3 > .column, .large-up-3 > .columns {
+    float: left;
+    width: 33.3333333333%;
+  }
+  /* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-3 > .column:nth-of-type(1n), .large-up-3 > .columns:nth-of-type(1n) {
+    clear: none;
+  }
+  /* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-3 > .column:nth-of-type(3n+1), .large-up-3 > .columns:nth-of-type(3n+1) {
+    clear: both;
+  }
+  /* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-3 > .column:last-child, .large-up-3 > .columns:last-child {
+    float: left;
+  }
+  /* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-4 > .column, .large-up-4 > .columns {
+    float: left;
+    width: 25%;
+  }
+  /* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-4 > .column:nth-of-type(1n), .large-up-4 > .columns:nth-of-type(1n) {
+    clear: none;
+  }
+  /* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-4 > .column:nth-of-type(4n+1), .large-up-4 > .columns:nth-of-type(4n+1) {
+    clear: both;
+  }
+  /* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-4 > .column:last-child, .large-up-4 > .columns:last-child {
+    float: left;
+  }
+  /* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-5 > .column, .large-up-5 > .columns {
+    float: left;
+    width: 20%;
+  }
+  /* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-5 > .column:nth-of-type(1n), .large-up-5 > .columns:nth-of-type(1n) {
+    clear: none;
+  }
+  /* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-5 > .column:nth-of-type(5n+1), .large-up-5 > .columns:nth-of-type(5n+1) {
+    clear: both;
+  }
+  /* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-5 > .column:last-child, .large-up-5 > .columns:last-child {
+    float: left;
+  }
+  /* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-6 > .column, .large-up-6 > .columns {
+    float: left;
+    width: 16.6666666667%;
+  }
+  /* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-6 > .column:nth-of-type(1n), .large-up-6 > .columns:nth-of-type(1n) {
+    clear: none;
+  }
+  /* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-6 > .column:nth-of-type(6n+1), .large-up-6 > .columns:nth-of-type(6n+1) {
+    clear: both;
+  }
+  /* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-6 > .column:last-child, .large-up-6 > .columns:last-child {
+    float: left;
+  }
+  /* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-7 > .column, .large-up-7 > .columns {
+    float: left;
+    width: 14.2857142857%;
+  }
+  /* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-7 > .column:nth-of-type(1n), .large-up-7 > .columns:nth-of-type(1n) {
+    clear: none;
+  }
+  /* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-7 > .column:nth-of-type(7n+1), .large-up-7 > .columns:nth-of-type(7n+1) {
+    clear: both;
+  }
+  /* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-7 > .column:last-child, .large-up-7 > .columns:last-child {
+    float: left;
+  }
+  /* line 22, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-8 > .column, .large-up-8 > .columns {
+    float: left;
+    width: 12.5%;
+  }
+  /* line 46, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-8 > .column:nth-of-type(1n), .large-up-8 > .columns:nth-of-type(1n) {
+    clear: none;
+  }
+  /* line 50, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-8 > .column:nth-of-type(8n+1), .large-up-8 > .columns:nth-of-type(8n+1) {
+    clear: both;
+  }
+  /* line 54, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_layout.scss */
+  .large-up-8 > .column:last-child, .large-up-8 > .columns:last-child {
+    float: left;
+  }
+  /* line 141, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-collapse > .column, .large-collapse > .columns {
+    padding-right: 0;
+    padding-left: 0;
+  }
+  /* line 143, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-collapse .row {
+    margin-right: 0;
+    margin-left: 0;
+  }
+  /* line 149, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .expanded.row .large-collapse.row {
+    margin-right: 0;
+    margin-left: 0;
+  }
+  /* line 155, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-uncollapse > .column, .large-uncollapse > .columns {
+    padding-right: 0.9375rem;
+    padding-left: 0.9375rem;
+  }
+  /* line 160, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-centered {
+    margin-right: auto;
+    margin-left: auto;
+  }
+  /* line 43, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_position.scss */
+  .large-centered, .large-centered:last-child:not(:first-child) {
+    float: none;
+    clear: both;
+  }
+  /* line 172, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .large-uncentered, .large-push-0, .large-pull-0 {
+    position: static;
+    margin-right: 0;
+    margin-left: 0;
+  }
+  /* line 20, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_position.scss */
+  .large-uncentered, .large-uncentered:last-child:not(:first-child), .large-push-0, .large-push-0:last-child:not(:first-child), .large-pull-0, .large-pull-0:last-child:not(:first-child) {
+    float: left;
+    clear: none;
+  }
+  /* line 27, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_position.scss */
+  .large-uncentered:last-child:not(:first-child), .large-push-0:last-child:not(:first-child), .large-pull-0:last-child:not(:first-child) {
+    float: right;
+  }
+}
+
+/* line 179, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+.column-block {
+  margin-bottom: 1.25rem;
+}
+
+/* line 63, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_gutter.scss */
+.column-block > :last-child {
+  margin-bottom: 0;
+}
+
+@media print, screen and (min-width: 40em) {
+  /* line 179, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_classes.scss */
+  .column-block {
+    margin-bottom: 1.875rem;
+  }
+  /* line 63, ../usr/local/bundle/gems/foundation-rails-6.6.2.0/vendor/assets/scss/grid/_gutter.scss */
+  .column-block > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* line 7, app/assets/stylesheets/projects.scss */
+#project-tabs li a.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* line 12, app/assets/stylesheets/projects.scss */
+fieldset a.add_fields {
+  float: right;
+}
+
+/* line 16, app/assets/stylesheets/projects.scss */
+ul.accordion {
+  margin-right: 0;
+}
+
+/* line 20, app/assets/stylesheets/projects.scss */
+mark {
+  background: yellow;
+}
+
+/* line 25, app/assets/stylesheets/projects.scss */
+.project-filter .input-group-button button {
+  margin-right: 5px;
+}
+
+/* line 29, app/assets/stylesheets/projects.scss */
+.project-filter .search-field {
+  width: 0;
+  height: 40px;
+  margin-top: 0.7rem;
+  padding: 0;
+  border: none;
+  -webkit-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+}
+
+/* line 38, app/assets/stylesheets/projects.scss */
+.project-filter .expand-search {
+  width: 80%;
+  max-width: 80%;
+  border: 1px solid #c9c9c9;
+  padding-left: 1rem;
+}
+
+/* line 48, app/assets/stylesheets/projects.scss */
+.project-controls .toggle-sort-order {
+  margin-top: -10px;
+  margin-left: -10px;
+}
+
+/* line 52, app/assets/stylesheets/projects.scss */
+.project-controls .toggle-sort-order button {
+  margin: 18px 0 0 2px;
+}
+
+/* line 55, app/assets/stylesheets/projects.scss */
+.project-controls .toggle-sort-order button.active {
+  background-color: #011430;
+  cursor: not-allowed;
+}
+
+/* line 60, app/assets/stylesheets/projects.scss */
+.project-controls .toggle-sort-order button.disabled {
+  opacity: 0.9;
+  border: solid 1px #011430;
+  background-color: transparent;
+  color: #011430;
+  cursor: pointer;
+}
+
+/* line 67, app/assets/stylesheets/projects.scss */
+.project-controls .toggle-sort-order button.disabled:hover {
+  background-color: #45699F;
+  border-color: #45699F;
+  color: white;
+  opacity: 1;
+}
+
+/* line 79, app/assets/stylesheets/projects.scss */
+#project-list a {
+  text-decoration: underline;
+}
+
+/* line 83, app/assets/stylesheets/projects.scss */
+#project-list h4 {
+  font-style: italic;
+}
+
+/* line 94, app/assets/stylesheets/projects.scss */
+#project-list a.accordion-title {
+  text-decoration: none;
+}
+
+/* line 96, app/assets/stylesheets/projects.scss */
+#project-list a.accordion-title:hover {
+  text-decoration: none;
+}
+
+/* line 99, app/assets/stylesheets/projects.scss */
+#project-list a.accordion-title small {
+  color: darkgrey;
+}
+
+/* line 105, app/assets/stylesheets/projects.scss */
+#project-list li.accordion-item.is-active a.accordion-title {
+  font-weight: bold;
+  color: #011430;
+}
+
+/* line 108, app/assets/stylesheets/projects.scss */
+#project-list li.accordion-item.is-active a.accordion-title small {
+  color: #011430;
+}
+
+/* line 113, app/assets/stylesheets/projects.scss */
+#project-list li.accordion-item.is-active div.accordion-content {
+  border-top: none;
+}
+
+/* line 116, app/assets/stylesheets/projects.scss */
+#project-list li.accordion-item.is-active div.accordion-content a.button {
+  font-weight: normal;
+  margin-top: 31px;
+}
+
+/* line 121, app/assets/stylesheets/projects.scss */
+#project-list li.accordion-item.is-active div.accordion-content .callout.description {
+  min-height: 140px;
+}
+
+/* line 127, app/assets/stylesheets/projects.scss */
+#project-list span.label {
+  background-color: #777;
+}
+
+/* line 132, app/assets/stylesheets/projects.scss */
+ul.legend {
+  list-style-type: none;
+  margin-left: 0;
+}
+
+/* line 138, app/assets/stylesheets/projects.scss */
+div.pagination-centered {
+  float: right;
+}
+
+/* line 144, app/assets/stylesheets/projects.scss */
+ul li {
+  position: relative;
+}
+
+/* line 147, app/assets/stylesheets/projects.scss */
+ul li.publishing-approved:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-width: 16px 16px 0 0;
+  border-style: solid;
+  border-color: #3adb76 transparent;
+}
+
+/* line 157, app/assets/stylesheets/projects.scss */
+ul li.publishing-requested:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-width: 16px 16px 0 0;
+  border-style: solid;
+  border-color: #56017b transparent;
+}
+
+/* line 170, app/assets/stylesheets/projects.scss */
+#citations {
+  min-height: 800px;
+}
+
+/* line 171, app/assets/stylesheets/projects.scss */
+#citations ul {
+  margin-top: 0rem;
+}
+
+/* line 173, app/assets/stylesheets/projects.scss */
+#citations ul li:nth-of-type(even) {
+  background-color: #f1f1f1;
+}
+
+/* line 176, app/assets/stylesheets/projects.scss */
+#citations ul li:nth-of-type(even) a.citation-label:hover {
+  background-color: #d8d8d8;
+}
+
+/* line 183, app/assets/stylesheets/projects.scss */
+#citations .citation-row {
+  margin-bottom: 0px;
+}
+
+/* line 184, app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-label {
+  font-size: 0.7rem;
+  line-height: 0.9rem;
+  color: #5b5b5b;
+}
+
+/* line 188, app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-label .citation-title,
+#citations .citation-row .citation-label .citation-authors {
+  width: calc(100% - 35px);
+}
+
+/* line 193, app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-label .citation-title {
+  overflow: hidden;
+  font-weight: bold;
+}
+
+/* line 201, app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-label .citation-authors {
+  font-style: italic;
+  overflow: hidden;
+}
+
+/* line 208, app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-label .citation-numbers {
+  display: inline;
+}
+
+/* line 217, app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-journal {
+  display: inline;
+}
+
+/* line 225, app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-journal-date {
+  display: inline;
+}
+
+/* line 232, app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-journal {
+  margin-top: 0rem;
+  margin-bottom: 1rem;
+  font-size: 13px;
+  color: #5b5b5b;
+}
+
+/* line 240, app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-journal-date {
+  display: inline;
+}
+
+/* line 247, app/assets/stylesheets/projects.scss */
+#citations .citation-row .citation-abstract {
+  font-size: 13px;
+  color: #303030;
+}
+
+/* line 253, app/assets/stylesheets/projects.scss */
+#citations .citation-row:hover {
+  background-color: #e5e5e5;
+}
+
+/* line 257, app/assets/stylesheets/projects.scss */
+#citations .citation-row.is-active {
+  background-color: #f7f3f9 !important;
+}
+
+/* line 259, app/assets/stylesheets/projects.scss */
+#citations .citation-row.is-active a.citation-label {
+  color: black !important;
+  height: auto;
+  overflow: auto;
+  white-space: normal;
+  border-bottom: 0px;
+}
+
+/* line 265, app/assets/stylesheets/projects.scss */
+#citations .citation-row.is-active a.citation-label:hover {
+  background-color: #e5dee8 !important;
+}
+
+/* line 268, app/assets/stylesheets/projects.scss */
+#citations .citation-row.is-active a.citation-label .citation-numbers,
+#citations .citation-row.is-active a.citation-label .citation-authors {
+  margin-bottom: 0.5rem;
+}
+
+/* line 272, app/assets/stylesheets/projects.scss */
+#citations .citation-row.is-active a.citation-label .citation-authors,
+#citations .citation-row.is-active a.citation-label .citation-title {
+  margin-top: 0.5rem;
+}
+
+/* line 276, app/assets/stylesheets/projects.scss */
+#citations .citation-row.is-active a.citation-label .citation-authors,
+#citations .citation-row.is-active a.citation-label .citation-title {
+  margin-top: 0.5rem;
+}
+
+/* line 281, app/assets/stylesheets/projects.scss */
+#citations .citation-row.is-active .accordion-content {
+  border-top: 0px;
+  background-color: #f7f3f9;
+}
+
+/* line 291, app/assets/stylesheets/projects.scss */
+#search-div {
+  width: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+/* line 295, app/assets/stylesheets/projects.scss */
+#search-div #sort-button {
+  margin-right: 0.25rem;
+}
+
+/* line 299, app/assets/stylesheets/projects.scss */
+#search-div #sort-select {
+  max-width: 5rem;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 0.25rem;
+  font-size: 0.85rem;
+}
+
+/* line 307, app/assets/stylesheets/projects.scss */
+#search-div #search-box {
+  -webkit-box-flex: 100;
+  -webkit-flex-grow: 100;
+      -ms-flex-positive: 100;
+          flex-grow: 100;
+  margin-right: 1rem;
+}
+
+/* line 310, app/assets/stylesheets/projects.scss */
+#search-div #search-box input {
+  width: 100%;
+}
+
+/* line 315, app/assets/stylesheets/projects.scss */
+#search-div #search-box input,
+#search-div #sort-button,
+#search-div #sort-select {
+  height: 2rem;
+}
+
+/* line 322, app/assets/stylesheets/projects.scss */
+.citation-select {
+  margin-bottom: 0px;
+}
+
+/* line 326, app/assets/stylesheets/projects.scss */
+a.citation-label {
+  line-height: 1.2rem;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+/* line 335, app/assets/stylesheets/projects.scss */
+#citations {
+  min-height: 800px;
+}
+
+/* line 350, app/assets/stylesheets/projects.scss */
+.remove-button {
+  font-size: 1rem;
+  color: #4c4c4c;
+  margin-right: 5px;
+  -webkit-transition: color 0.25s;
+  transition: color 0.25s;
+}
+
+/* line 357, app/assets/stylesheets/projects.scss */
+.remove-button:hover {
+  text-decoration: none;
+  color: #cc4b37;
+}
+
+/* line 362, app/assets/stylesheets/projects.scss */
+.edit-citation-row {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: reverse;
+  -webkit-flex-direction: row-reverse;
+      -ms-flex-direction: row-reverse;
+          flex-direction: row-reverse;
+}
+
+/* line 365, app/assets/stylesheets/projects.scss */
+.edit-citation-row .button {
+  margin-top: 10px;
+  margin-bottom: 0px;
+}
+
+/* line 371, app/assets/stylesheets/projects.scss */
+.buttons-row {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+/* line 372, app/assets/stylesheets/projects.scss */
+.buttons-row .button {
+  margin-left: 0.5rem;
+}
+
+/* line 378, app/assets/stylesheets/projects.scss */
+.added-item {
+  border: solid 1px #666666;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+/* line 389, app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs {
+  margin-top: 1rem;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  width: 92%;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+/* line 398, app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .accession-number input.numeric {
+  margin-bottom: 0;
+}
+
+/* line 401, app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .accession-number .pmid-checkbox {
+  float: right;
+}
+
+/* line 407, app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .citation-abstract textarea {
+  height: 8rem;
+}
+
+/* line 414, app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .middle-row .journal-info .name-year {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+/* line 418, app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .middle-row .journal-info .name-year .journal-name {
+  -webkit-box-flex: 4;
+  -webkit-flex: 4;
+      -ms-flex: 4;
+          flex: 4;
+}
+
+/* line 421, app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .middle-row .journal-info .name-year .journal-year {
+  margin-left: 1rem;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
+/* line 426, app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .middle-row .journal-info .volume-issue-page-numbers {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+/* line 430, app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .middle-row .journal-info .volume-issue-page-numbers input {
+  width: 90%;
+}
+
+/* line 433, app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .middle-row .journal-info .volume-issue-page-numbers .page-numbers {
+  -webkit-box-flex: 2;
+  -webkit-flex: 2;
+      -ms-flex: 2;
+          flex: 2;
+  margin-left: 0.6rem;
+}
+
+/* line 436, app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .middle-row .journal-info .volume-issue-page-numbers .page-numbers div {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+/* line 440, app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .middle-row .journal-info .volume-issue-page-numbers .page-numbers div input {
+  width: 100%;
+}
+
+/* line 444, app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .middle-row .journal-info .volume-issue-page-numbers .page-numbers h4 {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+/* line 453, app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .bottom-row {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+/* line 457, app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .bottom-row .bottom-column {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 30%;
+}
+
+/* line 461, app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .bottom-row .authors-citation {
+  margin: 0px;
+  padding: 0px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+/* line 467, app/assets/stylesheets/projects.scss */
+.citation-fields .citation-inputs .bottom-row .authors-citation .remove-authors-citation {
+  margin-left: 1rem;
+}
+
+/* line 475, app/assets/stylesheets/projects.scss */
+#citations-footer {
+  padding-top: 30px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+  background-color: #fefefe;
+  margin-bottom: 0px;
+}
+
+/* line 490, app/assets/stylesheets/projects.scss */
+.projects-users-role-select2 .select2-container--default .select2-selection--multiple {
+  height: 100px;
+  overflow-y: auto;
+}
+
+/* line 498, app/assets/stylesheets/projects.scss */
+.distiller-reference-file-container .callout {
+  background: #eee8f3;
+}
+
+/* line 504, app/assets/stylesheets/projects.scss */
+.distiller-section-file-container .callout {
+  background: #fff3dc;
+}
+
+/* line 509, app/assets/stylesheets/projects.scss */
+.drop-area {
+  height: 100px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+/* line 518, app/assets/stylesheets/projects.scss */
+input:checked ~ .switch-hidden {
+  background: #016bab;
+}
