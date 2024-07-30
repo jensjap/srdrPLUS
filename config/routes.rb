@@ -447,4 +447,6 @@ Rails.application.routes.draw do
 
   post '/extractions/:id/approve', to: 'extractions#approve'
   post '/extractions/:id/disapprove', to: 'extractions#disapprove'
+
+  resources :key_questions_projects_questions, only: %i[create destroy]
 end
