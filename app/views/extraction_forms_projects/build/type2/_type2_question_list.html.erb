@@ -97,6 +97,26 @@
               </div>
             </div>
           </div>
+          <div>
+            <h3 class="text-base">Associated Key Questions:</h3>
+            <template
+              x-for="key_questions_project in question.key_questions_projects"
+            >
+              <div>
+                <input
+                  type="checkbox"
+                  :id="`question-${question.id}-kqp-${key_questions_project.id}`"
+                  class="!my-0 !ml-2 cursor-pointer"
+                  x-on:change="toggleKqpq($el.checked, question.id, key_questions_project.id)"
+                  :checked="key_questions_project.checked"
+                />
+                <label
+                  :for="`question-${question.id}-kqp-${key_questions_project.id}`"
+                  x-text="key_questions_project.key_question.name"
+                ></label>
+              </div>
+            </template>
+          </div>
           <div class="bg-gray-100 p-1 rounded-md">
             <input
               placeholder="Question text"
@@ -823,6 +843,24 @@
         this.loading = false;
       },
 
+      async toggleKqpq(checked, question_id, key_questions_project_id) {
+        let url;
+        if (checked) {
+          url = "/key_questions_projects_questions/";
+        } else {
+          url = "/key_questions_projects_questions/null";
+        }
+        const response = await fetch(url, {
+          method: checked ? "POST" : "DELETE",
+          headers,
+          credentials: "same-origin",
+          body: JSON.stringify({
+            key_questions_project_id,
+            question_id,
+          }),
+        });
+        this.report(response.status);
+      },
       async updateRow(question_row, params) {
         const response = await fetch(`/question_rows/${question_row.id}`, {
           method: "PATCH",
@@ -887,7 +925,12 @@
         this.loading = false;
       },
       async updateCellType(question_row_column, params) {
-        if (no_extractions_exist || confirm('Changing field types while extractions exist may lead to data loss.  Would you like to proceed anyway?')) {
+        if (
+          no_extractions_exist ||
+          confirm(
+            "Changing field types while extractions exist may lead to data loss.  Would you like to proceed anyway?"
+          )
+        ) {
           this.loading = true;
           const response = await fetch(
             `/question_row_columns/${question_row_column.id}`,
@@ -930,11 +973,7 @@
         await this.fetch_questions();
         this.loading = false;
       },
-      async updateFollowupField(
-        qrcqrco_id,
-        followup_field_id,
-        checked
-      ) {
+      async updateFollowupField(qrcqrco_id, followup_field_id, checked) {
         this.loading = true;
         const url = checked
           ? `/question_row_columns_question_row_column_options/${qrcqrco_id}/followup_fields`
@@ -995,18 +1034,23 @@
         table
       ) {
         this.loading = true;
-        const temp =
-          this.question.cells[row_index][column_index].answer_choice[dropPos];
-        this.question.cells[row_index][column_index].answer_choice[dropPos] =
-          this.question.cells[row_index][column_index].answer_choice[dragPos];
-        this.question.cells[row_index][column_index].answer_choice[dragPos] =
-          temp;
-        const tempOrderableElements =
-          this.question.cells[row_index][column_index].answer_choice;
+        const temp = this.question.cells[row_index][column_index].answer_choice[
+          dropPos
+        ];
+        this.question.cells[row_index][column_index].answer_choice[
+          dropPos
+        ] = this.question.cells[row_index][column_index].answer_choice[dragPos];
+        this.question.cells[row_index][column_index].answer_choice[
+          dragPos
+        ] = temp;
+        const tempOrderableElements = this.question.cells[row_index][
+          column_index
+        ].answer_choice;
         this.question.cells[row_index][column_index].answer_choice = [];
         await this.$nextTick(async () => {
-          this.question.cells[row_index][column_index].answer_choice =
-            tempOrderableElements;
+          this.question.cells[row_index][
+            column_index
+          ].answer_choice = tempOrderableElements;
           const orderings = {};
           tempOrderableElements.forEach(
             (oe, index) => (orderings[index] = { id: oe.id, table })
