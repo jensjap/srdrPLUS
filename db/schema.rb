@@ -318,8 +318,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.string "screening_status", default: "asu"
     t.text "refman"
     t.text "other_reference"
+    t.integer "creator_id"
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id"
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id"
+    t.index ["creator_id"], name: "index_citations_projects_on_creator_id"
     t.index ["project_id"], name: "index_citations_projects_on_project_id"
     t.index ["screening_status"], name: "index_citations_projects_on_screening_status"
   end
@@ -2013,6 +2015,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.index ["team_type_id"], name: "index_teams_on_team_type_id"
   end
 
+  create_table "temp_citations_projects_creators", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "citations_project_id"
+    t.integer "creator_id"
+    t.index ["citations_project_id"], name: "index_temp_citations_projects_creators_on_citations_project_id"
+  end
+
   create_table "term_groups", id: :integer, charset: "utf8", force: :cascade do |t|
     t.string "name"
   end
@@ -2168,6 +2176,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
   add_foreign_key "citations_projects", "citations"
   add_foreign_key "citations_projects", "consensus_types"
   add_foreign_key "citations_projects", "projects"
+  add_foreign_key "citations_projects", "users", column: "creator_id"
   add_foreign_key "colorings", "color_choices"
   add_foreign_key "comparate_groups", "comparisons"
   add_foreign_key "comparates", "comparable_elements"

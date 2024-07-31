@@ -1,5 +1,5 @@
 module ImportJobs::EnlCitationImporter
-  def import_citations_from_enl(imported_file, preview = false)
+  def import_citations_from_enl(imported_file, user_id, preview = false)
     key_counter = 0
     primary_id = CitationType.find_by(name: 'Primary').id
 
@@ -69,8 +69,14 @@ module ImportJobs::EnlCitationImporter
       if preview
         preview_citations += h_arr.dup
       else
-        imported_file.project.citations << Citation.create(h_arr)
-      end
+        citations = Citation.create!(h_arr)
+        citations.each do |citation|
+          CitationsProject.create!(
+            citation: citation,
+            project: imported_file.project,
+            creator_id: user_id
+          )
+        end
       h_arr = []
     end
     # imported_file.project.citations << Citation.create!( h_arr )

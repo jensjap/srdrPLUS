@@ -143,7 +143,7 @@ class CitationsController < ApplicationController
         :page_number_end,
         :_destroy,
         citations_attributes: %i[id name _destroy],
-        citations_projects_attributes: %i[id refman other_reference],
+        citations_projects_attributes: %i[id refman other_reference creator_id],
         journal_attributes: %i[id name publication_date issue volume _destroy],
         keywords_attributes: %i[id name _destroy]
       )

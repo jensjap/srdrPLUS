@@ -30,6 +30,7 @@ class ProjectPolicy < ApplicationPolicy
         :project_id,
         :refman,
         :other_reference,
+        :creator_id,
         {
           citation_attributes: [
             :id,
