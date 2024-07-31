@@ -208,7 +208,8 @@ class BaseScreeningService
   def self.user_screened_citation_ids(screening, user)
     screening.send("#{sr_relation}_results".to_sym)
              .joins(:citations_project)
-             .where(privileged: false, user:)
+             .where(privileged: false)
+             .where(user:)
              .pluck('citations_projects.citation_id')
   end
 
@@ -230,12 +231,18 @@ class BaseScreeningService
                                      .where(project_id:)
                                      .where(screening_status: excluded_types_by_screening_status)
                                      .pluck(:id)
-    unscreened_citation_ids = CitationsProject
-                              .where(project_id:)
-                              .where(citation_id: unscreened_citation_ids)
-                              .where.not(id: excluded_citations_project_ids)
-                              .pluck(:citation_id)
-    citation_id = unscreened_citation_ids.tally.select { |_, v| v == 1 }.keys.sample
+
+    citation_id =
+      screening
+        .send("#{sr_relation}_results".to_sym)
+        .joins(:citations_project)
+        .where(citations_projects: { citation_id: unscreened_citation_ids })
+        .where.not(citations_project_id: excluded_citations_project_ids)
+        .group(:citations_project_id)
+        .having('COUNT(citations_project_id) = 1')
+        .pluck(:citation_id)
+        &.sample
+
     citation_id || get_next_singles_citation_id(screening)
   end
 

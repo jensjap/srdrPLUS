@@ -8,6 +8,7 @@ json.asr do
   json.custom_tags @custom_tags
   json.notes @abstract_screening_result.notes || ''
   json.form_complete @abstract_screening_result.form_complete
+  json.total_asr_count_for_this_cp AbstractScreeningResult.where(citations_project_id: @abstract_screening_result.citations_project.id)&.size
 end
 json.citation do
   json.citation_id @abstract_screening_result.citation.id
