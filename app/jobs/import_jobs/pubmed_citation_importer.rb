@@ -1,23 +1,23 @@
 PRIMARY_ID = CitationType.find_by(name: 'Primary').id
 
 module ImportJobs::PubmedCitationImporter
-  def import_citations_from_pubmed_file(imported_file, preview: false)
+  def import_citations_from_pubmed_file(imported_file, user_id, preview = false)
     pmid_arr = imported_file.content.download.split("\n").map(&:strip).compact_blank
-    import_citations_from_pubmed_array(imported_file.project, pmid_arr, preview)
+    import_citations_from_pubmed_array(imported_file.project, pmid_arr, user_id, preview)
   end
 
-  def import_citations_from_pubmed_array(project, pubmed_id_array, preview)
+  def import_citations_from_pubmed_array(project, pubmed_id_array, user_id, preview)
     count = pubmed_id_array.length
     pubmed_id_array = pubmed_id_array[0..4] if preview
 
-    preview_citations = process_pubmed_ids(project, pubmed_id_array, preview)
+    preview_citations = process_pubmed_ids(project, pubmed_id_array, user_id, preview)
 
     { count:, citations: preview_citations }
   end
 
   private
 
-  def process_pubmed_ids(project, pubmed_id_array, preview)
+  def process_pubmed_ids(project, pubmed_id_array, user_id, preview)
     preview_citations = []
 
     search_results = find_existing_and_missing_citation_records(pubmed_id_array)
@@ -35,7 +35,8 @@ module ImportJobs::PubmedCitationImporter
     unless preview
       Citation.create(h_arr_missing_citations)
       pubmed_id_array.each do |pmid|
-        CitationsProject.find_or_create_by!(project:, citation: Citation.find_by(pmid:))
+        citation = Citation.find_by(pmid: pmid)
+        CitationsProject.find_or_create_by!(project:, citation:, creator_id: user_id)
       end
     end
 

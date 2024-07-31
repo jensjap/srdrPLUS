@@ -1,5 +1,5 @@
 module ImportJobs::RisCitationImporter
-  def import_citations_from_ris(imported_file, preview = false)
+  def import_citations_from_ris(imported_file, user_id, preview = false)
     key_counter = 0
     @project = imported_file.project
 
@@ -33,11 +33,14 @@ module ImportJobs::RisCitationImporter
           else
             # Refman is incorrectly present in Citation model.
             # We must add refman information to the correct CitationsProject object.
-            citation = Citation.create!(h_arr)
-            @project.citations << citation
-            if h_arr.first['refman'].present?
-              cp = @project.citations_projects.where(citation:).first
-              cp.update_attribute(:refman, h_arr.first['refman'])
+            citations = Citation.create!(h_arr)
+            citations.each do |citation|
+              CitationsProject.create!(
+                citation: citation,
+                project: @project,
+                refman: citation.refman,
+                creator_id: user_id
+              )
             end
           end
           successful_refman_arr << h_arr.map { |h| h[:refman] }
