@@ -1,5 +1,5 @@
 class AutoTrainingService
-  MAX_RETRIES = 5
+  MAX_RETRIES = 6
   URL = ENV['ML_SERVER']
 
   def self.check_and_train_and_predict(x)
