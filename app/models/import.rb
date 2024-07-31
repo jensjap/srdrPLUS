@@ -55,7 +55,7 @@ class Import < ApplicationRecord
     false
   end
 
-  def preview_import_job
+  def preview_import_job(user_id)
     return nil if import_type.name == 'Distiller'
 
     @previews = []
@@ -64,20 +64,20 @@ class Import < ApplicationRecord
       when 'Citation'
         case imported_file.file_type.name
         when '.ris'
-          @previews << RisImportJob.new.import_citations_from_ris(imported_file, true)
+          @previews << RisImportJob.new.import_citations_from_ris(imported_file, user_id, true)
         when '.csv'
-          @previews << CsvImportJob.new.import_citations_from_csv(imported_file, true)
+          @previews << CsvImportJob.new.import_citations_from_csv(imported_file, user_id, true)
         when '.enl'
-          @previews << EnlImportJob.new.import_citations_from_enl(imported_file, true)
+          @previews << EnlImportJob.new.import_citations_from_enl(imported_file, user_id, true)
         when 'PubMed'
-          @previews << PubmedImportJob.new.import_citations_from_pubmed_file(imported_file, preview: true)
+          @previews << PubmedImportJob.new.import_citations_from_pubmed_file(imported_file, user_id, preview: true)
         end
       end
     end
     @previews
   end
 
-  def start_import_job
+  def start_import_job(user_id)
     if import_type.name == 'Distiller'
       DistillerImportJob.set(wait: 1.minute).perform_later(id)
       return
@@ -88,15 +88,15 @@ class Import < ApplicationRecord
       when 'Citation'
         case imported_file.file_type.name
         when '.ris'
-          RisImportJob.set(wait: 1.minute).perform_later(imported_file.id)
+          RisImportJob.set(wait: 1.minute).perform_later(imported_file.id, user_id)
         when '.csv'
-          CsvImportJob.set(wait: 1.minute).perform_later(imported_file.id)
+          CsvImportJob.set(wait: 1.minute).perform_later(imported_file.id, user_id)
         when '.enl'
-          EnlImportJob.set(wait: 1.minute).perform_later(imported_file.id)
+          EnlImportJob.set(wait: 1.minute).perform_later(imported_file.id, user_id)
         when 'PubMed'
-          PubmedImportJob.set(wait: 1.minute).perform_later(imported_file.id)
+          PubmedImportJob.set(wait: 1.minute).perform_later(imported_file.id, user_id)
         when '.json'
-          CitationFhirImportJob.set(wait: 1.minute).perform_later(imported_file.id)
+          CitationFhirImportJob.set(wait: 1.minute).perform_later(imported_file.id, user_id)
         else
           ## NOT SUPPORTED, WHAT TO DO?
         end

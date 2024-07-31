@@ -23,7 +23,7 @@ class ImportsController < ApplicationController
       return redirect_to(project_citations_path(@project), status: 303)
     end
 
-    @previews = @import.preview_import_job
+    @previews = @import.preview_import_job(current_user.id)
 
     if @previews.blank?
       flash[:error] = 'This import cannot be previewed.'
@@ -37,7 +37,7 @@ class ImportsController < ApplicationController
     @project = @import.project
     authorize(@import)
     if current_user == @import.user
-      @import.start_import_job
+      @import.start_import_job(current_user.id)
       flash[:success] =
         'Citation file(s) successfully uploaded. You will be notified by email when the citation imports finish.'
     else

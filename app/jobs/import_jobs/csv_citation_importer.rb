@@ -2,7 +2,7 @@ require 'csv'
 require 'cgi'
 
 module ImportJobs::CsvCitationImporter
-  def import_citations_from_csv(imported_file, preview = false)
+  def import_citations_from_csv(imported_file, user_id, preview = false)
     primary_id = CitationType.find_by(name: 'Primary').id
     ### citation type, not sure if necessary
     # secondary_id = CitationType.find_by( name: 'Secondary' ).id
@@ -90,7 +90,7 @@ module ImportJobs::CsvCitationImporter
           preview_citations += h_arr.dup
         else
           h_arr.each do |arr|
-            find_or_create_citation_and_make_association_to_project(arr)
+            find_or_create_citation_and_make_association_to_project(arr, user_id)
           end
         end
         h_arr = []
@@ -100,7 +100,7 @@ module ImportJobs::CsvCitationImporter
     { count: preview_citations.length, citations: preview_citations[0..2] }
   end
 
-  def find_or_create_citation_and_make_association_to_project(arr)
+  def find_or_create_citation_and_make_association_to_project(arr, user_id)
     rel_citations = Citation.where("doi=?", arr['doi'].to_s) if arr['doi'].present?
     rel_citations = Citation.where("pmid=?", arr['pmid'].to_s) if arr['pmid'].present?
     citation = if rel_citations.present?
@@ -113,7 +113,7 @@ module ImportJobs::CsvCitationImporter
                end
     @project.citations << citation
     citations_project = @project.citations_projects.find_by(citation_id: citation.id)
-    citations_project.update(refman: refid)
+    citations_project.update(refman: refid, creator_id: user_id)
   end
 
   def sanitize_row(row)
