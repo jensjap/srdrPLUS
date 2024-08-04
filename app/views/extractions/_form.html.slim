@@ -24,7 +24,7 @@ javascript:
       existing_pmids.every(function(pmid) {
         if (option_text.includes(pmid)) {
           if (confirm('An extraction for this citation already exists. Do you wish to create this extraction anyway?\
-    Please note that in order to assign the same user the same citation, you must overwrite "Duplicate User-Citation Protection".\
+    Please note that in order to assign the same user the same citation, you must check the "Overwrite same user, same citation protection" checkbox.\
     Do you wish to proceed with the current settings?')) {
             $('#create-extraction-form').submit();
           }
