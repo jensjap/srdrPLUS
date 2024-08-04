@@ -75,40 +75,43 @@ class ExtractionsController < ApplicationController
     succeeded = []
     skipped = []
     failed = []
-    extractions = []
-    user = User.find(params['extraction']['user_id'])
-    params['extraction']['citation'].delete_if { |i| i == '' }.map(&:to_i).each do |citation_id|
-      citations_project = CitationsProject.find_by(citation_id:, project: @project)
-      extraction = Extraction.find_by(project: @project, citations_project:)
+    user = User.find(extraction_params[:user_id])
+    processed_citations_count = 0
 
-      new_extraction = @project
-                       .extractions
-                       .find_or_initialize_by(
-                         citations_project:,
-                         user:
-                       )
+    processed_citations_count, succeeded, skipped, failed =
+      if extraction_params[:allow_duplicate_extraction_of_citation_by_user].eql?("1")
+        ExtractionService.bulk_assignment_duplicates_allowed(
+          user,
+          @project,
+          extraction_params[:citation],
+          duplicates_allowed: true)
 
-      if new_extraction.persisted?
-        skipped << new_extraction
-      elsif new_extraction.save
-        succeeded << new_extraction
       else
-        failed << extraction
+        ExtractionService.bulk_assignment_duplicates_allowed(
+          user,
+          @project,
+          extraction_params[:citation])
       end
-    end
 
     respond_to do |format|
       format.html do
-        if extractions.length.zero?
+        if processed_citations_count.zero?
           redirect_to project_extractions_url(@project), notice: 'Please select a citation.'
-        elsif extractions.count != succeeded.count
-          failed_citation_names = failed.map { |extraction| extraction.citation.name }.join("\n\n")
-          error = "The following citations were unsuccessfully assigned: #{failed_citation_names}"
-          redirect_to project_extractions_url(@project), error:
-        elsif extractions.count == 1 && extractions.count == succeeded.count
+        elsif processed_citations_count != succeeded.size
+          alert = ""
+          if failed.present?
+            failed_citation_names = failed.map { |extraction| "- #{ extraction.citation.name }" }.join("\n\n")
+            alert += "The following citations were unsuccessfully assigned:\n\n #{ failed_citation_names }"
+          end
+          if skipped.present?
+            skipped_citation_names = skipped.map { |extraction| "- #{ extraction.citation.name }" }.join("\n\n")
+            alert += "The following citations were skipped (potentially due to duplicate assignment):\n\n #{ skipped_citation_names }"
+          end
+          redirect_to project_extractions_url(@project), alert:
+        elsif processed_citations_count == 1 && processed_citations_count == succeeded.size
           redirect_to work_extraction_path(succeeded.first), notice: 'Extraction was successfully created.'
         else
-          redirect_to project_extractions_url(@project), notice: 'Extractions were successfully created.'
+          redirect_to project_extractions_url(@project), notice: 'Extraction(s) were successfully created.'
         end
       end
       format.json do
@@ -203,7 +206,7 @@ class ExtractionsController < ApplicationController
 
     respond_to do |format|
       format.html do
-        if params['panel-tab'].nil? && @project.key_questions_projects.count == 1
+        if params['panel-tab'].nil? && @project.key_questions_projects.size == 1
           ExtractionsKeyQuestionsProjectsSelection.find_or_create_by(
             key_questions_project: @project.key_questions_projects.first, extraction: @extraction
           )
@@ -415,6 +418,8 @@ class ExtractionsController < ApplicationController
       .require(:extraction)
       .permit(:user_id,
               :citations_project_id,
+              :allow_duplicate_extraction_of_citation_by_user,
+              citation: [],
               citations_project_ids: [],
               extractions_key_questions_project_ids: [],
               key_questions_project_ids: [])

@@ -4,6 +4,7 @@
   .form-inputs
     = f.association :user, label: "Select User",   collection: @users, label_method: :handle, input_html: { class: "new-extraction-select2" }, selected: @current_user.id
     = f.input :citation, require: true, label: "Select Citation", collection: @citations, label_method: :label_method, input_html: { class: "new-extraction-select2-multi", multiple: true }
+    = f.input :allow_duplicate_extraction_of_citation_by_user, label: 'Overwrite same user, same citation protection.', as: :boolean, wrapper_html: { class: "mt-1" }
     div#citations-project-id data-project-id="#{@extraction.project.id}"
 
   .form-actions
@@ -22,7 +23,9 @@ javascript:
 
       existing_pmids.every(function(pmid) {
         if (option_text.includes(pmid)) {
-          if (confirm('This extraction for this citation already exists.  Create anyway?')) {
+          if (confirm('An extraction for this citation already exists. Do you wish to create this extraction anyway?\
+    Please note that in order to assign the same user the same citation, you must overwrite "Duplicate User-Citation Protection".\
+    Do you wish to proceed with the current settings?')) {
             $('#create-extraction-form').submit();
           }
           submittable = false
