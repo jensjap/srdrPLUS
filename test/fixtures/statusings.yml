@@ -2,3 +2,28 @@ one:
   status: draft
   statusable: one
   statusable_type: 'ExtractionsExtractionFormsProjectsSection'
+
+two:
+  status: complete
+  statusable: copy_project_extraction_one
+  statusable_type: 'Extraction'
+
+three:
+  status: draft
+  statusable: copy_project_extraction_two
+  statusable_type: 'Extraction'
+
+four:
+  status: draft
+  statusable: copy_project_extraction_three
+  statusable_type: 'Extraction'
+
+five:
+  status: draft
+  statusable: copy_project_extraction_four
+  statusable_type: 'Extraction'
+
+six:
+  status: draft
+  statusable: copy_project_extraction_five
+  statusable_type: 'Extraction'

@@ -3,14 +3,11 @@
 one:
   extraction: one
   extraction_forms_projects_section: one
-#  active: true
 
 two:
   extraction: two
   extraction_forms_projects_section: two
-#  active: true
 
 three:
   extraction: three
   extraction_forms_projects_section: five
-#  active: true

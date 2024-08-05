@@ -76,14 +76,14 @@ class ProjectCloningServiceTest < ActiveSupport::TestCase
     }
     cloned_prj = ProjectCloningService.clone_project(@original_project, @leaders, opts)
     cloned_std_efp = cloned_prj
-                     .extraction_forms_projects
-                     .joins(:extraction_form)
-                     .find_by(extraction_forms: { name: 'Standard' })
-    cloned_std_efp_efps = cloned_std_efp.extraction_forms_projects_sections
-    original_std_efp = @original_project
                        .extraction_forms_projects
                        .joins(:extraction_form)
                        .find_by(extraction_forms: { name: 'Standard' })
+    cloned_std_efp_efps = cloned_std_efp.extraction_forms_projects_sections
+    original_std_efp = @original_project
+                         .extraction_forms_projects
+                         .joins(:extraction_form)
+                         .find_by(extraction_forms: { name: 'Standard' })
     original_std_efp_efps = original_std_efp.extraction_forms_projects_sections
 
     assert_equal(
@@ -194,7 +194,7 @@ class ProjectCloningServiceTest < ActiveSupport::TestCase
     copied_project = ProjectCloningService.clone_project(@original_project, @leaders, opts)
     copied_project.reload
     assert copied_project.citations_projects.all? { |cp| cp.screening_status.eql?('asu') },
-           "All added CitationsProject should have 'asu' screening_status"
+      "All added CitationsProject should have 'asu' screening_status"
   end
 
   test "copied citations_projects should have screening_status 'eip' if extraction exists" do
@@ -207,6 +207,32 @@ class ProjectCloningServiceTest < ActiveSupport::TestCase
     copied_project = ProjectCloningService.clone_project(@original_project, @leaders, opts)
     copied_project.reload
     assert copied_project.citations_projects.all? { |cp| cp.screening_status.eql?('eip') },
-           "All added CitationsProject should have 'eip' screening_status in the presence of extraction"
+      "All added CitationsProject should have 'eip' screening_status in the presence of extraction"
+  end
+
+  test "count of copied extractions should be the same as @original_project" do
+    opts = {
+      include_citations: true,
+      include_extraction_forms: true,
+      include_extractions: true,
+      include_labels: false
+    }
+    copied_project = ProjectCloningService.clone_project(@original_project, @leaders, opts)
+
+    assert_equal(copied_project.extractions.size, @original_project.extractions.size)
+  end
+
+  test "copied extractions should have same status as source" do
+    opts = {
+      include_citations: true,
+      include_extraction_forms: true,
+      include_extractions: true,
+      include_labels: false
+    }
+    copied_project = ProjectCloningService.clone_project(@original_project, @leaders, opts)
+
+    assert copied_project.extractions.any? { |ex| ex.status.eql?(Status.COMPLETED) }
+    assert_equal(copied_project.extractions.map(&:citation), @original_project.extractions.map(&:citation))
+    assert_equal(copied_project.extractions.map(&:status), @original_project.extractions.map(&:status))
   end
 end

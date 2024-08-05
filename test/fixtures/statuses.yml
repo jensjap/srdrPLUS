@@ -1,2 +1,5 @@
 draft:
   name: Draft
+
+complete:
+  name: Completed
