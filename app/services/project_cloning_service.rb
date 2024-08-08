@@ -24,8 +24,8 @@ class ProjectCloningService
       )
     end
 
-    # Assign all extractions to the first leader.
     if amoeba_copy_extractions
+      # Assign all extractions to the first leader.
       copied_project.extractions.each do |extraction|
         extraction.update(user: leaders.first)
       end

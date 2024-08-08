@@ -13,12 +13,19 @@
 class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   include SharedProcessTokenMethods
 
-  # !!! Doesn't work
-  #  scope :result_type_sections, -> () {
-  #    joins(extraction_forms_projects_section: :section )
-  #      .where(extraction_forms_projects_sections: { sections: { name: 'Results' } }) }
+  attr_accessor :is_amoeba_copy, :amoeba_source_object
 
   after_create :create_default_draft_status
+
+  before_commit :correct_associations, if: :is_amoeba_copy
+
+  amoeba do
+    enable
+    customize(lambda { |original, copy|
+      copy.is_amoeba_copy = true
+      copy.amoeba_source_object = original
+    })
+  end
 
   belongs_to :extraction, inverse_of: :extractions_extraction_forms_projects_sections
   belongs_to :extraction_forms_projects_section, inverse_of: :extractions_extraction_forms_projects_sections
@@ -350,6 +357,17 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       else
         eefpst1.pos
       end
+    end
+  end
+
+  def correct_associations
+    if amoeba_source_object.link_to_type1.present?
+      name = amoeba_source_object.link_to_type1.section.name
+      correct_link_to_type1 = extraction
+                                .extractions_extraction_forms_projects_sections
+                                .joins(extraction_forms_projects_section: :section)
+                                .find_by(section: { name: })
+      self.update(link_to_type1: correct_link_to_type1)
     end
   end
 end

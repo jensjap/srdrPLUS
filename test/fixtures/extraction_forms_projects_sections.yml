@@ -44,11 +44,13 @@ amoeba_efps_arms:
 amoeba_efps_arm_details:
   extraction_forms_project: amoeba_efp_standard
   extraction_forms_projects_section_type: two
+  link_to_type1: amoeba_efps_arms
   section: two
 
 amoeba_efps_sample_characteristics:
   extraction_forms_project: amoeba_efp_standard
   extraction_forms_projects_section_type: two
+  link_to_type1: amoeba_efps_arms
   section: sample_characteristics
 
 amoeba_efps_outcomes:
@@ -59,6 +61,7 @@ amoeba_efps_outcomes:
 amoeba_efps_outcome_details:
   extraction_forms_project: amoeba_efp_standard
   extraction_forms_projects_section_type: two
+  link_to_type1: amoeba_efps_outcomes
   section: six
 
 amoeba_efps_results:

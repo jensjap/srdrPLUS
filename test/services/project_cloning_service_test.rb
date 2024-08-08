@@ -235,4 +235,19 @@ class ProjectCloningServiceTest < ActiveSupport::TestCase
     assert_equal(copied_project.extractions.map(&:citation), @original_project.extractions.map(&:citation))
     assert_equal(copied_project.extractions.map(&:status), @original_project.extractions.map(&:status))
   end
+
+  test "copied eefps should have correct link to type1" do
+    opts = {
+      include_citations: true,
+      include_extraction_forms: true,
+      include_extractions: true,
+      include_labels: false
+    }
+    copied_project = ProjectCloningService.clone_project(@original_project, @leaders, opts)
+    copied_project.extractions.each do |extraction|
+      extraction.extractions_extraction_forms_projects_sections.each do |eefps|
+        assert_equal(eefps.link_to_type1.project, copied_project) if eefps.link_to_type1.present?
+      end
+    end
+  end
 end
