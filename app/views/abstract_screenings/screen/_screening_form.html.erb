@@ -54,20 +54,6 @@
   <template x-if="questions && questions.length == 0">
     <div class="py-2">
       <div>No Screening Form</div>
-      <div class="flex justify-end items-center m-4 ml-0">
-        <input
-          class="cursor-pointer !m-0"
-          id="screening-form-complete-checkbox"
-          type="checkbox"
-          x-model="asr.form_complete"
-          @click="$nextTick(() => { updateAsr('form_complete') });"
-        />
-        <label
-          class="grow select-none cursor-pointer mr-2"
-          for="screening-form-complete-checkbox"
-          >Screening Form Complete
-        </label>
-      </div>
     </div>
   </template>
   <template x-if="questions && questions.length > 0">
