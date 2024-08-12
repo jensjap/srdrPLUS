@@ -1,0 +1,7 @@
+one:
+  extraction: copy_project_extraction_one
+  key_questions_project: three
+
+two:
+  extraction: copy_project_extraction_one
+  key_questions_project: four
