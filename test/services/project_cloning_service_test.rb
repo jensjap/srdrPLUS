@@ -250,4 +250,20 @@ class ProjectCloningServiceTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "copied eefps should have efps that belongs to copied project" do
+    opts = {
+      include_citations: true,
+      include_extraction_forms: true,
+      include_extractions: true,
+      include_labels: false
+    }
+    copied_project = ProjectCloningService.clone_project(@original_project, @leaders, opts)
+
+    copied_project.extractions.each do |ex|
+      ex.extractions_extraction_forms_projects_sections.each do |eefps|
+        assert_equal(eefps.extraction_forms_projects_section.project, copied_project)
+      end
+    end
+  end
 end

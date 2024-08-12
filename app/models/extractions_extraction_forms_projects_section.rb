@@ -17,7 +17,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 
   after_create :create_default_draft_status
 
-  before_commit :correct_associations, if: :is_amoeba_copy
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   amoeba do
     enable
@@ -360,14 +360,31 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
     end
   end
 
-  def correct_associations
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    correct_extraction_forms_projects_section_association
+    correct_link_to_type1_association
+  end
+
+  def correct_extraction_forms_projects_section_association
+    name = extraction_forms_projects_section.section.name
+    correct_extraction_forms_projects_section =
+      ExtractionFormsProjectsSection
+        .joins(:extraction_forms_project, :section)
+        .where(extraction_forms_projects: { project: extraction.project })
+        .find_by(sections: { name: })
+    update(extraction_forms_projects_section: correct_extraction_forms_projects_section)
+  end
+
+  def correct_link_to_type1_association
     if amoeba_source_object.link_to_type1.present?
       name = amoeba_source_object.link_to_type1.section.name
       correct_link_to_type1 = extraction
                                 .extractions_extraction_forms_projects_sections
                                 .joins(extraction_forms_projects_section: :section)
                                 .find_by(section: { name: })
-      self.update(link_to_type1: correct_link_to_type1)
+      update(link_to_type1: correct_link_to_type1)
     end
   end
 end
