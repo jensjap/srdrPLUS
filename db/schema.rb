@@ -20,6 +20,17 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.index ["profile_id"], name: "index_abstrackr_settings_on_profile_id"
   end
 
+  create_table "abstract_screening_distributions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "abstract_screening_id", null: false
+    t.integer "user_id", null: false
+    t.integer "citations_project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["abstract_screening_id"], name: "fk_rails_ff148ba4d0"
+    t.index ["citations_project_id"], name: "fk_rails_4fc38fa348"
+    t.index ["user_id"], name: "fk_rails_ac2003cb18"
+  end
+
   create_table "abstract_screening_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "abstract_screening_id"
     t.bigint "user_id"
@@ -754,6 +765,17 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
+  create_table "fulltext_screening_distributions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "fulltext_screening_id", null: false
+    t.integer "user_id", null: false
+    t.integer "citations_project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["citations_project_id"], name: "fk_rails_e55c2d7438"
+    t.index ["fulltext_screening_id"], name: "fk_rails_b56734f739"
+    t.index ["user_id"], name: "fk_rails_add0bdd3f2"
+  end
+
   create_table "fulltext_screening_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "fulltext_screening_id"
     t.bigint "user_id"
@@ -1226,6 +1248,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.boolean "fs_allow_adding_tags", default: true, null: false
     t.boolean "force_training", default: false, null: false
     t.integer "source_project_id"
+    t.boolean "new_picking_logic", default: true
   end
 
   create_table "projects_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -2167,6 +2190,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
   end
 
   add_foreign_key "abstrackr_settings", "profiles"
+  add_foreign_key "abstract_screening_distributions", "abstract_screenings"
+  add_foreign_key "abstract_screening_distributions", "citations_projects"
+  add_foreign_key "abstract_screening_distributions", "users"
   add_foreign_key "actions", "action_types"
   add_foreign_key "actions", "users"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
