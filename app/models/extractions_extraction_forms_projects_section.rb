@@ -21,6 +21,8 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 
   amoeba do
     enable
+    exclude_association :link_to_type2s
+
     customize(lambda { |original, copy|
       copy.is_amoeba_copy = true
       copy.amoeba_source_object = original
@@ -47,8 +49,9 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
            -> { joins(:extractions_extraction_forms_projects_sections_type1s) },
            through: :extractions_extraction_forms_projects_sections_type1s, dependent: :destroy
 
-  has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy,
-                                                                                       inverse_of: :extractions_extraction_forms_projects_section
+  has_many :extractions_extraction_forms_projects_sections_question_row_column_fields,
+           dependent: :destroy,
+           inverse_of: :extractions_extraction_forms_projects_section
   has_many :question_row_column_fields,
            through: :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy
 
