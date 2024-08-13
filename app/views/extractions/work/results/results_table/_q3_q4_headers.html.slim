@@ -5,14 +5,14 @@
     th.bg-lightgreen colspan="#{ @arms.length }"
       | Within Arm Comparisons
       br
-      = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: wac_rss.id), remote: true
+      = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: wac_rss.id), remote: true, onclick: "return false"
 
     - if bac_rss.comparisons.present?
       th.bg-lightpink.freeze
       th.bg-lightpink colspan="#{ bac_rss.comparisons.length }"
         | Net Comparisons
         br
-        = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: net_rss.id), remote: true
+        = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: net_rss.id), remote: true, onclick: "return false"
 
   tr
     th.bg-lightgreen.vertical

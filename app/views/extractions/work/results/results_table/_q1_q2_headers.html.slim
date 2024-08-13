@@ -4,13 +4,13 @@ tr
   th colspan="#{ @arms.length }" style="width: #{[@arms.length, 1].max * 150}px;"
     | Descriptive Statistics
     br
-    = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: dsc_rss.id), remote: true
+    = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: dsc_rss.id), remote: true, onclick: "return false"
   - if bac_rss.comparisons.present?
     th.bg-lightblue.freeze style="width: 250px;"
     th.bg-lightblue colspan="#{ bac_rss.comparisons.length }" style="width: #{[bac_rss.comparisons.length, 1].max * 150}px;"
       | Between Arm Comparisons
       br
-      = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: bac_rss.id), remote: true
+      = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: bac_rss.id), remote: true, onclick: "return false"
   th style="width: 200px; padding: 30px;"
     .bac-comparison style="padding: 10px;"
       = simple_form_for bac_rss,
