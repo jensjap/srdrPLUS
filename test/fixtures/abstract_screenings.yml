@@ -1,0 +1,21 @@
+one:
+  project: copy_project_original
+  abstract_screening_type: single-perpetual
+  no_of_citations: 0
+  exclusive_users: false
+  yes_tag_required: false
+  no_tag_required: false
+  maybe_tag_required: false
+  yes_reason_required: false
+  no_reason_required: false
+  maybe_reason_required: false
+  yes_note_required: false
+  no_note_required: false
+  maybe_note_required: false
+  hide_author: false
+  hide_journal: false
+  created_at: <%= Time.now %>
+  updated_at: <%= Time.now %>
+  yes_form_required: false
+  no_form_required: false
+  maybe_form_required: false
