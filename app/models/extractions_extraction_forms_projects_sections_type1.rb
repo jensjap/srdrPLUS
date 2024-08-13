@@ -18,9 +18,6 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   # Need this to accept an attribute on the fly when making bulk changes to the eefpst1 within consolidation tool.
   attr_writer :should
 
-  has_one :statusing, as: :statusable, dependent: :destroy
-  has_one :status, through: :statusing
-
   after_commit :set_extraction_stale, on: %i[create update destroy]
 
   paginates_per 1
@@ -78,6 +75,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
                                                                                        inverse_of: :extractions_extraction_forms_projects_sections_type1
 
   has_many :comparable_elements, as: :comparable, dependent: :destroy
+
+  has_one :statusing, as: :statusable, dependent: :destroy
+  has_one :status, through: :statusing
 
   accepts_nested_attributes_for :extractions_extraction_forms_projects_sections_type1_rows, allow_destroy: true
   accepts_nested_attributes_for :type1, reject_if: :all_blank

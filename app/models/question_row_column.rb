@@ -30,6 +30,7 @@ class QuestionRowColumn < ApplicationRecord
 
   amoeba do
     enable
+
     customize(lambda { |_original, cloned|
       cloned.skip_callbacks = true
     })
