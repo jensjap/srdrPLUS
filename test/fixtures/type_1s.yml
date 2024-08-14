@@ -3,9 +3,23 @@
 one:
   name: MyString1
   description: MyText1
-#  deleted_at:
 
 two:
   name: MyString2
   description: MyText2
-#  deleted_at:
+
+arm1:
+  name: Arm 1
+  description: Arm 1 description
+
+arm2:
+  name: Arm 2
+  description: Arm 2 description
+
+outcome1:
+  name: Outcome 1
+  description: Outcome 1 description
+
+outcome2:
+  name: Outcome 2
+  description: Outcome 2 description
