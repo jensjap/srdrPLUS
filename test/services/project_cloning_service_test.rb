@@ -259,10 +259,44 @@ class ProjectCloningServiceTest < ActiveSupport::TestCase
       include_labels: false
     }
     copied_project = ProjectCloningService.clone_project(@original_project, @leaders, opts)
-
     copied_project.extractions.each do |ex|
       ex.extractions_extraction_forms_projects_sections.each do |eefps|
         assert_equal(eefps.extraction_forms_projects_section.project, copied_project)
+      end
+    end
+  end
+
+  test "ensure correct parent associations for eefpsqrcf" do
+    opts = {
+      include_citations: true,
+      include_extraction_forms: true,
+      include_extractions: true,
+      include_labels: false
+    }
+    copied_project = ProjectCloningService.clone_project(@original_project, @leaders, opts)
+    copied_project.extractions.each do |ex|
+      ex.extractions_extraction_forms_projects_sections.each do |eefps|
+        eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.each do |eefpsqrcf|
+          assert_equal(eefpsqrcf.extractions_extraction_forms_projects_sections_type1.extraction.project, copied_project)
+          assert_equal(eefpsqrcf.extractions_extraction_forms_projects_section.extraction.project, copied_project)
+          assert_equal(eefpsqrcf.question_row_column_field.question.project, copied_project)
+        end
+      end
+    end
+
+    # Check record counts.
+    copied_project.extractions.each do |ex|
+      original_ex = @original_project
+                      .extractions
+                      .select {
+                        |orig_ex| orig_ex.citations_project.citation.eql?(ex.citations_project.citation) &&
+                                  orig_ex.extractions_extraction_forms_projects_sections.size.eql?(ex.extractions_extraction_forms_projects_sections.size) }[0]
+      ex.extractions_extraction_forms_projects_sections.each do |eefps|
+        original_eefps = original_ex
+                           .extractions_extraction_forms_projects_sections
+                           .select { |orig_eefps| orig_eefps.extraction_forms_projects_section.section.eql?(eefps.extraction_forms_projects_section.section) }[0]
+        assert_equal(eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.size,
+                     original_eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.size)
       end
     end
   end

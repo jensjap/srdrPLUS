@@ -12,5 +12,5 @@ two:
 
 three:
   extraction_forms_projects_section: amoeba_efps_arm_details
-  name: MyString
-  description: MyText
+  name: "Amoeba Question 1"
+  description: "Located in Arm Details section"

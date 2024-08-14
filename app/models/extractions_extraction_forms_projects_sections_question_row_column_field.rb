@@ -14,7 +14,19 @@
 class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < ApplicationRecord
   include SharedProcessTokenMethods
 
+  attr_accessor :is_amoeba_copy
+
   self.table_name = 'eefps_qrcfs'
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
+
+  amoeba do
+    enable
+
+    customize(lambda { |original, copy| 
+      copy.is_amoeba_copy = true
+    })
+  end
 
   belongs_to :extractions_extraction_forms_projects_sections_type1,
              inverse_of: :extractions_extraction_forms_projects_sections_question_row_column_fields, optional: true
@@ -42,5 +54,22 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < Applica
       save_resource_name_with_token(resource, token)
     end
     super
+  end
+
+  private
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    correct_eefpst1_association
+    correct_qrcf_association
+  end
+
+  def correct_eefpst1_association
+    extractions_extraction_forms_projects_sections_type1.update(extractions_extraction_forms_projects_section:)
+  end
+
+  def correct_qrcf_association
+    question_row_column_field.question_row_column.question_row.question.update(extraction_forms_projects_section: extractions_extraction_forms_projects_section.extraction_forms_projects_section)
   end
 end
