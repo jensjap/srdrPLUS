@@ -3,9 +3,11 @@
 one:
   question: one
   name: MyString
-#  deleted_at:
 
 two:
   question: two
   name: MyString
-#  deleted_at:
+
+three:
+  question: three
+  name: MyString
