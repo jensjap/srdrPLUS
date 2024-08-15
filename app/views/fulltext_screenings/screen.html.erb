@@ -16,56 +16,43 @@
     <%= render 'fulltext_screenings/screen/screening_form' %>
   </div>
   <div
-    class="mx-auto lg:mx-0 lg:w-2/3 h-24 absolute inset-0 overflow-y-hidden flex flex-col justify-center"
+    class="lg:mx-0 lg:w-2/3 h-24 inset-0 overflow-y-hidden flex justify-between items-center"
     :class="resolutionMode ? 'bg-purple-100' : 'bg-gray-300'"
   >
-    <a
-      id="dynamic-link"
-      href="<%= fulltext_screening_path(params[:fulltext_screening_id]) %>"
-      class="cursor-pointer z-[5] absolute top-4 right-4 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-    >
-      <span class="sr-only">Close menu</span>
-      <!-- Heroicon name: outline/x -->
-      Exit
-    </a>
-    <button
-      @click="historyPanel = !historyPanel"
-      class="p-1 px-2 text-xs z-[9] inline-flex items-center cursor-pointer"
-      :class="resolutionMode ? 'bg-srdrpurple text-white' : ''"
-    >
-      <span x-text="resolutionMode ? 'Conflicts' : 'Your Labels'"></span>
-      &nbsp;
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1"
-        stroke="currentColor"
-        class="w-3 h-3 pt-1"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5"
-        />
-      </svg>
-    </button>
-    <button
-      @click="getFsrId()"
-      class="cursor-pointer z-[5] absolute top-4 right-16 bg-gray-100 rounded-md p-2 inline-flex items-center justify-center text-black"
-      x-show="!resolutionMode"
-    >
-      Continue Screening
-    </button>
     <div class="h-24 mr-56 overflow-y-auto items-center">
-      <div>
-        <div class="flex items-center">
+      <div class="h-full">
+        <div class="flex items-center h-full">
           <h1
             class="px-8 text-base font-bold leading-none"
             x-text="citation.title"
           ></h1>
         </div>
       </div>
+    </div>
+    <div class="flex flex-col justify-evenly h-24 text-xs">
+      <button
+        @click="historyPanel = !historyPanel"
+        class="cursor-pointer bg-gray-100 rounded-md p-1 inline-flex items-center justify-center text-black"
+        :class="resolutionMode ? 'bg-srdrpurple text-white' : ''"
+      >
+        <span x-text="resolutionMode ? 'Conflicts' : 'Your Labels'"></span>
+      </button>
+      <button
+        @click="getFsrId()"
+        class="cursor-pointer bg-gray-100 rounded-md p-1 inline-flex items-center justify-center text-black"
+        x-show="!resolutionMode"
+      >
+        Continue Screening
+      </button>
+      <a
+        id="dynamic-link"
+        href="<%= fulltext_screening_path(params[:fulltext_screening_id]) %>"
+        class="cursor-pointer bg-gray-100 rounded-md p-1 inline-flex items-center justify-center text-black hover:no-underline hover:text-black"
+      >
+        <span class="sr-only">Close menu</span>
+        <!-- Heroicon name: outline/x -->
+        Exit
+      </a>
     </div>
   </div>
   <div
@@ -794,8 +781,6 @@
 
         if (this.requireReasoning()) {
           this.reasoningMenu = true;
-        } else {
-          this.updateFsr("label", originalLabel);
         }
       },
     }));

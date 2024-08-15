@@ -36,6 +36,7 @@ class FulltextScreeningResultsController < ApplicationController
                           fulltext_screening: @fulltext_screening_result.fulltext_screening,
                           privileged: params[:resolution_mode] == 'true'
                         )
+                        .order(updated_at: :desc)
         @screened_cps = @screened_cps.where(user: current_user) unless params[:resolution_mode] == 'true'
         prepare_json_data
       end

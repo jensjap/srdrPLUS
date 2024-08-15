@@ -128,12 +128,19 @@ class BaseScreeningService
   end
 
   def self.find_unfinished_sr(screening, user)
-    sr_model.find_by(
-      "#{sr_relation}": screening,
-      user:,
-      label: nil,
-      privileged: false
-    )
+    project_id = screening.project.id
+    # Exclude CitationsProject IDs with any of the excluded screening_status
+    excluded_types_by_screening_status = excluded_screening_statuses
+    excluded_citations_project_ids = CitationsProject
+                                     .where(project_id:)
+                                     .where(screening_status: excluded_types_by_screening_status)
+                                     .pluck(:id)
+    sr_model.where("#{sr_relation}": screening,
+                   user:,
+                   label: nil,
+                   privileged: false)
+            .where.not(citations_project_id: excluded_citations_project_ids)
+            .first
   end
 
   def self.find_or_create_unprivileged_sr(screening, user)
@@ -141,12 +148,16 @@ class BaseScreeningService
     return nil if citation_id.nil?
 
     cp = CitationsProject.find_by(project: screening.project, citation_id:)
-    sr_model.find_or_create_by!(
-      "#{sr_relation}": screening,
-      user:,
-      citations_project: cp,
-      privileged: false
-    )
+    new_sr = nil
+    sr_model.transaction do
+      new_sr = sr_model.find_or_create_by!(
+        "#{sr_relation}": screening,
+        user:,
+        citations_project: cp,
+        privileged: false
+      )
+    end
+    new_sr
   end
 
   def self.get_next_pilot_citation_id(screening, user)
@@ -166,7 +177,7 @@ class BaseScreeningService
     relation = "#{sr_relation}_results".to_sym
     CitationsProject.joins(relation => sr_relation.to_sym)
                     .where(project:)
-                    .map(&:citation_id)
+                    .pluck(:citation_id)
   end
 
   def self.at_or_over_limit?(screening, user)
@@ -188,19 +199,18 @@ class BaseScreeningService
 
   def self.other_users_screened_citation_ids(screening, user)
     screening.send("#{sr_relation}_results".to_sym)
-             .includes(citations_project: :citation)
+             .joins(:citations_project)
              .where(privileged: false)
              .where.not(user:)
-             .map(&:citation)
-             .map(&:id)
+             .pluck('citations_projects.citation_id')
   end
 
   def self.user_screened_citation_ids(screening, user)
     screening.send("#{sr_relation}_results".to_sym)
-             .includes(citations_project: :citation)
-             .where(privileged: false, user:)
-             .map(&:citation)
-             .map(&:id)
+             .joins(:citations_project)
+             .where(privileged: false)
+             .where(user:)
+             .pluck('citations_projects.citation_id')
   end
 
   def self.expert_screened_citation_ids(screening)
@@ -212,32 +222,28 @@ class BaseScreeningService
   end
 
   def self.get_next_doubles_citation_id(screening, user)
+    project_id = screening.project.id
     unscreened_citation_ids =
       other_users_screened_citation_ids(screening, user) - user_screened_citation_ids(screening, user)
-    # add additional check to protect against cases where the cp screening status has changed arbitrarily
-    unscreened_citation_ids =
-      CitationsProject
-      .where(citation_id: unscreened_citation_ids)
-      .where(screening_status: partially_screened_status)
-      .map(&:citation_id)
+    # Exclude CitationsProject IDs with any of the excluded screening_status
+    excluded_types_by_screening_status = excluded_screening_statuses
+    excluded_citations_project_ids = CitationsProject
+                                     .where(project_id:)
+                                     .where(screening_status: excluded_types_by_screening_status)
+                                     .pluck(:id)
 
-    citation_id = unscreened_citation_ids.tally.select { |_, v| v == 1 }.keys.sample
-    if citation_id.nil?
-      get_next_singles_citation_id(screening)
-    else
-      citation_id
-    end
-  end
+    citation_id =
+      screening
+        .send("#{sr_relation}_results".to_sym)
+        .joins(:citations_project)
+        .where(citations_projects: { citation_id: unscreened_citation_ids })
+        .where.not(citations_project_id: excluded_citations_project_ids)
+        .group(:citations_project_id)
+        .having('COUNT(citations_project_id) = 1')
+        .pluck(:citation_id)
+        &.sample
 
-  def self.partially_screened_status
-    case name
-    when 'AbstractScreeningService'
-      CitationsProject::AS_PARTIALLY_SCREENED
-    when 'FulltextScreeningService'
-      CitationsProject::FS_PARTIALLY_SCREENED
-    else
-      raise "Unknown service name: #{name}"
-    end
+    citation_id || get_next_singles_citation_id(screening)
   end
 
   def self.get_next_expert_needed_citation_id(screening, user)
@@ -274,11 +280,55 @@ class BaseScreeningService
              .includes(citations_project: :citation,
                        user: { projects_users: :project })
              .select do |result|
-      result.user.projects_users.any? do |pu|
-        pu.is_expert == is_expert && pu.project == screening.project
-      end
+               result.user.projects_users.any? do |pu|
+                 pu.is_expert == is_expert && pu.project == screening.project
+               end
+             end
+             .pluck('citations_projects.citation_id')
+  end
+
+  private
+
+  def self.excluded_screening_statuses
+    case name
+    when 'AbstractScreeningService'
+      [
+        # CitationsProject::AS_UNSCREENED,
+        # CitationsProject::AS_PARTIALLY_SCREENED,
+        # CitationsProject::AS_IN_CONFLICT,
+        CitationsProject::AS_REJECTED,
+        CitationsProject::FS_UNSCREENED,
+        CitationsProject::FS_PARTIALLY_SCREENED,
+        CitationsProject::FS_IN_CONFLICT,
+        CitationsProject::FS_REJECTED,
+        CitationsProject::E_NEED_EXTRACTION,
+        CitationsProject::E_IN_PROGRESS,
+        CitationsProject::E_REJECTED,
+        CitationsProject::E_COMPLETE,
+        CitationsProject::C_NEED_CONSOLIDATION,
+        CitationsProject::C_IN_PROGRESS,
+        CitationsProject::C_REJECTED,
+        CitationsProject::C_COMPLETE
+      ]
+    when 'FulltextScreeningService'
+      [
+        CitationsProject::AS_UNSCREENED,
+        CitationsProject::AS_PARTIALLY_SCREENED,
+        CitationsProject::AS_IN_CONFLICT,
+        CitationsProject::AS_REJECTED,
+        # CitationsProject::FS_UNSCREENED,
+        # CitationsProject::FS_PARTIALLY_SCREENED,
+        # CitationsProject::FS_IN_CONFLICT,
+        CitationsProject::FS_REJECTED,
+        CitationsProject::E_NEED_EXTRACTION,
+        CitationsProject::E_IN_PROGRESS,
+        CitationsProject::E_REJECTED,
+        CitationsProject::E_COMPLETE,
+        CitationsProject::C_NEED_CONSOLIDATION,
+        CitationsProject::C_IN_PROGRESS,
+        CitationsProject::C_REJECTED,
+        CitationsProject::C_COMPLETE
+      ]
     end
-             .map(&:citation)
-             .map(&:id)
   end
 end

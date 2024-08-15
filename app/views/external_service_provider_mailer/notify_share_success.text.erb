@@ -1,0 +1,11 @@
+Dear <%= @user.handle %>,
+
+The request to share your project with <%= @external_service_providers_projects_user.external_service_provider.name %> has finished.
+
+Below is the list of links to the resource resource(s) shared:
+<% @lsof_fois.each do |foi| %>
+[<%= @resource_url %>/resources/<%= foi.to_s %>]
+<% end %>
+
+Respectfully,
+The SRDR Team

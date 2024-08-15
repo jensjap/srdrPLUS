@@ -8,6 +8,7 @@ json.asr do
   json.custom_tags @custom_tags
   json.notes @abstract_screening_result.notes || ''
   json.form_complete @abstract_screening_result.form_complete
+  json.total_asr_count_for_this_cp AbstractScreeningResult.where(citations_project_id: @abstract_screening_result.citations_project.id)&.size
 end
 json.citation do
   json.citation_id @abstract_screening_result.citation.id
@@ -33,7 +34,7 @@ json.options do
   json.no_form_required @abstract_screening.no_form_required
   json.maybe_form_required @abstract_screening.maybe_form_required
 end
-cps = @screened_cps.reverse.map do |asr|
+cps = @screened_cps.map do |asr|
   {
     asr_id: asr.id,
     name: asr.citation.name,

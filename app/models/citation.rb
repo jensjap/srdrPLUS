@@ -53,11 +53,12 @@ class Citation < ApplicationRecord
   end
 
   def accession_number_alts
-    (pmid.present? && pmid) ||
-      (registry_number.present? && registry_number) ||
-      (accession_number.present? && accession_number) ||
-      (doi.present? && doi) ||
-      (other.present? && other)
+    value = (pmid.present? && pmid) ||
+            (registry_number.present? && registry_number) ||
+            (accession_number.present? && accession_number) ||
+            (doi.present? && doi) ||
+            (other.present? && other)
+    value.to_s
   end
 
   def authors_short

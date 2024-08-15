@@ -45,13 +45,12 @@ class RobotScreenService
     end
   end
 
-  def get_predictions(timestamp)
-    data = MachineLearningDataSupplyingService.get_unlabel_abstract(@project_id)
+  def get_predictions(timestamp, data)
     predict_url = "#{@url}/predict/#{@method}/#{@project_id}"
     response_hash = send_post_request(predict_url, { input_citations: data, timestamp: timestamp })
     predictions = response_hash['predictions']
     ml_model = @project.ml_models.find_by(timestamp: timestamp)
-    return data, predictions, ml_model
+    return predictions, ml_model
   end
 
   def check_predictions(predictions, score_threshold, percentage_threshold)

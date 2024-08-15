@@ -64,6 +64,8 @@ services:
       - private.env
     environment:
       RAILS_ENV: development
+    stdin_open: true
+    tty: true
 
   database:
     image: mysql:8.0.23

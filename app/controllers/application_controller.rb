@@ -53,14 +53,23 @@ class ApplicationController < ActionController::Base
   end
 
   def user_not_authorized(_exception)
-    flash[:alert] = 'You are not authorized to perform this action.'
     respond_to do |format|
-      format.json { head :forbidden }
+      format.json do
+        flash.now[:alert] = 'You are not authorized to perform this action.'
+        head :forbidden
+      end
+      format.js do
+        flash.now[:error] = 'You are not authorized to perform this action.'
+        render status: :forbidden, layout: false
+      end
       #! Critical: We must use status 303 here, otherwise the Browser
       #!           might redirect using the original request method
       #!           such as DELETE to an unintended fallback path.
       #! https://api.rubyonrails.org/classes/ActionController/Redirecting.html#method-i-redirect_to
-      format.html { redirect_back(fallback_location: root_path, status: 303) unless request.xhr? }
+      format.html do
+        flash[:alert] = 'You are not authorized to perform this action.'
+        redirect_back(fallback_location: root_path, status: 303) unless request.xhr?
+      end
     end
   end
 

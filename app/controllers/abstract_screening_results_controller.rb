@@ -38,6 +38,7 @@ class AbstractScreeningResultsController < ApplicationController
                           abstract_screening: @abstract_screening_result.abstract_screening,
                           privileged: params[:resolution_mode] == 'true'
                         )
+                        .order(updated_at: :desc)
         @screened_cps = @screened_cps.where(user: current_user) unless params[:resolution_mode] == 'true'
         prepare_json_data
       end

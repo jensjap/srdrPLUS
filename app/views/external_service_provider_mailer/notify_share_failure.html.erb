@@ -1,0 +1,24 @@
+<div>
+    Dear <%= @user.handle %>,
+</div>
+
+<div>
+  We encountered a problem while processing the job you recently submitted. <br>Please try again or contact our help staff for further assistance at &lbrack;SRDR@ahrq.hhs.gov&rbrack;. Please provide them with the following information to help resolve the issue.
+</div>
+
+<div>
+  Affected service: External Service Provider Sharing
+  <br>
+  Arguments: <%= @args %>
+</div>
+
+<div>
+    Respectfully,<br>
+    The SRDR Team
+</div>
+
+<style>
+    div {
+        padding: 1em;
+    }
+</style>

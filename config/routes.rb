@@ -54,7 +54,7 @@ Rails.application.routes.draw do
     post '/users/api_key_reset' => 'users/registrations#api_key_reset'
   end
 
-  authenticate :user, lambda { |u| u.admin? } do
+  authenticate :user, ->(u) { u.admin? } do
     mount Searchjoy::Engine, at: 'searchjoy'
     mount Sidekiq::Web => '/sidekiq'
   end
@@ -135,6 +135,8 @@ Rails.application.routes.draw do
           get 'composition'
         end
       end
+
+      resources :users, only: [:show]
     end # END namespace :v3 do
 
     namespace :v4 do
@@ -329,12 +331,14 @@ Rails.application.routes.draw do
             post 'duplicate'
           end
 
-          resources :question_rows, only: [:destroy] do
+          resources :question_rows, only: %i[destroy update create] do
             member do
               post 'duplicate'
             end
-            resources :question_row_columns, only: [] do
-              resources :question_row_columns_question_row_column_options, only: [:destroy]
+            resources :question_row_columns, only: %i[destroy update create] do
+              resources :question_row_columns_question_row_column_options, only: %i[destroy update create] do
+                resources :followup_fields, only: %i[create destroy]
+              end
 
               member do
                 get 'answer_choices'
@@ -425,6 +429,12 @@ Rails.application.routes.draw do
   resources :screening_qualifications, only: %i[create]
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
+  resources :external_service_providers_projects_users, only: %i[create update destroy] do
+    member do
+      post 'share'
+    end
+  end
+
   get '/model_performances/by_project/:project_id', to: 'model_performances#show_by_project'
   get '/model_performances/by_timestamp/:timestamp', to: 'model_performances#show_by_timestamp'
   get '/model_performances/timestamps/:project_id', to: 'model_performances#show_timestamps'
@@ -448,4 +458,6 @@ Rails.application.routes.draw do
 
   resources :assignments
   resources :assignments_messages, only: %i[create destroy]
+
+  resources :key_questions_projects_questions, only: %i[create destroy]
 end

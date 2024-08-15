@@ -1,7 +1,12 @@
 class AsLabelSupplyingService
-  BASE_URL = 'https://srdrplus.ahrq.gov/api/v3/citations/'
+  BASE_URL = 'https://srdrplus.ahrq.gov/api/v3/'
 
   def find_by_project_id(project_id)
+    artifact_assessments = get_fhir_objs_in_array_by_project_id(project_id)
+    FhirResourceService.get_list(fhir_objs: artifact_assessments)
+  end
+
+  def get_fhir_objs_in_array_by_project_id(project_id)
     project = load_project_with_associations(project_id)
     artifact_assessments = []
 
@@ -30,8 +35,9 @@ class AsLabelSupplyingService
     citation.abstract_screening_results.each_with_object([]) do |asr, assessments|
       next if asr.label.blank?
 
-      user_ref = asr.user.present? ? '#practitioner_asr' : nil
-      artifact_assessment = build_artifact_assessment('14', asr.id, 'AbstractScreeningResult', citation.id, asr.user)
+      resource_name = 'users/'
+      user_ref = asr.user.present? ? "#{BASE_URL}#{resource_name}#{asr.user.id}" : nil
+      artifact_assessment = build_artifact_assessment('14', asr.id, 'AbstractScreeningResult', citation.id)
 
       add_content(artifact_assessment, 'rating', 'human label', asr.label, user_ref, asr.privileged)
       add_reasons_and_tags(artifact_assessment, asr.reasons, asr.tags, user_ref)
@@ -43,7 +49,7 @@ class AsLabelSupplyingService
   def process_screening_qualifications(citation)
     citation.screening_qualifications.each_with_object([]) do |sq, assessments|
       user_ref = sq.user.present? ? '#practitioner_sq' : nil
-      artifact_assessment = build_artifact_assessment('15', sq.id, 'ScreeningQualification', citation.id, sq.user)
+      artifact_assessment = build_artifact_assessment('15', sq.id, 'ScreeningQualification', citation.id)
 
       add_qualification_content(artifact_assessment, sq.qualification_type, user_ref)
 
@@ -51,17 +57,14 @@ class AsLabelSupplyingService
     end
   end
 
-  def build_artifact_assessment(id_prefix, srdrplus_id, srdrplus_type, citation_id, user)
+  def build_artifact_assessment(id_prefix, srdrplus_id, srdrplus_type, citation_id)
+    artifact_resource_name = 'citations/'
     artifact_assessment = FhirResourceService.get_artifact_assessment(
       id_prefix: id_prefix,
       srdrplus_id: srdrplus_id,
       srdrplus_type: srdrplus_type,
-      artifact_uri: "#{BASE_URL}#{citation_id}",
+      artifact_uri: "#{BASE_URL}#{artifact_resource_name}#{citation_id}",
     )
-
-    if user.present?
-      artifact_assessment['contained'] = FhirResourceService.build_contained_practitioner(id: "practitioner_#{srdrplus_type.downcase}", email: user.email)
-    end
 
     artifact_assessment
   end

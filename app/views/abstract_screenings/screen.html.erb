@@ -136,6 +136,11 @@
         ></div>
         <hr />
 
+        <div
+          class='absolute bottom-0 left-0 mb-5 ml-3'
+          x-text='`${ asr.total_asr_count_for_this_cp }`'>
+        </div>
+
         <button
           x-show="resolutionMode"
           class="text-center inline-flex items-center justify-center rounded-md border border-transparent bg-purple-900 px-2 py-1 mx-8 mb-4 text-xs font-medium text-white shadow-sm hover:no-underline hover:text-white cursor-pointer"
@@ -413,6 +418,7 @@
       alertModalContent: '',
       groupToDelete: null,
       isEditingGroupName: false,
+      total_asr_count_for_this_cp: 0,
 
       async init() {
         const url = new URL(window.location.href);
@@ -1011,6 +1017,7 @@
           this.processWeights("keywords", "processedKeyWord");
           this.project_id = data.project_id;
           this.groups = this.getGroups();
+          this.total_asr_count_for_this_cp = data.total_asr_count_for_this_cp;
         } else {
           if (
             submissionType !== "notes" &&
@@ -1057,8 +1064,6 @@
 
         if (this.requireReasoning()) {
           this.reasoningMenu = true;
-        } else {
-          this.updateAsr("label", originalLabel);
         }
       },
 

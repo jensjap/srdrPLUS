@@ -11,6 +11,8 @@
 #
 
 class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
+  default_scope { order(:pos, :id) }
+
   include SharedQueryableMethods
   include SharedSuggestableMethods
 
@@ -59,7 +61,7 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
     when 'min_length'
       self.name      ||= 0
     when 'max_length'
-      self.name      ||= 255
+      self.name      ||= ''
     when 'additional_char'
       self.name      ||= false
     when 'min_value'

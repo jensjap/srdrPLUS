@@ -7,7 +7,7 @@ class FevirPlatformService
   end
 
   def submit_resource
-    fhir_entry = AllResourceSupplyingService.new.find_by_project_id(@project_id)
+    fhir_entry = AllResourceSupplyingService.new.transaction_find_by_project_id(@project_id)
     post_data = {
       functionid: 'submitfhirresource',
       tool: 'directfhirentry',
