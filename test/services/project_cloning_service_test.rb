@@ -300,4 +300,18 @@ class ProjectCloningServiceTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "ensure correct eefpsff counts" do
+    eefpsff_before_cnt = ExtractionsExtractionFormsProjectsSectionsFollowupField.all.size
+    opts = {
+      include_citations: true,
+      include_extraction_forms: true,
+      include_extractions: true,
+      include_labels: false
+    }
+    copied_project = ProjectCloningService.clone_project(@original_project, @leaders, opts)
+    eefpsff_after_cnt = ExtractionsExtractionFormsProjectsSectionsFollowupField.all.size
+
+    assert_equal(eefpsff_after_cnt, eefpsff_before_cnt * 2)
+  end
 end
