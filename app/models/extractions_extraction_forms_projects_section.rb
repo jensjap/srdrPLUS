@@ -23,9 +23,9 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
     enable
     exclude_association :link_to_type2s
 
-    customize(lambda { |original, copy|
-      copy.is_amoeba_copy = true
-      copy.amoeba_source_object = original
+    customize(lambda { |original, cloned|
+      cloned.is_amoeba_copy = true
+      cloned.amoeba_source_object = original
     })
   end
 
