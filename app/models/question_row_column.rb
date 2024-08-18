@@ -11,12 +11,14 @@
 #
 
 class QuestionRowColumn < ApplicationRecord
-  attr_accessor :skip_callbacks
+  attr_accessor :skip_callbacks, :is_amoeba_copy
 
   after_create :create_default_question_row_column_options, unless: :skip_callbacks
   after_create :create_default_question_row_column_field, unless: :skip_callbacks
 
   after_save :ensure_question_row_column_fields, unless: :skip_callbacks
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   belongs_to :question_row,             inverse_of: :question_row_columns
   belongs_to :question_row_column_type, inverse_of: :question_row_columns
@@ -31,8 +33,9 @@ class QuestionRowColumn < ApplicationRecord
   amoeba do
     enable
 
-    customize(lambda { |_original, cloned|
+    customize(lambda { |_, cloned|
       cloned.skip_callbacks = true
+      cloned.is_amoeba_copy = true
     })
   end
 
@@ -117,5 +120,11 @@ class QuestionRowColumn < ApplicationRecord
     return unless question_row_column_type.name == QuestionRowColumnType::NUMERIC # Numeric requires 2 fields.
 
     question_row_column_fields.create! while question_row_column_fields.length < 2
+  end
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    # Placeholder for debugging. No corrections needed.
   end
 end
