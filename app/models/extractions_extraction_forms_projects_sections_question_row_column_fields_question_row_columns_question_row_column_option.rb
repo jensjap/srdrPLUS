@@ -10,13 +10,31 @@
 #
 
 class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
-  # !!! Don't quite remember what this is for. My best guess is that it is going to be used when we record multiple options for a particular record.
-  # So used for select many options like checkboxes, select2-multi???
+  attr_accessor :is_amoeba_copy
+
   self.table_name = 'eefpsqrcf_qrcqrcos'
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
+
+  amoeba do
+    enable
+
+    customize(lambda { |_, cloned|
+      cloned.is_amoeba_copy = true
+    })
+  end
 
   belongs_to :extractions_extraction_forms_projects_sections_question_row_column_field,
              inverse_of: :extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options,
              foreign_key: 'eefps_qrcf_id'
   belongs_to :question_row_columns_question_row_column_option,
              inverse_of: :extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options
+
+  private
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    # Placeholder for debugging. No corrections needed.
+  end
 end
