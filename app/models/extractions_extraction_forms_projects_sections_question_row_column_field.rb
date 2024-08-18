@@ -14,7 +14,7 @@
 class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < ApplicationRecord
   include SharedProcessTokenMethods
 
-  attr_accessor :is_amoeba_copy
+  attr_accessor :is_amoeba_copy, :amoeba_source_object
 
   self.table_name = 'eefps_qrcfs'
 
@@ -23,8 +23,9 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < Applica
   amoeba do
     enable
 
-    customize(lambda { |_, copy| 
+    customize(lambda { |original, copy| 
       copy.is_amoeba_copy = true
+      copy.amoeba_source_object = original
     })
   end
 
