@@ -14,3 +14,13 @@ three:
   name: 'Record for ExtractionsExtractionFormsProjectsSectionsFollowupField'
   recordable: one
   recordable_type: ExtractionsExtractionFormsProjectsSectionsFollowupField
+
+four:
+  name: MyString
+  recordable: three
+  recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
+
+five:
+  name: MyString
+  recordable: four
+  recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'

@@ -1,18 +1,13 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# WARNING: DO NOT create duplicates of 'name' even with different field_type.
+#          It will break tests because question_row_column.rb#field_validation_value_for
+#          cannot reliably find the correct QuestionRwoColumnOption.
 
 one:
   name: min_length
   field_type: text
   description: MyString
-#  deleted_at:
 
 two:
   name: max_length
-  field_type: numeric
-  description: MyString
-#  deleted_at:
-
-three:
-  name: max_length
-  field_type: numeric
+  field_type: text
   description: MyString

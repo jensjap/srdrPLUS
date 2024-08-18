@@ -13,6 +13,12 @@ two:
 
 three:
   extractions_extraction_forms_projects_section: six
-  extractions_extraction_forms_projects_sections_type1: three
-  question_row_column_field: three
+  extractions_extraction_forms_projects_sections_type1: three  #arm1
+  question_row_column_field: four
+  name: MyText
+
+four:
+  extractions_extraction_forms_projects_section: six
+  extractions_extraction_forms_projects_sections_type1: four  #arm2
+  question_row_column_field: four
   name: MyText

@@ -11,3 +11,7 @@ two:
 three:
   question: three
   name: MyString
+
+four:
+  question: four
+  name: MyString

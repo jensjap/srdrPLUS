@@ -14,3 +14,8 @@ three:
   question_row: three
   name: MyString
   question_row_column_type: three
+
+four:
+  question_row: four
+  name: MyString
+  question_row_column_type: three

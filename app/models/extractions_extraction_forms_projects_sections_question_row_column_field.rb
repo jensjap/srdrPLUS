@@ -23,7 +23,7 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < Applica
   amoeba do
     enable
 
-    customize(lambda { |original, copy| 
+    customize(lambda { |_, copy| 
       copy.is_amoeba_copy = true
     })
   end

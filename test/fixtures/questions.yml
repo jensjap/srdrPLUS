@@ -14,3 +14,8 @@ three:
   extraction_forms_projects_section: amoeba_efps_arm_details
   name: "Amoeba Question 1"
   description: "Located in Arm Details section"
+
+four:
+  extraction_forms_projects_section: amoeba_efps_arm_details
+  name: "Amoeba Question 2"
+  description: "Located in Arm Details section"
