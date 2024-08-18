@@ -34,18 +34,19 @@ class ExtractionFormsProjectsSection < ApplicationRecord
       .where(extraction_forms_projects: { extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::MINI_EXTRACTION) })
   }
 
-  after_create :create_extraction_forms_projects_section_option, unless: :is_amoeba_copy
-  after_create :correct_link_to_type1_association, if: :is_amoeba_copy
-
   amoeba do
     include_association :extraction_forms_projects_section_option
     include_association :extraction_forms_projects_sections_type1s
     include_association :questions
 
-    customize(lambda { |_original, copy|
+    customize(lambda { |_, copy|
       copy.is_amoeba_copy = true
     })
   end
+
+  after_create :create_extraction_forms_projects_section_option, unless: :is_amoeba_copy
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   belongs_to :extraction_forms_project,                inverse_of: :extraction_forms_projects_sections
   belongs_to :extraction_forms_projects_section_type,  inverse_of: :extraction_forms_projects_sections
@@ -242,6 +243,12 @@ class ExtractionFormsProjectsSection < ApplicationRecord
   end
 
   private
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    correct_link_to_type1_association
+  end
 
   def correct_link_to_type1_association
     return unless link_to_type1.present? && !project.eql?(link_to_type1.project)

@@ -25,7 +25,7 @@ class ExtractionFormsProject < ApplicationRecord
     'Diagnosis Details'
   ].freeze
 
-  attr_accessor :create_empty
+  attr_accessor :create_empty, :is_amoeba_copy
 
   scope :standard_types, lambda {
                            where(extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::STANDARD))
@@ -37,22 +37,26 @@ class ExtractionFormsProject < ApplicationRecord
                                   where(extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::MINI_EXTRACTION))
                                 }
 
+  amoeba do
+    include_association :extraction_forms_projects_sections
+
+    customize(lambda { |_, copy|
+      copy.create_empty = true
+      copy.is_amoeba_copy = true
+    })
+  end
+
   after_create :create_default_sections, unless: :create_empty
   after_create :create_default_arms, unless: :create_empty
   after_update :ensure_proper_sections
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   # Since has_many :extraction_forms_projects_sections uses lambda function to
   # scope efps by efp.extraction_forms_project_type declaring dependent: :destroy
   # on the has_many relationship will not find and destroy all of the efps.
   # We need to destroy them manually using pure sql to find all the relevant efps.
   before_destroy :destroy_extraction_forms_projects_sections
-
-  amoeba do
-    customize(lambda { |_original, copy|
-      copy.create_empty = true
-    })
-    include_association :extraction_forms_projects_sections
-  end
 
   belongs_to :extraction_forms_project_type, inverse_of: :extraction_forms_projects, optional: true
   belongs_to :extraction_form, inverse_of: :extraction_forms_projects
@@ -205,5 +209,11 @@ class ExtractionFormsProject < ApplicationRecord
         }
       )
     end
+  end
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    # Placeholder for debugging. No corrections needed.
   end
 end
