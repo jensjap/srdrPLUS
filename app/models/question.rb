@@ -18,6 +18,15 @@ class Question < ApplicationRecord
 
   default_scope { order(:pos, :id) }
 
+  amoeba do
+    exclude_association :dependencies
+
+    customize(lambda { |_, copy|
+      copy.skip_callbacks = true
+      copy.is_amoeba_copy = true
+    })
+  end
+
   after_create :create_default_question_row, unless: :skip_callbacks
   after_create :associate_kqs, unless: :is_amoeba_copy
 
@@ -41,15 +50,6 @@ class Question < ApplicationRecord
   delegate :extraction_forms_project, to: :extraction_forms_projects_section
   delegate :project,                  to: :extraction_forms_project
   delegate :section,                  to: :extraction_forms_projects_section
-
-  amoeba do
-    exclude_association :dependencies
-
-    customize(lambda { |_, copy|
-      copy.skip_callbacks = true
-      copy.is_amoeba_copy = true
-    })
-  end
 
   # Returns the question type based on how many how many rows/columns/answer choices the question has.
   def question_type
