@@ -32,6 +32,9 @@ class KeyQuestionsProjectsQuestion < ApplicationRecord
   end
 
   def correct_key_questions_project_association
-    key_questions_project.update(project: question.project)
+    update(key_questions_project: KeyQuestionsProject.find_by(
+      key_question: key_questions_project.key_question,
+      project: question.project
+    ))
   end
 end
