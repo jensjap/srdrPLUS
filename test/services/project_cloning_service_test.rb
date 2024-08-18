@@ -314,4 +314,44 @@ class ProjectCloningServiceTest < ActiveSupport::TestCase
 
     assert_equal(eefpsff_after_cnt, eefpsff_before_cnt * 2)
   end
+
+  test "ensure no disassociation of questions from the originals" do
+    orig_questions_cnt_before = @original_project
+      .extraction_forms_projects
+      .select { |efp| efp.extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: 'Standard')) }
+      .first
+      .extraction_forms_projects_sections
+      .select { |efps| efps.extraction_forms_projects_section_type.eql?(ExtractionFormsProjectsSectionType.find_by(name: 'Type 2')) }
+      .map { |efps| efps.questions.size }
+      .sum
+
+    opts = {
+      include_citations: true,
+      include_extraction_forms: true,
+      include_extractions: true,
+      include_labels: false
+    }
+    copied_project = ProjectCloningService.clone_project(@original_project, @leaders, opts)
+
+    orig_questions_cnt_after = @original_project
+      .extraction_forms_projects
+      .select { |efp| efp.extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: 'Standard')) }
+      .first
+      .extraction_forms_projects_sections
+      .select { |efps| efps.extraction_forms_projects_section_type.eql?(ExtractionFormsProjectsSectionType.find_by(name: 'Type 2')) }
+      .map { |efps| efps.questions.size }
+      .sum
+
+    copied_questions_cnt_after = @original_project
+      .extraction_forms_projects
+      .select { |efp| efp.extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: 'Standard')) }
+      .first
+      .extraction_forms_projects_sections
+      .select { |efps| efps.extraction_forms_projects_section_type.eql?(ExtractionFormsProjectsSectionType.find_by(name: 'Type 2')) }
+      .map { |efps| efps.questions.size }
+      .sum
+
+    assert_equal(orig_questions_cnt_after, orig_questions_cnt_before)
+    assert_equal(copied_questions_cnt_after, orig_questions_cnt_before)
+  end
 end
