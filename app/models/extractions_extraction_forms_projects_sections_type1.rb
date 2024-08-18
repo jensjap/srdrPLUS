@@ -15,10 +15,8 @@
 class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   default_scope { order(:pos, :id) }
 
-  # Need this to accept an attribute on the fly when making bulk changes to the eefpst1 within consolidation tool.
-  attr_writer :should
-
-  after_commit :set_extraction_stale, on: %i[create update destroy]
+  attr_accessor :is_amoeba_copy
+  attr_writer :should  # Need this to accept an attribute on the fly when making bulk changes to the eefpst1 within consolidation tool.
 
   paginates_per 1
 
@@ -52,9 +50,17 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
       .where(type1_id:)
   }
 
-  after_create :create_default_type1_rows
+  amoeba do
+    customize(lambda { |_, cloned|
+      cloned.is_amoeba_copy = true
+    })
+  end
 
+  after_create :create_default_type1_rows
+  after_commit :set_extraction_stale, on: %i[create update destroy]
   after_save :ensure_matrix_column_headers
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   belongs_to :type1_type,
              inverse_of: :extractions_extraction_forms_projects_sections_type1s, optional: true
@@ -268,5 +274,11 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   def section_name
     extractions_extraction_forms_projects_section.section_name
+  end
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    # Placeholder for debugging. No corrections needed.
   end
 end
