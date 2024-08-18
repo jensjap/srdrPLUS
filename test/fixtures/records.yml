@@ -16,11 +16,11 @@ three:
   recordable_type: ExtractionsExtractionFormsProjectsSectionsFollowupField
 
 four:
-  name: MyString
+  name: 'Record (answer 1) for ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
   recordable: three
   recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
 
 five:
-  name: MyString
+  name: 'Record (answer 2) for ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
   recordable: four
   recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
