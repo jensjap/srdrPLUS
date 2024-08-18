@@ -13,6 +13,15 @@
 class QuestionRowColumn < ApplicationRecord
   attr_accessor :skip_callbacks, :is_amoeba_copy
 
+  amoeba do
+    enable
+
+    customize(lambda { |_, copy|
+      copy.skip_callbacks = true
+      copy.is_amoeba_copy = true
+    })
+  end
+
   after_create :create_default_question_row_column_options, unless: :skip_callbacks
   after_create :create_default_question_row_column_field, unless: :skip_callbacks
 
@@ -29,15 +38,6 @@ class QuestionRowColumn < ApplicationRecord
   has_many :question_row_column_options, through: :question_row_columns_question_row_column_options, dependent: :destroy
 
   has_many :dependencies, as: :prerequisitable, dependent: :destroy
-
-  amoeba do
-    enable
-
-    customize(lambda { |_, cloned|
-      cloned.skip_callbacks = true
-      cloned.is_amoeba_copy = true
-    })
-  end
 
   # accepts_nested_attributes_for :question_row_column_fields
   accepts_nested_attributes_for :question_row_columns_question_row_column_options, allow_destroy: true

@@ -11,16 +11,16 @@
 #
 
 class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
+  include SharedQueryableMethods
+  include SharedSuggestableMethods
+
   attr_accessor :is_amoeba_copy
 
   default_scope { order(:pos, :id) }
 
-  include SharedQueryableMethods
-  include SharedSuggestableMethods
-
   amoeba do
-    customize(lambda { |_, cloned|
-      cloned.is_amoeba_copy = true
+    customize(lambda { |_, copy|
+      copy.is_amoeba_copy = true
     })
   end
 
@@ -42,6 +42,7 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
            inverse_of: :question_row_columns_question_row_column_option
   has_many :extractions_extraction_forms_projects_sections_question_row_column_fields,
            through: :extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options
+
   accepts_nested_attributes_for :question_row_column_option, allow_destroy: false
 
   delegate :question,                 to: :question_row_column
