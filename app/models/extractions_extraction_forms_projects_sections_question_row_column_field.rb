@@ -66,7 +66,7 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < Applica
   end
 
   def correct_eefpst1_association
-    extractions_extraction_forms_projects_sections_type1.update(extractions_extraction_forms_projects_section:)
+    extractions_extraction_forms_projects_sections_type1.update(extractions_extraction_forms_projects_section:) unless extractions_extraction_forms_projects_sections_type1.nil?
   end
 
   def correct_qrcf_association
