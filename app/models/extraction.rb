@@ -30,6 +30,7 @@ class Extraction < ApplicationRecord
     include_association :statusing
     include_association :extractions_extraction_forms_projects_sections
     include_association :extractions_key_questions_projects_selections
+
     customize(lambda { |_, copy|
       copy.is_amoeba_copy = true
       copy.projects_users_role = nil
@@ -62,16 +63,16 @@ class Extraction < ApplicationRecord
   belongs_to :projects_users_role, optional: true
   belongs_to :user,                optional: true
 
-  has_one :extraction_checksum, dependent: :destroy, inverse_of: :extraction
-  has_one :statusing, as: :statusable, dependent: :destroy
-  has_one :status, through: :statusing
-
   has_many :extractions_extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction
   has_many :extraction_forms_projects_sections, through: :extractions_extraction_forms_projects_sections,
                                                 dependent: :destroy
 
   has_many :extractions_key_questions_projects_selections, dependent: :destroy
   has_many :key_questions_projects, through: :extractions_key_questions_projects_selections
+
+  has_one :extraction_checksum, dependent: :destroy, inverse_of: :extraction
+  has_one :statusing, as: :statusable, dependent: :destroy
+  has_one :status, through: :statusing
 
   delegate :citation, to: :citations_project
   delegate :username, to: :user, allow_nil: true
@@ -259,10 +260,13 @@ class Extraction < ApplicationRecord
     citations_project.try(:evaluate_screening_status)
   end
 
-  def correct_cp_association
+  def correct_parent_associations
     return unless is_amoeba_copy
 
-    citation_id = citations_project.citation.id
-    update(citations_project: CitationsProject.find_by(citation_id:, project_id: project.id))
+    correct_cp_association
+  end
+
+  def correct_cp_association
+    update(citations_project: project.citations_projects.find_by(citation: citations_project.citation))
   end
 end
