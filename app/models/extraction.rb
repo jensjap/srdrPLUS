@@ -17,26 +17,14 @@ class Extraction < ApplicationRecord
 
   attr_accessor :is_amoeba_copy
 
-  # !!! We can't implement this without ensuring integrity of the extraction form. It is possible that the database
-  #    is rendered inconsistent if a project lead changes links between type1 and type2 after this hook is called.
-  #    We need something that ensures consistency when linking is changed.
-  #
-  # Note: 6/25/2018 - We call ensure_extraction_form_structure in work and consolidate action. this might be enough
-  #                   to ensure consistency?
-  after_create :ensure_extraction_form_structure, unless: :is_amoeba_copy
-  after_create :create_default_arms, unless: :is_amoeba_copy
-  after_create :create_default_status, unless: :is_amoeba_copy
+  default_scope { not_disqualified }
 
-  before_commit :correct_cp_association, if: :is_amoeba_copy
-
-  after_save :evaluate_screening_status_citations_project
-
-  after_destroy :evaluate_screening_status_citations_project
-
-  # create checksums without delay after create and update, since extractions/index would be incorrect.
-  after_create do |extraction|
-    ExtractionChecksum.create! extraction:
-  end
+  scope :consolidated,   -> { where(consolidated: true) }
+  scope :unconsolidated, -> { where(consolidated: false) }
+  scope :not_disqualified, lambda {
+    joins(:citations_project)
+      .where.not(citations_projects: { screening_status: CitationsProject::REJECTED })
+  }
 
   amoeba do
     include_association :statusing
@@ -48,14 +36,26 @@ class Extraction < ApplicationRecord
     })
   end
 
-  default_scope { not_disqualified }
+  # !!! We can't implement this without ensuring integrity of the extraction form. It is possible that the database
+  #    is rendered inconsistent if a project lead changes links between type1 and type2 after this hook is called.
+  #    We need something that ensures consistency when linking is changed.
+  #
+  # Note: 6/25/2018 - We call ensure_extraction_form_structure in work and consolidate action. this might be enough
+  #                   to ensure consistency?
+  after_create :ensure_extraction_form_structure, unless: :is_amoeba_copy
+  after_create :create_default_arms, unless: :is_amoeba_copy
+  after_create :create_default_status, unless: :is_amoeba_copy
 
-  scope :consolidated,   -> { where(consolidated: true) }
-  scope :unconsolidated, -> { where(consolidated: false) }
-  scope :not_disqualified, lambda {
-    joins(:citations_project)
-      .where.not(citations_projects: { screening_status: CitationsProject::REJECTED })
-  }
+  # create checksums without delay after create and update, since extractions/index would be incorrect.
+  after_create do |extraction|
+    ExtractionChecksum.create! extraction:
+  end
+
+  after_destroy :evaluate_screening_status_citations_project
+
+  after_save :evaluate_screening_status_citations_project
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   belongs_to :project,             inverse_of: :extractions # , touch: true
   belongs_to :citations_project,   inverse_of: :extractions
