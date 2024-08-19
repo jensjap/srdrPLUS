@@ -1,5 +1,9 @@
 <div
   x-data="{ url: '/projects/<%= params[:project_id] %>/abstract_screenings/new' }"
 >
-  <%= render 'abstract_screenings/form/form' %>
+  <% if @use_new_form %>
+    <%= render 'abstract_screenings/form/new_form' %>
+  <% else %>
+    <%= render 'abstract_screenings/form/form' %>
+  <% end %>
 </div>

@@ -13,6 +13,10 @@ class AbstractScreeningPolicy < ApplicationPolicy
     part_of_project?
   end
 
+  def filter?
+    part_of_project?
+  end
+
   def citation_lifecycle_management?
     part_of_project?
   end
