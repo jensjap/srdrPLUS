@@ -13,6 +13,10 @@ class AbstractScreeningPolicy < ApplicationPolicy
     part_of_project?
   end
 
+  def filter?
+    part_of_project?
+  end
+
   def export_screening_data?
     part_of_project?
   end

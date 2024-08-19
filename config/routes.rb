@@ -244,6 +244,8 @@ Rails.application.routes.draw do
     resources :abstract_screenings do
       collection do
         get 'work_selection', to: 'abstract_screenings#work_selection'
+        post :filter
+        get :filter, to: 'abstract_screenings#filter'
       end
       get 'screen', to: 'abstract_screenings#screen'
       post 'update_word_weight', to: 'abstract_screenings#update_word_weight'
