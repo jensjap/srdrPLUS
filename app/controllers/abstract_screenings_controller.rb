@@ -1,5 +1,5 @@
 class AbstractScreeningsController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: %i[update_word_weight kpis]
+  skip_before_action :verify_authenticity_token, only: %i[update_word_weight kpis filter]
 
   before_action :set_project,
                 only: %i[index new create citation_lifecycle_management export_screening_data kpis work_selection]
@@ -9,6 +9,36 @@ class AbstractScreeningsController < ApplicationController
   def new
     @abstract_screening = @project.abstract_screenings.new(abstract_screening_type: 'double-perpetual')
     authorize(@abstract_screening)
+
+    @use_new_form = @project.new_picking_logic
+  end
+
+  def filter
+    @project = Project.find(params[:project_id])
+    authorize(@project, policy_class: AbstractScreeningPolicy)
+
+    service = CitationFilterService.new(project_id: @project.id)
+    service = service.filter_without_abstract_screening_results
+
+    if params[:load_options]
+      render json: {
+        creators: service.creators,
+        created_dates: service.created_dates,
+        total_citations_count: service.results.count
+      }
+      return
+    end
+
+    if params[:creator_ids].present?
+      service = service.filter_by_creators(creator_ids: params[:creator_ids])
+    end
+
+    if params[:dates].present?
+      service = service.filter_by_created_dates(dates: params[:dates])
+    end
+
+    filtered_ids = service.results
+    render json: { filtered_citation_ids: filtered_ids, filtered_citations_count: filtered_ids.count }
   end
 
   def create
