@@ -70,7 +70,7 @@ class Project < ApplicationRecord
   after_create :create_empty_extraction_form, if: :create_empty
   after_create :create_default_member
 
-  before_commit :amoeba_copy_debugging, if: :is_amoeba_copy
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   has_many :extractions, dependent: :destroy, inverse_of: :project
   has_many :exported_items, dependent: :destroy
@@ -468,7 +468,7 @@ class Project < ApplicationRecord
     end
   end
 
-  def amoeba_copy_debugging
+  def correct_parent_associations
     return unless is_amoeba_copy
 
     # Placeholder for debugging. No corrections needed.
