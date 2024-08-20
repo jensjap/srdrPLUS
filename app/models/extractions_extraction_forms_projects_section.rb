@@ -15,19 +15,19 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
 
   attr_accessor :is_amoeba_copy, :amoeba_source_object
 
-  after_create :create_default_draft_status
-
-  before_commit :correct_parent_associations, if: :is_amoeba_copy
-
   amoeba do
     enable
     exclude_association :link_to_type2s
 
-    customize(lambda { |original, cloned|
-      cloned.is_amoeba_copy = true
-      cloned.amoeba_source_object = original
+    customize(lambda { |original, copy|
+      copy.is_amoeba_copy = true
+      copy.amoeba_source_object = original
     })
   end
+
+  after_create :create_default_draft_status, unless: :is_amoeba_copy
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   belongs_to :extraction, inverse_of: :extractions_extraction_forms_projects_sections
   belongs_to :extraction_forms_projects_section, inverse_of: :extractions_extraction_forms_projects_sections

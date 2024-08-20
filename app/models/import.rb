@@ -15,6 +15,7 @@ class Import < ApplicationRecord
 
   belongs_to :import_type
   belongs_to :projects_user
+
   has_many :imported_files, dependent: :destroy
 
   delegate :user, to: :projects_user
