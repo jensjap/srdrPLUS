@@ -371,13 +371,25 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   end
 
   def correct_extraction_forms_projects_section_association
-    name = extraction_forms_projects_section.section.name
+    # The reason we need to update all eefps as opposed to just the one we
+    # are working on is because when we fix the link_to_type1 association
+    # we do not know if its efps assocation has already been fixed. So to
+    # ensure that it is, we fix them all at the same time.
+    extraction.extractions_extraction_forms_projects_sections.each do |eefps|
+      # Small optimization as to not update needlessly.
+      next if eefps.extraction_forms_projects_section.project.eql?(extraction.project)
+      update_extraction_forms_projects_section(eefps)
+    end
+  end
+
+  def update_extraction_forms_projects_section(eefps)
+    name = eefps.extraction_forms_projects_section.section.name
     correct_extraction_forms_projects_section =
       ExtractionFormsProjectsSection
         .joins(:extraction_forms_project, :section)
         .where(extraction_forms_projects: { project: extraction.project })
         .find_by(sections: { name: })
-    update(extraction_forms_projects_section: correct_extraction_forms_projects_section)
+    eefps.update(extraction_forms_projects_section: correct_extraction_forms_projects_section)
   end
 
   def correct_link_to_type1_association
