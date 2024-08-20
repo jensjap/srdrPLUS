@@ -18,8 +18,6 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < Applica
 
   self.table_name = 'eefps_qrcfs'
 
-  before_commit :correct_parent_associations, if: :is_amoeba_copy
-
   amoeba do
     enable
 
@@ -28,6 +26,8 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < Applica
       copy.amoeba_source_object = original
     })
   end
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   belongs_to :extractions_extraction_forms_projects_sections_type1,
              inverse_of: :extractions_extraction_forms_projects_sections_question_row_column_fields, optional: true
