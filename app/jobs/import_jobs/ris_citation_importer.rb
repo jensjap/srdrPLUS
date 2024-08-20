@@ -39,7 +39,8 @@ module ImportJobs::RisCitationImporter
                 citation: citation,
                 project: @project,
                 refman: citation.refman,
-                creator_id: user_id
+                creator_id: user_id,
+                import_type: 'ris'
               )
             end
           end

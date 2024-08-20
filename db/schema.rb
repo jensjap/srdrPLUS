@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_08_15_000001) do
+ActiveRecord::Schema[7.0].define(version: 2024_08_20_000000) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -332,6 +332,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_15_000001) do
     t.integer "creator_id"
     t.bigint "abstract_screening_id"
     t.bigint "fulltext_screening_id"
+    t.string "import_type", default: "unknown"
     t.index ["abstract_screening_id"], name: "index_citations_projects_on_abstract_screening_id"
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id"
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id"
