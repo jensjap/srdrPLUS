@@ -13,12 +13,12 @@
 #
 
 class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
-  default_scope { order(:pos, :id) }
-
   attr_accessor :is_amoeba_copy
   attr_writer :should  # Need this to accept an attribute on the fly when making bulk changes to the eefpst1 within consolidation tool.
 
   paginates_per 1
+
+  default_scope { order(:pos, :id) }
 
   # !!! Implement this for type1 selection also.
   scope :extraction_collection, lambda { |section_name, efp_id|
@@ -51,8 +51,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   }
 
   amoeba do
-    customize(lambda { |_, cloned|
-      cloned.is_amoeba_copy = true
+    customize(lambda { |_, copy|
+      copy.is_amoeba_copy = true
     })
   end
 
