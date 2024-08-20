@@ -206,6 +206,7 @@ class ProjectCloningServiceTest < ActiveSupport::TestCase
     }
     copied_project = ProjectCloningService.clone_project(@original_project, @leaders, opts)
     copied_project.reload
+
     assert copied_project.citations_projects.all? { |cp| cp.screening_status.eql?('eip') },
       "All added CitationsProject should have 'eip' screening_status in the presence of extraction"
   end
@@ -303,6 +304,7 @@ class ProjectCloningServiceTest < ActiveSupport::TestCase
 
   test "ensure correct eefpsff counts" do
     eefpsff_before_cnt = ExtractionsExtractionFormsProjectsSectionsFollowupField.all.size
+
     opts = {
       include_citations: true,
       include_extraction_forms: true,
@@ -310,6 +312,7 @@ class ProjectCloningServiceTest < ActiveSupport::TestCase
       include_labels: false
     }
     copied_project = ProjectCloningService.clone_project(@original_project, @leaders, opts)
+
     eefpsff_after_cnt = ExtractionsExtractionFormsProjectsSectionsFollowupField.all.size
 
     assert_equal(eefpsff_after_cnt, eefpsff_before_cnt * 2)
@@ -353,5 +356,68 @@ class ProjectCloningServiceTest < ActiveSupport::TestCase
 
     assert_equal(orig_questions_cnt_after, orig_questions_cnt_before)
     assert_equal(copied_questions_cnt_after, orig_questions_cnt_before)
+  end
+
+  test "ensure proper ExtractionsKeyQuestionsProjectsSelection associations" do
+    opts = {
+      include_citations: true,
+      include_extraction_forms: true,
+      include_extractions: true,
+      include_labels: false
+    }
+    copied_project = ProjectCloningService.clone_project(@original_project, @leaders, opts)
+    copied_project.extractions.map(&:extractions_key_questions_projects_selections).flatten.each do |ekqps|
+      assert_equal(ekqps.key_questions_project.project, copied_project)
+    end
+  end
+
+  test "ensure originals didn't lose children" do
+    section_cnt_of_standard_efp = Hash.new
+    question_cnt_of_efps = Hash.new
+
+    standard_efps = @original_project
+                      .extraction_forms_projects
+                      .select { |efp| efp.extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: "Standard")) }
+    standard_efps.each do |efp|
+      section_cnt_of_standard_efp[efp.id] = efp.extraction_forms_projects_sections.size
+      efp.extraction_forms_projects_sections.each do |efps|
+        question_cnt_of_efps[efps.id] = efps.questions.size
+      end
+    end
+
+    opts = {
+      include_citations: true,
+      include_extraction_forms: true,
+      include_extractions: true,
+      include_labels: false
+    }
+    copied_project = ProjectCloningService.clone_project(@original_project, @leaders, opts)
+
+    standard_efps = @original_project
+                      .extraction_forms_projects
+                      .select { |efp| efp.extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: "Standard")) }
+    standard_efps.each do |efp|
+      assert_equal(efp.extraction_forms_projects_sections.size, section_cnt_of_standard_efp[efp.id])
+      puts "\r\n"
+      efp.extraction_forms_projects_sections.each do |efps|
+        puts "Section name: #{ efps.section.name }. Number of questions: #{ efps.questions.size }"
+        assert_equal(efps.questions.size, question_cnt_of_efps[efps.id])
+      end
+    end
+
+    copied_standard_efps = copied_project
+                             .extraction_forms_projects
+                             .select { |efp| efp.extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: "Standard")) }
+    copied_standard_efps.each do |efp|
+      puts "\r\n"
+      efp.extraction_forms_projects_sections.each do |efps|
+        puts "Section name: #{ efps.section.name }. Number of questions: #{ efps.questions.size }"
+      end
+    end
+
+    # List of models where parent corrections were made:
+    # Extraction
+    # ExtractionFormsProjectsSection
+    # ExtractionsKeyQuestionsProjectsSelection
   end
 end
