@@ -36,7 +36,8 @@ class ImportJobs::JsonImportJob::CitationFhirImporter
       @project.citations_projects << CitationsProject.create(
         citation:,
         project: @project,
-        creator_id: @user_id
+        creator_id: @user_id,
+        import_type: 'fhir'
       )
     end
 

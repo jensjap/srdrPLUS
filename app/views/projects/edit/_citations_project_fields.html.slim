@@ -47,6 +47,7 @@
           = citation_fields.input :doi, label: 'DOI'
 
       = f.hidden_field :creator_id, value: current_user.id
+      = f.hidden_field :import_type, value: 'individual'
 
       br
       .buttons-row.m-10

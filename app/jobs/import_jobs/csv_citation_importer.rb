@@ -113,7 +113,7 @@ module ImportJobs::CsvCitationImporter
                end
     @project.citations << citation
     citations_project = @project.citations_projects.find_by(citation_id: citation.id)
-    citations_project.update(refman: refid, creator_id: user_id)
+    citations_project.update(refman: refid, creator_id: user_id, import_type: 'csv')
   end
 
   def sanitize_row(row)

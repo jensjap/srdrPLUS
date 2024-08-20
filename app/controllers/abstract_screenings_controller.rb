@@ -24,6 +24,7 @@ class AbstractScreeningsController < ApplicationController
       render json: {
         creators: service.creators,
         created_dates: service.created_dates,
+        import_types: service.import_types,
         total_citations_count: service.results.count
       }
       return
@@ -35,6 +36,10 @@ class AbstractScreeningsController < ApplicationController
 
     if params[:dates].present?
       service = service.filter_by_created_dates(dates: params[:dates])
+    end
+
+    if params[:import_types].present?
+      service = service.filter_by_import_types(import_types: params[:import_types])
     end
 
     filtered_ids = service.results

@@ -31,6 +31,7 @@ class ProjectPolicy < ApplicationPolicy
         :refman,
         :other_reference,
         :creator_id,
+        :import_type,
         {
           citation_attributes: [
             :id,

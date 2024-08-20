@@ -36,7 +36,7 @@ module ImportJobs::PubmedCitationImporter
       Citation.create(h_arr_missing_citations)
       pubmed_id_array.each do |pmid|
         citation = Citation.find_by(pmid: pmid)
-        CitationsProject.find_or_create_by!(project:, citation:, creator_id: user_id)
+        CitationsProject.find_or_create_by!(project:, citation:, creator_id: user_id, import_type: 'pubmed')
       end
     end
 
