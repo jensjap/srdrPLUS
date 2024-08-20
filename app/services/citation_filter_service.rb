@@ -1,11 +1,12 @@
 class CitationFilterService
-  attr_reader :creators, :created_dates
+  attr_reader :creators, :created_dates, :import_types
 
   def initialize(project_id:)
     @project_id = project_id
     @filters = []
     @creators = calculate_creators
     @created_dates = calculate_created_dates
+    @import_types = calculate_import_types
   end
 
   def filter_by_creators(creator_ids:)
@@ -21,6 +22,12 @@ class CitationFilterService
       CitationsProject.where(project_id: @project_id, created_at: start_time..end_time).pluck(:id)
     end.flatten.uniq
     @filters << -> { date_filters }
+    self
+  end
+
+  def filter_by_import_types(import_types:)
+    import_type_filters = CitationsProject.where(project_id: @project_id, import_type: import_types).pluck(:id)
+    @filters << -> { import_type_filters }
     self
   end
 
@@ -67,5 +74,9 @@ class CitationFilterService
 
   def calculate_created_dates
     CitationsProject.where(project_id: @project_id).distinct.pluck("DATE(created_at)").map(&:to_date)
+  end
+
+  def calculate_import_types
+    CitationsProject.where(project_id: @project_id).distinct.pluck(:import_type)
   end
 end

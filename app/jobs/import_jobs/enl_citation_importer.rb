@@ -74,7 +74,8 @@ module ImportJobs::EnlCitationImporter
           CitationsProject.create!(
             citation: citation,
             project: imported_file.project,
-            creator_id: user_id
+            creator_id: user_id,
+            import_type: 'enl'
           )
         end
       h_arr = []

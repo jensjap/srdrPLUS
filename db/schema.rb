@@ -332,6 +332,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.integer "creator_id"
     t.bigint "abstract_screening_id"
     t.bigint "fulltext_screening_id"
+    t.string "import_type", default: "unknown"
     t.index ["abstract_screening_id"], name: "index_citations_projects_on_abstract_screening_id"
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id"
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id"
