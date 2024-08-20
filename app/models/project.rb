@@ -85,12 +85,12 @@ class Project < ApplicationRecord
   has_many :reasons, through: :projects_reasons
 
   has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project
-  has_many :extraction_forms, through: :extraction_forms_projects, dependent: :destroy
+  has_many :extraction_forms, through: :extraction_forms_projects
 
   has_many :key_questions_projects,
            dependent: :destroy, inverse_of: :project
   has_many :key_questions,
-           through: :key_questions_projects, dependent: :destroy
+           through: :key_questions_projects
 
   has_many :extraction_forms_projects_sections,
            through: :extraction_forms_projects
@@ -104,8 +104,8 @@ class Project < ApplicationRecord
   has_many :citations, through: :citations_projects
 
   has_many :sd_meta_data
-  has_many :imports, through: :projects_users, dependent: :destroy
-  has_many :imported_files, through: :imports, dependent: :destroy
+  has_many :imports, through: :projects_users
+  has_many :imported_files, through: :imports
 
   has_many :mesh_descriptors_projects, dependent: :destroy
   has_many :mesh_descriptors, through: :mesh_descriptors_projects
