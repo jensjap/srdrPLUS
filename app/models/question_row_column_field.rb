@@ -10,16 +10,6 @@
 #
 
 class QuestionRowColumnField < ApplicationRecord
-  attr_accessor :is_amoeba_copy
-
-  amoeba do
-    customize(lambda { |_, cloned|
-      cloned.is_amoeba_copy = true
-    })
-  end
-
-  before_commit :correct_parent_associations
-
   belongs_to :question_row_column, inverse_of: :question_row_column_fields
 
   has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy,
@@ -31,12 +21,4 @@ class QuestionRowColumnField < ApplicationRecord
 
   delegate :question_type, to: :question_row_column
   delegate :question,      to: :question_row_column
-
-  private
-
-  def correct_parent_associations
-    return unless is_amoeba_copy
-
-    # Placeholder for debugging. No corrections needed.
-  end
 end
