@@ -12,10 +12,10 @@ two:
 
 three:
   question_row: three
-  name: MyString
+  name: amoeba original 1
   question_row_column_type: three
 
 four:
   question_row: four
-  name: MyString
+  name: amoeba original 2
   question_row_column_type: three
