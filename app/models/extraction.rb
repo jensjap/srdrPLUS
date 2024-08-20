@@ -64,8 +64,7 @@ class Extraction < ApplicationRecord
   belongs_to :user,                optional: true
 
   has_many :extractions_extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction
-  has_many :extraction_forms_projects_sections, through: :extractions_extraction_forms_projects_sections,
-                                                dependent: :destroy
+  has_many :extraction_forms_projects_sections, through: :extractions_extraction_forms_projects_sections
 
   has_many :extractions_key_questions_projects_selections, dependent: :destroy
   has_many :key_questions_projects, through: :extractions_key_questions_projects_selections
