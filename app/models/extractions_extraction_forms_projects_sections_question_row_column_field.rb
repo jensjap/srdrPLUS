@@ -66,11 +66,43 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < Applica
     correct_qrcf_association
   end
 
+  # EEFPST1 association is link_to_type1 for extraction.
   def correct_eefpst1_association
-    extractions_extraction_forms_projects_sections_type1.update(extractions_extraction_forms_projects_section:) unless extractions_extraction_forms_projects_sections_type1.nil?
+    return unless extractions_extraction_forms_projects_sections_type1
+
+    eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1.where(
+                 type1_type: extractions_extraction_forms_projects_sections_type1.type1_type,
+                 extractions_extraction_forms_projects_section: extractions_extraction_forms_projects_section.link_to_type1,
+                 type1: extractions_extraction_forms_projects_sections_type1.type1)
+    raise unless eefpst1s.size.eql?(1)
+
+    update(extractions_extraction_forms_projects_sections_type1: eefpst1s[0])
   end
 
   def correct_qrcf_association
-    question_row_column_field.question_row_column.question_row.question.update(extraction_forms_projects_section: extractions_extraction_forms_projects_section.extraction_forms_projects_section)
+    qrcfs = question_row_column_field
+              .amoeba_copies
+              .joins(
+                question_row_column: {
+                  question_row: {
+                    question: {
+                      extraction_forms_projects_section: {
+                        extraction_forms_project: :project
+                      }
+                    }
+                  }
+                })
+              .where(
+                amoeba_source_object: question_row_column_field,
+                questions: {
+                  extraction_forms_projects_sections: {
+                    extraction_forms_projects: {
+                      project:
+                    }
+                  }
+                })
+    raise unless qrcfs.size.eql?(1)
+
+    update(question_row_column_field: qrcfs[0])
   end
 end
