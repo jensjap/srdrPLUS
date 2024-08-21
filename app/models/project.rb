@@ -59,7 +59,7 @@ class Project < ApplicationRecord
     include_association :extractions, if: :amoeba_copy_extractions
 
     customize(lambda { |original, copy|
-      copy.source_project_id = original.id
+      copy.amoeba_source_object = original
     })
     prepend name: 'Copy of '
   end
@@ -71,6 +71,11 @@ class Project < ApplicationRecord
   after_create :create_default_member
 
   before_commit :correct_parent_associations, if: :is_amoeba_copy
+
+  belongs_to :amoeba_source_object,
+             class_name: 'Project',
+             foreign_key: 'source_project_id',
+             optional: true
 
   has_many :extractions, dependent: :destroy, inverse_of: :project
   has_many :exported_items, dependent: :destroy
@@ -378,14 +383,8 @@ class Project < ApplicationRecord
     exported_items.where('created_at >= ?', 1.week.ago).order(created_at: :desc)
   end
 
-  def project_copy?
-    source_project_id.present?
-  end
-
-  def source_project
-    return nil unless project_copy?
-
-    Project.find(source_project_id)
+  def is_copy?
+    amoeba_source_object.present?
   end
 
   private
