@@ -16,7 +16,6 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   attr_accessor :is_amoeba_copy, :amoeba_source_object
 
   amoeba do
-    enable
     exclude_association :link_to_type2s
 
     customize(lambda { |original, copy|
@@ -378,6 +377,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
     extraction.extractions_extraction_forms_projects_sections.each do |eefps|
       # Small optimization as to not update needlessly.
       next if eefps.extraction_forms_projects_section.project.eql?(extraction.project)
+
       update_extraction_forms_projects_section(eefps)
     end
   end
@@ -389,6 +389,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
         .joins(:extraction_forms_project, :section)
         .where(extraction_forms_projects: { project: extraction.project })
         .find_by(sections: { name: })
+
     eefps.update(extraction_forms_projects_section: correct_extraction_forms_projects_section)
   end
 
@@ -399,6 +400,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
                                 .extractions_extraction_forms_projects_sections
                                 .joins(extraction_forms_projects_section: :section)
                                 .find_by(section: { name: })
+
       update(link_to_type1: correct_link_to_type1)
     end
   end

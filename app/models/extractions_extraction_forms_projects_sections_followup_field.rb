@@ -12,15 +12,15 @@
 class ExtractionsExtractionFormsProjectsSectionsFollowupField < ApplicationRecord
   attr_accessor :is_amoeba_copy
 
-  before_commit :correct_parent_associations, if: :is_amoeba_copy
-
   amoeba do
     enable
 
-    customize(lambda { |original, copy|
+    customize(lambda { |_, copy|
       copy.is_amoeba_copy = true
     })
   end
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   belongs_to :extractions_extraction_forms_projects_section, inverse_of: :extractions_extraction_forms_projects_sections_followup_fields
   belongs_to :extractions_extraction_forms_projects_sections_type1, inverse_of: :extractions_extraction_forms_projects_sections_followup_fields, optional: true
