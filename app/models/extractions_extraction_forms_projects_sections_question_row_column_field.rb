@@ -91,16 +91,13 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField < Applica
                       }
                     }
                   }
-                })
-              .where(
+                }
+              ).where(
                 amoeba_source_object: question_row_column_field,
-                questions: {
-                  extraction_forms_projects_sections: {
-                    extraction_forms_projects: {
-                      project:
-                    }
-                  }
-                })
+                extraction_forms_projects: {
+                  project:
+                }
+              )
     raise unless qrcfs.size.eql?(1)
 
     update(question_row_column_field: qrcfs[0])

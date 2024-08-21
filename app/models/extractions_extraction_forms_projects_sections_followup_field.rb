@@ -35,6 +35,45 @@ class ExtractionsExtractionFormsProjectsSectionsFollowupField < ApplicationRecor
   def correct_parent_associations
     return unless is_amoeba_copy
 
-    # Placeholder for debugging. No corrections needed.
+    correct_eefpst1_association
+    correct_followup_field_association
+  end
+
+  def correct_eefpst1_association
+    return unless extractions_extraction_forms_projects_sections_type1
+
+    eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1.where(
+                 type1_type: extractions_extraction_forms_projects_sections_type1.type1_type,
+                 extractions_extraction_forms_projects_section: extractions_extraction_forms_projects_section.link_to_type1,
+                 type1: extractions_extraction_forms_projects_sections_type1.type1)
+    raise unless eefpst1s.size.eql?(1)
+
+    update(extractions_extraction_forms_projects_sections_type1: eefpst1s[0])
+  end
+
+  def correct_followup_field_association
+    ffs = followup_field
+            .amoeba_copies
+            .joins(
+              question_row_columns_question_row_column_option: {
+                question_row_column: {
+                  question_row: {
+                    question: {
+                      extraction_forms_projects_section: {
+                        extraction_forms_project: :project
+                      }
+                    }
+                  }
+                }
+              }
+            ).where(
+              amoeba_source_object: followup_field,
+              extraction_forms_projects: {
+                project: extraction.project
+              }
+            )
+    raise unless ffs.size.eql?(1)
+
+    update(followup_field: ffs[0])
   end
 end

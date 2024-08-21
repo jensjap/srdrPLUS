@@ -2,3 +2,8 @@ one:
   extractions_extraction_forms_projects_section: six
   followup_field: one
   extractions_extraction_forms_projects_sections_type1: three
+
+two:
+  extractions_extraction_forms_projects_section: six
+  followup_field: two
+  extractions_extraction_forms_projects_sections_type1: four

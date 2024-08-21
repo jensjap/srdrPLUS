@@ -19,6 +19,8 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
   default_scope { order(:pos, :id) }
 
   amoeba do
+    include_association :followup_field
+
     customize(lambda { |_, copy|
       copy.is_amoeba_copy = true
     })

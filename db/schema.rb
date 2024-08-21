@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_08_21_041102) do
+ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -741,6 +741,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_041102) do
     t.bigint "question_row_columns_question_row_column_option_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.bigint "followup_field_id"
+    t.index ["followup_field_id"], name: "index_ffs_on_followup_field_id"
     t.index ["question_row_columns_question_row_column_option_id"], name: "index_followup_fields_on_qrcqrco_id"
   end
 
@@ -2219,6 +2221,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_041102) do
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "extractions_extraction_forms_projects_sections"
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "type1_types"
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "type1s"
+  add_foreign_key "followup_fields", "followup_fields"
   add_foreign_key "funding_sources_sd_meta_data", "funding_sources"
   add_foreign_key "funding_sources_sd_meta_data", "sd_meta_data"
   add_foreign_key "imported_files", "file_types"
