@@ -51,6 +51,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   }
 
   amoeba do
+    include_association :statusing
+
     customize(lambda { |_, copy|
       copy.is_amoeba_copy = true
     })
