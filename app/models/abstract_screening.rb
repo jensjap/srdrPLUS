@@ -43,7 +43,13 @@ class AbstractScreening < ApplicationRecord
 
   has_many :word_weights
 
+  before_destroy :clear_citations_projects_abstract_screening_id
+
   def screening_type
     abstract_screening_type
+  end
+
+  def clear_citations_projects_abstract_screening_id
+    project.citations_projects.where(abstract_screening_id: id).update_all(abstract_screening_id: nil)
   end
 end

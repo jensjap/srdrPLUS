@@ -7,7 +7,7 @@ class AbstractScreeningsController < ApplicationController
   after_action :verify_authorized
 
   def new
-    @abstract_screening = @project.abstract_screenings.new(abstract_screening_type: 'double-perpetual')
+    @abstract_screening = @project.abstract_screenings.new(abstract_screening_type: 'double')
     authorize(@abstract_screening)
 
     @use_new_form = @project.new_picking_logic
@@ -19,6 +19,7 @@ class AbstractScreeningsController < ApplicationController
 
     service = CitationFilterService.new(project_id: @project.id)
     service = service.filter_without_abstract_screening_results
+    service = service.filter_unassigned_abstract_screening
 
     if params[:load_options]
       render json: {
@@ -51,6 +52,7 @@ class AbstractScreeningsController < ApplicationController
       @project.abstract_screenings.new(abstract_screening_params)
     authorize(@abstract_screening)
     if @abstract_screening.save
+      update_citations_projects(params[:selected_citations], @abstract_screening.id)
       flash[:notice] = 'Screening was successfully created'
       redirect_to(project_abstract_screenings_path(@project), status: 303)
     else
@@ -272,6 +274,7 @@ class AbstractScreeningsController < ApplicationController
     @project = @abstract_screening.project
     authorize(@abstract_screening)
     if @abstract_screening.update(abstract_screening_params)
+      update_citations_projects(params[:selected_citations], @abstract_screening.id)
       flash[:notice] = 'Screening was successfully updated'
       redirect_to(project_abstract_screenings_path(@project), status: 303)
     else
@@ -335,5 +338,20 @@ class AbstractScreeningsController < ApplicationController
 
   def set_project
     @project = Project.find(params[:project_id])
+  end
+
+  def update_citations_projects(selected_citations, abstract_screening_id)
+    return unless selected_citations.present?
+
+    CitationsProject.where(abstract_screening_id: abstract_screening_id).update_all(abstract_screening_id: nil)
+
+    if selected_citations.is_a?(String)
+      selected_citations = selected_citations.split(',').map(&:strip)
+    end
+
+    selected_citations.each do |citation_id|
+      citation_project = CitationsProject.find(citation_id)
+      citation_project.update(abstract_screening_id: abstract_screening_id)
+    end
   end
 end

@@ -40,7 +40,13 @@ class FulltextScreening < ApplicationRecord
 
   has_many :fulltext_screening_results, dependent: :destroy, inverse_of: :fulltext_screening
 
+  before_destroy :clear_citations_projects_fulltext_screening_id
+
   def screening_type
     fulltext_screening_type
+  end
+
+  def clear_citations_projects_fulltext_screening_id
+    project.citations_projects.where(fulltext_screening_id: id).update_all(fulltext_screening_id: nil)
   end
 end

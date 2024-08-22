@@ -18,7 +18,7 @@
     <div class="mt-4 space-y-4">
       <!-- Results Summary -->
       <div class="mb-4 text-sm">
-        <div>Total Unscreened Citations: <span x-text="totalCitationsCount"></span></div>
+        <div>Total Unassigned Citations: <span x-text="totalCitationsCount"></span></div>
         <div>Filtered Citations: <span x-text="filteredCitationsCount"></span></div>
 
         <div class="mt-2">
@@ -83,7 +83,7 @@
 
   <div class="flex flex-col">
     <!-- prettier-ignore -->
-    <%= simple_form_for([action_name == 'edit' ? nil : @project, @abstract_screening]) do |f| %>
+    <%= simple_form_for([action_name == 'edit' ? nil : @project, @abstract_screening], html: { id: 'abstract-screening-form' }) do |f| %>
     <div
       class="mt-8 relative"
       x-data="{ pns: 'abstract_screening', cns: 'abstract_screening_type', customInput: false, open: false }"
@@ -98,26 +98,8 @@
         >)
       </div>
       <!-- prettier-ignore -->
-      <%= render 'components/radio_select' %>
+      <%= render 'components/new_radio_select' %>
     </div>
-
-    <template
-      x-if="['pilot', 'n-size-single', 'n-size-double', 'n-size-expert-needed', 'n-size-only-expert-novice-mixed'].includes(abstract_screening.abstract_screening_type.selection.key)"
-    >
-      <div class="mb-4">
-        <label for="no_of_citations"
-          >Number of citations for this screening:</label
-        >
-        <input
-          type="number"
-          id="no_of_citations"
-          name="abstract_screening[no_of_citations]"
-          min="1"
-          max="100000"
-          :value="abstract_screening.no_of_citations"
-        />
-      </div>
-    </template>
 
     <table class="shadow-lg unstriped">
       <tr>
@@ -593,7 +575,9 @@
     </table>
 
     <!-- prettier-ignore -->
-    <%= f.button :submit, params[:action] == 'new' ? 'Create Abstract Screening' : 'Update Abstract Screening', class: '!my-8' %>
+    <input type="hidden" name="abstract_screening[no_of_citations]" x-model.number="abstract_screening.no_of_citations">
+    <input type="hidden" name="selected_citations" x-model="selectedCitations">
+    <%= f.button :submit, params[:action] == 'new' ? 'Create Abstract Screening' : 'Update Abstract Screening', class: '!my-8', disabled: 'true', 'x-bind:disabled' => 'citationCountInvalid' %>
     <% end %>
   </div>
 </div>
@@ -605,6 +589,7 @@
         abstract_screening_type: {
           selection: { key: null, value: null },
           options: [],
+          new_options: []
         },
         all_tag: false,
         all_reason: false,
@@ -650,12 +635,18 @@
       totalCitationsCount: 0,
       filteredCitations: [],
       filteredCitationsCount: 0,
-      selectedCitationsCount: 1,
+      selectedCitations: [],
+      selectedCitationsCount: 0,
       citationCountInvalid: false,
 
       init() {
         this.initializeData();
         this.initializeFilterData();
+        this.applyFilters();
+
+        this.$nextTick(() => {
+          this.validateCitationCount();
+        });
       },
 
       async initializeData() {
@@ -732,6 +723,20 @@
 
       validateCitationCount() {
         this.citationCountInvalid = this.selectedCitationsCount > this.filteredCitationsCount || this.selectedCitationsCount <= 0;
+
+        this.$nextTick(() => {
+          const submitButton = document.querySelector('button[type="submit"]');
+          if (submitButton) {
+            submitButton.disabled = this.citationCountInvalid;
+          }
+        });
+
+        if (!this.citationCountInvalid) {
+          this.selectedCitations = this.filteredCitations.slice(0, this.selectedCitationsCount);
+          this.abstract_screening.no_of_citations = this.selectedCitationsCount;
+        } else {
+          this.selectedCitations = [];
+        }
       }
     }));
   });
