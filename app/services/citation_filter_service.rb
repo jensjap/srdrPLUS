@@ -31,6 +31,18 @@ class CitationFilterService
     self
   end
 
+  def filter_unassigned_abstract_screening
+    unassigned_abstract_screening_filter = CitationsProject.where(project_id: @project_id, abstract_screening_id: nil).pluck(:id)
+    @filters << -> { unassigned_abstract_screening_filter }
+    self
+  end
+
+  def filter_unassigned_fulltext_screening
+    unassigned_fulltext_screening_filter = CitationsProject.where(project_id: @project_id, fulltext_screening_id: nil).pluck(:id)
+    @filters << -> { unassigned_fulltext_screening_filter }
+    self
+  end
+
   def filter_all_citations
     @filters << -> { CitationsProject.where(project_id: @project_id).pluck(:id) }
     self
