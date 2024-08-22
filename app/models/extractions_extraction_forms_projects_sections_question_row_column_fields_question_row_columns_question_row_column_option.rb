@@ -19,8 +19,8 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionR
   amoeba do
     enable
 
-    customize(lambda { |_, cloned|
-      cloned.is_amoeba_copy = true
+    customize(lambda { |_, copy|
+      copy.is_amoeba_copy = true
     })
   end
 
@@ -35,6 +35,35 @@ class ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionR
   def correct_parent_associations
     return unless is_amoeba_copy
 
-    # Placeholder for debugging. No corrections needed.
+    correct_qrcqrco_association
+  end
+
+  def correct_qrcqrco_association
+    # qrcqrcos = ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnFieldsQuestionRowColumnsQuestionRowColumnOption
+    qrcqrcos = QuestionRowColumnsQuestionRowColumnOption
+                 .joins(
+                   question_row_column: {
+                     question_row: {
+                       question: {
+                         extraction_forms_projects_section: {
+                           extraction_forms_project: :project
+                         }
+                       }
+                     }
+                   }
+                 )
+                 .where(
+                   question_row_column: extractions_extraction_forms_projects_sections_question_row_column_field.question_row_column_field.question_row_column,
+                   question_row_column_option: question_row_columns_question_row_column_option.question_row_column_option,
+                   extraction_forms_projects: {
+                     project: extractions_extraction_forms_projects_sections_question_row_column_field
+                                .extractions_extraction_forms_projects_section
+                                .extraction
+                                .project
+                   }
+                 )
+    raise unless qrcqrcos.size.eql?(1)
+
+    update(question_row_columns_question_row_column_option: qrcqrcos[0])
   end
 end
