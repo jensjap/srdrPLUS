@@ -52,6 +52,6 @@ h4 List of Suggested #{ section_name }s
                 = t('edit')
 
               - delete_url = extraction_forms_projects_section_dissociate_type1_path(efps, type1_id: efpst1.type1_id)
-              a href="#" @click.prevent="$store.deleteConfirmation.openModal('#{delete_url}', 'Are you sure?')"
+              a href="#" @click.prevent="$store.sharedExtractionStore.openModal('#{delete_url}', 'Are you sure?')"
                 i.fi-trash>
                 = t('remove')

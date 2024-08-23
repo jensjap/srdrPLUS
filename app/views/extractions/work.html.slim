@@ -1,17 +1,25 @@
-div x-data="$store.deleteConfirmation"
+div x-data="$store.sharedExtractionStore"
   = render 'shared/alert_modal'
   - provide(:title, t(".extract_data"))
 
-  div style='margin-left: 34px;'
+  div class="ml-9"
     h5
       = "Assigned to "
       span style="font-weight: bold"
         = @extraction.user.handle
 
-  div style='margin: 0 34px; border-color: #bbb6dd; padding: 0; width: auto;'
+  div class="ml-9" style='border-color: #bbb6dd; padding: 0; width: auto;'
     h6 style='margin: 0;'
       = @extraction.citation.handle.split("\n").join(" - ")
     span Refman ID: #{ @extraction.citations_project.refman.to_s }
+
+  div class="flex ml-9 py-1"
+    div Extraction Status:
+    div
+      button @click="await updateStatus('awaiting_work'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-pointer bg-gray-500" :class="{ 'bg-srdrpurple' : extraction.status == 'awaiting_work' }" awaiting_work
+      button @click="await updateStatus('awaiting_review'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-pointer bg-gray-500" :class="{ 'bg-srdrpurple' : extraction.status == 'awaiting_review' }" awaiting_review
+      button :disabled="!extraction['able_to_review_status?']" @click="await updateStatus('work_rejected'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-not-allowed bg-gray-500" :class="{ 'bg-srdrpurple' : extraction.status == 'work_rejected', 'cursor-pointer' : extraction['able_to_review_status?'] }" work_rejected
+      button :disabled="!extraction['able_to_review_status?']" @click="await updateStatus('work_accepted'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-not-allowed bg-gray-500" :class="{ 'bg-srdrpurple' : extraction.status == 'work_accepted', 'cursor-pointer' : extraction['able_to_review_status?'] }" work_accepted
 
   - unless @panel_tab_id == 'keyquestions'
     div style='display: none;'
@@ -22,7 +30,7 @@ div x-data="$store.deleteConfirmation"
             .grid-y
               = render 'extractions/extractions_key_questions_projects_selections'
 
-  hr
+  hr.my-2
 
   #preview.work
     = render 'extractions/shared/extraction_forms_project_tab_links'
@@ -34,11 +42,63 @@ div x-data="$store.deleteConfirmation"
     title: t('manage_extractions')
 
 javascript:
+  let event = document.createEvent('HTMLEvents');
+  event.initEvent('extractionSectionLoaded', true, true);
+  document.dispatchEvent(event);
   document.addEventListener('alpine:init', () => {
-    Alpine.store('deleteConfirmation', {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+    };
+    const url = new URL(window.location.href);
+    const extractionId = url.pathname.split('/')[2];
+
+    Alpine.store('sharedExtractionStore', {
       isAlertModalOpen: false,
       alertModalContent: 'Warning! You are about to delete an outcome and any associated data with it. \nThis action cannot be undone. Please confirm to proceed.',
       deleteUrl: '',
+      extraction: {},
+
+      async init() {
+        this.getExtraction();
+      },
+      async getExtraction() {
+        const response = await fetch(
+          `/extractions/${extractionId}`,
+          {
+            method: "GET",
+            headers,
+          }
+        );
+        const data = await response.json();
+        this.extraction = data;
+      },
+      async updateStatus(status) {
+        const response = await fetch(
+          `/extractions/${extractionId}`,
+          {
+            method: "PATCH",
+            headers,
+            body: JSON.stringify({
+              extraction: {
+                status,
+              },
+            }),
+          }
+        );
+        const data = await response.json();
+      },
+      async askToSubmitForReview(allEefpsDone) {
+        if (this.extraction.status === 'awaiting_work' && allEefpsDone && confirm('Would you like to submit this extraction for review?')) {
+          await this.updateStatus('awaiting_review');
+        }
+        if (this.extraction.status === 'awaiting_review' && !allEefpsDone && confirm('Would you like to set the status of this extraction to \'awaiting_work\'?')) {
+          await this.updateStatus('awaiting_work');
+        }
+        this.getExtraction();
+      },
       openAlertModal(url) {
         this.deleteUrl = url;
         this.isAlertModalOpen = true;

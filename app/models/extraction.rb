@@ -11,6 +11,8 @@
 #  updated_at             :datetime         not null
 #  user_id                :integer
 #  approved_on            :datetime
+#  assignor_id            :integer
+#  status                 :string(255)
 #
 
 class Extraction < ApplicationRecord
@@ -25,7 +27,7 @@ class Extraction < ApplicationRecord
   after_create :ensure_extraction_form_structure
   after_create :create_default_arms
   after_create :create_default_status
-  after_save :evaluate_screening_status_citations_project
+  after_save :evaluate_screening_status_citations_project, :create_extraction_log
   after_destroy :evaluate_screening_status_citations_project
 
   # create checksums without delay after create and update, since extractions/index would be incorrect.
@@ -47,10 +49,10 @@ class Extraction < ApplicationRecord
   belongs_to :citations_project,   inverse_of: :extractions
   belongs_to :projects_users_role, optional: true
   belongs_to :user,                optional: true
+  belongs_to :assignor, class_name: 'User', optional: true
 
   has_one :extraction_checksum, dependent: :destroy, inverse_of: :extraction
   has_one :statusing, as: :statusable, dependent: :destroy
-  has_one :status, through: :statusing
 
   has_many :extractions_extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction
   has_many :extraction_forms_projects_sections, through: :extractions_extraction_forms_projects_sections,
@@ -59,16 +61,22 @@ class Extraction < ApplicationRecord
   has_many :extractions_key_questions_projects_selections, dependent: :destroy
   has_many :key_questions_projects, through: :extractions_key_questions_projects_selections
 
-  has_many :assignments, as: :assignable
+  has_many :logs, dependent: :destroy, as: :loggable
 
   delegate :citation, to: :citations_project
   delegate :username, to: :user, allow_nil: true
+
+  attr_accessor :current_user
 
   #  def to_builder
   #    Jbuilder.new do |extraction|
   #      extraction.sections extractions_extraction_forms_projects_sections.map { |eefps| eefps.to_builder.attributes! }
   #    end
   #  end
+
+  def able_to_review_status?
+    ExtractionService.able_to_review_status?(current_user, self)
+  end
 
   def set_stale(state)
     extraction_checksum.save
@@ -77,7 +85,7 @@ class Extraction < ApplicationRecord
   end
 
   def ensure_extraction_form_structure
-    # NOTE This method assumes that self is not a mini-extraction
+    # NOTE: This method assumes that self is not a mini-extraction
     efp = project.extraction_forms_projects.includes([:extraction_form]).first
     efp.extraction_forms_projects_sections.includes([:link_to_type1]).each do |efps|
       # We should ensure that there is only 1 EEFPS per extraction per efps.
@@ -243,5 +251,16 @@ class Extraction < ApplicationRecord
 
     citations_project.try(:evaluate_extraction_qualification_status, consolidated)
     citations_project.try(:evaluate_screening_status)
+  end
+
+  def create_extraction_log
+    return unless status_previously_changed?
+
+    message = if current_user
+                "#{current_user.handle} (User# #{current_user.id}): set status to '#{status}'"
+              else
+                "Status was set to '#{status}'"
+              end
+    logs.create!(description: message)
   end
 end

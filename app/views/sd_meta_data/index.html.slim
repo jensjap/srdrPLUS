@@ -1,4 +1,4 @@
-div x-data="$store.deleteConfirmation"
+div x-data="$store.sharedExtractionStore"
   = render 'shared/alert_modal'
   #sdMetaData-list class="p-4 lg:p-8"
     h4
@@ -81,7 +81,7 @@ div x-data="$store.deleteConfirmation"
                 td = "Request under review"
               td
                 - delete_url = sd_meta_datum_path(sd_meta_datum)
-                a href="#" @click.prevent="$store.deleteConfirmation.openModal('#{delete_url}')" class="sd-meta-data-index-delete"
+                a href="#" @click.prevent="$store.sharedExtractionStore.openModal('#{delete_url}')" class="sd-meta-data-index-delete"
                   | Destroy
     div class="pt-4 lg:pt-8"
       #create-sd-meta-datum-modal-button.create-button.button [data-open='create-sd-meta-datum-modal']
@@ -210,7 +210,7 @@ javascript:
   })
 
   document.addEventListener('alpine:init', () => {
-    Alpine.store('deleteConfirmation', {
+    Alpine.store('sharedExtractionStore', {
       isAlertModalOpen: false,
       alertModalContent: 'Are you sure? This will destroy the link you have created between a report and a project in SRDR. It will also destroy everything you have entered for this project in SRDR 2.0.',
       deleteUrl: '',

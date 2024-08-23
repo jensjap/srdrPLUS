@@ -48,7 +48,14 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/1
   # GET /extractions/1.json
-  def show; end
+  def show
+    respond_to do |format|
+      format.json do
+        @extraction.current_user = current_user
+        render json: @extraction, methods: [:able_to_review_status?]
+      end
+    end
+  end
 
   # GET /extractions/new
   def new
@@ -141,6 +148,7 @@ class ExtractionsController < ApplicationController
   # PATCH/PUT /extractions/1.json
   def update
     authorize(@extraction)
+    @extraction.current_user = current_user
     redirect_path = params[:redirect_to]
 
     respond_to do |format|
@@ -214,10 +222,7 @@ class ExtractionsController < ApplicationController
           efp = @extraction.extraction_forms_projects_sections.includes(:section).reject { |efps| efps.hidden }.first
           return redirect_to(work_extraction_path(@extraction, 'panel-tab' => efp.id))
         end
-      end
 
-      format.js do
-        @load_js = params['load-js']
         @ajax_section_loading_index = params['ajax-section-loading-index']
         @efp = if params.key?(:efp_id)
                  ExtractionFormsProject.find(params[:efp_id])
@@ -417,7 +422,8 @@ class ExtractionsController < ApplicationController
   def extraction_params
     params
       .require(:extraction)
-      .permit(:user_id,
+      .permit(:status,
+              :user_id,
               :citations_project_id,
               citations_project_ids: [],
               extractions_key_questions_project_ids: [],

@@ -8,6 +8,7 @@
 #  name                          :text(65535)
 #  created_at                    :datetime         not null
 #  updated_at                    :datetime         not null
+#  pos                           :integer          default(999999)
 #
 
 class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord

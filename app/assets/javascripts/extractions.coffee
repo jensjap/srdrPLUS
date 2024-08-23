@@ -116,7 +116,7 @@ documentCode = ->
       url = $(this).data('delete-url')
       extraction_id = $(this).data('extraction-id') || ''
       extraction_name = $(this).data('extraction-name') || ''
-      Alpine.store('deleteConfirmation').openAlertModal(url, extraction_id, extraction_name)
+      Alpine.store('sharedExtractionStore').openAlertModal(url, extraction_id, extraction_name)
 
     last_col = 6
     $('table.extractions-list').on('click', '.table-sortable', (e) ->

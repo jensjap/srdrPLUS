@@ -35,3 +35,7 @@ $('.status-switch[statusing-id="<%=@statusing.id.to_s%>"] span.status-label').ht
 <% if @statusing.statusable.class == ExtractionsExtractionFormsProjectsSectionsType1 %>
   $('#eefpst1-<%= @statusing.statusable.id %>').text('<%= "- #{@statusing.statusable.type1_name_and_description} [#{@statusing.status.name}]" %>')
 <% end %>
+
+<% if @statusing.statusable.class == ExtractionsExtractionFormsProjectsSection %>
+  Alpine.store('sharedExtractionStore').askToSubmitForReview(<%= ExtractionService.all_eefps_done?(@statusing.statusable.extraction) %>)
+<% end %>
