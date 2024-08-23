@@ -3,9 +3,15 @@
 one:
   name: MyString
   description: MyText
-#  deleted_at:
 
 two:
   name: MyString
   description: MyText
-#  deleted_at:
+
+male:
+  name: Male Population
+  description: (Amoeba Copy Original)
+
+female:
+  name: Female Population (Amoeba Copy Original)
+  description: (Amoeba Copy Original)

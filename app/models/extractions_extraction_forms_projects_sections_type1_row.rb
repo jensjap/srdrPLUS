@@ -11,6 +11,16 @@
 
 # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1Row. This is meant to be Outcome Population.
 class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
+  attr_accessor :is_amoeba_copy
+
+  amoeba do
+    enable
+
+    customize(lambda { |_, copy|
+      copy.is_amoeba_copy = true
+    })
+  end
+
   # We need to create the four ResultStatisticSections:
   #   - Descriptive Statistics
   #   - Between Arm Comparisons
@@ -19,6 +29,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   after_create :create_default_result_statistic_sections
   after_create :create_default_type1_row_columns
   after_commit :set_extraction_stale, on: %i[create update destroy]
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   belongs_to :extractions_extraction_forms_projects_sections_type1,
              inverse_of: :extractions_extraction_forms_projects_sections_type1_rows
@@ -142,5 +154,11 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
       end
 
     end
+  end
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    # Placeholder for debugging. No corrections needed.
   end
 end
