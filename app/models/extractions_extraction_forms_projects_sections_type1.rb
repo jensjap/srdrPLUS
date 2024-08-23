@@ -51,7 +51,8 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   }
 
   amoeba do
-    include_association :statusing
+    exclude_association :extractions_extraction_forms_projects_sections_question_row_column_fields
+    exclude_association :extractions_extraction_forms_projects_sections_followup_fields
 
     customize(lambda { |_, copy|
       copy.is_amoeba_copy = true
