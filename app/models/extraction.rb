@@ -257,7 +257,7 @@ class Extraction < ApplicationRecord
     return unless status_previously_changed?
 
     message = if current_user
-                "#{current_user.handle} (User# #{current_user.id}): set status to '#{status}'"
+                "#{current_user.handle} (User# #{current_user.id}) set status to '#{status}'"
               else
                 "Status was set to '#{status}'"
               end
