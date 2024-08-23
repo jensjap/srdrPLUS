@@ -247,8 +247,11 @@ class AbstractScreeningsController < ApplicationController
     @abstract_screening = AbstractScreening.find(params[:id])
     @project = @abstract_screening.project
     authorize(@abstract_screening)
-    if @abstract_screening.update(abstract_screening_params)
-      update_citations_projects(params[:selected_citations], @abstract_screening.id)
+
+    update_params = abstract_screening_params.except(:abstract_screening_type)
+
+    if @abstract_screening.update(update_params)
+      #update_citations_projects(params[:selected_citations], @abstract_screening.id)
       flash[:notice] = 'Screening was successfully updated'
       redirect_to(project_abstract_screenings_path(@project), status: 303)
     else
