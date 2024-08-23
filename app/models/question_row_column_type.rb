@@ -41,7 +41,7 @@ class QuestionRowColumnType < ApplicationRecord
                        'Select multiple (with write-in option)'].zip(QuestionRowColumnType
     .where(id: [1, 2, 5, 6, 7, 8, 9])
     .pluck(:id))
-                      .freeze
+    .freeze
 
   has_many :question_row_columns, dependent: :destroy, inverse_of: :question_row_column_type
 end
