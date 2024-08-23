@@ -139,7 +139,6 @@
   font-stretch: normal;
   line-height: 1.5;
   letter-spacing: normal;
-  //text-align: center;
   color: #414247;
 }
 
@@ -148,12 +147,20 @@
 }
 
 .about .hero {
-  //text-align: center;
   height: 240px;
 }
 
 .blog .hero {
-  height: 350px;
+  height: 200px;
+  font-family: Halant;
+  font-size: 64px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.13;
+  letter-spacing: normal;
+  text-align: center;
+  color: #ffffff;
 }
 
 .About-the-Systematic {
@@ -181,10 +188,6 @@
   line-height: 1.17;
   letter-spacing: normal;
   color: #ffffff;
-}
-
-.blog .hero.enhancement {
-  height: 340px;
 }
 
 .Enhancements-to-SRDR {
@@ -341,7 +344,7 @@
 // Hero section.
 .hero {
   height: 525px;
-  background-image: asset-data-url("background-hero-bottom.png");
+  background-image: asset-data-url("VADRR Page Center.png");
   background-repeat: no-repeat;
   background-size: 100%;
   padding-top: 30px;
@@ -918,7 +921,7 @@
   }
 
   .hero-background {
-    background-image: asset-data-url("background-hero-bottom.png");
+    background-image: asset-data-url("VADRR Page Center.png");
   }
 
   background-color: white;
@@ -979,5 +982,8 @@
 }
 
 .hero-background {
-  background-image: asset-data-url("background-hero-bottom.png");
+  background-image: asset-data-url("VADRR Page Center.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-blend-mode: overlay;
 }

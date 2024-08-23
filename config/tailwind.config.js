@@ -10,12 +10,12 @@ module.exports = {
     extend: {
       colors: {
         srdrpurple: {
-          DEFAULT: "#4c0d7d",
-          light: "#7438a4",
+          DEFAULT: "#011430",
+          light: "#45699F",
         },
-        "srdr-primary": "#4c0d7d",
-        "srdr-secondary": "#33124b",
-        "srdr-tertiary": "#005B94",
+        "srdr-primary": "#162E51",
+        "srdr-secondary": "#005ea2",
+        "srdr-tertiary": "#000B1B",
       },
       fontFamily: {
         sans: ["Inter var", ...defaultTheme.fontFamily.sans],
