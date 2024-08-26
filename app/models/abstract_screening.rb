@@ -43,6 +43,9 @@ class AbstractScreening < ApplicationRecord
 
   has_many :word_weights
 
+  has_many :citations_projects
+  has_many :abstract_screening_distributions, dependent: :destroy
+
   before_destroy :clear_citations_projects_abstract_screening_id
 
   def screening_type
