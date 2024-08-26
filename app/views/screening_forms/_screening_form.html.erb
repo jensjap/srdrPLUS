@@ -5,12 +5,7 @@
     border: 1px solid rgb(237, 236, 236);
   }
 </style>
-<div
-  x-data="screeningFormData<%= form_type %>"
-  class="p-4 lg:p-8"
-  @drop.prevent="drop()"
-  @dragover.prevent="dragover($event)"
->
+<div x-data="screeningFormData<%= form_type %>" class="p-4 lg:p-8">
   <%= render 'shared/alert_modal' %>
   <div class="flex">
     <button
@@ -28,52 +23,30 @@
       x-for="(question, question_index) in questions"
       :key="question.id"
     >
-      <div
-        class="relative shadow-md rounded-md mb-8 border"
-        :class="dragging === question_index ? 'border-blue-600' : ''"
-        draggable="true"
-        @dragstart="dragging = question_index"
-        @dragend="dragging = null"
-      >
-        <div
-          class="absolute inset-0 opacity-50"
-          :class="dropping === question_index ? 'bg-blue-200' : ''"
-          x-show.transition="dragging !== null"
-          @dragenter.prevent="if (question_index !== dragging) { dropping = question_index }"
-          @dragleave="if (dropping === question_index) dropping = null"
-        ></div>
+      <div class="relative shadow-md rounded-md mb-8 border">
         <div class="flex">
-          <div
-            class="cursor-move w-8 pt-4 border-r border-gray-300"
-            title="Drag here to rearrange order of questions"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="w-8 h-8"
+          <div class="pt-4 border-r border-gray-300">
+            <select
+              class="m-2 pl-2 w-auto"
+              @change="updateOrderings(question_index, $el.value - 1)"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"
-              />
-            </svg>
+              <template x-for="(q, q_index) in questions" :key="q.id">
+                <option
+                  :selected="q_index == question_index"
+                  :value="q_index + 1"
+                  x-text="q_index + 1"
+                ></option>
+              </template>
+            </select>
           </div>
-          <div
-            class="grow overflow-auto"
-            draggable="true"
-            @dragstart.prevent.stop
-          >
+          <div class="grow overflow-auto">
             <div class="py-2 px-4">
               <template
                 x-if="focusElement !== `question_name:${question_index}` && (question.name != '' && question.name != null)"
               >
                 <h2
                   class="text-lg cursor-pointer"
-                  x-text="`${question_index + 1}. ${question.name}`"
+                  x-text="question.name"
                   @click="focusElement = `question_name:${question_index}`"
                   title="Click here to edit question"
                 ></h2>
@@ -98,7 +71,7 @@
                   @blur="focusElement = null; updateQuestion(question, { name: $el.value })"
                   @keyup.enter="focusElement = null; updateQuestion(question, { name: $el.value })"
                   @keyup.esc="focusElement = null;"
-                  :value="question.name"
+                  x-model="question.name"
                   type="text"
                 />
               </template>
@@ -132,7 +105,7 @@
                   @blur="focusElement = null; updateQuestion(question, { description: $el.value })"
                   @keyup.enter="focusElement = null; updateQuestion(question, { description: $el.value })"
                   @keyup.esc="focusElement = null;"
-                  :value="question.description"
+                  x-model="question.description"
                   type="text"
                 />
               </template>
@@ -977,11 +950,15 @@
 
 <script>
   document.addEventListener("alpine:init", () => {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+    };
     Alpine.data("screeningFormData<%= form_type %>", () => ({
       questions: [],
       focusElement: null,
-      dragging: null,
-      dropping: null,
       screening_form: {},
       isAlertModalOpen: false,
       alertModalContent: "",
@@ -993,10 +970,7 @@
           "/projects/<%= @project.id %>/screening_forms?form_type=<%= form_type %>",
           {
             method: "GET",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
+            headers,
           }
         );
         const data = await response.json();
@@ -1008,13 +982,7 @@
           `/screening_forms/${this.screening_form.id}/sf_questions`,
           {
             method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
+            headers,
             credentials: "same-origin",
           }
         );
@@ -1032,13 +1000,7 @@
           `/sf_questions/${question.id}/sf_columns`,
           {
             method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
+            headers,
             credentials: "same-origin",
           }
         );
@@ -1054,13 +1016,7 @@
       async addRow(question) {
         const response = await fetch(`/sf_questions/${question.id}/sf_rows`, {
           method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           credentials: "same-origin",
         });
         if (response.status == 200) {
@@ -1075,13 +1031,7 @@
       async createCell(row, column, cell_type) {
         const response = await fetch(`/sf_cells`, {
           method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           credentials: "same-origin",
           body: JSON.stringify({
             sf_row_id: row.id,
@@ -1101,13 +1051,7 @@
       async createOption(cell, value) {
         const response = await fetch(`/sf_cells/${cell.id}/sf_options`, {
           method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           credentials: "same-origin",
           body: JSON.stringify({
             name: value,
@@ -1125,38 +1069,6 @@
           });
         }
       },
-      drop() {
-        if (this.dragging !== null && this.dropping !== null) {
-          if (this.dragging < this.dropping)
-            this.questions = [
-              ...this.questions.slice(0, this.dragging),
-              ...this.questions.slice(this.dragging + 1, this.dropping + 1),
-              this.questions[this.dragging],
-              ...this.questions.slice(this.dropping + 1),
-            ];
-          else
-            this.questions = [
-              ...this.questions.slice(0, this.dropping),
-              this.questions[this.dragging],
-              ...this.questions.slice(this.dropping, this.dragging),
-              ...this.questions.slice(this.dragging + 1),
-            ];
-        }
-        if (this.dragging != null && this.dropping != null) {
-          this.updateQuestion(this.questions[this.dragging], {
-            pos_index: this.questions.map((question, index) => {
-              return {
-                sf_question_id: question.id,
-                pos: index,
-              };
-            }),
-          });
-        }
-        this.dropping = null;
-      },
-      dragover(event) {
-        event.dataTransfer.dropEffect = "move";
-      },
       async deleteQuestion(question) {
         this.openModal(
           `Are you sure you want to delete question: "${
@@ -1168,13 +1080,7 @@
       async confirmDeleteQuestion(question) {
         const response = await fetch(`/sf_questions/${question.id}`, {
           method: "DELETE",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           credentials: "same-origin",
         });
         if (response.status == 200) {
@@ -1196,13 +1102,7 @@
       async confirmDeleteColumn(column) {
         const response = await fetch(`/sf_columns/${column.id}`, {
           method: "DELETE",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           credentials: "same-origin",
         });
         if (response.status == 200) {
@@ -1224,13 +1124,7 @@
       async confirmDeleteRow(row) {
         const response = await fetch(`/sf_rows/${row.id}`, {
           method: "DELETE",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           credentials: "same-origin",
         });
         if (response.status == 200) {
@@ -1252,13 +1146,7 @@
       async confirmDeleteCellField(cell) {
         const response = await fetch(`/sf_cells/${cell.id}`, {
           method: "DELETE",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           credentials: "same-origin",
         });
         if (response.status == 200) {
@@ -1276,13 +1164,7 @@
           `/sf_options/${option.id}/existing_data_check`,
           {
             method: "GET",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
+            headers,
             credentials: "same-origin",
           }
         );
@@ -1308,13 +1190,7 @@
           `/sf_options/${option.id}?deleteExistingAnswers=true}`,
           {
             method: "DELETE",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "X-Requested-With": "XMLHttpRequest",
-              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-                .content,
-            },
+            headers,
             credentials: "same-origin",
           }
         );
@@ -1340,13 +1216,7 @@
       async confirmDeleteOption(option) {
         const response = await fetch(`/sf_options/${option.id}`, {
           method: "DELETE",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           credentials: "same-origin",
         });
         if (response.status == 200) {
@@ -1365,13 +1235,7 @@
       async updateOption(option, params) {
         const response = await fetch(`/sf_options/${option.id}`, {
           method: "PATCH",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           credentials: "same-origin",
           body: JSON.stringify(params),
         });
@@ -1384,16 +1248,30 @@
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
       },
+      async updateOrderings(dragPos, dropPos) {
+        if (dropPos >= this.questions.length) {
+          let i = dropPos - this.questions.length + 1;
+          while (i--) {
+            this.questions.push(undefined);
+          }
+        }
+        this.questions.splice(dropPos, 0, this.questions.splice(dragPos, 1)[0]);
+
+        const tempOrderableElements = this.questions;
+        this.questions = [];
+        await this.$nextTick(async () => {
+          this.questions = tempOrderableElements;
+          const orderings = {};
+          tempOrderableElements.forEach(async (question, index) => {
+            this.updateQuestion(question, { pos: index });
+          });
+        });
+        this.questions = tempOrderableElements;
+      },
       async updateQuestion(question, params) {
         const response = await fetch(`/sf_questions/${question.id}`, {
           method: "PATCH",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           credentials: "same-origin",
           body: JSON.stringify(params),
         });
@@ -1401,7 +1279,6 @@
           toastr.success("Question updated succesfully!", null, {
             timeOut: 1000,
           });
-          this.getData();
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
@@ -1409,13 +1286,7 @@
       async updateCell(cell, params) {
         const response = await fetch(`/sf_cells/${cell.id}`, {
           method: "PATCH",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           credentials: "same-origin",
           body: JSON.stringify(params),
         });
@@ -1431,13 +1302,7 @@
       async updateColumn(column, params) {
         const response = await fetch(`/sf_columns/${column.id}`, {
           method: "PATCH",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           credentials: "same-origin",
           body: JSON.stringify(params),
         });
@@ -1453,13 +1318,7 @@
       async updateRow(row, params) {
         const response = await fetch(`/sf_rows/${row.id}`, {
           method: "PATCH",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRF-Token": document.querySelector("[name='csrf-token']")
-              .content,
-          },
+          headers,
           credentials: "same-origin",
           body: JSON.stringify(params),
         });

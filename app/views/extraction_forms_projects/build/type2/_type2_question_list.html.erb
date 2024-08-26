@@ -1004,9 +1004,14 @@
       },
       async updateOrderings(dragPos, dropPos, table) {
         this.loading = true;
-        const temp = this.questions[dropPos];
-        this.questions[dropPos] = this.questions[dragPos];
-        this.questions[dragPos] = temp;
+        if (dropPos >= this.questions.length) {
+            let i = dropPos - this.questions.length + 1;
+            while (i--) {
+              this.questions.push(undefined);
+            }
+        }
+        this.questions.splice(dropPos, 0, this.questions.splice(dragPos, 1)[0]);
+
         const tempOrderableElements = this.questions;
         this.questions = [];
         await this.$nextTick(async () => {
