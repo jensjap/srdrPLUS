@@ -29,7 +29,12 @@ class Project < ApplicationRecord
   include SharedPublishableMethods
   include SharedQueryableMethods
 
-  attr_accessor :create_empty
+  attr_accessor :create_empty,
+                :is_amoeba_copy,
+                :amoeba_copy_citations,
+                :amoeba_copy_extraction_forms,
+                :amoeba_copy_extractions,
+                :amoeba_copy_labels
 
   searchkick callbacks: :async
 
@@ -44,9 +49,33 @@ class Project < ApplicationRecord
                 }
   scope :lead_by_current_user, -> {}
 
+  amoeba do
+    include_association :key_questions_projects
+    include_association :mesh_descriptors_projects
+    include_association :projects_tags
+    include_association :projects_reasons
+    include_association :citations_projects, if: :amoeba_copy_citations
+    include_association :extraction_forms_projects, if: :amoeba_copy_extraction_forms
+    include_association :extractions, if: :amoeba_copy_extractions
+
+    customize(lambda { |original, copy|
+      copy.amoeba_source_object = original
+    })
+    prepend name: 'Copy of '
+  end
+
   after_create :create_default_extraction_form, unless: :create_empty
+  # It seems that this is redundant for amoeba copy because we will skip this callback,
+  # However we need this because it is needed in case of Distiller import.
   after_create :create_empty_extraction_form, if: :create_empty
   after_create :create_default_member
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
+
+  belongs_to :amoeba_source_object,
+             class_name: 'Project',
+             foreign_key: 'source_project_id',
+             optional: true
 
   has_many :extractions, dependent: :destroy, inverse_of: :project
   has_many :exported_items, dependent: :destroy
@@ -54,36 +83,19 @@ class Project < ApplicationRecord
   has_many :abstract_screening_results, through: :abstract_screenings
   has_many :fulltext_screenings, dependent: :destroy, inverse_of: :project
   has_many :fulltext_screening_results, through: :fulltext_screenings
-  has_one :screening_form, dependent: :destroy, inverse_of: :project
 
   has_many :projects_tags, dependent: :destroy
   has_many :tags, through: :projects_tags
   has_many :projects_reasons, dependent: :destroy
   has_many :reasons, through: :projects_reasons
 
-  has_one :data_audit, dependent: :destroy
-  has_one :publishing, as: :publishable, dependent: :destroy
-  # NOTE
-  # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one
-  # publishing, therefore:
-  #
-  #   belongs_to :publishing, polymorphic: true
-  #
-  # and on the publishing:
-  #
-  #   has_many :publishable, as: :publishing
-  #
-  # is actually what we want.
-  #
-  # Birol
-
   has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project
-  has_many :extraction_forms, through: :extraction_forms_projects, dependent: :destroy
+  has_many :extraction_forms, through: :extraction_forms_projects
 
   has_many :key_questions_projects,
            dependent: :destroy, inverse_of: :project
   has_many :key_questions,
-           through: :key_questions_projects, dependent: :destroy
+           through: :key_questions_projects
 
   has_many :extraction_forms_projects_sections,
            through: :extraction_forms_projects
@@ -97,8 +109,8 @@ class Project < ApplicationRecord
   has_many :citations, through: :citations_projects
 
   has_many :sd_meta_data
-  has_many :imports, through: :projects_users, dependent: :destroy
-  has_many :imported_files, through: :imports, dependent: :destroy
+  has_many :imports, through: :projects_users
+  has_many :imported_files, through: :imports
 
   has_many :mesh_descriptors_projects, dependent: :destroy
   has_many :mesh_descriptors, through: :mesh_descriptors_projects
@@ -106,6 +118,22 @@ class Project < ApplicationRecord
   has_many :ml_models_projects
   has_many :ml_models, through: :ml_models_projects
 
+  has_one :data_audit, dependent: :destroy
+  has_one :publishing, as: :publishable, dependent: :destroy
+  has_one :screening_form, dependent: :destroy, inverse_of: :project
+  # NOTE
+  # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one
+  # publishing, therefore:
+  #
+  #   belongs_to :publishing, polymorphic: true
+  #
+  # and on the publishing:
+  #
+  #   has_many :publishable, as: :publishing
+  #
+  # is actually what we want.
+  #
+  # Birol
   has_many :external_service_providers_projects_users, dependent: :destroy
 
   validates :name, presence: true
@@ -355,6 +383,10 @@ class Project < ApplicationRecord
     exported_items.where('created_at >= ?', 1.week.ago).order(created_at: :desc)
   end
 
+  def is_copy?
+    amoeba_source_object.present?
+  end
+
   private
 
   def process_list_of_pmids(listOf_pmids)
@@ -377,6 +409,8 @@ class Project < ApplicationRecord
   # end
 
   def create_default_extraction_form
+    return if amoeba_copy_extraction_forms
+
     extraction_forms_projects.create!(
       extraction_forms_project_type: ExtractionFormsProjectType.find_by(name: 'Standard'),
       extraction_form: ExtractionForm.find_by(name: 'ef1')
@@ -384,9 +418,11 @@ class Project < ApplicationRecord
   end
 
   def create_empty_extraction_form
-    efp = ExtractionFormsProject.new(project: self,
-                                     extraction_forms_project_type: ExtractionFormsProjectType.first,
-                                     extraction_form: ExtractionForm.first)
+    efp = ExtractionFormsProject.new(
+      project: self,
+      extraction_forms_project_type: ExtractionFormsProjectType.find_by(name: 'Standard'),
+      extraction_form: ExtractionForm.find_by(name: 'ef1')
+    )
     efp.create_empty = true
     efp.save!
   end
@@ -429,5 +465,11 @@ class Project < ApplicationRecord
     else
       ProjectsUser.create!(user: User.current, project: self, permissions: 1)
     end
+  end
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    # Placeholder for debugging. No corrections needed.
   end
 end

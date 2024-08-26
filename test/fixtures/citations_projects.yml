@@ -8,3 +8,26 @@ two:
   citation: two
   project: two
 
+three:
+  citation: three
+  project: one
+
+four:
+  citation: four
+  project: one
+
+copy_project_cp_one:
+  citation: one
+  project: copy_project_original
+
+copy_project_cp_two:
+  citation: two
+  project: copy_project_original
+
+copy_project_cp_three:
+  citation: three
+  project: copy_project_original
+
+copy_project_cp_four:
+  citation: four
+  project: copy_project_original

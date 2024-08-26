@@ -15,48 +15,63 @@
 class Extraction < ApplicationRecord
   include ConsolidationHelper
 
-  # !!! We can't implement this without ensuring integrity of the extraction form. It is possible that the database
-  #    is rendered inconsistent if a project lead changes links between type1 and type2 after this hook is called.
-  #    We need something that ensures consistency when linking is changed.
-  #
-  # Note: 6/25/2018 - We call ensure_extraction_form_structure in work and consolidate action. this might be enough
-  #                   to ensure consistency?
-  after_create :ensure_extraction_form_structure
-  after_create :create_default_arms
-  after_create :create_default_status
-  after_save :evaluate_screening_status_citations_project
-  after_destroy :evaluate_screening_status_citations_project
-
-  # create checksums without delay after create and update, since extractions/index would be incorrect.
-  after_create do |extraction|
-    ExtractionChecksum.create! extraction:
-  end
+  attr_accessor :is_amoeba_copy
 
   default_scope { not_disqualified }
 
   scope :consolidated,   -> { where(consolidated: true) }
   scope :unconsolidated, -> { where(consolidated: false) }
   scope :not_disqualified, lambda {
-                             joins(:citations_project)
-                               .where
-                               .not(citations_project: { screening_status: CitationsProject::REJECTED })
-                           }
+    joins(:citations_project)
+      .where.not(citations_projects: { screening_status: CitationsProject::REJECTED })
+  }
+
+  amoeba do
+    include_association :statusing
+    include_association :extractions_extraction_forms_projects_sections
+    include_association :extractions_key_questions_projects_selections
+
+    customize(lambda { |_, copy|
+      copy.is_amoeba_copy = true
+      copy.projects_users_role = nil
+    })
+  end
+
+  # !!! We can't implement this without ensuring integrity of the extraction form. It is possible that the database
+  #    is rendered inconsistent if a project lead changes links between type1 and type2 after this hook is called.
+  #    We need something that ensures consistency when linking is changed.
+  #
+  # Note: 6/25/2018 - We call ensure_extraction_form_structure in work and consolidate action. this might be enough
+  #                   to ensure consistency?
+  after_create :ensure_extraction_form_structure, unless: :is_amoeba_copy
+  after_create :create_default_arms, unless: :is_amoeba_copy
+  after_create :create_default_status, unless: :is_amoeba_copy
+
+  # create checksums without delay after create and update, since extractions/index would be incorrect.
+  after_create do |extraction|
+    ExtractionChecksum.create! extraction:
+  end
+
+  after_destroy :evaluate_screening_status_citations_project
+
+  after_save :evaluate_screening_status_citations_project
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   belongs_to :project,             inverse_of: :extractions # , touch: true
   belongs_to :citations_project,   inverse_of: :extractions
   belongs_to :projects_users_role, optional: true
   belongs_to :user,                optional: true
 
-  has_one :extraction_checksum, dependent: :destroy, inverse_of: :extraction
-  has_one :statusing, as: :statusable, dependent: :destroy
-  has_one :status, through: :statusing
-
   has_many :extractions_extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction
-  has_many :extraction_forms_projects_sections, through: :extractions_extraction_forms_projects_sections,
-                                                dependent: :destroy
+  has_many :extraction_forms_projects_sections, through: :extractions_extraction_forms_projects_sections
 
   has_many :extractions_key_questions_projects_selections, dependent: :destroy
   has_many :key_questions_projects, through: :extractions_key_questions_projects_selections
+
+  has_one :extraction_checksum, dependent: :destroy, inverse_of: :extraction
+  has_one :statusing, as: :statusable, dependent: :destroy
+  has_one :status, through: :statusing
 
   delegate :citation, to: :citations_project
   delegate :username, to: :user, allow_nil: true
@@ -68,6 +83,8 @@ class Extraction < ApplicationRecord
   #  end
 
   def set_stale(state)
+    return unless extraction_checksum
+
     extraction_checksum.save
     extraction_checksum.is_stale = state
     extraction_checksum.save
@@ -240,5 +257,15 @@ class Extraction < ApplicationRecord
 
     citations_project.try(:evaluate_extraction_qualification_status, consolidated)
     citations_project.try(:evaluate_screening_status)
+  end
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    correct_cp_association
+  end
+
+  def correct_cp_association
+    update(citations_project: project.citations_projects.find_by(citation: citations_project.citation))
   end
 end

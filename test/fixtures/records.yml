@@ -9,3 +9,18 @@ two:
   name: MyString
   recordable: two
   recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
+
+three:
+  name: 'Record for ExtractionsExtractionFormsProjectsSectionsFollowupField'
+  recordable: one
+  recordable_type: ExtractionsExtractionFormsProjectsSectionsFollowupField
+
+four:
+  name: 'Record (answer 1) for ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
+  recordable: three
+  recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
+
+five:
+  name: 'Record (answer 2) for ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'
+  recordable: four
+  recordable_type: 'ExtractionsExtractionFormsProjectsSectionsQuestionRowColumnField'

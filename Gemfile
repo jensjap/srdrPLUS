@@ -25,7 +25,7 @@ group :development do
   gem 'binding_of_caller'
 end
 
-gem 'amoeba' # for things like cloning questions (extraction forms maybe?)
+gem 'amoeba', github: 'amoeba-rb/amoeba' # for things like cloning questions (extraction forms maybe?)
 gem 'apipie-rails' # Api documentation.
 gem 'autoprefixer-rails' # Use Zurb Foundation as Front-End Framework
 gem 'awesome_print'

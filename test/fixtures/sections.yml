@@ -15,3 +15,14 @@ four:
 five:
   name: Outcomes
 
+six:
+  name: Outcome Details
+
+design_details:
+  name: Design Details
+
+sample_characteristics:
+  name: Sample Characteristics
+
+risk_of_bias_assessment:
+  name: Risk of Bias Assessment

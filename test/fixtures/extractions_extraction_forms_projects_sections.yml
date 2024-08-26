@@ -3,14 +3,46 @@
 one:
   extraction: one
   extraction_forms_projects_section: one
-#  active: true
 
 two:
   extraction: two
   extraction_forms_projects_section: two
-#  active: true
 
 three:
   extraction: three
   extraction_forms_projects_section: five
-#  active: true
+
+four:
+  extraction: copy_project_extraction_one
+  extraction_forms_projects_section: amoeba_efps_design_details
+
+five:
+  extraction: copy_project_extraction_one
+  extraction_forms_projects_section: amoeba_efps_arms
+
+six:
+  extraction: copy_project_extraction_one
+  link_to_type1: five
+  extraction_forms_projects_section: amoeba_efps_arm_details
+
+seven:
+  extraction: copy_project_extraction_one
+  link_to_type1: five
+  extraction_forms_projects_section: amoeba_efps_sample_characteristics
+
+eight:
+  extraction: copy_project_extraction_one
+  extraction_forms_projects_section: amoeba_efps_outcomes
+
+nine:
+  extraction: copy_project_extraction_one
+  link_to_type1: eight
+  extraction_forms_projects_section: amoeba_efps_outcome_details
+
+ten:
+  extraction: copy_project_extraction_one
+  extraction_forms_projects_section: amoeba_efps_results
+
+eleven:
+  extraction: copy_project_extraction_one
+  extraction_forms_projects_section: amoeba_efps_risk_of_bias_assessment

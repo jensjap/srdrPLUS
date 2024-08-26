@@ -94,7 +94,7 @@
                     edit_project_path(project, page: 'members_and_roles'),
                     class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
                     'x-bind:class': "{ 'bg-srdr-tertiary': members_and_roles, '!text-white': members_and_roles }" %>
-        <% c_count = @projects.present? ? @projects_citations_project_counts[project.id] : project.citations.size %>
+        <% c_count = @projects.present? ? @projects_citations_project_counts[project.id] : project.citations.where.not(id: nil).count %>
         <% c_title = "Citations (#{ c_count || 0 })" %>
         <%= link_to "#{ c_title }",
                     project_citations_path(project),

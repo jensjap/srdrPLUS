@@ -3,9 +3,10 @@
 one:
   name: text
   id: 1
-#  deleted_at:
 
 two:
   name: numeric
   id: 2
-#  deleted_at:
+
+three:
+  name: text

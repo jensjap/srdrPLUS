@@ -1,4 +1,11 @@
 GIT
+  remote: https://github.com/amoeba-rb/amoeba.git
+  revision: 6adbbc5547dce3edd53c9ba4f8fec05d334ce438
+  specs:
+    amoeba (3.3.0)
+      activerecord (>= 6.1.0)
+
+GIT
   remote: https://github.com/faker-ruby/faker.git
   revision: 7dc2f4044ca7f83da014f71be9bef87bf8b10e46
   branch: main
@@ -98,8 +105,6 @@ GEM
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
-    amoeba (3.3.0)
-      activerecord (>= 5.2.0)
     annotate (3.2.0)
       activerecord (>= 3.2, < 8.0)
       rake (>= 10.4, < 14.0)
@@ -491,7 +496,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_record_doctor
-  amoeba
+  amoeba!
   annotate
   apipie-rails
   autoprefixer-rails

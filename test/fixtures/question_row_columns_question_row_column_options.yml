@@ -18,3 +18,18 @@ three:
   question_row_column: one
   question_row_column_option: three
   name: MyString
+
+four:
+  question_row_column: three
+  question_row_column_option: one
+  name: MyString
+
+five:
+  question_row_column: four
+  question_row_column_option: one
+  name: null
+
+six:
+  question_row_column: four
+  question_row_column_option: two
+  name: null

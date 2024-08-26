@@ -3,11 +3,28 @@
 one:
   extractions_extraction_forms_projects_section: one
   type1: one
-#  deleted_at:
-#  active: true
 
 two:
   extractions_extraction_forms_projects_section: two
   type1: two
-#  deleted_at:
-#  active: true
+
+three:
+  type1_type: one
+  extractions_extraction_forms_projects_section: five
+  type1: arm1
+  
+four:
+  type1_type: one
+  extractions_extraction_forms_projects_section: five
+  type1: arm2
+  
+five:
+  type1_type: one
+  extractions_extraction_forms_projects_section: eight
+  type1: outcome1
+  
+six:
+  type1_type: one
+  extractions_extraction_forms_projects_section: eight
+  type1: outcome2
+  

@@ -1,0 +1,14 @@
+one:
+  project: copy_project_original
+  reason: one
+  screening_type: abstract
+
+two:
+  project: copy_project_original
+  reason: two
+  screening_type: abstract
+
+three:
+  project: copy_project_original
+  reason: three
+  screening_type: abstract

@@ -11,13 +11,6 @@
 #
 
 class ExtractionChecksum < ApplicationRecord
-  scope :not_disqualified,
-        lambda {
-          joins(extraction: :citations_project)
-            .where
-            .not(citations_project: { screening_status: CitationsProject::REJECTED })
-        }
-
   belongs_to :extraction
 
   after_create :update_hexdigest

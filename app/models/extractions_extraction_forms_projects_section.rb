@@ -13,31 +13,28 @@
 class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
   include SharedProcessTokenMethods
 
-  # !!! Doesn't work
-  #  scope :result_type_sections, -> () {
-  #    joins(extraction_forms_projects_section: :section )
-  #      .where(extraction_forms_projects_sections: { sections: { name: 'Results' } }) }
+  attr_accessor :is_amoeba_copy, :amoeba_source_object
 
-  after_create :create_default_draft_status
+  amoeba do
+    exclude_association :link_to_type2s
 
-  scope :not_disqualified,
-        lambda {
-          joins(extraction: :citations_project)
-            .where
-            .not(citations_project: { screening_status: CitationsProject::REJECTED })
-        }
+    customize(lambda { |original, copy|
+      copy.is_amoeba_copy = true
+      copy.amoeba_source_object = original
+    })
+  end
 
-  belongs_to :extraction,                        inverse_of: :extractions_extraction_forms_projects_sections
+  after_create :create_default_draft_status, unless: :is_amoeba_copy
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
+
+  belongs_to :extraction, inverse_of: :extractions_extraction_forms_projects_sections
   belongs_to :extraction_forms_projects_section, inverse_of: :extractions_extraction_forms_projects_sections
   belongs_to :link_to_type1, class_name: 'ExtractionsExtractionFormsProjectsSection',
                              foreign_key: 'extractions_extraction_forms_projects_section_id',
                              optional: true
 
-  has_one :statusing, as: :statusable, dependent: :destroy
-  has_one :status, through: :statusing
-
   has_many :link_to_type2s,
-           -> { not_disqualified },
            class_name: 'ExtractionsExtractionFormsProjectsSection',
            foreign_key: 'extractions_extraction_forms_projects_section_id',
            dependent: :nullify
@@ -48,8 +45,9 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
            -> { joins(:extractions_extraction_forms_projects_sections_type1s) },
            through: :extractions_extraction_forms_projects_sections_type1s, dependent: :destroy
 
-  has_many :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy,
-                                                                                       inverse_of: :extractions_extraction_forms_projects_section
+  has_many :extractions_extraction_forms_projects_sections_question_row_column_fields,
+           dependent: :destroy,
+           inverse_of: :extractions_extraction_forms_projects_section
   has_many :question_row_column_fields,
            through: :extractions_extraction_forms_projects_sections_question_row_column_fields, dependent: :destroy
 
@@ -57,6 +55,9 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
                                                                             inverse_of: :extractions_extraction_forms_projects_section
   has_many :followup_fields, through: :extractions_extraction_forms_projects_sections_followup_fields,
                              dependent: :destroy
+
+  has_one :statusing, as: :statusable, dependent: :destroy
+  has_one :status, through: :statusing
 
   accepts_nested_attributes_for :extractions_extraction_forms_projects_sections_type1s, reject_if: :all_blank
   accepts_nested_attributes_for :statusing, reject_if: :all_blank
@@ -358,6 +359,49 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       else
         eefpst1.pos
       end
+    end
+  end
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    correct_extraction_forms_projects_section_association
+    correct_link_to_type1_association
+  end
+
+  def correct_extraction_forms_projects_section_association
+    # The reason we need to update all eefps as opposed to just the one we
+    # are working on is because when we fix the link_to_type1 association
+    # we do not know if its efps assocation has already been fixed. So to
+    # ensure that it is, we fix them all at the same time.
+    extraction.extractions_extraction_forms_projects_sections.each do |eefps|
+      # Small optimization as to not update needlessly.
+      next if eefps.extraction_forms_projects_section.project.eql?(extraction.project)
+
+      update_extraction_forms_projects_section(eefps)
+    end
+  end
+
+  def update_extraction_forms_projects_section(eefps)
+    name = eefps.extraction_forms_projects_section.section.name
+    correct_extraction_forms_projects_section =
+      ExtractionFormsProjectsSection
+        .joins(:extraction_forms_project, :section)
+        .where(extraction_forms_projects: { project: extraction.project })
+        .find_by(sections: { name: })
+
+    eefps.update(extraction_forms_projects_section: correct_extraction_forms_projects_section)
+  end
+
+  def correct_link_to_type1_association
+    if amoeba_source_object.link_to_type1.present?
+      name = amoeba_source_object.link_to_type1.section.name
+      correct_link_to_type1 = extraction
+                                .extractions_extraction_forms_projects_sections
+                                .joins(extraction_forms_projects_section: :section)
+                                .find_by(section: { name: })
+
+      update(link_to_type1: correct_link_to_type1)
     end
   end
 end

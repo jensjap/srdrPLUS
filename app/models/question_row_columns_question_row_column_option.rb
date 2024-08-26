@@ -11,13 +11,25 @@
 #
 
 class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
-  default_scope { order(:pos, :id) }
-
   include SharedQueryableMethods
   include SharedSuggestableMethods
 
+  attr_accessor :is_amoeba_copy
+
+  default_scope { order(:pos, :id) }
+
+  amoeba do
+    include_association :followup_field
+
+    customize(lambda { |_, copy|
+      copy.is_amoeba_copy = true
+    })
+  end
+
   after_create :set_default_values
   after_create :record_suggestor
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   belongs_to :question_row_column,        inverse_of: :question_row_columns_question_row_column_options
   belongs_to :question_row_column_option, inverse_of: :question_row_columns_question_row_column_options
@@ -32,6 +44,7 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
            inverse_of: :question_row_columns_question_row_column_option
   has_many :extractions_extraction_forms_projects_sections_question_row_column_fields,
            through: :extractions_extraction_forms_projects_sections_question_row_column_fields_question_row_columns_question_row_column_options
+
   accepts_nested_attributes_for :question_row_column_option, allow_destroy: false
 
   delegate :question,                 to: :question_row_column
@@ -77,5 +90,11 @@ class QuestionRowColumnsQuestionRowColumnOption < ApplicationRecord
     end
 
     save
+  end
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    # Placeholder for debugging. No corrections needed.
   end
 end

@@ -5,10 +5,20 @@ one:
   extractions_extraction_forms_projects_sections_type1: one
   question_row_column_field: one
   name: MyText
-#  active: true
 
 two:
   extractions_extraction_forms_projects_section: two
   question_row_column_field: two
   name: MyText
-#  active: true
+
+three:
+  extractions_extraction_forms_projects_section: six
+  extractions_extraction_forms_projects_sections_type1: three  #arm1
+  question_row_column_field: four
+  name: MyText
+
+four:
+  extractions_extraction_forms_projects_section: six
+  extractions_extraction_forms_projects_sections_type1: four  #arm2
+  question_row_column_field: four
+  name: MyText

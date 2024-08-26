@@ -69,6 +69,8 @@ services:
 
   database:
     image: mysql:8.0.23
+    ports:
+      - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
     env_file:
@@ -106,6 +108,7 @@ services:
       - database
       - elasticsearch
       - redis
+      - mailcatcher
     volumes:
       - .:/app
       - gem_cache:/usr/local/bundle/gems

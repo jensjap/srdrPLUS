@@ -25,14 +25,7 @@ class ExtractionFormsProject < ApplicationRecord
     'Diagnosis Details'
   ].freeze
 
-  attr_accessor :create_empty
-
-  # Get all ExtractionFormsProject items that are linked to a particular Extraction.
-  # scope :by_extraction, -> (extraction_id) {
-  #  joins(extraction_forms_projects_sections: { key_questions_projects: :extractions })
-  #    .where(extractions: { id: extraction_id })
-  #    .distinct
-  # }
+  attr_accessor :create_empty, :is_amoeba_copy
 
   scope :standard_types, lambda {
                            where(extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::STANDARD))
@@ -44,9 +37,20 @@ class ExtractionFormsProject < ApplicationRecord
                                   where(extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::MINI_EXTRACTION))
                                 }
 
+  amoeba do
+    include_association :extraction_forms_projects_sections
+
+    customize(lambda { |_, copy|
+      copy.create_empty = true
+      copy.is_amoeba_copy = true
+    })
+  end
+
   after_create :create_default_sections, unless: :create_empty
   after_create :create_default_arms, unless: :create_empty
   after_update :ensure_proper_sections
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   # Since has_many :extraction_forms_projects_sections uses lambda function to
   # scope efps by efp.extraction_forms_project_type declaring dependent: :destroy
@@ -55,29 +59,25 @@ class ExtractionFormsProject < ApplicationRecord
   before_destroy :destroy_extraction_forms_projects_sections
 
   belongs_to :extraction_forms_project_type, inverse_of: :extraction_forms_projects, optional: true
-  belongs_to :extraction_form,               inverse_of: :extraction_forms_projects
-  belongs_to :project,                       inverse_of: :extraction_forms_projects # , touch: true
+  belongs_to :extraction_form, inverse_of: :extraction_forms_projects
+  belongs_to :project, inverse_of: :extraction_forms_projects # , touch: true
 
   has_many :extraction_forms_projects_sections,
            lambda { |extraction_forms_project|
              case extraction_forms_project.extraction_forms_project_type_id
              when 1
-               where(section: [Section.where('sections.name NOT IN (?)',
-                                             DIAGNOSTIC_TEST_SECTIONS)])
+               joins(:section).where.not(sections: { name: DIAGNOSTIC_TEST_SECTIONS })
              when 2
-               where(section: [Section.where('sections.name NOT IN (?)',
-                                             STANDARD_SECTIONS)])
+               joins(:section).where.not(sections: { name: STANDARD_SECTIONS })
              end
            },
+           dependent: :destroy,
            inverse_of: :extraction_forms_project
-  has_many :key_questions_projects,
-           -> { joins(:extraction_forms_projects_section) },
-           through: :extraction_forms_projects_sections, dependent: :destroy
   has_many :sections,
            -> { joins(:extraction_forms_projects_sections) },
            through: :extraction_forms_projects_sections, dependent: :destroy
 
-  accepts_nested_attributes_for :extraction_form, reject_if: :extraction_form_name_exists?
+  # accepts_nested_attributes_for :extraction_form, reject_if: :extraction_form_name_exists?
 
   def get_extraction_forms_project_extraction_form_information_markup
     extraction_form.name
@@ -98,7 +98,7 @@ class ExtractionFormsProject < ApplicationRecord
 
   def create_default_sections
     if extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: 'Standard'))
-      Section.default_sections.each do |section|
+      Section.e_ordered_default_sections.each do |section|
         ExtractionFormsProjectsSection.create(
           {
             extraction_forms_project: self,
@@ -177,7 +177,11 @@ class ExtractionFormsProject < ApplicationRecord
   end
 
   def ensure_proper_sections
-    sections_for_efp_type2 if extraction_forms_project_type_id.eql?(2)
+    if extraction_forms_project_type.eql?(
+      ExtractionFormsProjectType.find_by(name: ExtractionFormsProjectType::STANDARD)
+    )
+      sections_for_efp_type2
+    end
   end
 
   def sections_for_efp_type2
@@ -205,5 +209,11 @@ class ExtractionFormsProject < ApplicationRecord
         }
       )
     end
+  end
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    # Placeholder for debugging. No corrections needed.
   end
 end

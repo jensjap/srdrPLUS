@@ -15,9 +15,11 @@
 #
 
 class ExtractionFormsProjectsSection < ApplicationRecord
-  default_scope { order(:pos, :id) }
-
   include SharedProcessTokenMethods
+
+  attr_accessor :is_amoeba_copy
+
+  default_scope { order(:pos, :id) }
 
   scope :in_standard_extraction, lambda {
     joins(:extraction_forms_project)
@@ -31,7 +33,20 @@ class ExtractionFormsProjectsSection < ApplicationRecord
     joins(:extraction_forms_project)
       .where(extraction_forms_projects: { extraction_forms_project_type: ExtractionFormsProjectType.find_by_name(ExtractionFormsProjectType::MINI_EXTRACTION) })
   }
-  after_create :create_extraction_forms_projects_section_option
+
+  amoeba do
+    include_association :extraction_forms_projects_section_option
+    include_association :extraction_forms_projects_sections_type1s
+    include_association :questions
+
+    customize(lambda { |_, copy|
+      copy.is_amoeba_copy = true
+    })
+  end
+
+  after_create :create_extraction_forms_projects_section_option, unless: :is_amoeba_copy
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   belongs_to :extraction_forms_project,                inverse_of: :extraction_forms_projects_sections
   belongs_to :extraction_forms_projects_section_type,  inverse_of: :extraction_forms_projects_sections
@@ -54,13 +69,9 @@ class ExtractionFormsProjectsSection < ApplicationRecord
                                                       dependent: :nullify
 
   has_many :extractions_extraction_forms_projects_sections,
-           -> { not_disqualified },
            dependent: :destroy,
            inverse_of: :extraction_forms_projects_section
   has_many :extractions, through: :extractions_extraction_forms_projects_sections, dependent: :destroy
-
-  has_many :key_questions_projects, dependent: :nullify, inverse_of: :extraction_forms_projects_section
-  has_many :key_questions, through: :key_questions_projects, dependent: :destroy
 
   has_many :questions,
            dependent: :destroy, inverse_of: :extraction_forms_projects_section
@@ -71,8 +82,8 @@ class ExtractionFormsProjectsSection < ApplicationRecord
 
   delegate :project, to: :extraction_forms_project
 
-  validate :child_type
-  validate :parent_type
+  validate :child_type_must_be_type2
+  validate :parent_type_must_be_type1
 
   # !!! This code is repeated in model/ExtractionsExtractionFormsProjectsSection.
   #    We should move it somewhere to share.
@@ -114,15 +125,25 @@ class ExtractionFormsProjectsSection < ApplicationRecord
     section.name
   end
 
-  # !!! this isn't working.
-  def child_type
-    #    errors[:base] << 'Child Type must be of Type 2' unless self.link_to_type1.present? &&
-    #      self.extraction_forms_projects_section_type_id != 2
+  def child_type_must_be_type2
+    type2 = ExtractionFormsProjectsSectionType.find_by(name: ExtractionFormsProjectsSectionType::TYPE2)
+
+    invalid_types = extraction_forms_projects_section_type2s.any? do |section|
+      !section.extraction_forms_projects_section_type.eql?(type2)
+    end
+
+    return unless invalid_types
+
+    errors.add(:base, 'All associated types must be of Type 2')
   end
 
-  def parent_type
-    errors[:base] << 'Parent Type must be of Type 1' unless link_to_type1.nil? ||
-                                                            link_to_type1.extraction_forms_projects_section_type_id == 1
+  def parent_type_must_be_type1
+    if link_to_type1.present? &&
+       link_to_type1.extraction_forms_projects_section_type.eql?(
+         ExtractionFormsProjectsSectionType.find_by(name: ExtractionFormsProjectsSectionType::TYPE1)
+       )
+      errors[:base] << 'Parent Type must be of Type 1'
+    end
   end
 
   def extraction_forms_projects_sections_type1s_without_total_arm
@@ -219,5 +240,21 @@ class ExtractionFormsProjectsSection < ApplicationRecord
     questions.each_with_index do |question, idx|
       question.pos = idx + 1
     end
+  end
+
+  private
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    correct_link_to_type1_association
+  end
+
+  def correct_link_to_type1_association
+    return unless link_to_type1.present? && !project.eql?(link_to_type1.project)
+
+    section = link_to_type1.section
+    link_to_type1 = extraction_forms_project.extraction_forms_projects_sections.find_by(section:)
+    update(link_to_type1:)
   end
 end

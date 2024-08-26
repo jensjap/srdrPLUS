@@ -3,7 +3,7 @@
 one:
   project: one
   user: one
-  permissions: 4
+  permissions: 5
 
 two:
   project: two

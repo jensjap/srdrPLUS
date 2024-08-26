@@ -11,6 +11,18 @@
 #
 
 class TpsArmsRssm < ApplicationRecord
+  attr_accessor :is_amoeba_copy
+
+  amoeba do
+    enable
+
+    customize(lambda { |_, copy|
+      copy.is_amoeba_copy = true
+    })
+  end
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
+
   belongs_to :extractions_extraction_forms_projects_sections_type1
   belongs_to :result_statistic_sections_measure
   belongs_to :timepoint,
@@ -55,5 +67,13 @@ class TpsArmsRssm < ApplicationRecord
 
   def measure_name
     result_statistic_sections_measure.measure.name
+  end
+
+  private
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    # Placeholder for debugging. No corrections needed.
   end
 end

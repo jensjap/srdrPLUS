@@ -1,13 +1,23 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
   extractions_extraction_forms_projects_sections_question_row_column_field: one
   question_row_columns_question_row_column_option: one
-#  deleted_at:
-#  active: true
 
 two:
   extractions_extraction_forms_projects_sections_question_row_column_field: two
   question_row_columns_question_row_column_option: two
-#  deleted_at:
-#  active: true
+
+three:
+  extractions_extraction_forms_projects_sections_question_row_column_field: three
+  question_row_columns_question_row_column_option: five
+
+four:
+  extractions_extraction_forms_projects_sections_question_row_column_field: three
+  question_row_columns_question_row_column_option: six
+
+five:
+  extractions_extraction_forms_projects_sections_question_row_column_field: four
+  question_row_columns_question_row_column_option: five
+
+six:
+  extractions_extraction_forms_projects_sections_question_row_column_field: four
+  question_row_columns_question_row_column_option: six

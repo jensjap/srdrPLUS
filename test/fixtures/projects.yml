@@ -30,3 +30,6 @@ three:
   notes: MyText
   funding_source: MyString
 
+copy_project_original:
+  name: Amoeba Test Project
+  description: Original of the project to be copied using amoeba gem

@@ -14,6 +14,9 @@ class Section < ApplicationRecord
   include SharedSuggestableMethods
 
   scope :default_sections, -> { where(default: true) }
+  scope :e_ordered_default_sections, -> {
+    where(default: true).order(Arel.sql("CASE WHEN name = 'Risk of Bias Assessment' THEN 1 ELSE 0 END, id"))
+  }
 
   after_create :record_suggestor
 

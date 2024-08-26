@@ -4,28 +4,72 @@ one:
   extraction_forms_project: one
   extraction_forms_projects_section_type_id: 2
   section: one
-#  active: true
 
 two:
   extraction_forms_project: one
   extraction_forms_projects_section_type: two
   section: two
-#  active: true
 
 three:
   extraction_forms_project: one
   extraction_forms_projects_section_type: three
   section: three
-#  active: true
 
 four:
   extraction_forms_project: one
   extraction_forms_projects_section_type: four
   section: four
-#  active: true
 
 five:
   extraction_forms_project: one
   extraction_forms_projects_section_type: one
   section: five
-#  active: true
+
+six:
+  extraction_forms_project: one
+  link_to_type1: five
+  extraction_forms_projects_section_type: two
+  section: six
+
+amoeba_efps_design_details:
+  extraction_forms_project: amoeba_efp_standard
+  extraction_forms_projects_section_type: two
+  section: design_details
+
+amoeba_efps_arms:
+  extraction_forms_project: amoeba_efp_standard
+  extraction_forms_projects_section_type: one
+  section: one
+
+amoeba_efps_arm_details:
+  extraction_forms_project: amoeba_efp_standard
+  extraction_forms_projects_section_type: two
+  link_to_type1: amoeba_efps_arms
+  section: two
+
+amoeba_efps_sample_characteristics:
+  extraction_forms_project: amoeba_efp_standard
+  extraction_forms_projects_section_type: two
+  link_to_type1: amoeba_efps_arms
+  section: sample_characteristics
+
+amoeba_efps_outcomes:
+  extraction_forms_project: amoeba_efp_standard
+  extraction_forms_projects_section_type: one
+  section: five
+
+amoeba_efps_outcome_details:
+  extraction_forms_project: amoeba_efp_standard
+  extraction_forms_projects_section_type: two
+  link_to_type1: amoeba_efps_outcomes
+  section: six
+
+amoeba_efps_results:
+  extraction_forms_project: amoeba_efp_standard
+  extraction_forms_projects_section_type: three
+  section: three
+
+amoeba_efps_risk_of_bias_assessment:
+  extraction_forms_project: amoeba_efp_standard
+  extraction_forms_projects_section_type: two
+  section: risk_of_bias_assessment

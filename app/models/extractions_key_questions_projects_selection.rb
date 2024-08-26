@@ -9,13 +9,28 @@
 #  updated_at               :datetime         not null
 #
 class ExtractionsKeyQuestionsProjectsSelection < ApplicationRecord
-  scope :not_disqualified,
-        lambda {
-          joins(extraction: :citations_project)
-            .where
-            .not(citations_project: { screening_status: CitationsProject::REJECTED })
-        }
+  attr_accessor :is_amoeba_copy
+
+  amoeba do
+    customize(lambda { |_, copy|
+      copy.is_amoeba_copy = true
+    })
+  end
+
+  before_commit :correct_parent_associations
 
   belongs_to :extraction
   belongs_to :key_questions_project
+
+  private
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    correct_kqs_association
+  end
+
+  def correct_kqs_association
+    update(key_questions_project: extraction.project.key_questions_projects.find_by(key_question: key_questions_project.key_question))
+  end
 end

@@ -33,6 +33,10 @@ class CitationsProject < ApplicationRecord
   scope :not_disqualified,
         -> { where.not(screening_status: CitationsProject::REJECTED) }
 
+  amoeba do
+    set screening_status: 'asu'
+  end
+
   belongs_to :citation, inverse_of: :citations_projects
   belongs_to :project, inverse_of: :citations_projects # , touch: true
 
@@ -221,6 +225,8 @@ class CitationsProject < ApplicationRecord
   end
 
   def evaluate_screening_status
+    return if destroyed?
+
     consolidated_extraction = Extraction.includes(extractions_extraction_forms_projects_sections: :status).where(
       citations_project: self, consolidated: true
     ).first

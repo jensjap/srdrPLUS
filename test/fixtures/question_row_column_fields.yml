@@ -3,9 +3,15 @@
 one:
   question_row_column: one
   name: MyString
-#  deleted_at:
 
 two:
   question_row_column: two
   name: MyString
-#  deleted_at:
+
+three:
+  question_row_column: three
+  name: amoeba original 1
+
+four:
+  question_row_column: four
+  name: amoeba original 2

@@ -1,8 +1,10 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
+  name: Primary
 
 two:
-  name: MyString
+  name: Secondary
 
+three:
+  name: Abstrackr

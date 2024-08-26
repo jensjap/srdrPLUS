@@ -12,14 +12,26 @@
 #
 
 class Question < ApplicationRecord
-  default_scope { order(:pos, :id) }
-
   include SharedSuggestableMethods
 
-  attr_accessor :skip_callbacks
+  attr_accessor :skip_callbacks, :is_amoeba_copy
+
+  default_scope { order(:pos, :id) }
+
+  amoeba do
+    exclude_association :dependencies
+
+    customize(lambda { |_, copy|
+      copy.skip_callbacks = true
+      copy.is_amoeba_copy = true
+    })
+  end
 
   after_create :create_default_question_row, unless: :skip_callbacks
-  after_create :associate_kqs
+  after_create :associate_kqs, unless: :is_amoeba_copy
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
+
   after_save :ensure_matrix_column_headers, unless: :skip_callbacks
 
   belongs_to :extraction_forms_projects_section, inverse_of: :questions
@@ -38,16 +50,6 @@ class Question < ApplicationRecord
   delegate :extraction_forms_project, to: :extraction_forms_projects_section
   delegate :project,                  to: :extraction_forms_project
   delegate :section,                  to: :extraction_forms_projects_section
-
-  amoeba do
-    enable
-    exclude_association :dependencies
-    exclude_association :key_questions_projects_questions
-
-    customize(lambda { |_original, cloned|
-      cloned.skip_callbacks = true
-    })
-  end
 
   # Returns the question type based on how many how many rows/columns/answer choices the question has.
   def question_type
@@ -82,40 +84,9 @@ class Question < ApplicationRecord
       duplicated_question = amoeba_dup
       duplicated_question.save
     end
-    question_rows.each_with_index do |question_row, question_row_index|
-      question_row.question_row_columns.each_with_index do |question_row_column, question_row_column_index|
-        duplicated_qrc = duplicated_question.question_rows[question_row_index].question_row_columns[question_row_column_index]
 
-        case question_row_column.question_row_column_type_id
-        when 2
-          numeric_qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_by(
-            question_row_column:,
-            question_row_column_option_id: 4
-          )
-          allow_equality = numeric_qrcqrco.name
+    clone_question_options_and_followup_fields(self, duplicated_question)
 
-          duplicated_qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_by(
-            question_row_column: duplicated_qrc,
-            question_row_column_option_id: 4
-          )
-          duplicated_qrcqrco.update(name: allow_equality)
-        when 5, 7
-          QuestionRowColumnsQuestionRowColumnOption
-            .where(question_row_column:,
-                   question_row_column_option_id: 1).each_with_index do |multiplechoice_qrcqrco, qrcqrco_index|
-            duplicated_qrcqrco = QuestionRowColumnsQuestionRowColumnOption.where(
-              question_row_column: duplicated_qrc,
-              question_row_column_option_id: 1
-            )[qrcqrco_index]
-            if multiplechoice_qrcqrco.followup_field.present?
-              FollowupField.find_or_create_by(question_row_columns_question_row_column_option: duplicated_qrcqrco)
-            else
-              FollowupField.find_by(question_row_columns_question_row_column_option: duplicated_qrcqrco)&.destroy
-            end
-          end
-        end
-      end
-    end
     duplicated_question
   end
 
@@ -150,5 +121,48 @@ class Question < ApplicationRecord
         rc.update(name: column_headers[idx])
       end
     end
+  end
+
+  def clone_question_options_and_followup_fields(original_question, duplicated_question)
+    original_question.question_rows.each_with_index do |question_row, question_row_index|
+      question_row.question_row_columns.each_with_index do |question_row_column, question_row_column_index|
+        duplicated_qrc = duplicated_question.question_rows[question_row_index].question_row_columns[question_row_column_index]
+
+        case question_row_column.question_row_column_type_id
+        when 2
+          numeric_qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_by(
+            question_row_column:,
+            question_row_column_option_id: 4
+          )
+          allow_equality = numeric_qrcqrco.name
+
+          duplicated_qrcqrco = QuestionRowColumnsQuestionRowColumnOption.find_by(
+            question_row_column: duplicated_qrc,
+            question_row_column_option_id: 4
+          )
+          duplicated_qrcqrco.update(name: allow_equality)
+        when 5, 7
+          QuestionRowColumnsQuestionRowColumnOption
+            .where(question_row_column:,
+                   question_row_column_option_id: 1).each_with_index do |multiplechoice_qrcqrco, qrcqrco_index|
+            duplicated_qrcqrco = QuestionRowColumnsQuestionRowColumnOption.where(
+              question_row_column: duplicated_qrc,
+              question_row_column_option_id: 1
+            )[qrcqrco_index]
+            if multiplechoice_qrcqrco.followup_field.present?
+              FollowupField.find_or_create_by(question_row_columns_question_row_column_option: duplicated_qrcqrco)
+            else
+              FollowupField.find_by(question_row_columns_question_row_column_option: duplicated_qrcqrco)&.destroy
+            end
+          end
+        end
+      end
+    end
+  end
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    # Placeholder for debugging. No corrections needed.
   end
 end

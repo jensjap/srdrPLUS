@@ -10,9 +10,20 @@
 #
 
 class QuestionRow < ApplicationRecord
-  attr_accessor :skip_callbacks
+  attr_accessor :skip_callbacks, :is_amoeba_copy
+
+  amoeba do
+    enable
+
+    customize(lambda { |_, copy|
+      copy.skip_callbacks = true
+      copy.is_amoeba_copy = true
+    })
+  end
 
   after_create :create_default_question_row_columns, unless: :skip_callbacks
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   belongs_to :question, inverse_of: :question_rows
 
@@ -22,13 +33,6 @@ class QuestionRow < ApplicationRecord
 
   delegate :project, to: :question
   delegate :question_type, to: :question
-
-  amoeba do
-    enable
-    customize(lambda { |_original, cloned|
-      cloned.skip_callbacks = true
-    })
-  end
 
   def duplicate
     duplicated_question_row = nil
@@ -108,5 +112,11 @@ class QuestionRow < ApplicationRecord
     #   # This triggers after_save :ensure_matrix_column_headers callback in
     #   # question model to set the name field.
     #   question.save
+  end
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    # Placeholder for debugging. No corrections needed.
   end
 end

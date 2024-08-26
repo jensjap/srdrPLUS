@@ -10,3 +10,62 @@ two:
   by_type1: false
   include_total: false
 
+three:
+  extraction_forms_projects_section: three
+  by_type1: false
+  include_total: false
+
+four:
+  extraction_forms_projects_section: four
+  by_type1: false
+  include_total: false
+
+five:
+  extraction_forms_projects_section: five
+  by_type1: false
+  include_total: false
+
+six:
+  extraction_forms_projects_section: six
+  by_type1: false
+  include_total: false
+
+amoeba_efps_design_details_option:
+  extraction_forms_projects_section: amoeba_efps_design_details
+  by_type1: false
+  include_total: false
+
+amoeba_efps_arms_option:
+  extraction_forms_projects_section: amoeba_efps_arms
+  by_type1: nil
+  include_total: nil
+
+amoeba_efps_arm_details_option:
+  extraction_forms_projects_section: amoeba_efps_arm_details
+  by_type1: true
+  include_total: false
+
+amoeba_efps_sample_characteristics_option:
+  extraction_forms_projects_section: amoeba_efps_sample_characteristics
+  by_type1: true
+  include_total: true
+
+amoeba_efps_outcomes_option:
+  extraction_forms_projects_section: amoeba_efps_outcomes
+  by_type1: nil
+  include_total: nil
+
+amoeba_efps_outcome_details_option:
+  extraction_forms_projects_section: amoeba_efps_outcome_details
+  by_type1: true
+  include_total: false
+
+amoeba_efps_results_option:
+  extraction_forms_projects_section: amoeba_efps_results
+  by_type1: nil
+  include_total: nil
+
+amoeba_efps_risk_of_bias_assessment_option:
+  extraction_forms_projects_section: amoeba_efps_risk_of_bias_assessment
+  by_type1: false
+  include_total: false

@@ -1,3 +1,5 @@
 one:
+  abstract_screening: one
   citations_project: one
   user: one
+  label: 1
