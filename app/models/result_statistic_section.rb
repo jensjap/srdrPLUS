@@ -10,10 +10,14 @@
 #
 
 class ResultStatisticSection < ApplicationRecord
-  attr_accessor :comparison_type
+  attr_accessor :comparison_type, :is_amoeba_copy
 
   scope :standard_type_rsss, -> { where(result_statistic_section_type_id: [1, 2, 3, 4]) }
   scope :diagnostic_test_type_rsss, -> { where(result_statistic_section_type_id: [5, 6, 7, 8]) }
+
+  amoeba do
+    
+  end
 
   after_create :create_default_measures
 
