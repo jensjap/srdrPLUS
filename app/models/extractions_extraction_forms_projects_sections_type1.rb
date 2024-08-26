@@ -53,6 +53,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   amoeba do
     exclude_association :extractions_extraction_forms_projects_sections_question_row_column_fields
     exclude_association :extractions_extraction_forms_projects_sections_followup_fields
+    exclude_association :tps_arms_rssms
 
     customize(lambda { |_, copy|
       copy.is_amoeba_copy = true
