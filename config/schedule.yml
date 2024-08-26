@@ -18,11 +18,16 @@
 #  queue: default
 
 searchkick_reindex:
- cron: "0 1 * * *" # execute at 1am every day
- class: "SearchkickReindexJob"
- queue: low
+  cron: "0 1 * * *" # execute at 1am every day
+  class: "SearchkickReindexJob"
+  queue: low
 
 auto_training_job:
   cron: "0 3 * * *" # execute at 3am every day
   class: "AutoTrainingJob"
+  queue: default
+
+send_extraction_report_job:
+  cron: "0 5 * * *" # execute at 5am every day
+  class: "SendExtractionReportJob"
   queue: default
