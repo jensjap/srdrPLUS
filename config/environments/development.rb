@@ -1,7 +1,8 @@
 Rails.application.configure do
   config.hosts = [
-    "vadrr.org",
-    "www.vadrr.org"   # Allow this to be addressed when running in containers via docker-compose.yml.
+    'vadrr.org',
+    'www.vadrr.org',
+    'localhost:3000'   # Allow this to be addressed when running in containers via docker-compose.yml.
   ]
   # config.after_initialize do
   #   Bullet.enable = true
