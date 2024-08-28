@@ -39,10 +39,6 @@ class ExtractionsController < ApplicationController
   def reassign_extraction
     authorize(@extraction)
     @nav_buttons.push('extractions', 'my_projects')
-  end
-
-  def reassign_extraction
-    @nav_buttons.push('extractions', 'my_projects')
     @extraction = Extraction.find(params[:id])
   end
 
