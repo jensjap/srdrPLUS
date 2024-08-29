@@ -1,0 +1,102 @@
+<script src="/echarts.min.js"></script>
+<div x-data="projectStatus">
+  <div class="flex flex-col lg:flex-row">
+    <div class="grow basis-0">
+      <h1 class="text-xl font-bold">Extraction Activities</h1>
+      <div id="logChart" style="width: auto; height: 400px"></div>
+    </div>
+    <div class="grow basis-0">
+      <h1 class="text-xl font-bold">Extraction Approval Durations</h1>
+      <div id="extractionKPIChart" style="width: auto; height: 400px"></div>
+    </div>
+  </div>
+  <div class="mb-2">
+    <h1 class="text-xl font-bold">Logs</h1>
+    <div class="max-h-32 overflow-auto text-xs text-gray-500 border rounded-md">
+      <template x-for="log in projectStatus.logs">
+        <div x-text="log"></div> </template
+      >cbvcvbcbv
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener("alpine:init", () => {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+    };
+    Alpine.data("projectStatus", () => ({
+      projectStatus: {},
+
+      async init() {
+        await this.getProjectStatus();
+        this.generateChart();
+      },
+
+      async getProjectStatus() {
+        const url = new URL(window.location.href);
+        const id = url.pathname.split("/")[2];
+        const response = await fetch(`/projects/${id}/status`, {
+          method: "GET",
+          headers,
+        });
+        const data = await response.json();
+        this.projectStatus = data;
+      },
+
+      generateChart() {
+        const pieChart = echarts.init(
+          document.getElementById("extractionKPIChart")
+        );
+        const data = this.projectStatus.extraction_kpis;
+        const option = {
+          tooltip: {
+            trigger: "item",
+          },
+          legend: {
+            orient: "vertical",
+            left: "left",
+          },
+          series: [
+            {
+              name: "Time to Approval",
+              type: "pie",
+              radius: "50%",
+              data,
+            },
+          ],
+        };
+        pieChart.setOption(option);
+        const barChart = echarts.init(document.getElementById("logChart"));
+        const series = this.projectStatus.extraction_activities;
+        const option2 = {
+          tooltip: {
+            trigger: "axis",
+          },
+          legend: {},
+          xAxis: [
+            {
+              type: "category",
+              data: [
+                "4 weeks ago",
+                "3 weeks ago",
+                "2 weeks ago",
+                "last week",
+                "this week",
+              ],
+            },
+          ],
+          yAxis: [
+            {
+              type: "value",
+            },
+          ],
+          series,
+        };
+        barChart.setOption(option2);
+      },
+    }));
+  });
+</script>

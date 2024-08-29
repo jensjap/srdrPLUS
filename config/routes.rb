@@ -239,6 +239,7 @@ Rails.application.routes.draw do
 
     get 'citation_lifecycle_management', to: 'abstract_screenings#citation_lifecycle_management'
     get 'kpis', to: 'abstract_screenings#kpis'
+    get 'status', to: 'projects#status'
     post 'export_screening_data', to: 'abstract_screenings#export_screening_data'
 
     resources :abstract_screenings do

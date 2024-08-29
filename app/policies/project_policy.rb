@@ -181,6 +181,10 @@ class ProjectPolicy < ApplicationPolicy
     project_contributor?
   end
 
+  def status?
+    part_of_project?
+  end
+
   def permitted_attributes
     if project_leader?
       FULL_PARAMS
