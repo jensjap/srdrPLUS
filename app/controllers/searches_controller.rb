@@ -3,20 +3,30 @@ class SearchesController < ApplicationController
   skip_before_action :authenticate_user!
 
   ACCEPTABLE_SEARCH_KEYS = %w[
-    name description attribution authors_of_report
-    methodology_description prospero doi notes funding_source
-    refman pmid abstract
-  ]
+    name
+    description
+    attribution
+    authors_of_report
+    methodology_description
+    prospero
+    doi
+    notes
+    funding_source
+    refman
+    pmid
+    abstract
+  ].freeze
 
   def index
     @nav_buttons.push('search')
     @accepted_param_values = []
     search_fields = []
 
-    search_params = params[:general_search] || params[:projects_search] || params[:citations_search] || []
-    search_params.each do |k, v|
+    search_criteria = search_params[:general_search] || search_params[:projects_search] || search_params[:citations_search] || []
+    search_criteria.each do |k, v|
       if ACCEPTABLE_SEARCH_KEYS.include?(k) && v.present?
-        @accepted_param_values << v
+        sanitized_value = ActiveRecord::Base.sanitize_sql_like(v)
+        @accepted_param_values << sanitized_value
         search_fields << k
       end
     end
@@ -31,7 +41,7 @@ class SearchesController < ApplicationController
     elsif params[:projects_search]
       project_ids = Project.search(
         @accepted_param_values.join(' '),
-        where: { created_at: time_filter },
+        where: time_filter,
         fields: search_fields
       ).pluck(:id)
       process_project_search_results(project_ids)
@@ -43,6 +53,14 @@ class SearchesController < ApplicationController
   end
 
   private
+
+  def search_params
+    params.permit(
+      general_search: ACCEPTABLE_SEARCH_KEYS,
+      projects_search: ACCEPTABLE_SEARCH_KEYS + [:after, :before, :member, :arm, :outcome],
+      citations_search: ACCEPTABLE_SEARCH_KEYS
+    )
+  end
 
   def process_project_search_results(project_ids)
     @projects = Project.where(id: project_ids).to_a
@@ -58,19 +76,16 @@ class SearchesController < ApplicationController
   end
 
   def time_filter
-    if params[:projects_search][:after].present?
-      { gte: params[:projects_search][:after] }
-    elsif params[:projects_search][:before].present?
-      { lte: params[:projects_search][:before] }
-    else
-      {}
-    end
+    after = params.dig(:projects_search, :after)
+    before = params.dig(:projects_search, :before)
+    filters = {}
+    filters[:created_at] = { gte: after } if after.present?
+    filters[:created_at] = { lte: before } if before.present?
+    filters
   end
 
   def ensure_project_results_are_public
-    @projects = Project
-                .published
-                .where(id: @projects.pluck(:id))
+    @projects = Project.published.where(id: @projects.pluck(:id))
   end
 
   def ensure_citation_results_are_public
@@ -79,28 +94,32 @@ class SearchesController < ApplicationController
   end
 
   def apply_more_advanced_filters
-    member = params.dig(:projects_search, :member)
-    if member.present?
-      @projects = Project.joins(projects_users: { user: :profile })
-                         .where(id: @projects.pluck(:id))
-                         .where('profiles.username LIKE ?', "%#{member}%")
-                         .distinct
-    end
+    apply_member_filter if params.dig(:projects_search, :member).present?
+    apply_arm_filter if params.dig(:projects_search, :arm).present?
+    apply_outcome_filter if params.dig(:projects_search, :outcome).present?
+  end
 
-    arm = params.dig(:projects_search, :arm)
-    if arm.present?
-      @projects = Project.joins(extractions: { extractions_extraction_forms_projects_sections: :type1s })
-                         .where('type1s.name = ?', arm)
-                         .where(id: @projects.pluck(:id))
-                         .distinct
-    end
+  def apply_member_filter
+    member = ActiveRecord::Base.sanitize_sql_like(params[:projects_search][:member])
+    @projects = Project.joins(projects_users: { user: :profile })
+                       .where(id: @projects.pluck(:id))
+                       .where('profiles.username LIKE ?', "%#{member}%")
+                       .distinct
+  end
 
-    outcome = params.dig(:projects_search, :outcome)
-    if outcome.present?
-      @projects = Project.joins(extractions: { extractions_extraction_forms_projects_sections: :type1s })
-                         .where('type1s.name = ?', outcome)
-                         .where(id: @projects.pluck(:id))
-                         .distinct
-    end
+  def apply_arm_filter
+    arm = ActiveRecord::Base.sanitize_sql_like(params[:projects_search][:arm])
+    @projects = Project.joins(extractions: { extractions_extraction_forms_projects_sections: :type1s })
+                       .where('type1s.name = ?', arm)
+                       .where(id: @projects.pluck(:id))
+                       .distinct
+  end
+
+  def apply_outcome_filter
+    outcome = ActiveRecord::Base.sanitize_sql_like(params[:projects_search][:outcome])
+    @projects = Project.joins(extractions: { extractions_extraction_forms_projects_sections: :type1s })
+                       .where('type1s.name = ?', outcome)
+                       .where(id: @projects.pluck(:id))
+                       .distinct
   end
 end
