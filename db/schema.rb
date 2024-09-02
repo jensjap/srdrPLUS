@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
 ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
-=======
-ActiveRecord::Schema[7.0].define(version: 2024_08_20_000000) do
->>>>>>> d1f5d7a02e194bbca44c56f453956be560c1207e
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -24,7 +20,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_20_000000) do
     t.index ["profile_id"], name: "index_abstrackr_settings_on_profile_id"
   end
 
-  create_table "abstract_screening_distributions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "abstract_screening_distributions", charset: "utf8", force: :cascade do |t|
     t.bigint "abstract_screening_id", null: false
     t.integer "user_id", null: false
     t.integer "citations_project_id", null: false
@@ -552,7 +548,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_20_000000) do
     t.index ["project_id"], name: "index_exported_items_on_project_id"
   end
 
-  create_table "external_service_providers", charset: "utf8", force: :cascade do |t|
+  create_table "external_service_providers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.string "url"
@@ -560,7 +556,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_20_000000) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "external_service_providers_projects_users", charset: "utf8", force: :cascade do |t|
+  create_table "external_service_providers_projects_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "external_service_provider_id", null: false
     t.integer "project_id", null: false
     t.integer "user_id", null: false
@@ -774,7 +770,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_20_000000) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "fulltext_screening_distributions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "fulltext_screening_distributions", charset: "utf8", force: :cascade do |t|
     t.bigint "fulltext_screening_id", null: false
     t.integer "user_id", null: false
     t.integer "citations_project_id", null: false
@@ -2047,7 +2043,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_20_000000) do
     t.index ["team_type_id"], name: "index_teams_on_team_type_id"
   end
 
-  create_table "temp_citations_projects_creators", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "temp_citations_projects_creators", charset: "utf8", force: :cascade do |t|
     t.integer "citations_project_id"
     t.integer "creator_id"
     t.index ["citations_project_id"], name: "index_temp_citations_projects_creators_on_citations_project_id"
@@ -2267,13 +2263,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_20_000000) do
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "extractions_extraction_forms_projects_sections"
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "type1_types"
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "type1s"
-<<<<<<< HEAD
   add_foreign_key "followup_fields", "followup_fields"
-=======
   add_foreign_key "fulltext_screening_distributions", "citations_projects"
   add_foreign_key "fulltext_screening_distributions", "fulltext_screenings"
   add_foreign_key "fulltext_screening_distributions", "users"
->>>>>>> d1f5d7a02e194bbca44c56f453956be560c1207e
   add_foreign_key "funding_sources_sd_meta_data", "funding_sources"
   add_foreign_key "funding_sources_sd_meta_data", "sd_meta_data"
   add_foreign_key "imported_files", "file_types"
