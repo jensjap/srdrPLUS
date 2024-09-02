@@ -9,7 +9,8 @@ class PubmedImportJob < ApplicationJob
 
     Rails.logger.debug "#{self.class.name}: I'm performing my job with arguments: #{args.inspect}"
     @imported_file = ImportedFile.find(args.first)
-    import_citations_from_pubmed_file @imported_file
+    user_id = args[1]
+    import_citations_from_pubmed_file(@imported_file, user_id)
     ImportMailer.notify_import_completion(@imported_file.id).deliver_later
   rescue StandardError => e
     ImportMailer.notify_import_failure(@imported_file.id, e.message).deliver_later
