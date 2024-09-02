@@ -31,6 +31,11 @@ class AbstractScreeningsController < ApplicationController
       return
     end
 
+    if params[:creator_ids].blank? || params[:dates].blank? || params[:import_types].blank?
+      render json: { filtered_citation_ids: [], filtered_citations_count: 0 }
+      return
+    end
+
     if params[:creator_ids].present?
       service = service.filter_by_creators(creator_ids: params[:creator_ids])
     end
