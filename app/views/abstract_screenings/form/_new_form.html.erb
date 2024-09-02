@@ -31,54 +31,86 @@
               @input="validateCitationCount"
               class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             >
-            <div x-show="citationCountInvalid" class="text-red-500 text-sm mt-2">
-              The number cannot exceed the filtered citations count or be less than 1.
+            <div class="h-6 mt-2"> <!-- Add a fixed height to reserve space -->
+              <div 
+                x-show="citationCountInvalid"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-300"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="text-red-500 text-sm"
+              >
+                The number cannot exceed the filtered citations count or be less than 1.
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Filters -->
-        <div class="flex space-x-4">
-          <!-- Creator Filter -->
-          <div class="w-1/3">
-            <label class="block text-sm font-medium">Select Creators: <i class='fi-info text-blue-700 text-lg' title='Mutually Exclusive'></i></label>
-            <div class="mt-2 max-h-32 overflow-y-auto space-y-2 border border-gray-300 p-2">
-              <template x-for="creator in all_creators" :key="creator.id">
-                <div>
-                  <input type="checkbox" x-model="filters.creator_ids" :value="creator.id" :id="'creator-' + creator.id" @change="applyFilters">
-                  <label :for="'creator-' + creator.id" x-text="creator.handle"></label>
+        <!-- Filters Table -->
+        <table class="w-full border-collapse">
+          <tbody>
+            <tr>
+              <!-- Creator Filter -->
+              <td class="border p-2 w-1/3">
+                <label class="block text-sm font-medium">Select Creators: <i class='fi-info text-blue-700 text-lg' title='Mutually Exclusive'></i></label>
+                <div class="mt-2 border border-gray-300 p-2">
+                  <div class="mb-2">
+                    <input type="checkbox" id="select-all-creators" @click="toggleAll('creator_ids', $event.target.checked)" checked>
+                    <label for="select-all-creators" class="font-medium">Select All</label>
+                  </div>
+                  <div class="max-h-32 overflow-y-auto space-y-2">
+                    <template x-for="creator in all_creators" :key="creator.id">
+                      <div>
+                        <input type="checkbox" x-model="filters.creator_ids" :value="creator.id" :id="'creator-' + creator.id" @change="applyFilters" checked>
+                        <label :for="'creator-' + creator.id" x-text="creator.handle"></label>
+                      </div>
+                    </template>
+                  </div>
                 </div>
-              </template>
-            </div>
-          </div>
+              </td>
 
-          <!-- Date Filter -->
-          <div class="w-1/3">
-            <label class="block text-sm font-medium">Select Import Dates: <i class='fi-info text-blue-700 text-lg' title='Mutually Exclusive'></i></label>
-            <div class="mt-2 max-h-32 overflow-y-auto space-y-2 border border-gray-300 p-2">
-              <template x-for="date in all_created_dates" :key="date">
-                <div>
-                  <input type="checkbox" x-model="filters.dates" :value="date" :id="'date-' + date" @change="applyFilters">
-                  <label :for="'date-' + date" x-text="formatDate(date)"></label>
+              <!-- Date Filter -->
+              <td class="border p-2 w-1/3">
+                <label class="block text-sm font-medium">Select Import Dates: <i class='fi-info text-blue-700 text-lg' title='Mutually Exclusive'></i></label>
+                <div class="mt-2 border border-gray-300 p-2">
+                  <div class="mb-2">
+                    <input type="checkbox" id="select-all-dates" @click="toggleAll('dates', $event.target.checked)" checked>
+                    <label for="select-all-dates" class="font-medium">Select All</label>
+                  </div>
+                  <div class="max-h-32 overflow-y-auto space-y-2">
+                    <template x-for="date in all_created_dates" :key="date">
+                      <div>
+                        <input type="checkbox" x-model="filters.dates" :value="date" :id="'date-' + date" @change="applyFilters" checked>
+                        <label :for="'date-' + date" x-text="formatDate(date)"></label>
+                      </div>
+                    </template>
+                  </div>
                 </div>
-              </template>
-            </div>
-          </div>
+              </td>
 
-          <!-- Import Type Filter -->
-          <div class="w-1/3">
-            <label class="block text-sm font-medium">Select Import Types: <i class='fi-info text-blue-700 text-lg' title='Mutually Exclusive'></i></label>
-            <div class="mt-2 max-h-32 overflow-y-auto space-y-2 border border-gray-300 p-2">
-              <template x-for="import_type in all_import_types" :key="import_type">
-                <div>
-                  <input type="checkbox" x-model="filters.import_types" :value="import_type" :id="'import_type-' + import_type" @change="applyFilters">
-                  <label :for="'import_type-' + import_type" x-text="import_type"></label>
+              <!-- Import Type Filter -->
+              <td class="border p-2 w-1/3">
+                <label class="block text-sm font-medium">Select Import Types: <i class='fi-info text-blue-700 text-lg' title='Mutually Exclusive'></i></label>
+                <div class="mt-2 border border-gray-300 p-2">
+                  <div class="mb-2">
+                    <input type="checkbox" id="select-all-import-types" @click="toggleAll('import_types', $event.target.checked)" checked>
+                    <label for="select-all-import-types" class="font-medium">Select All</label>
+                  </div>
+                  <div class="max-h-32 overflow-y-auto space-y-2">
+                    <template x-for="import_type in all_import_types" :key="import_type">
+                      <div>
+                        <input type="checkbox" x-model="filters.import_types" :value="import_type" :id="'import_type-' + import_type" @change="applyFilters" checked>
+                        <label :for="'import_type-' + import_type" x-text="import_type"></label>
+                      </div>
+                    </template>
+                  </div>
                 </div>
-              </template>
-            </div>
-          </div>
-        </div>
-
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   <% end %>
@@ -747,6 +779,17 @@
         } else {
           this.selectedCitations = [];
         }
+      },
+
+      toggleAll(filterType, checked) {
+        if (filterType === 'creator_ids') {
+          this.filters.creator_ids = checked ? this.all_creators.map(c => c.id) : [];
+        } else if (filterType === 'dates') {
+          this.filters.dates = checked ? this.all_created_dates : [];
+        } else if (filterType === 'import_types') {
+          this.filters.import_types = checked ? this.all_import_types : [];
+        }
+        this.applyFilters();
       }
     }));
   });
