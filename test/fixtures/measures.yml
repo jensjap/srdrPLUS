@@ -1,9 +1,11 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
   name: MyString
-#  deleted_at:
 
 two:
   name: MyString
-#  deleted_at:
+
+measure_one_amoeba_copy:
+  name: 'Measure one found in amoeba copy extraction one'
+
+measure_two_amoeba_copy:
+  name: 'Measure two found in amoeba copy extraction one'

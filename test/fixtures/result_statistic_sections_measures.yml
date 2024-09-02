@@ -1,13 +1,16 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
   measure: one
   result_statistic_section: one
-#  deleted_at:
-#  active: true
 
 two:
   measure: two
   result_statistic_section: two
-#  deleted_at:
-#  active: true
+
+rssm_amoeba_copy_one:
+  measure: measure_one_amoeba_copy
+  result_statistic_section: three
+
+rssm_amoeba_copy_two:
+  measure: measure_two_amoeba_copy
+  result_statistic_section: three
+  provider_measure: rssm_amoeba_copy_one

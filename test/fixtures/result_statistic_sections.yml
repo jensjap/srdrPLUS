@@ -1,11 +1,11 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 one:
-  result_statistic_section_type: one
   population: one
-#  deleted_at:
+  result_statistic_section_type: one
 
 two:
-  result_statistic_section_type: two
   population: two
-#  deleted_at:
+  result_statistic_section_type: two
+
+three:
+  population: three
+  result_statistic_section_type: one

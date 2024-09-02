@@ -12,9 +12,21 @@
 #
 
 class ResultStatisticSectionsMeasure < ApplicationRecord
+  attr_accessor :is_amoeba_copy
+
   default_scope { order(:pos, :id) }
 
+  amoeba do
+    exclude_association :dependent_measures
+
+    customize(lambda { |_, copy|
+      copy.is_amoeba_copy = true
+    })
+  end
+
   after_commit :set_extraction_stale, on: %i[create update destroy]
+
+  before_commit :correct_parent_associations
 
   belongs_to :measure,                  inverse_of: :result_statistic_sections_measures
   belongs_to :result_statistic_section, inverse_of: :result_statistic_sections_measures
@@ -41,5 +53,23 @@ class ResultStatisticSectionsMeasure < ApplicationRecord
 
   def set_extraction_stale
     extraction.extraction_checksum&.update(is_stale: true) unless extraction.nil?
+  end
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    correct_provider_measure
+  end
+
+  def correct_provider_measure
+    return unless self.provider_measure.present?
+
+    rssms = ResultStatisticSectionsMeasure.where(
+      result_statistic_section:,
+      measure: self.provider_measure.measure
+    )
+    raise unless rssms.size.eql?(1)
+
+    self.update(provider_measure: rssms[0])
   end
 end

@@ -16,10 +16,16 @@ class ResultStatisticSection < ApplicationRecord
   scope :diagnostic_test_type_rsss, -> { where(result_statistic_section_type_id: [5, 6, 7, 8]) }
 
   amoeba do
-    
+    enable
+
+    customize(lambda { |_, copy|
+      copy.is_amoeba_copy = true
+    })
   end
 
   after_create :create_default_measures
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   belongs_to :result_statistic_section_type,
              inverse_of: :result_statistic_sections
@@ -111,7 +117,13 @@ class ResultStatisticSection < ApplicationRecord
       type1_type: population.extractions_extraction_forms_projects_sections_type1.type1_type,
       default: true
     ).each do |rsstm|
-      result_statistic_sections_measures.create(measure: rsstm.measure)
+      result_statistic_sections_measures.find_or_create_by(measure: rsstm.measure)
     end
+  end
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    # Placeholder for debugging. No corrections needed.
   end
 end
