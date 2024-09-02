@@ -41,7 +41,7 @@
         <div class="flex space-x-4">
           <!-- Creator Filter -->
           <div class="w-1/3">
-            <label class="block text-sm font-medium">Select Creators:</label>
+            <label class="block text-sm font-medium">Select Creators: <i class='fi-info text-blue-700 text-lg' title='Mutually Exclusive'></i></label>
             <div class="mt-2 max-h-32 overflow-y-auto space-y-2 border border-gray-300 p-2">
               <template x-for="creator in all_creators" :key="creator.id">
                 <div>
@@ -54,7 +54,7 @@
 
           <!-- Date Filter -->
           <div class="w-1/3">
-            <label class="block text-sm font-medium">Select Import Dates:</label>
+            <label class="block text-sm font-medium">Select Import Dates: <i class='fi-info text-blue-700 text-lg' title='Mutually Exclusive'></i></label>
             <div class="mt-2 max-h-32 overflow-y-auto space-y-2 border border-gray-300 p-2">
               <template x-for="date in all_created_dates" :key="date">
                 <div>
@@ -67,7 +67,7 @@
 
           <!-- Import Type Filter -->
           <div class="w-1/3">
-            <label class="block text-sm font-medium">Select Import Types:</label>
+            <label class="block text-sm font-medium">Select Import Types: <i class='fi-info text-blue-700 text-lg' title='Mutually Exclusive'></i></label>
             <div class="mt-2 max-h-32 overflow-y-auto space-y-2 border border-gray-300 p-2">
               <template x-for="import_type in all_import_types" :key="import_type">
                 <div>
@@ -78,6 +78,7 @@
             </div>
           </div>
         </div>
+
       </div>
     </div>
   <% end %>
@@ -649,11 +650,6 @@
       init() {
         this.initializeData();
         this.initializeFilterData();
-        this.applyFilters();
-
-        this.$nextTick(() => {
-          this.validateCitationCount();
-        });
       },
 
       async initializeData() {
@@ -690,14 +686,20 @@
           this.totalCitationsCount = data.total_citations_count;
           this.filteredCitationsCount = data.total_citations_count;
 
+          this.filters.creator_ids = this.all_creators.map(c => c.id);
+          this.filters.dates = this.all_created_dates.slice();
+          this.filters.import_types = this.all_import_types.slice();
+
+          this.applyFilters();
+
         } catch (error) {
           console.error("Unexpected error:", error);
         }
       },
 
       formatDate(date) {
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-        return new Date(date).toLocaleDateString(undefined, options);
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+        return new Date(date).toLocaleString(undefined, options);
       },
 
       async applyFilters() {
@@ -721,6 +723,7 @@
             const data = await response.json();
             this.filteredCitations = data.filtered_citation_ids;
             this.filteredCitationsCount = data.filtered_citations_count;
+            this.selectedCitationsCount = data.filtered_citations_count;
             this.validateCitationCount();
           } catch (error) {
             console.error("Unexpected error:", error);

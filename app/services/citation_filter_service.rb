@@ -17,8 +17,8 @@ class CitationFilterService
 
   def filter_by_created_dates(dates:)
     date_filters = dates.map do |date|
-      start_time = Date.parse(date).beginning_of_day.utc
-      end_time = Date.parse(date).end_of_day.utc
+      start_time = DateTime.parse(date).utc
+      end_time = start_time.end_of_hour
       CitationsProject.where(project_id: @project_id, created_at: start_time..end_time).pluck(:id)
     end.flatten.uniq
     @filters << -> { date_filters }
@@ -85,7 +85,9 @@ class CitationFilterService
   end
 
   def calculate_created_dates
-    CitationsProject.where(project_id: @project_id).distinct.pluck("DATE(created_at)").map(&:to_date)
+    CitationsProject.where(project_id: @project_id)
+                    .distinct
+                    .pluck(Arel.sql("DATE_FORMAT(created_at, '%Y-%m-%d %H:00:00')"))
   end
 
   def calculate_import_types
