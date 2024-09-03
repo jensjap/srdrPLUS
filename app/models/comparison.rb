@@ -9,16 +9,28 @@
 #
 
 class Comparison < ApplicationRecord
+  attr_accessor :is_amoeba_copy
+
+  amoeba do
+    include_association :comparate_groups
+
+    customize(lambda { |_, copy|
+      copy.is_amoeba_copy = true
+    })
+  end
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
+
   has_many :comparate_groups, inverse_of: :comparison, dependent: :destroy
   has_many :comparates, through: :comparate_groups, dependent: :destroy
 
   has_many :comparable_elements, as: :comparable, dependent: :destroy
 
   has_many :comparisons_measures, dependent: :destroy, inverse_of: :comparison
-  has_many :measures,     through: :comparisons_measures
+  has_many :measures, through: :comparisons_measures
 
-  has_many :comparisons_arms_rssms, dependent: :destroy, inverse_of: :comparison
   has_many :tps_comparisons_rssms,  dependent: :destroy, inverse_of: :comparison
+  has_many :comparisons_arms_rssms, dependent: :destroy, inverse_of: :comparison
   has_many :wacs_bacs_rssms,        dependent: :destroy, foreign_key: 'wac_id'
 
   has_many :comparisons_result_statistic_sections, dependent: :destroy, inverse_of: :comparison
@@ -108,5 +120,13 @@ class Comparison < ApplicationRecord
     end
 
     text[0..-6]
+  end
+
+  private
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    # Placeholder for debugging. No corrections needed.
   end
 end
