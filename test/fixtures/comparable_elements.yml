@@ -17,3 +17,11 @@ arm1:
 arm2:
   comparable_type: ExtractionsExtractionFormsProjectsSectionsType1
   comparable: four
+
+timepoint1:
+  comparable_type: ExtractionsExtractionFormsProjectsSectionsType1RowColumn
+  comparable: three
+
+timepoint2:
+  comparable_type: ExtractionsExtractionFormsProjectsSectionsType1RowColumn
+  comparable: four
