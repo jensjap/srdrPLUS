@@ -10,3 +10,8 @@ one:
 two:
   comparison: two
 
+amoeba_comparate_group_one:
+  comparison: amoeba_comparison_one
+
+amoeba_comparate_group_two:
+  comparison: amoeba_comparison_one

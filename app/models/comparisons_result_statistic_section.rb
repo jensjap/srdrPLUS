@@ -10,6 +10,16 @@
 #
 
 class ComparisonsResultStatisticSection < ApplicationRecord
+  attr_accessor :is_amoeba_copy
+
+  amoeba do
+    customize(lambda { |_, copy|
+      copy.is_amoeba_copy = true
+    })
+  end
+
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
+
   belongs_to :comparison
   belongs_to :result_statistic_section
 
@@ -67,5 +77,11 @@ class ComparisonsResultStatisticSection < ApplicationRecord
   def add_error_message(error_arguments, message)
     errors.add(*error_arguments, message:)
     result_statistic_section.errors.add(*error_arguments, message:)
+  end
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    # Placeholder for debugging. No corrections needed.
   end
 end

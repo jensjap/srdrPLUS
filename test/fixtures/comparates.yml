@@ -8,3 +8,10 @@ two:
   comparable_element: two
   comparate_group: two
 
+amoeba_copy_comparate_one:
+  comparable_element: arm1
+  comparate_group: amoeba_comparate_group_one
+
+amoeba_copy_comparate_two:
+  comparable_element: arm2
+  comparate_group: amoeba_comparate_group_two

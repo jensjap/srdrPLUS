@@ -9,3 +9,7 @@ two:
 three:
   population: three
   result_statistic_section_type: one
+
+four:
+  population: three
+  result_statistic_section_type: two

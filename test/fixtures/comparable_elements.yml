@@ -10,3 +10,10 @@ one: {}
 two: {}
 # column: value
 
+arm1:
+  comparable_type: ExtractionsExtractionFormsProjectsSectionsType1
+  comparable: three
+
+arm2:
+  comparable_type: ExtractionsExtractionFormsProjectsSectionsType1
+  comparable: four
