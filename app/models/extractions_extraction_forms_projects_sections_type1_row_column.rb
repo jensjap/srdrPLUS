@@ -12,13 +12,24 @@
 
 # Temporarily calling it ExtractionsExtractionFormsProjectsSectionsType1RowColumn. This is meant to be Outcome Timepoint.
 class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationRecord
+  attr_accessor :is_amoeba_copy
+
   default_scope { order(:pos, :id) }
+
+  amoeba do
+    exclude_association :tps_arms_rssms
+
+    customize(lambda { |_, copy|
+      copy.is_amoeba_copy = true
+    })
+  end
 
   after_commit :ensure_timepoints_across_populations, on: %i[create update]
   after_commit :set_extraction_stale, on: %i[create update destroy]
-
   after_destroy :remove_timepoints_across_populations
+
   before_destroy :remove_wac
+  before_commit :correct_parent_associations, if: :is_amoeba_copy
 
   belongs_to :extractions_extraction_forms_projects_sections_type1_row,
              inverse_of: :extractions_extraction_forms_projects_sections_type1_row_columns
@@ -97,5 +108,11 @@ class ExtractionsExtractionFormsProjectsSectionsType1RowColumn < ApplicationReco
 
     wac = try(:comparable_element).comparates.first.comparate_group.comparison
     wac.destroy
+  end
+
+  def correct_parent_associations
+    return unless is_amoeba_copy
+
+    # Placeholder for debugging. No corrections needed.
   end
 end
