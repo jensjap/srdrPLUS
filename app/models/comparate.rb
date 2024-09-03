@@ -21,7 +21,7 @@ class Comparate < ApplicationRecord
 
   def set_extraction_stale
     comparate_group&.comparison&.comparisons_result_statistic_sections&.each do |crss|
-      unless crss.result_statistic_section.population.extraction.nil?
+      if crss.result_statistic_section.population.extraction&.extraction_checksum&.present?
         crss.result_statistic_section.population.extraction.extraction_checksum.update(is_stale: true)
       end
     end
