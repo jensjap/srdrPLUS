@@ -235,8 +235,8 @@
       },
 
       async createRoom() {
-        const name =
-          prompt("Please give your chat a name", "Unnamed") || "Unnamed";
+        const name = prompt("Please name the chat");
+        if (name === null) return;
         const response = await fetch("/rooms/", {
           method: "POST",
           headers,
