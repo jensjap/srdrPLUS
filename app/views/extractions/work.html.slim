@@ -1,4 +1,5 @@
 div x-data="$store.sharedExtractionStore"
+  = render 'help_board'
   = render 'shared/alert_modal'
   - provide(:title, t(".extract_data"))
 
@@ -20,7 +21,9 @@ div x-data="$store.sharedExtractionStore"
       button @click="await updateStatus('awaiting_review'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-pointer bg-gray-500" :class="{ 'bg-srdrpurple' : extraction.status == 'awaiting_review' }" awaiting_review
       button :disabled="!extraction['able_to_review_status?']" @click="await updateStatus('work_rejected'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-not-allowed bg-gray-500" :class="{ 'bg-srdrpurple' : extraction.status == 'work_rejected', 'cursor-pointer' : extraction['able_to_review_status?'] }" work_rejected
       button :disabled="!extraction['able_to_review_status?']" @click="await updateStatus('work_accepted'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-not-allowed bg-gray-500" :class="{ 'bg-srdrpurple' : extraction.status == 'work_accepted', 'cursor-pointer' : extraction['able_to_review_status?'] }" work_accepted
-
+  div class="flex ml-9 py-1"
+    div @click="$store.sharedExtractionStore.help_board = true"
+      button class="cursor-pointer" Open Help Section
   - unless @panel_tab_id == 'keyquestions'
     div style='display: none;'
       ul.key-question-selector class="accordion" data-toggle='' data-accordion='' data-allow-all-closed='true'
@@ -60,6 +63,7 @@ javascript:
       alertModalContent: 'Warning! You are about to delete an outcome and any associated data with it. \nThis action cannot be undone. Please confirm to proceed.',
       deleteUrl: '',
       extraction: {},
+      help_board: false,
 
       async init() {
         this.getExtraction();
