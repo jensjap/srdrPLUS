@@ -1,4 +1,5 @@
 json.results @citations_projects do |citations_project|
+  json.created_at                 citations_project['created_at']
   json.citations_project_id       citations_project['citations_project_id']
   json.citation_id                citations_project['citation_id']
   json.accession_number_alts      citations_project['accession_number_alts']

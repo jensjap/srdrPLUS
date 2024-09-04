@@ -26,7 +26,7 @@ class CitationsProject < ApplicationRecord
                  fulltext_qualification: { type: 'keyword' },
                  extraction_qualification: { type: 'keyword' },
                  consolidation_qualification: { type: 'keyword' },
-                 screening_status: { type: 'keyword' },
+                 screening_status: { type: 'keyword' }
                }
              }
 
@@ -153,6 +153,7 @@ class CitationsProject < ApplicationRecord
     end
 
     {
+      'created_at' => created_at,
       'project_id' => project_id,
       'citations_project_id' => id,
       'citation_id' => citation.id,
@@ -177,7 +178,7 @@ class CitationsProject < ApplicationRecord
       'consolidation_qualification' => qualification('c-'),
       'abstract_screening_objects' => abstract_screening_objects,
       'fulltext_screening_objects' => fulltext_screening_objects,
-      'abstract' => citation.abstract.force_encoding("ISO-8859-1").encode("UTF-8"),
+      'abstract' => citation.abstract.force_encoding('ISO-8859-1').encode('UTF-8'),
       'pmid' => citation.pmid,
       'refman' => refman,
       'accession_number' => citation.accession_number
@@ -269,24 +270,23 @@ class CitationsProject < ApplicationRecord
 
   def formatted_publication_date(date)
     return nil unless date
+
     case date
     # 2010-04-30
     when /\d{4}-\d{2}-\d{2}/
-      $1.to_s
+      ::Regexp.last_match(1).to_s
     # 2023
     when /\d{4}/
-      $1.to_s
+      ::Regexp.last_match(1).to_s
     # 2001 Sep 15-23
     when /\d{4}[\s-]?\w{3}[\s-]?\d{1,2}([-\s]?\d+)?/
-      $1.to_s
+      ::Regexp.last_match(1).to_s
     # 2001 Sep
     when /\d{4}[\s-]?\w{3}/
-      $1.to_s
+      ::Regexp.last_match(1).to_s
     # 1985 Jul-Aug
     when /\d{4}[\s-]?\w{3}-\w{3}/
-      $1.to_s
-    else
-      nil
+      ::Regexp.last_match(1).to_s
     end
   end
 end
