@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_04_000000) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -20,12 +20,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.index ["profile_id"], name: "index_abstrackr_settings_on_profile_id"
   end
 
-  create_table "abstract_screening_distributions", charset: "utf8", force: :cascade do |t|
+  create_table "abstract_screening_distributions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "abstract_screening_id", null: false
     t.integer "user_id", null: false
     t.integer "citations_project_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "ml_score"
+    t.boolean "labeled", default: false
     t.index ["abstract_screening_id"], name: "fk_rails_ff148ba4d0"
     t.index ["citations_project_id"], name: "fk_rails_4fc38fa348"
     t.index ["user_id"], name: "fk_rails_ac2003cb18"
@@ -770,7 +772,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "fulltext_screening_distributions", charset: "utf8", force: :cascade do |t|
+  create_table "fulltext_screening_distributions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "fulltext_screening_id", null: false
     t.integer "user_id", null: false
     t.integer "citations_project_id", null: false
@@ -2043,7 +2045,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.index ["team_type_id"], name: "index_teams_on_team_type_id"
   end
 
-  create_table "temp_citations_projects_creators", charset: "utf8", force: :cascade do |t|
+  create_table "temp_citations_projects_creators", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "citations_project_id"
     t.integer "creator_id"
     t.index ["citations_project_id"], name: "index_temp_citations_projects_creators_on_citations_project_id"
