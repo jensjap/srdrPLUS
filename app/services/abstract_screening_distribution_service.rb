@@ -8,11 +8,25 @@ class AbstractScreeningDistributionService
     @expert_users, @non_expert_users = classify_users_by_expertise
   end
 
-  def call
+  def calculate_distributions
     delete_old_distributions
 
     citations_projects_to_allocate.each do |citations_project|
       allocate_citations_project(citations_project)
+    end
+  end
+
+  def self.update_labeled_status(abstract_screening_result, user, labeled_status)
+    distribution = AbstractScreeningDistribution.find_by(
+      abstract_screening: abstract_screening_result.abstract_screening,
+      citations_project: abstract_screening_result.citations_project,
+      user: user
+    )
+
+    if distribution
+      distribution.update(labeled: labeled_status)
+    else
+      raise ActiveRecord::RecordNotFound, "AbstractScreeningDistribution not found for the given criteria"
     end
   end
 
@@ -139,11 +153,16 @@ class AbstractScreeningDistributionService
   end
 
   def create_distribution(citations_project, user)
+    latest_ml_prediction = citations_project.ml_predictions.order(created_at: :desc).first
+    ml_score = latest_ml_prediction ? latest_ml_prediction.score : nil
+
     AbstractScreeningDistribution.create!(
       abstract_screening: @abstract_screening,
       citations_project: citations_project,
-      user: user
+      user: user,
+      ml_score: ml_score
     )
+
     @assigned_citations[user.id] << citations_project.id
   end
 
