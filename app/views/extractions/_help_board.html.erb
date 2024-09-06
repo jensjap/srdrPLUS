@@ -180,6 +180,21 @@
         input.value = "";
       },
 
+      async destroyMessage(message, messages) {
+        if (!confirm("Are you sure you want to delete this message?")) return;
+
+        const response = await fetch(`/messages/${message.id}`, {
+          method: "DELETE",
+          headers,
+        });
+        if (response.status >= 200 && response.status < 300) {
+          const index = messages.indexOf(message);
+          if (index > -1) {
+            messages.splice(index, 1);
+          }
+        }
+      },
+
       async setupWS() {
         const socket = new WebSocket("ws://localhost:3000/cable");
 

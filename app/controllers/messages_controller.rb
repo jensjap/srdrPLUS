@@ -53,8 +53,12 @@ class MessagesController < ApplicationController
     respond_to do |format|
       format.json do
         message = Message.find(params[:id])
-        message.destroy
-        render json: {}, status: 200
+        if message.user == current_user
+          message.destroy
+          render json: {}, status: 200
+        else
+          render json: {}, status: 403
+        end
       end
     end
   end

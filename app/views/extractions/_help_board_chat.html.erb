@@ -55,7 +55,8 @@
                   stroke-width="0.5"
                   stroke="currentColor"
                   class="w-4 h-4 cursor-pointer"
-                  @click="destroyMessage(message, messages)"
+                  @click="destroyMessage(message, getMessagesByKey(chatColumn.key))"
+                  x-show="message.user_id === current_user_id"
                 >
                   <path
                     stroke-linecap="round"
