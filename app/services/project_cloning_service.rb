@@ -31,6 +31,15 @@ class ProjectCloningService
       end
     end
 
+    # debugger
+
     copied_project
+  end
+
+  def self.find_unique_comparisons(project)
+    Comparison
+      .joins(comparisons_result_statistic_sections: { result_statistic_section: { population: { extractions_extraction_forms_projects_sections_type1: { extractions_extraction_forms_projects_section: :extraction } } } })
+      .where(extractions: { project_id: project.id })
+      .distinct
   end
 end
