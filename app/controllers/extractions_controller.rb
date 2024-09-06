@@ -214,6 +214,13 @@ class ExtractionsController < ApplicationController
     set_extraction_forms_projects
 
     respond_to do |format|
+      format.json do
+        render json: { project_id: @project.id,
+                       citations_project_id: @extraction.citations_project.id,
+                       efps_id: params['panel-tab'],
+                       extraction_id: @extraction.id },
+               status: 200
+      end
       format.html do
         if params['panel-tab'].nil? && @project.key_questions_projects.count == 1
           ExtractionsKeyQuestionsProjectsSelection.find_or_create_by(

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_08_16_080645) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_04_125128) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1061,6 +1061,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_16_080645) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "room_id"
+    t.string "help_key"
+    t.index ["help_key"], name: "index_messages_on_help_key"
     t.index ["message_id"], name: "index_messages_on_message_id"
     t.index ["room_id"], name: "index_messages_on_room_id"
     t.index ["user_id"], name: "index_messages_on_user_id"

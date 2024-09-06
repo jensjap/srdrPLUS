@@ -5,15 +5,17 @@ class MessagesController < ApplicationController
       format.json do
         if params[:room_id]
           @messages = get_messages(Room.find_by(id: params[:room_id]))
+        elsif (help_key = params[:help_key])
+          @messages = Message.where(help_key:).includes(user: :profile).order(id: :desc)
         else
           @current_user = current_user
           @all_users =
             ProjectsUser
-              .joins(:project)
-              .where(projects: current_user.projects)
-              .includes(user: :profile)
-              .map { |pu| { username: pu.user.username, user_id: pu.user_id } }
-              .uniq
+            .joins(:project)
+            .where(projects: current_user.projects)
+            .includes(user: :profile)
+            .map { |pu| { username: pu.user.username, user_id: pu.user_id } }
+            .uniq
           rooms = ChatChannelService.generate_rooms(current_user)
           @chat_rooms = rooms[:chat_rooms]
           @messages = get_messages(@chat_rooms)
@@ -60,7 +62,7 @@ class MessagesController < ApplicationController
   private
 
   def message_params
-    params.require(:message).permit(:room_id, :text, :pinned, :message_id)
+    params.require(:message).permit(:room_id, :text, :pinned, :message_id, :help_key)
   end
 
   def get_messages(rooms)
@@ -72,8 +74,8 @@ class MessagesController < ApplicationController
         {
           user: :profile,
           message_unreads: :user,
-          messages: [:room, { user: :profile, message_unreads: :user }],
-        },
+          messages: [:room, { user: :profile, message_unreads: :user }]
+        }
       )
       .order(created_at: :desc)
       .each do |message|
@@ -105,9 +107,9 @@ class MessagesController < ApplicationController
                 read: mmessage_unread.blank?,
                 message_unread_id: mmessage_unread&.id,
                 pinned: mmessage.pinned,
-                message_id: mmessage.message_id,
+                message_id: mmessage.message_id
               }
-            end,
+            end
         }
       end
     messages

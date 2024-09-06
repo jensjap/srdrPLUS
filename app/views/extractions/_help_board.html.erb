@@ -5,6 +5,7 @@
   aria-modal="true"
   x-cloak
   x-show="$store.sharedExtractionStore.help_board"
+  x-data="help_board"
 >
   <div
     class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
@@ -45,8 +46,9 @@
                 </h2>
                 <div class="ml-3 flex h-7 items-center">
                   <button
+                    @click="$store.sharedExtractionStore.help_board = false"
                     type="button"
-                    class="relative rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    class="cursor-pointer relative rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                   >
                     <span class="absolute -inset-2.5"></span>
                     <span class="sr-only">Close panel</span>
@@ -68,52 +70,10 @@
                 </div>
               </div>
             </div>
-            <div class="relative flex-1 px-4 sm:px-6 flex space-x-1">
-              <div class="w-1/3 h-full flex flex-col justify-between">
-                <h2
-                  class="text-base font-semibold leading-6 text-gray-900"
-                  id="slide-over-title"
-                >
-                  Project
-                </h2>
-                <div class="flex-grow overflow-y-scroll">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Itaque, asperiores delectus. Labore veritatis voluptatum
-                  laudantium officiis quia earum, quisquam, aut dolores dolore
-                  consequuntur tempora quod autem minus veniam nulla quis.
-                </div>
-                <div class="m-2"><input type="text" /></div>
-              </div>
-              <div class="w-1/3 h-full flex flex-col justify-between">
-                <h2
-                  class="text-base font-semibold leading-6 text-gray-900"
-                  id="slide-over-title"
-                >
-                  Citation x Form Section
-                </h2>
-                <div class="flex-grow overflow-y-scroll">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Itaque, asperiores delectus. Labore veritatis voluptatum
-                  laudantium officiis quia earum, quisquam, aut dolores dolore
-                  consequuntur tempora quod autem minus veniam nulla quis.
-                </div>
-                <div class="m-2"><input type="text" /></div>
-              </div>
-              <div class="w-1/3 h-full flex flex-col justify-between">
-                <h2
-                  class="text-base font-semibold leading-6 text-gray-900"
-                  id="slide-over-title"
-                >
-                  Extraction
-                </h2>
-                <div class="flex-grow overflow-y-scroll">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Itaque, asperiores delectus. Labore veritatis voluptatum
-                  laudantium officiis quia earum, quisquam, aut dolores dolore
-                  consequuntur tempora quod autem minus veniam nulla quis.
-                </div>
-                <div class="m-2"><input type="text" /></div>
-              </div>
+            <div class="relative flex-1 px-4 sm:px-6 flex space-x-1 min-h-0">
+              <template x-for="chatColumn in chatColumns" :key="chatColumn.key">
+                <%= render 'help_board_chat' %>
+              </template>
             </div>
           </div>
         </div>
@@ -121,3 +81,149 @@
     </div>
   </div>
 </div>
+<script>
+  document.addEventListener("alpine:init", () => {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+    };
+    Alpine.data("help_board", () => ({
+      project_messages: [],
+      citation_form_messages: [],
+      extraction_messages: [],
+      current_user_id: null,
+      project_id: null,
+      citations_project_id: null,
+      efps_id: null,
+      extraction_id: null,
+      chatColumns: [
+        {
+          title: "Project",
+          key: "project_messages",
+        },
+        {
+          title: "Citation x Form Section",
+          key: "citation_form_messages",
+        },
+        {
+          title: "Extraction",
+          key: "extraction_messages",
+        },
+      ],
+
+      async init() {
+        await this.fetchIds();
+        await this.fetchMessages(
+          "project_messages",
+          `project-${this.project_id}`
+        );
+        await this.fetchMessages(
+          "citation_form_messages",
+          `citations_project-${this.citations_project_id}-efps-${this.efps_id}`
+        );
+        await this.fetchMessages(
+          "extraction_messages",
+          `extraction-${this.extraction_id}`
+        );
+        await this.setupWS();
+      },
+
+      getHelpKeyByKey(key) {
+        if (key === "project_messages") {
+          return `project-${this.project_id}`;
+        } else if (key === "citation_form_messages") {
+          return `citations_project-${this.citations_project_id}-efps-${this.efps_id}`;
+        } else if (key === "extraction_messages") {
+          return `extraction-${this.extraction_id}`;
+        }
+      },
+
+      getMessagesByKey(key) {
+        return this[key];
+      },
+
+      async fetchIds() {
+        const response = await fetch(window.location.href, {
+          method: "GET",
+          headers,
+        });
+        const data = await response.json();
+        this.project_id = data.project_id;
+        this.citations_project_id = data.citations_project_id;
+        this.efps_id = data.efps_id;
+        this.extraction_id = data.extraction_id;
+      },
+
+      async fetchMessages(messages, help_key) {
+        const response = await fetch(`/messages?help_key=${help_key}`, {
+          method: "GET",
+          headers,
+        });
+        const data = await response.json();
+        this[messages] = data.messages;
+        this.current_user_id = data.current_user_id;
+      },
+
+      async sendMessage(input, help_key) {
+        if (input.value === "") return;
+
+        const response = await fetch("/messages", {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            help_key,
+            text: input.value,
+          }),
+        });
+        input.value = "";
+      },
+
+      async setupWS() {
+        const socket = new WebSocket("ws://localhost:3000/cable");
+
+        socket.onopen = () => {
+          console.log("WS connected");
+          const msg = {
+            command: "subscribe",
+            identifier: JSON.stringify({
+              channel: "HelpChannel",
+              messageKeys: {
+                project: this.project_id,
+                citations_project: this.citations_project_id,
+                efps: this.efps_id,
+                extraction: this.extraction_id,
+              },
+            }),
+          };
+          socket.send(JSON.stringify(msg));
+        };
+
+        socket.onclose = () => {
+          console.log("WS disconnected");
+        };
+
+        socket.onmessage = async (event) => {
+          const data = JSON.parse(event.data);
+          const message = data.message;
+          if (data.type === "ping" || message === undefined) {
+            return;
+          }
+          if (message.message_type === "message") {
+            if (message.help_key.startsWith("project-")) {
+              this.project_messages.unshift(message);
+            } else if (message.help_key.startsWith("citations_project-")) {
+              this.citation_form_messages.unshift(message);
+            } else if (message.help_key.startsWith("extraction-")) {
+              this.extraction_messages.unshift(message);
+            }
+          }
+        };
+        socket.onerror = (error) => {
+          console.log("WS error: ", error);
+        };
+      },
+    }));
+  });
+</script>
