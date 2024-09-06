@@ -40,7 +40,14 @@ class BaseScreeningService
   def self.find_citation_by_new_logic(screening, user)
     distributions = screening.abstract_screening_distributions.where(user: user, labeled: false)
 
-    return nil if distributions.empty?
+    if distributions.empty?
+      asd_service = AbstractScreeningDistributionService.new(screening)
+      asd_service.calculate_distributions
+
+      distributions = screening.abstract_screening_distributions.where(user: user, labeled: false)
+
+      return nil if distributions.empty?
+    end
 
     sorted_distributions = distributions.sort_by { |d| d.ml_score.nil? ? 0.5 : d.ml_score }
 

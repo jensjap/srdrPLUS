@@ -56,8 +56,11 @@ class AbstractScreeningsController < ApplicationController
     @abstract_screening =
       @project.abstract_screenings.new(abstract_screening_params)
     authorize(@abstract_screening)
+
     if @abstract_screening.save
       update_citations_projects(params[:selected_citations], @abstract_screening.id)
+      asd_service = AbstractScreeningDistributionService.new(@abstract_screening)
+      asd_service.calculate_distributions
       flash[:notice] = 'Screening was successfully created'
       redirect_to(project_abstract_screenings_path(@project), status: 303)
     else
