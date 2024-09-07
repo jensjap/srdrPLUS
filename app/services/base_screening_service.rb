@@ -17,6 +17,10 @@ class BaseScreeningService
     unfinished_sr = find_unfinished_sr(screening, user)
     return unfinished_sr.citation.id if unfinished_sr
 
+    if screening.is_a?(AbstractScreening) && screening.project.new_picking_logic
+      return find_citation_by_new_logic(screening, user)
+    end
+
     return nil if at_or_over_limit?(screening, user)
 
     case screening.screening_type
@@ -31,6 +35,29 @@ class BaseScreeningService
     when screening.class.const_get('ONLY_EXPERT_NOVICE_MIXED_PERPETUAL'), screening.class.const_get('N_SIZE_ONLY_EXPERT_NOVICE_MIXED')
       get_next_only_expert_novice_mixed_citation_id(screening, user)
     end
+  end
+
+  def self.find_citation_by_new_logic(screening, user)
+    distributions = screening.abstract_screening_distributions.where(user: user, labeled: false)
+
+    if distributions.empty?
+      asd_service = AbstractScreeningDistributionService.new(screening)
+      asd_service.calculate_distributions
+
+      distributions = screening.abstract_screening_distributions.where(user: user, labeled: false)
+
+      return nil if distributions.empty?
+    end
+
+    sorted_distributions = distributions.sort_by { |d| d.ml_score.nil? ? 0.5 : d.ml_score }
+
+    highest_score = sorted_distributions.last.ml_score.nil? ? 0.5 : sorted_distributions.last.ml_score
+
+    highest_score_distributions = sorted_distributions.select { |d| (d.ml_score.nil? ? 0.5 : d.ml_score) == highest_score }
+                                                       .sort_by { |d| d.created_at }
+
+    selected_distribution = highest_score_distributions.first
+    selected_distribution.citations_project.citation.id
   end
 
   def self.find_next_pilot_screening(project, user)

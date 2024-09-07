@@ -15,7 +15,8 @@
 class Extraction < ApplicationRecord
   include ConsolidationHelper
 
-  attr_accessor :is_amoeba_copy
+  attr_accessor :is_amoeba_copy, :allow_duplicate_extraction_of_citation_by_user
+
 
   default_scope { not_disqualified }
 
