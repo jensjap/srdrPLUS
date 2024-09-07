@@ -4,6 +4,7 @@ class AbstractScreeningDistributionService
     @users = determine_users
     @expert_users, @non_expert_users = classify_users_by_expertise
     @assigned_citations = calculate_assigned_citations
+    @newly_assigned_citations = Hash.new { |hash, key| hash[key] = [] }
 
     @last_assigned_user = find_last_assigned_user(@users)
     @last_assigned_expert_user = find_last_assigned_user(@expert_users)
@@ -34,6 +35,10 @@ class AbstractScreeningDistributionService
     else
       raise ActiveRecord::RecordNotFound, "AbstractScreeningDistribution not found for the given criteria"
     end
+  end
+
+  def self.delete_distributions_by_citations_projects(citations_projects)
+    AbstractScreeningDistribution.where(citations_project: citations_projects).destroy_all
   end
 
   private
@@ -204,6 +209,7 @@ class AbstractScreeningDistributionService
     )
 
     @assigned_citations[user.id] << citations_project.id
+    @newly_assigned_citations[user.id] << citations_project.id
   end
 
   def handle_double_type_assignments(current_assignments, assigned_users, citations_project)
@@ -267,23 +273,23 @@ class AbstractScreeningDistributionService
   end
 
   def least_assigned_user_excluding(excluded_users)
-    (@users - excluded_users).min_by { |user| @assigned_citations[user.id].size }
+    (@users - excluded_users).min_by { |user| @newly_assigned_citations[user.id].size }
   end
 
   def least_assigned_user
-    @users.min_by { |user| @assigned_citations[user.id].size }
+    @users.min_by { |user| @newly_assigned_citations[user.id].size }
   end
 
   def second_least_assigned_user
-    (@users - [least_assigned_user]).min_by { |user| @assigned_citations[user.id].size }
+    (@users - [least_assigned_user]).min_by { |user| @newly_assigned_citations[user.id].size }
   end
 
   def expert_user
-    @expert_users.min_by { |user| @assigned_citations[user.id].size }
+    @expert_users.min_by { |user| @newly_assigned_citations[user.id].size }
   end
 
   def non_expert_user
-    @non_expert_users.min_by { |user| @assigned_citations[user.id].size }
+    @non_expert_users.min_by { |user| @newly_assigned_citations[user.id].size }
   end
 
   def another_user_excluding(excluded_users)
