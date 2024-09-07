@@ -87,6 +87,10 @@ class ProjectsController < ApplicationController
           flash[:alert] = 'You must have at least one leader in the project.'
           redirect_to(edit_project_path(@project, page: 'members_and_roles'))
         elsif @project.update(project_params)
+          @project.abstract_screenings.each do |abstract_screening|
+            asd_service = AbstractScreeningDistributionService.new(abstract_screening)
+            asd_service.calculate_distributions
+          end
           redirect_path = params.dig(:project, :redirect_path)
           if redirect_path.present?
             redirect_to(

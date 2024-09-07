@@ -68,7 +68,7 @@ class RobotScreenService
     end
   end
 
-  def save_predictions(data, predictions, ml_model)
+  def save_predictions(data, predictions, ml_model, project)
     prediction_records = data.map.with_index do |citation, index|
       citation_id = citation['citation_id']
       score = predictions[index]
@@ -77,6 +77,11 @@ class RobotScreenService
     end
 
     MlPrediction.insert_all(prediction_records)
+
+    project.abstract_screenings.each do |abstract_screening|
+      asd_service = AbstractScreeningDistributionService.new(abstract_screening)
+      asd_service.calculate_distributions
+    end
 
     'Predictions saved'
   end
