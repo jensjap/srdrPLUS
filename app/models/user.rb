@@ -63,6 +63,7 @@ class User < ApplicationRecord
   has_many :message_unreads, dependent: :destroy, inverse_of: :user
   has_many :memberships, dependent: :destroy, inverse_of: :user
   has_many :rooms, through: :memberships
+  has_many :extractions
 
   has_many :external_service_providers_projects_users, dependent: :destroy
 
