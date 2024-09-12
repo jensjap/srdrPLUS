@@ -7,6 +7,8 @@ class MessagesController < ApplicationController
           @messages = get_messages(Room.find_by(id: params[:room_id]))
         elsif (help_key = params[:help_key])
           @messages = Message.where(help_key:).includes(user: :profile).order(id: :desc)
+        elsif (project_id = params[:project_id])
+          @messages = Message.where(project_id:).includes(user: :profile).order(id: :desc)
         else
           @current_user = current_user
           @all_users =
@@ -66,7 +68,7 @@ class MessagesController < ApplicationController
   private
 
   def message_params
-    params.require(:message).permit(:room_id, :text, :pinned, :message_id, :help_key)
+    params.require(:message).permit(:room_id, :text, :pinned, :message_id, :help_key, :project_id)
   end
 
   def get_messages(rooms)

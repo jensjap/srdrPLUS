@@ -134,7 +134,9 @@
         );
         await this.fetchMessages(
           "citation_form_messages",
-          `citations_project-${this.citations_project_id}-efps-${this.efps_id}`
+          `citations_project-${this.citations_project_id}-efps-${
+            this.efps_id || "keyquestions"
+          }`
         );
         await this.fetchMessages(
           "extraction_messages",
@@ -147,7 +149,9 @@
         if (key === "project_messages") {
           return `project-${this.project_id}`;
         } else if (key === "citation_form_messages") {
-          return `citations_project-${this.citations_project_id}-efps-${this.efps_id}`;
+          return `citations_project-${this.citations_project_id}-efps-${
+            this.efps_id || "keyquestions"
+          }`;
         } else if (key === "extraction_messages") {
           return `extraction-${this.extraction_id}`;
         }
@@ -188,6 +192,7 @@
           body: JSON.stringify({
             help_key,
             text: input.value,
+            project_id: this.project_id,
           }),
         });
         input.value = "";

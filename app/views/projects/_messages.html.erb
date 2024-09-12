@@ -1,0 +1,53 @@
+<div
+  x-data="projectMessages"
+  class="max-h-[70vh] rounded-md overflow-y-scroll flex flex-col-reverse flex-auto w-full gap-y-2 border border-gray-100"
+>
+  <template x-for="projectMessage in projectMessages" :key="projectMessage.id">
+    <div class="p-1 rounded-lg col-start-1 col-end-8">
+      <div class="flex flex-row items-center">
+        <div
+          class="relative ml-3 text-sm px-2 py-1 shadow rounded-xl w-full bg-white hover:bg-blue-200 hover:shadow-md cursor-pointer hover:no-underline"
+        >
+          <div
+            x-text="projectMessage.text"
+            class="whitespace-pre-wrap"
+            style="overflow-wrap: anywhere"
+          ></div>
+          <div class="flex space-x-1">
+            <div
+              class="text-xs text-gray-500 text-nowrap text-right"
+              x-text="`${projectMessage.handle} wrote at ${new Date(projectMessage.created_at).toLocaleString()}`"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+</div>
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("projectMessages", () => ({
+      projectMessages: [],
+      current_user_id: null,
+
+      async init() {
+        await this.fetchProjectMessages();
+      },
+
+      async fetchProjectMessages() {
+        const url = new URL(window.location.href);
+        const projectId = url.pathname.split("/")[2];
+        const response = await fetch(`/projects/${projectId}/messages`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.projectMessages = data.messages;
+        this.current_user_id = data.current_user_id;
+      },
+    }));
+  });
+</script>

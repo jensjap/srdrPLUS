@@ -234,6 +234,7 @@ Rails.application.routes.draw do
   resources :projects, concerns: :paginatable, shallow: true do
     resources :projects_reasons, only: %i[index create update destroy]
     resources :projects_tags, only: %i[index create update destroy]
+    resources :messages, only: %i[index]
 
     resources :consolidations
 
@@ -461,5 +462,4 @@ Rails.application.routes.draw do
   resources :assignments_messages, only: %i[create destroy]
 
   resources :key_questions_projects_questions, only: %i[create destroy]
-  resources :chats
 end

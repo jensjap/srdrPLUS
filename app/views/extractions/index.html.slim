@@ -4,7 +4,6 @@
 - provide(:title, 'List of Extractions')
 - am_leader = @project.leaders.include? current_user
 div class="p-4 lg:p-8" x-data="$store.sharedExtractionStore"
-  = render 'messages'
   = render 'shared/alert_modal'
   - efp = @project.extraction_forms_projects.first
   div class="flex justify-between"
@@ -43,13 +42,11 @@ div class="p-4 lg:p-8" x-data="$store.sharedExtractionStore"
         th.table-sortable.sorting data-sorting-col="10" width="80px" Approved
         th width="50px"
         th width="50px"
-        th width="50px"
 
     tbody
       - if @extractions.blank?
         tr
           td No extractions found.
-          td
           td
           td
           td
@@ -93,8 +90,6 @@ div class="p-4 lg:p-8" x-data="$store.sharedExtractionStore"
             td
               div = (extraction.created_at + 2.weeks).strftime('%Y-%m-%d')
             td
-              div class="cursor-pointer" onclick="Alpine.store('sharedExtractionStore').help_board = true" Messages
-            td
               = link_to 'Reassign', reassign_extraction_extraction_path(extraction)
             td
               - delete_url = extraction_path(extraction)
@@ -117,7 +112,6 @@ javascript:
       isAlertModalOpen: false,
       alertModalContent: '',
       deleteUrl: '',
-      help_board: false,
       openAlertModal(url, extraction_id, extraction_name) {
         this.deleteUrl = url;
         if (extraction_name) {
