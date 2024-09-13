@@ -69,7 +69,14 @@ javascript:
       help_board: false,
 
       async init() {
-        this.getExtraction();
+        await this.getExtraction();
+        this.toggleHelpBoard();
+      },
+      toggleHelpBoard() {
+        const url = new URL(window.location.href);
+        if (url.searchParams.get('help_board') === 'true') {
+          this.help_board = true;
+        }
       },
       async getExtraction() {
         const response = await fetch(
