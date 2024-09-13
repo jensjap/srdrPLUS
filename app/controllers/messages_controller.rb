@@ -68,7 +68,16 @@ class MessagesController < ApplicationController
   private
 
   def message_params
-    params.require(:message).permit(:room_id, :text, :pinned, :message_id, :help_key, :project_id)
+    params
+      .require(:message)
+      .permit(:room_id,
+              :text,
+              :pinned,
+              :message_id,
+              :help_key,
+              :project_id,
+              :extraction_id,
+              :extraction_forms_projects_section_id)
   end
 
   def get_messages(rooms)

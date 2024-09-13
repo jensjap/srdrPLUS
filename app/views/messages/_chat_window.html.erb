@@ -331,7 +331,6 @@
     </div>
   </template>
 
-  <%= render 'messages/combobox' %>
   <div class="flex flex-row items-center w-full h-32">
     <div class="w-full flex relative">
       <textarea
@@ -339,16 +338,14 @@
         rows="5"
         type="text"
         class="w-full !text-sm !p-2 !resize-none"
-        placeholder="Type message... or press ALT+T to tag assignment"
+        placeholder="Type message..."
         x-ref="chattextarea"
         x-model="chat_text[selected_room?.id]"
-        @keydown.alt.t.prevent="$focus.focus($refs.assignmentsComboBox)"
         @keydown.shift="shiftPressed = true"
         @keyup.shift="shiftPressed = false"
         @keydown.enter.prevent="let insert;
         if (shiftPressed) {
           const insert = '\n';
-          assignmentWindow = false;
           const start = $event.target.selectionStart;
           const end = $event.target.selectionEnd;
           const oldValue = $event.target.value;

@@ -215,9 +215,10 @@ class ExtractionsController < ApplicationController
 
     respond_to do |format|
       format.json do
+        panel_tab = params['panel-tab']
         render json: { project_id: @project.id,
                        citations_project_id: @extraction.citations_project.id,
-                       efps_id: params['panel-tab'],
+                       extraction_forms_projects_section_id: panel_tab == 'keyquestions' ? nil : panel_tab,
                        extraction_id: @extraction.id },
                status: 200
       end

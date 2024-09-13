@@ -458,8 +458,5 @@ Rails.application.routes.draw do
     resources :memberships, only: %i[index destroy create]
   end
 
-  resources :assignments
-  resources :assignments_messages, only: %i[create destroy]
-
   resources :key_questions_projects_questions, only: %i[create destroy]
 end

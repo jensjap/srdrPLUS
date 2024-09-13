@@ -109,7 +109,7 @@
       current_user_id: null,
       project_id: null,
       citations_project_id: null,
-      efps_id: null,
+      extraction_forms_projects_section_id: null,
       extraction_id: null,
       chatColumns: [
         {
@@ -135,7 +135,9 @@
         await this.fetchMessages(
           "citation_form_messages",
           `citations_project-${this.citations_project_id}-efps-${
-            this.efps_id || "keyquestions"
+            this.extraction_forms_projects_section_id
+              ? this.extraction_forms_projects_section_id
+              : ""
           }`
         );
         await this.fetchMessages(
@@ -150,7 +152,9 @@
           return `project-${this.project_id}`;
         } else if (key === "citation_form_messages") {
           return `citations_project-${this.citations_project_id}-efps-${
-            this.efps_id || "keyquestions"
+            this.extraction_forms_projects_section_id
+              ? this.extraction_forms_projects_section_id
+              : ""
           }`;
         } else if (key === "extraction_messages") {
           return `extraction-${this.extraction_id}`;
@@ -169,7 +173,8 @@
         const data = await response.json();
         this.project_id = data.project_id;
         this.citations_project_id = data.citations_project_id;
-        this.efps_id = data.efps_id;
+        this.extraction_forms_projects_section_id =
+          data.extraction_forms_projects_section_id;
         this.extraction_id = data.extraction_id;
       },
 
@@ -193,6 +198,9 @@
             help_key,
             text: input.value,
             project_id: this.project_id,
+            extraction_id: this.extraction_id,
+            extraction_forms_projects_section_id:
+              this.extraction_forms_projects_section_id,
           }),
         });
         input.value = "";
@@ -225,7 +233,7 @@
               messageKeys: {
                 project: this.project_id,
                 citations_project: this.citations_project_id,
-                efps: this.efps_id,
+                efps: this.extraction_forms_projects_section_id,
                 extraction: this.extraction_id,
               },
             }),

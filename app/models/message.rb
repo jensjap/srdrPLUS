@@ -16,6 +16,9 @@ class Message < ApplicationRecord
   belongs_to :user
   belongs_to :room, optional: true
   belongs_to :message, optional: true
+  belongs_to :project, optional: true
+  belongs_to :extraction, optional: true
+  belongs_to :extraction_forms_projects_section, optional: true
   has_many :messages
   has_many :message_unreads, dependent: :destroy
 
@@ -28,6 +31,7 @@ class Message < ApplicationRecord
   def broadcast_message
     if help_key
       broadcast_help
+      broadcast_project_message
     else
       broadcast_chat
     end
@@ -47,7 +51,32 @@ class Message < ApplicationRecord
         pinned:,
         message_id:,
         messages:,
-        help_key:
+        help_key:,
+        project_id:,
+        extraction_id:,
+        extraction_forms_projects_section_id:
+      }
+    )
+  end
+
+  def broadcast_project_message
+    ActionCable.server.broadcast(
+      "project_message-#{project_id}",
+      {
+        message_type: 'message',
+        id:,
+        room:,
+        user_id:,
+        handle: user.handle,
+        text:,
+        created_at:,
+        pinned:,
+        message_id:,
+        messages:,
+        help_key:,
+        project_id:,
+        extraction_id:,
+        extraction_forms_projects_section_id:
       }
     )
   end

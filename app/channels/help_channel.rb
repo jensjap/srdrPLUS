@@ -8,7 +8,7 @@ class HelpChannel < ApplicationCable::Channel
     extraction = Extraction.find(message_keys[:extraction])
 
     stream_from "project-#{project.id}"
-    stream_from "citations_project-#{citations_project.id}-efps-#{efps&.id || 'keyquestions'}"
+    stream_from "citations_project-#{citations_project.id}-efps-#{efps&.id}"
     stream_from "extraction-#{extraction.id}"
   end
 

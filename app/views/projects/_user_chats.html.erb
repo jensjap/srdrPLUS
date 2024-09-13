@@ -2,8 +2,6 @@
   <!-- prettier-ignore -->
   <%= render 'messages/navbar_chats' %>
   <%= render 'messages/chat_window' %>
-  <%= render 'messages/assignments' %>
-  <%= render 'messages/new_assignment' %>
   <%= render 'messages/user_menu' %>
 </div>
 
@@ -34,138 +32,15 @@
       threadMessages: [],
       threadMessageId: null,
       thread_chat_text: {},
-      assignments: [],
       message_selection_index: null,
-      assignmentWindow: false,
       members: [],
       comboBoxQuery: "",
-      selectedAssignments: [],
-      newAssignments: [],
 
       async init() {
         await this.fetchRooms();
         this.selected_rooms = this.chat_rooms;
         this.sortRooms();
-        this.getNewAssignments();
         await this.setupWS();
-      },
-
-      get filteredItems() {
-        return this.comboBoxQuery === ""
-          ? this.assignments
-          : this.assignments.filter((assignment) => {
-              return assignment.name
-                .toLowerCase()
-                .includes(this.comboBoxQuery.toLowerCase());
-            });
-      },
-
-      remove(assignment) {
-        this.selectedAssignments = this.selectedAssignments.filter(
-          (i) => i !== assignment
-        );
-      },
-
-      async updateAssignment(assignment_id, assignment_index, value, key) {
-        const response = await fetch(`/assignments/${assignment_id}`, {
-          method: "PATCH",
-          headers,
-          body: JSON.stringify({
-            [key]: value,
-          }),
-        });
-        const data = await response.json();
-        if (response.status >= 200 && response.status < 300) {
-          this.assignments[assignment_index] = data;
-        }
-      },
-
-      async destroyAssignment(assignment_id) {
-        if (!confirm("Are you sure you want to remove this assignment?"))
-          return;
-
-        const response = await fetch(`/assignments/${assignment_id}`, {
-          method: "DELETE",
-          headers,
-        });
-        await this.getAssignments();
-      },
-
-      async createAssignment(
-        assignable_type,
-        assignable_id,
-        assignee_id,
-        extraction_index
-      ) {
-        const response = await fetch("/assignments/", {
-          method: "POST",
-          headers,
-          body: JSON.stringify({
-            assignable_type,
-            assignable_id,
-            assignee_id,
-          }),
-        });
-
-        const data = await response.json();
-        console.log(data.assignable);
-        console.log(this.newAssignments);
-        console.log(extraction_index);
-        this.newAssignments[extraction_index] = data.assignable;
-      },
-
-      async getAssignments(room_id) {
-        const response = await fetch(`/assignments?room_id=${room_id}`, {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-        this.assignments = data.assignments;
-        this.members = data.members;
-      },
-
-      async getNewAssignments() {
-        const response = await fetch(`/assignments/new`, {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-        this.newAssignments = data;
-      },
-
-      async createAssignmentsMessage(message_id) {
-        const assignment_ids = this.selectedAssignments.map(
-          (assignment) => assignment.id
-        );
-        this.selectedAssignments = [];
-
-        assignment_ids.forEach((assignment_id) => {
-          fetch("/assignments_messages/", {
-            method: "POST",
-            headers,
-            body: JSON.stringify({
-              assignment_id,
-              message_id,
-            }),
-          });
-        });
-      },
-
-      async destroyAssignmentsMessage(assignment) {
-        const response = await fetch(
-          `/assignments_messages/${assignment.assignments_room_id}`,
-          {
-            method: "DELETE",
-            headers,
-          }
-        );
-        assignment.assignments_room_id = null;
       },
 
       async openRoom(room) {
@@ -343,7 +218,6 @@
             this.thread_chat_text[this.selected_room?.id] = "";
           } else {
             this.chat_text[this.selected_room?.id] = "";
-            this.createAssignmentsMessage(data.id);
           }
         }
       },

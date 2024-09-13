@@ -98,7 +98,7 @@
       <input
         class="!pl-2 !pr-8"
         type="text"
-        @keydown.enter="sendMessage($el, getHelpKeyByKey(chatColumn.key))"
+        @keydown.enter="sendMessage($el, getHelpKeyByKey(chatColumn.key), chatColumn.key)"
       />
     </label>
   </div>
