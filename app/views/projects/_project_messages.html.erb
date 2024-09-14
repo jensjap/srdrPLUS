@@ -1,0 +1,217 @@
+<div
+  x-data="projectMessages"
+  class="h-[70vh] rounded-md overflow-y-scroll flex flex-col-reverse flex-auto w-full border border-gray-100"
+>
+  <%= render 'projects/project_messages_modal' %>
+  <template x-for="projectMessage in projectMessages" :key="projectMessage.id">
+    <div
+      class="grid grid-cols-12 shadow w-full px-1 bg-white hover:bg-blue-200 hover:shadow-md"
+    >
+      <div
+        class="text-sm text-gray-500 text-left text-nowrap text-ellipsis overflow-hidden col-span-6"
+        x-text="projectMessage.text"
+        class="whitespace-pre-wrap"
+        style="overflow-wrap: anywhere"
+      ></div>
+      <a
+        class="text-sm col-span-3"
+        :href="createMessageUrl(projectMessage)"
+        target="_blank"
+        x-text="createMessageUrl(projectMessage)"
+      >
+      </a>
+      <div class="flex justify-center">
+        <div
+          class="text-sm text-gray-500 text-left text-nowrap text-ellipsis overflow-hidden cursor-pointer"
+          @click="project_messages_modal = true; fetchAndSubscribe(projectMessage)"
+        >
+          Reply
+        </div>
+      </div>
+      <div
+        class="text-sm text-gray-500 text-left text-nowrap text-ellipsis overflow-hidden"
+        x-text="projectMessage.handle"
+      ></div>
+      <div
+        class="text-sm text-gray-500 text-left text-nowrap text-ellipsis overflow-hidden"
+        x-text="new Date(projectMessage.created_at).toLocaleString()"
+      ></div>
+    </div>
+  </template>
+</div>
+<script>
+  document.addEventListener("alpine:init", () => {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+    };
+    Alpine.data("projectMessages", () => ({
+      projectMessages: [],
+      current_user_id: null,
+      project_messages_modal: false,
+      helpMessages: [],
+      helpSocket: null,
+      help_key: null,
+      project_id: null,
+      extraction_id: null,
+      extraction_forms_projects_section_id: null,
+
+      async init() {
+        this.setProjectId();
+        await this.fetchProjectMessages();
+        await this.setupWS();
+      },
+
+      async fetchAndSubscribe(projectMessage) {
+        this.help_key = projectMessage.help_key;
+        this.project_id = projectMessage.project_id;
+        this.extraction_id = projectMessage.extraction_id;
+        this.extraction_forms_projects_section_id =
+          projectMessage.extraction_forms_projects_section_id;
+        await this.fetchMessages(projectMessage.help_key);
+        await this.subscribe(projectMessage);
+      },
+
+      async fetchMessages(help_key) {
+        const response = await fetch(`/messages?help_key=${help_key}`, {
+          method: "GET",
+          headers,
+        });
+        const data = await response.json();
+        this.helpMessages = data.messages;
+        this.current_user_id = data.current_user_id;
+      },
+
+      async sendMessage(input) {
+        if (input.value === "") return;
+
+        const response = await fetch("/messages", {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            help_key: this.help_key,
+            text: input.value,
+            project_id: this.project_id,
+            extraction_id: this.extraction_id,
+            extraction_forms_projects_section_id:
+              this.extraction_forms_projects_section_id,
+          }),
+        });
+        input.value = "";
+      },
+
+      async destroyMessage(message, messages) {
+        if (!confirm("Are you sure you want to delete this message?")) return;
+
+        const response = await fetch(`/messages/${message.id}`, {
+          method: "DELETE",
+          headers,
+        });
+        if (response.status >= 200 && response.status < 300) {
+          const index = messages.indexOf(message);
+          if (index > -1) {
+            messages.splice(index, 1);
+          }
+        }
+      },
+
+      subscribe(projectMessage) {
+        if (this.helpSocket !== null) {
+          this.helpSocket.close();
+        }
+
+        this.helpSocket = new WebSocket("ws://localhost:3000/cable");
+        this.helpSocket.onopen = () => {
+          console.log("WS connected");
+          const msg = {
+            command: "subscribe",
+            identifier: JSON.stringify({
+              channel: "HelpChannel",
+              messageKeys: {
+                project: projectMessage.project_id,
+                citations_project: projectMessage.citations_project_id,
+                efps: projectMessage.extraction_forms_projects_section_id,
+                extraction: projectMessage.extraction_id,
+              },
+            }),
+          };
+          this.helpSocket.send(JSON.stringify(msg));
+        };
+
+        this.helpSocket.onclose = () => {
+          console.log("WS disconnected");
+        };
+
+        this.helpSocket.onmessage = async (event) => {
+          const data = JSON.parse(event.data);
+          const message = data.message;
+          if (data.type === "ping" || message === undefined) {
+            return;
+          }
+          console.log(message);
+          if (message.message_type === "message") {
+            this.helpMessages.unshift(message);
+          }
+        };
+        this.helpSocket.onerror = (error) => {
+          console.log("WS error: ", error);
+        };
+      },
+
+      setProjectId() {
+        const url = new URL(window.location.href);
+        this.projectId = url.pathname.split("/")[2];
+      },
+
+      createMessageUrl(projectMessage) {
+        return `/extractions/${projectMessage.extraction_id}/work?panel-tab=${projectMessage.extraction_forms_projects_section_id}&help_board=true`;
+      },
+
+      async fetchProjectMessages() {
+        const response = await fetch(`/projects/${this.projectId}/messages`, {
+          method: "GET",
+          headers,
+        });
+        const data = await response.json();
+        this.projectMessages = data.messages;
+        this.current_user_id = data.current_user_id;
+      },
+
+      async setupWS() {
+        const socket = new WebSocket("ws://localhost:3000/cable");
+
+        socket.onopen = () => {
+          console.log("WS connected");
+          const msg = {
+            command: "subscribe",
+            identifier: JSON.stringify({
+              channel: "ProjectMessageChannel",
+              project_id: this.projectId,
+            }),
+          };
+          socket.send(JSON.stringify(msg));
+        };
+
+        socket.onclose = () => {
+          console.log("WS disconnected");
+        };
+
+        socket.onmessage = async (event) => {
+          const data = JSON.parse(event.data);
+          const message = data.message;
+          if (data.type === "ping" || message === undefined) {
+            return;
+          }
+          if (message.message_type === "message") {
+            this.projectMessages.unshift(message);
+          }
+        };
+        socket.onerror = (error) => {
+          console.log("WS error: ", error);
+        };
+      },
+    }));
+  });
+</script>

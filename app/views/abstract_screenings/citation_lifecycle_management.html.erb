@@ -37,7 +37,7 @@
       <%= render 'citation_lifecycle_management' %>
     </div>
     <div x-cloak x-show="tab === 'projectMessages'">
-      <%= render 'projects/messages' %>
+      <%= render 'projects/project_messages' %>
     </div>
     <div x-cloak x-show="tab === 'userMessages'">
       <%= render 'projects/user_chats' %>
@@ -79,7 +79,7 @@
       detailedResult: 0,
       lastIndexSelected: null,
       copied: false,
-      tab: "projectActivities",
+      tab: "projectMessages",
 
       init() {
         window.shift = false;
