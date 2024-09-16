@@ -171,7 +171,9 @@
       },
 
       createMessageUrl(projectMessage) {
-        return `/extractions/${projectMessage.extraction_id}/work?panel-tab=${projectMessage.extraction_forms_projects_section_id}&help_board=true`;
+        return `/extractions/${projectMessage.extraction_id}/work?panel-tab=${
+          projectMessage.extraction_forms_projects_section_id || ""
+        }&help_board=true`;
       },
 
       async fetchProjectMessages() {
