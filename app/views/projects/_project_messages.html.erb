@@ -3,6 +3,11 @@
   class="h-[70vh] rounded-md overflow-y-scroll flex flex-col-reverse flex-auto w-full border border-gray-100"
 >
   <%= render 'projects/project_messages_modal' %>
+  <template x-if="projectMessages.length === 0">
+    <div class="flex justify-center items-center h-full text-gray-500">
+      No project messages
+    </div>
+  </template>
   <template x-for="projectMessage in projectMessages" :key="projectMessage.id">
     <div
       class="grid grid-cols-12 shadow w-full px-1 bg-white hover:bg-blue-200 hover:shadow-md"
