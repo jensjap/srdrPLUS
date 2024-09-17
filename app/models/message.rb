@@ -37,7 +37,23 @@ class Message < ApplicationRecord
     end
   end
 
+  def notify_users(online_broadcast_user_ids)
+    online_broadcast_user_ids.each do |online_broadcast_user_id|
+      next if online_broadcast_user_id == user_id
+
+      ActionCable.server.broadcast(
+        "notification-#{online_broadcast_user_id}", { message_type: 'message', text: text.truncate(100),
+                                                      url: '/' }
+      )
+    end
+  end
+
   def broadcast_help
+    online_user_ids = ActionCable.server.connections.map(&:current_user).map(&:id).uniq
+    broadcast_user_ids =
+      User.joins(:projects_users).where(projects_users: { project_id: }).pluck(:id)
+    notify_users(online_user_ids & broadcast_user_ids)
+
     ActionCable.server.broadcast(
       help_key,
       {
@@ -82,16 +98,18 @@ class Message < ApplicationRecord
   end
 
   def broadcast_chat
-    online_users = ActionCable.server.connections.map(&:current_user)
-    broadcast_users = room.users
-    bus = broadcast_users.reject { |bu| bu == user }.map { |bu| { user_id: bu.id, message_id: id } }
+    online_user_ids = ActionCable.server.connections.map(&:current_user).map(&:id).uniq
+    broadcast_user_ids = room.users.map(&:id)
+    notify_users(online_user_ids & broadcast_user_ids)
+
+    bus = broadcast_user_ids.reject { |bu_id| bu_id == user.id }.map { |bu_id| { user_id: bu_id, message_id: id } }
     MessageUnread.insert_all(bus) unless bus.empty?
-    (broadcast_users & online_users).each do |broadcast_user|
+    (broadcast_user_ids & online_user_ids).each do |online_broadcast_user_id|
       message_unread = message_unreads.find do |mu|
-        mu.user_id == broadcast_user.id
+        mu.user_id == online_broadcast_user_id
       end
       ActionCable.server.broadcast(
-        "user_#{broadcast_user.id}",
+        "user_#{online_broadcast_user_id}",
         {
           message_type: 'message',
           id:,

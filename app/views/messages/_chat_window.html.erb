@@ -334,6 +334,7 @@
   <div class="flex flex-row items-center w-full h-32">
     <div class="w-full flex relative">
       <textarea
+        :disabled="!selected_room"
         maxlength="65000"
         rows="5"
         type="text"
@@ -360,6 +361,7 @@
       <textarea
         x-cloak
         x-show="threadMessageId"
+        :disabled="!selected_room"
         maxlength="65000"
         rows="5"
         type="text"
