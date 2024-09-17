@@ -15,14 +15,14 @@
       Citation Lifecycle Management
     </div>
     <div
-      @click="tab = 'projectMessages'"
+      @click="tab = 'projectMessages'; if (Notification.permission !== 'granted') { Notification.requestPermission() };"
       class="bg-srdrpurple-light text-white m-1 p-2 rounded-md cursor-pointer"
       :class="{ '!bg-srdrpurple': tab === 'projectMessages' }"
     >
       Project Messages
     </div>
     <div
-      @click="tab = 'userMessages'"
+      @click="tab = 'userMessages'; if (Notification.permission !== 'granted') { Notification.requestPermission() };"
       class="bg-srdrpurple-light text-white m-1 p-2 rounded-md cursor-pointer"
       :class="{ '!bg-srdrpurple': tab === 'userMessages' }"
     >

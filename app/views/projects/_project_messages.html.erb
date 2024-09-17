@@ -127,7 +127,7 @@
           this.helpSocket.close();
         }
 
-        this.helpSocket = new WebSocket("ws://localhost:3000/cable");
+        this.helpSocket = new WebSocket("/cable");
         this.helpSocket.onopen = () => {
           console.log("WS connected");
           const msg = {
@@ -187,7 +187,7 @@
       },
 
       async setupWS() {
-        const socket = new WebSocket("ws://localhost:3000/cable");
+        const socket = new WebSocket("/cable");
 
         socket.onopen = () => {
           console.log("WS connected");
