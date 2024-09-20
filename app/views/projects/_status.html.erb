@@ -12,9 +12,15 @@
   </div>
   <div class="mb-2">
     <h1 class="text-xl font-bold">Logs</h1>
-    <div class="max-h-32 overflow-auto text-xs text-gray-500 border rounded-md">
+    <div
+      class="max-h-32 overflow-auto text-xs text-gray-500 border rounded-md flex flex-col-reverse"
+    >
       <template x-for="log in projectStatus.logs">
-        <div x-text="log"></div>
+        <a
+          :href="`/extractions/${log.loggable_id}/work`"
+          target="_blank"
+          x-text="`${log.description} on ${log.created_at}`"
+        ></a>
       </template>
     </div>
   </div>

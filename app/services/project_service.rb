@@ -8,13 +8,7 @@ class ProjectService
   end
 
   def self.logs(project)
-    project.extractions.includes(:logs).map do |extraction|
-      extraction.logs.map do |log|
-        extraction = log.loggable
-        citation = extraction.citations_project.citation
-        "Extraction ID: #{extraction.id} (#{citation.name}) -- #{log.description} on #{log.created_at}"
-      end
-    end.flatten.compact
+    Log.where(loggable_type: 'Extraction', loggable_id: project.extractions.pluck(:id))
   end
 
   def self.extraction_activities(project)
