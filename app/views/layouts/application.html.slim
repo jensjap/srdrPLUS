@@ -32,7 +32,6 @@ html class='no-js' lang='en'
     link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16"
 
   body class="#{controller_name} #{action_name}"
-    div x-data="application"
     = Gon::Base.render_data(camelCase: true)
     = render 'shared/noscript'
 
@@ -47,7 +46,7 @@ html class='no-js' lang='en'
               span aria-hidden='true' &times;
             iframe class="iframe" style="height: 100vh" id='htmlReportIframe' src='/TOC.html' text='Systematic Review Report' title='Systematic Review Report' width='100%'
 
-        .off-canvas-content data-off-canvas-content=''
+        .off-canvas-content data-off-canvas-content='' x-data="application"
           = render "shared/topbar_nav"
 
           div class="min-h-[10vh]"
@@ -65,9 +64,15 @@ javascript:
       "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
     };
     Alpine.data("application", () => ({
+      notification_enabled: false,
+
       async init() {
         await this.setupWS();
-        // this.setupNotification();
+        this.check_notification_status();
+      },
+
+      check_notification_status() {
+        this.notification_enabled = Notification.permission === 'granted';
       },
 
       async setupWS() {
@@ -103,10 +108,18 @@ javascript:
         };
       },
 
-      setupNotification() {
-        if (Notification.permission !== 'denied') {
-          Notification.requestPermission();
+      async setupNotification() {
+        if (this.notification_enabled) {
+          return this.createNotification('Site notifications are already setup. To disable please reset this site\'s permissions in the browser.', '/')
         }
+
+        const permission = await Notification.requestPermission();
+        if (permission === 'denied') {
+          alert('To re-enable notifications, please reset this site\'s permissions in the browser.')
+        } else if (permission === 'granted') {
+          this.createNotification('Site notifications are setup.', '/')
+        }
+        this.check_notification_status();
       },
 
       createNotification(text, url) {
