@@ -27,7 +27,7 @@ class Extraction < ApplicationRecord
   after_create :ensure_extraction_form_structure
   after_create :create_default_arms
   after_create :create_default_status
-  after_save :evaluate_screening_status_citations_project, :create_extraction_log
+  after_save :evaluate_screening_status_citations_project, :create_extraction_log_and_notify
   after_destroy :evaluate_screening_status_citations_project
 
   # create checksums without delay after create and update, since extractions/index would be incorrect.
@@ -253,6 +253,11 @@ class Extraction < ApplicationRecord
     citations_project.try(:evaluate_screening_status)
   end
 
+  def create_extraction_log_and_notify
+    log = create_extraction_log
+    notify_project_members(log, current_user ? current_user.id : nil)
+  end
+
   def create_extraction_log
     return unless status_previously_changed?
 
@@ -262,5 +267,16 @@ class Extraction < ApplicationRecord
                 "Status was set to '#{status}'"
               end
     logs.create!(description: message)
+  end
+
+  def notify_project_members(log, skip_user_id = nil)
+    project.projects_users.each do |project_user|
+      next if project_user.user_id == skip_user_id || !project_user.project_auditor?
+
+      ActionCable.server.broadcast(
+        "notification-#{project_user.user_id}", { message_type: 'message', text: log.description.truncate(140),
+                                                  url: "/extractions/#{id}/work" }
+      )
+    end
   end
 end
