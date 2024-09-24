@@ -273,6 +273,8 @@ class Extraction < ApplicationRecord
     project.projects_users.each do |project_user|
       next if project_user.user_id == skip_user_id || !project_user.project_auditor?
 
+      next unless log
+
       ActionCable.server.broadcast(
         "notification-#{project_user.user_id}", { message_type: 'message', text: log.description.truncate(140),
                                                   url: "/extractions/#{id}/work" }
