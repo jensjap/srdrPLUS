@@ -2,6 +2,7 @@ class MessagesController < ApplicationController
   def index
     # TODO: authorize
     respond_to do |format|
+      format.html
       format.json do
         if params[:room_id]
           @messages = get_messages(Room.find_by(id: params[:room_id]))

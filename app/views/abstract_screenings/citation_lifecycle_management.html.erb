@@ -21,13 +21,6 @@
     >
       Project Messages
     </div>
-    <div
-      @click="tab = 'userMessages'; if (Notification.permission !== 'granted') { Notification.requestPermission() };"
-      class="bg-srdrpurple-light text-white m-1 p-2 rounded-md cursor-pointer"
-      :class="{ '!bg-srdrpurple': tab === 'userMessages' }"
-    >
-      User Messages
-    </div>
   </div>
   <div class="px-4 lg:px-8 py-2 lg:py-4">
     <div x-cloak x-show="tab === 'projectActivities'">
@@ -38,9 +31,6 @@
     </div>
     <div x-cloak x-show="tab === 'projectMessages'">
       <%= render 'projects/project_messages' %>
-    </div>
-    <div x-cloak x-show="tab === 'userMessages'">
-      <%= render 'projects/user_chats' %>
     </div>
   </div>
 </div>
