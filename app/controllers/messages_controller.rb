@@ -77,8 +77,7 @@ class MessagesController < ApplicationController
               :message_id,
               :help_key,
               :project_id,
-              :extraction_id,
-              :extraction_forms_projects_section_id)
+              :extraction_id)
   end
 
   def get_messages(rooms)

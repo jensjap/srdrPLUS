@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_13_075541) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_24_112005) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -331,6 +331,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_13_075541) do
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id"
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id"
     t.index ["project_id"], name: "index_citations_projects_on_project_id"
+    t.index ["screening_status"], name: "index_citations_projects_on_screening_status"
   end
 
   create_table "color_choices", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -743,6 +744,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_13_075541) do
     t.bigint "question_row_columns_question_row_column_option_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.bigint "followup_field_id"
+    t.index ["followup_field_id"], name: "index_ffs_on_followup_field_id"
     t.index ["question_row_columns_question_row_column_option_id"], name: "index_followup_fields_on_qrcqrco_id"
   end
 
@@ -946,13 +949,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_13_075541) do
   end
 
   create_table "key_questions_projects", id: :integer, charset: "utf8mb3", force: :cascade do |t|
-    t.integer "extraction_forms_projects_section_id"
     t.integer "key_question_id"
     t.integer "project_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "pos", default: 999999
-    t.index ["extraction_forms_projects_section_id", "key_question_id", "project_id"], name: "index_kqp_on_efps_id_kq_id_p_id"
+    t.index ["key_question_id", "project_id"], name: "index_kqp_on_efps_id_kq_id_p_id"
     t.index ["key_question_id", "project_id"], name: "index_kqp_on_kq_id_p_id"
     t.index ["pos"], name: "index_key_questions_projects_on_pos"
     t.index ["project_id"], name: "index_kqp_on_p_id"
@@ -1064,8 +1066,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_13_075541) do
     t.string "help_key"
     t.integer "project_id"
     t.integer "extraction_id"
-    t.integer "extraction_forms_projects_section_id"
-    t.index ["extraction_forms_projects_section_id"], name: "index_messages_on_extraction_forms_projects_section_id"
     t.index ["extraction_id"], name: "index_messages_on_extraction_id"
     t.index ["help_key"], name: "index_messages_on_help_key"
     t.index ["message_id"], name: "index_messages_on_message_id"
@@ -1249,6 +1249,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_13_075541) do
     t.boolean "fs_allow_adding_reasons", default: true, null: false
     t.boolean "fs_allow_adding_tags", default: true, null: false
     t.boolean "force_training", default: false, null: false
+    t.integer "source_project_id"
   end
 
   create_table "projects_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -1384,6 +1385,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_13_075541) do
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "question_row_column_field_id"
+    t.index ["question_row_column_field_id"], name: "index_qrcfs_on_question_row_column_field_id"
     t.index ["question_row_column_id"], name: "index_qrcf_on_qrc_id_deleted_at"
     t.index ["question_row_column_id"], name: "index_question_row_column_fields_on_question_row_column_id"
   end
@@ -1448,8 +1451,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_13_075541) do
     t.string "name", limit: 1000, collation: "utf8mb4_bin"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.integer "label_type_id"
-    t.index ["label_type_id"], name: "index_reasons_on_label_type_id"
   end
 
   create_table "records", id: :integer, charset: "utf8mb3", force: :cascade do |t|
@@ -2257,13 +2258,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_13_075541) do
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "extractions_extraction_forms_projects_sections"
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "type1_types"
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "type1s"
+  add_foreign_key "followup_fields", "followup_fields"
   add_foreign_key "funding_sources_sd_meta_data", "funding_sources"
   add_foreign_key "funding_sources_sd_meta_data", "sd_meta_data"
   add_foreign_key "imported_files", "file_types"
   add_foreign_key "imported_files", "sections"
   add_foreign_key "invitations", "roles"
   add_foreign_key "journals", "citations"
-  add_foreign_key "key_questions_projects", "extraction_forms_projects_sections"
   add_foreign_key "key_questions_projects", "key_questions"
   add_foreign_key "key_questions_projects", "projects"
   add_foreign_key "key_questions_projects_questions", "key_questions_projects"
@@ -2274,7 +2275,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_13_075541) do
   add_foreign_key "labels_reasons", "labels"
   add_foreign_key "labels_reasons", "projects_users_roles"
   add_foreign_key "labels_reasons", "reasons"
-  add_foreign_key "messages", "extraction_forms_projects_sections"
   add_foreign_key "messages", "extractions"
   add_foreign_key "messages", "projects"
   add_foreign_key "messages", "rooms"
@@ -2304,6 +2304,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_13_075541) do
   add_foreign_key "quality_dimension_questions", "quality_dimension_sections"
   add_foreign_key "quality_dimension_questions_quality_dimension_options", "quality_dimension_options"
   add_foreign_key "quality_dimension_questions_quality_dimension_options", "quality_dimension_questions"
+  add_foreign_key "question_row_column_fields", "question_row_column_fields"
   add_foreign_key "question_row_column_fields", "question_row_columns"
   add_foreign_key "question_row_columns", "question_row_column_types"
   add_foreign_key "question_row_columns", "question_rows"
@@ -2311,7 +2312,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_13_075541) do
   add_foreign_key "question_row_columns_question_row_column_options", "question_row_columns"
   add_foreign_key "question_rows", "questions"
   add_foreign_key "questions", "extraction_forms_projects_sections"
-  add_foreign_key "reasons", "label_types"
   add_foreign_key "result_statistic_section_types_measures", "measures"
   add_foreign_key "result_statistic_section_types_measures", "result_statistic_section_types"
   add_foreign_key "result_statistic_section_types_measures", "result_statistic_section_types_measures"

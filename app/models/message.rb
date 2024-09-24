@@ -2,15 +2,17 @@
 #
 # Table name: messages
 #
-#  id         :bigint           not null, primary key
-#  message_id :bigint
-#  user_id    :bigint           not null
-#  text       :text(65535)      not null
-#  pinned     :boolean          default(FALSE), not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  room_id    :bigint
-#  help_key   :string(255)
+#  id            :bigint           not null, primary key
+#  message_id    :bigint
+#  user_id       :bigint           not null
+#  text          :text(65535)      not null
+#  pinned        :boolean          default(FALSE), not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  room_id       :bigint
+#  help_key      :string(255)
+#  project_id    :integer
+#  extraction_id :integer
 #
 class Message < ApplicationRecord
   belongs_to :user
@@ -18,7 +20,6 @@ class Message < ApplicationRecord
   belongs_to :message, optional: true
   belongs_to :project, optional: true
   belongs_to :extraction, optional: true
-  belongs_to :extraction_forms_projects_section, optional: true
   has_many :messages
   has_many :message_unreads, dependent: :destroy
 
@@ -69,8 +70,7 @@ class Message < ApplicationRecord
         messages:,
         help_key:,
         project_id:,
-        extraction_id:,
-        extraction_forms_projects_section_id:
+        extraction_id:
       }
     )
   end
@@ -91,8 +91,7 @@ class Message < ApplicationRecord
         messages:,
         help_key:,
         project_id:,
-        extraction_id:,
-        extraction_forms_projects_section_id:
+        extraction_id:
       }
     )
   end
