@@ -38,7 +38,8 @@ class CitationsProject < ApplicationRecord
             screening_qualifications: { user: :profile },
             citation: %i[journal keywords],
             abstract_screening_results: [:reasons, :tags, :abstract_screening, { user: :profile }],
-            fulltext_screening_results: [:reasons, :tags, :fulltext_screening, { user: :profile }]
+            fulltext_screening_results: [:reasons, :tags, :fulltext_screening, { user: :profile }],
+            extractions: { user: :profile, assignor: :profile }
           )
         }
 
@@ -161,6 +162,17 @@ class CitationsProject < ApplicationRecord
       fulltext_screening_objects << fsr_objs
     end
 
+    extraction_objects = extractions.map do |extraction|
+      {
+        user: extraction.user.handle,
+        consolidated: extraction.consolidated,
+        created_at: extraction.created_at,
+        approved_on: extraction.approved_on,
+        assignor: extraction.assignor&.handle || '',
+        status: extraction.status
+      }
+    end
+
     {
       'created_at' => created_at,
       'project_id' => project_id,
@@ -190,7 +202,10 @@ class CitationsProject < ApplicationRecord
       'abstract' => citation.abstract.force_encoding('ISO-8859-1').encode('UTF-8'),
       'pmid' => citation.pmid,
       'refman' => refman,
-      'accession_number' => citation.accession_number
+      'accession_number' => citation.accession_number,
+      'extraction_objects' => extraction_objects,
+      'extraction_count' => extractions.reject(&:consolidated).length,
+      'consolidated_count' => extractions.select(&:consolidated).length
     }
   end
 

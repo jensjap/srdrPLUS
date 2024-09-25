@@ -20,6 +20,9 @@ json.results @citations_projects do |citations_project|
   json.abstract_screening_objects citations_project['abstract_screening_objects']
   json.fulltext_screening_objects citations_project['fulltext_screening_objects']
   json.abstract                   citations_project['abstract']
+  json.extraction_objects         citations_project['extraction_objects']
+  json.extraction_count           citations_project['extraction_count']
+  json.consolidated_count         citations_project['consolidated_count']
 end
 json.pagination do
   json.prev_page    @page == 1 ? 1 : @page - 1
