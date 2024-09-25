@@ -15,7 +15,7 @@
 #
 
 class CitationsProject < ApplicationRecord
-  searchkick callbacks: :async,
+  searchkick callbacks: :async, merge_mappings: true,
              mappings: {
                properties: {
                  accession_number_alts: { type: 'keyword' },
@@ -32,6 +32,15 @@ class CitationsProject < ApplicationRecord
 
   scope :not_disqualified,
         -> { where.not(screening_status: CitationsProject::REJECTED) }
+  scope :search_import,
+        lambda {
+          includes(
+            screening_qualifications: { user: :profile },
+            citation: %i[journal keywords],
+            abstract_screening_results: [:reasons, :tags, :abstract_screening, { user: :profile }],
+            fulltext_screening_results: [:reasons, :tags, :fulltext_screening, { user: :profile }]
+          )
+        }
 
   belongs_to :citation, inverse_of: :citations_projects
   belongs_to :project, inverse_of: :citations_projects # , touch: true
