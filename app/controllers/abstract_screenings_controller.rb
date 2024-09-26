@@ -16,6 +16,17 @@ class AbstractScreeningsController < ApplicationController
       @project.abstract_screenings.new(abstract_screening_params)
     authorize(@abstract_screening)
     if @abstract_screening.save
+      default_word_groups = [
+        { name: "Group 1", color: "#ef4444" },
+        { name: "Group 2", color: "#a855f7" },
+        { name: "Group 3", color: "#22c55e" },
+        { name: "Group 4", color: "#3b82f6" }
+      ]
+
+      default_word_groups.each do |group_attrs|
+        @abstract_screening.word_groups.create(group_attrs.merge(user: current_user))
+      end
+
       flash[:notice] = 'Screening was successfully created'
       redirect_to(project_abstract_screenings_path(@project), status: 303)
     else
