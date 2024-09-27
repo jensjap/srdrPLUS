@@ -262,7 +262,7 @@ class Extraction < ApplicationRecord
   def create_extraction_log
     return unless id_previously_changed? || status_previously_changed?
 
-    logs.create!(description: status, user: current_user)
+    logs.create!(description: status, user: current_user || User.current)
   end
 
   def notify_project_members(log, skip_user_id = nil)
