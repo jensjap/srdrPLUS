@@ -19,7 +19,7 @@
         <a
           :href="`/extractions/${log.loggable_id}/work`"
           target="_blank"
-          x-text="`${log.description} on ${log.created_at}`"
+          x-text="`${log.handle || 'System'} logged '${log.description}' for ${log.loggable_type} #${log.loggable_id} on ${new Date(log.created_at).toLocaleString()}`"
         ></a>
       </template>
     </div>

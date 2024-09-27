@@ -62,6 +62,7 @@ class Extraction < ApplicationRecord
   has_many :key_questions_projects, through: :extractions_key_questions_projects_selections
 
   has_many :logs, dependent: :destroy, as: :loggable
+  has_many :messages, dependent: :destroy
 
   delegate :citation, to: :citations_project
   delegate :username, to: :user, allow_nil: true
@@ -243,7 +244,7 @@ class Extraction < ApplicationRecord
   end
 
   def create_default_status
-    self.status = Status.DRAFT if statusing.blank?
+    create_statusing(status: Status.DRAFT) if statusing.blank?
   end
 
   def evaluate_screening_status_citations_project
@@ -259,14 +260,9 @@ class Extraction < ApplicationRecord
   end
 
   def create_extraction_log
-    return unless status_previously_changed?
+    return unless id_previously_changed? || status_previously_changed?
 
-    message = if current_user
-                "#{current_user.handle} (User# #{current_user.id}) set status to '#{status}'"
-              else
-                "Status was set to '#{status}'"
-              end
-    logs.create!(description: message)
+    logs.create!(description: status, user: current_user)
   end
 
   def notify_project_members(log, skip_user_id = nil)
@@ -276,7 +272,7 @@ class Extraction < ApplicationRecord
       next unless log
 
       ActionCable.server.broadcast(
-        "notification-#{project_user.user_id}", { message_type: 'message', text: log.description.truncate(140),
+        "notification-#{project_user.user_id}", { message_type: 'message', text: log.description&.truncate(140),
                                                   url: "/extractions/#{id}/work" }
       )
     end

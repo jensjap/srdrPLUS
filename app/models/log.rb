@@ -11,4 +11,16 @@
 #
 class Log < ApplicationRecord
   belongs_to :loggable, polymorphic: true
+  belongs_to :user, optional: true
+
+  # Below doesn't work with Log.create!(extraction: ...)
+  has_one :self_ref, class_name: 'Log', foreign_key: :id
+  has_one :extraction, through: :self_ref, source: :loggable, source_type: 'Extraction'
+  # See note above
+
+  attribute :handle, type: :string
+
+  def handle
+    user&.handle
+  end
 end

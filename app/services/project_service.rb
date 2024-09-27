@@ -8,13 +8,13 @@ class ProjectService
   end
 
   def self.logs(project)
-    Log.where(loggable_type: 'Extraction', loggable_id: project.extractions.pluck(:id))
+    Log.includes({ extraction: :project, user: :profile }).where(extraction: { project: }).order(id: :desc)
   end
 
   def self.extraction_activities(project)
     activities = []
-    logs = project.extractions.includes(:logs).map(&:logs).flatten
-    %w[awaiting_work awaiting_review work_approved work_rejected].each do |log_type|
+    logs = Log.includes({ extraction: :project, user: :profile }).where(extraction: { project: })
+    %w[awaiting_work awaiting_review work_accepted work_rejected].each do |log_type|
       relevant_logs = logs.select { |log| log.description.include?(log_type) }
       data = 4.downto(0).map do |i|
         reference_time = (Time.now - i.weeks)
