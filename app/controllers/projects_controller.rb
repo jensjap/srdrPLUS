@@ -19,11 +19,12 @@ class ProjectsController < ApplicationController
 
   def status
     @project = Project.find(params[:project_id])
+    user_id = params[:user_id] == 'null' ? nil : params[:user_id]
     authorize(@project)
     respond_to do |format|
       format.html
       format.json do
-        render json: ProjectService.status_report(@project)
+        render json: ProjectService.status_report(@project, user_id)
       end
     end
   end

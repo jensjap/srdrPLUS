@@ -1,27 +1,48 @@
 <script src="/echarts.min.js"></script>
-<div x-data="projectStatus">
-  <div class="flex flex-col lg:flex-row">
-    <div class="grow basis-0">
-      <h1 class="text-xl font-bold">Extraction Activities</h1>
-      <div id="logChart" style="width: auto; height: 400px"></div>
-    </div>
-    <div class="grow basis-0">
-      <h1 class="text-xl font-bold">Extraction Approval Durations</h1>
-      <div id="extractionKPIChart" style="width: auto; height: 400px"></div>
-    </div>
-  </div>
-  <div class="mb-2">
-    <h1 class="text-xl font-bold">Logs</h1>
-    <div
-      class="max-h-32 overflow-auto text-xs text-gray-500 border rounded-md flex flex-col-reverse"
-    >
-      <template x-for="log in projectStatus.logs">
-        <a
-          :href="`/extractions/${log.loggable_id}/work`"
-          target="_blank"
-          x-text="`${log.handle || 'System'} logged '${log.description}' for ${log.loggable_type} #${log.loggable_id} on ${new Date(log.created_at).toLocaleString()}`"
-        ></a>
+<div x-data="projectStatus" class="flex">
+  <div class="relative w-64 mr-2">
+    <ul class="top-0 bottom-0 absolute overflow-auto w-64 !m-0">
+      <li
+        class="cursor-pointer"
+        :class="{ 'font-bold': null === user_id }"
+        @click="user_id = null; await getProjectStatus(); generateChart(); generateApprovalDurations();"
+      >
+        ALL USERS
+      </li>
+      <template x-for="projects_user in projectStatus?.projects_users">
+        <li
+          class="cursor-pointer"
+          :class="{ 'font-bold': projects_user.id === user_id }"
+          x-text="`${projects_user.handle}`"
+          @click="user_id = projects_user.id; await getProjectStatus(); generateChart(); generateApprovalDurations();"
+        ></li>
       </template>
+    </ul>
+  </div>
+  <div class="grow">
+    <div class="flex flex-col lg:flex-row">
+      <div class="grow basis-0">
+        <h1 class="text-xl font-bold">Extraction Activities</h1>
+        <div id="logChart" style="width: auto; height: 400px"></div>
+      </div>
+      <div class="grow basis-0">
+        <h1 class="text-xl font-bold">Extraction Approval Durations</h1>
+        <div id="extractionKPIChart" style="width: auto; height: 400px"></div>
+      </div>
+    </div>
+    <div class="mb-2">
+      <h1 class="text-xl font-bold">Extraction Logs</h1>
+      <div
+        class="h-32 overflow-auto text-xs text-gray-500 border rounded-md flex flex-col-reverse"
+      >
+        <template x-for="log in projectStatus.logs">
+          <a
+            :href="`/extractions/${log.loggable_id}/work`"
+            target="_blank"
+            x-text="`${log.handle || 'System'} logged '${log.description}' for ${log.loggable_type} #${log.loggable_id} on ${new Date(log.created_at).toLocaleString()}`"
+          ></a>
+        </template>
+      </div>
     </div>
   </div>
 </div>
@@ -35,24 +56,29 @@
     };
     Alpine.data("projectStatus", () => ({
       projectStatus: {},
+      user_id: null,
 
       async init() {
         await this.getProjectStatus();
         this.generateChart();
+        this.generateApprovalDurations();
       },
 
       async getProjectStatus() {
         const url = new URL(window.location.href);
         const id = url.pathname.split("/")[2];
-        const response = await fetch(`/projects/${id}/status`, {
-          method: "GET",
-          headers,
-        });
+        const response = await fetch(
+          `/projects/${id}/status?user_id=${this.user_id}`,
+          {
+            method: "GET",
+            headers,
+          }
+        );
         const data = await response.json();
         this.projectStatus = data;
       },
 
-      generateChart() {
+      generateApprovalDurations() {
         const pieChart = echarts.init(
           document.getElementById("extractionKPIChart")
         );
@@ -75,6 +101,9 @@
           ],
         };
         pieChart.setOption(option);
+      },
+
+      generateChart() {
         const barChart = echarts.init(document.getElementById("logChart"));
         const series = this.projectStatus.extraction_activities;
         const option2 = {
