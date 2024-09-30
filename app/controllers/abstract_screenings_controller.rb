@@ -43,6 +43,7 @@ class AbstractScreeningsController < ApplicationController
     color = params[:color]
     group_name = params[:group_name]
     case_sensitive = params[:case_sensitive]
+    full_match = params[:full_match]
 
     word_group = nil
     if group_id.present?
@@ -77,15 +78,20 @@ class AbstractScreeningsController < ApplicationController
           ww = WordWeight.find_by(id: params[:id])
           update_attributes = { word: word, word_group: word_group }
           update_attributes[:case_sensitive] = case_sensitive if case_sensitive == true || case_sensitive == false
+          update_attributes[:full_match] = full_match if full_match == true || full_match == false
           ww.update(update_attributes)
         else
           create_attributes = { word: word, weight: weight, user: current_user, abstract_screening: @abstract_screening, word_group: word_group }
           create_attributes[:case_sensitive] = case_sensitive if case_sensitive == true || case_sensitive == false
+          update_attributes[:full_match] = full_match if full_match == true || full_match == false
           WordWeight.create!(create_attributes)
         end
       elsif params[:id].present? && ww.id == params[:id]
         if case_sensitive == true || case_sensitive == false
           ww.update(case_sensitive: case_sensitive)
+        end
+        if full_match == true || full_match == false
+          ww.update(full_match: full_match)
         end
         if params[:destroy_ww].to_s == 'true'
           ww.destroy

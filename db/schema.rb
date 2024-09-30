@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_11_000000) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_28_000000) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -2191,6 +2191,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_11_000000) do
     t.datetime "updated_at", null: false
     t.bigint "word_group_id"
     t.boolean "case_sensitive", default: false, null: false
+    t.boolean "full_match", default: false, null: false
     t.index ["abstract_screening_id"], name: "ww_on_as"
     t.index ["user_id", "abstract_screening_id", "word"], name: "u_as_w", unique: true
     t.index ["user_id"], name: "ww_on_u"

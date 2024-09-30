@@ -343,7 +343,8 @@
       desktop: false,
       weighingScreen: false,
       selectedGroup: null,
-      selectAllChecked: false,
+      caseSensitiveSelectAllChecked: false,
+      fullMatchSelectAllChecked: false,
       groups: [],
       newWordName: null,
       newGroupName: null,
@@ -674,12 +675,12 @@
           event.target.classList.remove("!bg-red-500");
         }
 
-        this.sendWw(null, 0, null, false, group_id, null, newGroupName, null, false);
+        this.sendWw(null, 0, null, false, group_id, null, newGroupName, null, null, false);
       },
 
       updateGroupColor(event, group_id) {
         const newGroupColor = event.target.value.trim();
-        this.sendWw(null, 0, null, false, group_id, newGroupColor, null, false);
+        this.sendWw(null, 0, null, false, group_id, newGroupColor, null, null, null, false);
       },
 
       weighWord(word) {
@@ -756,13 +757,16 @@
           const word_weight = this.word_weights[phrase];
           const escapedPhrase = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-          let regex;
+          let regexPattern;
 
-          if (word_weight.case_sensitive) {
-            regex = new RegExp(escapedPhrase, "g");
+          if (word_weight.full_match) {
+            regexPattern = `\\b${escapedPhrase}\\b`;
           } else {
-            regex = new RegExp(escapedPhrase, "gi");
+            regexPattern = escapedPhrase;
           }
+
+          let regexFlags = word_weight.case_sensitive ? 'g' : 'gi';
+          let regex = new RegExp(regexPattern, regexFlags);
 
           let match;
           while ((match = regex.exec(this.citation[sourceKey])) != null) {
@@ -831,7 +835,7 @@
         );
       },
 
-      async sendWw(word, weight, id, destroy_ww, group_id, color, group_name, case_sensitive, destroy_wg) {
+      async sendWw(word, weight, id, destroy_ww, group_id, color, group_name, case_sensitive, full_match, destroy_wg) {
         const response = await fetch(
           "/abstract_screenings/<%= params[:abstract_screening_id] %>/update_word_weight",
           {
@@ -846,6 +850,7 @@
               color,
               group_name,
               case_sensitive,
+              full_match,
               destroy_wg,
             }),
           }
@@ -1072,11 +1077,11 @@
         const groups = {};
         Object.entries(this.word_weights_by_group).forEach(([groupId, words]) => {
           words.forEach(wordInfo => {
-            const { word, color, id, group_name, case_sensitive } = wordInfo;
+            const { word, color, id, group_name, case_sensitive, full_match } = wordInfo;
             if (!groups[groupId]) {
               groups[groupId] = { id: groupId, name: group_name, color: color, words: [] };
             }
-            groups[groupId].words.push({ name: word, id: id, case_sensitive: case_sensitive });
+            groups[groupId].words.push({ name: word, id: id, case_sensitive: case_sensitive, full_match: full_match });
           });
         });
 
@@ -1098,6 +1103,7 @@
               group_name: item.group_name,
               group_id: item.group_id,
               case_sensitive: item.case_sensitive,
+              full_match: item.full_match,
             };
           });
         }
@@ -1117,7 +1123,7 @@
 
       modalConfirmAction() {
         if (this.groupToDelete) {
-          this.sendWw(null, null, null, false, this.groupToDelete, null, null, null, true);
+          this.sendWw(null, null, null, false, this.groupToDelete, null, null, null, null, true);
         }
         this.closeAlertModal();
       },
@@ -1141,14 +1147,27 @@
 
       updateCaseSensitive(wordObj, $event) {
         wordObj.case_sensitive = $event.target.checked;
-        this.sendWw(wordObj.name, 0, wordObj.id, false, this.selectedGroup.id, null, null, $event.target.checked, false);
+        this.sendWw(wordObj.name, 0, wordObj.id, false, this.selectedGroup.id, null, null, $event.target.checked, null, false);
       },
 
-      toggleSelectAll() {
-        this.selectAllChecked = !this.selectAllChecked;
+      toggleCaseSensitiveSelectAll() {
+        this.caseSensitiveSelectAllChecked = !this.caseSensitiveSelectAllChecked;
         this.selectedGroup.words.forEach(wordObj => {
-          wordObj.case_sensitive = this.selectAllChecked;
-          this.sendWw(wordObj.name, 0, wordObj.id, false, this.selectedGroup.id, null, null, this.selectAllChecked, false);
+          wordObj.case_sensitive = this.caseSensitiveSelectAllChecked;
+          this.sendWw(wordObj.name, 0, wordObj.id, false, this.selectedGroup.id, null, null, this.caseSensitiveSelectAllChecked, null, false);
+        });
+      },
+
+      updateFullMatch(wordObj, $event) {
+        wordObj.full_match = $event.target.checked;
+        this.sendWw(wordObj.name, 0, wordObj.id, false, this.selectedGroup.id, null, null, null, $event.target.checked, false);
+      },
+
+      toggleFullMatchSelectAll() {
+        this.fullMatchSelectAllChecked = !this.fullMatchSelectAllChecked;
+        this.selectedGroup.words.forEach(wordObj => {
+          wordObj.full_match = this.fullMatchSelectAllChecked;
+          this.sendWw(wordObj.name, 0, wordObj.id, false, this.selectedGroup.id, null, null, null, this.fullMatchSelectAllChecked, false);
         });
       },
 
@@ -1160,7 +1179,7 @@
           { name: "Group 4", color: "#3b82f6" }
         ];
         defaults.forEach(({ name, color }) => {
-          this.sendWw(null, null, null, false, null, color, name, null, false);
+          this.sendWw(null, null, null, false, null, color, name, null, null, false);
         });
       },
 
@@ -1209,7 +1228,7 @@
             if (group.words && group.words.length > 0) {
               for (const word of group.words) {
                 if (word) {
-                  const updatePromise = this.sendWw(word, 0, null, false, newGroupId, group.color, group.name, null, false);
+                  const updatePromise = this.sendWw(word, 0, null, false, newGroupId, group.color, group.name, null, null, false);
                   updatePromises.push(updatePromise);
                 }
               }
@@ -1242,7 +1261,7 @@
       async updateAndFetchNewGroupId(group) {
         const oldGroups = this.groups.slice();
 
-        await this.sendWw(null, null, null, false, null, group.color, group.name, null, false);
+        await this.sendWw(null, null, null, false, null, group.color, group.name, null, null, false);
 
         await new Promise(resolve => setTimeout(resolve, 1000));
 

@@ -46,6 +46,7 @@ class WordGroup < ApplicationRecord
           group_name: wg.name,
           group_id: wg.id,
           case_sensitive: ww.case_sensitive,
+          full_match: ww.full_match,
         } unless ww.nil?
       end
 
