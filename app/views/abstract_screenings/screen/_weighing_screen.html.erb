@@ -74,7 +74,7 @@
         <template x-for="group in getGroups()" :key="group.id">
           <div class="mt-1 sm:mt-6">
             <button
-              @click="toggleWeighingScreen(); sendWw(wordWeight, 0, null, false, group.id, null, null, false)"
+              @click="toggleWeighingScreen(); sendWw(wordWeight, 0, null, false, group.id, null, null, null, null, false)"
               type="button"
               class="cursor-pointer inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 sm:text-sm"
               :style="`background-color: ${group.color}`"

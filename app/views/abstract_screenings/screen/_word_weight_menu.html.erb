@@ -7,25 +7,42 @@
   <div @click.stop class="bg-white p-5 rounded-lg shadow-lg max-w-lg mx-auto max-h-[90vh] overflow-y-auto">
     <div>
       <h2 class="text-lg">Group: <span x-text="selectedGroup ? selectedGroup.name : ''"></span></h2>
-      <div class="flex mb-4">
-        <div class="form-check" x-show="selectedGroup">
-          <input class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer"
-                type="checkbox"
-                id="caseSensitiveCheckbox"
-                :checked="selectedGroup ? selectedGroup.case_sensitive : false"
-                @change="updateCaseSensitive($event)"
-                x-show="selectedGroup">
-          <label class="form-check-label inline-block text-gray-800" for="caseSensitiveCheckbox">
-            Case Sensitive
-          </label>
-        </div>
+
+      <div class="flex justify-end mb-4" x-show="selectedGroup && selectedGroup.words && selectedGroup.words.length > 0 && !selectedGroup.words.every(wordObj => wordObj.name === null && wordObj.id === null)">
+        <button @click="toggleCaseSensitiveSelectAll" class="text-xs px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+          <span x-text="caseSensitiveSelectAllChecked ? 'Unselect All Case Sensitive Checkbox' : 'Select All Case Sensitive Checkbox'"></span>
+        </button>
       </div>
+
+      <div class="flex justify-end mb-4" x-show="selectedGroup && selectedGroup.words && selectedGroup.words.length > 0 && !selectedGroup.words.every(wordObj => wordObj.name === null && wordObj.id === null)">
+        <button @click="toggleFullMatchSelectAll" class="text-xs px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+          <span x-text="fullMatchSelectAllChecked ? 'Unselect All Full Match Checkbox' : 'Select All Full Match Checkbox'"></span>
+        </button>
+      </div>
+
       <div class="mt-4 max-h-[500px] overflow-y-auto">
         <template x-if="selectedGroup && selectedGroup.words && selectedGroup.words.length > 0 && !selectedGroup.words.every(wordObj => wordObj.name === null && wordObj.id === null)">
           <template x-for="(wordObj, index) in selectedGroup.words" :key="wordObj.id">
             <div :class="{'bg-gray-100': index % 2 === 0, 'bg-white': index % 2 !== 0}" class="flex items-center gap-4">
-              <input class="box-border p-2" type="text" x-model="wordObj.name" @keyup.enter="sendWw(wordObj.name, 0, wordObj.id, false, selectedGroup.id, null, null, null, false)" @blur="sendWw(wordObj.name, null, wordObj.id, false, selectedGroup.id, null, null, null, false)">
-              <button @click="sendWw(wordObj.name, null, wordObj.id, true, selectedGroup.id, null, null, null, false)" class="p-2">
+              <input class="box-border p-2" type="text" x-model="wordObj.name"
+                @keyup.enter="sendWw(wordObj.name, 0, wordObj.id, false, selectedGroup.id, null, null, wordObj.case_sensitive, wordObj.full_match, false)"
+                @blur="sendWw(wordObj.name, null, wordObj.id, false, selectedGroup.id, null, null, wordObj.case_sensitive, wordObj.full_match, false)">
+
+              <div class="flex items-center">
+                <input type="checkbox" class="form-check-input h-4 w-4 inline-block"
+                  :checked="wordObj.case_sensitive"
+                  @change="updateCaseSensitive(wordObj, $event)">
+                <label class="text-gray-800 text-xs whitespace-nowrap">Case Sensitive</label>
+              </div>
+
+              <div class="flex items-center">
+                <input type="checkbox" class="form-check-input h-4 w-4 inline-block"
+                  :checked="wordObj.full_match"
+                  @change="updateFullMatch(wordObj, $event)">
+                <label class="text-gray-800 text-xs whitespace-nowrap">Full Match</label>
+              </div>
+
+              <button @click="sendWw(wordObj.name, null, wordObj.id, true, selectedGroup.id, null, null, null, null, false)" class="p-2">
                 <i class="fi-trash cursor-pointer hover:underline"></i>
               </button>
             </div>
@@ -36,7 +53,7 @@
         </div>
       </div>
       <div class="mt-4">
-        <input class="box-border p-2 w-full" type="text" placeholder="Add new term" x-model="newWordName" @keyup.enter="sendWw(newWordName, 0, null, false, selectedGroup.id, null, null, null, false)">
+        <input class="box-border p-2 w-full" type="text" placeholder="Add new term" x-model="newWordName" @keyup.enter="sendWw(newWordName, 0, null, false, selectedGroup.id, null, null, null, null, false)">
       </div>
     </div>
     <button @click="word_weight_menu = false; selectedGroup = null;" class="mt-4 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Close</button>

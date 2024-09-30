@@ -16,6 +16,17 @@ class AbstractScreeningsController < ApplicationController
       @project.abstract_screenings.new(abstract_screening_params)
     authorize(@abstract_screening)
     if @abstract_screening.save
+      default_word_groups = [
+        { name: "Group 1", color: "#ef4444" },
+        { name: "Group 2", color: "#a855f7" },
+        { name: "Group 3", color: "#22c55e" },
+        { name: "Group 4", color: "#3b82f6" }
+      ]
+
+      default_word_groups.each do |group_attrs|
+        @abstract_screening.word_groups.create(group_attrs.merge(user: current_user))
+      end
+
       flash[:notice] = 'Screening was successfully created'
       redirect_to(project_abstract_screenings_path(@project), status: 303)
     else
@@ -32,6 +43,7 @@ class AbstractScreeningsController < ApplicationController
     color = params[:color]
     group_name = params[:group_name]
     case_sensitive = params[:case_sensitive]
+    full_match = params[:full_match]
 
     word_group = nil
     if group_id.present?
@@ -45,11 +57,10 @@ class AbstractScreeningsController < ApplicationController
         word_group.destroy
         render json: WordGroup.word_weights_object(current_user, @abstract_screening)
         return
-      elsif group_name.present? || color.present? || !case_sensitive.nil?
+      elsif group_name.present? || color.present?
         word_group.update(
           name: group_name.presence || word_group.name,
           color: color.presence || word_group.color,
-          case_sensitive: case_sensitive.nil? ? word_group.case_sensitive : case_sensitive,
         )
       end
     elsif color.present? && group_name.present? && params[:destroy_wg].to_s != 'true'
@@ -65,11 +76,23 @@ class AbstractScreeningsController < ApplicationController
       if ww.nil?
         if params[:id].present?
           ww = WordWeight.find_by(id: params[:id])
-          ww.update(word: word, word_group: word_group)
+          update_attributes = { word: word, word_group: word_group }
+          update_attributes[:case_sensitive] = case_sensitive if case_sensitive == true || case_sensitive == false
+          update_attributes[:full_match] = full_match if full_match == true || full_match == false
+          ww.update(update_attributes)
         else
-          WordWeight.create!(word: word, weight: weight, user: current_user, abstract_screening: @abstract_screening, word_group: word_group)
+          create_attributes = { word: word, weight: weight, user: current_user, abstract_screening: @abstract_screening, word_group: word_group }
+          create_attributes[:case_sensitive] = case_sensitive if case_sensitive == true || case_sensitive == false
+          update_attributes[:full_match] = full_match if full_match == true || full_match == false
+          WordWeight.create!(create_attributes)
         end
       elsif params[:id].present? && ww.id == params[:id]
+        if case_sensitive == true || case_sensitive == false
+          ww.update(case_sensitive: case_sensitive)
+        end
+        if full_match == true || full_match == false
+          ww.update(full_match: full_match)
+        end
         if params[:destroy_ww].to_s == 'true'
           ww.destroy
         end

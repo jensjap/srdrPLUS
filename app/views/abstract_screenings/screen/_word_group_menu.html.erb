@@ -117,7 +117,7 @@
               </button>
             </template>
             <div class="mt-4">
-              <input class="box-border p-2 w-full" type="text" placeholder="Add new group" x-model="newGroupName" @keyup.enter="sendWw(null, null, null, false, null, '#3b82f6', newGroupName, null, false); newGroupName = null;">
+              <input class="box-border p-2 w-full" type="text" placeholder="Add new group" x-model="newGroupName" @keyup.enter="sendWw(null, null, null, false, null, '#3b82f6', newGroupName, null, null, false); newGroupName = null;">
             </div>
             <button @click="downloadGroupsJson()" class="mt-4 px-4 py-2 bg-srdrpurple text-white rounded hover:bg-srdrpurple-light focus:outline-none">
                 Download Groups

@@ -14,7 +14,9 @@ class FevirPlatformService
       fhirEntry: fhir_entry,
       status: 'active',
       resourceType: 'Bundle',
-      apiToken: @api_token
+      apiToken: @api_token,
+      srdrplus: true,
+      srdrplustoken: 'TLOvkAojYDGxsp1P3Q689scbiM6F4x7MgkP5WPojEXGim7lRWQ2QeJLH97JKnVnC2YEbONYcg5eTQmdxomf89mnmjACJ6uRnSxuTUocNjceJJYfmbSCZVy56t3hhkgEy'
     }
 
     response = HTTParty.post(API_ENDPOINT,

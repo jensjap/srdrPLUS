@@ -42,6 +42,7 @@ class AbstractScreening < ApplicationRecord
   has_many :abstract_screening_results, dependent: :destroy, inverse_of: :abstract_screening
 
   has_many :word_weights
+  has_many :word_groups
 
   def screening_type
     abstract_screening_type
