@@ -1,0 +1,7 @@
+Greetings <%= @handle %>,
+
+Here are yesterday's activity status updates of the extractions you've assigned.
+
+<% @log_messages.each do |log_message| %>
+  <%= log_message %>
+<% end %>
