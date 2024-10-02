@@ -2,7 +2,7 @@ div class="mx-auto p-4 lg:p-8"
   h1 class="text-xl font-bold" Member(s) & Role(s)
   div class="button tiny !mb-2" data-open="member-roles-modal" See Role Definitions
   .grid.grid-cols-1
-    = simple_form_for(@project, html: { inert: !ProjectPolicy.new(current_user, @project).project_leader?, 'abide': '', 'live-validate': true }) do |f|
+    = simple_form_for(@project, html: { inert: !@project_leader, 'abide': '', 'live-validate': true }) do |f|
       .form-inputs style="display: inline-block;"
         table.hover style="table-layout: fixed;"
           thead
@@ -10,14 +10,16 @@ div class="mx-auto p-4 lg:p-8"
               th.w-16 Expertise
               th.w-1/5 User
               - ProjectsUser::ROLES.each do |role|
-                th = role
-              th
-              - if ProjectPolicy.new(current_user, @project).project_leader?
-                th
+                th.w-24 = role
+              th Interest Areas
+              th Additional Roles & Responsibilities
+              th Availability Notes
+              - if @project_leader
+                th.w-24
           tbody#projects-users-table
             = f.simple_fields_for :projects_users do |pu_f|
               = render 'projects_users/form', f: pu_f
-      - if ProjectPolicy.new(current_user, @project).project_leader?
+      - if @project_leader
         .links
           = link_to_add_association 'add another user to project', f, :projects_users, partial: 'projects_users/form', 'data-association-insertion-node': '#projects-users-table', 'data-association-insertion-method': 'append'
         .form-actions

@@ -102,7 +102,19 @@
       </div>
     </div>
   </td>
-  <% if ProjectPolicy.new(current_user, @project).project_leader? %>
+  <td>
+    <!-- prettier-ignore -->
+    <%= f.input :interest_areas, label: false, input_html: { rows: 3, disabled: !@project_leader } %>
+  </td>
+  <td>
+    <!-- prettier-ignore -->
+    <%= f.input :additional_rrs, label: false, input_html: { rows: 3, disabled: !@project_leader } %>
+  </td>
+  <td>
+    <!-- prettier-ignore -->
+    <%= f.input :availability_notes, label: false, input_html: { rows: 3, disabled: !@project_leader } %>
+  </td>
+  <% if @project_leader %>
   <td class="pt-3">
     <div
       style="display: flex; align-items: center; justify-content: space-around"
@@ -111,5 +123,4 @@
     </div>
   </td>
   <% end %>
-  <td></td>
 </tr>

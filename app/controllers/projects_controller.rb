@@ -467,8 +467,9 @@ class ProjectsController < ApplicationController
   def set_project
     @project = Project
                .includes(publishing: :approval)
-               .includes(projects_users: [user: :profile])
+               .includes(projects_users: { user: :profile }, users: :profile)
                .find(params[:id])
+    @project_leader = ProjectPolicy.new(current_user, @project).project_leader?
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

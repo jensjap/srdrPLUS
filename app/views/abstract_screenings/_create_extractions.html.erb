@@ -1,5 +1,5 @@
 <div
-  class="fixed top-1/2 left-1/2 h-[32rem] -mt-[18rem] w-96 -ml-48 md:h-[40rem] md:-mt-[20rem] md:w-[48rem] md:-ml-[24rem] z-10 transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:p-6 border border-slate-200"
+  class="fixed inset-0 m-4 lg:m-24 z-10 transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:p-6 border border-slate-200 flex flex-col"
   x-show="showCreateExtractions"
   x-cloak
   x-transition:enter="ease-out duration-300"
@@ -45,7 +45,7 @@
       </p>
     </div>
   </div>
-  <div class="overflow-y-scroll h-[28rem] md:h-[32rem] border p-2">
+  <div class="overflow-y-scroll grow border p-2">
     <div class="flex cursor-pointer border-b border-slate-100 mb-2">
       <span @click="users.forEach(user => user.selected = true)"
         >Select All</span
@@ -56,16 +56,29 @@
       >
     </div>
     <template x-for="(user, userIndex) in users">
-      <div
-        class="flex cursor-pointer border-b border-slate-100 mb-2 select-none"
-        @click="users[userIndex].selected = !users[userIndex].selected"
-      >
-        <input
-          class="!m-0 !mr-2 cursor-pointer"
-          type="checkbox"
-          x-model="users[userIndex].selected"
-        />
-        <div x-text="user.handle"></div>
+      <div class="grid grid-cols-4 border-b border-slate-100 mb-2">
+        <label :for="`createExtractionsUser-${userIndex}`" class="fit-content">
+          <input
+            class="!m-0 !mr-2 cursor-pointer"
+            type="checkbox"
+            :id="`createExtractionsUser-${userIndex}`"
+            x-model="users[userIndex].selected"
+          />
+          <span class="cursor-pointer" x-text="user.handle"></span>
+        </label>
+        <div>
+          <textarea :value="user.interest_areas" disabled rows="3"></textarea>
+        </div>
+        <div>
+          <textarea :value="user.additional_rrs" disabled rows="3"></textarea>
+        </div>
+        <div>
+          <textarea
+            :value="user.availability_notes"
+            disabled
+            rows="3"
+          ></textarea>
+        </div>
       </div>
     </template>
   </div>

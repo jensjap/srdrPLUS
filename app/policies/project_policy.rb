@@ -65,6 +65,9 @@ class ProjectPolicy < ApplicationPolicy
         :_destroy,
         :user_id,
         :permissions,
+        :interest_areas,
+        :additional_rrs,
+        :availability_notes,
         :is_expert,
         { imports_attributes: [
           :import_type_id, {
