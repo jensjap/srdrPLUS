@@ -31,7 +31,8 @@ module ProjectsHelper
       (controller_name.eql?('imports') && (action_name.eql?('new') || action_name.eql?('index'))) ||
       (controller.instance_of?(PublishingsController) && publishable_record.instance_of?(Project) && controller.action_name == 'new') ||
       controller_name.eql?('consolidations') ||
-      (controller_name.eql?('imports') && action_name.eql?('show'))
+      (controller_name.eql?('imports') && action_name.eql?('show')) ||
+      (controller_name.eql?('project_dashboard') && action_name.eql?('citation_lifecycle_management'))
   end
 
   def find_project(project, extraction, extraction_forms_project, question, extraction_forms_projects_section, publishable_record)
