@@ -2,6 +2,7 @@
   <!-- prettier-ignore -->
   <%= render 'shared/screenings/reasons_and_tags_modal' %>
   <%= render 'shared/screenings/add_reasoning' %>
+
   <div class="sm:flex sm:items-center">
     <div class="sm:flex-auto">
       <h1 class="text-xl font-bold">Abstract Screenings</h1>
@@ -10,6 +11,7 @@
         citations
       </p>
     </div>
+
     <div class="mt-4 flex flex-col space-y-2">
       <!-- prettier-ignore -->
       <%= link_to('Create New Screening',
@@ -58,6 +60,11 @@
       </div>
     </div>
   </div>
+
+  <div class="mt-4">
+    <%= render 'project_dashboard/abstract_screening' %>
+  </div>
+
   <div class="px-4 sm:px-6 lg:px-8">
     <div class="mt-8 flex flex-col">
       <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -233,6 +240,101 @@
 </div>
 <script>
   document.addEventListener("alpine:init", () => {
+    Alpine.store("dashboard", {
+      kpis: {
+        count: "..",
+        asu: "..",
+        asps: "..",
+        asic: "..",
+        asa: "..",
+        asr: "..",
+        fsu: "..",
+        fsps: "..",
+        fsic: "..",
+        fsa: "..",
+        fsr: "..",
+        ene: "..",
+        eip: "..",
+        er: "..",
+        ec: "..",
+        cnc: "..",
+        cip: "..",
+        cr: "..",
+        cc: "..",
+      },
+
+      show: {
+        asu: true,
+        asps: true,
+        asic: true,
+        asa: true,
+        asr: true,
+        fsu: true,
+        fsps: true,
+        fsic: true,
+        fsa: true,
+        fsr: true,
+        ene: true,
+        eip: true,
+        er: true,
+        ec: true,
+        cnc: true,
+        cip: true,
+        cr: true,
+        cc: true,
+      },
+
+      init() {
+        this.fetch_kpis();
+      },
+
+      async fetch_kpis() {
+        const response = await fetch("/projects/<%= @project.id %>/kpis", {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        this.kpis = await response.json();
+      },
+
+      getAbstractScreeningTotal() {
+        return (
+          (parseInt(this.kpis.asu) || 0) +
+          (parseInt(this.kpis.asps) || 0) +
+          (parseInt(this.kpis.asic) || 0) +
+          (parseInt(this.kpis.asa) || 0) +
+          (parseInt(this.kpis.asr) || 0)
+        );
+      },
+      getFullTextScreeningTotal() {
+        return (
+          (parseInt(this.kpis.fsu) || 0) +
+          (parseInt(this.kpis.fsps) || 0) +
+          (parseInt(this.kpis.fsic) || 0) +
+          (parseInt(this.kpis.fsa) || 0) +
+          (parseInt(this.kpis.fsr) || 0)
+        );
+      },
+      getFullTextExtractionTotal() {
+        return (
+          (parseInt(this.kpis.ene) || 0) +
+          (parseInt(this.kpis.eip) || 0) +
+          (parseInt(this.kpis.er) || 0) +
+          (parseInt(this.kpis.ec) || 0)
+        );
+      },
+      getConsolidationTotal() {
+        return (
+          (parseInt(this.kpis.cnc) || 0) +
+          (parseInt(this.kpis.cip) || 0) +
+          (parseInt(this.kpis.cr) || 0) +
+          (parseInt(this.kpis.cc) || 0)
+        );
+      },
+    });
+
     const headers = {
       Accept: "application/json",
       "Content-Type": "application/json",
