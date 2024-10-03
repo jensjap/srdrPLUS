@@ -28,8 +28,10 @@ class ExtractionsController < ApplicationController
             { extraction_forms_projects_section: :section }
           ] },
           { project: [
-            { extraction_forms_projects: :extraction_forms_projects_sections }
-          ] }
+            { extraction_forms_projects: :extraction_forms_projects_sections },
+            :key_questions_projects
+          ] },
+          { extractions_key_questions_projects_selections: { key_questions_project: :key_question } }
         ]
       )
     @extractions = ExtractionDecorator.decorate_collection(@extractions)
