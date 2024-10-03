@@ -19,8 +19,15 @@ class Log < ApplicationRecord
   # See note above
 
   attribute :handle, type: :string
+  attribute :citation_name, type: :string
 
   def handle
     user&.handle
+  end
+
+  def citation_name
+    return '' unless loggable_type == 'Extraction'
+
+    extraction.citations_project.citation.name
   end
 end

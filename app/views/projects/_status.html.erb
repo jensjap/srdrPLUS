@@ -1,9 +1,10 @@
 <script src="/echarts.min.js"></script>
-<div x-data="projectStatus" class="flex">
-  <div class="relative w-64 mr-2">
-    <ul class="top-0 bottom-0 absolute overflow-auto w-64 !m-0">
+<div x-data="projectStatus" class="flex space-x-8">
+  <div class="relative w-48">
+    <h1 class="text-lg font-bold">Select User Activities</h1>
+    <ul class="h-[calc(100vh-280px)] overflow-auto !m-0">
       <li
-        class="cursor-pointer"
+        class="cursor-pointer text-xs"
         :class="{ 'font-bold': null === user_id }"
         @click="user_id = null; await getProjectStatus(); generateChart(); generateApprovalDurations();"
       >
@@ -11,9 +12,10 @@
       </li>
       <template x-for="projects_user in projectStatus?.projects_users">
         <li
-          class="cursor-pointer"
+          class="cursor-pointer truncate text-xs"
           :class="{ 'font-bold': projects_user.id === user_id }"
           x-text="`${projects_user.handle}`"
+          :title="projects_user.handle"
           @click="user_id = projects_user.id; await getProjectStatus(); generateChart(); generateApprovalDurations();"
         ></li>
       </template>
@@ -22,25 +24,39 @@
   <div class="grow">
     <div class="flex flex-col lg:flex-row">
       <div class="grow basis-0">
-        <h1 class="text-xl font-bold">Extraction Log Activities</h1>
-        <div id="logChart" style="width: auto; height: 400px"></div>
+        <h1 class="text-lg font-bold">Extraction Logs Graph</h1>
+        <div id="logChart" style="width: auto; height: 250px"></div>
       </div>
       <div class="grow basis-0">
-        <h1 class="text-xl font-bold">Extraction Approval Durations</h1>
-        <div id="extractionKPIChart" style="width: auto; height: 400px"></div>
+        <h1 class="text-lg font-bold">Extraction Approval Durations</h1>
+        <div id="extractionKPIChart" style="width: auto; height: 250px"></div>
       </div>
     </div>
     <div class="mb-2">
-      <h1 class="text-xl font-bold">Extraction Logs</h1>
+      <h1 class="text-lg font-bold">Extraction Logs Book</h1>
       <div
-        class="h-32 overflow-auto text-xs text-gray-500 border rounded-md flex flex-col-reverse"
+        class="h-56 overflow-auto text-xs text-gray-500 border rounded-md flex flex-col-reverse"
       >
         <template x-for="log in projectStatus.logs">
           <a
+            class="flex justify-between space-x-1"
             :href="`/extractions/${log.loggable_id}/work`"
             target="_blank"
-            x-text="`${log.handle || 'System'} logged '${log.description}' for ${log.loggable_type} #${log.loggable_id} on ${new Date(log.created_at).toLocaleString()}`"
-          ></a>
+          >
+            <div class="w-56" x-text="log.handle || 'System'"></div>
+            <div class="w-32" x-text="log.description"></div>
+            <div class="w-16" x-text="log.loggable_type"></div>
+            <div class="w-16" x-text="log.loggable_id"></div>
+            <div
+              class="w-80 truncate"
+              :title="log.citation_name"
+              x-text="log.citation_name"
+            ></div>
+            <div
+              class="w-32"
+              x-text="new Date(log.created_at).toLocaleString()"
+            ></div>
+          </a>
         </template>
       </div>
     </div>

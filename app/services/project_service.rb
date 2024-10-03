@@ -5,13 +5,15 @@ class ProjectService
       extraction_activities: extraction_activities(logs),
       extraction_kpis: extraction_kpis(project, user_id),
       logs:,
-      projects_users: project.projects_users.includes(user: :profile).map { |pu| { id: pu.user_id, handle: pu.user.handle } }
+      projects_users: project.projects_users.includes(user: :profile).map do |pu|
+                        { id: pu.user_id, handle: pu.user.handle }
+                      end
     }
   end
 
   def self.get_logs(project, user_id)
-    logs = Log.includes({ extraction: { citations_project: :project, user: :profile },
-                          user: :profile }).where(extraction: { project: })
+    logs = Log.includes({ extraction: { citations_project: %i[project citation], user: :profile },
+                          user: :profile }).where(extraction: { project: }).order(created_at: :desc)
     logs = logs.where(extraction: { user_id: }) if user_id
     logs
   end
