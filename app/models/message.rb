@@ -50,7 +50,7 @@ class Message < ApplicationRecord
   end
 
   def broadcast_help
-    online_user_ids = ActionCable.server.connections.map(&:current_user).map(&:id).uniq
+    online_user_ids = get_redis_online_user_ids
     broadcast_user_ids =
       User.joins(:projects_users).where(projects_users: { project_id: }).pluck(:id)
     notify_users(online_user_ids & broadcast_user_ids)
@@ -97,7 +97,7 @@ class Message < ApplicationRecord
   end
 
   def broadcast_chat
-    online_user_ids = ActionCable.server.connections.map(&:current_user).map(&:id).uniq
+    online_user_ids = get_redis_online_user_ids
     broadcast_user_ids = room.users.map(&:id)
     notify_users(online_user_ids & broadcast_user_ids)
 
@@ -126,5 +126,13 @@ class Message < ApplicationRecord
         }
       )
     end
+  end
+
+  private
+
+  def get_redis_online_user_ids
+    Redis.new.pubsub('channels', 'action_cable/*')
+         .map { |c| Base64.decode64(c.split('/').last) }
+         .map { |string| string.split('/').last.to_i }
   end
 end
