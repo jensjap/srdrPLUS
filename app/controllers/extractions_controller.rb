@@ -179,6 +179,14 @@ class ExtractionsController < ApplicationController
               @extraction.extractions_key_questions_projects_selections.create(key_questions_project_id: kqp_id)
             end
           end
+
+          @extraction.extractions_extraction_forms_projects_sections.each do |eefps|
+            if eefps.statusing.present?
+              eefps.statusing.update(status_id: 1)
+            else
+              eefps.create_statusing(status_id: 1)
+            end
+          end
         end
       end
     end

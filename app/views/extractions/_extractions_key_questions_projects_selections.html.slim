@@ -1,6 +1,9 @@
 - extraction = action_name.eql?('work') ? @extraction : @consolidated_extraction
 
 h4 Select Key Questions Addressed
+p.alert-warning style="color: red; font-weight: bold; margin-bottom: 1em;"
+  | **Warning:** Changing the selected key questions will reset all extraction work statuses to "Draft".
+
 div#extractions-key-questions-projects-selections.key-question-selector
   = simple_form_for extraction,
                     :url => "/extractions/#{ extraction.id }/update_kqp_selections",
