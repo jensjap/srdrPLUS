@@ -70,7 +70,7 @@
       <button
         @click="getAsrId()"
         class="cursor-pointer bg-gray-100 rounded-md p-1 inline-flex items-center justify-center text-black"
-        x-show="!resolutionMode"
+        x-show="!resolutionMode && asr.label !== null"
       >
         Continue Screening
       </button>
