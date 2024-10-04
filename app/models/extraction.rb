@@ -266,7 +266,12 @@ class Extraction < ApplicationRecord
   end
 
   def notify_project_members(log, skip_user_id = nil)
-    project.projects_users.each do |project_user|
+    online_user_ids = redis_online_user_ids
+    broadcast_user_ids = project.projects_users.map(&:user_id)
+    online_broadcast_user_ids = (online_user_ids & broadcast_user_ids)
+
+    projects_users = ProjectsUser.where(project:, user_id: online_broadcast_user_ids)
+    projects_users.each do |project_user|
       next if project_user.user_id == skip_user_id || !project_user.project_auditor?
 
       next unless log
@@ -276,5 +281,11 @@ class Extraction < ApplicationRecord
                                                   url: "/extractions/#{id}/work" }
       )
     end
+  end
+
+  def redis_online_user_ids
+    Redis.new.pubsub('channels', 'action_cable/*')
+         .map { |c| Base64.decode64(c.split('/').last) }
+         .map { |string| string.split('/').last.to_i }
   end
 end
