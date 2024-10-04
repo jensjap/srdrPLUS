@@ -27,3 +27,9 @@ div style="display: flex; flex-direction: row;margin-bottom:.5rem;"
     b Outcome Status
   span
     = render 'shared/statusing_form', statusing: @eefpst1.statusing, status_name: @eefpst1.statusing.status.name
+
+div style="display: flex; flex-direction: row; margin-bottom: .5rem;"
+  span style="margin-right: .5rem;"
+    b Units:
+  span
+    = @eefpst1.units.present? ? @eefpst1.units : 'N/A'
