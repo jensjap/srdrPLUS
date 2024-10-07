@@ -1,15 +1,22 @@
 class MessagesController < ApplicationController
   def index
-    # TODO: authorize
     respond_to do |format|
       format.html
       format.json do
-        if params[:room_id]
-          @messages = get_messages(Room.find_by(id: params[:room_id]))
+        if (room = Room.find_by(id: params[:room_id]))
+          authorize(room, policy_class: MessagePolicy)
+          @messages = get_messages(room)
         elsif (help_key = params[:help_key])
-          @messages = Message.where(help_key:).includes(user: :profile).order(id: :desc)
-        elsif (project_id = params[:project_id])
-          @messages = Message.where(project_id:).includes(user: :profile).order(id: :desc)
+          @messages = Message.where(help_key:).includes(:project, user: :profile).order(id: :desc)
+          @messages.map(&:project).uniq.each do |project|
+            authorize(project, policy_class: MessagePolicy)
+          end
+        elsif (project = Project.find_by(id: params[:project_id]))
+          authorize(project, policy_class: MessagePolicy)
+          @messages = Message.where(project:).includes(:project, user: :profile).order(id: :desc)
+          @messages.map(&:project).uniq.each do |pro|
+            authorize(pro, policy_class: MessagePolicy)
+          end
         else
           @current_user = current_user
           @all_users =
@@ -28,10 +35,11 @@ class MessagesController < ApplicationController
   end
 
   def update
-    # TODO: authorize
     respond_to do |format|
       format.json do
         message = Message.find(params[:id])
+        authorize(message)
+
         message.update(message_params)
         render json: {}, status: 200
       end
@@ -39,11 +47,12 @@ class MessagesController < ApplicationController
   end
 
   def create
-    # TODO: authorize the room
     respond_to do |format|
       format.json do
         message = Message.new(message_params)
         message.user = current_user
+        authorize(message)
+
         message.save!
         message.broadcast_message
         render json: message, status: 200
@@ -52,16 +61,13 @@ class MessagesController < ApplicationController
   end
 
   def destroy
-    # TODO: authorize
     respond_to do |format|
       format.json do
         message = Message.find(params[:id])
-        if message.user == current_user
-          message.destroy
-          render json: {}, status: 200
-        else
-          render json: {}, status: 403
-        end
+        authorize(message)
+
+        message.destroy
+        render json: {}, status: 200
       end
     end
   end
