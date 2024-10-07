@@ -13,4 +13,5 @@ class Room < ApplicationRecord
   has_many :users, through: :memberships
   has_many :messages, dependent: :destroy
   belongs_to :project, optional: true
+  belongs_to :user
 end

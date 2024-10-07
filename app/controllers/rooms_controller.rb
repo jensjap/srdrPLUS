@@ -3,6 +3,7 @@ class RoomsController < ApplicationController
     respond_to do |format|
       format.json do
         room = Room.new(room_params)
+        room.user = current_user
         if room.save && room.users << current_user
           render json: room, status: 200
         else
