@@ -12,6 +12,10 @@ class UserPolicy
     record.eql?(user)
   end
 
+  def update?
+    record.eql?(user)
+  end
+
   def destroy?
     record.eql?(user)
   end
