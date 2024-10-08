@@ -23,7 +23,6 @@
       selected_rooms: [],
       selected_messages: [],
       messages: {},
-      chat_rooms: [],
       current_user_id: null,
       chat_text: {},
       shiftPressed: false,
@@ -41,7 +40,6 @@
 
       async init() {
         await this.fetchRooms();
-        this.selected_rooms = this.chat_rooms;
         this.sortRooms();
         await this.setupWS();
       },
@@ -121,9 +119,32 @@
         });
         if (response.status >= 200 && response.status < 300) {
           const data = await response.json();
-          this.chat_rooms.push(data);
+          this.selected_rooms.push(data);
           this.messages[data.id] = [];
           this.openRoom(data);
+        }
+      },
+
+      async destroyRoom(room) {
+        const id = room.id;
+        if (!confirm(`Are you sure you want to delete room: '${room.name}'?`)) {
+          return;
+        }
+
+        const response = await fetch(`/rooms/${id}`, {
+          method: "DELETE",
+          headers,
+        });
+        if (response.status >= 200 && response.status < 300) {
+          this.selected_rooms = this.selected_rooms.filter(
+            (sr) => sr.id !== id
+          );
+          this.roomUsers = [];
+          if (this.selected_room?.id === id) {
+            this.selected_room = null;
+            this.selected_messages = [];
+            delete this.messages[id];
+          }
         }
       },
 
@@ -234,7 +255,7 @@
           },
         });
         const data = await response.json();
-        this.chat_rooms = data.chat_rooms;
+        this.selected_rooms = data.chat_rooms;
         this.messages = data.messages;
         this.current_user_id = data.current_user_id;
         this.allUsers = data.all_users;
@@ -281,17 +302,16 @@
           }
 
           if (message.message_type === "add-membership") {
-            this.chat_rooms.push(message.room);
+            this.selected_rooms.push(message.room);
             this.getMessages(message.room);
             return;
           }
 
           if (message.message_type === "remove-membership") {
             this.messages[message.room.id] = [];
-            this.chat_rooms = this.chat_rooms.filter(
+            this.selected_rooms = this.selected_rooms.filter(
               (room) => room.id !== message.room.id
             );
-            this.selected_rooms = this.chat_rooms;
             if (this.selected_room?.id === message.room.id) {
               this.selected_room = null;
               this.selected_messages = [];

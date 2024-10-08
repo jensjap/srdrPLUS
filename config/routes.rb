@@ -454,7 +454,7 @@ Rails.application.routes.draw do
     resources :message_unreads, only: %i[destroy]
   end
 
-  resources :rooms, shallow: true, only: %i[create] do
+  resources :rooms, shallow: true, only: %i[create destroy] do
     resources :memberships, only: %i[index destroy create]
   end
 
