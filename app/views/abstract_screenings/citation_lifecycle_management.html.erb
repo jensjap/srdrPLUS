@@ -1,11 +1,11 @@
 <div x-data="citation_lifecycle_management">
   <div class="flex items-center space-x-2 ml-7">
     <div
-      @click="tab = 'projectActivities'"
+      @click="tab = 'extractionOverview'"
       class="bg-srdrpurple-light text-white m-1 p-2 rounded-md cursor-pointer"
-      :class="{ '!bg-srdrpurple': tab === 'projectActivities' }"
+      :class="{ '!bg-srdrpurple': tab === 'extractionOverview' }"
     >
-      Project Activities
+      Extraction Overview
     </div>
     <div
       @click="tab = 'citationLifecycleManagement'"
@@ -23,7 +23,7 @@
     </div>
   </div>
   <div class="px-4 lg:px-8 py-2 lg:py-4">
-    <div x-cloak x-show="tab === 'projectActivities'">
+    <div x-cloak x-show="tab === 'extractionOverview'">
       <%= render 'projects/status' %>
     </div>
     <div x-cloak x-show="tab === 'citationLifecycleManagement'">
@@ -69,7 +69,7 @@
       detailedResult: 0,
       lastIndexSelected: null,
       copied: false,
-      tab: "projectActivities",
+      tab: "extractionOverview",
 
       init() {
         window.shift = false;

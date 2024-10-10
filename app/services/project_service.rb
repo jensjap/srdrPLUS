@@ -2,7 +2,7 @@ class ProjectService
   def self.status_report(project, user_id = nil)
     logs = get_logs(project, user_id)
     {
-      extraction_activities: extraction_activities(logs),
+      extraction_activities: extraction_activities(project, user_id),
       extraction_kpis: extraction_kpis(project, user_id),
       logs:,
       projects_users: project.projects_users.includes(user: :profile).map do |pu|
@@ -18,21 +18,39 @@ class ProjectService
     logs
   end
 
-  def self.extraction_activities(logs)
+  def self.extraction_activities(project, user_id)
+    extractions = project.extractions.includes(:logs, citations_project: %i[project citation],
+                                                      user: :profile)
+    extractions = extractions.where(user_id:) if user_id
     activities = []
-    %w[awaiting_work awaiting_review work_accepted work_rejected].each do |log_type|
-      relevant_logs = logs.select { |log| log.description.include?(log_type) }
-      data = 4.downto(0).map do |i|
-        reference_time = (Time.now - i.weeks)
-        head = reference_time.beginning_of_week
-        tail = reference_time.end_of_week
-        relevant_logs.select { |log| log.created_at.between?(head, tail) }.count
+    [
+      %w[awaiting_work #edcc5f],
+      %w[awaiting_review #606fc4],
+      %w[work_accepted #a1c876],
+      %w[work_rejected #d6776a]
+    ].each do |log_type, color|
+      relevant_logs = extractions.map do |extraction|
+        extraction.logs.select do |log|
+          log.description == extraction.status && extraction.status == log_type
+        end.min_by(&:id)
+      end.compact
+      data = 3.downto(0).map do |i|
+        head = (i + 1).weeks.ago
+        tail = i.weeks.ago
+        if i == 3
+          relevant_logs.select { |log| log.created_at < tail }.count
+        else
+          relevant_logs.select { |log| log.created_at.between?(head, tail) }.count
+        end
       end
       activities << {
         name: log_type,
         type: 'bar',
         stack: 'log',
-        data:
+        data:,
+        itemStyle: {
+          color:
+        }
       }
     end
     activities
