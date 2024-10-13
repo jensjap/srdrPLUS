@@ -36,6 +36,7 @@ class ScreeningQualificationsController < ApplicationController
                        consolidation_qualification: citations_project.qualification('c-') }
         end
 
+        AbstractScreeningDistributionService.delete_distributions_by_citations_projects(citations_projects)
         render json: results
       end
     end

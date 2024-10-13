@@ -7,6 +7,7 @@ json.abstract_screening do
       }
     )
     json.options(AbstractScreening::SCREENINGTYPES.map { |key, value| { key:, value: } })
+    json.new_options(AbstractScreening::NEW_SCREENINGTYPES.map { |key, value| { key:, value: } })
   end
   json.all_tag @abstract_screening.yes_tag_required && @abstract_screening.no_tag_required && @abstract_screening.maybe_tag_required
   json.all_reason @abstract_screening.no_reason_required && @abstract_screening.maybe_reason_required

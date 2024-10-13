@@ -1,0 +1,96 @@
+class CitationFilterService
+  attr_reader :creators, :created_dates, :import_types
+
+  def initialize(project_id:)
+    @project_id = project_id
+    @filters = []
+    @creators = calculate_creators
+    @created_dates = calculate_created_dates
+    @import_types = calculate_import_types
+  end
+
+  def filter_by_creators(creator_ids:)
+    creator_ids_filter = CitationsProject.where(project_id: @project_id, creator_id: creator_ids).pluck(:id)
+    @filters << -> { creator_ids_filter }
+    self
+  end
+
+  def filter_by_created_dates(dates:)
+    date_filters = dates.map do |date|
+      start_time = DateTime.parse(date).utc
+      end_time = start_time.end_of_hour
+      CitationsProject.where(project_id: @project_id, created_at: start_time..end_time).pluck(:id)
+    end.flatten.uniq
+    @filters << -> { date_filters }
+    self
+  end
+
+  def filter_by_import_types(import_types:)
+    import_type_filters = CitationsProject.where(project_id: @project_id, import_type: import_types).pluck(:id)
+    @filters << -> { import_type_filters }
+    self
+  end
+
+  def filter_unassigned_abstract_screening
+    unassigned_abstract_screening_filter = CitationsProject.where(project_id: @project_id, abstract_screening_id: nil).pluck(:id)
+    @filters << -> { unassigned_abstract_screening_filter }
+    self
+  end
+
+  def filter_unassigned_fulltext_screening
+    unassigned_fulltext_screening_filter = CitationsProject.where(project_id: @project_id, fulltext_screening_id: nil).pluck(:id)
+    @filters << -> { unassigned_fulltext_screening_filter }
+    self
+  end
+
+  def filter_all_citations
+    @filters << -> { CitationsProject.where(project_id: @project_id).pluck(:id) }
+    self
+  end
+
+  def filter_with_abstract_screening_results
+    @filters << -> { CitationsProject.joins(:abstract_screening_results)
+                                     .where(project_id: @project_id)
+                                     .distinct
+                                     .pluck(:id) }
+    self
+  end
+
+  def filter_without_abstract_screening_results
+    @filters << -> { CitationsProject.left_joins(:abstract_screening_results)
+                                      .where(project_id: @project_id, abstract_screening_results: { id: nil })
+                                      .distinct
+                                      .pluck(:id) }
+    self
+  end
+
+  def results
+    return [] if @filters.empty?
+
+    @filters.map(&:call).reduce(:&)
+  end
+
+  def clear_filters
+    @filters = []
+    self
+  end
+
+  private
+
+  def calculate_creators
+    creator_ids = CitationsProject.where(project_id: @project_id).distinct.pluck(:creator_id)
+    User.where(id: creator_ids).map do |user|
+      { id: user.id, handle: user.handle }
+    end
+  end
+
+  def calculate_created_dates
+    CitationsProject.where(project_id: @project_id)
+                    .distinct
+                    .pluck(Arel.sql("DATE_FORMAT(created_at, '%Y-%m-%d %H:00:00')"))
+  end
+
+  def calculate_import_types
+    CitationsProject.where(project_id: @project_id).distinct.pluck(:import_type)
+  end
+end
