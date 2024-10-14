@@ -13,10 +13,6 @@ class AbstractScreeningPolicy < ApplicationPolicy
     part_of_project?
   end
 
-  def citation_lifecycle_management?
-    part_of_project?
-  end
-
   def export_screening_data?
     part_of_project?
   end
@@ -35,10 +31,6 @@ class AbstractScreeningPolicy < ApplicationPolicy
 
   def work_selection?
     part_of_project? && project_contributor? && !project_consolidator? && !project_leader?
-  end
-
-  def kpis?
-    part_of_project?
   end
 
   def new?

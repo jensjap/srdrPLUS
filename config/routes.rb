@@ -237,8 +237,8 @@ Rails.application.routes.draw do
 
     resources :consolidations
 
-    get 'citation_lifecycle_management', to: 'abstract_screenings#citation_lifecycle_management'
-    get 'kpis', to: 'abstract_screenings#kpis'
+    get 'citation_lifecycle_management', to: 'project_dashboard#citation_lifecycle_management'
+    get 'kpis', to: 'project_dashboard#kpis'
     post 'export_screening_data', to: 'abstract_screenings#export_screening_data'
 
     resources :abstract_screenings do
