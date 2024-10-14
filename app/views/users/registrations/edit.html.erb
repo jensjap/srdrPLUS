@@ -122,6 +122,8 @@
           </p>
           <!-- prettier-ignore -->
           <% end %>
+          <input type="text" name="fake_username" style="position: absolute; top: -1000px;">
+          <input type="password" name="fake_password" style="position: absolute; top: -1000px;">
           <%= f.input :password, autocomplete: "off", hint: "leave it blank if you don't want to change it", required: false %>
           <%= f.input :password_confirmation, required: false %>
           <%= f.input :current_password, hint: "we need your current password to confirm your changes", required: true %>
