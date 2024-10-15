@@ -1,19 +1,44 @@
+include ActionView::Helpers::DateHelper
 class ProjectService
   def self.status_report(project, user_id = nil)
-    logs = get_logs(project, user_id)
     {
       extraction_activities: extraction_activities(project, user_id),
       extraction_kpis: extraction_kpis(project, user_id),
-      logs:,
       projects_users: project.projects_users.includes(user: :profile).map do |pu|
                         { id: pu.user_id, handle: pu.user.handle }
-                      end
+                      end,
+      pending_work: pending_work(project, user_id)
     }
   end
 
+  def self.pending_work(project, user_id)
+    extractions = Extraction
+                  .where(project:)
+                  .where.not(status: 'work_accepted')
+                  .includes(:logs, citations_project: :citation, user: :profile)
+    extractions = extractions.where(user_id:) if user_id
+    extractions.map do |extraction|
+      log = extraction.logs.select do |l|
+        l.description == extraction.status
+      end.min_by(&:created_at)
+      {
+        handle: extraction&.user&.handle,
+        status: extraction.status,
+        created_at: log&.created_at || '',
+        time_ago_in_words: (log && time_ago_in_words(log.created_at)) || '',
+        id: extraction.id,
+        title: extraction.citations_project.citation.name
+      }
+    end.sort_by { |pending_work| pending_work[:created_at] }
+  end
+
   def self.get_logs(project, user_id)
-    logs = Log.includes({ extraction: { citations_project: %i[project citation], user: :profile },
-                          user: :profile }).where(extraction: { project: }).order(created_at: :desc)
+    logs = Log.includes({ extraction: {
+                            citations_project: %i[project citation], user: :profile
+                          },
+                          user: :profile })
+              .where(extraction: { project: })
+              .order(created_at: :desc)
     logs = logs.where(extraction: { user_id: }) if user_id
     logs
   end
@@ -32,7 +57,7 @@ class ProjectService
       relevant_logs = extractions.map do |extraction|
         extraction.logs.select do |log|
           log.description == extraction.status && extraction.status == log_type
-        end.min_by(&:id)
+        end.min_by(&:created_at)
       end.compact
       data = 3.downto(0).map do |i|
         head = (i + 1).weeks.ago
