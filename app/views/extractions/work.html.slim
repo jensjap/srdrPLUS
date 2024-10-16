@@ -13,14 +13,16 @@ div x-data="$store.sharedExtractionStore"
     h6 style='margin: 0;'
       = @extraction.citation.handle.split("\n").join(" - ")
     span Refman ID: #{ @extraction.citations_project.refman.to_s }
-
-  div class="flex ml-9 py-1"
-    div Extraction Status:
+  div class="flex ml-9"
+    div class="flex items-center" Extraction Status:
     div
-      button @click="await updateStatus('awaiting_work'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-pointer bg-gray-500" :class="{ 'bg-srdrpurple' : extraction.status == 'awaiting_work' }" awaiting_work
-      button @click="await updateStatus('awaiting_review'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-pointer bg-gray-500" :class="{ 'bg-srdrpurple' : extraction.status == 'awaiting_review' }" awaiting_review
-      button :disabled="!extraction['able_to_review_status?']" @click="await updateStatus('work_rejected'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-not-allowed bg-gray-500" :class="{ 'bg-srdrpurple' : extraction.status == 'work_rejected', 'cursor-pointer' : extraction['able_to_review_status?'] }" work_rejected
-      button :disabled="!extraction['able_to_review_status?']" @click="await updateStatus('work_accepted'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-not-allowed bg-gray-500" :class="{ 'bg-srdrpurple' : extraction.status == 'work_accepted', 'cursor-pointer' : extraction['able_to_review_status?'] }" work_accepted
+      button @click="await updateStatus('awaiting_work'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-pointer bg-orange-600 opacity-40" :class="{ '!opacity-100 border border-black' : extraction.status == 'awaiting_work' }" awaiting_work
+      button @click="await updateStatus('awaiting_review'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-pointer bg-blue-800 opacity-40" :class="{ '!opacity-100 border border-black' : extraction.status == 'awaiting_review' }" awaiting_review
+      button :disabled="!extraction['able_to_review_status?']" @click="await updateStatus('work_rejected'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-not-allowed bg-red-800 opacity-40" :class="{ '!opacity-100 border border-black' : extraction.status == 'work_rejected', 'cursor-pointer' : extraction['able_to_review_status?'] }" work_rejected
+      button :disabled="!extraction['able_to_review_status?']" @click="await updateStatus('work_accepted'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-not-allowed bg-green-700 opacity-40" :class="{ '!opacity-100 border border-black' : extraction.status == 'work_accepted', 'cursor-pointer' : extraction['able_to_review_status?'] }" work_accepted
+  div class="ml-9" x-cloak="" x-show="extraction.status === 'work_rejected'"
+    | Rejection Reason:
+    span class="ml-1 text-red-700 text-sm" x-text="extraction.rejection_reason ? extraction.rejection_reason : 'None Given'"
   div class="flex mr-9 py-1 justify-end"
     div @click="$store.sharedExtractionStore.help_board = true" class="p-1 bg-srdr-secondary rounded-md text-white text-sm cursor-pointer flex items-center"
       | Messages
@@ -94,7 +96,7 @@ javascript:
 
         let rejectionReason = null;
         if (status === "work_rejected") {
-          rejectionReason = prompt('Please enter a rejection reason if any.')
+          rejectionReason = prompt('Please enter a rejection reason if any. (Can be left blank)')
           if (rejectionReason === null) return
         }
 

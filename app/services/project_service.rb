@@ -49,10 +49,10 @@ class ProjectService
     extractions = extractions.where(user_id:) if user_id
     activities = []
     [
-      %w[awaiting_work #edcc5f],
-      %w[awaiting_review #606fc4],
-      %w[work_accepted #a1c876],
-      %w[work_rejected #d6776a]
+      %w[awaiting_work #dd631b],
+      %w[awaiting_review #2a40ae],
+      %w[work_rejected #8f2a1f],
+      %w[work_accepted #347e3d]
     ].each do |log_type, color|
       relevant_logs = extractions.map do |extraction|
         extraction.logs.select do |log|

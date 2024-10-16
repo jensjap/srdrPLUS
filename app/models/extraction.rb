@@ -75,6 +75,10 @@ class Extraction < ApplicationRecord
   #    end
   #  end
 
+  def rejection_reason
+    logs.where(description: 'work_rejected').order(created_at: :desc).limit(1)&.first&.reason
+  end
+
   def able_to_review_status?
     ExtractionService.able_to_review_status?(current_user, self)
   end

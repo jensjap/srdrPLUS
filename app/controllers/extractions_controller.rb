@@ -52,7 +52,7 @@ class ExtractionsController < ApplicationController
     respond_to do |format|
       format.json do
         @extraction.current_user = current_user
-        render json: @extraction, methods: [:able_to_review_status?]
+        render json: @extraction, methods: %i[able_to_review_status? rejection_reason]
       end
     end
   end
