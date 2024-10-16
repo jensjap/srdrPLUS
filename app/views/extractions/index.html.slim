@@ -40,7 +40,6 @@ div class="p-4 lg:p-8" x-data="$store.sharedExtractionStore"
         th.table-sortable.sorting data-sorting-col="8" width="80px" Status
         th.table-sortable.sorting data-sorting-col="9" width="80px" Created
         th.table-sortable.sorting data-sorting-col="10" width="80px" Approved
-        th.table-sortable.sorting data-sorting-col="11" width="80px" Days Open
         th width="50px"
         th width="50px"
 
@@ -48,7 +47,6 @@ div class="p-4 lg:p-8" x-data="$store.sharedExtractionStore"
       - if @extractions.blank?
         tr
           td No extractions found.
-          td
           td
           td
           td
@@ -90,10 +88,7 @@ div class="p-4 lg:p-8" x-data="$store.sharedExtractionStore"
             td
               div = extraction.created_at.strftime('%Y-%m-%d')
             td
-              div = extraction.approved_on&.strftime('%Y-%m-%d')
-            td class="text-center"
-              - if extraction.approved_on.nil?
-                = ((Time.now - extraction.created_at)/1.day).to_i
+              div = (extraction.created_at + 2.weeks).strftime('%Y-%m-%d')
             td
               = link_to 'Reassign', reassign_extraction_extraction_path(extraction)
             td

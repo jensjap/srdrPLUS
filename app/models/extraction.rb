@@ -257,10 +257,6 @@ class Extraction < ApplicationRecord
   def create_extraction_log_and_notify
     log = create_extraction_log
     notify_project_members(log, current_user ? current_user.id : nil)
-
-    return unless approved_on.nil? && status == 'work_accepted'
-
-    update_column(:approved_on, Time.now)
   end
 
   def create_extraction_log
