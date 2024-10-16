@@ -12,7 +12,7 @@
 #  user_id                :integer
 #  approved_on            :datetime
 #  assignor_id            :integer
-#  status                 :string(255)
+#  status                 :string(255)      default("awaiting_work")
 #
 
 class Extraction < ApplicationRecord
@@ -67,7 +67,7 @@ class Extraction < ApplicationRecord
   delegate :citation, to: :citations_project
   delegate :username, to: :user, allow_nil: true
 
-  attr_accessor :current_user
+  attr_accessor :current_user, :reason
 
   #  def to_builder
   #    Jbuilder.new do |extraction|
@@ -266,7 +266,8 @@ class Extraction < ApplicationRecord
   def create_extraction_log
     return unless id_previously_changed? || status_previously_changed?
 
-    logs.create!(description: status, user: current_user || User.current)
+    logs.create!(description: status, user: current_user || User.current,
+                 reason: reason.present? && status == 'work_rejected' ? reason : nil)
   end
 
   def notify_project_members(log, skip_user_id = nil)

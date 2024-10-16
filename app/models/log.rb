@@ -8,6 +8,8 @@
 #  description   :string(255)
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
+#  user_id       :integer
+#  reason        :string(255)
 #
 class Log < ApplicationRecord
   belongs_to :loggable, polymorphic: true

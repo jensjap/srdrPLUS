@@ -22,6 +22,7 @@
 #  fs_allow_adding_reasons    :boolean          default(TRUE), not null
 #  fs_allow_adding_tags       :boolean          default(TRUE), not null
 #  force_training             :boolean          default(FALSE), not null
+#  source_project_id          :integer
 #
 
 class Project < ApplicationRecord

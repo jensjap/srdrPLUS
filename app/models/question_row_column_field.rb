@@ -2,11 +2,12 @@
 #
 # Table name: question_row_column_fields
 #
-#  id                     :integer          not null, primary key
-#  question_row_column_id :integer
-#  name                   :string(255)
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
+#  id                           :integer          not null, primary key
+#  question_row_column_id       :integer
+#  name                         :string(255)
+#  created_at                   :datetime         not null
+#  updated_at                   :datetime         not null
+#  question_row_column_field_id :integer
 #
 
 class QuestionRowColumnField < ApplicationRecord

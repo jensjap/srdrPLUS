@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_10_07_070925) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_16_072851) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1010,6 +1010,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_07_070925) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.string "reason"
     t.index ["loggable_type", "loggable_id"], name: "index_logs_on_loggable"
     t.index ["user_id"], name: "index_logs_on_user_id"
   end

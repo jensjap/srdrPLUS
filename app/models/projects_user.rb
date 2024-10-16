@@ -2,13 +2,16 @@
 #
 # Table name: projects_users
 #
-#  id          :integer          not null, primary key
-#  project_id  :integer
-#  user_id     :integer
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  permissions :integer          default(0), not null
-#  is_expert   :boolean          default(FALSE)
+#  id                 :integer          not null, primary key
+#  project_id         :integer
+#  user_id            :integer
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  permissions        :integer          default(0), not null
+#  is_expert          :boolean          default(FALSE)
+#  interest_areas     :text(65535)
+#  additional_rrs     :text(65535)
+#  availability_notes :text(65535)
 #
 
 class ProjectsUser < ApplicationRecord

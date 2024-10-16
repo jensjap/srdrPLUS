@@ -2,11 +2,10 @@
 #
 # Table name: reasons
 #
-#  id            :integer          not null, primary key
-#  name          :string(1000)
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  label_type_id :integer
+#  id         :integer          not null, primary key
+#  name       :string(1000)
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #
 
 class Reason < ApplicationRecord

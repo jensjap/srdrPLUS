@@ -2,13 +2,12 @@
 #
 # Table name: key_questions_projects
 #
-#  id                                   :integer          not null, primary key
-#  extraction_forms_projects_section_id :integer
-#  key_question_id                      :integer
-#  project_id                           :integer
-#  created_at                           :datetime         not null
-#  updated_at                           :datetime         not null
-#  pos                                  :integer          default(999999)
+#  id              :integer          not null, primary key
+#  key_question_id :integer
+#  project_id      :integer
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  pos             :integer          default(999999)
 #
 
 class KeyQuestionsProject < ApplicationRecord

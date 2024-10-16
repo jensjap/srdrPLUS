@@ -430,7 +430,8 @@ class ExtractionsController < ApplicationController
   def extraction_params
     params
       .require(:extraction)
-      .permit(:status,
+      .permit(:reason,
+              :status,
               :user_id,
               :citations_project_id,
               citations_project_ids: [],
