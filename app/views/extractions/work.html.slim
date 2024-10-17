@@ -1,5 +1,6 @@
-div x-data="$store.deleteConfirmation"
+div x-data="{ ...$store.deleteConfirmation, ...$store.resetConfirmation }"
   = render 'shared/alert_modal'
+  = render 'shared/reset_confirmation_modal'
   - provide(:title, t(".extract_data"))
 
   div style='margin-left: 34px;'
@@ -63,6 +64,39 @@ javascript:
           })
           .catch(error => console.error('Error:', error))
           .finally(() => this.closeAlertModal());
+      }
+    });
+
+    Alpine.store('resetConfirmation', {
+      isResetModalOpen: false,
+      resetModalContent: 'Warning! Changing the selected key questions may reset extraction work statuses. Please confirm your choice.',
+      actionUrl: '',
+      resetExtractionWorkStatuses: true,
+      openResetModal(url) {
+        this.actionUrl = url;
+        this.isResetModalOpen = true;
+        this.resetExtractionWorkStatuses = true;
+      },
+      closeResetModal() {
+        this.isResetModalOpen = false;
+      },
+      confirmResetAction() {
+        this.submitForm();
+        this.closeResetModal();
+      },
+      confirmWithoutResetAction() {
+        this.resetExtractionWorkStatuses = false;
+        this.submitForm();
+        this.closeResetModal();
+      },
+      submitForm() {
+        const form = document.getElementById('extractions-key-questions-projects-selections-form');
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'reset_extraction_work_statuses';
+        input.value = this.resetExtractionWorkStatuses;
+        form.appendChild(input);
+        form.submit();
       }
     });
   });
