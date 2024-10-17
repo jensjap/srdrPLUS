@@ -1,5 +1,5 @@
 module ImportJobs::RisCitationImporter
-  def import_citations_from_ris(imported_file, user_id, preview = false)
+  def import_citations_from_ris(imported_file, user_id, import_id, preview = false)
     key_counter = 0
     @project = imported_file.project
 
@@ -40,6 +40,7 @@ module ImportJobs::RisCitationImporter
                 project: @project,
                 refman: citation.refman,
                 creator_id: user_id,
+                import_id: import_id,
                 import_type: 'ris'
               )
             end

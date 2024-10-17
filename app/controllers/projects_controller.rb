@@ -4,7 +4,6 @@ class ProjectsController < ApplicationController
   before_action :set_project, only: %i[
     citations_in_ris export_data show edit update destroy export
     export_assignments_and_mappings import_assignments_and_mappings simple_import
-    import_csv import_pubmed import_endnote import_ris
     confirm_deletion dedupe_citations create_citation_screening_extraction_form
     create_full_text_screening_extraction_form machine_learning_results
   ]
@@ -13,8 +12,7 @@ class ProjectsController < ApplicationController
     index edit show filter export new create
   ]
   before_action :skip_policy_scope, except: %i[
-    index show edit update destroy filter export import_csv
-    import_pubmed import_endnote import_ris
+    index show edit update destroy filter export
   ]
 
   # GET /projects
@@ -317,47 +315,6 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def import_ris
-    authorize(@project)
-    @project.citation_files.attach(citation_import_params[:citation_files])
-    RisImportJob.set(wait: 1.minute).perform_later(current_user.id, @project.id, @project.citation_files.last.id)
-    flash[:success] =
-      "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
-
-    redirect_to(project_citations_path(@project), status: 303)
-  end
-
-  def import_csv
-    authorize(@project)
-    @project.citation_files.attach(citation_import_params[:citation_files])
-    CsvImportJob.set(wait: 1.minute).perform_later(current_user.id, @project.id, @project.citation_files.last.id)
-    flash[:success] =
-      "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
-
-    redirect_to(project_citations_path(@project), status: 303)
-  end
-
-  def import_pubmed
-    authorize(@project)
-    @project.citation_files.attach(citation_import_params[:citation_files])
-    PubmedImportJob.set(wait: 1.minute).perform_later(current_user.id, @project.id, @project.citation_files.last.id)
-    flash[:success] =
-      "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
-    # @project.import_citations_from_pubmed( citation_import_params[:citation_file] )
-
-    redirect_to(project_citations_path(@project), status: 303)
-  end
-
-  def import_endnote
-    authorize(@project)
-    @project.citation_files.attach(citation_import_params[:citation_files])
-    EnlImportJob.set(wait: 1.minute).perform_later(current_user.id, @project.id, @project.citation_files.last.id)
-    flash[:success] =
-      "Import request submitted for project '#{@project.name}'. You will be notified by email of its completion."
-
-    redirect_to(project_citations_path(@project), status: 303)
-  end
-
   def dedupe_citations
     authorize(@project)
     DedupeCitationsJob.set(wait: 1.minute).perform_later(@project.id)
@@ -498,20 +455,6 @@ class ProjectsController < ApplicationController
 
     project.save
   end
-
-  # def import_params
-  #  params.require(:project)
-  #      .permit(
-  # end
-
-  # def distiller_params
-  #   # what kind of files do we want to import?
-  #   params.require(:project).permit(:citation_file, :design_file, :arms_file, :outcomes_file, :bc_file, :rob_file)
-  # end
-
-  # def json_params
-  #   params.require(:project).permit(:json_file)
-  # end
 
   def citation_import_params
     # what kind of files do we want to import?

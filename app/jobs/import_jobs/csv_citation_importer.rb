@@ -2,7 +2,7 @@ require 'csv'
 require 'cgi'
 
 module ImportJobs::CsvCitationImporter
-  def import_citations_from_csv(imported_file, user_id, preview = false)
+  def import_citations_from_csv(imported_file, user_id, import_id, preview = false)
     primary_id = CitationType.find_by(name: 'Primary').id
     ### citation type, not sure if necessary
     # secondary_id = CitationType.find_by( name: 'Secondary' ).id
@@ -113,7 +113,7 @@ module ImportJobs::CsvCitationImporter
                end
     @project.citations << citation
     citations_project = @project.citations_projects.find_by(citation_id: citation.id)
-    citations_project.update(refman: refid, creator_id: user_id, import_type: 'csv')
+    citations_project.update(refman: refid, creator_id: user_id, import_type: 'csv', import_id: import_id)
   end
 
   def sanitize_row(row)

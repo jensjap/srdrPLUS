@@ -42,12 +42,14 @@ class CitationsProject < ApplicationRecord
   belongs_to :creator, class_name: 'User', optional: true
   belongs_to :abstract_screening, optional: true
   belongs_to :fulltext_screening, optional: true
+  belongs_to :import, optional: true
 
   has_many :extractions, dependent: :destroy
   has_many :abstract_screening_results, dependent: :destroy
   has_many :fulltext_screening_results, dependent: :destroy
   has_many :screening_qualifications, dependent: :destroy
   has_many :ml_predictions, dependent: :destroy
+  has_many :abstract_screening_distributions
 
   accepts_nested_attributes_for :citation, reject_if: :all_blank
 

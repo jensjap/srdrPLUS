@@ -147,6 +147,11 @@ class AbstractScreeningDistributionService
   end
 
   def allocate_double(citations_project)
+    if @users.size < 2
+      allocate_single(citations_project)
+      return
+    end
+
     current_assignments = @assigned_citations.values.flatten.count(citations_project.id)
 
     if current_assignments >= 2

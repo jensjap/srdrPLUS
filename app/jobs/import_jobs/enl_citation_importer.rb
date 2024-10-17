@@ -1,5 +1,5 @@
 module ImportJobs::EnlCitationImporter
-  def import_citations_from_enl(imported_file, user_id, preview = false)
+  def import_citations_from_enl(imported_file, user_id, import_id, preview = false)
     key_counter = 0
     primary_id = CitationType.find_by(name: 'Primary').id
 
@@ -75,6 +75,7 @@ module ImportJobs::EnlCitationImporter
             citation: citation,
             project: imported_file.project,
             creator_id: user_id,
+            import_id: import_id,
             import_type: 'enl'
           )
         end

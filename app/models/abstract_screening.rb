@@ -28,6 +28,7 @@ class AbstractScreening < ApplicationRecord
   include ScreeningModule
 
   validates_presence_of :abstract_screening_type
+  #validate :double_screening_user_requirements, if: -> { requires_user_validation? }
 
   belongs_to :project
 
@@ -54,5 +55,23 @@ class AbstractScreening < ApplicationRecord
 
   def clear_citations_projects_abstract_screening_id
     project.citations_projects.where(abstract_screening_id: id).update_all(abstract_screening_id: nil)
+  end
+
+  private
+
+  def requires_user_validation?
+    ['double', 'expert-needed', 'only-expert-novice-mixed'].include?(abstract_screening_type)
+  end
+
+  def double_screening_user_requirements
+    if exclusive_users
+      if users.reject(&:blank?).size < 2
+        errors.add(:users, 'Must select at least two users.')
+      end
+    else
+      if project.users.size < 2
+        errors.add(:base, 'Project must have at least two users.')
+      end
+    end
   end
 end
