@@ -32,7 +32,7 @@
               class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             >
             <div class="h-6 mt-2"> <!-- Add a fixed height to reserve space -->
-              <div 
+              <div
                 x-show="citationCountInvalid"
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0"
@@ -71,6 +71,7 @@
                 </div>
               </td>
 
+              <%#
               <!-- Date Filter -->
               <td class="border p-2 w-1/3">
                 <label class="block text-sm font-medium">Select Import Dates: <i class='fi-info text-blue-700 text-lg' title='Mutually Exclusive'></i></label>
@@ -84,6 +85,26 @@
                       <div>
                         <input type="checkbox" x-model="filters.dates" :value="date" :id="'date-' + date" @change="applyFilters" checked>
                         <label :for="'date-' + date" x-text="formatDate(date)"></label>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </td>
+              %>
+
+              <!-- Task Filter -->
+              <td class="border p-2 w-1/3">
+                <label class="block text-sm font-medium">Select Import Tasks: <i class='fi-info text-blue-700 text-lg' title='Mutually Exclusive'></i></label>
+                <div class="mt-2 border border-gray-300 p-2">
+                  <div class="mb-2">
+                    <input type="checkbox" id="select-all-import-tasks" @click="toggleAll('import_tasks', $event.target.checked)" checked>
+                    <label for="select-all-import-tasks" class="font-medium">Select All</label>
+                  </div>
+                  <div class="max-h-32 overflow-y-auto space-y-2">
+                    <template x-for="import_task in all_import_tasks" :key="import_task">
+                      <div>
+                        <input type="checkbox" x-model="filters.import_tasks" :value="import_task" :id="'import_task-' + import_task" @change="applyFilters" checked>
+                        <label :for="'import_task-' + import_task" x-text="formatDate(import_task)"></label>
                       </div>
                     </template>
                   </div>
@@ -672,6 +693,7 @@
       all_creators: [],
       all_created_dates: [],
       all_import_types: [],
+      all_import_tasks: [],
       totalCitationsCount: 0,
       filteredCitations: [],
       filteredCitationsCount: 0,
@@ -715,12 +737,14 @@
           this.all_creators = data.creators;
           this.all_created_dates = data.created_dates;
           this.all_import_types = data.import_types;
+          this.all_import_tasks = data.import_tasks;
           this.totalCitationsCount = data.total_citations_count;
           this.filteredCitationsCount = data.total_citations_count;
 
           this.filters.creator_ids = this.all_creators.map(c => c.id);
           this.filters.dates = this.all_created_dates.slice();
           this.filters.import_types = this.all_import_types.slice();
+          this.filters.import_tasks = this.all_import_tasks.slice();
 
           this.applyFilters();
 
@@ -730,8 +754,22 @@
       },
 
       formatDate(date) {
-        const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-        return new Date(date).toLocaleString(undefined, options);
+        if (date === 'No Import') {
+          return 'Not By File Import';
+        }
+        const parsedDate = new Date(date);
+        if (isNaN(parsedDate.getTime())) {
+          return 'Invalid Date';
+        } else {
+          const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+          };
+          return parsedDate.toLocaleString(undefined, options);
+        }
       },
 
       async applyFilters() {
@@ -786,6 +824,8 @@
           this.filters.creator_ids = checked ? this.all_creators.map(c => c.id) : [];
         } else if (filterType === 'dates') {
           this.filters.dates = checked ? this.all_created_dates : [];
+        } else if (filterType === 'import_tasks') {
+          this.filters.import_tasks = checked ? this.all_import_tasks : [];
         } else if (filterType === 'import_types') {
           this.filters.import_types = checked ? this.all_import_types : [];
         }

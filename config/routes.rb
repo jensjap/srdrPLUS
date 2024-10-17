@@ -265,10 +265,6 @@ Rails.application.routes.draw do
 
     member do
       get 'confirm_deletion'
-      post 'import_csv'
-      post 'import_ris'
-      post 'import_endnote'
-      post 'import_pubmed'
       post 'dedupe_citations'
       post 'citations_in_ris'
       post 'create_citation_screening_extraction_form'

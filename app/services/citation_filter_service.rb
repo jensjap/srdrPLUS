@@ -1,5 +1,5 @@
 class CitationFilterService
-  attr_reader :creators, :created_dates, :import_types
+  attr_reader :creators, :created_dates, :import_types, :import_tasks
 
   def initialize(project_id:)
     @project_id = project_id
@@ -7,6 +7,7 @@ class CitationFilterService
     @creators = calculate_creators
     @created_dates = calculate_created_dates
     @import_types = calculate_import_types
+    @import_tasks = calculate_import_tasks_and_created_dates
   end
 
   def filter_by_creators(creator_ids:)
@@ -22,6 +23,30 @@ class CitationFilterService
       CitationsProject.where(project_id: @project_id, created_at: start_time..end_time).pluck(:id)
     end.flatten.uniq
     @filters << -> { date_filters }
+    self
+  end
+
+  def filter_by_import_tasks(task_dates:)
+    task_date_filters = []
+
+    dates = task_dates - ['No Import']
+    if dates.any?
+      date_filters = dates.map do |date|
+        start_time = DateTime.parse(date).utc
+        CitationsProject.joins(:import)
+                        .where(project_id: @project_id)
+                        .where(imports: { created_at: start_time })
+                        .pluck(:id)
+      end.flatten
+      task_date_filters += date_filters
+    end
+
+    if task_dates.include?('No Import')
+      no_import_filters = CitationsProject.where(project_id: @project_id, import_id: nil).pluck(:id)
+      task_date_filters += no_import_filters
+    end
+
+    @filters << -> { task_date_filters.uniq }
     self
   end
 
@@ -78,19 +103,51 @@ class CitationFilterService
   private
 
   def calculate_creators
-    creator_ids = CitationsProject.where(project_id: @project_id).distinct.pluck(:creator_id)
+    creator_ids = CitationsProject.left_outer_joins(:abstract_screening_distributions)
+                                  .where(project_id: @project_id)
+                                  .where(abstract_screening_distributions: { id: nil })
+                                  .distinct
+                                  .pluck(:creator_id)
     User.where(id: creator_ids).map do |user|
       { id: user.id, handle: user.handle }
     end
   end
 
   def calculate_created_dates
-    CitationsProject.where(project_id: @project_id)
+    CitationsProject.left_outer_joins(:abstract_screening_distributions)
+                    .where(project_id: @project_id)
+                    .where(abstract_screening_distributions: { id: nil })
                     .distinct
-                    .pluck(Arel.sql("DATE_FORMAT(created_at, '%Y-%m-%d %H:00:00')"))
+                    .pluck(Arel.sql("DATE_FORMAT(citations_projects.created_at, '%Y-%m-%d %H:00:00')"))
   end
 
   def calculate_import_types
-    CitationsProject.where(project_id: @project_id).distinct.pluck(:import_type)
+    CitationsProject.left_outer_joins(:abstract_screening_distributions)
+                    .where(project_id: @project_id)
+                    .where(abstract_screening_distributions: { id: nil })
+                    .distinct
+                    .pluck(:import_type)
+  end
+
+  def calculate_import_tasks_and_created_dates
+    citations_project_ids = CitationsProject.left_outer_joins(:abstract_screening_distributions)
+                                            .where(project_id: @project_id)
+                                            .where(abstract_screening_distributions: { id: nil })
+                                            .pluck(:id)
+
+    import_dates = Import.joins(:citations_projects)
+                         .where(citations_projects: { id: citations_project_ids })
+                         .distinct
+                         .pluck(:created_at)
+
+    has_no_import = CitationsProject.left_outer_joins(:abstract_screening_distributions)
+                                    .where(project_id: @project_id, import_id: nil)
+                                    .where(abstract_screening_distributions: { id: nil })
+                                    .exists?
+    if has_no_import
+      import_dates << 'No Import'
+    end
+
+    import_dates.uniq
   end
 end

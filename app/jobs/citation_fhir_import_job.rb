@@ -7,6 +7,7 @@ class CitationFhirImportJob < ApplicationJob
 
     imported_file_id = args[0]
     user_id = args[1]
+    import_id = args[2]
     @imported_file = ImportedFile.find(imported_file_id)
 
     begin
@@ -17,7 +18,7 @@ class CitationFhirImportJob < ApplicationJob
     end
 
     json.each do |citation_json|
-      citation_fhir_importer = ImportJobs::JsonImportJob::CitationFhirImporter.new(@imported_file.project.id, citation_json, user_id)
+      citation_fhir_importer = ImportJobs::JsonImportJob::CitationFhirImporter.new(@imported_file.project.id, citation_json, user_id, import_id)
       citation_fhir_importer.run
     end
 

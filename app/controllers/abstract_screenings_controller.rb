@@ -26,12 +26,13 @@ class AbstractScreeningsController < ApplicationController
         creators: service.creators,
         created_dates: service.created_dates,
         import_types: service.import_types,
+        import_tasks: service.import_tasks,
         total_citations_count: service.results.count
       }
       return
     end
 
-    if params[:creator_ids].blank? || params[:dates].blank? || params[:import_types].blank?
+    if params[:creator_ids].blank? || params[:import_tasks].blank? || params[:import_types].blank?
       render json: { filtered_citation_ids: [], filtered_citations_count: 0 }
       return
     end
@@ -46,6 +47,10 @@ class AbstractScreeningsController < ApplicationController
 
     if params[:import_types].present?
       service = service.filter_by_import_types(import_types: params[:import_types])
+    end
+
+    if params[:import_tasks].present?
+      service = service.filter_by_import_tasks(task_dates: params[:import_tasks])
     end
 
     filtered_ids = service.results
@@ -64,8 +69,8 @@ class AbstractScreeningsController < ApplicationController
       flash[:notice] = 'Screening was successfully created'
       redirect_to(project_abstract_screenings_path(@project), status: 303)
     else
-      flash[:now] = @abstract_screening.errors.full_messages.join(',')
-      render :new
+      flash[:errors] = @abstract_screening.errors.full_messages
+      redirect_to(new_project_abstract_screening_path(@project))
     end
   end
 

@@ -32,6 +32,7 @@ class ProjectPolicy < ApplicationPolicy
         :other_reference,
         :creator_id,
         :import_type,
+        :import_id,
         {
           citation_attributes: [
             :id,
@@ -140,22 +141,6 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def simple_import?
-    project_leader?
-  end
-
-  def import_csv?
-    project_leader?
-  end
-
-  def import_pubmed?
-    project_leader?
-  end
-
-  def import_ris?
-    project_leader?
-  end
-
-  def import_endnote?
     project_leader?
   end
 
