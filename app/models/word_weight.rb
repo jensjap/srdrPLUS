@@ -11,6 +11,6 @@
 #
 class WordWeight < ApplicationRecord
   belongs_to :user, optional: true
-  belongs_to :abstract_screening, optional: true
+  belongs_to :project, optional: true
   belongs_to :word_group
 end

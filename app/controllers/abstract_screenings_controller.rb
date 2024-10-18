@@ -47,7 +47,7 @@ class AbstractScreeningsController < ApplicationController
 
     word_group = nil
     if group_id.present?
-      word_group = WordGroup.find_by(id: group_id, user: current_user, abstract_screening: @abstract_screening)
+      word_group = WordGroup.find_by(id: group_id, user: current_user, project: @abstract_screening.project)
       unless word_group
         render json: { error: 'WordGroup not found' }, status: :not_found
         return
@@ -55,7 +55,7 @@ class AbstractScreeningsController < ApplicationController
 
       if params[:destroy_wg].to_s == 'true'
         word_group.destroy
-        render json: WordGroup.word_weights_object(current_user, @abstract_screening)
+        render json: WordGroup.word_weights_object(current_user, @abstract_screening.project)
         return
       elsif group_name.present? || color.present?
         word_group.update(
@@ -64,7 +64,7 @@ class AbstractScreeningsController < ApplicationController
         )
       end
     elsif color.present? && group_name.present? && params[:destroy_wg].to_s != 'true'
-      word_group = WordGroup.create!(color:, name: group_name, user: current_user, abstract_screening: @abstract_screening)
+      word_group = WordGroup.create!(color:, name: group_name, user: current_user, project: @abstract_screening.project)
     elsif params[:destroy_wg].to_s != 'true'
       render json: { error: 'Missing color or group name for new WordGroup or invalid destroy_wg flag' },
              status: :bad_request
@@ -72,7 +72,7 @@ class AbstractScreeningsController < ApplicationController
     end
 
     if word.present? && word_group
-      ww = WordWeight.find_by(word: word, user: current_user, abstract_screening: @abstract_screening)
+      ww = WordWeight.find_by(word: word, user: current_user, project: @abstract_screening.project)
       if ww.nil?
         if params[:id].present?
           ww = WordWeight.find_by(id: params[:id])
@@ -81,7 +81,7 @@ class AbstractScreeningsController < ApplicationController
           update_attributes[:full_match] = full_match if full_match == true || full_match == false
           ww.update(update_attributes)
         else
-          create_attributes = { word: word, weight: weight, user: current_user, abstract_screening: @abstract_screening, word_group: word_group }
+          create_attributes = { word: word, weight: weight, user: current_user, project: @abstract_screening.project, word_group: word_group }
           create_attributes[:case_sensitive] = case_sensitive if case_sensitive == true || case_sensitive == false
           update_attributes[:full_match] = full_match if full_match == true || full_match == false
           WordWeight.create!(create_attributes)
@@ -99,7 +99,7 @@ class AbstractScreeningsController < ApplicationController
       end
     end
 
-    render json: WordGroup.word_weights_object(current_user, @abstract_screening)
+    render json: WordGroup.word_weights_object(current_user, @abstract_screening.project)
   end
 
   def citation_lifecycle_management

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_28_000000) do
+ActiveRecord::Schema[7.0].define(version: 2024_10_18_000001) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -2175,25 +2175,26 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_28_000000) do
   create_table "word_groups", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "color"
-    t.bigint "abstract_screening_id", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "case_sensitive", default: false
+    t.bigint "project_id", null: false
+    t.index ["project_id"], name: "index_word_groups_on_project_id"
   end
 
   create_table "word_weights", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id"
-    t.bigint "abstract_screening_id"
     t.integer "weight", limit: 1, null: false
     t.string "word", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "word_group_id"
     t.boolean "case_sensitive", default: false, null: false
+    t.integer "project_id", null: false
     t.boolean "full_match", default: false, null: false
-    t.index ["abstract_screening_id"], name: "ww_on_as"
-    t.index ["user_id", "abstract_screening_id", "word"], name: "u_as_w", unique: true
+    t.index ["project_id"], name: "index_word_weights_on_project_id"
+    t.index ["user_id", "project_id", "word"], name: "index_word_weights_on_user_group_word", unique: true
     t.index ["user_id"], name: "ww_on_u"
     t.index ["word_group_id"], name: "index_word_weights_on_word_group_id"
   end
@@ -2375,5 +2376,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_28_000000) do
   add_foreign_key "training_data_infos", "ml_models"
   add_foreign_key "users", "user_types"
   add_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures"
+  add_foreign_key "word_weights", "projects"
   add_foreign_key "word_weights", "word_groups"
 end
