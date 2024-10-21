@@ -1249,19 +1249,12 @@
         }
       },
       async updateOrderings(dragPos, dropPos) {
-        if (dropPos >= this.questions.length) {
-          let i = dropPos - this.questions.length + 1;
-          while (i--) {
-            this.questions.push(undefined);
-          }
-        }
         this.questions.splice(dropPos, 0, this.questions.splice(dragPos, 1)[0]);
 
         const tempOrderableElements = this.questions;
         this.questions = [];
         await this.$nextTick(async () => {
           this.questions = tempOrderableElements;
-          const orderings = {};
           tempOrderableElements.forEach(async (question, index) => {
             this.updateQuestion(question, { pos: index });
           });

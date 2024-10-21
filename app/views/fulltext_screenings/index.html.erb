@@ -29,9 +29,7 @@
     </div>
   </div>
 
-  <div class="mt-4">
-    <%= render 'project_dashboard/fulltext_screening' %>
-  </div>
+  <div class="mt-4"><%= render 'project_dashboard/fulltext_screening' %></div>
 
   <div class="px-4 sm:px-6 lg:px-8">
     <div class="mt-8 flex flex-col">
@@ -481,23 +479,24 @@
       },
 
       async updateOrderings(dragPos, dropPos, orderableKey, table) {
-        const temp = this[orderableKey][dropPos];
-        this[orderableKey][dropPos] = this[orderableKey][dragPos];
-        this[orderableKey][dragPos] = temp;
-        const tempOrderableElements = this[orderableKey];
-        this[orderableKey] = [];
-        this.$nextTick(() => {
-          this[orderableKey] = tempOrderableElements;
-          const orderings = {};
-          tempOrderableElements.forEach(
-            (oe, index) => (orderings[index] = { id: oe.id, table })
-          );
-          fetch("/api/v1/orderings/update_positions", {
-            method: "PATCH",
-            headers,
-            body: JSON.stringify({ orderings }),
-          });
-          this[orderableKey].forEach((el, index) => (el.pos = index + 1));
+        this[orderableKey].splice(
+          dropPos,
+          0,
+          this[orderableKey].splice(dragPos, 1)[0]
+        );
+
+        const orderings = {};
+        this[orderableKey].forEach((el, index) => {
+          orderings[index] = {
+            id: el.id,
+            table,
+          };
+        });
+
+        fetch("/api/v1/orderings/update_positions", {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify({ orderings }),
         });
       },
 
