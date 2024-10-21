@@ -137,9 +137,9 @@
         <hr />
 
         <div
-          class='absolute bottom-0 left-0 mb-5 ml-3'
-          x-text='`${ asr.total_asr_count_for_this_cp }`'>
-        </div>
+          class="absolute bottom-0 left-0 mb-5 ml-3"
+          x-text="`${ asr.total_asr_count_for_this_cp }`"
+        ></div>
 
         <button
           x-show="resolutionMode"
@@ -415,7 +415,7 @@
       as_allow_adding_tags: false,
       as_limit_one_reason: false,
       isAlertModalOpen: false,
-      alertModalContent: '',
+      alertModalContent: "",
       groupToDelete: null,
       isEditingGroupName: false,
       total_asr_count_for_this_cp: 0,
@@ -605,23 +605,24 @@
       },
 
       async updateOrderings(dragPos, dropPos, orderableKey, table) {
-        const temp = this.asr[orderableKey][dropPos];
-        this.asr[orderableKey][dropPos] = this.asr[orderableKey][dragPos];
-        this.asr[orderableKey][dragPos] = temp;
-        const tempOrderableElements = this.asr[orderableKey];
-        this.asr[orderableKey] = [];
-        this.$nextTick(() => {
-          this.asr[orderableKey] = tempOrderableElements;
-          const orderings = {};
-          tempOrderableElements.forEach(
-            (oe, index) => (orderings[index] = { id: oe.id, table })
-          );
-          fetch("/api/v1/orderings/update_positions", {
-            method: "PATCH",
-            headers,
-            body: JSON.stringify({ orderings }),
-          });
-          this.asr[orderableKey].forEach((el, index) => (el.pos = index + 1));
+        this.asr[orderableKey].splice(
+          dropPos,
+          0,
+          this.asr[orderableKey].splice(dragPos, 1)[0]
+        );
+
+        const orderings = {};
+        this.asr[orderableKey].forEach((el, index) => {
+          orderings[index] = {
+            id: el.id,
+            table,
+          };
+        });
+
+        fetch("/api/v1/orderings/update_positions", {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify({ orderings }),
         });
       },
 
@@ -673,7 +674,17 @@
           event.target.classList.remove("!bg-red-500");
         }
 
-        this.sendWw(null, 0, null, false, group_id, null, newGroupName, null, false);
+        this.sendWw(
+          null,
+          0,
+          null,
+          false,
+          group_id,
+          null,
+          newGroupName,
+          null,
+          false
+        );
       },
 
       updateGroupColor(event, group_id) {
@@ -725,7 +736,7 @@
           for (let i = match.index; i < match.index + match[0].length; i++) {
             sourceTextArray[i] = {
               id: `word:${match.index}-${match.index + match[0].length}`,
-              color: '',
+              color: "",
               phrase: sourceText.slice(
                 match.index,
                 match.index + match[0].length
@@ -740,7 +751,7 @@
           for (let i = match.index; i < match.index + match[0].length; i++) {
             sourceTextArray[i] = {
               id: `nonWord:${match.index}-${match.index + match[0].length}`,
-              color: '',
+              color: "",
               phrase: sourceText.slice(
                 match.index,
                 match.index + match[0].length
@@ -753,7 +764,7 @@
         let matches = [];
         for (const phrase of Object.keys(this.word_weights)) {
           const word_weight = this.word_weights[phrase];
-          const escapedPhrase = phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const escapedPhrase = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
           let regex;
 
@@ -830,7 +841,17 @@
         );
       },
 
-      async sendWw(word, weight, id, destroy_ww, group_id, color, group_name, case_sensitive, destroy_wg) {
+      async sendWw(
+        word,
+        weight,
+        id,
+        destroy_ww,
+        group_id,
+        color,
+        group_name,
+        case_sensitive,
+        destroy_wg
+      ) {
         const response = await fetch(
           "/abstract_screenings/<%= params[:abstract_screening_id] %>/update_word_weight",
           {
@@ -861,7 +882,9 @@
         if (response.ok) {
           this.groups = this.getGroups();
           if (this.selectedGroup) {
-            this.selectedGroup = this.groups.find(group => group.id === group_id);
+            this.selectedGroup = this.groups.find(
+              (group) => group.id === group_id
+            );
           }
         }
       },
@@ -1009,7 +1032,9 @@
           this.citation = data.citation;
           this.options = data.options;
           this.word_weights_by_group = data.word_weights;
-          this.word_weights = this.convertGroupedDataToWordKeyedObject(data.word_weights);
+          this.word_weights = this.convertGroupedDataToWordKeyedObject(
+            data.word_weights
+          );
           this.cps = data.cps;
           this.asr_in_asic_count = data.asr_in_asic_count;
           this.processWeights("title", "processedTitle");
@@ -1069,28 +1094,39 @@
 
       getGroups() {
         const groups = {};
-        Object.entries(this.word_weights_by_group).forEach(([groupId, words]) => {
-          words.forEach(wordInfo => {
-            const { word, color, id, group_name, case_sensitive } = wordInfo;
-            if (!groups[groupId]) {
-              groups[groupId] = { id: groupId, name: group_name, color: color, case_sensitive: case_sensitive, words: [] };
-            }
-            groups[groupId].words.push({ name: word, id: id });
-          });
-        });
+        Object.entries(this.word_weights_by_group).forEach(
+          ([groupId, words]) => {
+            words.forEach((wordInfo) => {
+              const { word, color, id, group_name, case_sensitive } = wordInfo;
+              if (!groups[groupId]) {
+                groups[groupId] = {
+                  id: groupId,
+                  name: group_name,
+                  color: color,
+                  case_sensitive: case_sensitive,
+                  words: [],
+                };
+              }
+              groups[groupId].words.push({ name: word, id: id });
+            });
+          }
+        );
 
         return Object.values(groups);
       },
 
       convertGroupedDataToWordKeyedObject(groupedData) {
-        if (!groupedData || !Object.keys(groupedData).every(key => !isNaN(parseInt(key)))) {
+        if (
+          !groupedData ||
+          !Object.keys(groupedData).every((key) => !isNaN(parseInt(key)))
+        ) {
           return groupedData;
         }
 
         let wordKeyedObject = {};
         for (const groupId in groupedData) {
           const groupItems = groupedData[groupId];
-          groupItems.forEach(item => {
+          groupItems.forEach((item) => {
             wordKeyedObject[item.word] = {
               color: item.color,
               id: item.id,
@@ -1105,7 +1141,8 @@
 
       openAlertModal(groupId) {
         this.groupToDelete = groupId;
-        this.alertModalContent = 'Are you sure you want to delete this group? This can not be undone and will delete related terms.';
+        this.alertModalContent =
+          "Are you sure you want to delete this group? This can not be undone and will delete related terms.";
         this.isAlertModalOpen = true;
       },
 
@@ -1116,13 +1153,23 @@
 
       modalConfirmAction() {
         if (this.groupToDelete) {
-          this.sendWw(null, null, null, false, this.groupToDelete, null, null, null, true);
+          this.sendWw(
+            null,
+            null,
+            null,
+            false,
+            this.groupToDelete,
+            null,
+            null,
+            null,
+            true
+          );
         }
         this.closeAlertModal();
       },
 
       startGroupNameEditing(group) {
-        if(this.isEditingGroupName) {
+        if (this.isEditingGroupName) {
           return;
         }
         this.isEditingGroupName = true;
@@ -1140,7 +1187,17 @@
 
       updateCaseSensitive($event) {
         this.selectedGroup.case_sensitive = $event.target.checked;
-        this.sendWw(null, null, null, false, this.selectedGroup.id, null, null, $event.target.checked, false);
+        this.sendWw(
+          null,
+          null,
+          null,
+          false,
+          this.selectedGroup.id,
+          null,
+          null,
+          $event.target.checked,
+          false
+        );
       },
 
       addDefaultGroups() {
@@ -1148,7 +1205,7 @@
           { name: "Group 1", color: "#ef4444" },
           { name: "Group 2", color: "#a855f7" },
           { name: "Group 3", color: "#22c55e" },
-          { name: "Group 4", color: "#3b82f6" }
+          { name: "Group 4", color: "#3b82f6" },
         ];
         defaults.forEach(({ name, color }) => {
           this.sendWw(null, null, null, false, null, color, name, null, false);
@@ -1156,17 +1213,19 @@
       },
 
       downloadGroupsJson() {
-        const filteredData = this.groups.map(group => ({
+        const filteredData = this.groups.map((group) => ({
           name: group.name,
           color: group.color,
-          words: group.words.map(word => word.name).filter(name => name != null)
+          words: group.words
+            .map((word) => word.name)
+            .filter((name) => name != null),
         }));
         const jsonData = JSON.stringify(filteredData, null, 2);
-        const blob = new Blob([jsonData], { type: 'application/json' });
+        const blob = new Blob([jsonData], { type: "application/json" });
         const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
+        const a = document.createElement("a");
         a.href = url;
-        a.download = 'groups.json';
+        a.download = "groups.json";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -1184,12 +1243,15 @@
 
           for (const group of groups) {
             if (!group.name || !group.color) {
-              alert('Missing required fields!');
+              alert("Missing required fields!");
               continue;
             }
 
-            if (!/^[a-zA-Z0-9\s]+$/.test(group.name) || !/^#[0-9a-fA-F]{6}$/.test(group.color)) {
-              alert('Invalid data format!');
+            if (
+              !/^[a-zA-Z0-9\s]+$/.test(group.name) ||
+              !/^#[0-9a-fA-F]{6}$/.test(group.color)
+            ) {
+              alert("Invalid data format!");
               continue;
             }
 
@@ -1200,7 +1262,17 @@
             if (group.words && group.words.length > 0) {
               for (const word of group.words) {
                 if (word) {
-                  const updatePromise = this.sendWw(word, 0, null, false, newGroupId, group.color, group.name, null, false);
+                  const updatePromise = this.sendWw(
+                    word,
+                    0,
+                    null,
+                    false,
+                    newGroupId,
+                    group.color,
+                    group.name,
+                    null,
+                    false
+                  );
                   updatePromises.push(updatePromise);
                 }
               }
@@ -1210,19 +1282,26 @@
           await Promise.all(updatePromises);
           const missingWords = this.collectMissingWords(groups);
           if (missingWords.length > 0) {
-            alert(`Some terms were not updated successfully. The terms that failed to update may already exist in another group: ${missingWords.join(', ')}`);
+            alert(
+              `Some terms were not updated successfully. The terms that failed to update may already exist in another group: ${missingWords.join(
+                ", "
+              )}`
+            );
           }
         };
         reader.readAsText(file);
-        event.target.value = '';
+        event.target.value = "";
       },
 
       collectMissingWords(groups) {
         const missingWords = [];
-        groups.forEach(group => {
-          const groupInState = this.groups.find(g => g.id === group.id);
-          group.words.forEach(word => {
-            if (!groupInState || !groupInState.words.some(w => w.name === word)) {
+        groups.forEach((group) => {
+          const groupInState = this.groups.find((g) => g.id === group.id);
+          group.words.forEach((word) => {
+            if (
+              !groupInState ||
+              !groupInState.words.some((w) => w.name === word)
+            ) {
               missingWords.push(word);
             }
           });
@@ -1233,12 +1312,24 @@
       async updateAndFetchNewGroupId(group) {
         const oldGroups = this.groups.slice();
 
-        await this.sendWw(null, null, null, false, null, group.color, group.name, null, false);
+        await this.sendWw(
+          null,
+          null,
+          null,
+          false,
+          null,
+          group.color,
+          group.name,
+          null,
+          false
+        );
 
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
         const newGroups = this.groups;
-        const newGroup = newGroups.find(g => !oldGroups.some(og => og.id === g.id));
+        const newGroup = newGroups.find(
+          (g) => !oldGroups.some((og) => og.id === g.id)
+        );
 
         return newGroup ? newGroup.id : null;
       },
