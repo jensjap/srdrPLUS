@@ -101,8 +101,8 @@ class ProjectService
       end.count
     three_weeks_or_more =
       extractions.select do |extraction|
-        extraction.approved_on.nil? ||
-          (extraction.approved_on - extraction.created_at) >= 3.weeks
+        (extraction.approved_on.nil? && (Time.now - extraction.created_at) >= 3.weeks) ||
+          (extraction.approved_on && ((extraction.approved_on - extraction.created_at) >= 3.weeks))
       end.count
 
     [
