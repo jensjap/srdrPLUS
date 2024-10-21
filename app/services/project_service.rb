@@ -51,7 +51,7 @@ class ProjectService
     [
       %w[awaiting_work #dd631b],
       %w[awaiting_review #2a40ae],
-      %w[work_rejected #8f2a1f],
+      %w[work_returned #8f2a1f],
       %w[work_accepted #347e3d]
     ].each do |log_type, color|
       relevant_logs = extractions.map do |extraction|

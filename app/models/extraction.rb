@@ -76,7 +76,7 @@ class Extraction < ApplicationRecord
   #  end
 
   def rejection_reason
-    logs.where(description: 'work_rejected').order(created_at: :desc).limit(1)&.first&.reason
+    logs.where(description: 'work_returned').order(created_at: :desc).limit(1)&.first&.reason
   end
 
   def able_to_review_status?
@@ -271,7 +271,7 @@ class Extraction < ApplicationRecord
     return unless id_previously_changed? || status_previously_changed?
 
     logs.create!(description: status, user: current_user || User.current,
-                 reason: reason.present? && status == 'work_rejected' ? reason : nil)
+                 reason: reason.present? && status == 'work_returned' ? reason : nil)
   end
 
   def notify_project_members(log, skip_user_id = nil)

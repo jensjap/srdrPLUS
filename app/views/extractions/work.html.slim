@@ -18,9 +18,9 @@ div x-data="$store.sharedExtractionStore"
     div
       button @click="await updateStatus('awaiting_work'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-pointer bg-orange-600 opacity-40" :class="{ '!opacity-100 border border-black' : extraction.status == 'awaiting_work' }" awaiting_work
       button @click="await updateStatus('awaiting_review'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-pointer bg-blue-800 opacity-40" :class="{ '!opacity-100 border border-black' : extraction.status == 'awaiting_review' }" awaiting_review
-      button :disabled="!extraction['able_to_review_status?']" @click="await updateStatus('work_rejected'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-not-allowed bg-red-800 opacity-40" :class="{ '!opacity-100 border border-black' : extraction.status == 'work_rejected', 'cursor-pointer' : extraction['able_to_review_status?'] }" work_rejected
+      button :disabled="!extraction['able_to_review_status?']" @click="await updateStatus('work_returned'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-not-allowed bg-red-800 opacity-40" :class="{ '!opacity-100 border border-black' : extraction.status == 'work_returned', 'cursor-pointer' : extraction['able_to_review_status?'] }" work_returned
       button :disabled="!extraction['able_to_review_status?']" @click="await updateStatus('work_accepted'); getExtraction();" class="text-xs mx-1 p-1 text-white cursor-not-allowed bg-green-700 opacity-40" :class="{ '!opacity-100 border border-black' : extraction.status == 'work_accepted', 'cursor-pointer' : extraction['able_to_review_status?'] }" work_accepted
-  div class="ml-9" x-cloak="" x-show="extraction.status === 'work_rejected'"
+  div class="ml-9" x-cloak="" x-show="extraction.status === 'work_returned'"
     | Rejection Reason:
     span class="ml-1 text-red-700 text-sm" x-text="extraction.rejection_reason ? extraction.rejection_reason : 'None Given'"
   div class="flex mr-9 py-1 justify-end"
@@ -95,7 +95,7 @@ javascript:
         if (this.extraction.status === status) return
 
         let rejectionReason = null;
-        if (status === "work_rejected") {
+        if (status === "work_returned") {
           rejectionReason = prompt('Please enter a rejection reason if any. (Can be left blank)')
           if (rejectionReason === null) return
         }
