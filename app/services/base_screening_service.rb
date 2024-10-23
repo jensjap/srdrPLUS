@@ -284,7 +284,7 @@ class BaseScreeningService
                  pu.is_expert == is_expert && pu.project == screening.project
                end
              end
-             .pluck('citations_projects.citation_id')
+             .map { |result| result.citations_project.citation.id }
   end
 
   private
