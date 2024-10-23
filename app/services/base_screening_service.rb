@@ -167,7 +167,7 @@ class BaseScreeningService
     citation_id = unscreened_citation_ids.sample
 
     if citation_id.nil?
-      get_next_singles_citation_id(screening)
+      get_next_citation_id(screening)
     else
       citation_id
     end
@@ -284,7 +284,7 @@ class BaseScreeningService
                  pu.is_expert == is_expert && pu.project == screening.project
                end
              end
-             .pluck('citations_projects.citation_id')
+             .map { |result| result.citations_project.citation.id }
   end
 
   private
