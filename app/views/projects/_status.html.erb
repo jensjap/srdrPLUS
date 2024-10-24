@@ -45,6 +45,30 @@
         <span class="text-gray-600 text-xs"
           >(extractions not in 'work_accepted' status)</span
         >
+        <span
+          class="text-xs text-white bg-orange-700 p-1 rounded-md cursor-pointer select-none"
+          :class="{
+            'opacity-30': !pendingWorkFilter.awaiting_work
+          }"
+          @click="pendingWorkFilter.awaiting_work = !pendingWorkFilter.awaiting_work"
+          >awaiting_work</span
+        >
+        <span
+          class="text-xs text-white bg-blue-800 p-1 rounded-md cursor-pointer select-none"
+          :class="{
+            'opacity-30': !pendingWorkFilter.awaiting_review
+          }"
+          @click="pendingWorkFilter.awaiting_review = !pendingWorkFilter.awaiting_review"
+          >awaiting_review</span
+        >
+        <span
+          class="text-xs text-white bg-red-800 p-1 rounded-md cursor-pointer select-none"
+          :class="{
+            'opacity-30': !pendingWorkFilter.work_returned
+          }"
+          @click="pendingWorkFilter.work_returned = !pendingWorkFilter.work_returned"
+          >work_returned</span
+        >
       </h1>
       <div
         class="h-[calc(100vh-36rem)] overflow-y-scroll text-xs text-gray-500 border rounded-md"
@@ -62,7 +86,7 @@
             </tr>
           </thead>
           <tbody>
-            <template x-for="extraction in projectStatus.pending_work">
+            <template x-for="extraction in filterPendingWork()">
               <tr>
                 <td x-text="extraction.id" class="text-center"></td>
                 <td
@@ -120,11 +144,22 @@
     Alpine.data("projectStatus", () => ({
       projectStatus: {},
       user_id: null,
+      pendingWorkFilter: {
+        awaiting_work: true,
+        awaiting_review: true,
+        work_returned: true,
+      },
 
       async init() {
         await this.getProjectStatus();
         this.generateChart();
         this.generateApprovalDurations();
+      },
+
+      filterPendingWork() {
+        return this.projectStatus.pending_work.filter(
+          (extraction) => this.pendingWorkFilter[extraction.status]
+        );
       },
 
       async getProjectStatus() {
