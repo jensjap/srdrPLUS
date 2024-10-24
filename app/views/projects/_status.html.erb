@@ -26,7 +26,7 @@
         <h1 class="text-lg font-bold">Overview</h1>
         <div
           id="logChart"
-          style="width: calc(50vw - 6rem); height: 250px"
+          style="width: calc(50vw - 9rem); height: 250px"
         ></div>
       </div>
       <div class="grow basis-0">
@@ -35,7 +35,7 @@
         </h1>
         <div
           id="extractionKPIChart"
-          style="width: calc(50vw - 6rem); height: 250px"
+          style="width: calc(50vw - 9rem); height: 250px"
         ></div>
       </div>
     </div>
@@ -47,18 +47,18 @@
         >
       </h1>
       <div
-        class="max-h-64 overflow-auto text-xs text-gray-500 border rounded-md"
+        class="h-[calc(100vh-36rem)] overflow-y-scroll text-xs text-gray-500 border rounded-md"
       >
         <table class="table-fixed w-full">
           <thead>
             <tr>
-              <th>Extraction ID</th>
+              <th class="w-20">ID</th>
               <th>Citation Title</th>
-              <th>Extractor</th>
-              <th>Status</th>
-              <th>Status Date</th>
-              <th>Time Ago</th>
-              <th>Link</th>
+              <th class="w-40">Extractor</th>
+              <th class="w-24">Status</th>
+              <th class="w-44">Status Date</th>
+              <th class="w-40">Time Ago</th>
+              <th class="w-48">Link</th>
             </tr>
           </thead>
           <tbody>
@@ -70,11 +70,20 @@
                   :title="extraction.title"
                   class="truncate"
                 ></td>
-                <th
+                <td
                   x-text="extraction.handle || 'System'"
-                  class="text-center"
-                ></th>
-                <td x-text="extraction.status" class="text-center"></td>
+                  :title="extraction.handle"
+                  class="text-left truncate"
+                ></td>
+                <td
+                  x-text="extraction.status"
+                  class="text-center font-bold"
+                  :class="{
+                    'text-orange-700': extraction.status === 'awaiting_work',
+                    'text-blue-800': extraction.status === 'awaiting_review',
+                    'text-red-900': extraction.status === 'work_returned',
+                  }"
+                ></td>
                 <td
                   x-text="new Date(extraction.created_at).toLocaleString()"
                   class="text-center"
@@ -89,6 +98,7 @@
                     x-text="`/extractions/${extraction.id}/work`"
                     target="_blank"
                     rel="noopener noreferrer"
+                    class="underline"
                   ></a>
                 </td>
               </tr>
