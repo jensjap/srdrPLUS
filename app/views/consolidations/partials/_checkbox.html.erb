@@ -126,7 +126,7 @@
                       }
                       return mh?.current_citations_project?.cell_lookups[a]?.value
                     "
-                    @input="
+                    @input.debounce.500ms="
                       ''; let a
                       if (typeof section_eefpst1 === 'undefined') {
                         a = `record_id-ff-${selection_option.followup_field_id}-${eefps.id}-`
