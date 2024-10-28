@@ -1304,23 +1304,48 @@ class ConsolidationService
                           }
                         }
                       }
-                    })
-          .where(extraction_forms_projects_sections: { id: efps_id })
-          .where(extractions_extraction_forms_projects_section: { extraction: extractions })
+                    }, extractions_extraction_forms_projects_sections_type1: :type1)
+          .where(extractions_extraction_forms_projects_sections: eefpss2)
+
+        if linked_eefps
+          eefpsffs = eefpsffs.where(extractions_extraction_forms_projects_sections_type1s: { type1s: linked_eefps.type1s })
+        end
+        eefpsffs = eefpsffs.sort_by { |eefpsff| eefpsff.id }.uniq do |eefpsff|
+          [
+            eefpsff.extractions_extraction_forms_projects_section_id,
+            eefpsff.followup_field_id,
+            eefpsff.extractions_extraction_forms_projects_sections_type1_id
+          ]
+        end
+
+        ff_lookup = {}
         eefpsffs.each do |eefpsff|
+          comparison_array = []
           next if eefpsff.extractions_extraction_forms_projects_section.extraction_id == consolidated_extraction.id
 
-          comparison_array = []
-          comparison_array << eefpsff&.followup_field_id # 0
+          next if eefpsff.followup_field.nil?
+
+          comparison_array << eefpsff.followup_field_id # 0
           comparison_array << eefpsff.records.first.name # 1
+
+          eefpst1 = eefpsff.extractions_extraction_forms_projects_sections_type1
+
+          next if linked_eefps.nil? && eefpst1
+
           if linked_eefps
-            eefpst1 = eefpsff&.extractions_extraction_forms_projects_sections_type1
-            type1 = eefpst1&.type1
-            comparison_array << eefpst1&.type1_type_id # 2
-            comparison_array << eefpst1&.units # 3
-            comparison_array << type1&.name # 4
-            comparison_array << type1&.description # 5
-            comparison_array << linked_eefps&.extraction_forms_projects_section_id # 6
+            comparison_array << eefpsff.extractions_extraction_forms_projects_section.extraction_forms_projects_section_id # 2
+            next if eefpst1.nil?
+
+            comparison_array << eefpst1.type1_id # 3
+
+            type1 = eefpst1.type1
+            next if type1.nil?
+
+            comparison_array << eefpst1.type1_type_id # 4
+            comparison_array << eefpst1.units # 5
+            comparison_array << type1.name # 6
+            comparison_array << type1.description # 7
+            comparison_array << linked_eefps.extraction_forms_projects_section_id # 8
           end
           ff_lookup[comparison_array] ||= 0
           ff_lookup[comparison_array] += 1
@@ -1378,12 +1403,12 @@ class ConsolidationService
             .find_by(extraction_forms_projects_section_id: efps_id, extraction: consolidated_extraction)
           eefpst1 = nil
           if linked_eefps
-            type1_type_id = comparison_array[2]
-            units = comparison_array[3]
-            type1 = Type1.find_by(name: comparison_array[4], description: comparison_array[5])
+            type1_type_id = comparison_array[4]
+            units = comparison_array[5]
+            type1 = Type1.find_by(name: comparison_array[6], description: comparison_array[7])
             linked_ceefps =
               ExtractionsExtractionFormsProjectsSection
-              .find_by(extraction_forms_projects_section_id: comparison_array[6], extraction: consolidated_extraction)
+              .find_by(extraction_forms_projects_section_id: comparison_array[8], extraction: consolidated_extraction)
             eefpst1 =
               ExtractionsExtractionFormsProjectsSectionsType1.find_or_create_by(
                 type1_type_id:,
