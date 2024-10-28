@@ -1310,7 +1310,7 @@ class ConsolidationService
         if linked_eefps
           eefpsffs = eefpsffs.where(extractions_extraction_forms_projects_sections_type1s: { type1s: linked_eefps.type1s })
         end
-        eefpsffs = eefpsffs.sort_by { |eefpsff| eefpsff.id }.uniq do |eefpsff|
+        eefpsffs = eefpsffs.sort_by(&:id).uniq do |eefpsff|
           [
             eefpsff.extractions_extraction_forms_projects_section_id,
             eefpsff.followup_field_id,
@@ -1321,9 +1321,9 @@ class ConsolidationService
         ff_lookup = {}
         eefpsffs.each do |eefpsff|
           comparison_array = []
-          next if eefpsff.extractions_extraction_forms_projects_section.extraction_id == consolidated_extraction.id
-
-          next if eefpsff.followup_field.nil?
+          if (eefpsff.extractions_extraction_forms_projects_section.extraction_id == consolidated_extraction.id) || eefpsff.followup_field.nil?
+            next
+          end
 
           comparison_array << eefpsff.followup_field_id # 0
           comparison_array << eefpsff.records.first.name # 1
@@ -1333,14 +1333,11 @@ class ConsolidationService
           next if linked_eefps.nil? && eefpst1
 
           if linked_eefps
+            type1 = eefpst1&.type1
+            next if eefpst1.nil? || type1.nil?
+
             comparison_array << eefpsff.extractions_extraction_forms_projects_section.extraction_forms_projects_section_id # 2
-            next if eefpst1.nil?
-
             comparison_array << eefpst1.type1_id # 3
-
-            type1 = eefpst1.type1
-            next if type1.nil?
-
             comparison_array << eefpst1.type1_type_id # 4
             comparison_array << eefpst1.units # 5
             comparison_array << type1.name # 6
