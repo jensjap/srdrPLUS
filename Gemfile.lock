@@ -321,7 +321,7 @@ GEM
     passenger (6.0.22)
       rack
       rake (>= 0.8.1)
-    puma (6.4.2)
+    puma (6.4.3)
       nio4r (~> 2.0)
     pundit (2.3.2)
       activesupport (>= 3.0.0)
