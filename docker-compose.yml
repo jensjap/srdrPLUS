@@ -36,11 +36,7 @@ services:
         echo "All done!";
       '
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "[ -f config/certs/elasticsearch/elasticsearch.crt ]"
-        ]
+      test: [ "CMD-SHELL", "[ -f config/certs/elasticsearch/elasticsearch.crt ]" ]
       interval: 1s
       timeout: 5s
       retries: 120
@@ -119,15 +115,15 @@ services:
       - private.env
     environment:
       RAILS_ENV: development
-    entrypoint: ./entrypoints/sidekiq-entrypoint.sh
+    entrypoint: [ "/usr/local/bin/entrypoints/sidekiq-entrypoint.sh" ]
 
   mailcatcher:
     image: schickling/mailcatcher
     ports:
-      - "1080:1080"  # Web interface
-      - "1025:1025"  # SMTP server
+      - "3080:1080" # Web interface
+      - "1025:1025" # SMTP server
     environment:
-      - MAILCATCHER_IP=0.0.0.0  # Listen on all interfaces
+      - MAILCATCHER_IP=0.0.0.0 # Listen on all interfaces
 
 volumes:
   gem_cache:
