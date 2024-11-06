@@ -915,18 +915,20 @@ class ConsolidationService
     current_section_eefpss.each do |eefps|
       ffs.each do |ff|
         if current_section_eefpst1_objects.empty?
-          eefpsffs << ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by(
+          eefpsff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_by(
             extractions_extraction_forms_projects_section: eefps,
             followup_field: ff,
             extractions_extraction_forms_projects_sections_type1_id: nil
           )
+          eefpsffs << eefpsff if eefpsff
         else
           current_section_eefpst1_objects.each do |eefpst1_obj|
-            eefpsffs << ExtractionsExtractionFormsProjectsSectionsFollowupField.find_or_create_by(
+            eefpsff = ExtractionsExtractionFormsProjectsSectionsFollowupField.find_by(
               extractions_extraction_forms_projects_section: eefps,
               followup_field: ff,
               extractions_extraction_forms_projects_sections_type1_id: eefpst1_obj[:extractions_extraction_forms_projects_sections_type1_id]
             )
+            eefpsffs << eefpsff if eefpsff
           end
         end
       end
