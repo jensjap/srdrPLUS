@@ -1309,14 +1309,20 @@ class ConsolidationService
                     }, extractions_extraction_forms_projects_sections_type1: :type1)
           .where(extractions_extraction_forms_projects_sections: eefpss2)
 
-        if linked_eefps
-          eefpsffs = eefpsffs.where(extractions_extraction_forms_projects_sections_type1s: { type1s: linked_eefps.type1s })
+        correct_link = {}
+        eefpss2.each do |eefps2|
+          correct_link[eefps2.id] = eefps2&.link_to_type1&.id
+        end
+        # source of bug: some eefpsffs exist that have eefpst1s that point to the wrong eefps
+        # protect against counting eefpsffs that point to wrongly linked eefps via their eefpst1s
+        eefpsffs = eefpsffs.filter do |eefpsff|
+          correct_link[eefpsff.extractions_extraction_forms_projects_section_id] == eefpsff&.extractions_extraction_forms_projects_sections_type1&.extractions_extraction_forms_projects_section_id
         end
         eefpsffs = eefpsffs.sort_by(&:id).uniq do |eefpsff|
           [
             eefpsff.extractions_extraction_forms_projects_section_id,
             eefpsff.followup_field_id,
-            eefpsff.extractions_extraction_forms_projects_sections_type1_id
+            eefpsff.extractions_extraction_forms_projects_sections_type1&.type1&.id
           ]
         end
 
