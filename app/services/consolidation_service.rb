@@ -1498,10 +1498,22 @@ class ConsolidationService
                             comparate.comparable_element.comparable.type1.id
                           end.join('/')
                         end
-                        # TODO: anova
-                        # TODO: tps_comparisons_rssms
-                        unless existing_comparison_id_strings.include?(arm_id)
-                          comparison = Comparison.find(comparisons["#{type1_type_id}-#{type1_id}-#{population_name_id}-#{arm_id}-#{timepoint_name_id}-#{measure_id}"])
+
+                        comparison = Comparison.find(comparisons["#{type1_type_id}-#{type1_id}-#{population_name_id}-#{arm_id}-#{timepoint_name_id}-#{measure_id}"])
+                        c_comparison = c_rss.comparisons.find do |ccomparison|
+                          if arm_id == 'ANOVA'
+                            ccomparison.is_anova
+                          else
+                            ccomparison.comparates.map do |comparate|
+                              comparate.comparable_element.comparable.type1.id
+                            end.join('/') == arm_id
+                          end
+                        end
+
+                        if c_comparison.nil? && (arm_id == 'ANOVA' && c_rss.comparisons.none?(&:is_anova))
+                          c_comparison = Comparison.create(is_anova: true)
+                          c_rss.comparisons << c_comparison
+                        elsif c_comparison.nil? && existing_comparison_id_strings.exclude?(arm_id)
                           c_comparison = Comparison.new
                           comparison.comparate_groups.each do |comparate_group|
                             c_comparate_group = c_comparison.comparate_groups.new
@@ -1513,6 +1525,15 @@ class ConsolidationService
                           end
                           c_rss.comparisons << c_comparison
                         end
+
+                        c_tps_comparisons_rssm = c_rssm.tps_comparisons_rssms.find_or_create_by(
+                          timepoint_id: c_efpst1rc.id,
+                          comparison_id: c_comparison.id,
+                          result_statistic_sections_measure_id: c_rssm.id
+                        )
+                        c_record = Record.find_or_create_by(recordable_type: c_tps_comparisons_rssm.class,
+                                                            recordable_id: c_tps_comparisons_rssm.id)
+                        c_record.update(name: name_records.first)
                       when 3
                       when 4
                       end
