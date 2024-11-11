@@ -1465,12 +1465,7 @@ class ConsolidationService
                       end
                       next unless name_records.uniq.count == 1 && name_records.first.present?
 
-                      c_eefps = ExtractionsExtractionFormsProjectsSection.find_by(
-                        extraction_id: consolidated_extraction.id,
-                        extraction_forms_projects_section_id: efps_id
-                      )
-
-                      c_eefpst1, c_population_name, c_eefpst1r, c_eefpst1rc = consolidated_extraction.eefpst1_outcome_data(
+                      _, _, c_eefpst1r, c_eefpst1rc = consolidated_extraction.eefpst1_outcome_data(
                         type1_type_id, type1_id, population_name_id, timepoint_name_id
                       )
 
