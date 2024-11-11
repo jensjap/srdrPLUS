@@ -17,7 +17,6 @@ class Extraction < ApplicationRecord
 
   attr_accessor :is_amoeba_copy, :allow_duplicate_extraction_of_citation_by_user
 
-
   default_scope { not_disqualified }
 
   scope :consolidated,   -> { where(consolidated: true) }
@@ -83,6 +82,54 @@ class Extraction < ApplicationRecord
   #    end
   #  end
 
+  def eefpst1_arm_data(id)
+    eefps = extractions_extraction_forms_projects_sections.find do |extractions_extraction_forms_projects_section|
+      extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Arms'
+    end
+    eefpst1 = eefps.extractions_extraction_forms_projects_sections_type1s.find do |extractions_extraction_forms_projects_sections_type1|
+      extractions_extraction_forms_projects_sections_type1.type1.id == id
+    end
+
+    raise 'not found' unless eefpst1
+
+    eefpst1
+  end
+
+  def eefpst1_outcome_data(type1_type_id, type1_id, population_name_id, timepoint_name_id)
+    eefps = extractions_extraction_forms_projects_sections.find do |extractions_extraction_forms_projects_section|
+      extractions_extraction_forms_projects_section.extraction_forms_projects_section.section.name == 'Outcomes'
+    end
+    eefpst1 = nil
+    population_name = nil
+    eefpst1r = nil
+    eefpst1rc = nil
+
+    eefps.extractions_extraction_forms_projects_sections_type1s.find do |extractions_extraction_forms_projects_sections_type1|
+      extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.each do |extractions_extraction_forms_projects_sections_type1_row|
+        extractions_extraction_forms_projects_sections_type1_row.extractions_extraction_forms_projects_sections_type1_row_columns.each do |extractions_extraction_forms_projects_sections_type1_row_column|
+          next unless eefpst1.nil?
+
+          next unless extractions_extraction_forms_projects_sections_type1.type1_type_id == type1_type_id &&
+                      extractions_extraction_forms_projects_sections_type1.type1_id == type1_id &&
+                      extractions_extraction_forms_projects_sections_type1_row.population_name_id == population_name_id &&
+                      extractions_extraction_forms_projects_sections_type1_row_column.timepoint_name_id == timepoint_name_id
+
+          eefpst1 = extractions_extraction_forms_projects_sections_type1
+          population_name = extractions_extraction_forms_projects_sections_type1_row.population_name
+          eefpst1r = extractions_extraction_forms_projects_sections_type1_row
+          eefpst1rc = extractions_extraction_forms_projects_sections_type1_row_column
+        end
+      end
+    end
+
+    raise 'not found' unless eefpst1 && population_name && eefpst1r && eefpst1rc
+
+    [eefpst1,
+     population_name,
+     eefpst1r,
+     eefpst1rc]
+  end
+
   def set_stale(state)
     return unless extraction_checksum
 
@@ -92,7 +139,7 @@ class Extraction < ApplicationRecord
   end
 
   def ensure_extraction_form_structure
-    # NOTE This method assumes that self is not a mini-extraction
+    # NOTE: This method assumes that self is not a mini-extraction
     efp = project.extraction_forms_projects.includes([:extraction_form]).first
     efp.extraction_forms_projects_sections.includes([:link_to_type1]).each do |efps|
       # We should ensure that there is only 1 EEFPS per extraction per efps.

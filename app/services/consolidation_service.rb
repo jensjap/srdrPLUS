@@ -144,7 +144,7 @@ class ConsolidationService
     }
   end
 
-  def self.results(efps, citations_project, result_statistic_section_type_id)
+  def self.results(efps, citations_project, result_statistic_section_type_id, consolidated_only = false)
     return {} unless efps.extraction_forms_projects_section_type.name == 'Results'
 
     if result_statistic_section_type_id == 5
@@ -153,6 +153,7 @@ class ConsolidationService
     end
 
     extractions = Extraction.includes(projects_users_role: { projects_user: :user }).where(citations_project:)
+    extractions = extractions.unconsolidated if consolidated_only
 
     master_template = {
       1 => {},
@@ -171,6 +172,7 @@ class ConsolidationService
         rss: {}
       }
     end
+    comparisons = {}
 
     eefpss = preload_eefpss(extractions, %w[Arms Outcomes])
 
@@ -315,6 +317,8 @@ class ConsolidationService
                     record_id: record.id,
                     record_value: record.name
                   }
+                  comparisons["#{type1_type.id}-#{outcome.id}-#{population_name.id}-#{consolidated_bac_id}-#{timepoint_name.id}-#{measure.id}"] =
+                    tps_comparisons_rssm.comparison.id
                 end
               when 3
                 eefpss.each do |second_eefps|
@@ -355,6 +359,8 @@ class ConsolidationService
                     record_id: record.id,
                     record_value: record.name
                   }
+                  comparisons["#{type1_type.id}-#{outcome.id}-#{population_name.id}-#{arm.id}-#{consolidated_wac_id}-#{measure.id}"] =
+                    comparisons_arms_rssm.comparison.id
                 end
               when 4
                 bac_rss = eefpst1r.between_arm_comparisons_section
@@ -395,6 +401,10 @@ class ConsolidationService
                     record_id: record.id,
                     record_value: record.name
                   }
+                  comparisons["#{type1_type.id}-#{outcome.id}-#{population_name.id}-#{consolidated_bac_id}-#{consolidated_wac_id}-#{measure.id}-consolidated_bac_id"] =
+                    wacs_bacs_rssm.bac.id
+                  comparisons["#{type1_type.id}-#{outcome.id}-#{population_name.id}-#{consolidated_bac_id}-#{consolidated_wac_id}-#{measure.id}-consolidated_wac_id"] =
+                    wacs_bacs_rssm.wac.id
                 end
               end
             end
@@ -493,6 +503,7 @@ class ConsolidationService
       dimensions_lookup:,
       rss_lookup:,
       comparables:,
+      comparisons:,
       extraction_ids: extractions.sort_by do |extraction|
                         extraction.consolidated ? 999_999_999 : extraction.id
                       end.map { |extraction| { id: extraction.id, user: extraction.user.email.split('@').first } },
@@ -1435,10 +1446,65 @@ class ConsolidationService
           record.update(name: comparison_array[1]) if record.name != comparison_array[1]
         end
       when 3
-        # TODO
+        (1..4).each do |result_statistic_section_type_id|
+          efps = ExtractionFormsProjectsSection.find(efps_id)
+          citations_project = CitationsProject.find(citations_project_id)
+          res_obj = results(efps, citations_project, result_statistic_section_type_id, true)
+          master_template = res_obj[:master_template]
+          results_lookup = res_obj[:results_lookup]
+          comparisons = res_obj[:comparisons]
+
+          master_template.each_key do |type1_type_id|
+            master_template[type1_type_id].each_key do |type1_id|
+              master_template[type1_type_id][type1_id][:populations].each_key do |population_name_id|
+                master_template[type1_type_id][type1_id][:populations][population_name_id][:timepoints].each_key do |timepoint_name_id|
+                  master_template[type1_type_id][type1_id][:populations][population_name_id][:arms].each_key do |arm_id|
+                    master_template[type1_type_id][type1_id][:populations][population_name_id][:measures].each_key do |measure_id|
+                      name_records = res_obj[:extraction_ids].map do |extraction|
+                        results_lookup["#{extraction[:id]}-#{type1_type_id}-#{type1_id}-#{population_name_id}-#{arm_id}-#{timepoint_name_id}-#{measure_id}"]&.dig(:record_value)
+                      end
+                      next unless name_records.uniq.count == 1 && name_records.first.present?
+
+                      c_eefps = ExtractionsExtractionFormsProjectsSection.find_by(
+                        extraction_id: consolidated_extraction.id,
+                        extraction_forms_projects_section_id: efps_id
+                      )
+
+                      c_eefpst1, c_population_name, c_efpst1r, c_efpst1rc = consolidated_extraction.eefpst1_outcome_data(
+                        type1_type_id, type1_id, population_name_id, timepoint_name_id
+                      )
+                      c_eefpst1_arm = consolidated_extraction.eefpst1_arm_data(arm_id)
+
+                      c_rss = ResultStatisticSection.find_by(result_statistic_section_type_id:,
+                                                             population_id: c_efpst1r.id)
+                      c_rssm = ResultStatisticSectionsMeasure.find_or_create_by(
+                        result_statistic_section_id: c_rss.id,
+                        measure_id:
+                      )
+
+                      case result_statistic_section_type_id
+                      when 1
+                        c_tps_arms_rssm = c_rssm.tps_arms_rssms.find_or_create_by(
+                          timepoint_id: c_efpst1rc.id,
+                          extractions_extraction_forms_projects_sections_type1_id: c_eefpst1_arm.id,
+                          result_statistic_sections_measure_id: c_rssm.id
+                        )
+                        c_record = Record.find_or_create_by(recordable_type: c_tps_arms_rssm.class,
+                                                            recordable_id: c_tps_arms_rssm.id)
+                        c_record.update(name: name_records.first)
+                      when 2
+                      when 3
+                      when 4
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
       end
     end
-
     nil
   end
 end
