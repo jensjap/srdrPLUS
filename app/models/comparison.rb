@@ -12,10 +12,10 @@ class Comparison < ApplicationRecord
   has_many :comparate_groups, inverse_of: :comparison, dependent: :destroy
   has_many :comparates, through: :comparate_groups, dependent: :destroy
 
-  has_many :comparable_elements, as: :comparable, dependent: :destroy
+  has_many :comparable_elements, as: :comparable, dependent: :destroy # TODO: dead code
 
   has_many :comparisons_measures, dependent: :destroy, inverse_of: :comparison
-  has_many :measures,     through: :comparisons_measures
+  has_many :measures, through: :comparisons_measures
 
   has_many :comparisons_arms_rssms, dependent: :destroy, inverse_of: :comparison
   has_many :tps_comparisons_rssms,  dependent: :destroy, inverse_of: :comparison
