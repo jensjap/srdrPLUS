@@ -1560,6 +1560,34 @@ class ConsolidationService
                                                             recordable_id: c_comparisons_arms_rssm.id)
                         c_record.update(name: name_records.first)
                       when 4
+                        c_rss_2 = ResultStatisticSection.find_by(result_statistic_section_type_id: 2,
+                                                                 population_id: c_eefpst1r.id)
+                        c_arm_comparison = c_rss_2.comparisons.find do |ccomparison|
+                          if arm_id == 'ANOVA'
+                            ccomparison.is_anova
+                          else
+                            ccomparison.comparates.map do |comparate|
+                              comparate.comparable_element.comparable.type1.id
+                            end.join('/') == arm_id
+                          end
+                        end
+
+                        c_rss_3 = ResultStatisticSection.find_by(result_statistic_section_type_id: 3,
+                                                                 population_id: c_eefpst1r.id)
+                        c_timepoint_comparison = c_rss_3.comparisons.find do |ccomparison|
+                          ccomparison.comparates.map do |comparate|
+                            comparate.comparable_element.comparable.timepoint_name.id
+                          end.join('/') == timepoint_name_id
+                        end
+
+                        c_wacs_bacs_rssm = c_rssm.wacs_bacs_rssms.find_or_create_by(
+                          bac_id: c_arm_comparison.id,
+                          wac_id: c_timepoint_comparison.id,
+                          result_statistic_sections_measure_id: c_rssm.id
+                        )
+                        c_record = Record.find_or_create_by(recordable_type: c_wacs_bacs_rssm.class,
+                                                            recordable_id: c_wacs_bacs_rssm.id)
+                        c_record.update(name: name_records.first)
                       end
                     end
                   end
