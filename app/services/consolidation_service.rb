@@ -1473,7 +1473,6 @@ class ConsolidationService
                       c_eefpst1, c_population_name, c_efpst1r, c_efpst1rc = consolidated_extraction.eefpst1_outcome_data(
                         type1_type_id, type1_id, population_name_id, timepoint_name_id
                       )
-                      c_eefpst1_arm = consolidated_extraction.eefpst1_arm_data(arm_id)
 
                       c_rss = ResultStatisticSection.find_by(result_statistic_section_type_id:,
                                                              population_id: c_efpst1r.id)
@@ -1484,6 +1483,7 @@ class ConsolidationService
 
                       case result_statistic_section_type_id
                       when 1
+                        c_eefpst1_arm = consolidated_extraction.eefpst1_arm_data(arm_id)
                         c_tps_arms_rssm = c_rssm.tps_arms_rssms.find_or_create_by(
                           timepoint_id: c_efpst1rc.id,
                           extractions_extraction_forms_projects_sections_type1_id: c_eefpst1_arm.id,
@@ -1493,6 +1493,26 @@ class ConsolidationService
                                                             recordable_id: c_tps_arms_rssm.id)
                         c_record.update(name: name_records.first)
                       when 2
+                        existing_comparison_id_strings = c_rss.comparisons.map do |comparison|
+                          comparison.comparates.map do |comparate|
+                            comparate.comparable_element.comparable.type1.id
+                          end.join('/')
+                        end
+                        # TODO: anova
+                        # TODO: tps_comparisons_rssms
+                        unless existing_comparison_id_strings.include?(arm_id)
+                          comparison = Comparison.find(comparisons["#{type1_type_id}-#{type1_id}-#{population_name_id}-#{arm_id}-#{timepoint_name_id}-#{measure_id}"])
+                          c_comparison = Comparison.new
+                          comparison.comparate_groups.each do |comparate_group|
+                            c_comparate_group = c_comparison.comparate_groups.new
+                            comparate_group.comparable_elements.each do |comparable_element|
+                              c_eefpst1_arm = consolidated_extraction.eefpst1_arm_data(comparable_element.comparable.type1_id)
+                              c_comparate_group.comparable_elements.new(comparable_type: c_eefpst1_arm.class.to_s,
+                                                                        comparable_id: c_eefpst1_arm.id)
+                            end
+                          end
+                          c_rss.comparisons << c_comparison
+                        end
                       when 3
                       when 4
                       end
