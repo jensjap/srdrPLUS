@@ -1470,12 +1470,12 @@ class ConsolidationService
                         extraction_forms_projects_section_id: efps_id
                       )
 
-                      c_eefpst1, c_population_name, c_efpst1r, c_efpst1rc = consolidated_extraction.eefpst1_outcome_data(
+                      c_eefpst1, c_population_name, c_eefpst1r, c_eefpst1rc = consolidated_extraction.eefpst1_outcome_data(
                         type1_type_id, type1_id, population_name_id, timepoint_name_id
                       )
 
                       c_rss = ResultStatisticSection.find_by(result_statistic_section_type_id:,
-                                                             population_id: c_efpst1r.id)
+                                                             population_id: c_eefpst1r.id)
                       c_rssm = ResultStatisticSectionsMeasure.find_or_create_by(
                         result_statistic_section_id: c_rss.id,
                         measure_id:
@@ -1485,7 +1485,7 @@ class ConsolidationService
                       when 1
                         c_eefpst1_arm = consolidated_extraction.eefpst1_arm_data(arm_id)
                         c_tps_arms_rssm = c_rssm.tps_arms_rssms.find_or_create_by(
-                          timepoint_id: c_efpst1rc.id,
+                          timepoint_id: c_eefpst1rc.id,
                           extractions_extraction_forms_projects_sections_type1_id: c_eefpst1_arm.id,
                           result_statistic_sections_measure_id: c_rssm.id
                         )
@@ -1493,12 +1493,6 @@ class ConsolidationService
                                                             recordable_id: c_tps_arms_rssm.id)
                         c_record.update(name: name_records.first)
                       when 2
-                        existing_comparison_id_strings = c_rss.comparisons.map do |comparison|
-                          comparison.comparates.map do |comparate|
-                            comparate.comparable_element.comparable.type1.id
-                          end.join('/')
-                        end
-
                         comparison = Comparison.find(comparisons["#{type1_type_id}-#{type1_id}-#{population_name_id}-#{arm_id}-#{timepoint_name_id}-#{measure_id}"])
                         c_comparison = c_rss.comparisons.find do |ccomparison|
                           if arm_id == 'ANOVA'
@@ -1513,7 +1507,7 @@ class ConsolidationService
                         if c_comparison.nil? && (arm_id == 'ANOVA' && c_rss.comparisons.none?(&:is_anova))
                           c_comparison = Comparison.create(is_anova: true)
                           c_rss.comparisons << c_comparison
-                        elsif c_comparison.nil? && existing_comparison_id_strings.exclude?(arm_id)
+                        elsif c_comparison.nil?
                           c_comparison = Comparison.new
                           comparison.comparate_groups.each do |comparate_group|
                             c_comparate_group = c_comparison.comparate_groups.new
@@ -1527,7 +1521,7 @@ class ConsolidationService
                         end
 
                         c_tps_comparisons_rssm = c_rssm.tps_comparisons_rssms.find_or_create_by(
-                          timepoint_id: c_efpst1rc.id,
+                          timepoint_id: c_eefpst1rc.id,
                           comparison_id: c_comparison.id,
                           result_statistic_sections_measure_id: c_rssm.id
                         )
@@ -1535,6 +1529,41 @@ class ConsolidationService
                                                             recordable_id: c_tps_comparisons_rssm.id)
                         c_record.update(name: name_records.first)
                       when 3
+                        c_comparison = c_rss.comparisons.find do |ccomparison|
+                          ccomparison.comparates.map do |comparate|
+                            comparate.comparable_element.comparable.timepoint_name.id
+                          end.join('/') == timepoint_name_id
+                        end
+
+                        comparison = Comparison.find(comparisons["#{type1_type_id}-#{type1_id}-#{population_name_id}-#{arm_id}-#{timepoint_name_id}-#{measure_id}"])
+
+                        if c_comparison.nil?
+                          c_comparison = Comparison.new
+                          comparison.comparate_groups.each do |comparate_group|
+                            c_comparate_group = c_comparison.comparate_groups.new
+                            comparate_group.comparable_elements.each do |comparable_element|
+                              _, _, _, c_eefpst1rc = consolidated_extraction.eefpst1_outcome_data(
+                                type1_type_id,
+                                type1_id,
+                                population_name_id,
+                                comparable_element.comparable.timepoint_name.id
+                              )
+                              c_comparate_group.comparable_elements.new(comparable_type: c_eefpst1rc.class.to_s,
+                                                                        comparable_id: c_eefpst1rc.id)
+                            end
+                          end
+                          c_rss.comparisons << c_comparison
+                        end
+
+                        c_eefpst1_arm = consolidated_extraction.eefpst1_arm_data(arm_id)
+                        c_comparisons_arms_rssm = c_rssm.comparisons_arms_rssms.find_or_create_by(
+                          comparison_id: c_comparison.id,
+                          extractions_extraction_forms_projects_sections_type1_id: c_eefpst1_arm.id,
+                          result_statistic_sections_measure_id: c_rssm.id
+                        )
+                        c_record = Record.find_or_create_by(recordable_type: c_comparisons_arms_rssm.class,
+                                                            recordable_id: c_comparisons_arms_rssm.id)
+                        c_record.update(name: name_records.first)
                       when 4
                       end
                     end

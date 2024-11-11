@@ -112,7 +112,8 @@ class Extraction < ApplicationRecord
           next unless extractions_extraction_forms_projects_sections_type1.type1_type_id == type1_type_id &&
                       extractions_extraction_forms_projects_sections_type1.type1_id == type1_id &&
                       extractions_extraction_forms_projects_sections_type1_row.population_name_id == population_name_id &&
-                      extractions_extraction_forms_projects_sections_type1_row_column.timepoint_name_id == timepoint_name_id
+                      ((timepoint_name_id.instance_of?(String) && timepoint_name_id.include?('/')) ||
+                      extractions_extraction_forms_projects_sections_type1_row_column.timepoint_name_id == timepoint_name_id)
 
           eefpst1 = extractions_extraction_forms_projects_sections_type1
           population_name = extractions_extraction_forms_projects_sections_type1_row.population_name
@@ -122,7 +123,12 @@ class Extraction < ApplicationRecord
       end
     end
 
-    raise 'not found' unless eefpst1 && population_name && eefpst1r && eefpst1rc
+    unless eefpst1 &&
+           population_name &&
+           eefpst1r &&
+           (eefpst1rc || (timepoint_name_id.instance_of?(String) && timepoint_name_id.include?('/')))
+      raise 'not found'
+    end
 
     [eefpst1,
      population_name,
