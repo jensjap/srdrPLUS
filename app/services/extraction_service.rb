@@ -1,7 +1,5 @@
 class ExtractionService
   def self.generate_status
-    done_extraction_ids = []
-    max_statusing_created_ats = []
     Extraction.includes(extractions_extraction_forms_projects_sections: :statusing).each do |extraction|
       statusings = extraction.extractions_extraction_forms_projects_sections.map(&:statusing)
       all_done =
@@ -10,14 +8,13 @@ class ExtractionService
         end
       next unless all_done && statusings.count.positive?
 
-      done_extraction_ids << extraction.id
-      max_statusing_created_ats << extraction
+      approved_on = extraction
                                    .extractions_extraction_forms_projects_sections
                                    .map(&:statusing)
                                    .max_by(&:created_at)
                                    .created_at
+      extraction.update_columns(approved_on:)
     end
-    done_extraction_ids.zip(max_statusing_created_ats)
   end
 
   def self.all_eefps_done?(extraction)
