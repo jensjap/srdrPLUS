@@ -27,7 +27,8 @@ RUN apk add --update --no-cache \
       pkgconfig \
       python3 \
       tzdata \
-      yarn
+      yarn \
+      bash
 
 RUN gem install bundler -v 2.3.15
 
@@ -39,6 +40,11 @@ RUN bundle config build.nokogiri --use-system-libraries
 
 RUN bundle install
 
+COPY entrypoints /usr/local/bin/entrypoints
+
+RUN dos2unix /usr/local/bin/entrypoints/*.sh \
+      && chmod +x /usr/local/bin/entrypoints/*.sh
+
 COPY . ./
 
-ENTRYPOINT ["./entrypoints/docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoints/docker-entrypoint.sh"]
