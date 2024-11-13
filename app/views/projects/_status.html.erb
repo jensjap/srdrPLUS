@@ -109,7 +109,7 @@
                   }"
                 ></td>
                 <td
-                  x-text="new Date(extraction.created_at).toLocaleString()"
+                  x-text="extraction.created_at ? new Date(extraction.created_at).toLocaleString() : ''"
                   class="text-center"
                 ></td>
                 <td
