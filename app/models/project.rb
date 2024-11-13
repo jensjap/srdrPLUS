@@ -214,10 +214,13 @@ class Project < ApplicationRecord
 
   def consolidated_extraction(citations_project_id, current_user_id)
     non_c_extractions = extractions.unconsolidated.where(citations_project_id:)
-    c_extraction = extractions.consolidated.find_by(citations_project_id:)
-    return c_extraction if c_extraction.present?
 
-    c_extraction = extractions.create(
+    c_extraction = extractions.find_by(
+      citations_project_id:,
+      consolidated: true
+    )
+
+    c_extraction ||= extractions.find_or_create_by(
       citations_project_id:,
       user_id: current_user_id,
       consolidated: true

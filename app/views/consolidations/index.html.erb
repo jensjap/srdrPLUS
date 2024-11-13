@@ -43,6 +43,7 @@
                 >
                   Citation (Sorted by Title)
                 </th>
+                <th></th>
                 <th
                   class="cursor-pointer"
                   @click="sort('ce_sort_by', 'status', 'ce_sort_direction', 'consolidated_extractions')"
@@ -78,6 +79,18 @@
                   </td>
                   <td class="text-center">
                     <button
+                      @click="reconsolidate(c_extraction)"
+                      class="p-2 w-32 text-white bg-red-800"
+                      :class="{
+                        'cursor-pointer': c_extraction.consolidated_extraction_status,
+                        'cursor-not-allowed': c_extraction.consolidated_extraction_status === false,
+                        'opacity-50': c_extraction.consolidated_extraction_status === false,
+                      }"
+                      x-text="c_extraction.consolidated_extraction_status ? 'Reconsolidate' : 'Loading...'"
+                    ></button>
+                  </td>
+                  <td class="text-center">
+                    <button
                       @click="toggleSectionCompletionStatus(c_extraction)"
                       x-text="c_extraction.status"
                       class="p-2 w-32 cursor-pointer text-white"
@@ -87,7 +100,7 @@
                       }"
                     ></button>
                   </td>
-                  <td>
+                  <td class="text-center">
                     <button
                       @click="toggleApproval(c_extraction)"
                       x-text="c_extraction.approved_on === null ? 'Unapproved' : 'Approved'"
@@ -376,6 +389,25 @@
         });
         const data = await response.json();
         this.fetch_results();
+      },
+
+      reconsolidate(c_extraction) {
+        if (
+          c_extraction.consolidated_extraction_status &&
+          confirm(
+            "This will override existing data that can be auto consolidated"
+          )
+        ) {
+          this.createConsolidatedExtraction(c_extraction.citations_project_id);
+          c_extraction.consolidated_extraction_status = false;
+          this.citationsArray.forEach((cp_obj) => {
+            if (
+              cp_obj.citations_project_id === c_extraction.citations_project_id
+            ) {
+              cp_obj.consolidated_extraction_status = false;
+            }
+          });
+        }
       },
     }));
   });
