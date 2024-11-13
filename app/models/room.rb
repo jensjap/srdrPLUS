@@ -6,7 +6,6 @@
 #  name       :string(255)      not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  project_id :integer
 #  user_id    :integer          not null
 #
 class Room < ApplicationRecord

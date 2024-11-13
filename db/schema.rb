@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_10_16_072851) do
+ActiveRecord::Schema[7.0].define(version: 2024_11_13_054641) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1019,6 +1019,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_16_072851) do
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.index ["name"], name: "index_measures_on_name", unique: true
   end
 
   create_table "memberships", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -1065,7 +1066,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_16_072851) do
     t.boolean "pinned", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "room_id"
+    t.bigint "room_id", null: false
     t.string "help_key"
     t.integer "project_id"
     t.integer "extraction_id"
@@ -1074,6 +1075,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_16_072851) do
     t.index ["message_id"], name: "index_messages_on_message_id"
     t.index ["project_id"], name: "index_messages_on_project_id"
     t.index ["room_id"], name: "index_messages_on_room_id"
+    t.index ["user_id", "room_id"], name: "index_messages_on_user_id_and_room_id"
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
@@ -1244,9 +1246,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_16_072851) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.text "authors_of_report"
-    t.boolean "exclude_personal_conflicts", default: true, null: false
-    t.boolean "as_limit_one_reason", default: false, null: false
-    t.boolean "fs_limit_one_reason", default: false, null: false
+    t.boolean "exclude_personal_conflicts", default: false, null: false
+    t.boolean "as_limit_one_reason", default: true, null: false
+    t.boolean "fs_limit_one_reason", default: true, null: false
     t.boolean "as_allow_adding_reasons", default: true, null: false
     t.boolean "as_allow_adding_tags", default: true, null: false
     t.boolean "fs_allow_adding_reasons", default: true, null: false
@@ -1537,10 +1539,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_16_072851) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "project_id"
     t.integer "user_id", null: false
     t.index ["name"], name: "index_rooms_on_name"
-    t.index ["project_id"], name: "index_rooms_on_project_id", unique: true
     t.index ["user_id"], name: "index_rooms_on_user_id"
   end
 
@@ -2188,18 +2188,16 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_16_072851) do
   end
 
   create_table "word_weights", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "abstract_screening_id"
     t.integer "weight", limit: 1, null: false
     t.string "word", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "project_id"
-    t.integer "user_id", default: 1, null: false
-    t.bigint "abstract_screening_id", default: 1, null: false
     t.bigint "word_group_id"
-    t.index ["abstract_screening_id"], name: "index_word_weights_on_abstract_screening_id"
-    t.index ["project_id", "word"], name: "project_id_word", unique: true
-    t.index ["project_id"], name: "index_word_weights_on_project_id"
-    t.index ["user_id"], name: "index_word_weights_on_user_id"
+    t.index ["abstract_screening_id"], name: "ww_on_as"
+    t.index ["user_id", "abstract_screening_id", "word"], name: "u_as_w", unique: true
+    t.index ["user_id"], name: "ww_on_u"
     t.index ["word_group_id"], name: "index_word_weights_on_word_group_id"
   end
 
@@ -2285,7 +2283,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_16_072851) do
   add_foreign_key "labels_reasons", "reasons"
   add_foreign_key "messages", "extractions"
   add_foreign_key "messages", "projects"
-  add_foreign_key "messages", "rooms"
   add_foreign_key "ml_predictions", "citations_projects"
   add_foreign_key "ml_predictions", "ml_models"
   add_foreign_key "model_performances", "ml_models"
@@ -2331,7 +2328,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_16_072851) do
   add_foreign_key "result_statistic_sections_measures", "result_statistic_sections_measures"
   add_foreign_key "result_statistic_sections_measures_comparisons", "comparisons"
   add_foreign_key "result_statistic_sections_measures_comparisons", "result_statistic_sections"
-  add_foreign_key "rooms", "projects"
   add_foreign_key "screening_options", "label_types"
   add_foreign_key "screening_options", "projects"
   add_foreign_key "screening_options", "screening_option_types"
@@ -2373,8 +2369,5 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_16_072851) do
   add_foreign_key "training_data_infos", "ml_models"
   add_foreign_key "users", "user_types"
   add_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures"
-  add_foreign_key "word_weights", "abstract_screenings"
-  add_foreign_key "word_weights", "projects"
-  add_foreign_key "word_weights", "users"
   add_foreign_key "word_weights", "word_groups"
 end
