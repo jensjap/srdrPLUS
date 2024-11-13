@@ -32,6 +32,7 @@ class AbstractScreeningResultsController < ApplicationController
                                      .includes(:user, citations_project: :citation)
                                      .find(params[:id])
         authorize(@abstract_screening_result)
+
         @screened_cps = AbstractScreeningResult
                         .includes(citations_project: :citation)
                         .where(
@@ -39,6 +40,16 @@ class AbstractScreeningResultsController < ApplicationController
                           privileged: params[:resolution_mode] == 'true'
                         )
                         .order(updated_at: :desc)
+
+        unless params[:resolution_mode] == 'true'
+          privileged_citations_project_ids = AbstractScreeningResult
+                                              .where(citations_project_id: @screened_cps.pluck(:citations_project_id))
+                                              .where(privileged: true)
+                                              .pluck(:citations_project_id)
+
+          @screened_cps = @screened_cps.where.not(citations_project_id: privileged_citations_project_ids)
+        end
+
         @screened_cps = @screened_cps.where(user: current_user) unless params[:resolution_mode] == 'true'
         prepare_json_data
       end

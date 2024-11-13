@@ -676,12 +676,19 @@
                 ></td>
                 <td class="p-3 whitespace-nowrap flex flex-col space-y-2">
                   <a
-                    :href="`/abstract_screenings/${result.abstract_screening_id}/screen?asr_id=${result.id}${result.privileged ? '&resolution_mode=true' : ''}`"
+                    x-bind:href="!shouldDisableButton(result) ? `/abstract_screenings/${result.abstract_screening_id}/screen?asr_id=${result.id}${result.privileged ? '&resolution_mode=true' : ''}` : null"
                     x-cloak
                     x-show="result.user_id == <%= current_user.id %> || result.privileged || <%= ProjectPolicy.new(current_user, @project).project_leader? %>"
-                    class="hover:no-underline focus:no-underline hover:text-white focus:text-white inline-flex items-center justify-center rounded-md border border-transparent bg-srdrpurple hover:bg-srdrpurple-light px-4 py-1 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
-                    >Screen Again</a
-                  >
+                    :class="{
+                      'bg-gray-300 cursor-not-allowed': shouldDisableButton(result),
+                      'bg-srdrpurple hover:bg-srdrpurple-light': !result.privileged && !shouldDisableButton(result),
+                      'bg-indigo-600 hover:bg-indigo-700': result.privileged && !shouldDisableButton(result)
+                    }"
+                    :aria-disabled="shouldDisableButton(result)"
+                    :tabindex="shouldDisableButton(result) ? '-1' : '0'"
+                    class="hover:no-underline focus:no-underline hover:text-white focus:text-white inline-flex items-center justify-center rounded-md border border-transparent px-4 py-1 text-sm font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
+                    x-text="result.privileged ? 'Resolve Conflict Again' : 'Screen Again'"
+                  ></a>
                 </td>
               </tr>
             </template>
@@ -789,6 +796,16 @@
         } else {
           toastr.error("We've encountered an error", null, { timeOut: 1000 });
         }
+      },
+
+      shouldDisableButton(result) {
+        return this.results.some(r =>
+          r.author_map_string === result.author_map_string &&
+          r.name === result.name &&
+          r.year === result.year &&
+          r.privileged &&
+          !result.privileged
+        );
       },
     }));
   });
