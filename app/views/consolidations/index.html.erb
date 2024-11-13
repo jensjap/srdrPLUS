@@ -30,7 +30,9 @@
         </div>
         <div
           class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg mb-4 overflow-y-auto max-h-80"
+          x-data="$store.deleteConfirmation"
         >
+          <%= render 'shared/alert_modal' %>
           <table
             class="min-w-full divide-y divide-gray-300 overflow-y-scroll max-h-80"
           >
@@ -44,17 +46,18 @@
                   Citation (Sorted by Title)
                 </th>
                 <th></th>
+                <th></th>
                 <th
                   class="cursor-pointer"
                   @click="sort('ce_sort_by', 'status', 'ce_sort_direction', 'consolidated_extractions')"
                 >
-                  Status
+                  Work Status
                 </th>
                 <th
                   class="cursor-pointer"
                   @click="sort('ce_sort_by', 'approved_on', 'ce_sort_direction', 'consolidated_extractions')"
                 >
-                  Approved
+                  Approval Status
                 </th>
               </tr>
             </thead>
@@ -79,8 +82,16 @@
                   </td>
                   <td class="text-center">
                     <button
+                      @click="Alpine.store('deleteConfirmation').openAlertModal(`/extractions/${c_extraction.id}`, c_extraction.id, c_extraction.citation_name)"
+                      class="p-2 w-32 text-white bg-red-800 cursor-pointer"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                  <td class="text-center">
+                    <button
                       @click="reconsolidate(c_extraction)"
-                      class="p-2 w-32 text-white bg-red-800"
+                      class="p-2 w-32 text-white bg-orange-500"
                       :class="{
                         'cursor-pointer': c_extraction.consolidated_extraction_status,
                         'cursor-not-allowed': c_extraction.consolidated_extraction_status === false,
@@ -410,5 +421,42 @@
         }
       },
     }));
+    Alpine.store("deleteConfirmation", {
+      isAlertModalOpen: false,
+      alertModalContent: "",
+      deleteUrl: "",
+      openAlertModal(url, extraction_id, extraction_name) {
+        this.deleteUrl = url;
+        if (extraction_name) {
+          this.alertModalContent = `Warning! You are about to delete an Extraction with ID ${extraction_id}: "${extraction_name}" and any associated data with it. \nThis action cannot be undone. Please confirm to proceed.`;
+        } else {
+          this.alertModalContent = `Warning! You are about to delete an Extraction with ID ${extraction_id} and any associated data with it. \nThis action cannot be undone. Please confirm to proceed.`;
+        }
+        this.isAlertModalOpen = true;
+      },
+      closeAlertModal() {
+        this.isAlertModalOpen = false;
+      },
+      modalConfirmAction() {
+        fetch(this.deleteUrl, {
+          method: "DELETE",
+          headers: {
+            "X-CSRF-Token": document
+              .querySelector("meta[name='csrf-token']")
+              .getAttribute("content"),
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        })
+          .then((response) => {
+            if (response.ok || response.status === 204) {
+              window.location.reload();
+            }
+          })
+          .catch((error) => console.error("Error:", error))
+          .finally(() => this.closeAlertModal());
+      },
+    });
   });
 </script>
