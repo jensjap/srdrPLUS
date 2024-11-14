@@ -49,51 +49,38 @@ class Message < ApplicationRecord
     end
   end
 
+  def broadcast(key, additional_data = {})
+    ActionCable.server.broadcast(
+      key,
+      {
+        message_type: 'message',
+        id:,
+        room:,
+        user_id:,
+        handle: user.handle,
+        text:,
+        created_at:,
+        pinned:,
+        message_id:,
+        messages:,
+        help_key:,
+        project_id:,
+        extraction_id:
+      }.merge(additional_data)
+    )
+  end
+
   def broadcast_help
     online_user_ids = redis_online_user_ids
     broadcast_user_ids =
       User.joins(:projects_users).where(projects_users: { project_id: }).pluck(:id)
     notify_users(online_user_ids & broadcast_user_ids)
 
-    ActionCable.server.broadcast(
-      help_key,
-      {
-        message_type: 'message',
-        id:,
-        room:,
-        user_id:,
-        handle: user.handle,
-        text:,
-        created_at:,
-        pinned:,
-        message_id:,
-        messages:,
-        help_key:,
-        project_id:,
-        extraction_id:
-      }
-    )
+    broadcast(help_key)
   end
 
   def broadcast_project_message
-    ActionCable.server.broadcast(
-      "project_message-#{project_id}",
-      {
-        message_type: 'message',
-        id:,
-        room:,
-        user_id:,
-        handle: user.handle,
-        text:,
-        created_at:,
-        pinned:,
-        message_id:,
-        messages:,
-        help_key:,
-        project_id:,
-        extraction_id:
-      }
-    )
+    broadcast("project_message-#{project_id}")
   end
 
   def broadcast_chat
@@ -107,24 +94,11 @@ class Message < ApplicationRecord
       message_unread = message_unreads.find do |mu|
         mu.user_id == online_broadcast_user_id
       end
-      ActionCable.server.broadcast(
-        "user_#{online_broadcast_user_id}",
-        {
-          message_type: 'message',
-          id:,
-          room:,
-          user_id:,
-          handle: user.handle,
-          text:,
-          created_at:,
-          read: message_unread.blank?,
-          message_unread_id: message_unread&.id,
-          pinned:,
-          message_id:,
-          messages:,
-          help_key:
-        }
-      )
+      broadcast("user_#{online_broadcast_user_id}",
+                {
+                  read: message_unread.blank?,
+                  message_unread_id: message_unread&.id
+                })
     end
   end
 
