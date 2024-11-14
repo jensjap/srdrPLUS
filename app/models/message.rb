@@ -74,6 +74,10 @@ class Message < ApplicationRecord
     online_user_ids = redis_online_user_ids
     broadcast_user_ids =
       User.joins(:projects_users).where(projects_users: { project_id: }).pluck(:id)
+    if help_key
+      broadcast_user_ids =
+        (broadcast_user_ids | User.includes(:profile, :messages).where(messages: { help_key: }).pluck(:id))
+    end
     notify_users(online_user_ids & broadcast_user_ids)
 
     broadcast(help_key)
