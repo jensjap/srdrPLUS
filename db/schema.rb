@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_11_13_054641) do
+ActiveRecord::Schema[7.0].define(version: 2024_11_13_130210) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1066,7 +1066,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_13_054641) do
     t.boolean "pinned", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "room_id", null: false
+    t.bigint "room_id"
     t.string "help_key"
     t.integer "project_id"
     t.integer "extraction_id"
