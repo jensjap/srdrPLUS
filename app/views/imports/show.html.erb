@@ -58,7 +58,7 @@
           <td><%= citation['refman'] %></td>
           <td><%= citation['pmid'] %></td>
           <td><%= citation['doi'] %></td>
-          <td><%= citation['abstract'] %></td>
+          <td><%= citation['abstract'].force_encoding('UTF-8') %></td>
         </tr>
         <% end %>
       </tbody>

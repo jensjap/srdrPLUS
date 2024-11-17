@@ -81,7 +81,7 @@ module ImportJobs::PubmedCitationImporter
         # will add as primary citation by default, there is no way to figure that out from pubmed
         row_h['pmid'] = cit_h['PMID'].strip if cit_h['PMID'].present?
         row_h['name'] = cit_h['TI'].strip.truncate(500) if cit_h['TI'].present?
-        row_h['abstract'] = cit_h['AB'].strip if cit_h['AB'].present?
+        row_h['abstract'] = Utilities.encode_to_utf8(cit_h['AB'].strip) if cit_h['AB'].present?
         row_h['citation_type_id'] = PRIMARY_ID
 
         # keywords
