@@ -101,7 +101,7 @@ class ExtractionsController < ApplicationController
 
       if new_extraction.persisted?
         skipped << new_extraction
-      elsif new_extraction.save
+      elsif (new_extraction.assignor = current_user) && new_extraction.save
         succeeded << new_extraction
       else
         failed << extraction
