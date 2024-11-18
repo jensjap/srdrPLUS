@@ -2,17 +2,18 @@ class SendExtractionReportJob < ApplicationJob
   queue_as :default
 
   def perform(*_args)
-    Log.includes(loggable: [:assignor, { citations_project: :citation }])
-       .where(loggable_type: 'Extraction')
-       .where(created_at: 1445.minutes.ago..5.minutes.from_now)
-       .group_by { |log| log.loggable.assignor }
-       .each do |assignor, logs|
-      next unless assignor
+    Extraction
+      .includes(:logs, { citations_project: :citation })
+      .where.not(assignor: nil)
+      .where(logs: { loggable_type: 'Extraction', created_at: 1445.minutes.ago..5.minutes.from_now })
+      .group_by(&:assignor)
+      .each do |assignor, extractions|
+      log_messages = []
+      extractions.each do |extraction|
+        next unless extraction.logs.present?
 
-      log_messages = logs.map do |log|
-        extraction = log.loggable
-        citation = extraction.citations_project.citation
-        "Extraction ID: #{extraction.id} (#{citation.name}) was set to '#{log.description}'"
+        newest_log = extraction.logs.max_by(&:id)
+        log_messages << "Extraction ID: #{extraction.id} (#{extraction.citations_project.citation.name}) was set to '#{newest_log.description}'"
       end
 
       SendExtractionReportMailer.send_extraction_report(assignor.email, assignor.handle, log_messages).deliver_later
