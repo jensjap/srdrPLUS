@@ -1,7 +1,7 @@
 <script src="/echarts.min.js"></script>
 
 <div x-data="machine_learning_results" data-top-unscreened-citations="<%= @searched_top_unscreened_citations.to_json %>">
-  <%= render '/abstract_screenings/detail_view' %>
+  <%= render '/project_dashboard/detail_view' %>
   <div id="dataContainer"
       data-scores="<%= @scores.to_json %>"
       data-labels-with-scores="<%= @labels_with_scores.to_json %>"
