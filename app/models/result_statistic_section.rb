@@ -59,7 +59,7 @@ class ResultStatisticSection < ApplicationRecord
     # Not calling super(hash)/super because we don't have a use case for updating measures through measures_attributes
     hash.values.each do |value|
       measure = Measure.find_or_create_by(name: value[:name])
-      measures << Measure.find_or_create_by(name: value[:name]) if measures.exclude?(measure)
+      measures << measure if measures.exclude?(measure)
     end
   end
 
