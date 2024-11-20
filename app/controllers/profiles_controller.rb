@@ -90,6 +90,7 @@ class ProfilesController < ApplicationController
         :abstrackr_setting_id,
         :organization_id,
         :conflict_resolution_label_visibility,
+        :notification,
         degree_ids: []
       )
   end

@@ -15,7 +15,44 @@
         'hover:text-srdr-primary' %>
       </p>
     </div>
-    <div class="mt-6 grid grid-cols-1 gap-y-2 gap-x-4 sm:grid-cols-6">
+    <div x-data="account">
+      <div class="block text-sm font-medium text-gray-700">
+        Messages Notifications
+      </div>
+      <div class="mt-1 text-sm text-gray-500">
+        <div class="flex items-center">
+          <input
+            id="email"
+            name="notification-method"
+            type="radio"
+            :checked="notification === 'email'"
+            class="size-4 border-gray-300 !mb-0"
+            @click="updateProfile('email')"
+          />
+          <label
+            for="email"
+            class="ml-3 block text-sm/6 font-medium text-gray-900"
+            >Email</label
+          >
+        </div>
+        <div class="flex items-center">
+          <input
+            id="no-notification"
+            name="notification-method"
+            type="radio"
+            :checked="notification === 'null'"
+            class="size-4 border-gray-300 !mb-0"
+            @click="updateProfile(null)"
+          />
+          <label
+            for="no-notification"
+            class="ml-3 block text-sm/6 font-medium text-gray-900"
+            >No notification</label
+          >
+        </div>
+      </div>
+    </div>
+    <div class="mt-3 grid grid-cols-1 gap-y-2 gap-x-4 sm:grid-cols-6">
       <div class="sm:col-span-6">
         <div class="block text-sm font-medium text-gray-700">Organization</div>
         <div class="mt-1">
@@ -134,17 +171,51 @@
 
   <div class="pt-8">
     <div>
-      <h3 class="text-lg font-medium leading-6 text-gray-900 underline">Delete Account</h3>
+      <h3 class="text-lg font-medium leading-6 text-gray-900 underline">
+        Delete Account
+      </h3>
     </div>
-
+    <div>
       <div class="sm:col-span-6">
         <div class="mt-1">
           <div class="block text-xs text-red-700 font-bold">
             Warning: Account Deletions are Irreversible
           </div>
           <!-- prettier-ignore -->
-          <%= button_to "Confirm Deletion", registration_path(resource_name), class: 'alert button', data: { confirm: 'I understand that any deleted data cannot be restored. Delete?' }, method: :delete %>        </div>
+          <%= button_to "Confirm Deletion", registration_path(resource_name), class: 'alert button', data: { confirm: 'I understand that any deleted data cannot be restored. Delete?' }, method: :delete %>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+    };
+    Alpine.data("account", () => ({
+      notification:
+        "<%= @profile.notification.nil? ? 'null' : @profile.notification %>",
+
+      async init() {},
+
+      async updateProfile(notification) {
+        const response = await fetch("/profile", {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify({
+            profile: { notification },
+          }),
+        });
+
+        if (response.status >= 200 && response.status < 300) {
+          toastr.success("Saved successfully", null, { timeOut: 1000 });
+        }
+      },
+    }));
+  });
+</script>
