@@ -29,5 +29,5 @@ auto_training_job:
 
 send_extraction_report_job:
   cron: "0 5 * * *" # execute at 5am every day
-  class: "SendExtractionReportJob"
+  class: "ExtractionReportJob"
   queue: default

@@ -1,4 +1,4 @@
-class SendExtractionReportJob < ApplicationJob
+class ExtractionReportJob < ApplicationJob
   queue_as :default
 
   def perform(*_args)
@@ -16,7 +16,7 @@ class SendExtractionReportJob < ApplicationJob
         log_messages << "Extraction ID: #{extraction.id} (#{extraction.citations_project.citation.name}) was set to '#{newest_log.description}'"
       end
 
-      SendExtractionReportMailer.send_extraction_report(assignor.email, assignor.handle, log_messages).deliver_later
+      ExtractionReportMailer.send_extraction_report(assignor.email, assignor.handle, log_messages).deliver_later
     end
   end
 end

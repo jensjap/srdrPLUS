@@ -1,7 +1,7 @@
-class SendExtractionReportMailer < ApplicationMailer
+class ExtractionReportMailer < ApplicationMailer
   layout false
 
-  def send_extraction_report(email, handle, log_messages)
+  def extraction_report(email, handle, log_messages)
     @handle = handle
     @log_messages = log_messages
 
