@@ -14,8 +14,9 @@
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
 #  projects_paginate_per                :integer
-#  storage                              :text(65535)
 #  conflict_resolution_label_visibility :boolean          default(FALSE)
+#  storage                              :text(65535)
+#  notification                         :string(255)      default("email")
 #
 
 class Profile < ApplicationRecord

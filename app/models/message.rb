@@ -9,7 +9,7 @@
 #  pinned        :boolean          default(FALSE), not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  room_id       :bigint           not null
+#  room_id       :bigint
 #  help_key      :string(255)
 #  project_id    :integer
 #  extraction_id :integer
