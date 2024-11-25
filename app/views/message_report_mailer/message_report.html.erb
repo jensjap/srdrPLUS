@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Latest messages</title>
+  </head>
+  <body style="font-family: Arial, Helvetica, sans-serif; margin: 32px">
+    <p>Greetings <span style="font-weight: bold"><%= @handle %></span>,</p>
+    <p>Here are yesterday's messages:</p>
+    <!-- prettier-ignore -->
+    <% @messages_hash.each do |help_key, messages| %>
+    <div style="margin-top: 8px">
+      <div style="display: block; font-weight: bold"><%= help_key %></div>
+      <!-- prettier-ignore -->
+      <% messages.each do |message| %>
+      <div
+        style="
+          display: block;
+          font-size: 14px;
+          margin-left: 16px;
+          display: flex;
+          margin-top: 0.25rem;
+        "
+      >
+        <a target="_blank" href="http://localhost:3000/extractions/<%= message.extraction_id %>/work?panel-tab=&help_board=true">
+          <div><%= message.text %></div>
+          <div style="font-weight: lighter; font-size: 10px; color: gray">
+            <!-- prettier-ignore -->
+            <%= message.created_at.strftime("%a, %e %b %Y %H:%M:%S %z") %>
+            <span style="font-weight: bold"><%= message.handle %></span>
+          </div>
+        </div>
+      </a>
+      <% end %>
+    </div>
+    <% end %>
+  </body>
+</html>

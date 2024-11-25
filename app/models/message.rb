@@ -26,7 +26,7 @@ class Message < ApplicationRecord
   attribute :handle, type: :string
 
   def handle
-    user.handle if association_cached?(:user) && user.association_cached?(:profile)
+    user.handle
   end
 
   def broadcast_message
