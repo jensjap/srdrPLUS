@@ -23,7 +23,7 @@
           margin-top: 0.25rem;
         "
       >
-        <a target="_blank" href="http://localhost:3000/extractions/<%= message.extraction_id %>/work?panel-tab=&help_board=true">
+        <a target="_blank" href="<%= root_url %>extractions/<%= message.extraction_id %>/work?panel-tab=&help_board=true">
           <div><%= message.text %></div>
           <div style="font-weight: lighter; font-size: 10px; color: gray">
             <!-- prettier-ignore -->
@@ -35,5 +35,9 @@
       <% end %>
     </div>
     <% end %>
+
+    <div style="text-align: center; display: block; margin: 8px 8px;">
+      If you prefer to not receive these message summaries, please visit <a href="<%= root_url %>users/edit" target="_blank">Account Settings</a> to update your notification preference.
+    </div>
   </body>
 </html>
