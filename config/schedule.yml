@@ -27,7 +27,12 @@ auto_training_job:
   class: "AutoTrainingJob"
   queue: default
 
-send_extraction_report_job:
+extraction_report_job:
   cron: "0 5 * * *" # execute at 5am every day
   class: "ExtractionReportJob"
+  queue: default
+
+message_report_job:
+  cron: "0 5 * * *" # execute at 5am every day
+  class: "MessageReportJob"
   queue: default

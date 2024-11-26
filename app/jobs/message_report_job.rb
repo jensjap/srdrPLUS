@@ -26,6 +26,8 @@ class MessageReportJob < ApplicationJob
         .joins(:messages, :profile)
         .where(messages: { help_key: recent_help_key })
         .each do |user|
+        next unless user.profile.notification == 'email'
+
         user_messages[user] ||= {}
         user_messages[user][recent_help_key] = messages_lookup[recent_help_key]
       end
