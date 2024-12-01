@@ -196,9 +196,18 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500"
-                >"accession_number_alts:keyword"</span
-              >
+
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-500 mb-2">"accession_number_alts:keyword"</span>
+                <input
+                  type="text"
+                  x-model="filters.accession_number_alts"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Filter..."
+                />
+              </div>
             </th>
             <th
               scope="col"
@@ -244,9 +253,18 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500"
-                >"author_map_string:keyword"</span
-              >
+
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-500 mb-2">"author_map_string:keyword"</span>
+                <input
+                  type="text"
+                  x-model="filters.author_map_string"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Filter..."
+                />
+              </div>
             </th>
             <th
               scope="col"
@@ -292,7 +310,18 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500">"name:keyword"</span>
+
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-500 mb-2">"name:keyword"</span>
+                <input
+                  type="text"
+                  x-model="filters.name"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Filter..."
+                />
+              </div>
             </th>
             <th
               scope="col"
@@ -338,7 +367,18 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500">"year:keyword"</span>
+
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-500 mb-2">"year:keyword"</span>
+                <input
+                  type="text"
+                  x-model="filters.year"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Filter..."
+                />
+              </div>
             </th>
             <th
               scope="col"
@@ -384,7 +424,18 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500">"user:keyword"</span>
+
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-500 mb-2">"user:keyword"</span>
+                <input
+                  type="text"
+                  x-model="filters.user"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Filter..."
+                />
+              </div>
             </th>
             <th
               scope="col"
@@ -430,7 +481,18 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500">"label:keyword"</span>
+
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-500 mb-2">"label:keyword"</span>
+                <input
+                  type="text"
+                  x-model="filters.label"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Filter..."
+                />
+              </div>
             </th>
             <th
               scope="col"
@@ -476,7 +538,18 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500">"privileged:keyword"</span>
+
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-500 mb-2">"privileged:keyword"</span>
+                <input
+                  type="text"
+                  x-model="filters.privileged"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Filter..."
+                />
+              </div>
             </th>
             <th
               scope="col"
@@ -522,7 +595,18 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500">"reasons:keyword"</span>
+
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-500 mb-2">"reasons:keyword"</span>
+                <input
+                  type="text"
+                  x-model="filters.reasons"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Filter..."
+                />
+              </div>
             </th>
             <th
               scope="col"
@@ -568,7 +652,18 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500">"tags:keyword"</span>
+
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-500 mb-2">"tags:keyword"</span>
+                <input
+                  type="text"
+                  x-model="filters.tags"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Filter..."
+                />
+              </div>
             </th>
             <th
               scope="col"
@@ -613,7 +708,18 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500">"notes:keyword"</span>
+
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-500 mb-2">"notes:keyword"</span>
+                <input
+                  type="text"
+                  x-model="filters.notes"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Filter..."
+                />
+              </div>
             </th>
             <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
               <span class="sr-only">Edit</span>
@@ -709,6 +815,18 @@
         order_by: null,
         sort: null,
       },
+      filters: {
+        accession_number_alts: '',
+        author_map_string: '',
+        name: '',
+        year: '',
+        user: '',
+        label: '',
+        privileged: '',
+        reasons: '',
+        tags: '',
+        notes: ''
+      },
 
       init() {
         this.fetch_results();
@@ -739,9 +857,17 @@
       query_url() {
         let url = this.base_url;
         let params = [];
+
         if (this.query) {
           params.push("query=" + escape(this.query));
         }
+
+        for (const [key, value] of Object.entries(this.filters)) {
+          if (value) {
+            params.push(`${key}=${encodeURIComponent(value)}`);
+          }
+        }
+
         if (this.pagination.order_by) {
           params.push("order_by=" + this.pagination.order_by);
         }
@@ -749,6 +875,7 @@
           params.push("sort=" + this.pagination.sort);
         }
         params.push(`page=${this.pagination.current_page}`);
+
         return url + "?" + params.join("&");
       },
 
