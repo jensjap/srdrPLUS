@@ -127,7 +127,7 @@
         </div>
       </div>
     </div>
-    <div class="relative my-4">
+    <div class="relative my-4" style='display: none;'>
       <input
         x-model="query"
         @input.debounce.500ms="fetch_results()"
@@ -158,7 +158,7 @@
               @click="changeOrderBy('accession_number_alts')"
             >
               <div class="flex justify-between">
-                Accession No. (e.g. PubMed ID)
+                Accession No
                 <template
                   x-if="pagination.sort == 'asc' && pagination.order_by == 'accession_number_alts'"
                 >
@@ -198,14 +198,13 @@
               </div>
 
               <div class="flex flex-col">
-                <span class="text-xs text-gray-500 mb-2">"accession_number_alts:keyword"</span>
                 <input
                   type="text"
                   x-model="filters.accession_number_alts"
                   @input.debounce.500ms="fetch_results()"
                   @click.stop
                   class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
-                  placeholder="Filter..."
+                  placeholder="Search"
                 />
               </div>
             </th>
@@ -255,14 +254,13 @@
               </div>
 
               <div class="flex flex-col">
-                <span class="text-xs text-gray-500 mb-2">"author_map_string:keyword"</span>
                 <input
                   type="text"
                   x-model="filters.author_map_string"
                   @input.debounce.500ms="fetch_results()"
                   @click.stop
                   class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
-                  placeholder="Filter..."
+                  placeholder="Name"
                 />
               </div>
             </th>
@@ -312,14 +310,13 @@
               </div>
 
               <div class="flex flex-col">
-                <span class="text-xs text-gray-500 mb-2">"name:keyword"</span>
                 <input
                   type="text"
                   x-model="filters.name"
                   @input.debounce.500ms="fetch_results()"
                   @click.stop
                   class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
-                  placeholder="Filter..."
+                  placeholder="Keyword"
                 />
               </div>
             </th>
@@ -369,14 +366,13 @@
               </div>
 
               <div class="flex flex-col">
-                <span class="text-xs text-gray-500 mb-2">"year:keyword"</span>
                 <input
                   type="text"
                   x-model="filters.year"
                   @input.debounce.500ms="fetch_results()"
                   @click.stop
                   class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
-                  placeholder="Filter..."
+                  placeholder="Year"
                 />
               </div>
             </th>
@@ -426,14 +422,13 @@
               </div>
 
               <div class="flex flex-col">
-                <span class="text-xs text-gray-500 mb-2">"user:keyword"</span>
                 <input
                   type="text"
                   x-model="filters.user"
                   @input.debounce.500ms="fetch_results()"
                   @click.stop
                   class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
-                  placeholder="Filter..."
+                  placeholder="Username"
                 />
               </div>
             </th>
@@ -483,14 +478,13 @@
               </div>
 
               <div class="flex flex-col">
-                <span class="text-xs text-gray-500 mb-2">"label:keyword"</span>
                 <input
                   type="text"
                   x-model="filters.label"
                   @input.debounce.500ms="fetch_results()"
                   @click.stop
                   class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
-                  placeholder="Filter..."
+                  placeholder="1 or -1 or nil"
                 />
               </div>
             </th>
@@ -540,14 +534,13 @@
               </div>
 
               <div class="flex flex-col">
-                <span class="text-xs text-gray-500 mb-2">"privileged:keyword"</span>
                 <input
                   type="text"
                   x-model="filters.privileged"
                   @input.debounce.500ms="fetch_results()"
                   @click.stop
                   class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
-                  placeholder="Filter..."
+                  placeholder="true or false"
                 />
               </div>
             </th>
@@ -597,14 +590,13 @@
               </div>
 
               <div class="flex flex-col">
-                <span class="text-xs text-gray-500 mb-2">"reasons:keyword"</span>
                 <input
                   type="text"
                   x-model="filters.reasons"
                   @input.debounce.500ms="fetch_results()"
                   @click.stop
                   class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
-                  placeholder="Filter..."
+                  placeholder="Reason"
                 />
               </div>
             </th>
@@ -654,14 +646,13 @@
               </div>
 
               <div class="flex flex-col">
-                <span class="text-xs text-gray-500 mb-2">"tags:keyword"</span>
                 <input
                   type="text"
                   x-model="filters.tags"
                   @input.debounce.500ms="fetch_results()"
                   @click.stop
                   class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
-                  placeholder="Filter..."
+                  placeholder="Tag"
                 />
               </div>
             </th>
@@ -710,14 +701,13 @@
               </div>
 
               <div class="flex flex-col">
-                <span class="text-xs text-gray-500 mb-2">"notes:keyword"</span>
                 <input
                   type="text"
                   x-model="filters.notes"
                   @input.debounce.500ms="fetch_results()"
                   @click.stop
                   class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
-                  placeholder="Filter..."
+                  placeholder="Note"
                 />
               </div>
             </th>

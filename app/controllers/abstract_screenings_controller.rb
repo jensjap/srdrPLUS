@@ -202,9 +202,13 @@ class AbstractScreeningsController < ApplicationController
 
           case key
           when 'privileged'
-            where_hash[key] = value == 'true'
+            where_hash[key] = case value
+                              when 'true' then true
+                              when 'false' then false
+                              else nil
+                              end
           when 'label'
-            where_hash[key] = value == 'null' ? nil : value
+            where_hash[key] = value =~ /null|nil/ ? nil : value
           else
             where_hash[key] = { ilike: "%#{value}%" }
           end
