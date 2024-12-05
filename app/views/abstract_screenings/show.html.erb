@@ -47,7 +47,10 @@
             <% else %>
             <button
               class="text-center mb-2 cursor-pointer w-full inline-flex items-center justify-center rounded-md border border-transparent bg-purple-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
-              @click="query = 'privileged:true'; fetch_results()"
+              @click="
+                filters.privileged = 'true';
+                fetch_results();
+              "
             >
               Nothing to Resolve - View Resolutions
             </button>
@@ -125,25 +128,6 @@
             <% end %>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="relative my-4" style='display: none;'>
-      <input
-        x-model="query"
-        @input.debounce.500ms="fetch_results()"
-        @keyup.slash.window="$focus.focus($el)"
-        class="!p-4 text-center"
-        placeholder="To start searching, press '/'"
-        type="search"
-        :class="query.length === 0 ? '' : '!bg-purple-100'"
-      />
-      <div
-        x-show="query != ''"
-        x-cloak
-        @click="query = ''; fetch_results();"
-        class="cursor-pointer absolute top-2 right-2"
-      >
-        Clear Results (X)
       </div>
     </div>
     <div
