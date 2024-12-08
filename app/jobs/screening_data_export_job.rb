@@ -52,7 +52,7 @@ class ScreeningDataExportJob < ApplicationJob
         if sr.privileged
           unless sr.label.blank?
             mh[sr.citations_project_id][:consensus_label] = sr.label
-            mh[sr.citations_project_id][:consensus_user] = sr.user.handle
+            mh[sr.citations_project_id][:consensus_user] = ''
             mh[sr.citations_project_id][:consensus_tags] = sr.tags.map(&:name).join('||')
             mh[sr.citations_project_id][:consensus_reasons] = sr.reasons.map(&:name).join('||')
             mh[sr.citations_project_id][:consensus_notes] = sr.notes

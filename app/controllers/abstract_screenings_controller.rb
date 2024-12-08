@@ -222,6 +222,11 @@ class AbstractScreeningsController < ApplicationController
                   offset: per_page * (@page - 1),
                   order: order,
                   load: false)
+
+        @abstract_screening_results.each do |result|
+          result.user = nil if result.privileged
+        end
+
         @total_pages = (@abstract_screening_results.total_count / per_page) + 1
       end
     end
