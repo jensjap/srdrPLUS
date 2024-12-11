@@ -59,4 +59,19 @@ class ExtractionDecorator < Decorator
   def user_handle
     user&.handle
   end
+
+  def selected_key_questions_positions_and_names
+    @selected_key_questions_positions_and_names ||= begin
+      selected_kqps = extractions_key_questions_projects_selections.map(&:key_questions_project)
+      project_kqps = project.key_questions_projects
+      kqp_positions = project_kqps.each_with_index.map { |kqp, index| [kqp.id, index + 1] }.to_h
+
+      selected_kqps.map do |kqp|
+        position = kqp_positions[kqp.id]
+        name = kqp.key_question.name
+        { position: position, name: name }
+      end
+    end
+  end
+
 end
