@@ -16,7 +16,6 @@ class ResultStatisticSection < ApplicationRecord
   scope :diagnostic_test_type_rsss, -> { where(result_statistic_section_type_id: [5, 6, 7, 8]) }
 
   amoeba do
-    
   end
 
   after_create :create_default_measures
@@ -55,6 +54,14 @@ class ResultStatisticSection < ApplicationRecord
   delegate :extraction,                                    to: :population
   delegate :extractions_extraction_forms_projects_section, to: :population
   delegate :project, to: :extraction
+
+  def measures_attributes=(hash)
+    # Not calling super(hash)/super because we don't have a use case for updating measures through measures_attributes
+    hash.values.each do |value|
+      measure = Measure.find_or_create_by(name: value[:name])
+      measures << measure if measures.exclude?(measure)
+    end
+  end
 
   def timepoints
     population.extractions_extraction_forms_projects_sections_type1_row_columns
