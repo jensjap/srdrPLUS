@@ -174,33 +174,64 @@ class AbstractScreeningsController < ApplicationController
       format.json do
         @query = params[:query].to_s
         @order_by = params[:order_by]
-        @sort = params[:sort].present? ? params[:sort] : nil
+        @sort = params[:sort].present? ? params[:sort] : 'desc'
         @page = params[:page].present? ? params[:page].to_i : 1
         per_page = 15
         order = @order_by.present? ? { @order_by => @sort } : { 'name' => 'desc' }
-        where_hash = { abstract_screening_id: @abstract_screening.id }
-        where_hash[:user_id] = current_user.id unless ProjectPolicy.new(current_user, @project).project_consolidator?
-        fields = %w[accession_number_alts author_map_string name year user label privileged reasons tags notes]
-        fields.each do |field|
-          next if @query.match(/(#{field}:(-?[\w\d]+))/).nil?
 
-          query, keyword = @query.match(/(#{field}:(-?[\w\d]+))/).captures
-          where_hash[field] =
-            case field
-            when 'privileged'
-              keyword == 'true'
-            when 'label'
-              keyword == 'null' ? nil : keyword
-            else
-              { ilike: "%#{keyword}%" }
-            end
-          @query.slice!(query)
+        filter_params = params.slice(
+          :accession_number_alts,
+          :author_map_string,
+          :name,
+          :year,
+          :user,
+          :label,
+          :privileged,
+          :reasons,
+          :tags,
+          :updated_at
+        ).compact_blank
+
+        where_hash = { abstract_screening_id: @abstract_screening.id }
+        unless ProjectPolicy.new(current_user, @project).project_consolidator?
+          where_hash[:user_id] = current_user.id
         end
+
+        filter_params.each do |key, value|
+          next if value.blank?
+
+          case key
+          when 'privileged'
+            where_hash[key] = case value
+                              when 'true' then true
+                              when 'false' then false
+                              else nil
+                              end
+          when 'label'
+            where_hash[key] = value =~ /null|nil/ ? nil : value
+          when 'updated_at'
+            date = Date.parse(value) rescue nil
+            if date
+              where_hash[:updated_at] = date.beginning_of_day..date.end_of_day
+            end
+          else
+            where_hash[key] = { ilike: "%#{value}%" }
+          end
+        end
+
         @abstract_screening_results =
           AbstractScreeningResult
           .search(@query.present? ? @query : '*',
                   where: where_hash,
-                  limit: per_page, offset: per_page * (@page - 1), order:, load: false)
+                  limit: per_page,
+                  offset: per_page * (@page - 1),
+                  order: order,
+                  load: false)
+
+        @abstract_screening_results.each do |result|
+          result.user = nil if result.privileged
+        end
+
         @total_pages = (@abstract_screening_results.total_count / per_page) + 1
       end
     end
