@@ -478,7 +478,7 @@
               @click="changeOrderBy('privileged')"
             >
               <div class="flex justify-between">
-                Privileged
+                Adjudicated
                 <template
                   x-if="pagination.sort == 'asc' && pagination.order_by == 'privileged'"
                 >
@@ -643,11 +643,11 @@
             <th
               scope="col"
               class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
-              @click="changeOrderBy('notes')"
+              @click="changeOrderBy('updated_at')"
             >
               <div class="flex justify-between">
-                Notes<template
-                  x-if="pagination.sort == 'asc' && pagination.order_by == 'notes'"
+                Updated Time<template
+                  x-if="pagination.sort == 'asc' && pagination.order_by == 'updated_at'"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -665,7 +665,7 @@
                   </svg>
                 </template>
                 <template
-                  x-if="pagination.sort == 'desc' && pagination.order_by == 'notes'"
+                  x-if="pagination.sort == 'desc' && pagination.order_by == 'updated_at'"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -687,11 +687,11 @@
               <div class="flex flex-col">
                 <input
                   type="text"
-                  x-model="filters.notes"
+                  x-model="filters.updated_at"
                   @input.debounce.500ms="fetch_results()"
                   @click.stop
                   class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
-                  placeholder="Note"
+                  placeholder="YYYY-MM-DD"
                 />
               </div>
             </th>
@@ -752,7 +752,7 @@
                 ></td>
                 <td
                   class="px-3 text-sm text-gray-500"
-                  x-text="result.notes"
+                  x-text="new Date(result.updated_at).toLocaleDateString('en-CA')"
                 ></td>
                 <td class="p-3 whitespace-nowrap flex flex-col space-y-2">
                   <a
@@ -799,7 +799,7 @@
         privileged: '',
         reasons: '',
         tags: '',
-        notes: ''
+        updated_at: ''
       },
 
       init() {

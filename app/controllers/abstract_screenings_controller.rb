@@ -189,7 +189,7 @@ class AbstractScreeningsController < ApplicationController
           :privileged,
           :reasons,
           :tags,
-          :notes
+          :updated_at
         ).compact_blank
 
         where_hash = { abstract_screening_id: @abstract_screening.id }
@@ -209,6 +209,11 @@ class AbstractScreeningsController < ApplicationController
                               end
           when 'label'
             where_hash[key] = value =~ /null|nil/ ? nil : value
+          when 'updated_at'
+            date = Date.parse(value) rescue nil
+            if date
+              where_hash[:updated_at] = date.beginning_of_day..date.end_of_day
+            end
           else
             where_hash[key] = { ilike: "%#{value}%" }
           end
