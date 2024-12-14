@@ -261,7 +261,15 @@ class AbstractScreeningsController < ApplicationController
     @project = @abstract_screening.project
     authorize(@abstract_screening)
 
-    update_params = abstract_screening_params.except(:abstract_screening_type)
+    new_type = params[:abstract_screening][:abstract_screening_type]
+    old_type = @abstract_screening.abstract_screening_type
+
+    if (old_type == "pilot" && new_type != "pilot") || (old_type != "pilot" && new_type == "pilot")
+      flash.now[:alert] = "Cannot change the abstract screening type between 'pilot' and other types."
+      return render :edit, status: :unprocessable_entity
+    end
+
+    update_params = abstract_screening_params.except(:no_of_citations)
 
     if @abstract_screening.update(update_params)
       #update_citations_projects(params[:selected_citations], @abstract_screening.id)
@@ -271,7 +279,7 @@ class AbstractScreeningsController < ApplicationController
       redirect_to(project_abstract_screenings_path(@project), status: 303)
     else
       flash[:now] = @abstract_screening.errors.full_messages.join(',')
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 
