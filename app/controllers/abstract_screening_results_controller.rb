@@ -15,6 +15,13 @@ class AbstractScreeningResultsController < ApplicationController
           if @abstract_screening_result.privileged && @abstract_screening_result.label&.zero?
             @abstract_screening_result.touch
           end
+          if @abstract_screening_result.label.present? && @abstract_screening_result.label != 0
+            AbstractScreeningDistributionService.update_labeled_status(
+              @abstract_screening_result,
+              current_user,
+              true
+            )
+          end
         when 'notes', 'form_complete'
           @abstract_screening_result.update_column(params[:submissionType], params[:asr][params[:submissionType]])
           @abstract_screening_result.reindex

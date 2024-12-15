@@ -1,0 +1,860 @@
+<div class="px-4 sm:px-6 lg:px-8 pt-8" x-data="form">
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h1 class="text-xl font-semibold text-gray-900">
+        <%= params[:action] == 'new' ? 'Create New Abstract Screening' : 'Update
+        Abstract Screening' %>
+      </h1>
+      <p class="mt-2 text-sm text-gray-700">
+        Setup an abstract screening process for your project members and pool of
+        citations
+      </p>
+    </div>
+  </div>
+
+  <% if params[:action] == 'new' %>
+    <div class="flex flex-col mt-8 relative">
+      <div class="text-lg font-bold">Select Citations</div>
+
+      <div class="mt-4 space-y-4">
+        <!-- Results Summary -->
+        <div class="mb-4 text-sm">
+          <div>Total Unassigned Citations: <span x-text="totalCitationsCount"></span></div>
+          <div>Filtered Citations: <span x-text="filteredCitationsCount"></span></div>
+
+          <div class="mt-2">
+            <label for="selectedCitationsCount" class="block text-sm font-medium">Citations to Add to Abstract Screening:</label>
+            <input
+              type="number"
+              id="selectedCitationsCount"
+              x-model.number="selectedCitationsCount"
+              @input="validateCitationCount"
+              class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            >
+            <div class="h-6 mt-2"> <!-- Add a fixed height to reserve space -->
+              <div
+                x-show="citationCountInvalid"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-300"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="text-red-500 text-sm"
+              >
+                The number cannot exceed the filtered citations count or be less than 1.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filters Table -->
+        <table class="w-full border-collapse">
+          <tbody>
+            <tr>
+              <!-- Creator Filter -->
+              <td class="border p-2 w-1/3">
+                <label class="block text-sm font-medium">Select Creators: <i class='fi-info text-blue-700 text-lg' title='Mutually Exclusive'></i></label>
+                <div class="mt-2 border border-gray-300 p-2">
+                  <div class="mb-2">
+                    <input type="checkbox" id="select-all-creators" @click="toggleAll('creator_ids', $event.target.checked)" checked>
+                    <label for="select-all-creators" class="font-medium">Select All</label>
+                  </div>
+                  <div class="max-h-32 overflow-y-auto space-y-2">
+                    <template x-for="creator in all_creators" :key="creator.id">
+                      <div>
+                        <input type="checkbox" x-model="filters.creator_ids" :value="creator.id" :id="'creator-' + creator.id" @change="applyFilters" checked>
+                        <label :for="'creator-' + creator.id" x-text="creator.handle"></label>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </td>
+
+              <%#
+              <!-- Date Filter -->
+              <td class="border p-2 w-1/3">
+                <label class="block text-sm font-medium">Select Import Dates: <i class='fi-info text-blue-700 text-lg' title='Mutually Exclusive'></i></label>
+                <div class="mt-2 border border-gray-300 p-2">
+                  <div class="mb-2">
+                    <input type="checkbox" id="select-all-dates" @click="toggleAll('dates', $event.target.checked)" checked>
+                    <label for="select-all-dates" class="font-medium">Select All</label>
+                  </div>
+                  <div class="max-h-32 overflow-y-auto space-y-2">
+                    <template x-for="date in all_created_dates" :key="date">
+                      <div>
+                        <input type="checkbox" x-model="filters.dates" :value="date" :id="'date-' + date" @change="applyFilters" checked>
+                        <label :for="'date-' + date" x-text="formatDate(date)"></label>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </td>
+              %>
+
+              <!-- Task Filter -->
+              <td class="border p-2 w-1/3">
+                <label class="block text-sm font-medium">Select Import Tasks: <i class='fi-info text-blue-700 text-lg' title='Mutually Exclusive'></i></label>
+                <div class="mt-2 border border-gray-300 p-2">
+                  <div class="mb-2">
+                    <input type="checkbox" id="select-all-import-tasks" @click="toggleAll('import_tasks', $event.target.checked)" checked>
+                    <label for="select-all-import-tasks" class="font-medium">Select All</label>
+                  </div>
+                  <div class="max-h-32 overflow-y-auto space-y-2">
+                    <template x-for="import_task in all_import_tasks" :key="import_task">
+                      <div>
+                        <input type="checkbox" x-model="filters.import_tasks" :value="import_task" :id="'import_task-' + import_task" @change="applyFilters" checked>
+                        <label :for="'import_task-' + import_task" x-text="formatDate(import_task)"></label>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </td>
+
+              <!-- Import Type Filter -->
+              <td class="border p-2 w-1/3">
+                <label class="block text-sm font-medium">Select Import Types: <i class='fi-info text-blue-700 text-lg' title='Mutually Exclusive'></i></label>
+                <div class="mt-2 border border-gray-300 p-2">
+                  <div class="mb-2">
+                    <input type="checkbox" id="select-all-import-types" @click="toggleAll('import_types', $event.target.checked)" checked>
+                    <label for="select-all-import-types" class="font-medium">Select All</label>
+                  </div>
+                  <div class="max-h-32 overflow-y-auto space-y-2">
+                    <template x-for="import_type in all_import_types" :key="import_type">
+                      <div>
+                        <input type="checkbox" x-model="filters.import_types" :value="import_type" :id="'import_type-' + import_type" @change="applyFilters" checked>
+                        <label :for="'import_type-' + import_type" x-text="import_type"></label>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="flex flex-col">
+    <!-- prettier-ignore -->
+    <%= simple_form_for(
+      @abstract_screening,
+      url: @abstract_screening.persisted? ? abstract_screening_path(@abstract_screening) : project_abstract_screenings_path(@project),
+      html: { id: 'abstract-screening-form' }
+    ) do |f| %>
+    <div
+      class="mt-8 relative"
+      x-data="{ pns: 'abstract_screening', cns: 'abstract_screening_type', customInput: false, open: false }"
+    >
+      <div class="flex items-center">
+        <div>Select Abstract Screening Type</div>
+        &nbsp&nbsp(<a
+          href="/projects/<%= @project.id %>/edit?page=members_and_roles"
+          target="_blank"
+          class="ml-1 mr-1 text-blue-600"
+          >Who are my Experts?</a
+        >)
+      </div>
+      <!-- prettier-ignore -->
+      <%= render 'components/new_radio_select' %>
+    </div>
+
+    <% unless action_name == 'new' %>
+      <div class="mt-4 p-4 bg-yellow-100 text-yellow-700 rounded-md">
+        <p>
+          Note: Changing the screening type between <strong>Single</strong> and <strong>Double</strong>
+          (including <strong>Expert Needed</strong> and <strong>Only Mixed With Expert</strong>)
+          may result in changes to the citation statuses. For example, a citation with a positive label
+          in Single might progress to the next stage (<strong>fsu</strong>), but switching to Double
+          could revert its status back to <strong>asps</strong>.
+        </p>
+        <p class="mt-2">
+          Additionally, the screening type cannot be changed to <strong>Pilot</strong> or from <strong>Pilot</strong>.
+        </p>
+      </div>
+    <% end %>
+
+    <table class="shadow-lg unstriped mt-4">
+      <tr>
+        <td class="align-middle">Rejection Reason</td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.all_reason = !abstract_screening.all_reason; abstract_screening.yes_reason = abstract_screening.all_reason; abstract_screening.no_reason = abstract_screening.all_reason; abstract_screening.maybe_reason = abstract_screening.all_reason"
+          >
+            <input
+              type="checkbox"
+              :value="abstract_screening.all_reason"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-blue-700">
+                Required for "Reject" and "Maybe"
+              </span>
+            </span>
+          </div>
+        </td>
+        <td></td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.no_reason = !abstract_screening.no_reason; abstract_screening.all_reason = (abstract_screening.no_reason && abstract_screening.maybe_reason)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[no_reason_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[no_reason_required]"
+              :value="abstract_screening.no_reason"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-red-500">
+                Required for "Reject"
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.maybe_reason = !abstract_screening.maybe_reason; abstract_screening.all_reason = (abstract_screening.no_reason && abstract_screening.maybe_reason)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[maybe_reason_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[maybe_reason_required]"
+              :value="abstract_screening.maybe_reason"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-srdrpurple">
+                Required for "Maybe"
+              </span>
+            </span>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="align-middle">Tag</td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.all_tag = !abstract_screening.all_tag; abstract_screening.yes_tag = abstract_screening.all_tag; abstract_screening.no_tag = abstract_screening.all_tag; abstract_screening.maybe_tag = abstract_screening.all_tag"
+          >
+            <input
+              type="checkbox"
+              :value="abstract_screening.all_tag"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-blue-700">
+                Always Required
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.yes_tag = !abstract_screening.yes_tag; abstract_screening.all_tag = (abstract_screening.yes_tag && abstract_screening.no_tag && abstract_screening.maybe_tag)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[yes_tag_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[yes_tag_required]"
+              :value="abstract_screening.yes_tag"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-green-600">
+                Required for 'Include'
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.no_tag = !abstract_screening.no_tag; abstract_screening.all_tag = (abstract_screening.yes_tag && abstract_screening.no_tag && abstract_screening.maybe_tag)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[no_tag_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[no_tag_required]"
+              :value="abstract_screening.no_tag"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-red-500">
+                Required for 'Reject'
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.maybe_tag = !abstract_screening.maybe_tag; abstract_screening.all_tag = (abstract_screening.yes_tag && abstract_screening.no_tag && abstract_screening.maybe_tag)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[maybe_tag_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[maybe_tag_required]"
+              :value="abstract_screening.maybe_tag"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-srdrpurple">
+                Required for 'Maybe'
+              </span>
+            </span>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="align-middle">Notes</td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.all_note = !abstract_screening.all_note; abstract_screening.yes_note = abstract_screening.all_note; abstract_screening.no_note = abstract_screening.all_note; abstract_screening.maybe_note = abstract_screening.all_note"
+          >
+            <input
+              type="checkbox"
+              :value="abstract_screening.all_note"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-blue-700">
+                Always Required
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.yes_note = !abstract_screening.yes_note; abstract_screening.all_note = (abstract_screening.yes_note && abstract_screening.no_note && abstract_screening.maybe_note)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[yes_note_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[yes_note_required]"
+              :value="abstract_screening.yes_note"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-green-600">
+                Required for 'Include'
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.no_note = !abstract_screening.no_note; abstract_screening.all_note = (abstract_screening.yes_note && abstract_screening.no_note && abstract_screening.maybe_note)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[no_note_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[no_note_required]"
+              :value="abstract_screening.no_note"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-red-500">
+                Required for 'Reject'
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.maybe_note = !abstract_screening.maybe_note; abstract_screening.all_note = (abstract_screening.yes_note && abstract_screening.no_note && abstract_screening.maybe_note)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[maybe_note_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[maybe_note_required]"
+              :value="abstract_screening.maybe_note"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-srdrpurple">
+                Required for 'Maybe'
+              </span>
+            </span>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="align-middle">Screening Form</td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.all_form = !abstract_screening.all_form; abstract_screening.yes_form = abstract_screening.all_form; abstract_screening.no_form = abstract_screening.all_form; abstract_screening.maybe_form = abstract_screening.all_form"
+          >
+            <input
+              type="checkbox"
+              :value="abstract_screening.all_form"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-blue-700">
+                Always Required
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.yes_form = !abstract_screening.yes_form; abstract_screening.all_form = (abstract_screening.yes_form && abstract_screening.no_form && abstract_screening.maybe_form)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[yes_form_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[yes_form_required]"
+              :value="abstract_screening.yes_form"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-green-600">
+                Required for 'Include'
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.no_form = !abstract_screening.no_form; abstract_screening.all_form = (abstract_screening.yes_form && abstract_screening.no_form && abstract_screening.maybe_form)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[no_form_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[no_form_required]"
+              :value="abstract_screening.no_form"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-red-500">
+                Required for 'Reject'
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.maybe_form = !abstract_screening.maybe_form; abstract_screening.all_form = (abstract_screening.yes_form && abstract_screening.no_form && abstract_screening.maybe_form)"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[maybe_form_required]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[maybe_form_required]"
+              :value="abstract_screening.maybe_form"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900">
+              </span>
+              <span class="text-sm text-srdrpurple">
+                Required for 'Maybe'
+              </span>
+            </span>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <hr>
+
+    <table class="shadow-lg">
+      <tr>
+        <th colspan="2">
+          Additional Options
+        </th>
+      </tr>
+
+      <tr>
+        <td colspan="2">
+          <div class="mt-4">
+            <div
+              class="flex items-center justify-between cursor-pointer"
+              @click="abstract_screening.exclusive_users = !abstract_screening.exclusive_users"
+            >
+              <input
+                type="hidden"
+                value="false"
+                name="abstract_screening[exclusive_users]"
+              />
+              <input
+                type="checkbox"
+                name="abstract_screening[exclusive_users]"
+                :value="abstract_screening.exclusive_users"
+                class="!my-auto !mr-2 text-purple-900 bg-white-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              />
+              <span class="flex-grow flex flex-col">
+                <span class="text-sm font-medium text-gray-900">Exclusive Users</span>
+                <span class="text-sm text-gray-500"
+                  >Limit screening participants to a pre-defined list of users
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <template x-if="abstract_screening.exclusive_users">
+            <div
+              x-data="{ pns: 'abstract_screening', cns: 'user_ids', customInput: false, open: false }"
+            >
+              <div>Users</div>
+              <%= render 'components/multi_select' %>
+            </div>
+          </template>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.hide_author = !abstract_screening.hide_author"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[hide_author]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[hide_author]"
+              :value="abstract_screening.hide_author"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900"
+                >Hide Author Information
+              </span>
+              <span class="text-sm text-gray-500"
+                >Screeners will not be shown author information of citations
+              </span>
+            </span>
+          </div>
+        </td>
+        <td>
+          <div
+            class="flex items-center justify-between cursor-pointer"
+            @click="abstract_screening.hide_journal = !abstract_screening.hide_journal"
+          >
+            <input
+              type="hidden"
+              value="false"
+              name="abstract_screening[hide_journal]"
+            />
+            <input
+              type="checkbox"
+              name="abstract_screening[hide_journal]"
+              :value="abstract_screening.hide_journal"
+              class="!my-auto !mr-2 text-purple-900 bg-gray-200 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            />
+            <span class="flex-grow flex flex-col">
+              <span class="text-sm font-medium text-gray-900"
+                >Hide Journal Information
+              </span>
+              <span class="text-sm text-gray-500"
+                >Screeners will not be shown journal information of citations
+              </span>
+            </span>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- prettier-ignore -->
+    <input type="hidden" name="abstract_screening[no_of_citations]" x-model.number="abstract_screening.no_of_citations">
+    <input type="hidden" name="selected_citations" x-model="selectedCitations">
+    <%= f.button :submit,
+      params[:action] == 'new' ? 'Create Abstract Screening' : 'Update Abstract Screening',
+      class: '!my-8',
+      disabled: (params[:action] == 'edit' ? false : 'true'),
+      'x-bind:disabled' => (params[:action] == 'edit' ? nil : 'citationCountInvalid') %>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("form", () => ({
+      abstract_screening: {
+        abstract_screening_type: {
+          selection: { key: null, value: null },
+          options: [],
+          new_options: []
+        },
+        all_tag: false,
+        all_reason: false,
+        all_note: false,
+        all_form: false,
+        no_of_citations: 0,
+        exclusive_users: false,
+        yes_tag: false,
+        no_tag: false,
+        maybe_tag: false,
+        yes_reason: false,
+        no_reason: false,
+        maybe_reason: false,
+        yes_note: false,
+        no_note: false,
+        maybe_note: false,
+        yes_form: false,
+        no_form: false,
+        maybe_form: false,
+        hide_author: false,
+        hide_journal: false,
+        user_ids: {
+          selections: [],
+          options: [],
+        },
+        reason_ids: {
+          selections: [],
+          options: [],
+        },
+        tag_ids: {
+          selections: [],
+          options: [],
+        },
+      },
+      filters: {
+        creator_ids: [],
+        dates: [],
+        import_types: []
+      },
+      all_creators: [],
+      all_created_dates: [],
+      all_import_types: [],
+      all_import_tasks: [],
+      totalCitationsCount: 0,
+      filteredCitations: [],
+      filteredCitationsCount: 0,
+      selectedCitations: [],
+      selectedCitationsCount: 0,
+      citationCountInvalid: false,
+
+      init() {
+        this.initializeData();
+        this.initializeFilterData();
+      },
+
+      async initializeData() {
+        const response = await fetch(this.url, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.abstract_screening = data.abstract_screening;
+      },
+
+      async initializeFilterData() {
+        try {
+          const response = await fetch("/projects/<%= @project.id %>/abstract_screenings/filter?load_options=true", {
+            method: "GET",
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+          });
+
+          if (!response.ok) {
+            console.error("Failed to fetch filter options");
+            return;
+          }
+
+          const data = await response.json();
+          this.all_creators = data.creators;
+          this.all_created_dates = data.created_dates;
+          this.all_import_types = data.import_types;
+          this.all_import_tasks = data.import_tasks;
+          this.totalCitationsCount = data.total_citations_count;
+          this.filteredCitationsCount = data.total_citations_count;
+
+          this.filters.creator_ids = this.all_creators.map(c => c.id);
+          this.filters.dates = this.all_created_dates.slice();
+          this.filters.import_types = this.all_import_types.slice();
+          this.filters.import_tasks = this.all_import_tasks.slice();
+
+          this.applyFilters();
+
+        } catch (error) {
+          console.error("Unexpected error:", error);
+        }
+      },
+
+      formatDate(date) {
+        if (date === 'No Import') {
+          return 'Not By File Import';
+        }
+        const parsedDate = new Date(date);
+        if (isNaN(parsedDate.getTime())) {
+          return 'Invalid Date';
+        } else {
+          const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+          };
+          return parsedDate.toLocaleString(undefined, options);
+        }
+      },
+
+      async applyFilters() {
+        this.$nextTick(async () => {
+          try {
+            const response = await fetch("/projects/<%= @project.id %>/abstract_screenings/filter", {
+              method: "POST",
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+              },
+              body: JSON.stringify(this.filters)
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              console.error("Error:", errorData.error);
+              return;
+            }
+
+            const data = await response.json();
+            this.filteredCitations = data.filtered_citation_ids;
+            this.filteredCitationsCount = data.filtered_citations_count;
+            this.selectedCitationsCount = data.filtered_citations_count;
+            this.validateCitationCount();
+          } catch (error) {
+            console.error("Unexpected error:", error);
+          }
+        });
+      },
+
+      validateCitationCount() {
+        this.citationCountInvalid = this.selectedCitationsCount > this.filteredCitationsCount || this.selectedCitationsCount <= 0;
+
+        this.$nextTick(() => {
+          const submitButton = document.querySelector('button[type="submit"]');
+          if (submitButton) {
+            submitButton.disabled = this.citationCountInvalid;
+          }
+        });
+
+        if (!this.citationCountInvalid) {
+          this.selectedCitations = this.filteredCitations.slice(0, this.selectedCitationsCount);
+          this.abstract_screening.no_of_citations = this.selectedCitationsCount;
+        } else {
+          this.selectedCitations = [];
+        }
+      },
+
+      toggleAll(filterType, checked) {
+        if (filterType === 'creator_ids') {
+          this.filters.creator_ids = checked ? this.all_creators.map(c => c.id) : [];
+        } else if (filterType === 'dates') {
+          this.filters.dates = checked ? this.all_created_dates : [];
+        } else if (filterType === 'import_tasks') {
+          this.filters.import_tasks = checked ? this.all_import_tasks : [];
+        } else if (filterType === 'import_types') {
+          this.filters.import_types = checked ? this.all_import_types : [];
+        }
+        this.applyFilters();
+      }
+    }));
+  });
+</script>
+
+<style>
+  td {
+    border: 1px solid black;
+    padding: 4px;
+  }
+</style>

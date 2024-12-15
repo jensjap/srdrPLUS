@@ -161,7 +161,7 @@ class Api::V2::ProjectsController < Api::V2::BaseController
   def import_citations_fhir_json
     json = JSON.parse(request.body.read)
     json.each do |citation_json|
-      citation_fhir_importer = ImportJobs::JsonImportJob::CitationFhirImporter.new(@project.id, citation_json)
+      citation_fhir_importer = ImportJobs::JsonImportJob::CitationFhirImporter.new(@project.id, citation_json, user_id, import_id)
       citation_fhir_importer.run
     end
 

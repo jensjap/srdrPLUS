@@ -1,5 +1,5 @@
 class AbstractScreeningsController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: %i[update_word_weight]
+  skip_before_action :verify_authenticity_token, only: %i[update_word_weight filter]
 
   before_action :set_project,
                 only: %i[index new create export_screening_data work_selection]
@@ -7,20 +7,70 @@ class AbstractScreeningsController < ApplicationController
   after_action :verify_authorized
 
   def new
-    @abstract_screening = @project.abstract_screenings.new(abstract_screening_type: 'double-perpetual')
+    @abstract_screening = @project.abstract_screenings.new(abstract_screening_type: 'double')
     authorize(@abstract_screening)
+
+    @use_new_form = @project.new_picking_logic
+  end
+
+  def filter
+    @project = Project.find(params[:project_id])
+    authorize(@project, policy_class: AbstractScreeningPolicy)
+
+    service = CitationFilterService.new(project_id: @project.id)
+    service = service.filter_without_abstract_screening_results
+    service = service.filter_unassigned_abstract_screening
+
+    if params[:load_options]
+      render json: {
+        creators: service.creators,
+        created_dates: service.created_dates,
+        import_types: service.import_types,
+        import_tasks: service.import_tasks,
+        total_citations_count: service.results.count
+      }
+      return
+    end
+
+    if params[:creator_ids].blank? || params[:import_tasks].blank? || params[:import_types].blank?
+      render json: { filtered_citation_ids: [], filtered_citations_count: 0 }
+      return
+    end
+
+    if params[:creator_ids].present?
+      service = service.filter_by_creators(creator_ids: params[:creator_ids])
+    end
+
+    if params[:dates].present?
+      service = service.filter_by_created_dates(dates: params[:dates])
+    end
+
+    if params[:import_types].present?
+      service = service.filter_by_import_types(import_types: params[:import_types])
+    end
+
+    if params[:import_tasks].present?
+      service = service.filter_by_import_tasks(task_dates: params[:import_tasks])
+    end
+
+    filtered_ids = service.results
+    render json: { filtered_citation_ids: filtered_ids, filtered_citations_count: filtered_ids.count }
   end
 
   def create
     @abstract_screening =
       @project.abstract_screenings.new(abstract_screening_params)
     authorize(@abstract_screening)
+
     if @abstract_screening.save
+      update_citations_projects(params[:selected_citations], @abstract_screening.id)
+      asd_service = AbstractScreeningDistributionService.new(@abstract_screening)
+      asd_service.calculate_distributions
       flash[:notice] = 'Screening was successfully created'
       redirect_to(project_abstract_screenings_path(@project), status: 303)
     else
-      flash[:now] = @abstract_screening.errors.full_messages.join(',')
-      render :new
+      flash[:errors] = @abstract_screening.errors.full_messages
+      redirect_to(new_project_abstract_screening_path(@project))
     end
   end
 
@@ -210,12 +260,41 @@ class AbstractScreeningsController < ApplicationController
     @abstract_screening = AbstractScreening.find(params[:id])
     @project = @abstract_screening.project
     authorize(@abstract_screening)
-    if @abstract_screening.update(abstract_screening_params)
+
+    new_type = params[:abstract_screening][:abstract_screening_type]
+    old_type = @abstract_screening.abstract_screening_type
+
+    if (old_type == "pilot" && new_type != "pilot") || (old_type != "pilot" && new_type == "pilot")
+      flash.now[:alert] = "Cannot change the abstract screening type between 'pilot' and other types."
+      return render :edit, status: :unprocessable_entity
+    end
+
+    if old_type != new_type
+      if old_type == "single" && new_type != "single"
+        ScreeningUtilities.reset_asr_fsu_citations_for_abstract_screening(@abstract_screening.id)
+      elsif old_type != "single" && new_type == "single"
+        ScreeningUtilities.advance_eligible_citations_to_full_text_for_abstract_screening(@abstract_screening.id)
+      end
+    end
+
+    update_params = abstract_screening_params.except(:no_of_citations)
+
+    original_user_ids = @abstract_screening.users.pluck(:id).sort
+    new_user_ids = update_params[:user_ids].map(&:to_i).sort if update_params[:user_ids]
+
+    if new_user_ids && original_user_ids != new_user_ids
+      ScreeningUtilities.delete_nil_label_results_for_abstract_screening(@abstract_screening.id)
+    end
+
+    if @abstract_screening.update(update_params)
+      #update_citations_projects(params[:selected_citations], @abstract_screening.id)
+      asd_service = AbstractScreeningDistributionService.new(@abstract_screening)
+      asd_service.calculate_distributions
       flash[:notice] = 'Screening was successfully updated'
       redirect_to(project_abstract_screenings_path(@project), status: 303)
     else
       flash[:now] = @abstract_screening.errors.full_messages.join(',')
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -274,5 +353,20 @@ class AbstractScreeningsController < ApplicationController
 
   def set_project
     @project = Project.find(params[:project_id])
+  end
+
+  def update_citations_projects(selected_citations, abstract_screening_id)
+    return unless selected_citations.present?
+
+    CitationsProject.where(abstract_screening_id: abstract_screening_id).update_all(abstract_screening_id: nil)
+
+    if selected_citations.is_a?(String)
+      selected_citations = selected_citations.split(',').map(&:strip)
+    end
+
+    selected_citations.each do |citation_id|
+      citation_project = CitationsProject.find(citation_id)
+      citation_project.update(abstract_screening_id: abstract_screening_id)
+    end
   end
 end

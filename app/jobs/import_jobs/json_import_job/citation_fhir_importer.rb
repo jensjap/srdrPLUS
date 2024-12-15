@@ -1,7 +1,9 @@
 class ImportJobs::JsonImportJob::CitationFhirImporter
-  def initialize(project_id, citation)
+  def initialize(project_id, citation, user_id, import_id)
     @project       = Project.find project_id
     @citation_json = citation
+    @user_id = user_id
+    @import_id = import_id
   end
 
   def run
@@ -34,7 +36,10 @@ class ImportJobs::JsonImportJob::CitationFhirImporter
       citation = Citation.find_or_create_by(citation_hash)
       @project.citations_projects << CitationsProject.create(
         citation:,
-        project: @project
+        project: @project,
+        creator_id: @user_id,
+        import_id: @import_id,
+        import_type: 'fhir'
       )
     end
 
