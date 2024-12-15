@@ -269,7 +269,22 @@ class AbstractScreeningsController < ApplicationController
       return render :edit, status: :unprocessable_entity
     end
 
+    if old_type != new_type
+      if old_type == "single" && new_type != "single"
+        ScreeningUtilities.reset_asr_fsu_citations_for_abstract_screening(@abstract_screening.id)
+      elsif old_type != "single" && new_type == "single"
+        ScreeningUtilities.advance_eligible_citations_to_full_text_for_abstract_screening(@abstract_screening.id)
+      end
+    end
+
     update_params = abstract_screening_params.except(:no_of_citations)
+
+    original_user_ids = @abstract_screening.users.pluck(:id).sort
+    new_user_ids = update_params[:user_ids].map(&:to_i).sort if update_params[:user_ids]
+
+    if new_user_ids && original_user_ids != new_user_ids
+      ScreeningUtilities.delete_nil_label_results_for_abstract_screening(@abstract_screening.id)
+    end
 
     if @abstract_screening.update(update_params)
       #update_citations_projects(params[:selected_citations], @abstract_screening.id)

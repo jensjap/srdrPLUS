@@ -160,7 +160,22 @@
       <%= render 'components/new_radio_select' %>
     </div>
 
-    <table class="shadow-lg unstriped">
+    <% unless action_name == 'new' %>
+      <div class="mt-4 p-4 bg-yellow-100 text-yellow-700 rounded-md">
+        <p>
+          Note: Changing the screening type between <strong>Single</strong> and <strong>Double</strong>
+          (including <strong>Expert Needed</strong> and <strong>Only Mixed With Expert</strong>)
+          may result in changes to the citation statuses. For example, a citation with a positive label
+          in Single might progress to the next stage (<strong>fsu</strong>), but switching to Double
+          could revert its status back to <strong>asps</strong>.
+        </p>
+        <p class="mt-2">
+          Additionally, the screening type cannot be changed to <strong>Pilot</strong> or from <strong>Pilot</strong>.
+        </p>
+      </div>
+    <% end %>
+
+    <table class="shadow-lg unstriped mt-4">
       <tr>
         <td class="align-middle">Rejection Reason</td>
         <td>
