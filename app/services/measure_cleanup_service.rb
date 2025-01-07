@@ -1,10 +1,23 @@
 class MeasureCleanupService
   def self.deduplicate_all
+    trim_measures
     deduplicate_suggestion
     deduplicate_related_class(ResultStatisticSectionsMeasure)
     deduplicate_related_class(ResultStatisticSectionTypesMeasure)
     deduplicate_related_class(ComparisonsMeasure)
     deduplicate_measures
+  end
+
+  def self.trim_measures
+    # Perform trimming operation in batches
+    Measure.find_each(batch_size: 1000) do |measure|
+      trimmed_name = measure.name.strip
+
+      # Only update if there's a change (this prevents unnecessary writes)
+      if measure.name != trimmed_name
+        measure.update(name: trimmed_name)
+      end
+    end
   end
 
   def self.deduplicate_suggestion
@@ -46,10 +59,15 @@ class MeasureCleanupService
       Measure.select(:id).where(name: first_measure.name).where.not(id: first_measure.id).pluck(:id)
     end.flatten
 
-    raise 'Suggestion' unless Suggestion.where(suggestable_type: 'Measure').where(suggestable_id: deletable_ids).empty?
-    raise 'RSSM' unless ResultStatisticSectionsMeasure.where(measure_id: deletable_ids).empty?
-    raise 'RSSTM' unless ResultStatisticSectionTypesMeasure.where(measure_id: deletable_ids).empty?
-    raise 'CM' unless ComparisonsMeasure.where(measure_id: deletable_ids).empty?
+    begin
+      raise 'Suggestion' unless Suggestion.where(suggestable_type: 'Measure').where(suggestable_id: deletable_ids).empty?
+      raise 'RSSM' unless ResultStatisticSectionsMeasure.where(measure_id: deletable_ids).empty?
+      raise 'RSSTM' unless ResultStatisticSectionTypesMeasure.where(measure_id: deletable_ids).empty?
+      raise 'CM' unless ComparisonsMeasure.where(measure_id: deletable_ids).empty?
+    rescue => e
+      debugger
+      raise e  
+    end
 
     Measure.where(id: deletable_ids).delete_all
   end
