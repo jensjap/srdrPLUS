@@ -24,15 +24,18 @@ class MeasureCleanupService
     lookup = {}
     original_measures = Measure.group(:name).having('count(*) > 1')
     original_measures.each do |original_measure|
+      debugger if lookup[original_measure.name].present?
       lookup[original_measure.name] = original_measure.id
     end
 
     duplicate_measures = Measure.where(name: original_measures.map(&:name)) - original_measures
     Suggestion.where(suggestable: duplicate_measures).group(:suggestable_id).each do |suggestion|
+      lookup_suggestable_id = lookup[suggestion.suggestable.name]
+      debugger if lookup_suggestable_id.nil?
       Suggestion.where(
         suggestable_type: 'Measure',
         suggestable_id: suggestion.suggestable_id
-      ).update_all(suggestable_id: lookup[suggestion.suggestable.name])
+      ).update_all(suggestable_id: lookup_suggestable_id)
     end
   end
 
@@ -40,14 +43,17 @@ class MeasureCleanupService
     lookup = {}
     original_measures = Measure.group(:name).having('count(*) > 1')
     original_measures.each do |original_measure|
+      debugger if lookup[original_measure.name].present?
       lookup[original_measure.name] = original_measure.id
     end
 
     duplicate_measures = Measure.where(name: original_measures.map(&:name)) - original_measures
     related_class.where(measure: duplicate_measures).group(:measure_id).each do |related_record|
+      lookup_measure_id = lookup[related_record.measure.name]
+      debugger if lookup_measure_id.nil?
       related_class
         .where(measure_id: related_record.measure_id)
-        .update_all(measure_id: lookup[related_record.measure.name])
+        .update_all(measure_id: lookup_measure_id)
     end
   end
 
