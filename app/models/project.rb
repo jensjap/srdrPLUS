@@ -167,10 +167,14 @@ class Project < ApplicationRecord
   end
 
   def dei_blacklisted?
-    # Load list of blacklisted projects from YAML file.
-    data = YAML.load_file(Rails.root.join('config', 'dei-blacklist.yml'))
-    blacklisted_project_ids = data.map { |item| item["project_id"] }
-    blacklisted_project_ids.include?(self.id)
+    begin
+      # Load list of blacklisted projects from YAML file.
+      data = YAML.load_file(Rails.root.join('config', 'dei-blacklist.yml'))
+      blacklisted_project_ids = data.map { |item| item["project_id"] }
+      blacklisted_project_ids.include?(self.id)
+    rescue Errno::ENOENT => e
+      return false
+    end
   end
 
   def duplicate_key_question?
