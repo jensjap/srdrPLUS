@@ -65,6 +65,7 @@ class SearchesController < ApplicationController
   def process_project_search_results(project_ids)
     @projects = Project.where(id: project_ids).to_a
     ensure_project_results_are_public
+    ensure_project_results_are_not_blacklisted
     apply_more_advanced_filters
     @projects = Kaminari.paginate_array(@projects).page(params[:page] || 1).per(10)
   end
@@ -86,6 +87,10 @@ class SearchesController < ApplicationController
 
   def ensure_project_results_are_public
     @projects = Project.published.where(id: @projects.pluck(:id))
+  end
+
+  def ensure_project_results_are_not_blacklisted
+    @projects = @projects.reject { |proj| proj.dei_blacklisted? }
   end
 
   def ensure_citation_results_are_public
