@@ -3,7 +3,9 @@ class PublicDataController < ApplicationController
   skip_before_action :authenticate_user!
 
   def show
-    if @project&.public?
+    if @project&.dei_blacklisted?
+      render 'public_data/dei_blacklisted'
+    elsif @project&.public?
       render @template
     else
       path_error_page = Rails.public_path.join('404.html')

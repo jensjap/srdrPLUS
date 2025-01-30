@@ -35,7 +35,11 @@ module ImportJobs::PubmedCitationImporter
     unless preview
       Citation.create(h_arr_missing_citations)
       pubmed_id_array.each do |pmid|
-        CitationsProject.find_or_create_by!(project:, citation: Citation.find_by(pmid:))
+        begin
+          CitationsProject.find_or_create_by!(project:, citation: Citation.find_by(pmid:))
+        rescue ActiveRecord::RecordInvalid => e
+          puts "Unable to find Citation with PMID: #{pmid}. Cannot add to project."
+        end
       end
     end
 

@@ -162,12 +162,15 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     cnt_data_rows = 0
 
     rows.each do |row|
+      next if row.nil? || row.cells.nil? || row.cells[col].nil?
+
       if row.cells.length > 0
-        if row.cells[col].present?
-          cnt_data_rows = cnt_data_rows + 1
-        end  # if row.cells[col].present?
+        cell_value = row.cells[col].value
+        if cell_value && !cell_value.to_s.strip.empty?
+          cnt_data_rows += 1
+        end  # if cell_value && !cell_value.to_s.strip.empty?
       end  # if row.cells.length > 0
-    end if rows.present?  # rows.each do |row|
+    end  # rows.each do |row|
 
     puts "We found #{ (cnt_data_rows-1).to_s }"
 
@@ -237,6 +240,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
     _build_header_index_lookup_dict_aam(header_row)
 
     data_rows.each do |row|
+      next if row.nil?
       next if row[0]&.value.blank?
       next if row[1]&.value.blank?
 
@@ -467,7 +471,7 @@ class ImportAssignmentsAndMappingsJob < ApplicationJob
         type1_section_name,
         lsof_type1_info[0],
         lsof_type1_info[1],
-        @@TYPE1_TYPE[lsof_type1_info[2]],
+        @@TYPE1_TYPE[lsof_type1_info[2]] || 1,
         data["Populations"],
         data["Timepoints"]) unless lsof_type1_info[0].blank?
     end

@@ -5,8 +5,8 @@ staging:
 production:
   :concurrency: 3
 :queues:
-  - searchkick
-  - exports
-  - default
-  - low
-  - mailers
+  - [searchkick, 5]
+  - [mailers, 4]
+  - [default, 3]
+  - [exports, 2]
+  - [low, 1]

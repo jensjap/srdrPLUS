@@ -69,3 +69,6 @@ public/packs/
 !/app/assets/builds/.keep
 
 git_commit_csv.py
+
+# Blacklisted projects which do not appear in published data
+config/dei-blacklist.yml
