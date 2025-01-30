@@ -1,18 +1,25 @@
 module ImportJobs::RisCitationImporter
   def import_citations_from_ris(imported_file, preview = false)
     key_counter = 0
+    total_records_cnt = 0
     @project = imported_file.project
-
-    # creates a new parser of type RIS
-    parser = RefParsers::RISParser.new
 
     # !!! maybe just gsub double quotes with single quotes.
     file_string = imported_file
                   .content
                   .download
-                  .gsub('"', "'")
+
+    if preview
+      all_records = file_string.scan(/TY  -.*?ER  - /m)
+      total_records_cnt = all_records.length
+
+      # Limit to first 3
+      records = all_records[0...3]
+      file_string = records.join("\n")
+    end
 
     # BOM sucks!
+    file_string.gsub!('"', "'")
     file_string.force_encoding('utf-8').gsub!(/\xEF\xBB\xBF/, '')
     file_string.force_encoding('utf-8').gsub!(/<feff>/, '')
 
@@ -23,6 +30,8 @@ module ImportJobs::RisCitationImporter
     successful_refman_arr = []
     failed_refman_arr = []
 
+    # creates a new parser of type RIS
+    parser = RefParsers::RISParser.new
     parser.parse(file_string).each do |cit_h|
       h_arr << get_row_hash(cit_h, key_counter)
       # CITATION_BATCH_SIZE is defined in config/initializers/sidekiq.rb
@@ -49,7 +58,7 @@ module ImportJobs::RisCitationImporter
       cit_h.clear
     end
     if preview
-      { count: preview_citations.length, citations: preview_citations[0..2] }
+      { count: total_records_cnt, citations: preview_citations[0..2] }
     else
       { imported_refmans: successful_refman_arr, failed_refmans: failed_refman_arr }
     end

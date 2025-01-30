@@ -1,7 +1,7 @@
 class ScreeningDataExportJob < ApplicationJob
   def perform(user_email, project_id)
-    export_user = User.find_by(email: user_email)
-    @desired_time_zone = export_user.profile.time_zone
+    User.find_by(email: user_email)
+    # @desired_time_zone = export_user.profile.time_zone
     exported_item = ExportedItem.create!(project_id:, user_email:, export_type: ExportType.find_by(name: '.xlsx'))
     filename = 'tmp/screening_data_export_project_' + project_id.to_s + '_' + Time.now.strftime('%s') + '.xlsx'
     p = build_xlsx(project_id)
@@ -67,7 +67,7 @@ class ScreeningDataExportJob < ApplicationJob
       end
 
       # New label export structure: Sheet 1
-      wb.add_worksheet(name: "#{ screening_type } Long") do |sheet|
+      wb.add_worksheet(name: "#{screening_type} Long") do |sheet|
         sf = case screening_type
              when 'AS'
                ScreeningForm.find_or_create_by(project:, form_type: 'abstract')
@@ -92,14 +92,14 @@ class ScreeningDataExportJob < ApplicationJob
           citation = cp.citation
           row = [
             citation.id,
-            citation.accession_number,
+            citation.accession_number_alts,
             citation.pmid,
             cp.refman,
             citation.authors,
             citation.journal&.publication_date,
             citation.name,
             citation.abstract,
-            "#{ citation.journal&.name } #{ citation.journal&.volume }(#{ citation.journal&.issue }):#{ citation&.page_number_start }-#{ citation&.page_number_end }",
+            "#{citation.journal&.name} #{citation.journal&.volume}(#{citation.journal&.issue}):#{citation&.page_number_start}-#{citation&.page_number_end}",
             citation.doi,
             citation.keywords.map(&:name).join(', '),
             sr.created_at,
@@ -154,10 +154,40 @@ class ScreeningDataExportJob < ApplicationJob
             row.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
           )
         end
+
+        all_citations_projects = project.citations_projects
+        not_labeled_citations_projects = all_citations_projects - srs.map(&:citations_project)
+        not_labeled_citations_projects.each do |cp|
+          citation = cp.citation
+          row = [
+            citation.id,
+            citation.accession_number_alts,
+            citation.pmid,
+            cp.refman,
+            citation.authors,
+            citation.journal&.publication_date,
+            citation.name,
+            citation.abstract,
+            "#{citation.journal&.name} #{citation.journal&.volume}(#{citation.journal&.issue}):#{citation&.page_number_start}-#{citation&.page_number_end}",
+            citation.doi,
+            citation.keywords.map(&:name).join(', '),
+            nil,
+            cp.screening_status,
+            nil,
+            nil,
+            nil,
+            nil,
+            nil,
+            nil
+          ]
+          sheet.add_row(
+            row.map { |cell| cell.to_s.gsub(/\p{Cf}/, '') }
+          )
+        end
       end
 
       # New label export structure: Sheet 2
-      wb.add_worksheet(name: "#{ screening_type } Wide Brief") do |sheet|
+      wb.add_worksheet(name: "#{screening_type} Wide Brief") do |sheet|
         sf = case screening_type
              when 'AS'
                ScreeningForm.find_or_create_by(project:, form_type: 'abstract')
@@ -165,24 +195,25 @@ class ScreeningDataExportJob < ApplicationJob
                ScreeningForm.find_or_create_by(project:, form_type: 'fulltext')
              end
         sheet = build_headers_and_add_to_sheet(sheet, project, 'sheet2', sf)
-        CitationsProject.search(where: { project_id: project.id }, load: false).each do |cp|
-          cp_id = cp.id.to_i
+        CitationsProject.where(project_id: project.id).each do |cp|
+          cp_id = cp.id
+          citation = cp.citation
           columns = [
-            cp['citation_id'],
-            cp['accession_number'],
-            cp['pmid'],
-            cp['refman'],
-            cp['author_map_string'],
-            cp['publication_date'],
-            cp['name'],
-            cp['abstract'],
-            cp['publication'],
-            cp['doi'],
-            cp['keywords'],
+            citation.id,
+            citation.accession_number_alts,
+            citation.pmid,
+            cp.refman,
+            citation.authors,
+            citation.journal&.publication_date,
+            citation.name,
+            citation.abstract,
+            "#{citation.journal&.name} #{citation.journal&.volume}(#{citation.journal&.issue}):#{citation&.page_number_start}-#{citation&.page_number_end}",
+            citation.doi,
+            citation.keywords.map(&:name).join(', ')
           ]
-          last_label_time = mh.dig(cp_id, :sr_label_dates)&.min&.in_time_zone(@desired_time_zone)
+          last_label_time = mh.dig(cp_id, :sr_label_dates)&.min&.strftime('%F %T')
           columns << last_label_time
-          columns << cp['screening_status']
+          columns << cp.screening_status
           columns << @consensus_dict[screening_type][cp_id]
           @users.each do |user|
             columns << mh.dig(cp_id, :user_labels, user[0])
@@ -220,7 +251,7 @@ class ScreeningDataExportJob < ApplicationJob
     end
 
     p
-  rescue => e
+  rescue StandardError => e
     Sentry.capture_exception(e) if Rails.env.production?
     debugger if Rails.env.development?
   end
@@ -228,7 +259,7 @@ class ScreeningDataExportJob < ApplicationJob
   private
 
   def add_compressed_screening_form_answers(cp, screening_type, sf)
-    citations_project = CitationsProject.find(cp.id.to_i)
+    citations_project = CitationsProject.find(cp.id)
     sf_answers = {}
     sf_answers[:cells] = {}
     columns = []
@@ -266,17 +297,20 @@ class ScreeningDataExportJob < ApplicationJob
               case sf_cell.cell_type
               when SfCell::TEXT
                 sf_answers[:cells][sf_cell.id] += sfrs.map(&:value) if sfrs.map(&:value).any?(&:present?)
-                sf_answers[:cells][sf_cell.id] = sfrs.map(&:value) if sr.privileged && sfrs.map(&:value).any?(&:present?)
+                if sr.privileged && sfrs.map(&:value).any?(&:present?)
+                  sf_answers[:cells][sf_cell.id] =
+                    sfrs.map(&:value)
+                end
 
               when SfCell::NUMERIC
-                sfrs.each_with_index do |sfr, idx|
+                sfrs.each_with_index do |sfr, _idx|
                   cell += sfr.equality.to_s if sf_cell.with_equality
                   cell += sfr.value.to_s
                 end
                 sf_answers[:cells][sf_cell.id] += [cell] if cell.present?
                 sf_answers[:cells][sf_cell.id] = [cell] if sr.privileged && cell.present?
               when SfCell::CHECKBOX, SfCell::DROPDOWN, SfCell::RADIO, SfCell::SELECT_ONE, SfCell::SELECT_MULTIPLE
-                sfrs.each_with_index do |sfr, idx|
+                sfrs.each_with_index do |sfr, _idx|
                   sfo = sfos.select { |sfo| sfo.name == sfr.value }.first
                   cell += "#{sfr.value}"
                   cell += ": #{sfr.followup}" if sfo&.with_followup
@@ -286,7 +320,9 @@ class ScreeningDataExportJob < ApplicationJob
               end
             end
 
-            columns << sf_answers[:cells][sf_cell.id].flatten(1).reject(&:empty?).map(&:strip).uniq.join('||') if sf_cell.present?
+            if sf_cell.present?
+              columns << sf_answers[:cells][sf_cell.id].flatten(1).reject(&:empty?).map(&:strip).uniq.join('||')
+            end
           end
         end
       end
@@ -295,7 +331,7 @@ class ScreeningDataExportJob < ApplicationJob
     columns
   end
 
-  def build_headers_and_add_to_sheet(sheet, project, style, sf=nil)
+  def build_headers_and_add_to_sheet(sheet, _project, style, sf = nil)
     headers = [
       'SRDR Citation ID',
       'Accession Number',
@@ -309,7 +345,7 @@ class ScreeningDataExportJob < ApplicationJob
       'DOI',
       'Keywords',
       'First Label Time',
-      'Sub Status',
+      'Sub Status'
     ]
     case style
     when 'sheet1'
@@ -319,7 +355,7 @@ class ScreeningDataExportJob < ApplicationJob
         'User Label',
         'Reasons',
         'Tags',
-        'Notes',
+        'Notes'
       ]
       sf.sf_questions.each_with_index do |sf_question, q_index|
         question_name = sf_question.name.blank? ? "Question #{q_index}" : sf_question.name
@@ -337,7 +373,7 @@ class ScreeningDataExportJob < ApplicationJob
       end
     when 'sheet2'
       headers.concat [
-        'Consensus Label',
+        'Consensus Label'
       ]
       @users.each do |user|
         headers << "\"#{user[1]}\" Label"
@@ -348,7 +384,7 @@ class ScreeningDataExportJob < ApplicationJob
       sf.sf_questions.each_with_index do |sf_question, q_index|
         question_name = sf_question.name.blank? ? "Question #{q_index}" : sf_question.name
         if sf_question.sf_rows.size.eql?(1) && sf_question.sf_columns.size.eql?(1)
-          headers << "#{ question_name.to_s }"
+          headers << "#{question_name}"
         else
           sf_question.sf_rows.each_with_index do |sf_row, r_index|
             row_name = sf_row.name.blank? ? "Row #{r_index}" : sf_row.name

@@ -169,3 +169,10 @@ en:
   manage_citations: Manage Citation(s)
   manage_screening_options: Manage Screening Options
   manage_tasks: Manage Task(s)
+  activerecord:
+    errors:
+      models:
+        extractions_extraction_forms_projects_sections_type1:
+          attributes:
+            type1:
+              taken: "The combination of Type and Domain must be unique. Submission failed."

@@ -86,7 +86,7 @@ document.addEventListener 'DOMContentLoaded', ->
       url: $('#fileDropzone').attr('dropzone-path'),
       autoProcessQueue: false,
       uploadMultiple: false,
-
+      timeout: 0,
       init: ()->
         wrapperThis = this
         this.on('addedfile', (file) ->
@@ -143,7 +143,6 @@ document.addEventListener 'DOMContentLoaded', ->
           formData.append("file_type_id", file_type_id)
           formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val())
         )
-
         this.on('success', (file, response) ->
           wrapperThis.removeFile(file)
           window.location.href = '/imports/' + response.id

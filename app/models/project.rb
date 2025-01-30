@@ -166,6 +166,13 @@ class Project < ApplicationRecord
     publishing.present? and publishing.approval.present?
   end
 
+  def dei_blacklisted?
+    # Load list of blacklisted projects from YAML file.
+    data = YAML.load_file(Rails.root.join('config', 'dei-blacklist.yml'))
+    blacklisted_project_ids = data.map { |item| item["project_id"] }
+    blacklisted_project_ids.include?(self.id)
+  end
+
   def duplicate_key_question?
     kqps = key_questions_projects
     kqps.map(&:key_question).map(&:id).uniq.length < kqps.length if kqps.present?
