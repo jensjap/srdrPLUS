@@ -33,4 +33,12 @@ class ProfilePolicy < ApplicationPolicy
   def get_labels_visibility?
     record.user.eql?(user)
   end
+
+  def toggle_follow_project_settings?
+    record.user.eql?(user)
+  end
+
+  def get_follow_project_settings?
+    record.user.eql?(user)
+  end
 end

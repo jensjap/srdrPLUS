@@ -125,6 +125,11 @@ class FulltextScreeningsController < ApplicationController
           .search(@query.present? ? @query : '*',
                   where: where_hash,
                   limit: per_page, offset: per_page * (@page - 1), order:, load: false)
+
+        @fulltext_screening_results.each do |result|
+          result.user = nil if result.privileged
+        end
+
         @total_pages = (@fulltext_screening_results.total_count / per_page) + 1
       end
     end

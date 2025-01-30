@@ -23,6 +23,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
     super
   end
 
+  def update
+    authorize(current_user)
+    @nav_buttons.push('account')
+    @profile = current_user.profile
+    super
+  end
+
   # PUT /resource
   # def update
   #   super

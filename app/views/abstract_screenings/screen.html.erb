@@ -419,6 +419,7 @@
       groupToDelete: null,
       isEditingGroupName: false,
       total_asr_count_for_this_cp: 0,
+      followProjectSettings: true,
 
       async init() {
         const url = new URL(window.location.href);
@@ -440,6 +441,12 @@
           .then((response) => response.json())
           .then((data) => {
             this.show_all_labels = data.show_all_labels;
+          });
+
+        fetch("/profile/get_follow_project_settings")
+          .then((response) => response.json())
+          .then((data) => {
+            this.followProjectSettings = data.follow_project_settings;
           });
 
         handleDeviceChange(smallDevice);
@@ -497,6 +504,11 @@
 
       satisfiesReasoning() {
         if (this.asr.label == null) return false;
+
+        if (this.resolutionMode && !this.followProjectSettings) {
+          return true;
+        }
+
         let satisfactory = true;
         if (this.asr.label == -1) {
           if (this.options.no_tag_required)
@@ -834,6 +846,16 @@
 
         fetch(
           `/profile/toggle_labels_visibility?show_all_labels=${this.show_all_labels}`,
+          {
+            method: "POST",
+            headers,
+          }
+        );
+      },
+
+      toggleFollowProjectSettings() {
+        fetch(
+          `/profile/toggle_follow_project_settings?follow_project_settings=${this.followProjectSettings}`,
           {
             method: "POST",
             headers,
