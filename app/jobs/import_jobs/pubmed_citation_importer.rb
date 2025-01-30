@@ -35,7 +35,11 @@ module ImportJobs::PubmedCitationImporter
     unless preview
       Citation.create(h_arr_missing_citations)
       pubmed_id_array.each do |pmid|
-        CitationsProject.find_or_create_by!(project:, citation: Citation.find_by(pmid:))
+        begin
+          CitationsProject.find_or_create_by!(project:, citation: Citation.find_by(pmid:))
+        rescue ActiveRecord::RecordInvalid => e
+          puts "Unable to find Citation with PMID: #{pmid}. Cannot add to project."
+        end
       end
     end
 
@@ -75,13 +79,13 @@ module ImportJobs::PubmedCitationImporter
         # {
         #   "ID+l" => "t+is+empty!+Possibly+it+has+no+correct+IDs."
         # }
-        # Use break here in case the next batch has valid PMIDs.
-        break if cit_h.key?('ID+l')
+        # Use next here in case the next batch has valid PMIDs.
+        next if cit_h.key?('ID+l')
 
         # will add as primary citation by default, there is no way to figure that out from pubmed
         row_h['pmid'] = cit_h['PMID'].strip if cit_h['PMID'].present?
         row_h['name'] = cit_h['TI'].strip.truncate(500) if cit_h['TI'].present?
-        row_h['abstract'] = cit_h['AB'].strip if cit_h['AB'].present?
+        row_h['abstract'] = Utilities.encode_to_utf8(cit_h['AB'].strip) if cit_h['AB'].present?
         row_h['citation_type_id'] = PRIMARY_ID
 
         # keywords
