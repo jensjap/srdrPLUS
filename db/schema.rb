@@ -10,14 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_11_13_054641) do
-  create_table "abstrackr_settings", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+ActiveRecord::Schema[7.0].define(version: 2024_10_23_123456) do
+  create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
     t.boolean "journal_visible", default: true
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["profile_id"], name: "index_abstrackr_settings_on_profile_id"
+  end
+
+  create_table "abstract_screening_distributions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "abstract_screening_id", null: false
+    t.integer "user_id", null: false
+    t.integer "citations_project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.float "ml_score"
+    t.boolean "labeled", default: false
+    t.index ["abstract_screening_id"], name: "fk_rails_ff148ba4d0"
+    t.index ["citations_project_id"], name: "fk_rails_4fc38fa348"
+    t.index ["user_id"], name: "fk_rails_ac2003cb18"
   end
 
   create_table "abstract_screening_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -328,8 +341,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_13_054641) do
     t.string "screening_status", default: "asu"
     t.text "refman"
     t.text "other_reference"
+    t.integer "creator_id"
+    t.bigint "abstract_screening_id"
+    t.bigint "fulltext_screening_id"
+    t.string "import_type", default: "unknown"
+    t.index ["abstract_screening_id"], name: "index_citations_projects_on_abstract_screening_id"
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id"
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id"
+    t.index ["creator_id"], name: "index_citations_projects_on_creator_id"
+    t.index ["fulltext_screening_id"], name: "index_citations_projects_on_fulltext_screening_id"
     t.index ["project_id"], name: "index_citations_projects_on_project_id"
     t.index ["screening_status"], name: "index_citations_projects_on_screening_status"
   end
@@ -760,6 +780,17 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_13_054641) do
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+  end
+
+  create_table "fulltext_screening_distributions", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "fulltext_screening_id", null: false
+    t.integer "user_id", null: false
+    t.integer "citations_project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["citations_project_id"], name: "fk_rails_e55c2d7438"
+    t.index ["fulltext_screening_id"], name: "fk_rails_b56734f739"
+    t.index ["user_id"], name: "fk_rails_add0bdd3f2"
   end
 
   create_table "fulltext_screening_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -1268,6 +1299,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_13_054641) do
     t.boolean "fs_allow_adding_tags", default: true, null: false
     t.boolean "force_training", default: false, null: false
     t.integer "source_project_id"
+    t.boolean "new_picking_logic", default: true
   end
 
   create_table "projects_reasons", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -2068,7 +2100,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_13_054641) do
     t.index ["team_type_id"], name: "index_teams_on_team_type_id"
   end
 
-  create_table "term_groups", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+  create_table "temp_citations_projects_creators", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "citations_project_id"
+    t.integer "creator_id"
+    t.index ["citations_project_id"], name: "index_temp_citations_projects_creators_on_citations_project_id"
+  end
+
+  create_table "term_groups", id: :integer, charset: "utf8", force: :cascade do |t|
     t.string "name"
   end
 
@@ -2192,37 +2230,48 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_13_054641) do
   create_table "word_groups", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "color"
-    t.bigint "abstract_screening_id", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "case_sensitive", default: false
+    t.bigint "project_id", null: false
+    t.integer "abstract_screening_id"
+    t.index ["abstract_screening_id"], name: "index_word_groups_on_abstract_screening_id"
+    t.index ["project_id"], name: "index_word_groups_on_project_id"
   end
 
   create_table "word_weights", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id"
-    t.bigint "abstract_screening_id"
     t.integer "weight", limit: 1, null: false
     t.string "word", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "word_group_id"
-    t.index ["abstract_screening_id"], name: "ww_on_as"
-    t.index ["user_id", "abstract_screening_id", "word"], name: "u_as_w", unique: true
+    t.boolean "case_sensitive", default: false, null: false
+    t.integer "project_id", null: false
+    t.boolean "full_match", default: false, null: false
+    t.index ["project_id"], name: "index_word_weights_on_project_id"
+    t.index ["user_id", "project_id", "word"], name: "index_word_weights_on_user_group_word", unique: true
     t.index ["user_id"], name: "ww_on_u"
     t.index ["word_group_id"], name: "index_word_weights_on_word_group_id"
   end
 
   add_foreign_key "abstrackr_settings", "profiles"
+  add_foreign_key "abstract_screening_distributions", "abstract_screenings"
+  add_foreign_key "abstract_screening_distributions", "citations_projects"
+  add_foreign_key "abstract_screening_distributions", "users"
   add_foreign_key "actions", "action_types"
   add_foreign_key "actions", "users"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "approvals", "users"
   add_foreign_key "citations", "citation_types"
+  add_foreign_key "citations_projects", "abstract_screenings"
   add_foreign_key "citations_projects", "citations"
   add_foreign_key "citations_projects", "consensus_types"
+  add_foreign_key "citations_projects", "fulltext_screenings"
   add_foreign_key "citations_projects", "projects"
+  add_foreign_key "citations_projects", "users", column: "creator_id"
   add_foreign_key "colorings", "color_choices"
   add_foreign_key "comparate_groups", "comparisons"
   add_foreign_key "comparates", "comparable_elements"
@@ -2277,6 +2326,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_13_054641) do
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "type1_types"
   add_foreign_key "extractions_extraction_forms_projects_sections_type1s", "type1s"
   add_foreign_key "followup_fields", "followup_fields"
+  add_foreign_key "fulltext_screening_distributions", "citations_projects"
+  add_foreign_key "fulltext_screening_distributions", "fulltext_screenings"
+  add_foreign_key "fulltext_screening_distributions", "users"
   add_foreign_key "funding_sources_sd_meta_data", "funding_sources"
   add_foreign_key "funding_sources_sd_meta_data", "sd_meta_data"
   add_foreign_key "imported_files", "file_types"
@@ -2382,5 +2434,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_13_054641) do
   add_foreign_key "training_data_infos", "ml_models"
   add_foreign_key "users", "user_types"
   add_foreign_key "wacs_bacs_rssms", "result_statistic_sections_measures"
+  add_foreign_key "word_weights", "projects"
   add_foreign_key "word_weights", "word_groups"
 end
