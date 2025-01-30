@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_10_23_123456) do
+ActiveRecord::Schema[7.0].define(version: 2024_11_22_000000) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -345,11 +345,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_23_123456) do
     t.bigint "abstract_screening_id"
     t.bigint "fulltext_screening_id"
     t.string "import_type", default: "unknown"
+    t.bigint "import_id"
     t.index ["abstract_screening_id"], name: "index_citations_projects_on_abstract_screening_id"
     t.index ["citation_id"], name: "index_citations_projects_on_citation_id"
     t.index ["consensus_type_id"], name: "index_citations_projects_on_consensus_type_id"
     t.index ["creator_id"], name: "index_citations_projects_on_creator_id"
     t.index ["fulltext_screening_id"], name: "index_citations_projects_on_fulltext_screening_id"
+    t.index ["import_id"], name: "index_citations_projects_on_import_id"
     t.index ["project_id"], name: "index_citations_projects_on_project_id"
     t.index ["screening_status"], name: "index_citations_projects_on_screening_status"
   end
@@ -1273,6 +1275,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_23_123456) do
     t.integer "projects_paginate_per"
     t.boolean "conflict_resolution_label_visibility", default: false
     t.text "storage"
+    t.boolean "follow_project_settings_in_conflict_resolution", default: true, null: false
     t.index ["organization_id"], name: "index_profiles_on_organization_id"
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
     t.index ["username"], name: "index_profiles_on_username", unique: true
@@ -2270,6 +2273,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_10_23_123456) do
   add_foreign_key "citations_projects", "citations"
   add_foreign_key "citations_projects", "consensus_types"
   add_foreign_key "citations_projects", "fulltext_screenings"
+  add_foreign_key "citations_projects", "imports"
   add_foreign_key "citations_projects", "projects"
   add_foreign_key "citations_projects", "users", column: "creator_id"
   add_foreign_key "colorings", "color_choices"

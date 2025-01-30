@@ -47,7 +47,10 @@
             <% else %>
             <button
               class="text-center mb-2 cursor-pointer w-full inline-flex items-center justify-center rounded-md border border-transparent bg-purple-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:no-underline hover:text-white"
-              @click="query = 'privileged:true'; fetch_results()"
+              @click="
+                filters.privileged = 'true';
+                fetch_results();
+              "
             >
               Nothing to Resolve - View Resolutions
             </button>
@@ -127,25 +130,6 @@
         </div>
       </div>
     </div>
-    <div class="relative my-4">
-      <input
-        x-model="query"
-        @input.debounce.500ms="fetch_results()"
-        @keyup.slash.window="$focus.focus($el)"
-        class="!p-4 text-center"
-        placeholder="To start searching, press '/'"
-        type="search"
-        :class="query.length === 0 ? '' : '!bg-purple-100'"
-      />
-      <div
-        x-show="query != ''"
-        x-cloak
-        @click="query = ''; fetch_results();"
-        class="cursor-pointer absolute top-2 right-2"
-      >
-        Clear Results (X)
-      </div>
-    </div>
     <div
       class="overflow-auto mb-8 shadow ring-1 ring-black ring-opacity-5 md:rounded-lg"
     >
@@ -158,7 +142,7 @@
               @click="changeOrderBy('accession_number_alts')"
             >
               <div class="flex justify-between">
-                Accession No. (e.g. PubMed ID)
+                Accession No
                 <template
                   x-if="pagination.sort == 'asc' && pagination.order_by == 'accession_number_alts'"
                 >
@@ -196,9 +180,17 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500"
-                >"accession_number_alts:keyword"</span
-              >
+
+              <div class="flex flex-col">
+                <input
+                  type="text"
+                  x-model="filters.accession_number_alts"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Search"
+                />
+              </div>
             </th>
             <th
               scope="col"
@@ -244,9 +236,17 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500"
-                >"author_map_string:keyword"</span
-              >
+
+              <div class="flex flex-col">
+                <input
+                  type="text"
+                  x-model="filters.author_map_string"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Name"
+                />
+              </div>
             </th>
             <th
               scope="col"
@@ -292,7 +292,17 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500">"name:keyword"</span>
+
+              <div class="flex flex-col">
+                <input
+                  type="text"
+                  x-model="filters.name"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Keyword"
+                />
+              </div>
             </th>
             <th
               scope="col"
@@ -338,7 +348,17 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500">"year:keyword"</span>
+
+              <div class="flex flex-col">
+                <input
+                  type="text"
+                  x-model="filters.year"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Year"
+                />
+              </div>
             </th>
             <th
               scope="col"
@@ -384,7 +404,17 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500">"user:keyword"</span>
+
+              <div class="flex flex-col">
+                <input
+                  type="text"
+                  x-model="filters.user"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Username"
+                />
+              </div>
             </th>
             <th
               scope="col"
@@ -430,7 +460,17 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500">"label:keyword"</span>
+
+              <div class="flex flex-col">
+                <input
+                  type="text"
+                  x-model="filters.label"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="0, 1, -1, nil"
+                />
+              </div>
             </th>
             <th
               scope="col"
@@ -438,7 +478,7 @@
               @click="changeOrderBy('privileged')"
             >
               <div class="flex justify-between">
-                Privileged
+                Adjudicated
                 <template
                   x-if="pagination.sort == 'asc' && pagination.order_by == 'privileged'"
                 >
@@ -476,7 +516,17 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500">"privileged:keyword"</span>
+
+              <div class="flex flex-col">
+                <input
+                  type="text"
+                  x-model="filters.privileged"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="true or false"
+                />
+              </div>
             </th>
             <th
               scope="col"
@@ -522,7 +572,17 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500">"reasons:keyword"</span>
+
+              <div class="flex flex-col">
+                <input
+                  type="text"
+                  x-model="filters.reasons"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Reason"
+                />
+              </div>
             </th>
             <th
               scope="col"
@@ -568,16 +628,26 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500">"tags:keyword"</span>
+
+              <div class="flex flex-col">
+                <input
+                  type="text"
+                  x-model="filters.tags"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Tag"
+                />
+              </div>
             </th>
             <th
               scope="col"
               class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
-              @click="changeOrderBy('notes')"
+              @click="changeOrderBy('updated_at')"
             >
               <div class="flex justify-between">
-                Notes<template
-                  x-if="pagination.sort == 'asc' && pagination.order_by == 'notes'"
+                Updated Time<template
+                  x-if="pagination.sort == 'asc' && pagination.order_by == 'updated_at'"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -595,7 +665,7 @@
                   </svg>
                 </template>
                 <template
-                  x-if="pagination.sort == 'desc' && pagination.order_by == 'notes'"
+                  x-if="pagination.sort == 'desc' && pagination.order_by == 'updated_at'"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -613,7 +683,17 @@
                   </svg>
                 </template>
               </div>
-              <span class="text-xs text-gray-500">"notes:keyword"</span>
+
+              <div class="flex flex-col">
+                <input
+                  type="text"
+                  x-model="filters.updated_at"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="YYYY-MM-DD"
+                />
+              </div>
             </th>
             <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
               <span class="sr-only">Edit</span>
@@ -672,7 +752,7 @@
                 ></td>
                 <td
                   class="px-3 text-sm text-gray-500"
-                  x-text="result.notes"
+                  x-text="new Date(result.updated_at).toLocaleDateString('en-CA')"
                 ></td>
                 <td class="p-3 whitespace-nowrap flex flex-col space-y-2">
                   <a
@@ -716,6 +796,18 @@
         order_by: null,
         sort: null,
       },
+      filters: {
+        accession_number_alts: '',
+        author_map_string: '',
+        name: '',
+        year: '',
+        user: '',
+        label: '',
+        privileged: '',
+        reasons: '',
+        tags: '',
+        updated_at: ''
+      },
 
       init() {
         this.fetch_results();
@@ -746,9 +838,17 @@
       query_url() {
         let url = this.base_url;
         let params = [];
+
         if (this.query) {
           params.push("query=" + escape(this.query));
         }
+
+        for (const [key, value] of Object.entries(this.filters)) {
+          if (value) {
+            params.push(`${key}=${encodeURIComponent(value)}`);
+          }
+        }
+
         if (this.pagination.order_by) {
           params.push("order_by=" + this.pagination.order_by);
         }
@@ -756,6 +856,7 @@
           params.push("sort=" + this.pagination.sort);
         }
         params.push(`page=${this.pagination.current_page}`);
+
         return url + "?" + params.join("&");
       },
 

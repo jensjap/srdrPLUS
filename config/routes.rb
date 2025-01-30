@@ -400,6 +400,8 @@ Rails.application.routes.draw do
   resource :profile, only: %i[show edit update] do
     post 'toggle_labels_visibility', on: :member
     get 'get_labels_visibility', on: :member
+    post 'toggle_follow_project_settings', on: :member
+    get 'get_follow_project_settings', on: :member
   end
 
   resources :screening_forms, only: [] do
