@@ -67,6 +67,10 @@ class ResultStatisticSectionsController < ApplicationController
   def remove_comparison
     respond_to do |format|
       if Comparison.find(params[:comparison_id]).destroy
+        # Prevent WacsBacsRssm orphans.
+        # Note: WacsBacsRssm records that belong to WAC type comparison are automatically removed
+        # due to has_many dependent: :destroy declaration in model/comparison.rb
+        WacsBacsRssm.where(bac_id: params[:comparison_id]).destroy_all
         format.js do
           flash.now[:notice] = ' Comparison removed'
           render :add_comparison
