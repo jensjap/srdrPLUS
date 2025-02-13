@@ -300,7 +300,7 @@ class ExtractionsExtractionFormsProjectsSection < ApplicationRecord
       next if attribute_collection.has_key? 'id'
 
       Type1.transaction do
-        type1 = Type1.find_or_create_by!(attribute_collection['type1_attributes'])
+        type1 = Type1.find_or_create_by!(attribute_collection['type1_attributes'].transform_values! { |v| v.strip })
         attributes[key]['type1_attributes']['id'] = type1.id.to_s
       end
     end
