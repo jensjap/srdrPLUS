@@ -45,11 +45,16 @@ class ExtractionsExtractionFormsProjectsSectionsController < ApplicationControll
         end
       else
         format.html do
+          error_message = @extractions_extraction_forms_projects_section.
+                            errors.
+                            messages.
+                            values.
+                            dig(0, 0) || t('failure')
           redirect_to work_extraction_path(
             @extractions_extraction_forms_projects_section.extraction,
             "panel-tab": @extractions_extraction_forms_projects_section.extraction_forms_projects_section.id.to_s
           ),
-                      alert: t('failure')
+                      alert: error_message
         end
         format.json do
           render json: @extractions_extraction_forms_projects_section.errors, status: :unprocessable_entity

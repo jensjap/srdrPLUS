@@ -175,4 +175,4 @@ en:
         extractions_extraction_forms_projects_sections_type1:
           attributes:
             type1:
-              taken: "The combination of Type and Domain must be unique. Submission failed."
+              taken: "Failed to create resource. Please ensure that name, description and if applicable the resource type are unique."
