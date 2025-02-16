@@ -250,6 +250,11 @@ class ExtractionsController < ApplicationController
                      end
 
           update_record_helper_dictionaries @extraction
+          if @extraction_forms_projects.first.extraction_forms_project_type.name.eql? ExtractionFormsProjectType::STANDARD
+            unless @eefpst1.comparisons_assisted
+              @eefpst1.assist_with_comparisons
+            end
+          end
         end
       end
     end
@@ -283,6 +288,12 @@ class ExtractionsController < ApplicationController
                                                                                          @extraction_forms_projects.first.id)
         else
           next
+        end
+
+        if @extraction_forms_projects.first.extraction_forms_project_type.name.eql? ExtractionFormsProjectType::STANDARD
+          unless @eefpst1.comparisons_assisted
+            @eefpst1.assist_with_comparisons
+          end
         end
       end
     end

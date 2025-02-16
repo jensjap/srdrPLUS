@@ -165,11 +165,23 @@ class ResultStatisticSectionsController < ApplicationController
       measures_attributes: %i[id name _destroy],
       measure_ids: [],
       result_statistic_sections_measures_attributes: [measure_attributes: %i[id name]],
-      comparisons_attributes: [:id, :is_anova,
-                               { comparate_groups_attributes: [:id,
-                                                               { comparates_attributes: [:id,
-                                                                                         { comparable_element_attributes: %i[id comparable_type
-                                                                                                                             comparable_id] }] }] }]
+      comparisons_attributes: [
+        :id,
+        :is_anova,
+        {
+          comparate_groups_attributes: [
+            :id,
+            {
+              comparates_attributes: [
+                :id,
+                {
+                  comparable_element_attributes: %i[id comparable_type comparable_id]
+                }
+              ]
+            }
+          ]
+        }
+      ]
     )
     #
     #        measure_ids: [],

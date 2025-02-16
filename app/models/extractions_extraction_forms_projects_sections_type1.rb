@@ -212,6 +212,36 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
     super || create_default_draft_status.status
   end
 
+  # Search for the newest comparison in the extraction. Then copy all BAC
+  # and WAC from that comparison's parent outcome to the current outcome.
+  # For WAC only copy comparison if timepoint name and unit match.
+  #
+  # !!!TODO: If no comparisons exist then create default comparison using the first
+  # available comparates.
+  # !!!TODO: check that WAC comparison have matching timepoints before copying.
+  #
+  # Is this accurate? Should comparisons be copied across populations by default
+  # when adding comparisons?
+  def assist_with_comparisons
+    comparisons = collect_all_comparisons_in_extraction
+    latest_comparison = comparisons.order(created_at: :desc).first
+
+    if latest_comparison
+      comparison_candidates_to_copy = find_sibiling_comparisons_to_copy(latest_comparison)
+      self.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+        bac_rss = identify_rss(:bac, eefpst1r)
+        wac_rss = identify_rss(:wac, eefpst1r)
+        add_comparison_candidates_to_copy(eefpst1r, bac_rss, wac_rss, comparison_candidates_to_copy)
+      end
+    else
+      # No comparisons exist in this extraction. Create default ones with first available arms
+      # and timepoints.
+      puts 'Nothing to do here..'
+    end
+
+    # self.update_columns(comparisons_assisted: true)
+  end
+
   private
 
   def set_extraction_stale
@@ -284,5 +314,117 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
     return unless is_amoeba_copy
 
     # Placeholder for debugging. No corrections needed.
+  end
+
+  def collect_all_comparisons_in_extraction
+    Comparison
+      .joins(
+        result_statistic_sections: {
+          population: {
+            extractions_extraction_forms_projects_sections_type1: {
+              extractions_extraction_forms_projects_section: :extraction
+            }
+          }
+        }
+      )
+      .where(  # filter on current extraction.
+        extractions_extraction_forms_projects_sections_type1_rows: {
+          extractions_extraction_forms_projects_sections_type1s: {
+            extractions_extraction_forms_projects_sections: {
+              extractions: self.extraction
+            }
+          }
+        }
+      )
+      .where(  # filter on BAC and WAC type RSS.
+        result_statistic_sections: {
+          result_statistic_section_type_id: [
+            ResultStatisticSectionType::BAC,
+            ResultStatisticSectionType::WAC
+          ]
+        }
+      )
+      # .where.not(  # filter out current outcome?
+      #   extractions_extraction_forms_projects_sections_type1_rows: {
+      #     extractions_extraction_forms_projects_sections_type1s: self
+      #   }
+      # )
+  end
+
+  def find_sibiling_comparisons_to_copy(comparison)
+    Comparison
+      .joins(result_statistic_sections: :population)
+      .where(  # filter on current extraction.
+        result_statistic_sections: {
+          population: comparison.result_statistic_sections.map(&:population)
+        }
+      )
+      .where(  # filter on BAC and WAC type RSS.
+        result_statistic_sections: {
+          result_statistic_section_type_id: [
+            ResultStatisticSectionType::BAC,
+            ResultStatisticSectionType::WAC
+          ]
+        }
+      )
+  end
+
+  def identify_rss(rss_type, eefpst1r)
+    rss_type_id = case rss_type
+                  when :bac
+                    ResultStatisticSectionType::BAC
+                  when :wac
+                    ResultStatisticSectionType::WAC
+                  else
+                    raise 'Fatal: unknown rss type.'
+                  end
+
+    rss_collection = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: rss_type_id)
+    raise "Fatal: incorrect number of #{ rss_type.to_s } type result_statistic_sections" unless rss_collection.size.eql?(1)
+
+    return rss_collection.first
+  end
+
+  def add_comparison_candidates_to_copy(eefpst1r, bac_rss, wac_rss, comparison_candidates_to_copy)
+    comparison_candidates_to_copy.each do |comparison|
+      begin
+        case comparison.result_statistic_sections.first.result_statistic_section_type_id
+        when ResultStatisticSectionType::BAC
+          copy_comparison(comparison, bac_rss)
+        when ResultStatisticSectionType::WAC
+          copy_comparison(comparison, wac_rss)
+        else
+          raise 'Fatal: unknown rss type.'
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        debugger if Rails.env.development?
+        puts e
+        puts 'continuing..'
+      end
+    end
+  end
+
+  def copy_comparison(comparison, rss)
+    comparison_copy = Comparison.create(is_anova: comparison.is_anova)
+    comparison.comparate_groups.each do |comparate_group|
+      comparate_group_copy = ComparateGroup.create(
+        comparison: comparison_copy
+      )
+      comparate_group.comparates.each do |comparate|
+        comparable_element_copy = ComparableElement.create(
+          comparable_type: comparate.comparable_element.comparable_type,
+          comparable_id: comparate.comparable_element.comparable_id
+        )
+        comparate_copy = Comparate.create(
+          comparate_group: comparate_group_copy,
+          comparable_element: comparable_element_copy
+        )
+      end
+    end
+
+    ComparisonsResultStatisticSection.create(
+      comparison: comparison_copy,
+      result_statistic_section: rss,
+    )
   end
 end
