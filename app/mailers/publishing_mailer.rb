@@ -4,7 +4,7 @@ class PublishingMailer < ApplicationMailer
     @name_of_pub_type = name_of_pub_type
     @record_id = record_id
     @publishing_id = publishing_id
-    email = 'webmaster@vadrr.org'
+    email = ENV['SMTP_USERNAME']
     set_controller
     mail(to: email, subject: 'Publishing requested')
   end

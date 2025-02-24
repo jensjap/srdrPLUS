@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'webmaster@vadrr.org'
+  default from: ENV['SMTP_USERNAME']
   layout 'mailer'
 end

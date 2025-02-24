@@ -22,7 +22,8 @@ module SrdrPLUS
     config.active_job.queue_adapter = :sidekiq
     # config.active_job.queue_name_prefix = "srdrPLUS_#{ Rails.env }"
 
-    config.autoload_paths += %w(#{config.root}/lib)
+    #config.autoload_paths += ["#{config.root}/services"]
+    config.autoload_paths += ["#{config.root}/lib"]
     config.autoload_paths += Dir[Rails.root.join('app', 'services', '**', '*')]
 
     # Restriction of Rendered UI Layers or Frames.
@@ -30,6 +31,8 @@ module SrdrPLUS
     config.action_dispatch.default_headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
     config.action_dispatch.default_headers['X-Frame-Options'] = 'SAMEORIGIN'
     config.action_dispatch.default_headers['X-XSS-Protection'] = '1; mode=block'
+
+    config.aws_region = ENV['AWS_REGION']
   end
 end
 
