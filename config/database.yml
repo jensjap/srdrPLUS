@@ -14,8 +14,8 @@ default: &default
   encoding: utf8
   pool: 5
   host: <%= ENV['SRDRPLUS_DATABASE_HOST'] %>
-  username: <%= ENV['SRDRPLUS_DATABASE_USERNAME'] %>
-  password: <%= ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
+  username: <%= DATABASE_CREDENTIALS['username']%>
+  password: <%= DATABASE_CREDENTIALS['password'] %>
   variables:
     sql_mode: TRADITIONAL
 
