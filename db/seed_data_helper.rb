@@ -5,6 +5,11 @@ module SeedData
     puts 'Running SeedData module.'
 
     object.instance_exec do
+      # KeyQuestions.
+      %w[kq1 kq2].each do |name|
+        KeyQuestion.find_or_create_by!(name:)
+      end
+
       # UserTypes.
       %w[Admin Member Trainee].each do |user_type|
         UserType.find_or_create_by!(user_type:)
