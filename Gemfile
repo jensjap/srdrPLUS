@@ -30,6 +30,7 @@ gem 'apipie-rails' # Api documentation.
 gem 'autoprefixer-rails' # Use Zurb Foundation as Front-End Framework
 gem 'awesome_print'
 gem 'aws-sdk-s3', require: false # Access to AWS S3 Cloud Storage.
+gem 'aws-sdk-secretsmanager'
 gem 'base64', '0.1.1'
 gem 'bcrypt'
 gem 'bio' # bioruby for pubmed queries.
@@ -42,7 +43,7 @@ gem 'country_select'
 gem 'devise'
 gem 'dotenv-rails'
 gem 'dropzonejs-rails' # Allows users to drop files to upload
-gem 'elasticsearch'
+gem 'elasticsearch', '< 7.14'
 gem 'faker', github: 'faker-ruby/faker', branch: 'main'
 gem 'fhir_models', github: 'sleepwalk712/fhir_models'
 gem 'font-awesome-rails'
