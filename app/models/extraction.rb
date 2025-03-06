@@ -238,6 +238,13 @@ class Extraction < ApplicationRecord
     user.eql?(member)
   end
 
+  def find_all_type1_members_by_section_name(name)
+    extractions_extraction_forms_projects_sections
+      .joins(extraction_forms_projects_section: :section)
+      .where(section: { name: })[0]
+      .extractions_extraction_forms_projects_sections_type1s
+  end
+
   private
 
   def create_default_arms

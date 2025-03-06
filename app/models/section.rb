@@ -10,6 +10,9 @@
 #
 
 class Section < ApplicationRecord
+  ARMS     = 'Arms'
+  OUTCOMES = 'Outcomes'
+
   include SharedQueryableMethods
   include SharedSuggestableMethods
 
