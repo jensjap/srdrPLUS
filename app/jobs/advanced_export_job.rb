@@ -400,9 +400,8 @@ class AdvancedExportJob < ApplicationJob
         eefps.reload
         [eefps.link_to_type1, eefps]
       end
-      raise 'must be linked, inconsistent data' if linked_eefpss.any? do |link_to_type1, eefps|
-                                                     link_to_type1.nil? || eefps.nil?
-                                                   end
+      # Select only linked_eefps for which link_to_type1 is present.
+      linked_eefpss = linked_eefpss.select { |link_to_type1, eefps| link_to_type1 && eefps }
 
       linked_eefpss.each do |eefps, child_eefps|
         extraction = eefps.extraction
@@ -502,7 +501,7 @@ class AdvancedExportJob < ApplicationJob
         end
 
         extractions.each do |extraction|
-          extractions_lookups[extraction.id][:type1s].each do |type1|
+          extractions_lookups.dig(extraction.id, :type1s)&.each do |type1|
             row = extract_default_row_columns(extraction)
             row << type1.name
             row << type1.description
