@@ -270,7 +270,7 @@ class ExtractionsController < ApplicationController
           update_eefps_by_extraction_and_efps_dict(extraction)
         end
         @project                   = @extraction.project
-        @extraction_forms_projects = @project.extraction_forms_projects
+        @extraction_forms_projects = set_extraction_forms_projects
         if @extraction_forms_projects.first.extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: ExtractionFormsProjectType::STANDARD))
           @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
                       .by_section_name_and_extraction_id_and_extraction_forms_project_id('Outcomes',
@@ -467,6 +467,9 @@ class ExtractionsController < ApplicationController
   end
 
   def set_extraction_forms_projects
-    @extraction_forms_projects = @project.extraction_forms_projects.includes(:extraction_form)
+    @extraction_forms_projects = @project.
+                                   extraction_forms_projects.
+                                   includes(:extraction_form).
+                                   reject { |efp| efp.extraction_forms_project_type_id.eql?(3) }
   end
 end

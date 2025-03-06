@@ -29,8 +29,10 @@ class PublicDataController < ApplicationController
         @extraction = Extraction.find(id)
         update_record_helper_dictionaries(@extraction)
         @project = @extraction.project
-        @extraction_forms_projects = @project.extraction_forms_projects.includes(:extraction_form)
-
+        @extraction_forms_projects = @project.
+                                       extraction_forms_projects.
+                                       includes(:extraction_form).
+                                       reject { |efp| efp.extraction_forms_project_type_id.eql?(3) }
 
         if @extraction_forms_projects.first.extraction_forms_project_type.name.eql? ExtractionFormsProjectType::DIAGNOSTIC_TEST
           @eefpst1s = ExtractionsExtractionFormsProjectsSectionsType1
