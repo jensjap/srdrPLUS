@@ -189,7 +189,8 @@ class AbstractScreeningsController < ApplicationController
           :privileged,
           :reasons,
           :tags,
-          :updated_at
+          :updated_at,
+          :notes
         ).compact_blank
 
         where_hash = { abstract_screening_id: @abstract_screening.id }

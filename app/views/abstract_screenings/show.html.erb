@@ -695,6 +695,61 @@
                 />
               </div>
             </th>
+            <th
+              scope="col"
+              class="cursor-pointer px-3 py-3.5 text-left text-sm font-semibold text-gray-900 align-top"
+              @click="changeOrderBy('notes')"
+            >
+              <div class="flex justify-between">
+                Notes<template
+                  x-if="pagination.sort == 'asc' && pagination.order_by == 'notes'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+                    />
+                  </svg>
+                </template>
+                <template
+                  x-if="pagination.sort == 'desc' && pagination.order_by == 'notes'"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+                    />
+                  </svg>
+                </template>
+              </div>
+
+              <div class="flex flex-col">
+                <input
+                  type="text"
+                  x-model="filters.notes"
+                  @input.debounce.500ms="fetch_results()"
+                  @click.stop
+                  class="mt-1 block w-full px-2 py-1 text-sm border-gray-300 rounded-md"
+                  placeholder="Keyword"
+                />
+              </div>
+            </th>
             <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
               <span class="sr-only">Edit</span>
             </th>
@@ -753,6 +808,10 @@
                 <td
                   class="px-3 text-sm text-gray-500"
                   x-text="new Date(result.updated_at).toLocaleDateString('en-CA')"
+                ></td>
+                <td
+                  class="px-3 text-sm text-gray-500"
+                  x-text="result.notes"
                 ></td>
                 <td class="p-3 whitespace-nowrap flex flex-col space-y-2">
                   <a
