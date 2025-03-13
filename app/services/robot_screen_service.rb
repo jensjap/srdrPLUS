@@ -7,14 +7,34 @@ class RobotScreenService
   end
 
   def send_post_request(url, body)
-    res = HTTParty.post(
-      url,
-      {
-        body: body.to_json,
-        headers: { 'Content-Type' => 'application/json', 'Accept': 'application/json' },
-        timeout: 5400
-      }
-    )
+    start_time = Time.now 
+    puts "Start time: #{start_time.strftime('%Y-%m-%d %H:%M:%S')}"
+
+    begin
+      res = HTTParty.post(
+        url,
+        {
+          body: body.to_json,
+          headers: { 'Content-Type' => 'application/json', 'Accept': 'application/json', "Connection" => 'keep-alive' },
+          timeout: 10800
+        }
+      )
+    rescue Net::ReadTimeout => e
+      elapsed_time = Time.now - start_time  # Calculate elapsed time
+      Rails.logger.error "Net::ReadTimeout after #{elapsed_time.round(2)} seconds"
+      puts "Net::ReadTimeout after #{elapsed_time.round(2)} seconds"
+      raise
+    rescue StandardError => e
+      elapsed_time = Time.now - start_time  # Calculate elapsed time
+      Rails.logger.error "Request failed after #{elapsed_time.round(2)} seconds: #{e.message}"
+      puts "Request failed after #{elapsed_time.round(2)} seconds: #{e.message}"
+      raise
+    end
+
+    elapsed_time = Time.now - start_time  # Calculate elapsed time for a successful request
+    end_time = Time.now
+    puts "Request completed in #{elapsed_time.round(2)} seconds, at #{end_time.strftime('%Y-%m-%d %H:%M:%S')}"
+
     JSON.parse(res.body)
   end
 
@@ -46,14 +66,18 @@ class RobotScreenService
   end
 
   def get_predictions(timestamp, data)
+    Rails.logger.info "Preparing to send predict POST request for unlabeled data.."
     predict_url = "#{@url}/predict/#{@method}/#{@project_id}"
+    Rails.logger.info "Sending POST request for unlabeled data.."
     response_hash = send_post_request(predict_url, { input_citations: data, timestamp: timestamp })
+    Rails.logger.info "Prediction scores received for unlabeled data.."
     predictions = response_hash['predictions']
     ml_model = @project.ml_models.find_by(timestamp: timestamp)
     return predictions, ml_model
   end
 
   def check_predictions(predictions, score_threshold, percentage_threshold)
+    Rails.logger.info "Checking predictions.."
     total_predictions = predictions.size
     high_score_count = predictions.count { |score| score >= score_threshold }
     percentage = (high_score_count.to_f / total_predictions) * 100
@@ -69,6 +93,8 @@ class RobotScreenService
   end
 
   def save_predictions(data, predictions, ml_model)
+    Rails.logger.info "Saving predictions.."
+    total_predictions = predictions.size
     prediction_records = data.map.with_index do |citation, index|
       citation_id = citation['citation_id']
       score = predictions[index]
@@ -95,7 +121,9 @@ class RobotScreenService
     predict_data = data_0.drop(train_size_0) + data_1.drop(train_size_1)
 
     train_url = "#{@url}/train/#{@method}/#{@project_id}"
+    Rails.logger.info "Sending training POST request to #{train_url}.."
     train_response_hash = send_post_request(train_url, { labeled_data: train_data })
+    Rails.logger.info "Done!"
 
     return "Failed (message: #{train_response_hash['message']})" unless train_response_hash['success']
 
@@ -105,16 +133,20 @@ class RobotScreenService
     ml_model.training_data_infos.create(category: '1', count: train_size_1)
 
     predict_url = "#{@url}/predict/#{@method}/#{@project_id}"
+    Rails.logger.info "Sending predict POST request for human labeled data to #{predict_url}.."
     predict_response_hash = send_post_request(predict_url, { input_citations: predict_data, timestamp: timestamp })
 
+    Rails.logger.info "Predictions for human labeled data successfully received.."
     predictions = predict_response_hash['predictions']
 
     human_labels = predict_data.map { |data| data['label'] }
 
+    Rails.logger.info "Preparing to update ModelPerformance table.."
     performance_data = human_labels.zip(predictions).map do |label, prediction|
       { ml_model_id: ml_model.id, label: label, score: prediction, created_at: Time.current, updated_at: Time.current }
     end
     ModelPerformance.insert_all(performance_data)
+    Rails.logger.info "ModelPerformance table updated!"
 
     "Training complete (model timestamp: #{timestamp})"
   end
