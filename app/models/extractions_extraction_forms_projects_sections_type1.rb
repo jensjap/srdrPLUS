@@ -96,6 +96,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   delegate :citations_project, to: :extractions_extraction_forms_projects_section
   delegate :extraction,        to: :extractions_extraction_forms_projects_section
   delegate :project, to: :extractions_extraction_forms_projects_section
+  delegate :name, to: :type1
 
   validates :type1, uniqueness: { scope: %i[extractions_extraction_forms_projects_section type1_type] }
 
@@ -216,12 +217,6 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   # BAC from that comparison's parent outcome to the current outcome.
   # For WAC automatically create every combination possible using all
   # <TIMEPOINT> vs. "Baseline"
-  #
-  # !!!TODO: If no BAC comparisons exist then create default comparison
-  # using the first available comparates.
-  #
-  # !!!TODO: Is this accurate? Should comparisons be copied across populations by default
-  # when adding comparisons?
   def assist_with_comparisons
     # Check for BAC comparisons to copy.
     comparisons = collect_all_comparisons_in_extraction
@@ -441,7 +436,6 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
     end
   end
 
-  #!!! TODO
   def create_default_bac_comparison
     # Find all "Arm" type1 and use the first 2 to create a default BAC comparison.
     self.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
@@ -454,18 +448,58 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
     # Only create comparison if there are more than 1 Arms available.
     if arms.size > 1
-      create_default_bac_combination(arms)
+      create_default_bac_combination(arms, eefpst1r)
     end
   end
 
-  def create_default_bac_combination(arms)
-    create_bac_comparison(arms[0], arms[1])
+  def create_default_bac_combination(arms, eefpst1r)
+    create_bac_comparison(arms[0], arms[1], eefpst1r)
   end
 
-  def create_bac_comparison(arm1, arm2)
+  def create_bac_comparison(arm1, arm2, eefpst1r)
     ActiveRecord::Base.transaction do
-      # debugger
-      rss_collection = arm2
+      rss_collection = eefpst1r
+                         .result_statistic_sections
+                         .where(result_statistic_section_type_id: ResultStatisticSectionType::BAC)
+      raise "Fatal: incorrect number of BAC type result_statistic_sections" unless rss_collection.size.eql?(1)
+
+      bac_rss = rss_collection.first
+
+      comparison = Comparison.create!(is_anova: false)
+
+      left_comparate_group = ComparateGroup.create!(comparison:)
+      right_comparate_group = ComparateGroup.create!(comparison:)
+
+      left_comparate_comparable_element = ComparableElement.create!(
+        comparable_type: arm1.class,
+        comparable_id: arm1.id
+      )
+      right_comparate_comparable_element = ComparableElement.create!(
+        comparable_type: arm2.class,
+        comparable_id: arm2.id
+      )
+
+      # Attach comparate to respective comparate group.
+      left_comparate = Comparate.create!(
+        comparate_group: left_comparate_group,
+        comparable_element: left_comparate_comparable_element
+      )
+      right_comparate = Comparate.create!(
+        comparate_group: right_comparate_group,
+        comparable_element: right_comparate_comparable_element
+      )
+
+      begin
+        # Attach comparison to RSS.
+        ComparisonsResultStatisticSection.create!(
+          comparison:,
+          result_statistic_section: bac_rss
+        )
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error("Transaction failed: #{e.message}")
+        # Explicitly call rollback to prevent partial records.
+        raise ActiveRecord::Rollback  
+      end
     end
   end
 

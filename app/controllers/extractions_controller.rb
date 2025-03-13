@@ -250,9 +250,11 @@ class ExtractionsController < ApplicationController
                      end
 
           update_record_helper_dictionaries @extraction
-          if @eefpst1.present? && @extraction_forms_projects.first.extraction_forms_project_type.name.eql?(ExtractionFormsProjectType::STANDARD)
-            unless @eefpst1.comparisons_assisted
-              @eefpst1.assist_with_comparisons
+          if @eefps_by_efps_dict[params["panel-tab"].to_i]&.dig(0)&.section&.name.eql?("Results")
+            if @eefpst1.present? && @extraction_forms_projects.first.extraction_forms_project_type.name.eql?(ExtractionFormsProjectType::STANDARD)
+              unless @eefpst1.comparisons_assisted
+                @eefpst1.assist_with_comparisons
+              end
             end
           end
         end
