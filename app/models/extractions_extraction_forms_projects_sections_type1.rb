@@ -238,7 +238,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
     # Create all combinations of WAC comparisons, such that we compare against "Baseline".
     create_default_wac_comparisons
 
-    #!!! UNCOMMENT THIS WHEN READY TO DEPLOY: self.update_columns(comparisons_assisted: true)
+    self.update_columns(comparisons_assisted: true)
   end
 
   private
