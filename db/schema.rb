@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_11_22_000000) do
+ActiveRecord::Schema[7.0].define(version: 2025_02_15_144138) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -715,6 +715,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_11_22_000000) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "pos", default: 999999
+    t.boolean "comparisons_assisted", default: false
     t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpst1_on_eefps_id"
     t.index ["pos"], name: "eefpst1_id"
     t.index ["type1_id"], name: "index_eefpst1_on_t1_id"

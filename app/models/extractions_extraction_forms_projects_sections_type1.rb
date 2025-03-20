@@ -96,6 +96,7 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
   delegate :citations_project, to: :extractions_extraction_forms_projects_section
   delegate :extraction,        to: :extractions_extraction_forms_projects_section
   delegate :project, to: :extractions_extraction_forms_projects_section
+  delegate :name, to: :type1
 
   validates :type1, uniqueness: { scope: %i[extractions_extraction_forms_projects_section type1_type] }
 
@@ -212,6 +213,34 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
     super || create_default_draft_status.status
   end
 
+  # Search for the newest BAC comparison in the extraction. Then copy all
+  # BAC from that comparison's parent outcome to the current outcome.
+  # For WAC automatically create every combination possible using all
+  # <TIMEPOINT> vs. "Baseline"
+  def assist_with_comparisons
+    # Check for BAC comparisons to copy.
+    comparisons = collect_all_comparisons_in_extraction
+    latest_comparison = comparisons.order(created_at: :desc).first
+
+    if latest_comparison
+      comparison_candidates_to_copy = find_sibiling_comparisons_to_copy(latest_comparison)
+      self.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+        bac_rss = identify_rss(:bac, eefpst1r)
+        wac_rss = identify_rss(:wac, eefpst1r)
+        add_comparison_candidates_to_copy(eefpst1r, bac_rss, wac_rss, comparison_candidates_to_copy)
+      end
+    else
+      # No BAC comparisons exist in this extraction. Create default ones with first available arms.
+      puts 'Create default BAC Comparison using first available comparates.'
+      create_default_bac_comparison
+    end
+
+    # Create all combinations of WAC comparisons, such that we compare against "Baseline".
+    create_default_wac_comparisons
+
+    self.update_columns(comparisons_assisted: true)
+  end
+
   private
 
   def set_extraction_stale
@@ -284,5 +313,270 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
     return unless is_amoeba_copy
 
     # Placeholder for debugging. No corrections needed.
+  end
+
+  def collect_all_comparisons_in_extraction
+    Comparison
+      .joins(
+        result_statistic_sections: {
+          population: {
+            extractions_extraction_forms_projects_sections_type1: {
+              extractions_extraction_forms_projects_section: :extraction
+            }
+          }
+        }
+      )
+      .where(  # filter on current extraction.
+        extractions_extraction_forms_projects_sections_type1_rows: {
+          extractions_extraction_forms_projects_sections_type1s: {
+            extractions_extraction_forms_projects_sections: {
+              extractions: self.extraction
+            }
+          }
+        }
+      )
+      .where(  # filter on BAC type RSS.
+        result_statistic_sections: {
+          result_statistic_section_type_id: [
+            ResultStatisticSectionType::BAC
+          ]
+        }
+      )
+      # .where.not(  # filter out current outcome?
+      #   extractions_extraction_forms_projects_sections_type1_rows: {
+      #     extractions_extraction_forms_projects_sections_type1s: self
+      #   }
+      # )
+  end
+
+  def find_sibiling_comparisons_to_copy(comparison)
+    Comparison
+      .joins(result_statistic_sections: :population)
+      .where(  # filter on populations.
+        result_statistic_sections: {
+          population: comparison.result_statistic_sections.map(&:population)
+        }
+      )
+      .where(  # filter on BAC type RSS.
+        result_statistic_sections: {
+          result_statistic_section_type_id: [
+            ResultStatisticSectionType::BAC
+          ]
+        }
+      )
+  end
+
+  def identify_rss(rss_type, eefpst1r)
+    rss_type_id = case rss_type
+                  when :bac
+                    ResultStatisticSectionType::BAC
+                  when :wac
+                    ResultStatisticSectionType::WAC
+                  else
+                    raise 'Fatal: unknown rss type.'
+                  end
+
+    rss_collection = eefpst1r.result_statistic_sections.where(result_statistic_section_type_id: rss_type_id)
+    raise "Fatal: incorrect number of #{ rss_type.to_s } type result_statistic_sections" unless rss_collection.size.eql?(1)
+
+    return rss_collection.first
+  end
+
+  def add_comparison_candidates_to_copy(eefpst1r, bac_rss, wac_rss, comparison_candidates_to_copy)
+    comparison_candidates_to_copy.each do |comparison|
+      begin
+        case comparison.result_statistic_sections.first.result_statistic_section_type_id
+        when ResultStatisticSectionType::BAC
+          copy_comparison(comparison, bac_rss)
+        when ResultStatisticSectionType::WAC
+          # This is probably not needed, since the query in #find_sibiling_comparisons_to_copy
+          # only returns BAC comparisons. Leaving this here in case we want to make changes
+          # to copying WAC comparison logic.
+          next
+        else
+          raise 'Fatal: unknown rss type.'
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        puts e
+        puts 'continuing..'
+        debugger if Rails.env.development?
+      end
+    end
+  end
+
+  def copy_comparison(comparison, rss)
+    ActiveRecord::Base.transaction do
+      comparison_copy = Comparison.create!(is_anova: comparison.is_anova)
+      comparison.comparate_groups.each do |comparate_group|
+        comparate_group_copy = ComparateGroup.create!(
+          comparison: comparison_copy
+        )
+        comparate_group.comparates.each do |comparate|
+          comparable_element_copy = ComparableElement.create!(
+            comparable_type: comparate.comparable_element.comparable_type,
+            comparable_id: comparate.comparable_element.comparable_id
+          )
+          comparate_copy = Comparate.create!(
+            comparate_group: comparate_group_copy,
+            comparable_element: comparable_element_copy
+          )
+        end
+      end
+
+      begin
+        ComparisonsResultStatisticSection.create!(
+          comparison: comparison_copy,
+          result_statistic_section: rss,
+        )
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error("Transaction failed: #{e.message}")
+        # Explicitly call rollback to prevent partial records.
+        raise ActiveRecord::Rollback  
+      end
+    end
+  end
+
+  def create_default_bac_comparison
+    # Find all "Arm" type1 and use the first 2 to create a default BAC comparison.
+    self.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+      create_default_bac_comparisons_for_population(eefpst1r)
+    end
+  end
+
+  def create_default_bac_comparisons_for_population(eefpst1r)
+    arms = eefpst1r.extraction.find_all_type1_members_by_section_name(Section::ARMS)
+
+    # Only create comparison if there are more than 1 Arms available.
+    if arms.size > 1
+      create_default_bac_combination(arms, eefpst1r)
+    end
+  end
+
+  def create_default_bac_combination(arms, eefpst1r)
+    create_bac_comparison(arms[0], arms[1], eefpst1r)
+  end
+
+  def create_bac_comparison(arm1, arm2, eefpst1r)
+    ActiveRecord::Base.transaction do
+      rss_collection = eefpst1r
+                         .result_statistic_sections
+                         .where(result_statistic_section_type_id: ResultStatisticSectionType::BAC)
+      raise "Fatal: incorrect number of BAC type result_statistic_sections" unless rss_collection.size.eql?(1)
+
+      bac_rss = rss_collection.first
+
+      comparison = Comparison.create!(is_anova: false)
+
+      left_comparate_group = ComparateGroup.create!(comparison:)
+      right_comparate_group = ComparateGroup.create!(comparison:)
+
+      left_comparate_comparable_element = ComparableElement.create!(
+        comparable_type: arm1.class,
+        comparable_id: arm1.id
+      )
+      right_comparate_comparable_element = ComparableElement.create!(
+        comparable_type: arm2.class,
+        comparable_id: arm2.id
+      )
+
+      # Attach comparate to respective comparate group.
+      left_comparate = Comparate.create!(
+        comparate_group: left_comparate_group,
+        comparable_element: left_comparate_comparable_element
+      )
+      right_comparate = Comparate.create!(
+        comparate_group: right_comparate_group,
+        comparable_element: right_comparate_comparable_element
+      )
+
+      begin
+        # Attach comparison to RSS.
+        ComparisonsResultStatisticSection.create!(
+          comparison:,
+          result_statistic_section: bac_rss
+        )
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error("Transaction failed: #{e.message}")
+        # Explicitly call rollback to prevent partial records.
+        raise ActiveRecord::Rollback  
+      end
+    end
+  end
+
+  def create_default_wac_comparisons
+    # Each population may have a different set of Timepoints. We iterate over the
+    # populations and then check if sufficient number of Timepoints for comparisons exist.
+    self.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
+      create_default_wac_comparisons_for_population(eefpst1r)
+    end
+  end
+
+  def create_default_wac_comparisons_for_population(eefpst1r)
+    timepoints = eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns
+
+    # Only create comparison if there are more than 1 Timepoint available.
+    if timepoints.size > 1
+      create_all_wac_combinations(timepoints)
+    end
+  end
+
+  def create_all_wac_combinations(timepoints)
+    baseline_timepoint = find_baseline(timepoints)
+    non_baseline_timepoints = timepoints - [baseline_timepoint]
+    non_baseline_timepoints.each do |tp|
+      create_wac_comparison(tp, baseline_timepoint)
+    end
+  end
+
+  def find_baseline(timepoints)
+    timepoints.where(timepoint_name: TimepointName.find(1)).first
+  end
+
+  def create_wac_comparison(tp, baseline_timepoint)
+    ActiveRecord::Base.transaction do
+      rss_collection = baseline_timepoint
+                         .extractions_extraction_forms_projects_sections_type1_row
+                         .result_statistic_sections
+                         .where(result_statistic_section_type_id: ResultStatisticSectionType::WAC)
+      raise "Fatal: incorrect number of WAC type result_statistic_sections" unless rss_collection.size.eql?(1)
+
+      wac_rss = rss_collection.first
+
+      comparison = Comparison.create!(is_anova: false)
+
+      left_comparate_group = ComparateGroup.create!(comparison:)
+      right_comparate_group = ComparateGroup.create!(comparison:)
+
+      left_comparate_comparable_element = ComparableElement.create!(
+        comparable_type: tp.class,
+        comparable_id: tp.id
+      )
+      right_comparate_comparable_element = ComparableElement.create!(
+        comparable_type: baseline_timepoint.class,
+        comparable_id: baseline_timepoint.id
+      )
+
+      # Attach comparate to respective comparate group.
+      left_comparate = Comparate.create!(
+        comparate_group: left_comparate_group,
+        comparable_element: left_comparate_comparable_element
+      )
+      right_comparate = Comparate.create!(
+        comparate_group: right_comparate_group,
+        comparable_element: right_comparate_comparable_element
+      )
+
+      begin
+        # Attach comparison to RSS.
+        ComparisonsResultStatisticSection.create!(
+          comparison:,
+          result_statistic_section: wac_rss
+        )
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error("Transaction failed: #{e.message}")
+        # Explicitly call rollback to prevent partial records.
+        raise ActiveRecord::Rollback  
+      end
+    end
   end
 end

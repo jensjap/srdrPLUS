@@ -10,6 +10,10 @@
 
 class ResultStatisticSectionType < ApplicationRecord
   TYPE_NAMES = %w[Descriptive BAC WAC NET].freeze
+  DESCRIPTIVE = 1
+  BAC = 2
+  WAC = 3
+  NET = 4
 
   has_many :result_statistic_sections, dependent: :destroy, inverse_of: :result_statistic_section_type
 
