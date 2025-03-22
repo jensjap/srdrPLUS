@@ -78,7 +78,7 @@ class Message < ApplicationRecord
       broadcast_user_ids =
         (broadcast_user_ids | User.includes(:profile, :messages).where(messages: { help_key: }).pluck(:id))
     end
-    notify_users(online_user_ids & broadcast_user_ids)
+    notify_users(online_user_ids + broadcast_user_ids)
 
     broadcast(help_key)
   end
@@ -90,11 +90,11 @@ class Message < ApplicationRecord
   def broadcast_chat
     online_user_ids = redis_online_user_ids
     broadcast_user_ids = room.users.map(&:id)
-    notify_users(online_user_ids & broadcast_user_ids)
+    notify_users(online_user_ids + broadcast_user_ids)
 
     bus = broadcast_user_ids.reject { |bu_id| bu_id == user.id }.map { |bu_id| { user_id: bu_id, message_id: id } }
     MessageUnread.insert_all(bus) unless bus.empty?
-    (broadcast_user_ids & online_user_ids).each do |online_broadcast_user_id|
+    (broadcast_user_ids + online_user_ids).each do |online_broadcast_user_id|
       message_unread = message_unreads.find do |mu|
         mu.user_id == online_broadcast_user_id
       end
