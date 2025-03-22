@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_02_15_144138) do
+ActiveRecord::Schema[7.0].define(version: 2025_03_22_183941) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -983,28 +983,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_15_144138) do
     t.string "name"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-  end
-
-  create_table "labels", id: :integer, charset: "utf8", force: :cascade do |t|
-    t.integer "citations_project_id"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.integer "projects_users_role_id"
-    t.integer "label_type_id"
-    t.index ["citations_project_id"], name: "index_labels_on_citations_project_id"
-    t.index ["label_type_id"], name: "index_labels_on_label_type_id"
-    t.index ["projects_users_role_id"], name: "index_labels_on_projects_users_role_id"
-  end
-
-  create_table "labels_reasons", id: :integer, charset: "utf8", force: :cascade do |t|
-    t.integer "label_id"
-    t.integer "reason_id"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.integer "projects_users_role_id"
-    t.index ["label_id"], name: "index_labels_reasons_on_label_id"
-    t.index ["projects_users_role_id"], name: "index_labels_reasons_on_projects_users_role_id"
-    t.index ["reason_id"], name: "index_labels_reasons_on_reason_id"
   end
 
   create_table "measures", id: :integer, charset: "utf8", force: :cascade do |t|
@@ -2235,12 +2213,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_15_144138) do
   add_foreign_key "key_questions_projects", "projects"
   add_foreign_key "key_questions_projects_questions", "key_questions_projects"
   add_foreign_key "key_questions_projects_questions", "questions"
-  add_foreign_key "labels", "citations_projects"
-  add_foreign_key "labels", "label_types"
-  add_foreign_key "labels", "projects_users_roles"
-  add_foreign_key "labels_reasons", "labels"
-  add_foreign_key "labels_reasons", "projects_users_roles"
-  add_foreign_key "labels_reasons", "reasons"
   add_foreign_key "message_types", "frequencies"
   add_foreign_key "messages", "message_types"
   add_foreign_key "ml_predictions", "citations_projects"
