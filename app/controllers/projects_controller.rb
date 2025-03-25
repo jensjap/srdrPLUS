@@ -43,6 +43,10 @@ class ProjectsController < ApplicationController
   end
 
   def edit
+    if project_blacklisted?(@project.id)
+      flash[:alert] = t('project_blacklisted', project_name: @project.name)
+      return
+    end
     authorize(@project)
 
     case params[:page]
