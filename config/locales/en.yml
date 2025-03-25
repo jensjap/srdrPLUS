@@ -30,6 +30,7 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  project_blacklisted: "The project you are attempting to access (\"%{project_name}\") is currently not available for edit. Please contact your program manager for details."
   export: Export
   submit: Submit
   create_extraction_form: Create Extraction Form

@@ -208,6 +208,10 @@ class ExtractionsController < ApplicationController
   # GET /extractions/1/work
   def work
     @project = @extraction.project
+    if project_blacklisted?(@project.id)
+      flash[:alert] = t('project_blacklisted', project_name: @project.name)
+      return
+    end
     authorize(@extraction)
     @nav_buttons.push('extractions', 'my_projects')
 
