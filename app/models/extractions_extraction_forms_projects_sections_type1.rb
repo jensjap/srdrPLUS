@@ -522,7 +522,16 @@ class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
 
   def create_all_wac_combinations(timepoints)
     baseline_timepoint = find_baseline(timepoints)
-    non_baseline_timepoints = timepoints - [baseline_timepoint]
+    # Protect against removal of Baseline Timepoint by user.
+    # find_baseline looks for eefpst1rcs with TimepointName.first
+    # It is possible that user removed this and so we use first
+    # timepoint as Baseline instead.
+    if baseline_timepoint
+      non_baseline_timepoints = timepoints - [baseline_timepoint]
+    else
+      baseline_timepoint = timepoints.to_a.shift
+      non_baseline_timepoints = timepoints - [baseline_timepoint]
+    end
     non_baseline_timepoints.each do |tp|
       create_wac_comparison(tp, baseline_timepoint)
     end
