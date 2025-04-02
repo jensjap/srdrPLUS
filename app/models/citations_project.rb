@@ -16,19 +16,7 @@
 
 class CitationsProject < ApplicationRecord
   searchkick callbacks: :async,
-             mappings: {
-               properties: {
-                 accession_number_alts: { type: 'keyword' },
-                 author_map_string: { type: 'keyword' },
-                 name: { type: 'keyword' },
-                 year: { type: 'keyword' },
-                 abstract_qualification: { type: 'keyword' },
-                 fulltext_qualification: { type: 'keyword' },
-                 extraction_qualification: { type: 'keyword' },
-                 consolidation_qualification: { type: 'keyword' },
-                 screening_status: { type: 'keyword' },
-               }
-             }
+             batch_size: 5000
 
   scope :not_disqualified,
         -> { where.not(screening_status: CitationsProject::REJECTED) }
