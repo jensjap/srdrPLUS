@@ -7,12 +7,9 @@ namespace :search_index_tasks do
       CitationsProject.reindex(import: false)
       connection = ActiveRecord::Base.connection
       res = connection.execute('select max(id) from citations_projects')
-      id = res.to_a.flatten.first.to_i
-      1.upto(id) do |i|
-        p = CitationsProject.find_by_id(i)
-        next unless p
-    
-        p.reindex
+      max_id = res.to_a.flatten.first.to_i
+      CitationsProject.where(id: 1..max_id).find_in_batches(batch_size: 500) do |batch|
+        CitationsProject.where(id: batch.map(&:id)).reindex
       end
     end
 
