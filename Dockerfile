@@ -1,35 +1,24 @@
-FROM ruby:3.1.2-alpine
+FROM ruby:3.1.2-slim
 
 ENV BUNDLER_VERSION=2.3.15
 
-RUN apk add --update --no-cache \
-      binutils-gold \
-      build-base \
-      curl \
-      file \
-      g++ \
-      gcc \
-      git \
-      less \
-      libstdc++ \
-      libffi-dev \
-      libc-dev \
-      linux-headers \
+RUN apt-get update -qq && apt-get install -y \
+      build-essential \
+      libmariadb-dev \
+      libmariadb-dev-compat \
       libxml2-dev \
-      libxslt-dev \
-      libgcrypt-dev \
-      make \
-      mariadb-dev \
-      mysql-client \
-      netcat-openbsd \
-      nodejs \
-      openssl \
-      pkgconfig \
-      python3 \
+      libxslt1-dev \
+      libffi-dev \
+      git \
+      curl \
+      libssl-dev \
+      pkg-config \
       tzdata \
-      yarn
+      nodejs \
+      yarn \
+      && rm -rf /var/lib/apt/lists/*
 
-RUN gem install bundler -v 2.3.15
+RUN gem install bundler -v $BUNDLER_VERSION
 
 WORKDIR /app
 
