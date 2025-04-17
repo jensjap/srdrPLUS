@@ -39,8 +39,10 @@ class CitationsProject < ApplicationRecord
   has_many :fulltext_screening_results, dependent: :destroy
   has_many :screening_qualifications, dependent: :destroy
   has_many :ml_predictions, dependent: :destroy
+  has_many :logs, dependent: :destroy, as: :loggable
 
   accepts_nested_attributes_for :citation, reject_if: :all_blank
+  after_save :create_citations_project_log
 
   AS_UNSCREENED = 'asu'.freeze
   AS_PARTIALLY_SCREENED = 'asps'.freeze
@@ -279,6 +281,12 @@ class CitationsProject < ApplicationRecord
   end
 
   private
+
+  def create_citations_project_log
+    return unless id_previously_changed? || screening_status_previously_changed?
+
+    logs.create(description: screening_status, user: User.current)
+  end
 
   def formatted_publication_date(date)
     return nil unless date
