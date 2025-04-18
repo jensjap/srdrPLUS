@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily report</title>
+  </head>
+  <body style="font-family: Arial, Helvetica, sans-serif; margin: 32px">
+    <p>Greetings <span style="font-weight: bold"><%= @email %></span>,</p>
+    <div style="border: black 1px solid; padding: 8px; border-radius: 8px; margin-bottom: 8px;">
+      Here are yesterday's messages:
+      <!-- prettier-ignore -->
+      <% if @messages_hash.blank? %>
+      <div style="display: block; font-size: 14px; margin-left: 16px; margin-top: 0.25rem;">
+        No messages
+      </div>
+      <% end %>
+      <!-- prettier-ignore -->
+      <% @messages_hash.each do |help_key, messages| %>
+      <div style="margin-top: 0.25rem;">
+        <div style="display: block;"><%= help_key %></div>
+        <!-- prettier-ignore -->
+        <% messages.each do |message| %>
+        <div
+          style="
+            display: block;
+            font-size: 14px;
+            margin-left: 12px;
+            display: flex;
+            margin-top: 0.25rem;
+          "
+        >
+          <a target="_blank" href="<%= root_url %>extractions/<%= message.extraction_id %>/work?panel-tab=&help_board=true">
+            <div><%= message.text %></div>
+            <div style="font-weight: lighter; font-size: 10px; color: gray">
+              <!-- prettier-ignore -->
+              <%= message.created_at.strftime("%a, %e %b %Y %H:%M:%S %z") %>
+              <span style="font-weight: bold"><%= message.handle %></span>
+            </div>
+          </div>
+        </a>
+        <% end %>
+      </div>
+      <% end %>
+    </div>
+
+    <div style="display: block; margin: 8px 0 8px 0;">
+      If you prefer to not receive message summaries, please visit <a href="<%= root_url %>users/edit" target="_blank">Account Settings</a> to update your notification preference.
+    </div>
+
+    <div style="border: black 1px solid; padding: 8px; border-radius: 8px; margin-bottom: 8px;">
+      Here are yesterday's updates of the extractions you've assigned.
+      <div style="margin-top: 0.25rem;">
+      <% if @extract_log_messages.empty? %>
+      <div style="display: block; font-size: 14px; margin-left: 16px; margin-top: 0.25rem;">
+        No logs
+      </div>
+      <% end %>
+      <% @extract_log_messages.each do |log_message| %>
+      <div style="display: block; font-size: 14px; margin-left: 16px; margin-top: 0.25rem;">
+        <%= log_message %>
+      </div>
+      <% end %>
+      </div>
+    </div>
+
+    <div style="display: block; margin: 8px 0 8px 0;">
+      You're receiving extraction status updates because you're the extraction assignor.
+    </div>
+
+    <div style="border: black 1px solid; padding: 8px; border-radius: 8px; margin-bottom: 8px;">
+      Here are yesterday's updates of citations screening status changes of your projects.
+      <div style="margin-top: 0.25rem;">
+      <% if @citation_log_messages.empty? %>
+      <div style="display: block; font-size: 14px; margin-left: 16px; margin-top: 0.25rem;">
+        No logs
+      </div>
+      <% end %>
+      <% @citation_log_messages.each do |log_message| %>
+      <div style="display: block; font-size: 14px; margin-left: 16px; margin-top: 0.25rem;">
+        <%= log_message %>
+      </div>
+      <% end %>
+      </div>
+    </div>
+
+    <div style="display: block; margin: 8px 0 8px 0;">
+      You're receiving screening status updates because you are a project lead or auditor.
+    </div>
+
+    <div style="display: block; margin-top: 16px;">
+      Your VADRR Team
+    </div>
+  </body>
+</html>
