@@ -209,7 +209,7 @@ documentCode = ->
     $( '.key-question-selector input[type="checkbox"]' ).on 'change', ( e ) ->
       e.preventDefault()
       updateCards()
-      $('#extractions-key-questions-projects-selections-form').submit()
+      # $('#extractions-key-questions-projects-selections-form').submit()
 
     $(document).ready ->
       updateCards()

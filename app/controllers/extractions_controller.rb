@@ -28,8 +28,10 @@ class ExtractionsController < ApplicationController
             { extraction_forms_projects_section: :section }
           ] },
           { project: [
-            { extraction_forms_projects: :extraction_forms_projects_sections }
-          ] }
+            { extraction_forms_projects: :extraction_forms_projects_sections },
+            :key_questions_projects
+          ] },
+          { extractions_key_questions_projects_selections: { key_questions_project: :key_question } }
         ]
       )
     @extractions = ExtractionDecorator.decorate_collection(@extractions)
@@ -163,24 +165,35 @@ class ExtractionsController < ApplicationController
 
   def update_kqp_selections
     authorized = policy(@extraction).update_kqp_selections?
-    @info = if authorized
-              [true, 'Saved!', '#410093']
-            else
-              [true, 'You are not authorized to make changes', 'red']
-            end
-    respond_to do |format|
-      format.js do
-        if authorized
-          @extraction.extractions_key_questions_projects_selections.destroy_all
-          params[:extraction][:extractions_key_questions_projects_selection_ids].each do |kqp_id|
-            if kqp_id.present?
-              @extraction.extractions_key_questions_projects_selections.create(key_questions_project_id: kqp_id)
-            end
+
+    if authorized
+      @extraction.extractions_key_questions_projects_selections.destroy_all
+      if params[:extraction][:extractions_key_questions_projects_selection_ids].present?
+        params[:extraction][:extractions_key_questions_projects_selection_ids].each do |kqp_id|
+          if kqp_id.present?
+            @extraction.extractions_key_questions_projects_selections.create(key_questions_project_id: kqp_id)
           end
         end
       end
+
+      if ActiveModel::Type::Boolean.new.cast(params[:reset_extraction_work_statuses])
+        @extraction.extractions_extraction_forms_projects_sections.each do |eefps|
+          if eefps.statusing.present?
+            eefps.statusing.update(status_id: 1)
+          else
+            eefps.create_statusing(status_id: 1)
+          end
+        end
+      end
+
+      flash[:notice] = 'Saved!'
+    else
+      flash[:alert] = 'You are not authorized to make changes'
     end
+
+    redirect_to work_extraction_path(@extraction)
   end
+
 
   # DELETE /extractions/1
   # DELETE /extractions/1.json
