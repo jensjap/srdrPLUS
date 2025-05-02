@@ -57,6 +57,7 @@ gem 'jquery-datatables' # For making sortable searchable tables
 gem 'jquery-rails' # Use jquery as the JavaScript library
 gem 'json_schemer'
 gem 'kaminari' # Pagination.
+gem 'mutex_m', '~> 0.2', require: false
 gem 'mysql2' # Use mysql as the database for Active Record
 gem 'net-ftp'
 gem 'net-smtp', require: false
