@@ -32,6 +32,7 @@ gem 'awesome_print'
 gem 'aws-sdk-s3', require: false # Access to AWS S3 Cloud Storage.
 gem 'aws-sdk-secretsmanager'
 gem 'base64', '0.1.1'
+gem 'benchmark'
 gem 'bcrypt'
 gem 'bio' # bioruby for pubmed queries.
 gem 'bootsnap' # New for Rails 5.2.
@@ -53,21 +54,26 @@ gem 'foundation-rails' # Use Zurb Foundation as Front-End Framework
 gem 'fuzzy_match' # Fuzzy Match
 gem 'gon' # Access ruby data in JavaScript.
 gem 'httparty' # Simple calls to external API.
+gem 'irb'
 gem 'jbuilder'
 gem 'jquery-datatables' # For making sortable searchable tables
 gem 'jquery-rails' # Use jquery as the JavaScript library
 gem 'json_schemer'
 gem 'kaminari' # Pagination.
+gem 'logger'
+gem 'mutex_m', '~> 0.2', require: false
 gem 'mysql2' # Use mysql as the database for Active Record
 gem 'net-ftp'
 gem 'net-smtp', require: false
 gem 'nokogiri'
+gem 'ostruct'
 gem 'passenger'
 gem 'puma' # Use Puma as the app server
 gem 'pundit' # authorizations.
 gem 'rack-attack' # Limit request rates
 gem 'rack-cors' # CORS.
 gem 'rails', '~> 7.0.3'
+gem 'rdoc'
 gem 'redis'
 gem 'ref_parsers', github: 'jensjap/ref_parsers' # for parsing ris files.
 gem 'remotipart', github: 'mshibuya/remotipart'
