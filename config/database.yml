@@ -10,6 +10,7 @@
 #   http://dev.mysql.com/doc/refman/5.7/en/old-client.html
 #
 default: &default
+  host: <%= ENV['SRDRPLUS_DATABASE_HOST'] %>
   adapter: mysql2
   encoding: utf8
   pool: 5
@@ -18,7 +19,6 @@ default: &default
 
 development:
   <<: *default
-  host: <%= ENV['SRDRPLUS_DATABASE_HOST'] %>
   username: <%= ENV['SRDRPLUS_DATABASE_USERNAME'] %>
   password: <%= ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
   database: srdrPLUS_development
@@ -29,7 +29,6 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  host: <%= ENV['SRDRPLUS_DATABASE_HOST'] %>
   username: <%= ENV['SRDRPLUS_DATABASE_USERNAME'] %>
   password: <%= ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
   database: srdrPLUS_test
@@ -56,7 +55,6 @@ test:
 
 production:
   <<: *default
-  host: <%= DATABASE_CREDENTIALS['host'] if defined?(DATABASE_CREDENTIALS) %>
   username: <%= DATABASE_CREDENTIALS['username'] if defined?(DATABASE_CREDENTIALS) %>
   password: <%= DATABASE_CREDENTIALS['password'] if defined?(DATABASE_CREDENTIALS) %>
   database: <%= ENV['SRDRPLUS_DATABASE_SCHEMA'] %>
@@ -64,7 +62,6 @@ production:
 # For importing legacy srdr data.
 legacy_production:
   <<: *default
-  host: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['host'] : ENV['SRDRPLUS_DATABASE_HOST'] %>
   username: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['username'] : ENV['SRDRPLUS_DATABASE_USERNAME'] %>
   password: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['password'] : ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
   database: <%= ENV['SRDR_LEGACY_DATABASE_SCHEMA'] %>
@@ -72,7 +69,6 @@ legacy_production:
 # DB Snapshot for recovery purposes.
 recovery:
   <<: *default
-  host: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['host'] : ENV['SRDRPLUS_DATABASE_HOST'] %>
   username: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['username'] : ENV['SRDRPLUS_DATABASE_USERNAME'] %>
   password: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['password'] : ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
   database: <%= ENV['SRDRPLUS_DATABASE_RECOVERY_SCHEMA'] %>
