@@ -1,6 +1,7 @@
-FROM ruby:3.1.2-slim
+FROM ruby:3.4
 
-ENV BUNDLER_VERSION=2.3.15
+ENV BUNDLER_VERSION=2.6.8 \
+      LOGGER_VERSION=1.7.0
 
 RUN apt-get update -qq && apt-get install -y \
       build-essential \
@@ -18,15 +19,17 @@ RUN apt-get update -qq && apt-get install -y \
       yarn \
       && rm -rf /var/lib/apt/lists/*
 
-RUN gem install bundler -v $BUNDLER_VERSION
+RUN gem install logger -v ${LOGGER_VERSION} --no-document \
+      && gem install bundler -v ${BUNDLER_VERSION} --no-document
 
 WORKDIR /app
 
 COPY Gemfile Gemfile.lock ./
 
-RUN bundle config build.nokogiri --use-system-libraries
+RUN bundle config set force_ruby_platform true \
+      && bundle config build.nokogiri --use-system-libraries
 
-RUN bundle install
+RUN bundle install --jobs 4 --retry 3
 
 COPY . ./
 
