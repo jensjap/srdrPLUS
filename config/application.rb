@@ -32,7 +32,7 @@ module SrdrPLUS
     config.action_dispatch.default_headers['X-Frame-Options'] = 'SAMEORIGIN'
     config.action_dispatch.default_headers['X-XSS-Protection'] = '1; mode=block'
 
-    config.aws_region = ENV['AWS_REGION']
+    config.aws_region = ENV['AWS_REGION'] if Rails.env.production?
   end
 end
 
