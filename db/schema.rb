@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_03_22_183941) do
+ActiveRecord::Schema[7.0].define(version: 2025_08_05_141023) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -489,6 +489,15 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_22_183941) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["eefps_qrcf_id", "question_row_columns_question_row_column_option_id"], name: "index_eefpsqrcfqrcqrco_on_eefps_qrcf_id_qrcqrco_id"
     t.index ["question_row_columns_question_row_column_option_id"], name: "index_eefpsqrcfqrcqrco_on_qrcqrco_id"
+  end
+
+  create_table "email_notifications", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "email"
+    t.string "notification_hash"
+    t.boolean "successful"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "events", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
