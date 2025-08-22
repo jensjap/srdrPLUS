@@ -1,6 +1,6 @@
 services:
   setup:
-    image: elasticsearch:8.2.3
+    image: elasticsearch:9.1.2
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
     user: "0"
@@ -77,7 +77,7 @@ services:
     image: redis:7
 
   elasticsearch:
-    image: elasticsearch:8.2.3
+    image: elasticsearch:9.1.2
     volumes:
       - esdata:/usr/share/elasticsearch/data
       - certs:/usr/share/elasticsearch/config/certs
