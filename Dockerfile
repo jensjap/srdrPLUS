@@ -3,6 +3,13 @@ FROM ruby:3.4
 ENV BUNDLER_VERSION=2.6.8 \
       LOGGER_VERSION=1.7.0
 
+RUN apt-get update -qq && apt-get install -y curl
+
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+
+RUN apt-get install -y nodejs \
+    && npm install --global yarn
+
 RUN apt-get update -qq && apt-get install -y \
       build-essential \
       libmariadb-dev \
@@ -11,12 +18,9 @@ RUN apt-get update -qq && apt-get install -y \
       libxslt1-dev \
       libffi-dev \
       git \
-      curl \
       libssl-dev \
       pkg-config \
       tzdata \
-      nodejs \
-      yarn \
       && rm -rf /var/lib/apt/lists/*
 
 RUN gem install logger -v ${LOGGER_VERSION} --no-document \
