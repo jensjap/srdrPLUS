@@ -10,18 +10,20 @@
 #   http://dev.mysql.com/doc/refman/5.7/en/old-client.html
 #
 default: &default
+  host: <%= ENV['SRDRPLUS_DATABASE_HOST'] %>
+  username: <%= Rails.env.production? ? DATABASE_CREDENTIALS['username'] : ENV['MYSQL_USER'] %>
+  password: <%= Rails.env.production? ? DATABASE_CREDENTIALS['password'] : ENV['MYSQL_PASSWORD'] %>
   adapter: mysql2
   encoding: utf8
   pool: 5
-  host: <%= ENV['SRDRPLUS_DATABASE_HOST'] %>
   port: 3306
-  username: <%= Rails.env.production? ? DATABASE_CREDENTIALS['username'] : ENV['MYSQL_USER'] %>
-  password: <%= Rails.env.production? ? DATABASE_CREDENTIALS['password'] : ENV['MYSQL_PASSWORD'] %>
   variables:
     sql_mode: TRADITIONAL
 
 development:
   <<: *default
+  username: <%= ENV['SRDRPLUS_DATABASE_USERNAME'] %>
+  password: <%= ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
   database: srdrPLUS_development
 
 # Warning: The database defined as "test" will be erased and
@@ -29,6 +31,8 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
+  username: <%= ENV['SRDRPLUS_DATABASE_USERNAME'] %>
+  password: <%= ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
   database: srdrPLUS_test
 
 # As with config/secrets.yml, you never want to store sensitive information,
@@ -50,16 +54,23 @@ test:
 #   production:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
+
 production:
   <<: *default
+  username: <%= DATABASE_CREDENTIALS['username'] if defined?(DATABASE_CREDENTIALS) %>
+  password: <%= DATABASE_CREDENTIALS['password'] if defined?(DATABASE_CREDENTIALS) %>
   database: <%= ENV['SRDRPLUS_DATABASE_SCHEMA'] %>
 
 # For importing legacy srdr data.
 legacy_production:
   <<: *default
+  username: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['username'] : ENV['SRDRPLUS_DATABASE_USERNAME'] %>
+  password: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['password'] : ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
   database: <%= ENV['SRDR_LEGACY_DATABASE_SCHEMA'] %>
 
 # DB Snapshot for recovery purposes.
 recovery:
   <<: *default
+  username: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['username'] : ENV['SRDRPLUS_DATABASE_USERNAME'] %>
+  password: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['password'] : ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
   database: <%= ENV['SRDRPLUS_DATABASE_RECOVERY_SCHEMA'] %>

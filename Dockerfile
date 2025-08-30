@@ -1,43 +1,39 @@
-FROM ruby:3.1.2-alpine
+FROM ruby:3.4
 
-ENV BUNDLER_VERSION=2.3.15
+ENV BUNDLER_VERSION=2.6.8 \
+      LOGGER_VERSION=1.7.0
 
-RUN apk add --update --no-cache \
-      binutils-gold \
-      build-base \
-      curl \
-      file \
-      g++ \
-      gcc \
-      git \
-      less \
-      libstdc++ \
-      libffi-dev \
-      libc-dev \
-      linux-headers \
+RUN apt-get update -qq && apt-get install -y curl
+
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+
+RUN apt-get install -y nodejs \
+    && npm install --global yarn
+
+RUN apt-get update -qq && apt-get install -y \
+      build-essential \
+      libmariadb-dev \
+      libmariadb-dev-compat \
       libxml2-dev \
-      libxslt-dev \
-      libgcrypt-dev \
-      make \
-      mariadb-dev \
-      mysql-client \
-      netcat-openbsd \
-      nodejs \
-      openssl \
-      pkgconfig \
-      python3 \
+      libxslt1-dev \
+      libffi-dev \
+      git \
+      libssl-dev \
+      pkg-config \
       tzdata \
-      yarn
+      && rm -rf /var/lib/apt/lists/*
 
-RUN gem install bundler -v 2.3.15
+RUN gem install logger -v ${LOGGER_VERSION} --no-document \
+      && gem install bundler -v ${BUNDLER_VERSION} --no-document
 
 WORKDIR /app
 
 COPY Gemfile Gemfile.lock ./
 
-RUN bundle config build.nokogiri --use-system-libraries
+RUN bundle config set force_ruby_platform true \
+      && bundle config build.nokogiri --use-system-libraries
 
-RUN bundle install
+RUN bundle install --jobs 4 --retry 3
 
 COPY . ./
 

@@ -154,7 +154,7 @@ class CitationsProject < ApplicationRecord
 
     extraction_objects = extractions.map do |extraction|
       {
-        user: extraction.user&.handle,
+        user: extraction.user&.handle || '',
         consolidated: extraction.consolidated,
         created_at: extraction.created_at,
         approved_on: extraction.approved_on,

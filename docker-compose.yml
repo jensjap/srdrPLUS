@@ -1,64 +1,58 @@
-version: '2.2'
-
 services:
-  #setup:
-  #  image: elasticsearch:8.2.3
-  #  volumes:
-  #    - certs:/usr/share/elasticsearch/config/certs
-  #  user: "0"
-  #  command: >
-  #    bash -c '
-  #      if [ ! -f config/certs/ca.zip ]; then
-  #        echo "Creating CA";
-  #        bin/elasticsearch-certutil ca --silent --pem -out config/certs/ca.zip;
-  #        unzip config/certs/ca.zip -d config/certs;
-  #      fi;
-  #      if [ ! -f config/certs/certs.zip ]; then
-  #        echo "Creating certs";
-  #        echo -ne \
-  #        "instances:\n"\
-  #        "  - name: elasticsearch\n"\
-  #        "    dns:\n"\
-  #        "      - elasticsearch\n"\
-  #        "      - localhost\n"\
-  #        "    ip:\n"\
-  #        "      - 127.0.0.1\n"\
-  #        > config/certs/instances.yml;
-  #        bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
-  #        unzip config/certs/certs.zip -d config/certs;
-  #      fi;
-  #      echo "Setting file permissions"
-  #      chown -R root:root config/certs;
-  #      find . -type d -exec chmod 750 \{\} \;;
-  #      find . -type f -exec chmod 640 \{\} \;;
-  #      echo "Waiting for Elasticsearch availability";
-  #      until curl -s --cacert config/certs/ca/ca.crt https://elasticsearch:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
-  #      echo "All done!";
-  #    '
-  #  healthcheck:
-  #    test:
-  #      [
-  #        "CMD-SHELL",
-  #        "[ -f config/certs/elasticsearch/elasticsearch.crt ]"
-  #      ]
-  #    interval: 1s
-  #    timeout: 5s
-  #    retries: 120
+  setup:
+    image: elasticsearch:9.1.2
+    volumes:
+      - certs:/usr/share/elasticsearch/config/certs
+    user: "0"
+    command: >
+      bash -c '
+        if [ ! -f config/certs/ca.zip ]; then
+          echo "Creating CA";
+          bin/elasticsearch-certutil ca --silent --pem -out config/certs/ca.zip;
+          unzip config/certs/ca.zip -d config/certs;
+        fi;
+        if [ ! -f config/certs/certs.zip ]; then
+          echo "Creating certs";
+          echo -ne \
+          "instances:\n"\
+          "  - name: elasticsearch\n"\
+          "    dns:\n"\
+          "      - elasticsearch\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          > config/certs/instances.yml;
+          bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
+          unzip config/certs/certs.zip -d config/certs;
+        fi;
+        echo "Setting file permissions"
+        chown -R root:root config/certs;
+        find . -type d -exec chmod 750 \{\} \;;
+        find . -type f -exec chmod 640 \{\} \;;
+        echo "Waiting for Elasticsearch availability";
+        until curl -s --cacert config/certs/ca/ca.crt https://elasticsearch:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
+        echo "All done!";
+      '
+    healthcheck:
+      test: [ "CMD-SHELL", "[ -f config/certs/elasticsearch/elasticsearch.crt ]" ]
+      interval: 1s
+      timeout: 5s
+      retries: 120
 
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    #depends_on:
-    #  - database
-    #  - redis
+    depends_on:
+      - database
+      - redis
     ports:
       - "3000:3000"
     volumes:
       - .:/app
-      - gem_cache:/usr/local/bundle/gems
+      - gem_cache:/usr/local/bundle
       - node_modules:/app/node_modules
-    #  - certs:/app/certs
+      - certs:/app/certs
     env_file:
       - docker.env
       - private.env
@@ -67,35 +61,37 @@ services:
     stdin_open: true
     tty: true
 
-  #database:
-  #  image: mysql:8.0.23
-  #  volumes:
-  #    - db_data:/var/lib/mysql
-  #  env_file:
-  #    - docker.env
-  #    - private.env
-  #  security_opt:
-  #    - seccomp:unconfined
+  database:
+    image: mysql:8.0.23
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    env_file:
+      - docker.env
+      - private.env
+    security_opt:
+      - seccomp:unconfined
 
-  #redis:
-  #  image: redis:7
+  redis:
+    image: redis:7
 
-  #elasticsearch:
-  #  image: elasticsearch:8.2.3
-  #  volumes:
-  #    - esdata:/usr/share/elasticsearch/data
-  #    - certs:/usr/share/elasticsearch/config/certs
-  #  depends_on:
-  #    setup:
-  #      condition: service_healthy
-  #  environment:
-  #    discovery.type: single-node
-  #    ELASTIC_PASSWORD: password
-  #    xpack.security.http.ssl.enabled: "true"
-  #    xpack.security.http.ssl.key: certs/elasticsearch/elasticsearch.key
-  #    xpack.security.http.ssl.certificate: certs/elasticsearch/elasticsearch.crt
-  #    xpack.security.http.ssl.certificate_authorities: certs/ca/ca.crt
-  #    xpack.security.http.ssl.verification_mode: certificate
+  elasticsearch:
+    image: elasticsearch:9.1.2
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+      - certs:/usr/share/elasticsearch/config/certs
+    depends_on:
+      setup:
+        condition: service_healthy
+    environment:
+      discovery.type: single-node
+      ELASTIC_PASSWORD: password
+      xpack.security.http.ssl.enabled: "true"
+      xpack.security.http.ssl.key: certs/elasticsearch/elasticsearch.key
+      xpack.security.http.ssl.certificate: certs/elasticsearch/elasticsearch.crt
+      xpack.security.http.ssl.certificate_authorities: certs/ca/ca.crt
+      xpack.security.http.ssl.verification_mode: certificate
 
   sidekiq:
     build:
@@ -103,14 +99,15 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - app
-      #- database
-      #- elasticsearch
-      #- redis
+      - database
+      - elasticsearch
+      - redis
+      - mailcatcher
     volumes:
       - .:/app
-      - gem_cache:/usr/local/bundle/gems
+      - gem_cache:/usr/local/bundle
       - node_modules:/app/node_modules
-      #- certs:/app/certs
+      - certs:/app/certs
     env_file:
       - docker.env
       - private.env
@@ -118,37 +115,17 @@ services:
       RAILS_ENV: development
     entrypoint: ./entrypoints/sidekiq-entrypoint.sh
 
-  #mailcatcher:
-  #  image: schickling/mailcatcher
-  #  ports:
-  #    - "1080:1080"  # Web interface
-  #    - "1025:1025"  # SMTP server
-  #  environment:
-  #    - MAILCATCHER_IP=0.0.0.0  # Listen on all interfaces
-
-  # nginx:
-  #   image: nginx:latest
-  #   container_name: nginx
-  #   restart: unless-stopped
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   volumes:
-  #     - ./nginx.conf:/etc/nginx/nginx.conf
-  #     - ./data/certbot/conf:/etc/letsencrypt
-  #     - ./data/certbot/www:/var/www/certbot
-
-  # certbot:
-  #   image: certbot/certbot
-  #   container_name: certbot
-  #   volumes:
-  #     - ./data/certbot/conf:/etc/letsencrypt
-  #     - ./data/certbot/www:/var/www/certbot
-  #   entrypoint: "/bin/sh -c 'trap exit term; while :; do certbot renew; sleep 12h & wait $${!}; done'"
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080" # Web interface
+      - "1025:1025" # SMTP server
+    environment:
+      - MAILCATCHER_IP=0.0.0.0 # Listen on all interfaces
 
 volumes:
   gem_cache:
-  #db_data:
+  db_data:
   node_modules:
-  #esdata:
-  #certs:
+  esdata:
+  certs:
