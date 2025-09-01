@@ -41,6 +41,13 @@ Rails.application.routes.draw do
   resources :review_types, only: %i[index create]
   resources :data_analysis_levels, only: [:index]
 
+  authenticate :user, ->(u) { u.admin? } do
+    post 'users' => 'users#create'
+    get 'users/new' => 'users#new'
+    mount Searchjoy::Engine, at: 'searchjoy'
+    mount Sidekiq::Web => '/sidekiq'
+  end
+
   devise_for :users, controllers: {
     confirmations: 'users/confirmations',
     passwords: 'users/passwords',
@@ -51,11 +58,6 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     post '/users/api_key_reset' => 'users/registrations#api_key_reset'
-  end
-
-  authenticate :user, ->(u) { u.admin? } do
-    mount Searchjoy::Engine, at: 'searchjoy'
-    mount Sidekiq::Web => '/sidekiq'
   end
 
   apipie

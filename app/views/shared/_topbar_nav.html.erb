@@ -159,6 +159,11 @@
                 </svg>
               </a>
             </div>
+            <% if current_user && current_user.admin? %>
+              <div>
+                <%= link_to "New User Form", users_new_path, class: "rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white" %>
+              </div>
+            <% end %>
             <div>
               <a
                 href="<%= edit_user_registration_path %>"
