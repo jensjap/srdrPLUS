@@ -41,7 +41,6 @@ Rails.application.routes.draw do
   resources :review_types, only: %i[index create]
   resources :data_analysis_levels, only: [:index]
 
-  devise_for :admins
   devise_for :users, controllers: {
     confirmations: 'users/confirmations',
     passwords: 'users/passwords',
