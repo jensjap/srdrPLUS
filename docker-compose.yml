@@ -123,9 +123,27 @@ services:
     environment:
       - MAILCATCHER_IP=0.0.0.0 # Listen on all interfaces
 
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadminpass
+    ports:
+      - "9000:9000"   # S3 API
+      - "9001:9001"   # Web Console
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
 volumes:
   gem_cache:
   db_data:
   node_modules:
   esdata:
   certs:
+  minio_data:
