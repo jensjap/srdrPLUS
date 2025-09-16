@@ -403,6 +403,7 @@ class AdvancedExportJob < ApplicationJob
                                                    end
 
       linked_eefpss.each do |eefps, child_eefps|
+        next if eefps.nil? || child_eefps.nil?
         extraction = eefps.extraction
         extractions_lookups[extraction.id] ||= { type1s: [] }
         eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
