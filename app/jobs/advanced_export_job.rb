@@ -404,6 +404,7 @@ class AdvancedExportJob < ApplicationJob
       linked_eefpss = linked_eefpss.select { |link_to_type1, eefps| link_to_type1 && eefps }
 
       linked_eefpss.each do |eefps, child_eefps|
+        next if eefps.nil? || child_eefps.nil?
         extraction = eefps.extraction
         next if extraction.nil?
 
