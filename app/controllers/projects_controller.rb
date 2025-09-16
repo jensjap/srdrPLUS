@@ -1,6 +1,8 @@
 class ProjectsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:export]
 
+  before_action :disable_new_project_creation, only: %i[new create]
+
   before_action :set_project, only: %i[
     citations_in_ris export_data show edit update destroy export
     export_assignments_and_mappings import_assignments_and_mappings simple_import
@@ -730,5 +732,10 @@ class ProjectsController < ApplicationController
 
   def rescope(projects, page, per)
     projects.except(:limit, :offset).page(page).per(per)
+  end
+
+  def disable_new_project_creation
+    flash[:alert] = 'New project creation has been disabled for your account. Please contact an administrator if you have questions.'
+    redirect_to projects_path
   end
 end
