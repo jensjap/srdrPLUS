@@ -1,5 +1,5 @@
 if Rails.env.production?
-  require 'faraday/aws_sigv4'
+  require 'faraday_middleware/aws_sigv4'
 
   Searchkick.client = OpenSearch::Client.new(
     url: ENV["OPENSEARCH_URL"],
