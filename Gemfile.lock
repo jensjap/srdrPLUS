@@ -198,14 +198,6 @@ GEM
       railties (>= 6.1)
     dropzonejs-rails (0.8.5)
       rails (> 3.1)
-    elasticsearch (7.13.3)
-      elasticsearch-api (= 7.13.3)
-      elasticsearch-transport (= 7.13.3)
-    elasticsearch-api (7.13.3)
-      multi_json
-    elasticsearch-transport (7.13.3)
-      faraday (~> 1)
-      multi_json
     erubi (1.12.0)
     et-orbi (1.2.11)
       tzinfo
@@ -345,6 +337,14 @@ GEM
       racc (~> 1.4)
     nokogiri (1.16.5-x86_64-linux)
       racc (~> 1.4)
+    opensearch-api (2.2.0)
+      multi_json
+    opensearch-ruby (2.1.0)
+      opensearch-api (~> 2.1)
+      opensearch-transport (~> 2.0)
+    opensearch-transport (2.1.0)
+      faraday (>= 1.0, < 3)
+      multi_json
     orm_adapter (0.5.0)
     ostruct (0.6.1)
     passenger (6.0.22)
@@ -564,7 +564,6 @@ DEPENDENCIES
   devise
   dotenv-rails
   dropzonejs-rails
-  elasticsearch (< 7.14)
   faker!
   fhir_models!
   font-awesome-rails
@@ -586,6 +585,7 @@ DEPENDENCIES
   net-ftp
   net-smtp
   nokogiri
+  opensearch-ruby (~> 2.0)
   ostruct
   passenger
   puma

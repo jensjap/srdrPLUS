@@ -44,7 +44,6 @@ gem 'country_select'
 gem 'devise'
 gem 'dotenv-rails'
 gem 'dropzonejs-rails' # Allows users to drop files to upload
-gem 'elasticsearch', '< 7.14'
 gem 'faker', github: 'faker-ruby/faker', branch: 'main'
 gem 'fhir_models', github: 'sleepwalk712/fhir_models'
 gem 'font-awesome-rails'
@@ -66,6 +65,7 @@ gem 'mysql2' # Use mysql as the database for Active Record
 gem 'net-ftp'
 gem 'net-smtp', require: false
 gem 'nokogiri'
+gem 'opensearch-ruby', '~> 2.0'
 gem 'ostruct'
 gem 'passenger'
 gem 'puma' # Use Puma as the app server
