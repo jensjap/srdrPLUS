@@ -9,7 +9,7 @@ if Rails.env.production?
   ) do |f|
     f.request :aws_sigv4,
       service: "es",
-      region: "your-aws-region",
+      region: ENV["AWS_REGION"],
       access_key_id: ENV["AWS_ACCESS_KEY_ID"],
       secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"]
     f.adapter Faraday.default_adapter
