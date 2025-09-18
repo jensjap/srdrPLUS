@@ -25,6 +25,11 @@ group :development do
   gem 'binding_of_caller'
 end
 
+group :production do
+  gem 'aws-sigv4'
+  gem 'faraday_middleware-aws-sigv4'
+end
+
 gem 'amoeba' # for things like cloning questions (extraction forms maybe?)
 gem 'apipie-rails' # Api documentation.
 gem 'autoprefixer-rails' # Use Zurb Foundation as Front-End Framework

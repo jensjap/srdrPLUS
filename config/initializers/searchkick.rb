@@ -1,5 +1,7 @@
 if Rails.env.production?
-  Searchkick.client = Elasticsearch::Client.new(
+  require 'faraday/aws_sigv4'
+
+  Searchkick.client = OpenSearch::Client.new(
     url: ENV["OPENSEARCH_URL"],
     transport_options: {
       headers: { content_type: "application/json" }
