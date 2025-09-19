@@ -2,10 +2,10 @@ class ProjectsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:export]
 
   before_action :set_project, only: %i[
-    citations_in_ris export_data show edit update destroy export
+    citations_in_ris show edit update destroy export
     export_assignments_and_mappings import_assignments_and_mappings simple_import
     import_csv import_pubmed import_endnote import_ris
-    confirm_deletion dedupe_citations create_citation_screening_extraction_form
+    dedupe_citations create_citation_screening_extraction_form
     create_full_text_screening_extraction_form machine_learning_results
   ]
 
@@ -164,7 +164,7 @@ class ProjectsController < ApplicationController
   end
 
   def export
-    authenticate_user! unless export_type_name_params == '.xlsx' || export_type_name_params == '.xlsx legacy'
+    authenticate_user! unless ['.xlsx', '.xlsx legacy'].include?(export_type_name_params)
 
     email = params[:email]
     authenticate_user! unless current_user || ((email =~ URI::MailTo::EMAIL_REGEXP) == 0)

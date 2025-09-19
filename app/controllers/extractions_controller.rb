@@ -2,13 +2,13 @@ class ExtractionsController < ApplicationController
   include ExtractionsControllerHelpers
 
   before_action :set_project,
-                only: %i[index new create comparison_tool compare consolidate edit_type1_across_extractions]
+                only: %i[index new create comparison_tool consolidate edit_type1_across_extractions]
   before_action :set_extraction, only: %i[show edit update destroy work update_kqp_selections reassign_extraction]
   before_action :set_extractions, only: %i[consolidate]
   before_action :ensure_extraction_form_structure, only: %i[consolidate work]
   before_action :set_eefps_by_efps_dict, only: [:work]
 
-  before_action :skip_policy_scope, except: %i[compare consolidate edit_type1_across_extractions]
+  before_action :skip_policy_scope, except: %i[consolidate edit_type1_across_extractions]
   before_action :skip_authorization, only: %i[index show]
 
   # GET /projects/1/extractions

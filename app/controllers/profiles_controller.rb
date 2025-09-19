@@ -1,5 +1,6 @@
 class ProfilesController < ApplicationController
-  before_action :set_profile, :skip_policy_scope, only: %i[show edit update destroy read_storage set_storage toggle_labels_visibility get_labels_visibility]
+  before_action :set_profile, :skip_policy_scope,
+                only: %i[show edit update read_storage set_storage toggle_labels_visibility get_labels_visibility]
   before_action :call_authorize
 
   # GET /profile
@@ -31,7 +32,7 @@ class ProfilesController < ApplicationController
   def read_storage
     begin
       JSON.parse(@profile.storage)
-    rescue StandardError => e
+    rescue StandardError
       @profile.update(storage: {}.to_json)
     end
     render json: @profile.storage, status: 200
@@ -40,7 +41,7 @@ class ProfilesController < ApplicationController
   def set_storage
     begin
       old_storage = JSON.parse(@profile.storage)
-    rescue StandardError => e
+    rescue StandardError
       old_storage = {}
     end
 
