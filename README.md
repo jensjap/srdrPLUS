@@ -1,5 +1,19 @@
 # README
 
+## Running locally containerized
+
+* Ensure environmental variables are set in docker.env
+
+* When running first time or if changes to Dockerfile are made use --build switch
+
+  ```
+  docker compose -f docker-compose.dev.yml up --build
+  ```
+
+* If you do not require mailcatcher or you have your own mailserver on production you can comment out the mailcatcher service within docker-compose.dev.yml
+
+
+
 ## Running locally non-containerized. (See Docker instructions at the end)
 * Ruby version
   * 3.1.2
@@ -107,15 +121,3 @@
   ```
   bundle exec rails add_quality_dimensions
   ```
-
-## Running locally containerized
-
-* Ensure environmental variables are set in docker.env
-
-* When running first time or if changes to Dockerfile are made use --build switch
-
-  ```
-  docker compose up --build
-  ```
-
-* If you do not require mailcatcher or you have your own mailserver on production you can comment out the mailcatcher service within docker-compose.yml
