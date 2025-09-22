@@ -6,6 +6,8 @@ class AbstractScreeningsController < ApplicationController
   before_action :set_abstract_screening, only: %i[update_word_weight screen]
   after_action :verify_authorized
 
+  before_action :disable_screening, only: %i[screen]
+
   def new
     @abstract_screening = @project.abstract_screenings.new(abstract_screening_type: 'double-perpetual')
     authorize(@abstract_screening)
@@ -306,5 +308,10 @@ class AbstractScreeningsController < ApplicationController
 
   def set_project
     @project = Project.find(params[:project_id])
+  end
+
+  def disable_screening
+    flash[:alert] = 'Screening has been disabled. Please contact an administrator if you have questions.'
+    redirect_to project_abstract_screenings_path(@abstract_screening.project)
   end
 end

@@ -5,6 +5,8 @@ class FulltextScreeningsController < ApplicationController
   before_action :set_fulltext_screening, only: %i[screen]
   after_action :verify_authorized
 
+  before_action :disable_screening, only: %i[screen]
+
   def new
     @fulltext_screening = @project.fulltext_screenings.new(fulltext_screening_type: 'double-perpetual')
     authorize(@fulltext_screening)
@@ -203,5 +205,10 @@ class FulltextScreeningsController < ApplicationController
 
   def set_project
     @project = Project.find(params[:project_id])
+  end
+
+  def disable_screening
+    flash[:alert] = 'Screening has been disabled. Please contact an administrator if you have questions.'
+    redirect_to project_fulltext_screenings_path(@fulltext_screening.project)
   end
 end

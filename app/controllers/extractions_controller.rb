@@ -11,6 +11,8 @@ class ExtractionsController < ApplicationController
   before_action :skip_policy_scope, except: %i[compare consolidate edit_type1_across_extractions]
   before_action :skip_authorization, only: %i[index show]
 
+  before_action :disable_data_entry, only: %i[work]
+
   # GET /projects/1/extractions
   # GET /projects/1/extractions.json
   def index
@@ -488,5 +490,10 @@ class ExtractionsController < ApplicationController
                                    extraction_forms_projects.
                                    includes(:extraction_form).
                                    reject { |efp| efp.extraction_forms_project_type_id.eql?(3) }
+  end
+
+  def disable_data_entry
+    flash[:alert] = 'Data entry has been disabled. Please contact an administrator if you have questions.'
+    redirect_to project_extractions_path(@extraction.project)
   end
 end
