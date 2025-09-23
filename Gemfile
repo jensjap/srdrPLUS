@@ -70,7 +70,7 @@ gem 'mysql2' # Use mysql as the database for Active Record
 gem 'net-ftp'
 gem 'net-smtp', require: false
 gem 'nokogiri'
-gem 'opensearch-ruby', '~> 2.0'
+gem 'opensearch-ruby'
 gem 'ostruct'
 gem 'passenger'
 gem 'puma' # Use Puma as the app server
