@@ -311,7 +311,7 @@ class AbstractScreeningsController < ApplicationController
   end
 
   def disable_screening
-    flash[:alert] = 'Screening has been disabled. Please contact an administrator if you have questions.'
+    flash[:alert] = 'Screening has been disabled. Please refer to the sunset message found on the homepage.'
     redirect_to project_abstract_screenings_path(@abstract_screening.project)
   end
 end

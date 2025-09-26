@@ -735,7 +735,7 @@ class ProjectsController < ApplicationController
   end
 
   def disable_new_project_creation
-    flash[:alert] = 'New project creation has been disabled for your account. Please contact an administrator if you have questions.'
+    flash[:alert] = 'New project creation has been disabled for your account. Please refer to the sunset message found on the homepage.'
     redirect_to projects_path
   end
 end

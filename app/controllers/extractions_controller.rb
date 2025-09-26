@@ -493,7 +493,7 @@ class ExtractionsController < ApplicationController
   end
 
   def disable_data_entry
-    flash[:alert] = 'Data entry has been disabled. Please contact an administrator if you have questions.'
+    flash[:alert] = 'Data entry has been disabled. Please refer to the sunset message found on the homepage.'
     redirect_to project_extractions_path(@extraction.project)
   end
 end
