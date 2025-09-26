@@ -94,7 +94,6 @@ gem 'sentry-sidekiq' # full-stack error tracking system
 gem 'sidekiq' # Background jobs.
 gem 'sidekiq-cron' # Allows periodic background jobs
 gem 'simple_form'
-gem 'slim-rails'
 gem 'sortable-rails' # List reordering, Drag & Drop.
 gem 'tailwindcss-rails'
 gem 'toastr_rails'

@@ -467,13 +467,6 @@ GEM
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
     simpleidn (0.2.3)
-    slim (5.2.1)
-      temple (~> 0.10.0)
-      tilt (>= 2.1.0)
-    slim-rails (3.6.3)
-      actionpack (>= 3.1)
-      railties (>= 3.1)
-      slim (>= 3.0, < 6.0, != 5.0.0)
     sortable-rails (1.7.0)
     spring (4.2.1)
     spring-watcher-listen (2.1.0)
@@ -497,7 +490,6 @@ GEM
       railties (>= 7.0.0)
     tailwindcss-rails (2.6.0-x86_64-linux)
       railties (>= 7.0.0)
-    temple (0.10.3)
     thor (1.3.1)
     tilt (2.3.0)
     time (0.3.0)
@@ -607,7 +599,6 @@ DEPENDENCIES
   sidekiq-cron
   simple_form
   simplecov
-  slim-rails
   sortable-rails
   spring
   spring-watcher-listen
