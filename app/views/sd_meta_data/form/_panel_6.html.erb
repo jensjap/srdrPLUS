@@ -1,0 +1,57 @@
+<div id="panel-6" class="tabs-panel is-active">
+  <fieldset>
+    <div style="display:flex; flex-direction: row;">
+      <legend>Search Strategy and Results of Screening</legend>
+      <div class="status-switch" id="6-yes-no-section" class="<%= @sd_meta_datum.section_flag_6 ? 'completed' : 'draft' %>" data-sd_meta_datum_id="<%= @sd_meta_datum.id %>">
+        <span class="status-label">
+          <% if @sd_meta_datum.section_flag_6 %>
+            Completed
+          <% else %>
+            Draft
+          <% end %>
+        </span>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Search Strategies</label>
+        <div class="cocoon-container search-strategy-list">
+          <%= render 'sd_meta_data/form/nested_associations/search_strategy_list', sd_meta_datum: @sd_meta_datum, url: @url %>
+        </div>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Grey Literature Searches</label>
+        <div class="cocoon-container grey-literature-list">
+          <%= render 'sd_meta_data/form/nested_associations/grey_literature_list', sd_meta_datum: @sd_meta_datum, url: @url %>
+        </div>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>PRISMA / Literature Flow Diagrams</label>
+        <div class="cocoon-container prisma-list">
+          <%= render 'sd_meta_data/form/nested_associations/prisma_list', sd_meta_datum: @sd_meta_datum, url: @url %>
+        </div>
+      </div>
+    </div>
+    <!--
+    <fieldset>
+      <legend>Section Review & Validation</legend>
+      <div data-row-span="1">
+        <div data-field-span="1">
+          <div>Section Finished?</div>
+          <div class="switch">
+            <input class="switch-input" id="6-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="<%= @sd_meta_datum.id %>">
+            <label class="switch-paddle" for="6-yes-no-section">
+              <span class="switch-active" aria-hidden="true">Yes</span>
+              <span class="switch-inactive" aria-hidden="true">No</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+    -->
+  </fieldset>
+</div>

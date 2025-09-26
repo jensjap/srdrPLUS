@@ -1,0 +1,71 @@
+<% section_name = efps.section.name.titleize.singularize %>
+<h4>List of Suggested <%= section_name %>s</h4>
+<div class="table-scroll">
+  <table id="efp-type1-list" class="hover" style="width: 99%;">
+    <col style="width: 1%">
+    <% if section_name.eql?('Outcome') %>
+      <col>
+    <% end %>
+    <col>
+    <col>
+    <% if section_name.eql?('Outcome') %>
+      <col>
+    <% end %>
+    <col>
+    <col>
+    <thead>
+      <tr>
+        <th style="min-width: 0; width: 10px;"></th>
+        <% if section_name.eql?('Outcome') %>
+          <th>Type</th>
+        <% end %>
+        <th><%= section_name.eql?('Outcome') ? 'Domain' : 'Name' %></th>
+        <th><%= section_name.eql?('Outcome') ? 'Specific measurement (i.e., tool/definition/specific outcome)' : 'Description' %></th>
+        <% if section_name.eql?('Outcome') %>
+          <th>Timepoint(s)</th>
+        <% end %>
+        <th><%= section_name %> Specific Instructions by Lead</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody class="orderable-list" orderable-url="<%= update_positions_api_v1_orderings_url %>">
+      <% efps.extraction_forms_projects_sections_type1s_without_total_arm.each do |efpst1| %>
+        <tr class="orderable-item" table="extraction_forms_projects_sections_type1s" position="<%= efpst1.pos %>" ordering-id="<%= efpst1.id %>">
+          <td class="sort-handle" style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;">
+            <i class="fa fa-arrows"></i>
+          </td>
+          <% if section_name.eql?('Outcome') %>
+            <td><%= efpst1.type1_type.try(:name) %></td>
+          <% end %>
+          <td><%= efpst1.type1.name %></td>
+          <td style="white-space: pre-wrap"><%= efpst1.type1.description %></td>
+          <% if section_name.eql?('Outcome') %>
+            <td>
+              <% if efpst1.timepoint_names.present? %>
+                <ul>
+                  <% efpst1.timepoint_names.each do |tn| %>
+                    <li><%= tn.pretty_print_export_header %></li>
+                  <% end %>
+                </ul>
+              <% end %>
+            </td>
+          <% end %>
+          <td class="text-red-500"><%= efpst1.instructions %></td>
+          <td>
+            <div class="utilities">
+              <%= link_to edit_extraction_forms_projects_sections_type1_path(efpst1) do %>
+                <i class="fi-pencil"></i>
+                <%= t('edit') %>
+              <% end %>
+              <% delete_url = extraction_forms_projects_section_dissociate_type1_path(efps, type1_id: efpst1.type1_id) %>
+              <a href="#" onclick="$store.sharedExtractionStore.openModal('<%= delete_url %>', 'Are you sure?');">
+                <i class="fi-trash"></i>
+                <%= t('remove') %>
+              </a>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,50 @@
+<div class="mx-8">
+  <h1 class="text-base font-bold">Set Dependencies</h1>
+  <h2 class="!text-sm"><%= @question.pos %>. <%= @question.name %></h2>
+  <% @other_extraction_forms_projects_section_questions.each_with_index do |q, idx| %>
+    <!-- if @question.pos > q.pos -->
+    <div class="card">
+      <div class="card-divider">
+        <h4 class="!text-sm"><%= (idx + 1).to_s %>. <%= q.name %></h4>
+        <h5 class="!text-xs">Description: <%= q.description %></h5>
+      </div>
+      <div class="card-section">
+        <div class="table-scroll">
+          <div id="step-two">
+            <table class="hover dependency-table" style="width: inherit !important;">
+              <thead>
+                <tr>
+                  <th></th>
+                  <% q.question_rows.first.question_row_columns.each do |qrc| %>
+                    <th style="font-weight: normal;"><%= qrc.name %></th>
+                  <% end %>
+                </tr>
+              </thead>
+              <tbody>
+                <% q.question_rows.each do |qr| %>
+                  <tr>
+                    <td><%= qr.name %></td>
+                    <% qr.question_row_columns.each do |qrc| %>
+                      <td>
+                        <!-- Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi. -->
+                        <% if [5, 6, 7, 8, 9].include? qrc.question_row_column_type_id %>
+                          <% qrc.question_row_columns_question_row_column_options.where(question_row_column_option_id: 1).each do |qrcqrco| %>
+                            <%= qrcqrco.name %>
+                            <%= render 'question_row_column_fields', prerequisitable: qrcqrco %>
+                          <% end %>
+                        <!-- Text, Numeric, Numeric_Range, Scientific. -->
+                        <% else %>
+                          <%= render 'question_row_column_fields', prerequisitable: qrc %>
+                        <% end %>
+                      </td>
+                    <% end %>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

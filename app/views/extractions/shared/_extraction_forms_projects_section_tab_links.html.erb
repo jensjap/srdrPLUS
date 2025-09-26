@@ -1,0 +1,32 @@
+<ul class="tabs vertical" id="extraction-forms-projects-<%= efp.id %>-vertical-tabs">
+  <li class="tabs-title" style="<%= @panel_tab_id == 'keyquestions' ? 'background: lightgray;' : '' %>">
+    <%= link_to 'Key Questions',
+      action_name.eql?("consolidate") ?
+        request.original_url.gsub(/&panel-tab=[0-9]+$|&panel-tab=keyquestions$/, '') + "&panel-tab=keyquestions" :
+        "?panel-tab=keyquestions",
+      title: "Key Questions" %>
+  </li>
+  <% efp.extraction_forms_projects_sections.includes(:section).reject { |efps| efps.hidden }.each do |efps| %>
+    <% section_name = efps.section.name %>
+    <% extraction = @extraction || @consolidated_extraction %>
+    <% eefps_id = efps.extractions_extraction_forms_projects_sections.where(extraction_id: extraction.id).first.try(:id) %>
+    <% request_original_url = request.original_url.gsub(/&panel-tab=[0-9]+$|&panel-tab=keyquestions$/, '') %>
+    <% efps_link_url = (action_name.eql?("consolidate") ? (request_original_url + "&panel-tab=#{efps.id}") : ("?panel-tab=#{efps.id}")) %>
+    <% completed = Statusing.find_by(statusable_id: eefps_id).try(:status).try(:name) == 'Completed' %>
+    <% if @panel_tab_id == efps.id.to_s %>
+      <li class="tabs-title" style="background: lightgray;">
+        <%= link_to section_name,
+          efps_link_url,
+          title: section_name,
+          class: "tab-title-#{eefps_id} #{completed ? 'green bold checkmarked' : ''}" %>
+      </li>
+    <% else %>
+      <li class="tabs-title">
+        <%= link_to section_name,
+          efps_link_url,
+          title: section_name,
+          class: "tab-title-#{eefps_id} #{completed ? 'green bold checkmarked' : ''}" %>
+      </li>
+    <% end %>
+  <% end %>
+</ul>

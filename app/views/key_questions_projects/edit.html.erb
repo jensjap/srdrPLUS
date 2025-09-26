@@ -1,0 +1,11 @@
+<div class="column row">
+  <h2>Edit Key Question: <%= @key_questions_project.key_question.name %></h2>
+</div>
+<div class="column row">
+  <%= simple_form_for(@key_questions_project, html: { 'abide': '', 'live-validate': true }) do |f| %>
+    <%= render 'form', f: f %>
+  <% end %>
+</div>
+<div class="column row">
+  <%= link_to 'Back', edit_project_path(@key_questions_project.project, page: 'key_questions') %>
+</div>

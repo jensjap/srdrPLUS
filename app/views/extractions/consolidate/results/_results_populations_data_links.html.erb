@@ -1,0 +1,33 @@
+<h6>consolidated extraction links</h6>
+<table class="unstriped">
+  <tbody>
+    <tr>
+      <td style='border: 1px solid lightgrey;'>
+        <%= link_to "#{eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.short_name_and_description}::#{eefpst1r.population_name.name}: Measured Values",
+          consolidate_result_statistic_section_path(
+            eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Descriptive Statistics')).first,
+            extraction_ids: @extractions.map(&:id)) %>
+      </td>
+      <td style='border: 1px solid lightgrey;'>
+        <%= link_to "#{eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.short_name_and_description}::#{eefpst1r.population_name.name}: Between-arm comparisons",
+          consolidate_result_statistic_section_path(
+            eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Between Arm Comparisons')).first,
+            extraction_ids: @extractions.map(&:id)) %>
+      </td>
+    </tr>
+    <tr>
+      <td style='border: 1px solid lightgrey;'>
+        <%= link_to "#{eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.short_name_and_description}::#{eefpst1r.population_name.name}: Within-arm changes",
+          consolidate_result_statistic_section_path(
+            eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'Within Arm Comparisons')).first,
+            extraction_ids: @extractions.map(&:id)) %>
+      </td>
+      <td style='border: 1px solid lightgrey;'>
+        <%= link_to "#{eefpst1r.extractions_extraction_forms_projects_sections_type1.type1.short_name_and_description}::#{eefpst1r.population_name.name}: Net Differences",
+          consolidate_result_statistic_section_path(
+            eefpst1r.result_statistic_sections.where(result_statistic_section_type: ResultStatisticSectionType.find_by(name: 'NET Change')).first,
+            extraction_ids: @extractions.map(&:id)) %>
+      </td>
+    </tr>
+  </tbody>
+</table>

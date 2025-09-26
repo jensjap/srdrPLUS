@@ -1,0 +1,40 @@
+<div id="panel-4" class="tabs-panel is-active">
+  <fieldset>
+    <div style="display:flex; flex-direction: row;">
+      <legend>PICODTS</legend>
+      <div class="status-switch" id="4-yes-no-section" class="<%= @sd_meta_datum.section_flag_4 ? 'completed' : 'draft' %>" data-sd_meta_datum_id="<%= @sd_meta_datum.id %>">
+        <span class="status-label">
+          <% if @sd_meta_datum.section_flag_4 %>
+            Completed
+          <% else %>
+            Draft
+          <% end %>
+        </span>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <div class="cocoon-container picod-list">
+          <%= render 'sd_meta_data/form/nested_associations/picod_list', sd_meta_datum: @sd_meta_datum, url: @url %>
+        </div>
+      </div>
+    </div>
+    <!--
+    <fieldset>
+      <legend>Section Review & Validation</legend>
+      <div data-row-span="1">
+        <div data-field-span="1">
+          <div>Section Finished?</div>
+          <div class="switch">
+            <input class="switch-input" id="4-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="<%= @sd_meta_datum.id %>">
+            <label class="switch-paddle" for="4-yes-no-section">
+              <span class="switch-active" aria-hidden="true">Yes</span>
+              <span class="switch-inactive" aria-hidden="true">No</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+    -->
+  </fieldset>
+</div>

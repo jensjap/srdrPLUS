@@ -1,0 +1,16 @@
+<%= simple_form_for([@extraction_forms_projects_section, @type1], html: { data: { 'abide': '', 'live-validate': true } }) do |f| %>
+  <%= f.error_notification %>
+  <div class="alert callout" data-abide-error style="display: none;">
+    <p>
+      <i class="fi-alert"></i>
+      Please correct the errors below.
+    </p>
+  </div>
+  <div class="form-inputs">
+    <%= f.input :name, label: "#{@type1.extraction_forms_projects_section.section.name.titleize} Title", autofocus: true %>
+    <%= f.input :description, input_html: { rows: 8 } %>
+  </div>
+  <div class="form-actions">
+    <%= f.button :submit, 'Save Title' %>
+  </div>
+<% end %>

@@ -1,0 +1,70 @@
+<div class="nested-fields citation-fields added-item">
+  <div class="citation-inputs">
+    <%= f.simple_fields_for :citation, Citation.new do |citation_fields| %>
+      <div class="accession-number">
+        Accession Number (e.g. PubMed ID)
+        <span data-tooltip="" tabindex="1" title="e.g. Pubmed ID, Cochrane, MBASE, etc.">&nbsp;<i class="fi-info"></i></span>
+        <%= citation_fields.input :accession_number, label: false, required: false, input_html: { class: 'accession-number-lookup-field' } %>
+        <div class="pmid-checkbox">
+          <a class="is-pmid" style="display: inline-block;">Fetch from Pubmed</a>
+        </div>
+      </div>
+      <%= citation_fields.input :authors, placeholder: 'Author name(s)', required: true, label: 'Authors', wrapper_html: { class: "citation-authors" } %>
+      <%= citation_fields.input :name, placeholder: 'New Citation', label: 'Title', required: true, wrapper_html: { class: "citation-name" } %>
+      <%= citation_fields.input :abstract, as: :text, placeholder: 'Abstract goes here', required: false, wrapper_html: { class: "citation-abstract" } %>
+      <%= citation_fields.association :citation_type, label: 'Citation Type', selected: 1 %>
+      <br>
+      <div class="grid-x">
+        <%= citation_fields.simple_fields_for :journal_attributes do |j_f| %>
+          <div class="small-12">
+            <h5>Journal</h5>
+          </div>
+          <div class="small-12">
+            <%= j_f.input :name, label: "Name", required: false, wrapper_html: { class: "journal-name" } %>
+          </div>
+          <div class="small-4">
+            <%= j_f.input :volume, label: "Volume", required: false, wrapper_html: { class: "journal-volume" } %>
+          </div>
+          <div class="small-4">
+            <%= j_f.input :issue, label: "Issue", required: false, wrapper_html: { class: "journal-issue" } %>
+          </div>
+          <div class="small-4">
+            <%= j_f.input :publication_date, label: "Pub Year", required: false, wrapper_html: { class: "journal-year" } %>
+          </div>
+        <% end %>
+      </div>
+      <div class="grid-x">
+        <div class="small-12">
+          <h6>Page Numbers</h6>
+        </div>
+        <div class="small-6">
+          <%= citation_fields.input :page_number_start, label: false, required: false, wrapper_html: { class: "page-number-start" } %>
+        </div>
+        <div class="small-6">
+          <%= citation_fields.input :page_number_end, label: false, required: false, wrapper_html: { class: "page-number-end" } %>
+        </div>
+        <div class="small-12" style="margin-top: 20px;">
+          <h5>System Numbers</h5>
+        </div>
+        <div class="small-12">
+          <%= citation_fields.input :pmid, label: 'Pubmed ID', input_html: { class: 'input-citation-pmid' } %>
+        </div>
+        <div class="small-12">
+          <%= f.input :refman, label: 'Reference Manager ID' %>
+          <%= f.input :other_reference, label: 'Other Reference ID' %>
+        </div>
+        <div class="small-12">
+          <%= citation_fields.input :registry_number, label: 'Registry Number' %>
+        </div>
+        <div class="small-12">
+          <%= citation_fields.input :doi, label: 'DOI' %>
+        </div>
+      </div>
+      <br>
+      <div class="buttons-row m-10">
+        <span class="save-citation button success small">Save</span>
+        <%= link_to_remove_association 'Cancel', f, class: 'button alert small cancel-button' %>
+      </div>
+    <% end %>
+  </div>
+</div>

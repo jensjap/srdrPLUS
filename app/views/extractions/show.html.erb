@@ -1,0 +1,19 @@
+<div class="column row">
+  <div class="title-heading">
+    <h2>Extraction Information</h2>
+    <%= link_to 'Edit', edit_extraction_path(@extraction) %>
+  </div>
+</div>
+<div class="column row">
+  <dl>
+    <dt class="label primary">Study</dt>
+    <dd class="callout secondary"><%= @extraction.citation.name %></dd>
+  </dl>
+</div>
+<div class="column row">
+  <dl>
+    <dt class="label primary">Users</dt>
+    <dd class="callout secondary"><%= @extraction.user.handle %></dd>
+  </dl>
+</div>
+<%= link_to 'Back', project_extractions_path(@extraction.project) %>

@@ -1,0 +1,346 @@
+<div id="panel-8" class="tabs-panel is-active">
+  <fieldset>
+    <legend>Results for Individual Outcomes</legend>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Results by Key Questions</label>
+        <% if @sd_meta_datum.sd_result_items.empty? %>
+          <div>-----</div>
+        <% else %>
+          <% @sd_meta_datum.sd_result_items.each do |result_item| %>
+            <div class="sd-show-inner">
+              <!-- Key Question -->
+              <div data-row-span="1">
+                <div data-field-span="1">
+                  <label>Key Question</label>
+                  <% if !result_item.sd_key_question.present? %>
+                    <div>-----</div>
+                  <% else %>
+                    <div><%= result_item.sd_key_question.key_question&.name || "-----" %></div>
+                  <% end %>
+                </div>
+              </div>
+              <!-- Narrative Results by Outcome(s) -->
+              <div data-row-span="1">
+                <div data-field-span="1">
+                  <label>Narrative Results by Outcome(s)</label>
+                  <% if result_item.sd_narrative_results.empty? %>
+                    <div>-----</div>
+                  <% else %>
+                    <% result_item.sd_narrative_results.each do |narr| %>
+                      <div class="sd-show-inner">
+                        <div data-row-span="1">
+                          <div data-field-span="1">
+                            <label>Outcome(s)</label>
+                            <% sd_outcome_names = narr.sd_outcome_names %>
+                            <% if sd_outcome_names.present? %>
+                              <ol>
+                                <% sd_outcome_names.each do |sd_outcome_name| %>
+                                  <li><%= sd_outcome_name %></li>
+                                <% end %>
+                              </ol>
+                            <% end %>
+                          </div>
+                        </div>
+                        <div data-row-span="1">
+                          <div data-field-span="1">
+                            <label>Narrative Results (Overall)</label>
+                            <div><%= narr.narrative_results.present? ? simple_format(narr.narrative_results) : '-----' %></div>
+                          </div>
+                        </div>
+                        <div data-row-span="1">
+                          <div data-field-span="1">
+                            <label>Narrative Results by Population Subgroup</label>
+                            <div><%= narr.narrative_results_by_population.present? ? simple_format(narr.narrative_results_by_population) : '-----' %></div>
+                          </div>
+                        </div>
+                        <div data-row-span="1">
+                          <div data-field-span="1">
+                            <label>Narrative Results by Intervention Subgroup</label>
+                            <div><%= narr.narrative_results_by_intervention.present? ? simple_format(narr.narrative_results_by_intervention) : '-----' %></div>
+                          </div>
+                        </div>
+                      </div>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+              <!-- Evidence Tables by Outcome(s) -->
+              <div data-row-span="1">
+                <div data-field-span="1">
+                  <label>Evidence Tables by Outcome(s)</label>
+                  <% if result_item.sd_evidence_tables.empty? %>
+                    <div>-----</div>
+                  <% else %>
+                    <div class="sd-show-inner">
+                      <% result_item.sd_evidence_tables.each do |sd_evidence_table| %>
+                        <div data-row-span="1">
+                          <div data-field-span="1">
+                            <label>Outcome(s)</label>
+                            <% sd_outcome_names = sd_evidence_table.sd_outcome_names %>
+                            <% if sd_outcome_names.present? %>
+                              <ol>
+                                <% sd_outcome_names.each do |sd_outcome_name| %>
+                                  <li><%= sd_outcome_name %></li>
+                                <% end %>
+                              </ol>
+                            <% end %>
+                          </div>
+                        </div>
+                        <div data-row-span="1">
+                          <div data-field-span="1">
+                            <label>Description</label>
+                            <div><%= sd_evidence_table.name.present? ? simple_format(sd_evidence_table.name) : '-----' %></div>
+                          </div>
+                        </div>
+                        <div data-row-span="1">
+                          <div data-field-span="1">
+                            <label>Figure(s)</label>
+                            <% sd_evidence_table.sd_meta_data_figures.each do |sd_meta_data_figure| %>
+                              <div class="sd-show-inner">
+                                <div data-row-span="1">
+                                  <div data-field-span="1">
+                                    <% sd_meta_data_figure.pictures.each do |picture| %>
+                                      <div class="sd-show-image">
+                                        <%= image_tag(picture, class: 'openable sd-image', title: sd_meta_data_figure.alt_text || "") %>
+                                      </div>
+                                    <% end %>
+                                  </div>
+                                </div>
+                              </div>
+                            <% end %>
+                          </div>
+                        </div>
+                      <% end %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+              <!-- Pairwise Meta-analyses by Outcome(s) -->
+              <div data-row-span="1">
+                <div data-field-span="1">
+                  <label>Pairwise Meta-analyses by Outcome(s)</label>
+                  <% if result_item.sd_pairwise_meta_analytic_results.empty? %>
+                    <div>-----</div>
+                  <% else %>
+                    <% result_item.sd_pairwise_meta_analytic_results.each do |pairwise_meta_analytic_result| %>
+                      <div class="sd-show-inner">
+                        <div data-row-span="1">
+                          <div data-field-span="1">
+                            <label>Outcome(s)</label>
+                            <% sd_outcome_names = pairwise_meta_analytic_result.sd_outcome_names %>
+                            <% if sd_outcome_names.present? %>
+                              <ol>
+                                <% sd_outcome_names.each do |sd_outcome_name| %>
+                                  <li><%= sd_outcome_name %></li>
+                                <% end %>
+                              </ol>
+                            <% end %>
+                          </div>
+                        </div>
+                        <div data-row-span="1">
+                          <div data-field-span="1">
+                            <label>Description</label>
+                            <div><%= pairwise_meta_analytic_result.name.present? ? simple_format(pairwise_meta_analytic_result.name) : "-----" %></div>
+                          </div>
+                        </div>
+                        <div data-row-span="1">
+                          <div data-field-span="1">
+                            <label>Figure(s)</label>
+                            <% pairwise_meta_analytic_result.sd_meta_data_figures.each do |sd_meta_data_figure| %>
+                              <div class="sd-show-inner">
+                                <div data-row-span="1">
+                                  <div data-field-span="1">
+                                    <label>Type</label>
+                                    <div><%= sd_meta_data_figure.p_type.present? ? sd_meta_data_figure.p_type : "-----" %></div>
+                                  </div>
+                                </div>
+                                <div data-row-span="1">
+                                  <div data-field-span="1">
+                                    <% sd_meta_data_figure.pictures.each do |picture| %>
+                                      <div class="sd-show-image">
+                                        <%= image_tag(picture, class: 'openable sd-image', title: sd_meta_data_figure.alt_text) %>
+                                      </div>
+                                    <% end %>
+                                  </div>
+                                </div>
+                                <% if sd_meta_data_figure.sd_figurable_type == SdPairwiseMetaAnalyticResult.to_s %>
+                                  <div data-row-span="1">
+                                    <div data-field-span="1">
+                                      <label>Outcome type</label>
+                                      <div><%= sd_meta_data_figure.outcome_type %></div>
+                                    </div>
+                                  </div>
+                                  <div data-row-span="1">
+                                    <div data-field-span="1">
+                                      <label>Intervention name</label>
+                                      <div><%= sd_meta_data_figure.intervention_name %></div>
+                                    </div>
+                                  </div>
+                                  <div data-row-span="1">
+                                    <div data-field-span="1">
+                                      <label>Comparator name</label>
+                                      <div><%= sd_meta_data_figure.comparator_name %></div>
+                                    </div>
+                                  </div>
+                                  <div data-row-span="1">
+                                    <div data-field-span="1">
+                                      <label>Effect size measure name</label>
+                                      <div><%= sd_meta_data_figure.effect_size_measure_name %></div>
+                                    </div>
+                                  </div>
+                                  <div data-row-span="1">
+                                    <div data-field-span="1">
+                                      <label>Overall effect size</label>
+                                      <div><%= sd_meta_data_figure.overall_effect_size %></div>
+                                    </div>
+                                  </div>
+                                  <div data-row-span="1">
+                                    <div data-field-span="1">
+                                      <label>Overall 95 ci low</label>
+                                      <div><%= sd_meta_data_figure.overall_95_ci_low %></div>
+                                    </div>
+                                  </div>
+                                  <div data-row-span="1">
+                                    <div data-field-span="1">
+                                      <label>Overall 95 ci high</label>
+                                      <div><%= sd_meta_data_figure.overall_95_ci_high %></div>
+                                    </div>
+                                  </div>
+                                  <div data-row-span="1">
+                                    <div data-field-span="1">
+                                      <label>Overall I Squared (%)</label>
+                                      <div><%= sd_meta_data_figure.overall_i_squared %></div>
+                                    </div>
+                                  </div>
+                                  <div data-row-span="1">
+                                    <div data-field-span="1">
+                                      <label>Other heterogeneity statistics</label>
+                                      <div><%= sd_meta_data_figure.other_heterogeneity_statistics %></div>
+                                    </div>
+                                  </div>
+                                <% end %>
+                              </div>
+                            <% end %>
+                          </div>
+                        </div>
+                      </div>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+              <!-- Network Meta-analyses by Outcome(s) -->
+              <div data-row-span="1">
+                <div data-field-span="1">
+                  <label>Network Meta-analyses by Outcome(s)</label>
+                  <% if result_item.sd_network_meta_analysis_results.empty? %>
+                    <div>-----</div>
+                  <% else %>
+                    <% result_item.sd_network_meta_analysis_results.each do |network_meta_analysis_result| %>
+                      <div class="sd-show-inner">
+                        <div data-row-span="1">
+                          <div data-field-span="1">
+                            <label>Outcome(s)</label>
+                            <% sd_outcome_names = network_meta_analysis_result.sd_outcome_names %>
+                            <% if sd_outcome_names.present? %>
+                              <ol>
+                                <% sd_outcome_names.each do |sd_outcome_name| %>
+                                  <li><%= sd_outcome_name %></li>
+                                <% end %>
+                              </ol>
+                            <% end %>
+                          </div>
+                        </div>
+                        <div data-row-span="1">
+                          <div data-field-span="1">
+                            <label>Description</label>
+                            <div><%= network_meta_analysis_result.name.present? ? simple_format(network_meta_analysis_result.name) : "-----" %></div>
+                          </div>
+                        </div>
+                        <div data-row-span="1">
+                          <div data-field-span="1">
+                            <label>Figure(s)</label>
+                            <% network_meta_analysis_result.sd_meta_data_figures.each do |sd_meta_data_figure| %>
+                              <div class="sd-show-inner">
+                                <div data-row-span="1">
+                                  <div data-field-span="1">
+                                    <label>Type</label>
+                                    <div><%= sd_meta_data_figure.p_type.present? ? sd_meta_data_figure.p_type : "-----" %></div>
+                                  </div>
+                                </div>
+                                <div data-row-span="1">
+                                  <div data-field-span="1">
+                                    <% sd_meta_data_figure.pictures.each do |picture| %>
+                                      <div class="sd-show-image">
+                                        <%= image_tag(picture, class: 'openable sd-image') %>
+                                      </div>
+                                    <% end %>
+                                  </div>
+                                </div>
+                              </div>
+                            <% end %>
+                          </div>
+                        </div>
+                      </div>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+              <!-- Meta-regression Results by Outcome(s) -->
+              <div data-row-span="1">
+                <div data-field-span="1">
+                  <label>Meta-regression Results by Outcome(s)</label>
+                  <% if result_item.sd_meta_regression_analysis_results.empty? %>
+                    <div>-----</div>
+                  <% else %>
+                    <% result_item.sd_meta_regression_analysis_results.each do |sd_meta_regression_analysis_result| %>
+                      <div class="sd-show-inner">
+                        <div data-row-span="1">
+                          <div data-field-span="1">
+                            <label>Outcome(s)</label>
+                            <% sd_outcome_names = sd_meta_regression_analysis_result.sd_outcome_names %>
+                            <% if sd_outcome_names.present? %>
+                              <ol>
+                                <% sd_outcome_names.each do |sd_outcome_name| %>
+                                  <li><%= sd_outcome_name %></li>
+                                <% end %>
+                              </ol>
+                            <% end %>
+                          </div>
+                        </div>
+                        <div data-row-span="1">
+                          <div data-field-span="1">
+                            <label>Description</label>
+                            <div><%= sd_meta_regression_analysis_result.name.present? ? simple_format(sd_meta_regression_analysis_result.name) : "-----" %></div>
+                          </div>
+                        </div>
+                        <div data-row-span="1">
+                          <div data-field-span="1">
+                            <label>Figure(s)</label>
+                            <% sd_meta_regression_analysis_result.sd_meta_data_figures.each do |sd_meta_data_figure| %>
+                              <div class="sd-show-inner">
+                                <div data-row-span="1">
+                                  <div data-field-span="1">
+                                    <% sd_meta_data_figure.pictures.each do |picture| %>
+                                      <div class="sd-show-image">
+                                        <%= image_tag(picture, class: 'openable sd-image', title: sd_meta_data_figure.alt_text || "") %>
+                                      </div>
+                                    <% end %>
+                                  </div>
+                                </div>
+                              </div>
+                            <% end %>
+                          </div>
+                        </div>
+                      </div>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </fieldset>
+</div>

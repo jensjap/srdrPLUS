@@ -1,0 +1,22 @@
+<table class="hover">
+  <thead>
+    <tr>
+      <th></th>
+      <% q.question_rows.includes(:question_row_columns).first.question_row_columns.each do |qrc| %>
+        <th style="font-weight: normal;"><%= qrc.name %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% q.question_rows.includes(:question_row_columns).each do |qr| %>
+      <tr>
+        <td><%= qr.name %></td>
+        <% qr.question_row_columns.each do |qrc| %>
+          <td class="question-row-column" data-question-row-column-id="<%= qrc.id %>">
+            <%= render 'extraction_forms_projects_sections/question_row_column_types/' + qrc.question_row_column_type.name, qrc: qrc %>
+          </td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

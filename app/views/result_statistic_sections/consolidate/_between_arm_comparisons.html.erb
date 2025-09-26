@@ -1,0 +1,98 @@
+<div class="column row table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th>Arm Comparison(s)</th>
+        <% @result_statistic_section.comparisons.each do |bac| %>
+          <th>
+            <div style="text-align: center;">
+              <% bac.comparate_groups.first.comparates.each do |c| %>
+                <span class="has-tip tip-right" data-tooltip aria-haspopup="true" data-options="show_on:small" title="Description: <%= c.comparable_element.comparable.type1.description %>">
+                  <%= c.comparable_element.comparable.type1.short_name_and_description %>
+                </span><br>
+              <% end %>
+            </div>
+            <div style="text-align: center; font-weight: normal;">vs.</div>
+            <div style="text-align: center;">
+              <% bac.comparate_groups.second.comparates.each do |c| %>
+                <span class="has-tip tip-right" data-tooltip aria-haspopup="true" data-options="show_on:small" title="Description: <%= c.comparable_element.comparable.type1.description %>">
+                  <%= c.comparable_element.comparable.type1.short_name_and_description %>
+                </span><br>
+              <% end %>
+            </div>
+          </th>
+        <% end %>
+        <th>
+          <%= simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path, method: :post do |f| %>
+            <%= f.input :comparison_type, as: :hidden, input_html: { value: :bac } %>
+            <div class="links add-comparison">
+              <%= link_to_add_association f, :comparisons,
+                class: 'button tiny',
+                partial: "result_statistic_sections/edit/comparison_fields",
+                render_options: { locals: { comparison: :bac, rss: @result_statistic_section } } do %>
+                <i class="fi-plus"></i>
+                Add Comparison
+              <% end %>
+            </div>
+          <% end %>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @result_statistic_section.timepoints.each do |tp| %>
+        <tr>
+          <td><%= tp.timepoint_name.name %><%= tp.timepoint_name.unit.present? ? " (#{tp.timepoint_name.unit})" : "" %></td>
+          <% @result_statistic_section.comparisons.each_with_index do |bac, i| %>
+            <td class="consolidated-data-cell">
+              <div class="consolidated-dropdown">
+                <% @result_statistic_section.result_statistic_sections_measures.each do |rssm| %>
+                  <% record = TpsComparisonsRssm.find_record(timepoint: tp, comparison: bac, result_statistic_sections_measure: rssm) %>
+                  <%= simple_form_for(record, remote: true, html: { data: { 'abide': '', 'live-validate': true } }) do |f| %>
+                    <%= f.error_notification %>
+                    <table class="consolidated-data-table">
+                      <thead>
+                        <tr>
+                          <% if i == 0 %>
+                            <th></th>
+                          <% end %>
+                          <th><%= f.input :name, label: rssm.measure.name, wrapper: :label_only %></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% @extractions.each do |extraction| %>
+                          <tr>
+                            <% if i == 0 %>
+                              <td class="extractor-name"><%= extraction.username %></td>
+                            <% end %>
+                            <td>Mock Value</td>
+                          </tr>
+                        <% end %>
+                        <tr>
+                          <% if i == 0 %>
+                            <td class="extractor-name" style="font-weight: bold;">Consolidated</td>
+                          <% end %>
+                          <td>
+                            <%= f.input :name, label: false, required: false, class: 'form-control', wrapper_html: { style: 'padding-bottom: 0;' }, input_html: { style: 'margin-bottom: 0;' } %>
+                            <div id="record-id-<%= record.id.to_s %>" class="record-info" style="opacity: 0;">Saved!</div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  <% end %>
+                <% end %>
+              </div>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+      <tr>
+        <td><%= link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: @result_statistic_section.id, extraction_ids: @extractions.map(&:id)), remote: true, onclick: "return false" %></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="reveal" id="manage-measures-modal" style="min-height: 80vh">
+  <button class="close-button" data-close aria-label="Close modal" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>

@@ -1,0 +1,42 @@
+<div class="query-item grid-x grid-margin-x" data-sd-meta-data-query-id="<%= sd_meta_data_query_id %>" class="<%= is_first ? 'selected' : '' %>">
+  <div class="query-item-info large-2 medium-2 small-2">
+    <div class="query-id">
+      <span>Id: </span>
+      <span><%= sd_meta_data_query_id.to_s %></span>
+    </div>
+    <div class="updated-date"><%= updated_at %></div>
+    <div class="query-columns cell">
+      <div class="destroy-query button small alert">Delete</div>
+    </div>
+  </div>
+  <div class="key_questions cell large-2 medium-2 small-4">
+    <label>Key Questions</label>
+    <% query_hash['key_question_names'].each do |kq_name| %>
+      <div class="query-item-kq"><%= kq_name %></div>
+    <% end %>
+  </div>
+  <div class="type1s cell large-2 medium-2 small-6">
+    <% query_hash['type1_names'].each do |section_name, t1_name_arr| %>
+      <label><%= section_name %></label>
+      <div class="<%= section_name.downcase %>">
+        <% t1_name_arr.each do |t1_name| %>
+          <div class="t1-item"><%= t1_name %></div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  <div class="query-columns cell large-6 medium-6 small-12">
+    <div class="grid-x">
+      <% query_hash['columns'].values.each do |column| %>
+        <div class="query-item-column cell shrink <%= column['type'].downcase %>">
+          <label><%= column['name'] %></label>
+          <div class="query-item-questions">
+            <% column['export_items'].values.each do |export_item| %>
+              <div class="export-item"><%= export_item['name'] %></div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

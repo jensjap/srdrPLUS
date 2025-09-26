@@ -1,0 +1,19 @@
+<ul id="vertical-tabs" class="tabs vertical w-64 <%= 'orderable-list' if current_user.profile.advanced_mode %>" <%= current_user.profile.advanced_mode ? "orderable-url='#{ update_positions_api_v1_orderings_url }'" : '' %>>
+  <% @extraction_forms_projects_sections.each do |efps| %>
+    <% section = efps.section.name %>
+    <li class="tabs-title orderable-item sort-handle" table="extraction_forms_projects_sections" position="<%= efps.pos %>" ordering-id="<%= efps.id %>" style="background: <%= efps.id.to_s == @panel_tab ? 'lightgrey' : 'initial' %>">
+      <%= link_to build_extraction_forms_project_path(@extraction_forms_project, 'panel-tab': efps.id.to_s), title: section do %>
+        <% if current_user.profile.advanced_mode %>
+          <i class="fa fa-arrows" style="padding-right: 5px;"></i>
+        <% end %>
+        <%= section %>
+      <% end %>
+    </li>
+  <% end %>
+  <% if current_user.profile.advanced_mode %>
+    <%= link_to new_extraction_forms_project_extraction_forms_projects_section_path(@extraction_forms_project), class: 'button tiny secondary float-right' do %>
+      <i class="fi-plus"></i>
+      Add Section
+    <% end %>
+  <% end %>
+</ul>

@@ -1,0 +1,7 @@
+<div class="tabs-content vertical">
+  <% @extraction_forms_projects_sections.where(id: @panel_tab).each do |efps| %>
+    <div class="tabs-panel is-active" id="panel-tab-<%= efps.id.to_s %>">
+      <%= render 'extraction_forms_projects/build/extraction_forms_projects_section', efps: efps %>
+    </div>
+  <% end %>
+</div>

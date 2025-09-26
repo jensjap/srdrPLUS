@@ -1,0 +1,93 @@
+<% content_for :title, content="Search" %>
+
+<% if params[:general_search].present? || params[:projects_search].present? || params[:citations_search].present? %>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl my-4">Search Results</h1>
+    <ul class="space-y-3" style="list-style: disc; list-style-position: outside;">
+      <% if params[:projects_search].present? || params[:general_search].present? %>
+        <h4>Projects that meet your search criteria</h4>
+        <% if @projects.empty? %>
+          <li>No results</li>
+        <% end %>
+        <% @projects.each do |p| %>
+          <li><%= link_to p.name, "/public_data?id=#{p.id}&type=project", target: :_blank %></li>
+        <% end %>
+        <div class="mt-4"><%= paginate(@projects, params: {}, theme: 'foundation') %></div>
+      <% end %>
+      <% if params[:citations_search].present? || params[:general_search].present? %>
+        <h4>Citations that meet your search criteria</h4>
+        <% if @citations_projects.empty? %>
+          <li>No results</li>
+        <% end %>
+        <% @citations_projects.each do |cp| %>
+          <li><%= link_to "#{cp.citation.name} (Project: #{cp.project.name})", "/public_data?id=#{cp.project.id}&type=project" %></li>
+        <% end %>
+        <div class="mt-4"><%= paginate(@citations_projects, params: {}, theme: 'foundation') %></div>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+  <h1 class="text-3xl mt-6">Search Criteria</h1>
+  <ul id="search-tabs" class="tabs" data-deep-link="true" data-update-history="true" data-tabs="">
+    <li class="tabs-title <%= params.keys.any? { |k| %w(projects_search citations_search).include?(k) } ? '' : 'is-active' %>">
+      <%= link_to 'General Search', '#panel-general-search', title: 'Search for projects' %>
+    </li>
+    <li class="tabs-title <%= params[:projects_search].present? ? 'is-active' : '' %>">
+      <%= link_to 'Advanced Projects Search', '#panel-projects-search', title: 'Search for projects' %>
+    </li>
+    <li class="tabs-title <%= params[:citations_search].present? ? 'is-active' : '' %>">
+      <%= link_to 'Advanced Citations Search', '#panel-citations-search', title: 'Search for citations' %>
+    </li>
+  </ul>
+  <div class="tabs-content" data-tabs-content="search-tabs">
+    <div id="panel-general-search" class="tabs-panel <%= params.keys.any? { |k| %w(projects_search citations_search).include?(k) } ? '' : 'is-active' %>">
+      <blockquote>
+        <legend>Please enter your search term below.</legend>
+        <legend>We will provide the best matches based on your search criteria by checking against any available meta information in all publicly availabe Projects and Citations.</legend>
+        <cite>Helper</cite>
+      </blockquote>
+      <%= render 'searches/general_search_form', label: false %>
+    </div>
+    <div id="panel-projects-search" class="tabs-panel <%= params[:projects_search].present? ? 'is-active' : '' %>">
+      <blockquote>
+        <legend>This is the advanced Project search section.</legend>
+        <legend>In this area you can narrow down your search by finding exact matches within the relative fields such as the name of the project, the description of the project and so on.</legend>
+        <legend>You can further fine tune you search by providing date ranges, arm names or outcome names.</legend>
+        <cite>Helper</cite>
+      </blockquote>
+      <%= simple_form_for :projects_search, defaults: { required: false }, url: searches_path, method: :get do |f| %>
+        <%= f.input :name, input_html: { value: params.dig(:projects_search, :name) } %>
+        <%= f.input :description, input_html: { value: params.dig(:projects_search, :description) } %>
+        <%= f.input :attribution, input_html: { value: params.dig(:projects_search, :attribution) } %>
+        <%= f.input :authors_of_report, input_html: { value: params.dig(:projects_search, :authors_of_report) } %>
+        <%= f.input :methodology_description, input_html: { value: params.dig(:projects_search, :methodology_description) } %>
+        <%= f.input :prospero, input_html: { value: params.dig(:projects_search, :prospero) } %>
+        <%= f.input :doi, label: 'DOI', input_html: { value: params.dig(:projects_search, :doi) } %>
+        <%= f.input :notes, input_html: { value: params.dig(:projects_search, :notes) } %>
+        <%= f.input :funding_source, input_html: { value: params.dig(:projects_search, :funding_source) } %>
+        <%= f.input :member, label: 'Member', input_html: { value: params.dig(:projects_search, :member) } %>
+        <%= f.input :after, label: 'Created After', as: :date, html5: true, input_html: { value: params.dig(:projects_search, :after) } %>
+        <%= f.input :before, label: 'Created Before', as: :date, html5: true, input_html: { value: params.dig(:projects_search, :before) } %>
+        <%= f.input :arm, label: "Arm Name", input_html: { value: params.dig(:projects_search, :arm) } %>
+        <%= f.input :outcome, label: "Outcome Name", input_html: { value: params.dig(:projects_search, :outcome) } %>
+        <div class="my-4"><%= f.button :submit, 'Search' %></div>
+      <% end %>
+    </div>
+    <div id="panel-citations-search" class="tabs-panel <%= params[:citations_search].present? ? 'is-active' : '' %>">
+      <blockquote>
+        <legend>This is the advanced Citations search section.</legend>
+        <legend>In this area you can narrow down your search by finding exact matches within the relative fields such as the title of the citation, search terms within citation abstract or provided identifiers.</legend>
+        <cite>Helper</cite>
+      </blockquote>
+      <%= simple_form_for :citations_search, defaults: { required: false }, url: searches_path, method: :get do |f| %>
+        <%= f.input :name, label: 'Title', input_html: { value: params.dig(:citations_search, :name) } %>
+        <%= f.input :refman, label: 'RefMan', input_html: { value: params.dig(:citations_search, :refman) } %>
+        <%= f.input :pmid, label: 'PMID', input_html: { value: params.dig(:citations_search, :pmid) } %>
+        <%= f.input :abstract, input_html: { value: params.dig(:citations_search, :abstract) } %>
+        <div class="my-4"><%= f.button :submit, 'Search' %></div>
+      <% end %>
+    </div>
+  </div>
+</div>

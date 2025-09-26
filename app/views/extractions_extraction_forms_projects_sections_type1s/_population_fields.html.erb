@@ -1,0 +1,22 @@
+<tr class="nested-fields population-nested-fields" removed="false">
+  <%= f.simple_fields_for(:population_name, f.object.population_name || f.object.build_population_name) do |pn_form| %>
+    <td style="font-size: x-large;">
+      <%= link_to_remove_association '\u2716', f %>
+    </td>
+    <!-- /td.field = f.check_box :_destroy -->
+    <td class="field">
+      <%= pn_form.input :name, required: true %>
+    </td>
+    <td class="field">
+      <%= pn_form.input :description %>
+    </td>
+  <% end %>
+</tr>
+<!--
+  - if f.object.persisted?
+    = f.association :population_name, label: false, required: false, label_method: :select_label
+  - else
+    = f.simple_fields_for(:population_name, f.object.build_population_name) do |pn_form|
+      = pn_form.input :name
+      = pn_form.input :description
+-->

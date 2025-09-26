@@ -1,0 +1,42 @@
+<div id="panel-0" class="tabs-panel is-active">
+  <fieldset>
+    <legend>Title, Funding Sources, and Dates</legend>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Report Title</label>
+        <div><%= @sd_meta_datum.report_title.present? ? @sd_meta_datum.report_title : "-----" %></div>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Project Title in SRDR+</label>
+        <div><%= project.try(:name) %></div>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Funding Sources</label>
+        <ol>
+          <% @sd_meta_datum.funding_sources.each do |fs| %>
+            <li style='font-size: 12px;'><%= fs.name %></li>
+          <% end %>
+        </ol>
+      </div>
+    </div>
+    <div data-row-span="3">
+      <div data-field-span="1">
+        <label>Date of Last Search</label>
+        <div><%= @sd_meta_datum.try(:date_of_last_search).try(:to_date) %></div>
+      </div>
+      <div data-field-span="1">
+        <label>Date of Publication to SRDR+:</label>
+        <div><%= @sd_meta_datum.try(:date_of_publication_to_srdr).try(:to_date) %></div>
+        <br/><br/><br/>
+      </div>
+      <div data-field-span="1">
+        <label>Date of Publication of Full Report</label>
+        <div><%= @sd_meta_datum.try(:date_of_publication_full_report).try(:to_date) %></div>
+      </div>
+    </div>
+  </fieldset>
+</div>

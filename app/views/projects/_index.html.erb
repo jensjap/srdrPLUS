@@ -1,0 +1,59 @@
+<% provide(:title, "Project List") %>
+<!-- Row with content header and filter input field. -->
+<div class="column p-4 lg:p-8">
+  <h2 class="text-xl font-bold">My Projects</h2>
+  <%= link_to new_project_path, class: "button secondary create-button" do %>
+    <i class="fi-plus"></i>
+    <%= t(".create") %>
+  <% end %>
+</div>
+<!-- Row for toggler => sort by updated at or created at. -->
+<div class="project-controls">
+  <div class="column medium-8">
+    <%= simple_form_for 'project', url: '/projects', method: :get do |f| %>
+      <%= f.input :project_status, as: :hidden, input_html: { value: @project_status } %>
+      <%= f.input :q, label: false, input_html: { value: @query }, required: false, placeholder: 'Search' %>
+    <% end %>
+  </div>
+  <div class="column medium-4">
+    <div class="toggle-sort-order show-for-large">
+      <%= link_to 'Updated at', projects_path({ o: 'updated-at' }.merge(@params)), class: "button updated-at #{params[:o].nil? || params[:o] == 'updated-at' ? 'disabled' : ''}" %>
+      <%= link_to 'Created at', projects_path({ o: 'created-at' }.merge(@params)), class: "button created-at #{params[:o] == 'created-at' ? 'disabled' : ''}" %>
+    </div>
+  </div>
+</div>
+<div class="column" id="project-list">
+  <ul class="tabs" id="project-tabs">
+    <li class="tabs-title">
+      <%= link_to 'All', projects_path(@params.merge(project_status: nil)), 'aria-selected': @project_status.blank? ? 'true' : 'false' %>
+    </li>
+    <li class="tabs-title">
+      <%= link_to 'Drafts', projects_path(@params.merge(project_status: 'draft')), 'aria-selected': @project_status == 'draft' ? 'true' : 'false' %>
+    </li>
+    <li class="tabs-title">
+      <%= link_to 'Publication Requests', projects_path(@params.merge(project_status: 'pending')), 'aria-selected': @project_status == 'pending' ? 'true' : 'false' %>
+    </li>
+    <li class="tabs-title">
+      <%= link_to 'Published', projects_path(@params.merge(project_status: 'published')), 'aria-selected': @project_status == 'published' ? 'true' : 'false' %>
+    </li>
+  </ul>
+</div>
+<div class="column">
+  <div>
+    <% if @project_status.blank? %>
+      <div class="mb-12"><%= render "projects/index/project_list" %></div>
+      <div class="mb-4"><%= render "projects/index/select_paginate_size" %></div>
+      <div><%= paginate(@projects, params: @params, theme: 'foundation') %></div>
+    <% elsif @project_status == 'draft' %>
+      <div class="mb-12"><%= render "projects/index/project_list" %></div>
+      <div class="mb-4"><%= render "projects/index/select_paginate_size" %></div>
+      <div><%= paginate(@projects, params: @params, theme: 'foundation') %></div>
+    <% elsif @project_status == 'pending' %>
+      <div class="mb-12"><%= render "projects/index/unapproved_publishings" %></div>
+      <div><%= paginate(@unapproved_publishings, params: @params, theme: 'foundation') %></div>
+    <% elsif @project_status == 'published' %>
+      <div class="mb-12"><%= render "projects/index/approved_publishings" %></div>
+      <div><%= paginate(@approved_publishings, params: @params, theme: 'foundation') %></div>
+    <% end %>
+  </div>
+</div>

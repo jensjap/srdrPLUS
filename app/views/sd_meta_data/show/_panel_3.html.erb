@@ -1,0 +1,78 @@
+<div id="panel-3" class="tabs-panel is-active">
+  <fieldset>
+    <legend>Purpose, Analytic Framework, and Key Questions</legend>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Overall Purpose of Review</label>
+        <% opor = @sd_meta_datum.overall_purpose_of_review %>
+        <div><%= opor.present? ? simple_format(opor) : '-----' %></div>
+      </div>
+    </div>
+    <div data-row-span="2">
+      <div data-field-span="1">
+        <label>Type of Review</label>
+        <% tor = @sd_meta_datum.review_type&.name %>
+        <div><%= tor.present? ? tor : '-----' %></div>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Analytic / Conceptual Framework</label>
+        <% if @sd_meta_datum.sd_analytic_frameworks.empty? %>
+          <div>-----</div>
+        <% else %>
+          <% @sd_meta_datum.sd_analytic_frameworks.each do |sd_analytic_framework| %>
+            <div class="sd-show-inner">
+              <div>
+                <label>Description</label>
+                <div><%= sd_analytic_framework.name.present? ? simple_format(sd_analytic_framework.name) : "-----" %></div>
+              </div>
+              <div>
+                <label>Figure(s)</label>
+                <% sd_analytic_framework.sd_meta_data_figures.each do |sd_meta_data_figure| %>
+                  <div class="sd-show-inner">
+                    <div data-row-span="1">
+                      <div data-field-span="1">
+                        <% sd_meta_data_figure.pictures.each do |picture| %>
+                          <div class="sd-show-image">
+                            <%= image_tag(picture, class: 'openable sd-image', title: sd_meta_data_figure.alt_text || "") %>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Report Key Questions</label>
+        <% if @sd_meta_datum.sd_key_questions.empty? %>
+          <div>-----</div>
+        <% else %>
+          <% @sd_meta_datum.sd_key_questions.each do |sd_key_question| %>
+            <% kqts = sd_key_question.key_question_types.map { |kqt| kqt.name }.join(", ") %>
+            <div class="sd-show-inner">
+              <div>
+                <label>Key Question</label>
+                <div><%= sd_key_question.key_question.present? ? sd_key_question.key_question.name : '-----' %></div>
+              </div>
+              <div>
+                <label>Type(s)</label>
+                <div><%= kqts.present? ? kqts : '-----' %></div>
+              </div>
+              <div>
+                <label>Did this Key Question include a meta-analysis?</label>
+                <div><%= sd_key_question.includes_meta_analysis.present? ? 'Yes' : 'No' %></div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </fieldset>
+</div>

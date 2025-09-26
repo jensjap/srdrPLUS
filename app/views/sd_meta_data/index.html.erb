@@ -1,0 +1,266 @@
+<div x-data="$store.sharedExtractionStore">
+  <%= render 'shared/alert_modal' %>
+  <div id="sdMetaData-list" class="p-4 lg:p-8">
+    <h4><strong class="title">What is SR-360?</strong></h4>
+    <p class="my-5">
+      SR-360 is a tool that enables you to include summary information from the systematic review report in an interactive and modularized way with visitors to SRDR+. Within SR-360, you can include the following related to your project:
+    </p>
+    <ul class="list-disc pl-5">
+      <li>Meta Data (Funding Sources, Authors, Stakeholders)</li>
+      <li>Documentation (Executive Summary, Protocol, etc.)</li>
+      <li>Description of the review’s eligibility criteria in terms of the Population, Interventions, Comparators, Outcomes, Study Designs, Timing, and Settings (PICODTS)</li>
+      <li>Search Strategies and Results of Screening (Databases searched, PRISMA diagram, etc.)</li>
+      <li>Risk of Bias and Overall Summary of Evidence</li>
+      <li>Results for Individual Outcomes (Narrative Results, Evidence Tables, Pairwise Meta-analyses, Network Meta-analyses, and Meta-Regression Results)</li>
+    </ul>
+    <p class="my-5">
+      SR-360 will thus provide you a platform for sharing your review’s summary digitally and interactively with the world!
+    </p>
+    <div class="pt-4 lg:pt-8"></div>
+    <% if @sd_meta_data.present? %>
+      <button class="create-button button" data-open='create-sd-meta-datum-modal'>
+        <i class="fi-plus"></i>
+        Create SR-360 Item
+      </button>
+      <br>
+    <% end %>
+    <% if @sd_meta_data.present? %>
+      <br>
+      <table class="hover">
+        <thead>
+          <tr>
+            <th width="175">Systematic Review Report</th>
+            <th width="75">Progress</th>
+            <th width="25">Last Updated</th>
+            <th width="25"></th>
+            <th width="25"></th>
+            <th width="25"></th>
+            <th width="25"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @sd_meta_data.each do |sd_meta_datum| %>
+            <tr>
+              <td><%= (sd_meta_datum.report_title.present? ? sd_meta_datum.report_title : sd_meta_datum.report.try(:title)) ||  sd_meta_datum.report_file.try(:filename) || '_____' %></td>
+              <% if sd_meta_datum.incomplete_sections.empty? %>
+                <td style="font-weight: bold;">Completed</td>
+              <% else %>
+                <% tooltip_text = "<span style='font-weight: bold;'>Incomplete Sections:</span><br>" + (sd_meta_datum.incomplete_sections.join('<br>')) %>
+                <td>
+                  <div class="success progress" data-allow-html="true" data-tooltip title="<%= tooltip_text %>">
+                    <div class="progress-meter" style="width: <%= sd_meta_datum.progress_meter_width %>%;"></div>
+                  </div>
+                </td>
+              <% end %>
+              <%# <td style="font-weight: <%= sd_meta_datum.state == 'DRAFT' ? 'normal' : 'bold' %>;"> <%= sd_meta_datum.state %> </td> %>
+              <%# <td>
+                <%= simple_form_for(sd_meta_datum, url: sd_meta_datum_path(sd_meta_datum)) do |f| %>
+                  <%= f.input :state, as: :hidden, input_html: { value: sd_meta_datum.state == 'DRAFT' ? 'COMPLETED' : 'DRAFT' } %>
+                  <%= f.button :submit, 'Toggle State', class: 'state-toggler', state: sd_meta_datum.state, data_sections_complete: sd_meta_datum.all_sections_complete? %>
+                <% end %>
+              </td> %>
+              <td><%= distance_of_time_in_words_to_now(sd_meta_datum.updated_at) %> ago</td>
+              <td><%= link_to('View', sd_meta_datum) %></td>
+              <td><%= link_to "Work", edit_sd_meta_datum_path(sd_meta_datum.id), class: "sd-meta-data-index-edit" %></td>
+              <% if !sd_meta_datum.all_sections_complete? %>
+                <td></td>
+              <% elsif sd_meta_datum.publishing.nil? && sd_meta_datum.check_publishing_eligibility.blank? %>
+                <td><%= link_to("Publish", publishings_path(id: sd_meta_datum.id, type: sd_meta_datum.class.to_s), class: "sd-meta-data-index-request-publish", method: :post) %></td>
+              <% elsif sd_meta_datum.publishing.nil? %>
+                <td>
+                  <div data-open="publish-sd-meta-datum-errors-modal-<%= sd_meta_datum.id %>" style="color: #410b6c;" class="sd-meta-data-index-request-publish">Publish</div>
+                  <div id="publish-sd-meta-datum-errors-modal-<%= sd_meta_datum.id %>" class="reveal" data-reveal>
+                    <div class="column row" id="project-list">
+                      <h6 style="font-weight: bold; margin-top: 10px;">Some required fields are missing. Please go to the SR 360 record to fill out all required fields.</h6>
+                      <h6>Tabs with missing fields:</h6>
+                      <% sd_meta_datum.check_publishing_eligibility.each do |error| %>
+                        <div><%= error %></div>
+                      <% end %>
+                    </div>
+                  </div>
+                </td>
+              <% elsif sd_meta_datum.publishing.approval.present? %>
+                <td>Published</td>
+              <% else %>
+                <td>Request under review</td>
+              <% end %>
+              <td>
+                <% delete_url = sd_meta_datum_path(sd_meta_datum) %>
+                <a href="#" onclick="$store.sharedExtractionStore.openModal('<%= delete_url %>'); return false;" class="sd-meta-data-index-delete">Destroy</a>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+    <div class="pt-4 lg:pt-8">
+      <button id="create-sd-meta-datum-modal-button" class="create-button button" data-open='create-sd-meta-datum-modal'>
+        <i class="fi-plus"></i>
+        Create SR-360 Item
+      </button>
+      <% if @sd_meta_data.present? %>
+        <div class="button sd-meta-data-index-query">
+          <%= link_to('Query SRDR+ Project Data', project_report_link_new_query_form_path(@sd_meta_data.first)) %>
+        </div>
+      <% end %>
+    </div>
+    <div id="create-sd-meta-datum-modal" class="reveal" data-reveal>
+      <div class="column row" id="project-list">
+        <div class="hide">
+          <select id="project-create">
+            <option value="<%= @project.id %>"></option>
+          </select>
+        </div>
+        <h6 style="font-weight: bold; margin-top: 10px;">Systematic Review Report</h6>
+        <span style='margin-right: 1rem;'>
+          <input type="radio" id="report-radio-file" name="report-radio" checked="checked">
+          <label for="report-radio-file" style="margin-right: 0;">
+            Upload PDF
+            <span class="import-tooltip-icon" style="margin: 0 6px 0 3px;" data-open="import-tooltip-content">
+              <i class="fi-info" style="color:#28b0f3;font-size:20px;"></i>
+            </span>
+            <div class="reveal" id="import-tooltip-content" data-reveal style="font-size:large;line-height:25px;">
+              You can upload the following file formats:
+              <ul style="padding-top:15px;font-size:large;line-height:25px;">
+                <li>
+                  <a href="https://acrobat.adobe.com/us/en/acrobat/about-adobe-pdf.html" target="_blank">Adobe PDF File Format Information (external site)</a>
+                </li>
+              </ul>
+            </div>
+          </label>
+        </span>
+        <span>
+          <input type="radio" id="report-radio-select" name="report-radio">
+          <label for="report-radio-select">Select from existing reports</label>
+        </span>
+        <div style='margin-top: 1rem; margin-bottom: 1rem; height: 2rem;'>
+          <div id="report-select-div" class="hide">
+            <select id="report-create">
+              <% @reports.each do |report| %>
+                <option value="<%= report.accession_id %>"><%= report.accession_id %>: <%= report.title %></option>
+              <% end %>
+            </select>
+          </div>
+          <div id="report-upload-div">
+            <input id="report-upload" type="file" accept="application/pdf">
+          </div>
+        </div>
+        <a class="button create-button medium" id="create-new-sd-meta-datum">
+          <i class="fi-plus"></i>
+          Create
+        </a>
+      </div>
+      <!-- <hr style="border: 0.5px solid; margin: 20px 55px;"> -->
+    </div>
+  </div>
+</div>
+<script>
+  $('#import-tooltip-content').on('closed.zf.reveal', function() {$('#create-sd-meta-datum-modal').foundation('open');});
+  $('.state-toggler').on('click', function(e) {
+    if (this.attributes.state.value == 'DRAFT' && this.attributes.data_sections_complete.value === 'false') {
+      alert('There are still incomplete sections.  Please mark any incomplete sections complete first.')
+      e.preventDefault();
+    }
+  });
+  $('#project-create').select2({
+    placeholder: "Select a Project",
+    allowClear: true
+  });
+  $('#report-create').select2({
+    placeholder: "Select a Report",
+    allowClear: true
+  });
+  $('#report-radio-select').on('click', function(){
+    $('#report-select-div').removeClass('hide');
+    $('#report-upload-div').addClass('hide');
+  });
+  $('#report-radio-file').on('click', function(){
+    $('#report-upload-div').removeClass('hide');
+    $('#report-select-div').addClass('hide');
+  });
+  $('#create-new-sd-meta-datum').on('click', function(e) {
+    if ($('#report-select-div.hide').length == 0) {
+      var project_id = $('#project-create').val();
+      var report_accession_id = $('#report-create').val();
+      if ( project_id && report_accession_id ) {
+        e.preventDefault();
+        $.ajax({
+          type: "POST",
+          url: `/projects/${project_id}/sd_meta_data`,
+          data: {
+            sd_meta_datum: {
+              project_id,
+              report_accession_id
+            }
+          }
+        });
+      } else {
+        if (!project_id) {
+          toastr.warning("You must select an SRDR+ project")
+        }
+        if (!report_accession_id) {
+          toastr.warning("You must select a Systematic Review report")
+        }
+      }
+    } else {
+      var form_data = new FormData();
+      var project_id = $('#project-create').val();
+      var report_file = $('#report-upload')[0].files[0];
+      form_data.append('sd_meta_datum[report_file]', report_file);
+      form_data.append('sd_meta_datum[project_id]', project_id);
+      if ( project_id && report_file ) {
+        e.preventDefault();
+        $.ajax({
+          type: "POST",
+          url: `/projects/${project_id}/sd_meta_data`,
+          processData: false,
+          contentType: false,
+          data: form_data
+        });
+      } else {
+        if (!project_id) {
+          toastr.warning("You must select an SRDR+ project")
+        }
+        if (!report_file) {
+          toastr.warning("You must upload a PDF file")
+        }
+      }
+    }
+  });
+  document.addEventListener('alpine:init', () => {
+    Alpine.store('sharedExtractionStore', {
+      isAlertModalOpen: false,
+      alertModalContent: 'Are you sure? This will destroy the link you have created between a report and a project in SRDR. It will also destroy everything you have entered for this project in SRDR 2.0.',
+      deleteUrl: '',
+      openModal(url) {
+        this.deleteUrl = url;
+        this.isAlertModalOpen = true;
+      },
+      closeAlertModal() {
+        this.isAlertModalOpen = false;
+      },
+      modalConfirmAction() {
+        fetch(this.deleteUrl, {
+          method: 'DELETE',
+          headers: {
+            'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").getAttribute('content'),
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            window.location.reload();
+          } else {
+            console.error('Error:', data.message);
+          }
+        })
+        .catch(error => console.error('Error:', error))
+        .finally(() => this.closeAlertModal());
+      }
+    });
+  });
+</script>

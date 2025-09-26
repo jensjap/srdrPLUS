@@ -1,0 +1,14 @@
+<h1>Listing <%= plural_table_name.titleize %></h1>
+
+<table id="dttb-<%= plural_table_name %>" class="responsive nowrap table table-hover" data-sort="true" data-source="<%= url_for(format: :json) %>">
+  <thead>
+    <tr>
+<% attributes.reject(&:password_digest?).each do |attribute| -%>
+      <th data-data="<%= attribute.name %>"><%= attribute.human_name %></th>
+<% end -%>
+      <th data-data="url" data-orderable="false" data-class-name="all" data-searchable="false" class="skip-export" width="100px"></th>
+    </tr>
+  </thead>
+</table>
+
+<%= link_to 'New <%= human_name %>', new_<%= singular_table_name %>_path %>

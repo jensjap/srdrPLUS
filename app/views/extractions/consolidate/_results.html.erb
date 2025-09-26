@@ -1,0 +1,26 @@
+<% consolidated_eefps = @consolidated_extraction \
+  .extractions_extraction_forms_projects_sections \
+  .joins(extraction_forms_projects_section: :section) \
+  .where("sections.name = ?", "Results") \
+  .first %>
+
+<% unless action_name.eql?("change_outcome_in_results_section") %>
+  <div class="grid-x">
+    <div class="cell small-1">
+      <%= render 'shared/statusing_form', statusing: consolidated_eefps.statusing, status_name: consolidated_eefps.statusing.status.name %>
+    </div>
+  </div>
+<% end %>
+
+<% section_name = section_name.present? ? section_name : 'Results' %>
+<!-- Need to ensure that all type1s are matching, including Populations and Timepoints. -->
+<% if @consolidated_extraction.results_section_ready_for_extraction? %>
+  <div id="results-panel">
+    <%= render 'extractions/consolidate/results/results_section_content',
+      extraction: @consolidated_extraction,
+      efp: efp,
+      section_name: section_name %>
+  </div>
+<% else %>
+  <h5 style='color: red;'>You must add Arms and Outcomes before extracting into this section.</h5>
+<% end %>

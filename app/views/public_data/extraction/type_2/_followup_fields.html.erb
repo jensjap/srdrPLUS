@@ -1,0 +1,10 @@
+<% followups.each do |prereq_text, attach_target, eefps_ff| %>
+  <% record = eefps_ff.records.first %>
+  <% if record %>
+    <div class="attach-me hide" class="<%= prereq_text %>" data-attach-target="<%= attach_target %>">
+      <%= simple_form_for(record, url: '/', namespace: "record_#{record.id}", html: { data: { abide: '', 'live-validate': true } }) do |f| %>
+        <%= f.input :name, disabled: true, as: :string, label: false, required: false, input_html: { style: 'margin-bottom: 0;' } %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

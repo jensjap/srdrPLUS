@@ -1,0 +1,7 @@
+<div class="nested-fields">
+  <i class="fa fa-arrows" style="padding-right: 5px; cursor: pointer;"></i>
+  <div class="text-right">
+    <%= link_to_remove_association "remove grey literature search", f, data: { confirm: "This will remove this grey literature search and its description. Are you sure?" } %>
+  </div>
+  <%= f.input :name, label: 'Description' %>
+</div>

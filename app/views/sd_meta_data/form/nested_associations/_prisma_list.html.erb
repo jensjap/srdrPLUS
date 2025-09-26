@@ -1,0 +1,13 @@
+<%= simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: :sd_prisma_flows, class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f| %>
+  <%= f.input :item_id, as: :hidden, input_html: { value: 49 } %>
+  <div class="orderable-list" orderable-url="<%= update_positions_api_v1_orderings_url %>">
+    <%= f.simple_fields_for :sd_prisma_flows do |sd_prisma_flow| %>
+      <div class="sd-item sd-inner orderable-item sort-handle" table="sd_prisma_flows" ordering-id="<%= sd_prisma_flow.object.id %>">
+        <%= render 'sd_meta_data/form/dynamic_fields/sd_prisma_flow_fields', f: sd_prisma_flow %>
+      </div>
+    <% end %>
+  </div>
+  <div class="<%= f.object.sd_prisma_flows.present? ? '' : 'zero-nested-associations' %>">
+    <%= link_to_add_association 'Add PRISMA', f, :sd_prisma_flows, partial: 'sd_meta_data/form/dynamic_fields/sd_prisma_flow_fields', class: 'add-item-link' %>
+  </div>
+<% end %>

@@ -1,0 +1,34 @@
+<% section_name = efps.section.name.titleize.singularize %>
+<h4>Add <%= section_name %> Suggestion</h4>
+<%= simple_form_for(efps, html: { data: { 'abide': '', 'live-validate': true } }, remote: true) do |f| %>
+  <div class="alert callout" data-abide-error='' style='display: none;'>
+    <p>
+      <i class="fi-alert"></i>
+      Please correct the errors below.
+    </p>
+  </div>
+  <%= f.simple_fields_for(:extraction_forms_projects_sections_type1s, efps.extraction_forms_projects_sections_type1s.build) do |sf_efpst1| %>
+    <div class="form-inputs new-type1-fields-<%= efps.id.to_s %>">
+      <% if section_name.eql? 'Outcome' %>
+        <%= sf_efpst1.association :type1_type,
+          collection: Type1Type.outcome_types,
+          required: true,
+          label: "Suggest Type of #{section_name}" %>
+      <% end %>
+      <%= sf_efpst1.simple_fields_for(:type1, sf_efpst1.object.build_type1) do |sf_t1| %>
+        <%= sf_t1.input :name, label: section_name.eql?('Outcome') ? 'Suggest Domain' : 'Name', required: true, hint: "Name can't be blank" %>
+        <%= sf_t1.input :description, label: section_name.eql?('Outcome') ? 'Suggest Specific measurement (i.e., tool/definition/specific outcome)' : 'Description', input_html: { rows: 2 } %>
+      <% end %>
+      <% if section_name.eql? 'Outcome' %>
+        <%= sf_efpst1.association :timepoint_names,
+          including_blank: false,
+          label: "Suggest Timepoint(s) to associate with this #{section_name}. If you cannot find an existing Timepoint to associate, #{link_to_add_association('click here', sf_efpst1, :timepoint_names, partial: 'extraction_forms_projects/build/type1/timepoint_name_fields')} to create a new one.",
+          label_method: :select_label %>
+      <% end %>
+      <%= sf_efpst1.input :instructions, label: "(optional) Please enter specific instructions for this suggested #{section_name}", input_html: { rows: 4, maxlength: 1024 } %>
+    </div>
+  <% end %>
+  <div class="form-actions">
+    <%= f.button :submit, "Submit #{section_name} Suggestion" %>
+  </div>
+<% end %>

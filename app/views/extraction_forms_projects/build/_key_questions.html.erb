@@ -1,0 +1,19 @@
+<h4>Key Questions</h4>
+<blockquote>
+  Assign Key Questions to this Extraction Form in this section. A Key Question may belong to one and only one Extraction Form but an Extraction Form may have many Key Questions.
+  <cite>Friendly Helper</cite>
+</blockquote>
+<%= simple_form_for(efps, html: { data: { 'abide': '' } }, remote: true) do |f| %>
+  <%= f.error_notification %>
+  <div class="form-inputs">
+    <%= f.association :key_questions_projects,
+      collection: @key_questions_projects,
+      disabled: @key_questions_projects.where.not(extraction_forms_projects_section: efps).map(&:id),
+      as: :check_boxes,
+      label: false,
+      label_method: :kq_name_and_assignment %>
+  </div>
+  <div class="form-actions">
+    <%= f.button :submit, t('save') %>
+  </div>
+<% end %>

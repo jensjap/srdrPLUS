@@ -1,0 +1,34 @@
+<div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th>Project ID</th>
+        <th>Project Name</th>
+        <th>Date Published</th>
+        <th>Time from Creation to Publication</th>
+        <th>EPC (Y/N)</th>
+        <th>EPC</th>
+        <th>Non-EPC</th>
+        <th># KQs</th>
+        <th># Citations</th>
+        <th># Extractions</th>
+        <th># Consolidated Extractions</th>
+        <th>How was the data captured?</th>
+        <th>% Extractions with no Data</th>
+        <th>% Extractions with Unstructured Data</th>
+        <th>Distiller with Results?</th>
+        <th>Single or Multiple Extraction (with or without Consolidation)</th>
+        <th>SR360 Created?</th>
+        <th>Notes</th>
+        <th>Submit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @projects.each do |project| %>
+        <tr id="data-audit-row_project-id-<%= project.id %>">
+          <%= render 'data_audits/index/form', project: project %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
