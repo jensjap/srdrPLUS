@@ -493,7 +493,9 @@ class ExtractionsController < ApplicationController
   end
 
   def disable_data_entry
-    flash[:alert] = 'Data entry has been disabled. Please refer to the sunset message found on the homepage.'
-    redirect_to project_extractions_path(@extraction.project)
+    unless ENV['SUNSET_SKIP_PROJECT_IDS']&.split(',')&.to_a&.map(&:to_i)&.include?(@extraction.project.id)
+      flash[:alert] = 'Data entry has been disabled. Please refer to the sunset message found on the homepage.'
+      redirect_to project_extractions_path(@extraction.project)
+    end
   end
 end

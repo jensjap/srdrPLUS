@@ -208,7 +208,9 @@ class FulltextScreeningsController < ApplicationController
   end
 
   def disable_screening
-    flash[:alert] = 'Screening has been disabled. Please refer to the sunset message found on the homepage.'
-    redirect_to project_fulltext_screenings_path(@fulltext_screening.project)
+    unless ENV['SUNSET_SKIP_PROJECT_IDS']&.split(',')&.to_a&.map(&:to_i)&.include?(@fulltext_screening.project.id)
+      flash[:alert] = 'Screening has been disabled. Please refer to the sunset message found on the homepage.'
+      redirect_to project_fulltext_screenings_path(@fulltext_screening.project)
+    end
   end
 end
