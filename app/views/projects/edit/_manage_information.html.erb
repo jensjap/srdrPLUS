@@ -2,7 +2,7 @@
   <!-- Modal for project deletion. -->
   <div id="modal-project-delete" class="reveal large" data-reveal=""></div>
   <h1 class="text-xl font-bold">Project Info</h1>
-  <%= simple_form_for(@project, html: { inert: !ProjectPolicy.new(current_user, @project).project_leader?, id: "project-id-<%= @project.id %>", data: { 'abide': '', 'live-validate': true } }) do |f| %>
+  <%= simple_form_for(@project, html: { inert: !ProjectPolicy.new(current_user, @project).project_leader?, id: "project-id-#{@project.id}", data: { 'abide': '', 'live-validate': true } }) do |f| %>
     <%= f.error_notification %>
     <div class="alert callout" data-abide-error='' style='display: none;'>
       <p>
