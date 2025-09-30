@@ -9,16 +9,6 @@
         <% else %>
           <% @sd_meta_datum.sd_picods.each do |sd_picod| %>
             <div class="sd-show-inner">
-              <!--
-              <div>
-                <label>Type(s)</label>
-                <div><%= sd_picod.sd_picods_types.present? ? sd_picod.sd_picods_types.map(&:name).join(", ") : '-----' %></div>
-              </div>
-              <div>
-                <label>Name</label>
-                <div><%= sd_picod.name.present? ? sd_picod.name : '-----' %></div>
-              </div>
-              -->
               <div data-row-span="1">
                 <div data-field-span="1">
                   <label>Key Question(s)</label>
