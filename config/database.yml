@@ -64,8 +64,8 @@ production:
 # For importing legacy srdr data.
 legacy_production:
   <<: *default
-  username: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['username'] : ENV['SRDRPLUS_DATABASE_USERNAME'] %>
-  password: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['password'] : ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
+  username: <%= ENV['SRDR_LEGACY_DATABASE_USERNAME'] %>
+  password: <%= ENV['SRDR_LEGACY_DATABASE_PASSWORD'] %>
   database: <%= ENV['SRDR_LEGACY_DATABASE_SCHEMA'] %>
 
 # DB Snapshot for recovery purposes.
