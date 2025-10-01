@@ -72,6 +72,7 @@ gem 'net-smtp', require: false
 gem 'nokogiri'
 gem 'opensearch-ruby', '~> 2.0'
 gem 'ostruct'
+gem 'parallel'
 gem 'passenger'
 gem 'puma' # Use Puma as the app server
 gem 'pundit' # authorizations.
