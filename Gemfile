@@ -7,6 +7,8 @@ end
 
 group :development, :test do
   gem 'byebug'
+  gem 'factory_bot_rails'
+  gem 'rspec-rails'
 end
 
 group :test do
@@ -17,12 +19,12 @@ end
 group :development do
   gem 'active_record_doctor'
   gem 'annotate'
+  gem 'better_errors'
+  gem 'binding_of_caller'
   gem 'bullet'
   gem 'spring'
   gem 'spring-watcher-listen'
   gem 'web-console'
-  gem 'better_errors'
-  gem 'binding_of_caller'
 end
 
 group :production do
@@ -37,8 +39,8 @@ gem 'awesome_print'
 gem 'aws-sdk-s3', require: false # Access to AWS S3 Cloud Storage.
 gem 'aws-sdk-secretsmanager'
 gem 'base64', '0.1.1'
-gem 'benchmark'
 gem 'bcrypt'
+gem 'benchmark'
 gem 'bio' # bioruby for pubmed queries.
 gem 'bootsnap' # New for Rails 5.2.
 gem 'caxlsx' # Spreadsheet generation.
@@ -48,6 +50,7 @@ gem 'coffee-rails' # Use CoffeeScript for .coffee assets and views
 gem 'country_select'
 gem 'devise'
 gem 'dotenv-rails'
+gem 'drb'
 gem 'dropzonejs-rails' # Allows users to drop files to upload
 gem 'faker', github: 'faker-ruby/faker', branch: 'main'
 gem 'fhir_models', github: 'sleepwalk712/fhir_models'
