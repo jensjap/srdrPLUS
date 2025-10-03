@@ -50,7 +50,6 @@ gem 'coffee-rails' # Use CoffeeScript for .coffee assets and views
 gem 'country_select'
 gem 'devise'
 gem 'dotenv-rails'
-gem 'drb'
 gem 'dropzonejs-rails' # Allows users to drop files to upload
 gem 'faker', github: 'faker-ruby/faker', branch: 'main'
 gem 'fhir_models', github: 'sleepwalk712/fhir_models'
