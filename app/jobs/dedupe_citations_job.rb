@@ -91,6 +91,8 @@ class DedupeCitationsJob < ApplicationJob
         report_sentry(e)
       end
 
+      reload_associations_safely(master_cp)
+      master_cp.reindex
       processed_count += 1
     end
 
@@ -118,30 +120,35 @@ class DedupeCitationsJob < ApplicationJob
       Rails.logger.debug "Processing #{group.size} duplicate citations with signature: #{signature.inspect}"
 
       master_citation = group.first
-      duplicates = group[1..-1]
+      duplicate_citations = group[1..-1]
 
-      duplicates.each do |cit|
+      duplicate_citations.each do |duplicate_citation|
         master_cp = project.citations_projects.find_by(citation_id: master_citation.id)
-        cp_to_remove = project.citations_projects.find_by(citation_id: cit.id)
+        cp_to_remove = project.citations_projects.find_by(citation_id: duplicate_citation.id)
 
         if master_cp && cp_to_remove
           transfer_all_associations(master_cp, cp_to_remove)
         elsif cp_to_remove.nil?
-          Rails.logger.warn "CitationsProject not found for citation #{cit.id} in project #{project.id}"
+          Rails.logger.warn "CitationsProject not found for citation #{duplicate_citation.id} in project #{project.id}"
         elsif master_cp.nil?
           Rails.logger.warn "Master CitationsProject not found for citation #{master_citation.id} in project #{project.id}"
         end
 
-        Rails.logger.debug "Destroying duplicate Citation #{cit.id}"
-        cit.destroy!
+        # Reload citations_projects and their associations to avoid stale data before destroying
+        duplicate_citation.association(:citations_projects).reload
+        duplicate_citation.citations_projects.each { |cp| reload_associations_safely(cp) }
+        Rails.logger.debug "Destroying duplicate Citation #{duplicate_citation.id}"
+        duplicate_citation.destroy!
       rescue ActiveRecord::RecordNotDestroyed => e
-        Rails.logger.error "Failed to destroy Citation #{cit.id}: #{e.message}"
+        Rails.logger.error "Failed to destroy Citation #{duplicate_citation.id}: #{e.message}"
         report_sentry(e)
       rescue StandardError => e
-        Rails.logger.error "Error processing Citation #{cit.id}: #{e.message}"
+        Rails.logger.error "Error processing Citation #{duplicate_citation.id}: #{e.message}"
         report_sentry(e)
       end
 
+      master_citation.association(:citations_projects).reload
+      master_citation.citations_projects.each(&:reindex)
       processed_count += 1
     end
 
