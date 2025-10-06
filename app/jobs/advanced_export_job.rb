@@ -720,7 +720,8 @@ class AdvancedExportJob < ApplicationJob
       eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
         type1_type_id = eefpst1.type1_type_id || 1
         begin
-          raise 'inconsistent data' if type1_type_id > 2
+          # raise 'inconsistent data' if type1_type_id > 2
+          next if type1_type_id > 2
         rescue JSON::ParserError, TypeError => e
           Sentry.capture_exception(e) if Rails.env.production?
           next
@@ -968,7 +969,8 @@ class AdvancedExportJob < ApplicationJob
 
               g1, g2 = comparison.comparate_groups.map do |comparate_group|
                 comparate_group.comparates.map do |comparate|
-                  raise 'inconsistent data' if comparate.comparable_element.comparable.nil?
+                  # raise 'inconsistent data' if comparate.comparable_element.comparable.nil?
+                  next if comparate.comparable_element.comparable.nil?
 
                   comparate.comparable_element.comparable.timepoint_name.name
                 end.join(', ')
@@ -1042,7 +1044,7 @@ class AdvancedExportJob < ApplicationJob
 
               g1, g2 = wac_comparison.comparate_groups.map do |comparate_group|
                 comparate_group.comparates.map do |comparate|
-                  comparate.comparable_element.comparable.timepoint_name.name
+                  comparate.comparable_element&.comparable&.timepoint_name&.name.to_s
                 end.join(', ')
               end
               row << "[ID: #{wac_comparison.id}] [#{g1}] vs. [#{g2}]"
