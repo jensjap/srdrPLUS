@@ -90,7 +90,7 @@
                 | Edit
               div
                 - delete_url = extractions_extraction_forms_projects_sections_type1_path(eefpst1)
-                a href="#" @click.prevent="$store.deleteConfirmation.openAlertModal('#{delete_url}')"
+                a href="#" @click.prevent="$store.sharedExtractionStore.openAlertModal('#{delete_url}')"
                   i.fi-trash>
                   | Remove
 

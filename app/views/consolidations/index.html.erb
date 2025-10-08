@@ -197,8 +197,10 @@
                       <div
                         class="p-1"
                         x-text="
-                          if (cp_obj.consolidated_extraction_status == null) {
+                          if (cp_obj.consolidated_extraction_status === null) {
                             return 'No'
+                          } else if (cp_obj.consolidated_extraction_status === false) {
+                            return 'Calculating...'
                           } else {
                             return cp_obj.consolidated_extraction_status
                           }
@@ -220,13 +222,22 @@
                       >
                         <div
                           class="p-1 drop-shadow rounded bg-green-800 text-white cursor-pointer"
-                          @click="createConsolidatedExtraction(cp_obj.citations_project_id)"
+                          @click="createConsolidatedExtraction(cp_obj.citations_project_id); cp_obj.consolidated_extraction_status = false;"
                         >
                           Create
                         </div>
                       </template>
                       <template
-                        x-if="cp_obj.consolidated_extraction_status != null"
+                        x-if="cp_obj.consolidated_extraction_status == false"
+                      >
+                        <div
+                          class="p-1 drop-shadow rounded bg-green-800 text-white opacity-50 cursor-not-allowed"
+                        >
+                          Loading...
+                        </div>
+                      </template>
+                      <template
+                        x-if="cp_obj.consolidated_extraction_status != null && cp_obj.consolidated_extraction_status != false"
                       >
                         <a
                           :href="`/consolidations/null?citations_project_id=${cp_obj.citations_project_id}`"

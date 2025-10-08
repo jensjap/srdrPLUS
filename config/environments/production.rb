@@ -1,4 +1,10 @@
 Rails.application.configure do
+  config.hosts = [
+    'vadrr.org',
+    'www.vadrr.org',
+    '44.210.141.64',
+    'localhost:3000'   # Allow this to be addressed when running in containers via docker-compose.yml.
+  ]
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -64,14 +70,17 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set default url options. In production, :host should be set to the actual host of your application.
-  routes.default_url_options = { host: 'https://srdrplus.ahrq.gov' }
-  config.action_mailer.default_url_options = { host: 'https://srdrplus.ahrq.gov' }
+  routes.default_url_options = { host: 'https://vadrr.org' }
+  config.action_mailer.default_url_options = { host: 'https://vadrr.org' }
   config.action_mailer.perform_deliveries = true
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address: '10.1.5.15',
-    port: 25,
-    tls: false
+    address:              ENV['SMTP_ADDRESS'],
+    port:                 ENV['SMTP_PORT'],
+    user_name:            ENV['SMTP_USERNAME'],
+    password:             ENV['SMTP_PASSWORD'],
+    authentication:       ENV['SMTP_AUTHENTICATION'],
+    enable_starttls_auto: true
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to

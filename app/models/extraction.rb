@@ -10,6 +10,9 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  user_id                :integer
+#  approved_on            :datetime
+#  assignor_id            :integer
+#  status                 :string(255)      default("awaiting_work")
 #
 
 class Extraction < ApplicationRecord
@@ -62,6 +65,7 @@ class Extraction < ApplicationRecord
   belongs_to :citations_project,   inverse_of: :extractions
   belongs_to :projects_users_role, optional: true
   belongs_to :user,                optional: true
+  belongs_to :assignor, class_name: 'User', optional: true
 
   has_many :extractions_extraction_forms_projects_sections, dependent: :destroy, inverse_of: :extraction
   has_many :extraction_forms_projects_sections, through: :extractions_extraction_forms_projects_sections
@@ -72,15 +76,27 @@ class Extraction < ApplicationRecord
   has_one :extraction_checksum, dependent: :destroy, inverse_of: :extraction
   has_one :statusing, as: :statusable, dependent: :destroy
   has_one :status, through: :statusing
+  has_many :logs, dependent: :destroy, as: :loggable
+  has_many :messages, dependent: :destroy
 
   delegate :citation, to: :citations_project
   delegate :username, to: :user, allow_nil: true
+
+  attr_accessor :current_user, :reason
 
   #  def to_builder
   #    Jbuilder.new do |extraction|
   #      extraction.sections extractions_extraction_forms_projects_sections.map { |eefps| eefps.to_builder.attributes! }
   #    end
   #  end
+
+  def rejection_reason
+    logs.where(description: 'work_returned').order(created_at: :desc).limit(1)&.first&.reason
+  end
+
+  def able_to_review_status?
+    ExtractionService.able_to_review_status?(current_user, self)
+  end
 
   def set_stale(state)
     return unless extraction_checksum
@@ -91,7 +107,7 @@ class Extraction < ApplicationRecord
   end
 
   def ensure_extraction_form_structure
-    # NOTE This method assumes that self is not a mini-extraction
+    # NOTE: This method assumes that self is not a mini-extraction
     efp = project.extraction_forms_projects.includes([:extraction_form]).first
     efp.extraction_forms_projects_sections.includes([:link_to_type1]).each do |efps|
       # We should ensure that there is only 1 EEFPS per extraction per efps.
@@ -249,7 +265,7 @@ class Extraction < ApplicationRecord
   end
 
   def create_default_status
-    self.status = Status.DRAFT if statusing.blank?
+    create_statusing(status: Status.DRAFT) if statusing.blank?
   end
 
   def evaluate_screening_status_citations_project
@@ -267,5 +283,45 @@ class Extraction < ApplicationRecord
 
   def correct_cp_association
     update(citations_project: project.citations_projects.find_by(citation: citations_project.citation))
+  end
+
+  def create_extraction_log_and_notify
+    log = create_extraction_log
+    notify_project_members(log, current_user ? current_user.id : nil)
+
+    return unless approved_on.nil? && status == 'work_accepted'
+
+    update_column(:approved_on, Time.now)
+  end
+
+  def create_extraction_log
+    return unless id_previously_changed? || status_previously_changed?
+
+    logs.create!(description: status, user: current_user || User.current,
+                 reason: reason.present? && status == 'work_returned' ? reason : nil)
+  end
+
+  def notify_project_members(log, skip_user_id = nil)
+    online_user_ids = redis_online_user_ids
+    broadcast_user_ids = project.projects_users.map(&:user_id)
+    online_broadcast_user_ids = (online_user_ids & broadcast_user_ids)
+
+    projects_users = ProjectsUser.where(project:, user_id: online_broadcast_user_ids)
+    projects_users.each do |project_user|
+      next if project_user.user_id == skip_user_id || !project_user.project_auditor?
+
+      next unless log
+
+      ActionCable.server.broadcast(
+        "notification-#{project_user.user_id}", { message_type: 'message', text: log.description&.truncate(140),
+                                                  url: "/extractions/#{id}/work" }
+      )
+    end
+  end
+
+  def redis_online_user_ids
+    Redis.new.pubsub('channels', 'action_cable/*')
+         .map { |c| Base64.decode64(c.split('/').last) }
+         .map { |string| string.split('/').last.to_i }
   end
 end

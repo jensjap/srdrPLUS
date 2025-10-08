@@ -16,22 +16,20 @@
 
 class CitationsProject < ApplicationRecord
   searchkick callbacks: :async,
-             mappings: {
-               properties: {
-                 accession_number_alts: { type: 'keyword' },
-                 author_map_string: { type: 'keyword' },
-                 name: { type: 'keyword' },
-                 year: { type: 'keyword' },
-                 abstract_qualification: { type: 'keyword' },
-                 fulltext_qualification: { type: 'keyword' },
-                 extraction_qualification: { type: 'keyword' },
-                 consolidation_qualification: { type: 'keyword' },
-                 screening_status: { type: 'keyword' },
-               }
-             }
+             batch_size: 5000
 
   scope :not_disqualified,
         -> { where.not(screening_status: CitationsProject::REJECTED) }
+  scope :search_import,
+        lambda {
+          includes(
+            screening_qualifications: { user: :profile },
+            citation: %i[journal keywords],
+            abstract_screening_results: [:reasons, :tags, :abstract_screening, { user: :profile }],
+            fulltext_screening_results: [:reasons, :tags, :fulltext_screening, { user: :profile }],
+            extractions: { user: :profile, assignor: :profile }
+          )
+        }
 
   amoeba do
     set screening_status: 'asu'
@@ -45,8 +43,10 @@ class CitationsProject < ApplicationRecord
   has_many :fulltext_screening_results, dependent: :destroy
   has_many :screening_qualifications, dependent: :destroy
   has_many :ml_predictions, dependent: :destroy
+  has_many :logs, dependent: :destroy, as: :loggable
 
   accepts_nested_attributes_for :citation, reject_if: :all_blank
+  after_save :create_citations_project_log
 
   AS_UNSCREENED = 'asu'.freeze
   AS_PARTIALLY_SCREENED = 'asps'.freeze
@@ -156,7 +156,19 @@ class CitationsProject < ApplicationRecord
       fulltext_screening_objects << fsr_objs
     end
 
+    extraction_objects = extractions.map do |extraction|
+      {
+        user: extraction.user&.handle || '',
+        consolidated: extraction.consolidated,
+        created_at: extraction.created_at,
+        approved_on: extraction.approved_on,
+        assignor: extraction.assignor&.handle || '',
+        status: extraction.status
+      }
+    end
+
     {
+      'created_at' => created_at,
       'project_id' => project_id,
       'citations_project_id' => id,
       'citation_id' => citation.id,
@@ -181,10 +193,13 @@ class CitationsProject < ApplicationRecord
       'consolidation_qualification' => qualification('c-'),
       'abstract_screening_objects' => abstract_screening_objects,
       'fulltext_screening_objects' => fulltext_screening_objects,
-      'abstract' => citation.abstract.force_encoding("ISO-8859-1").encode("UTF-8"),
+      'abstract' => citation.abstract.force_encoding('ISO-8859-1').encode('UTF-8'),
       'pmid' => citation.pmid,
       'refman' => refman,
-      'accession_number' => citation.accession_number
+      'accession_number' => citation.accession_number,
+      'extraction_objects' => extraction_objects,
+      'extraction_count' => extractions.reject(&:consolidated).length,
+      'consolidated_count' => extractions.select(&:consolidated).length
     }
   end
 
@@ -273,26 +288,31 @@ class CitationsProject < ApplicationRecord
 
   private
 
+  def create_citations_project_log
+    return unless id_previously_changed? || screening_status_previously_changed?
+
+    logs.create(description: screening_status, user: User.current)
+  end
+
   def formatted_publication_date(date)
     return nil unless date
+
     case date
     # 2010-04-30
     when /\d{4}-\d{2}-\d{2}/
-      $1.to_s
+      ::Regexp.last_match(1).to_s
     # 2023
     when /\d{4}/
-      $1.to_s
+      ::Regexp.last_match(1).to_s
     # 2001 Sep 15-23
     when /\d{4}[\s-]?\w{3}[\s-]?\d{1,2}([-\s]?\d+)?/
-      $1.to_s
+      ::Regexp.last_match(1).to_s
     # 2001 Sep
     when /\d{4}[\s-]?\w{3}/
-      $1.to_s
+      ::Regexp.last_match(1).to_s
     # 1985 Jul-Aug
     when /\d{4}[\s-]?\w{3}-\w{3}/
-      $1.to_s
-    else
-      nil
+      ::Regexp.last_match(1).to_s
     end
   end
 end

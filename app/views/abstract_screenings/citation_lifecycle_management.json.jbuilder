@@ -1,4 +1,5 @@
 json.results @citations_projects do |citations_project|
+  json.created_at                 citations_project['created_at']
   json.citations_project_id       citations_project['citations_project_id']
   json.citation_id                citations_project['citation_id']
   json.accession_number_alts      citations_project['accession_number_alts']
@@ -19,6 +20,9 @@ json.results @citations_projects do |citations_project|
   json.abstract_screening_objects citations_project['abstract_screening_objects']
   json.fulltext_screening_objects citations_project['fulltext_screening_objects']
   json.abstract                   citations_project['abstract']
+  json.extraction_objects         citations_project['extraction_objects']
+  json.extraction_count           citations_project['extraction_count']
+  json.consolidated_count         citations_project['consolidated_count']
 end
 json.pagination do
   json.prev_page    @page == 1 ? 1 : @page - 1
@@ -29,9 +33,12 @@ json.pagination do
   json.order_by     @order_by
   json.sort         @sort
 end
-users = @project.users.includes(:profile).sort_by { |user| user.handle.downcase }
-json.users users do |user|
-  json.id user.id
-  json.handle user.handle
+projects_users = @project.projects_users.includes(user: :profile).sort_by { |pu| pu.user.handle.downcase }
+json.users projects_users do |projects_user|
+  json.id projects_user.user.id
+  json.handle projects_user.user.handle
+  json.interest_areas projects_user.interest_areas
+  json.additional_rrs projects_user.additional_rrs
+  json.availability_notes projects_user.availability_notes
   json.selected true
 end

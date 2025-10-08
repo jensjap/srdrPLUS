@@ -21,6 +21,8 @@
 #  as_allow_adding_tags       :boolean          default(TRUE), not null
 #  fs_allow_adding_reasons    :boolean          default(TRUE), not null
 #  fs_allow_adding_tags       :boolean          default(TRUE), not null
+#  force_training             :boolean          default(FALSE), not null
+#  source_project_id          :integer
 #
 
 class Project < ApplicationRecord
@@ -88,6 +90,23 @@ class Project < ApplicationRecord
   has_many :tags, through: :projects_tags
   has_many :projects_reasons, dependent: :destroy
   has_many :reasons, through: :projects_reasons
+
+  has_one :data_audit, dependent: :destroy
+  has_one :publishing, as: :publishable, dependent: :destroy
+  has_one :room, dependent: :destroy
+  # NOTE
+  # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one
+  # publishing, therefore:
+  #
+  #   belongs_to :publishing, polymorphic: true
+  #
+  # and on the publishing:
+  #
+  #   has_many :publishable, as: :publishing
+  #
+  # is actually what we want.
+  #
+  # Birol
 
   has_many :extraction_forms_projects, dependent: :destroy, inverse_of: :project
   has_many :extraction_forms, through: :extraction_forms_projects
@@ -213,17 +232,17 @@ class Project < ApplicationRecord
   end
 
   def consolidated_extraction(citations_project_id, current_user_id)
-    non_consolidated_extractions = extractions.reject { |extraction| extraction.consolidated }
-    consolidated_extraction = extractions.consolidated.find_by(citations_project_id:)
-    return consolidated_extraction if consolidated_extraction.present?
+    non_c_extractions = extractions.unconsolidated.where(citations_project_id:)
+    c_extraction = extractions.consolidated.find_by(citations_project_id:)
+    return c_extraction if c_extraction.present?
 
-    consolidated_extraction = extractions.create(
+    c_extraction = extractions.create(
       citations_project_id:,
       user_id: current_user_id,
       consolidated: true
     )
-    ConsolidationService.clone_extractions(non_consolidated_extractions, consolidated_extraction, citations_project_id)
-    consolidated_extraction.reload
+    ConsolidationService.clone_extractions(non_c_extractions, c_extraction, citations_project_id)
+    c_extraction.reload
   end
 
   # returns nested hash:

@@ -80,6 +80,6 @@ div
                   = 'Duplicate'
 
                 - delete_url = questions_path(q)
-                a href="#" @click.prevent="$store.deleteConfirmation.openModal('#{delete_url}')"
+                a href="#" @click.prevent="$store.sharedExtractionStore.openModal('#{delete_url}')"
                   i.fi-trash>
                   = t('remove')

@@ -65,6 +65,9 @@ class ProjectPolicy < ApplicationPolicy
         :_destroy,
         :user_id,
         :permissions,
+        :interest_areas,
+        :additional_rrs,
+        :availability_notes,
         :is_expert,
         { imports_attributes: [
           :import_type_id, {
@@ -179,6 +182,10 @@ class ProjectPolicy < ApplicationPolicy
 
   def citations_in_ris?
     project_contributor?
+  end
+
+  def status?
+    part_of_project?
   end
 
   def permitted_attributes

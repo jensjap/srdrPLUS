@@ -48,7 +48,14 @@ class ExtractionsController < ApplicationController
 
   # GET /extractions/1
   # GET /extractions/1.json
-  def show; end
+  def show
+    respond_to do |format|
+      format.json do
+        @extraction.current_user = current_user
+        render json: @extraction, methods: %i[able_to_review_status? rejection_reason]
+      end
+    end
+  end
 
   # GET /extractions/new
   def new
@@ -94,7 +101,7 @@ class ExtractionsController < ApplicationController
 
       if new_extraction.persisted?
         skipped << new_extraction
-      elsif new_extraction.save
+      elsif (new_extraction.assignor = current_user) && new_extraction.save
         succeeded << new_extraction
       else
         failed << extraction
@@ -141,6 +148,7 @@ class ExtractionsController < ApplicationController
   # PATCH/PUT /extractions/1.json
   def update
     authorize(@extraction)
+    @extraction.current_user = current_user
     redirect_path = params[:redirect_to]
 
     respond_to do |format|
@@ -200,12 +208,24 @@ class ExtractionsController < ApplicationController
   # GET /extractions/1/work
   def work
     @project = @extraction.project
+    if project_blacklisted?(@project.id)
+      flash[:alert] = t('project_blacklisted', project_name: @project.name)
+      return
+    end
     authorize(@extraction)
     @nav_buttons.push('extractions', 'my_projects')
 
     set_extraction_forms_projects
 
     respond_to do |format|
+      format.json do
+        panel_tab = params['panel-tab']
+        render json: { project_id: @project.id,
+                       citations_project_id: @extraction.citations_project.id,
+                       extraction_forms_projects_section_id: panel_tab == 'keyquestions' ? nil : panel_tab,
+                       extraction_id: @extraction.id },
+               status: 200
+      end
       format.html do
         if params['panel-tab'].nil? && @project.key_questions_projects.count == 1
           ExtractionsKeyQuestionsProjectsSelection.find_or_create_by(
@@ -214,10 +234,7 @@ class ExtractionsController < ApplicationController
           efp = @extraction.extraction_forms_projects_sections.includes(:section).reject { |efps| efps.hidden }.first
           return redirect_to(work_extraction_path(@extraction, 'panel-tab' => efp.id))
         end
-      end
 
-      format.js do
-        @load_js = params['load-js']
         @ajax_section_loading_index = params['ajax-section-loading-index']
         @efp = if params.key?(:efp_id)
                  ExtractionFormsProject.find(params[:efp_id])
@@ -417,7 +434,9 @@ class ExtractionsController < ApplicationController
   def extraction_params
     params
       .require(:extraction)
-      .permit(:user_id,
+      .permit(:reason,
+              :status,
+              :user_id,
               :citations_project_id,
               citations_project_ids: [],
               extractions_key_questions_project_ids: [],

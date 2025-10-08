@@ -1,4 +1,6 @@
 class ExportMailer < ApplicationMailer
+  default from: 'hello@mycenaean.org'
+
   def notify_screening_data_export_completion(exported_item_id)
     @exported_item = ExportedItem.find exported_item_id
     @project = @exported_item.project

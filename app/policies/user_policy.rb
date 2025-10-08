@@ -8,6 +8,14 @@ class UserPolicy
     @record = record
   end
 
+  def new?
+    user.admin?
+  end
+
+  def create?
+    user.admin?
+  end
+
   def edit?
     record.eql?(user)
   end

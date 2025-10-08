@@ -3,8 +3,7 @@
 
 - provide(:title, 'List of Extractions')
 - am_leader = @project.leaders.include? current_user
-
-div class="p-4 lg:p-8" x-data="$store.deleteConfirmation"
+div class="p-4 lg:p-8" x-data="$store.sharedExtractionStore"
   = render 'shared/alert_modal'
   - efp = @project.extraction_forms_projects.first
   div class="flex justify-between"
@@ -38,6 +37,9 @@ div class="p-4 lg:p-8" x-data="$store.deleteConfirmation"
         th.table-sortable.sorting data-sorting-col="5" Title
         th.table-sortable.sorting data-sorting-col="6" width="200px" Assigned User
         th.table-sortable.sorting data-sorting-col="7" width="50px" Progress
+        th.table-sortable.sorting data-sorting-col="8" width="80px" Status
+        th.table-sortable.sorting data-sorting-col="9" width="80px" Created
+        th.table-sortable.sorting data-sorting-col="10" width="80px" Approved
         th width="50px"
         th width="50px"
 
@@ -45,6 +47,9 @@ div class="p-4 lg:p-8" x-data="$store.deleteConfirmation"
       - if @extractions.blank?
         tr
           td No extractions found.
+          td
+          td
+          td
           td
           td
           td
@@ -78,12 +83,17 @@ div class="p-4 lg:p-8" x-data="$store.deleteConfirmation"
                       = e_f.select :user_id, @users.map { |user| [user.handle, user.id] }, input_html: { class: "index-extractions-select2" }, selected: extraction.user&.id
             - else
               td = extraction.user_handle
-
             td data-sort="#{ extraction.progress_meter_width }"
               .success.progress data-allow-html="true" data-tooltip="" title="#{ extraction.tooltip_text }"
                 .progress-meter style="width: #{ extraction.progress_meter_width }%;"
-
-            td = link_to 'Reassign', reassign_extraction_extraction_path(extraction)
+            td
+              div = extraction.status
+            td
+              div = extraction.created_at.strftime('%Y-%m-%d')
+            td
+              div = (extraction.created_at + 2.weeks).strftime('%Y-%m-%d')
+            td
+              = link_to 'Reassign', reassign_extraction_extraction_path(extraction)
             td
               - delete_url = extraction_path(extraction)
               a href="#" data-delete-url="#{delete_url}" data-extraction-id="#{extraction.id}" data-extraction-name="#{extraction.name}" class="delete-btn" style='font-weight:bold;color:#cc4b37 !important;'
@@ -101,7 +111,7 @@ div class="p-4 lg:p-8" x-data="$store.deleteConfirmation"
 
 javascript:
   document.addEventListener('alpine:init', () => {
-    Alpine.store('deleteConfirmation', {
+    Alpine.store('sharedExtractionStore', {
       isAlertModalOpen: false,
       alertModalContent: '',
       deleteUrl: '',

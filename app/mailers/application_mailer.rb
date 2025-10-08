@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'SRDR@AHRQ.hhs.gov'
+  default from: ENV['SMTP_USERNAME']
   layout 'mailer'
 end

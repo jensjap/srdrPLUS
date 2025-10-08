@@ -1,0 +1,106 @@
+version: '2.2'
+
+services:
+  setup:
+    image: opensearchproject/opensearch:2
+    volumes:
+      - certs:/usr/share/opensearch/config/certs
+    user: "0"
+    command: >
+      bash -c '
+        echo "No setup required for OpenSearch";
+        sleep 5;
+      '
+    healthcheck:
+      test: [ "CMD-SHELL", "exit 0" ]
+      interval: 1s
+      timeout: 5s
+      retries: 120
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - database
+      - redis
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - certs:/app/certs
+    env_file:
+      - docker.env
+      - private.env
+    environment:
+      RAILS_ENV: development
+    stdin_open: true
+    tty: true
+
+  database:
+    image: mysql:8.0.23
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    env_file:
+      - docker.env
+      - private.env
+    security_opt:
+      - seccomp:unconfined
+
+  redis:
+    image: redis:7
+
+  opensearch:
+    image: opensearchproject/opensearch:2
+    volumes:
+      - esdata:/usr/share/opensearch/data
+      - certs:/usr/share/opensearch/config/certs
+    depends_on:
+      setup:
+        condition: service_healthy
+    environment:
+      RAILS_ENV: development
+      discovery.type: single-node
+      plugins.security.disabled: true
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: Str0ngP@ssw0rd!
+      OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
+
+  sidekiq:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - app
+      - database
+      - opensearch
+      - redis
+      - mailcatcher
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - certs:/app/certs
+    env_file:
+      - docker.env
+      - private.env
+    environment:
+      RAILS_ENV: development
+    stdin_open: true
+    tty: true
+    entrypoint: ./entrypoints/sidekiq-entrypoint.sh
+
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+    environment:
+      - MAILCATCHER_IP=0.0.0.0  # Listen on all interfaces
+
+volumes:
+  db_data:
+  node_modules:
+  esdata:
+  certs:

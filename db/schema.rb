@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
+ActiveRecord::Schema[7.0].define(version: 2025_03_22_183941) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -460,16 +460,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.index ["prerequisitable_type", "prerequisitable_id"], name: "index_dependencies_on_ptype_pid"
   end
 
-  create_table "dispatches", id: :integer, charset: "utf8", force: :cascade do |t|
-    t.string "dispatchable_type"
-    t.integer "dispatchable_id"
-    t.integer "user_id"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.index ["dispatchable_type", "dispatchable_id"], name: "index_dispatches_on_dispatchable_type_and_dispatchable_id"
-    t.index ["user_id"], name: "index_dispatches_on_user_id"
-  end
-
   create_table "eefps_qrcfs", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "extractions_extraction_forms_projects_sections_type1_id"
     t.integer "extractions_extraction_forms_projects_section_id"
@@ -660,6 +650,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "user_id"
     t.datetime "approved_on"
+    t.integer "assignor_id"
+    t.string "status", default: "awaiting_work"
+    t.index ["assignor_id"], name: "index_extractions_on_assignor_id"
     t.index ["citations_project_id"], name: "index_extractions_on_citations_project_id"
     t.index ["project_id", "citations_project_id", "projects_users_role_id"], name: "index_e_on_p_id_cp_id_pur_id_uniq"
     t.index ["projects_users_role_id"], name: "index_extractions_on_projects_users_role_id"
@@ -715,6 +708,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.integer "pos", default: 999999
+    t.boolean "comparisons_assisted", default: false
     t.index ["extractions_extraction_forms_projects_section_id"], name: "index_eefpst1_on_eefps_id"
     t.index ["pos"], name: "eefpst1_id"
     t.index ["type1_id"], name: "index_eefpst1_on_t1_id"
@@ -744,12 +738,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.bigint "followup_field_id"
     t.index ["followup_field_id"], name: "index_ffs_on_followup_field_id"
     t.index ["question_row_columns_question_row_column_option_id"], name: "index_followup_fields_on_qrcqrco_id"
-  end
-
-  create_table "frequencies", id: :integer, charset: "utf8", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "fulltext_screening_results", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -984,32 +972,34 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "labels", id: :integer, charset: "utf8", force: :cascade do |t|
-    t.integer "citations_project_id"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.integer "projects_users_role_id"
-    t.integer "label_type_id"
-    t.index ["citations_project_id"], name: "index_labels_on_citations_project_id"
-    t.index ["label_type_id"], name: "index_labels_on_label_type_id"
-    t.index ["projects_users_role_id"], name: "index_labels_on_projects_users_role_id"
-  end
-
-  create_table "labels_reasons", id: :integer, charset: "utf8", force: :cascade do |t|
-    t.integer "label_id"
-    t.integer "reason_id"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.integer "projects_users_role_id"
-    t.index ["label_id"], name: "index_labels_reasons_on_label_id"
-    t.index ["projects_users_role_id"], name: "index_labels_reasons_on_projects_users_role_id"
-    t.index ["reason_id"], name: "index_labels_reasons_on_reason_id"
+  create_table "logs", charset: "utf8", force: :cascade do |t|
+    t.string "loggable_type", null: false
+    t.bigint "loggable_id", null: false
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.string "reason"
+    t.index ["loggable_type", "loggable_id"], name: "index_logs_on_loggable"
+    t.index ["user_id"], name: "index_logs_on_user_id"
   end
 
   create_table "measures", id: :integer, charset: "utf8", force: :cascade do |t|
-    t.string "name"
+    t.string "name", collation: "utf8mb4_bin"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.index ["name"], name: "index_measures_on_name", unique: true
+  end
+
+  create_table "memberships", charset: "utf8", force: :cascade do |t|
+    t.bigint "room_id", null: false
+    t.bigint "user_id", null: false
+    t.boolean "admin", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["room_id"], name: "index_memberships_on_room_id"
+    t.index ["user_id", "room_id"], name: "index_memberships_on_user_id_and_room_id", unique: true
+    t.index ["user_id"], name: "index_memberships_on_user_id"
   end
 
   create_table "mesh_descriptors", charset: "utf8", force: :cascade do |t|
@@ -1028,24 +1018,34 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.index ["project_id"], name: "index_mesh_descriptors_projects_on_project_id"
   end
 
-  create_table "message_types", id: :integer, charset: "utf8", force: :cascade do |t|
-    t.string "name"
-    t.integer "frequency_id"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.index ["frequency_id"], name: "index_message_types_on_frequency_id"
+  create_table "message_unreads", charset: "utf8", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "message_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id"], name: "index_message_unreads_on_message_id"
+    t.index ["user_id", "message_id"], name: "index_message_unreads_on_user_id_and_message_id", unique: true
+    t.index ["user_id"], name: "index_message_unreads_on_user_id"
   end
 
-  create_table "messages", id: :integer, charset: "utf8", force: :cascade do |t|
-    t.integer "message_type_id"
-    t.string "name"
-    t.text "description"
-    t.datetime "start_at", precision: nil
-    t.datetime "end_at", precision: nil
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.boolean "active", default: true
-    t.index ["message_type_id"], name: "index_messages_on_message_type_id"
+  create_table "messages", charset: "utf8", force: :cascade do |t|
+    t.bigint "message_id"
+    t.bigint "user_id", null: false
+    t.text "text", null: false
+    t.boolean "pinned", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "room_id"
+    t.string "help_key"
+    t.integer "project_id"
+    t.integer "extraction_id"
+    t.index ["extraction_id"], name: "index_messages_on_extraction_id"
+    t.index ["help_key"], name: "index_messages_on_help_key"
+    t.index ["message_id"], name: "index_messages_on_message_id"
+    t.index ["project_id"], name: "index_messages_on_project_id"
+    t.index ["room_id"], name: "index_messages_on_room_id"
+    t.index ["user_id", "room_id"], name: "index_messages_on_user_id_and_room_id"
+    t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
   create_table "ml_models", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -1198,6 +1198,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.integer "projects_paginate_per"
     t.boolean "conflict_resolution_label_visibility", default: false
     t.text "storage"
+    t.boolean "follow_project_settings_in_conflict_resolution", default: true, null: false
+    t.string "notification", default: "email"
     t.index ["organization_id"], name: "index_profiles_on_organization_id"
     t.index ["user_id"], name: "index_profiles_on_user_id", unique: true
     t.index ["username"], name: "index_profiles_on_username", unique: true
@@ -1261,6 +1263,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "permissions", default: 0, null: false
     t.boolean "is_expert", default: false
+    t.text "interest_areas"
+    t.text "additional_rrs"
+    t.text "availability_notes"
     t.index ["project_id", "user_id"], name: "index_pu_on_p_id_u_id_uniq", unique: true
     t.index ["user_id"], name: "index_projects_users_on_user_id"
   end
@@ -1499,6 +1504,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["name"], name: "index_roles_on_name", unique: true
+  end
+
+  create_table "rooms", charset: "utf8", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["name"], name: "index_rooms_on_name"
+    t.index ["user_id"], name: "index_rooms_on_user_id"
   end
 
   create_table "screening_forms", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -2181,7 +2195,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
   add_foreign_key "comparisons_result_statistic_sections", "result_statistic_sections"
   add_foreign_key "degrees_profiles", "degrees"
   add_foreign_key "degrees_profiles", "profiles"
-  add_foreign_key "dispatches", "users"
   add_foreign_key "eefps_qrcfs", "extractions_extraction_forms_projects_sections"
   add_foreign_key "eefps_qrcfs", "extractions_extraction_forms_projects_sections_type1s"
   add_foreign_key "eefps_qrcfs", "question_row_column_fields"
@@ -2211,6 +2224,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
   add_foreign_key "extractions", "projects"
   add_foreign_key "extractions", "projects_users_roles"
   add_foreign_key "extractions", "users"
+  add_foreign_key "extractions", "users", column: "assignor_id"
   add_foreign_key "extractions_extraction_forms_projects_sections", "extraction_forms_projects_sections"
   add_foreign_key "extractions_extraction_forms_projects_sections", "extractions"
   add_foreign_key "extractions_extraction_forms_projects_sections", "extractions_extraction_forms_projects_sections"
@@ -2232,14 +2246,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_21_172828) do
   add_foreign_key "key_questions_projects", "projects"
   add_foreign_key "key_questions_projects_questions", "key_questions_projects"
   add_foreign_key "key_questions_projects_questions", "questions"
-  add_foreign_key "labels", "citations_projects"
-  add_foreign_key "labels", "label_types"
-  add_foreign_key "labels", "projects_users_roles"
-  add_foreign_key "labels_reasons", "labels"
-  add_foreign_key "labels_reasons", "projects_users_roles"
-  add_foreign_key "labels_reasons", "reasons"
-  add_foreign_key "message_types", "frequencies"
-  add_foreign_key "messages", "message_types"
+  add_foreign_key "messages", "extractions"
+  add_foreign_key "messages", "projects"
   add_foreign_key "ml_predictions", "citations_projects"
   add_foreign_key "ml_predictions", "ml_models"
   add_foreign_key "model_performances", "ml_models"

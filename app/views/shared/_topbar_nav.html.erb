@@ -33,20 +33,17 @@
     sr360: <%= @nav_buttons.include?('sr360') %>,
     signin: <%= @nav_buttons.include?('signin') %>,
     signup: <%= @nav_buttons.include?('signup') %>,
+    chats: <%= @nav_buttons.include?('chats') %>,
   }"
 >
   <nav class="bg-srdr-primary">
     <div class="mx-auto px-4 lg:px-8">
       <div class="flex h-16 items-center justify-between">
         <div class="flex items-center">
-          <div class="flex-shrink-0">
-            <a href="/?no_redirect=true">
+          <div class="flex w-[250px] h-16">
+            <a class="inline w-[250px] h-16" href="/?no_redirect=true">
               <!-- prettier-ignore -->
-              <%= image_tag('brand.png', alt: 'srdrPLUS - Home', class: 'block h-8 w-auto lg:hidden') %></a
-            >
-            <a href="/?no_redirect=true">
-              <%= image_tag('brand.png', alt: 'srdrPLUS - Home', class: 'hidden
-              h-8 w-auto lg:block') %>
+              <%= image_tag('VADRR Top.png', alt: 'VADRR - Home', class: 'w-[250px] h-16') %>
             </a>
           </div>
           <div class="hidden lg:ml-6 lg:block">
@@ -109,6 +106,65 @@
           <div class="flex items-center space-x-4">
             <% if current_user %>
             <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="white"
+                class="size-6 cursor-pointer"
+                x-cloak
+                x-show="notification_enabled"
+                @click="setupNotification()"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5"
+                />
+              </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="white"
+                class="size-6 cursor-pointer"
+                x-cloak
+                x-show="!notification_enabled"
+                @click="setupNotification()"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9.143 17.082a24.248 24.248 0 0 0 3.844.148m-3.844-.148a23.856 23.856 0 0 1-5.455-1.31 8.964 8.964 0 0 0 2.3-5.542m3.155 6.852a3 3 0 0 0 5.667 1.97m1.965-2.277L21 21m-4.225-4.225a23.81 23.81 0 0 0 3.536-1.003A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6.53 6.53m10.245 10.245L6.53 6.53M3 3l3.53 3.53"
+                />
+              </svg>
+            </div>
+            <div>
+              <a href="/messages">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="white"
+                  class="size-6 cursor-pointer"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"
+                  />
+                </svg>
+              </a>
+            </div>
+            <% if current_user && current_user.admin? %>
+              <div>
+                <%= link_to "New User Form", users_new_path, class: "rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white" %>
+              </div>
+            <% end %>
+            <div>
               <a
                 href="<%= edit_user_registration_path %>"
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
@@ -123,14 +179,6 @@
                 class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
                 :class="signin && 'bg-srdr-secondary !text-white underline'"
                 >Login</a
-              >
-            </div>
-            <div>
-              <a
-                href="<%= new_user_registration_path %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
-                :class="signup && 'bg-srdr-secondary !text-white underline'"
-                >Register</a
               >
             </div>
             <% end %>
@@ -260,18 +308,12 @@
           >Account</a
         >
         <% else %>
-        <a
-          href="<%= new_user_session_path %>"
-          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
-          :class="signin && 'bg-srdr-secondary text-white'"
-          >Login</a
-        >
-        <a
-          href="<%= new_user_registration_path %>"
-          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
-          :class="signup && 'bg-srdr-secondary text-white'"
-          >Register</a
-        >
+          <a
+            href="<%= new_user_session_path %>"
+            class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+            :class="signin && 'bg-srdr-secondary text-white'"
+            >Login</a
+          >
         <% end %>
       </div>
     </div>
@@ -279,42 +321,43 @@
     <!-- prettier-ignore -->
     <% if add_submenu?(controller_name, action_name, controller, @publishable_record) %>
       <% project = find_project(@project, @extraction, @extraction_forms_project, @question, @extraction_forms_projects_section, @publishable_record) %>
-      <div class="h-28 bg-srdr-secondary px-4 lg:px-8 text-white" >
-        <div class="flex h-12 items-center justify-between pt-4">
-          <div class="mb-4 mt-4">
-            <!-- prettier-ignore -->
-            <%= link_to "Project ID##{project.id}: #{project.name}",
+    <div class="h-28 bg-srdr-secondary px-4 lg:px-8 text-white">
+      <div class="flex h-12 items-center justify-between pt-4">
+        <div class="mb-4 mt-4">
+          <!-- prettier-ignore -->
+          <%= link_to "Project ID##{project.id}: #{project.name}",
                         project_citation_lifecycle_management_path(project),
                         class: "rounded-md text-xl font-medium text-gray-300 hover:text-white focus:text-white" %>
             <% if project.publishing.present? && project.publishing.approval.present? %>
-              <span
-                class="ml-4 inline-flex items-center rounded bg-green-100 px-2 py-0.5 text-xs font-bold text-green-800"
-                >Published</span
-              >
-            <% elsif project.publishing.present? %>
-              <span
-                class="ml-4 inline-flex items-center rounded bg-yellow-700 px-2 py-0.5 text-xs font-bold text-white"
-                >Publication Requested</span
-              >
-            <% else %>
-              <span
-                class="ml-4 inline-flex items-center rounded bg-gray-100 px-2 py-0.5 text-xs font-bold text-gray-800"
-                >Unpublished</span
-              >
-            <% end %>
-          </div>
-          <div class="ml-4" x-show="!extractions" x-cloak>
-            <a
-              href="<%= project_extractions_path(project) %>"
-              class="rounded-md px-2 py-1 text-xs font-medium bg-green-700 !text-white border-[0.5px] border-white"
-              >Go to Extractions
-            </a>
-          </div>
+          <span
+            class="ml-4 inline-flex items-center rounded bg-green-100 px-2 py-0.5 text-xs font-bold text-green-800"
+            >Published</span
+          >
+          <% elsif project.publishing.present? %>
+          <span
+            class="ml-4 inline-flex items-center rounded bg-yellow-700 px-2 py-0.5 text-xs font-bold text-white"
+            >Publication Requested</span
+          >
+          <% else %>
+          <span
+            class="ml-4 inline-flex items-center rounded bg-gray-100 px-2 py-0.5 text-xs font-bold text-gray-800"
+            >Unpublished</span
+          >
+          <% end %>
         </div>
-        <div class="flex h-8 items-center justify-between pt-4 bg-srdr-secondary">
-          <%= render "projects/index/project_list_item_dropdown_links", project: project, index: 0, usage: 'project-navigation' %>
+        <div class="ml-4" x-show="!extractions" x-cloak>
+          <a
+            href="<%= project_extractions_path(project) %>"
+            class="rounded-md px-2 py-1 text-xs font-medium bg-green-700 !text-white border-[0.5px] border-white"
+            >Go to Extractions
+          </a>
         </div>
       </div>
+      <div class="flex h-8 items-center justify-between pt-4 bg-srdr-secondary">
+        <%= render "projects/index/project_list_item_dropdown_links", project:
+        project, index: 0, usage: 'project-navigation' %>
+      </div>
+    </div>
     <% end %>
   </nav>
 </div>

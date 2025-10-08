@@ -12,6 +12,7 @@
 #  hidden                                    :boolean          default(FALSE)
 #  helper_message                            :string(255)
 #  pos                                       :integer          default(999999)
+#  instructions                              :text(65535)
 #
 
 class ExtractionFormsProjectsSection < ApplicationRecord

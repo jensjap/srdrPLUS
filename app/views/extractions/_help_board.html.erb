@@ -1,0 +1,256 @@
+<div
+  class="relative z-10"
+  aria-labelledby="slide-over-title"
+  role="dialog"
+  aria-modal="true"
+  x-cloak
+  x-show="$store.sharedExtractionStore.help_board"
+  x-data="help_board"
+>
+  <div
+    class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+    aria-hidden="true"
+    x-transition:enter="ease-in-out duration-500"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="ease-in-out duration-500"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    x-show="$store.sharedExtractionStore.help_board"
+  ></div>
+  <div class="fixed inset-0 overflow-hidden">
+    <div class="absolute inset-0 overflow-hidden">
+      <div
+        class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 overflow-hidden"
+      >
+        <div
+          class="pointer-events-auto w-screen max-w-6xl"
+          x-cloak
+          x-transition:enter="transform transition ease-in-out duration-500 sm:duration-700"
+          x-transition:enter-start="translate-x-full"
+          x-transition:enter-end="translate-x-0"
+          x-transition:leave="transform transition ease-in-out duration-500 sm:duration-700"
+          x-transition:leave-start="translate-x-0"
+          x-transition:leave-end="translate-x-full"
+          x-show="$store.sharedExtractionStore.help_board"
+          @click.outside="$store.sharedExtractionStore.help_board = false"
+        >
+          <div class="flex h-full flex-col bg-white py-6 shadow-xl">
+            <div class="px-4 sm:px-6">
+              <div class="flex items-start justify-between">
+                <h2
+                  class="text-base font-semibold leading-6 text-gray-900 flex items-center"
+                >
+                  Message Boards
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1"
+                    stroke="currentColor"
+                    class="size-4 ml-2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
+                    />
+                  </svg>
+                </h2>
+                <div class="ml-3 flex h-7 items-center">
+                  <button
+                    @click="$store.sharedExtractionStore.help_board = false"
+                    type="button"
+                    class="cursor-pointer relative rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  >
+                    <span class="absolute -inset-2.5"></span>
+                    <span class="sr-only">Close panel</span>
+                    <svg
+                      class="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="relative flex-1 px-4 sm:px-6 flex space-x-1 min-h-0">
+              <template x-for="chatColumn in chatColumns" :key="chatColumn.key">
+                <%= render 'help_board_chat' %>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener("alpine:init", () => {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+    };
+    Alpine.data("help_board", () => ({
+      project_messages: [],
+      citations_project_messages: [],
+      extraction_messages: [],
+      current_user_id: null,
+      project_id: null,
+      citations_project_id: null,
+      extraction_id: null,
+      chatColumns: [
+        {
+          title: "Project",
+          key: "project_messages",
+        },
+        {
+          title: "Citation",
+          key: "citations_project_messages",
+        },
+        {
+          title: "Extraction",
+          key: "extraction_messages",
+        },
+      ],
+
+      async init() {
+        await this.fetchIds();
+        await this.fetchMessages(
+          "project_messages",
+          `project-${this.project_id}`
+        );
+        await this.fetchMessages(
+          "citations_project_messages",
+          `citations_project-${this.citations_project_id}`
+        );
+        await this.fetchMessages(
+          "extraction_messages",
+          `extraction-${this.extraction_id}`
+        );
+        await this.setupWS();
+      },
+
+      getHelpKeyByKey(key) {
+        if (key === "project_messages") {
+          return `project-${this.project_id}`;
+        } else if (key === "citations_project_messages") {
+          return `citations_project-${this.citations_project_id}`;
+        } else if (key === "extraction_messages") {
+          return `extraction-${this.extraction_id}`;
+        }
+      },
+
+      getMessagesByKey(key) {
+        return this[key];
+      },
+
+      async fetchIds() {
+        const response = await fetch(window.location.href, {
+          method: "GET",
+          headers,
+        });
+        const data = await response.json();
+        this.project_id = data.project_id;
+        this.citations_project_id = data.citations_project_id;
+        this.extraction_id = data.extraction_id;
+      },
+
+      async fetchMessages(messages, help_key) {
+        const response = await fetch(`/messages?help_key=${help_key}`, {
+          method: "GET",
+          headers,
+        });
+        const data = await response.json();
+        this[messages] = data.messages;
+        this.current_user_id = data.current_user_id;
+      },
+
+      async sendMessage(input, help_key) {
+        if (input.value === "") return;
+
+        const response = await fetch("/messages", {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            help_key,
+            text: input.value,
+            project_id: this.project_id,
+            extraction_id: this.extraction_id,
+          }),
+        });
+        input.value = "";
+      },
+
+      async destroyMessage(message, messages) {
+        if (!confirm("Are you sure you want to delete this message?")) return;
+
+        const response = await fetch(`/messages/${message.id}`, {
+          method: "DELETE",
+          headers,
+        });
+        if (response.status >= 200 && response.status < 300) {
+          const index = messages.indexOf(message);
+          if (index > -1) {
+            messages.splice(index, 1);
+          }
+        }
+      },
+
+      async setupWS() {
+        const socket = new WebSocket("/cable");
+
+        socket.onopen = () => {
+          console.log("WS connected");
+          const msg = {
+            command: "subscribe",
+            identifier: JSON.stringify({
+              channel: "HelpChannel",
+              messageKeys: {
+                project: this.project_id,
+                citations_project: this.citations_project_id,
+                extraction: this.extraction_id,
+              },
+            }),
+          };
+          socket.send(JSON.stringify(msg));
+        };
+
+        socket.onclose = () => {
+          console.log("WS disconnected");
+        };
+
+        socket.onmessage = async (event) => {
+          const data = JSON.parse(event.data);
+          const message = data.message;
+          if (data.type === "ping" || message === undefined) {
+            return;
+          }
+          if (message.message_type === "message") {
+            if (message.help_key.startsWith("project-")) {
+              this.project_messages.unshift(message);
+            } else if (message.help_key.startsWith("citations_project-")) {
+              this.citations_project_messages.unshift(message);
+            } else if (message.help_key.startsWith("extraction-")) {
+              this.extraction_messages.unshift(message);
+            }
+          }
+        };
+        socket.onerror = (error) => {
+          console.log("WS error: ", error);
+        };
+      },
+    }));
+  });
+</script>

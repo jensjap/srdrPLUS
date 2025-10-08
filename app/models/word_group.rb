@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: word_groups
+#
+#  id                    :bigint           not null, primary key
+#  name                  :string(255)      not null
+#  color                 :string(255)
+#  abstract_screening_id :bigint           not null
+#  user_id               :bigint           not null
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  case_sensitive        :boolean          default(FALSE)
+#
 class WordGroup < ApplicationRecord
   belongs_to :abstract_screening
   belongs_to :user

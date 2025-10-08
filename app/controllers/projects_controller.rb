@@ -17,6 +17,18 @@ class ProjectsController < ApplicationController
     import_pubmed import_endnote import_ris
   ]
 
+  def status
+    @project = Project.find(params[:project_id])
+    user_id = params[:user_id] == 'null' ? nil : params[:user_id]
+    authorize(@project)
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: ProjectService.status_report(@project, user_id)
+      end
+    end
+  end
+
   # GET /projects
   # GET /projects.json
   def index
@@ -43,6 +55,10 @@ class ProjectsController < ApplicationController
   end
 
   def edit
+    if project_blacklisted?(@project.id)
+      flash[:alert] = t('project_blacklisted', project_name: @project.name)
+      return
+    end
     authorize(@project)
 
     case params[:page]
@@ -391,7 +407,7 @@ class ProjectsController < ApplicationController
     @latest_model_time = MachineLearningStatisticService.latest_model_time(@project.id)
     @rejection_counter = MachineLearningStatisticService.count_recent_consecutive_rejects(@project.id)
     @estimated_coverage = MachineLearningStatisticService.get_estimated_coverage_to_total_size(@project.id)
-    @total_citation_number = @project.citations.count()
+    @total_citation_number = @project.citations.count
     @unscreened_citation_number = Citation
                                   .joins(:citations_projects)
                                   .where(citations_projects: { project_id: @project.id })
@@ -399,7 +415,7 @@ class ProjectsController < ApplicationController
                                   .where(abstract_screening_results: { id: nil })
                                   .count
     latest_ml_model = MlModel.joins(:projects)
-                             .where("projects.id = ?", @project.id)
+                             .where('projects.id = ?', @project.id)
                              .order(created_at: :desc)
                              .limit(1)
                              .first
@@ -419,7 +435,8 @@ class ProjectsController < ApplicationController
         map[item.citations_project_id] = item.score
       end
 
-      @searched_top_unscreened_citations = CitationsProject.search('*', where: { citations_project_id: citations_project_ids }, load: false)
+      @searched_top_unscreened_citations = CitationsProject.search('*',
+                                                                   where: { citations_project_id: citations_project_ids }, load: false)
       @searched_top_unscreened_citations.each do |result|
         result['ml_score'] = scores_map[result.citations_project_id]
       end
@@ -437,7 +454,7 @@ class ProjectsController < ApplicationController
     citation_ids = params[:project][:citation]
     respond_to do |format|
       format.json do
-        render status: 204 unless citation_ids.all?{ |x| x.is_a? Integer }
+        render status: 204 unless citation_ids.all? { |x| x.is_a? Integer }
         cres = CitationsRisExportService.new('RIS', @project.id, citation_ids)
         @payload = cres.export
         json_response = {
@@ -454,8 +471,9 @@ class ProjectsController < ApplicationController
   def set_project
     @project = Project
                .includes(publishing: :approval)
-               .includes(projects_users: [user: :profile])
+               .includes(projects_users: { user: :profile }, users: :profile)
                .find(params[:id])
+    @project_leader = ProjectPolicy.new(current_user, @project).project_leader?
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

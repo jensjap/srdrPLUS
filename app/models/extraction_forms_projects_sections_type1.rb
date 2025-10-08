@@ -9,6 +9,7 @@
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
 #  pos                                  :integer          default(999999)
+#  instructions                         :text(65535)
 #
 
 class ExtractionFormsProjectsSectionsType1 < ApplicationRecord

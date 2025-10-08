@@ -2,18 +2,13 @@
 module SeedData
   def self.extended(object)
     return if Rails.env.production?
+
     puts 'Running SeedData module.'
 
     object.instance_exec do
       # UserTypes.
       %w[Admin Member Trainee].each do |user_type|
         UserType.find_or_create_by!(user_type:)
-      end
-
-      # Frequency.
-      puts 'Updating frequencies table.'
-      %w[Daily Weekly Monthly Annually Scheduled].each do |name|
-        Frequency.find_or_create_by!(name:)
       end
 
       # ImportType.
@@ -26,26 +21,6 @@ module SeedData
       ['Distiller Section', '.csv', '.ris', '.xlsx', '.enl', 'PubMed', '.json'].each do |name|
         FileType.find_or_create_by!(name:)
       end
-
-      # MessageTypes.
-      puts 'Updating message_types table.'
-      @frequency_daily = Frequency.find_or_create_by!(name: 'Daily')
-      MessageType.find_or_create_by!(
-        name: 'Tip Of the Day',
-        frequency: @frequency_daily
-      )
-      MessageType.find_or_create_by!(
-        name: 'General Announcement',
-        frequency: @frequency_daily
-      )
-      MessageType.find_or_create_by!(
-        name: 'Maintenance Announcement',
-        frequency: @frequency_daily
-      )
-      MessageType.find_or_create_by!(
-        name: 'Publication Reminder',
-        frequency: Frequency.find_or_create_by!(name: 'Scheduled')
-      )
 
       # ActionTypes.
       %w[Create Destroy Update New Index Show Edit].each do |name|
@@ -1164,6 +1139,7 @@ end
 module SeedDataExtended
   def self.extended(object)
     return if Rails.env.production?
+
     puts 'Running SeedDataExtended module.'
 
     project_titles = [
@@ -1358,15 +1334,15 @@ module SeedDataExtended
         updated_at = Faker::Time.between(from: DateTime.now - 1000, to: DateTime.now - 1)
         User.current = User.first
         Project.find_or_create_by!(name: n[0],
-                       description: n[1],
-                       attribution: Faker::Creature::Cat.registry,
-                       methodology_description: Faker::Movies::HarryPotter.quote,
-                       prospero: Faker::Number.hexadecimal(digits: 12),
-                       doi: Faker::Number.hexadecimal(digits: 6),
-                       notes: Faker::Movies::HarryPotter.book,
-                       funding_source: Faker::Book.publisher,
-                       created_at: updated_at - rand(1000).hours,
-                       updated_at:)
+                                   description: n[1],
+                                   attribution: Faker::Creature::Cat.registry,
+                                   methodology_description: Faker::Movies::HarryPotter.quote,
+                                   prospero: Faker::Number.hexadecimal(digits: 12),
+                                   doi: Faker::Number.hexadecimal(digits: 6),
+                                   notes: Faker::Movies::HarryPotter.book,
+                                   funding_source: Faker::Book.publisher,
+                                   created_at: updated_at - rand(1000).hours,
+                                   updated_at:)
         Faker::UniqueGenerator.clear
       end
 
@@ -1451,16 +1427,6 @@ module SeedDataExtended
 
         # Assign a random sample of 50 citations to project.
         p.citations = Citation.all.sample(50)
-      end
-
-      # Messages.
-      @totd = MessageType.find_by(name: 'Tip of the Day')
-      100.times do
-        @totd.messages.find_or_create_by!(
-          name: Faker::Book.unique.title,
-          description: Faker::ChuckNorris.unique.fact,
-          start_at: 10.minute.ago)
-        Faker::UniqueGenerator.clear
       end
     end
   end

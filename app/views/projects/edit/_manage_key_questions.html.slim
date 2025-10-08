@@ -1,4 +1,4 @@
-div class="mx-auto p-4 lg:p-8" x-data="$store.deleteConfirmation"
+div class="mx-auto p-4 lg:p-8" x-data="$store.sharedExtractionStore"
   = render 'shared/alert_modal'
   - if @project.duplicate_key_question?
 
@@ -34,7 +34,7 @@ div class="mx-auto p-4 lg:p-8" x-data="$store.deleteConfirmation"
                 = t('edit')
               td
                 - delete_url = key_questions_project_path(kqp)
-                a href="#" @click.prevent="$store.deleteConfirmation.openModal('#{delete_url}')"
+                a href="#" @click.prevent="$store.sharedExtractionStore.openModal('#{delete_url}')"
                   i.fi-trash>
                   = t('remove')
 
@@ -56,7 +56,7 @@ div class="mx-auto p-4 lg:p-8" x-data="$store.deleteConfirmation"
 
 javascript:
   document.addEventListener('alpine:init', () => {
-    Alpine.store('deleteConfirmation', {
+    Alpine.store('sharedExtractionStore', {
       isAlertModalOpen: false,
       alertModalContent: 'Are you sure you want to delete this key question?<br> This action cannot be undone and might result in data loss.',
       deleteUrl: '',

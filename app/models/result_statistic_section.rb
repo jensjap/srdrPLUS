@@ -102,6 +102,19 @@ class ResultStatisticSection < ApplicationRecord
       .extraction_forms_projects_sections.last
   end
 
+  def measures_attributes=(attributes)
+    attributes.each do |key, attribute_collection|
+      next if attribute_collection.has_key? 'id'
+
+      Measure.transaction do
+        measure = Measure.find_or_create_by!(attribute_collection)
+        measures << measure unless measures.include?(measure)
+        attributes[key]['id'] = measure.id.to_s
+      end
+    end
+    super
+  end
+
   private
 
   def create_default_measures

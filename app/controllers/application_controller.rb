@@ -7,6 +7,8 @@ class ApplicationController < ActionController::Base
   # TODO: uncomment when controllers are set
   # after_action :verify_authorized, :verify_policy_scoped
 
+  include ApplicationHelper
+
   # rescue via custom method
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 

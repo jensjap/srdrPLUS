@@ -41,7 +41,13 @@ Rails.application.routes.draw do
   resources :review_types, only: %i[index create]
   resources :data_analysis_levels, only: [:index]
 
-  devise_for :admins
+  authenticate :user, ->(u) { u.admin? } do
+    post 'users' => 'users#create'
+    get 'users/new' => 'users#new'
+    mount Searchjoy::Engine, at: 'searchjoy'
+    mount Sidekiq::Web => '/sidekiq'
+  end
+
   devise_for :users, controllers: {
     confirmations: 'users/confirmations',
     passwords: 'users/passwords',
@@ -52,11 +58,6 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     post '/users/api_key_reset' => 'users/registrations#api_key_reset'
-  end
-
-  authenticate :user, lambda { |u| u.admin? } do
-    mount Searchjoy::Engine, at: 'searchjoy'
-    mount Sidekiq::Web => '/sidekiq'
   end
 
   apipie
@@ -234,11 +235,13 @@ Rails.application.routes.draw do
   resources :projects, concerns: :paginatable, shallow: true do
     resources :projects_reasons, only: %i[index create update destroy]
     resources :projects_tags, only: %i[index create update destroy]
+    resources :messages, only: %i[index]
 
     resources :consolidations
 
     get 'citation_lifecycle_management', to: 'abstract_screenings#citation_lifecycle_management'
     get 'kpis', to: 'abstract_screenings#kpis'
+    get 'status', to: 'projects#status'
     post 'export_screening_data', to: 'abstract_screenings#export_screening_data'
 
     resources :abstract_screenings do
@@ -447,6 +450,14 @@ Rails.application.routes.draw do
 
   post '/extractions/:id/approve', to: 'extractions#approve'
   post '/extractions/:id/disapprove', to: 'extractions#disapprove'
+  get '/rooms/:room_id/messages', to: 'messages#index'
+  resources :messages, shallow: true, only: %i[index create update destroy] do
+    resources :message_unreads, only: %i[destroy]
+  end
+
+  resources :rooms, shallow: true, only: %i[create destroy] do
+    resources :memberships, only: %i[index destroy create]
+  end
 
   resources :key_questions_projects_questions, only: %i[create destroy]
 end

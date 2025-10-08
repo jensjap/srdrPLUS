@@ -6,6 +6,7 @@
 #  question_row_columns_question_row_column_option_id :bigint
 #  created_at                                         :datetime         not null
 #  updated_at                                         :datetime         not null
+#  followup_field_id                                  :bigint
 #
 class FollowupField < ApplicationRecord
   attr_accessor :is_amoeba_copy

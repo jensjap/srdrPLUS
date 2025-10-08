@@ -1,0 +1,354 @@
+<div
+  class="flex flex-row h-[calc(100vh-64px)] text-gray-800 bg-gray-50"
+  x-data="chat"
+>
+  <!-- prettier-ignore -->
+  <%= render 'messages/navbar_chats' %>
+  <%= render 'messages/chat_window' %>
+  <%= render 'messages/user_menu' %>
+</div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    const headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+    };
+    Alpine.data("chat", () => ({
+      chatModal: false,
+      tab_type: "chats",
+      selected_room: null,
+      selected_rooms: [],
+      selected_messages: [],
+      messages: {},
+      current_user_id: null,
+      chat_text: {},
+      shiftPressed: false,
+      userMenu: true,
+      pinnedMenu: false,
+      userSearchString: "",
+      roomUsers: [],
+      allUsers: [],
+      threadMessages: [],
+      threadMessageId: null,
+      thread_chat_text: {},
+      message_selection_index: null,
+      members: [],
+      comboBoxQuery: "",
+
+      async init() {
+        await this.fetchRooms();
+        this.sortRooms();
+        await this.setupWS();
+      },
+
+      async openRoom(room) {
+        this.selected_room = room;
+        this.selected_messages = this.messages[room?.id] || [];
+        this.selected_messages.forEach((message) => {
+          if (message.message_id === null) {
+            this.destroyMessageUnread(message);
+          }
+        });
+        await this.fetchRoomUsers(room);
+      },
+
+      async fetchRoomUsers(room) {
+        this.roomUsers = [];
+        if (!room) {
+          return;
+        }
+
+        const response = await fetch(`/rooms/${room.id}/memberships`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.roomUsers = data;
+      },
+
+      sortRooms() {
+        this.selected_rooms = this.selected_rooms.sort((a, b) => {
+          const x =
+            (this.messages[a.id] && this.messages[a.id][0]?.created_at) || 0;
+          const y =
+            (this.messages[b.id] && this.messages[b.id][0]?.created_at) || 0;
+          return new Date(y) - new Date(x);
+        });
+      },
+
+      async togglePin(message) {
+        const response = await fetch(`/messages/${message.id}`, {
+          method: "PATCH",
+          headers,
+          body: JSON.stringify({
+            pinned: !message.pinned,
+          }),
+        });
+        if (response.status >= 200 && response.status < 300) {
+          message.pinned = !message.pinned;
+        }
+      },
+
+      async destroyRoom(room_id) {
+        if (!confirm("Are you sure you want to remove this user?")) return;
+
+        const response = await fetch(`/rooms/${room_id}`, {
+          method: "DELETE",
+          headers,
+        });
+        if (response.status >= 200 && response.status < 300) {
+          const data = await response.json();
+        }
+      },
+
+      async createRoom() {
+        const name = prompt("Please name the chat");
+        if (name === null) return;
+        const response = await fetch("/rooms/", {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            name,
+          }),
+        });
+        if (response.status >= 200 && response.status < 300) {
+          const data = await response.json();
+          this.selected_rooms.push(data);
+          this.messages[data.id] = [];
+          this.openRoom(data);
+        }
+      },
+
+      async destroyRoom(room) {
+        const id = room.id;
+        if (!confirm(`Are you sure you want to delete room: '${room.name}'?`)) {
+          return;
+        }
+
+        const response = await fetch(`/rooms/${id}`, {
+          method: "DELETE",
+          headers,
+        });
+        if (response.status >= 200 && response.status < 300) {
+          this.selected_rooms = this.selected_rooms.filter(
+            (sr) => sr.id !== id
+          );
+          this.roomUsers = [];
+          if (this.selected_room?.id === id) {
+            this.selected_room = null;
+            this.selected_messages = [];
+            delete this.messages[id];
+          }
+        }
+      },
+
+      async destroyMembership(membership_id) {
+        if (!confirm("Are you sure you want to remove this user?")) return;
+
+        const response = await fetch(`/memberships/${membership_id}`, {
+          method: "DELETE",
+          headers,
+        });
+        if (response.status >= 200 && response.status < 300) {
+          const data = await response.json();
+          this.roomUsers = data;
+        }
+      },
+
+      async createMembership(user_id) {
+        const response = await fetch(
+          `/rooms/${this.selected_room?.id}/memberships`,
+          {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+              room_id: this.selected_room?.id,
+              user_id,
+            }),
+          }
+        );
+        if (response.status >= 200 && response.status < 300) {
+          const data = await response.json();
+          this.roomUsers = data;
+        }
+      },
+
+      async destroyMessageUnread(message) {
+        if (message.read) return;
+
+        const response = await fetch(
+          `/message_unreads/${message.message_unread_id}`,
+          {
+            method: "DELETE",
+            headers,
+          }
+        );
+        if (response.status >= 200 && response.status < 300) {
+          message.read = true;
+          message.unread_message_id = null;
+        }
+      },
+
+      async destroyMessage(message, messages) {
+        if (!confirm("Are you sure you want to delete this message?")) return;
+
+        const response = await fetch(`/messages/${message.id}`, {
+          method: "DELETE",
+          headers,
+        });
+        if (response.status >= 200 && response.status < 300) {
+          const index = messages.indexOf(message);
+          if (index > -1) {
+            messages.splice(index, 1);
+          }
+        }
+      },
+
+      async sendMessage(threadMessage = false) {
+        if (
+          !threadMessage &&
+          (!this.chat_text[this.selected_room?.id] ||
+            this.chat_text[this.selected_room?.id].trim().length === 0)
+        )
+          return;
+
+        if (
+          threadMessage &&
+          (!this.thread_chat_text[this.selected_room?.id] ||
+            this.thread_chat_text[this.selected_room?.id].trim().length === 0)
+        )
+          return;
+
+        const response = await fetch("/messages", {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            room_id: this.selected_room?.id,
+            text: threadMessage
+              ? this.thread_chat_text[this.selected_room?.id]
+              : this.chat_text[this.selected_room?.id],
+            message_id: threadMessage ? this.threadMessageId : null,
+          }),
+        });
+        const data = await response.json();
+        if (response.status >= 200 && response.status < 300) {
+          if (threadMessage) {
+            this.thread_chat_text[this.selected_room?.id] = "";
+          } else {
+            this.chat_text[this.selected_room?.id] = "";
+          }
+        }
+      },
+
+      async fetchRooms() {
+        const response = await fetch("/messages", {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.selected_rooms = data.chat_rooms;
+        this.messages = data.messages;
+        this.current_user_id = data.current_user_id;
+        this.allUsers = data.all_users;
+      },
+
+      async getMessages(room) {
+        const response = await fetch(`/rooms/${room.id}/messages`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await response.json();
+        this.messages = {
+          ...this.messages,
+          ...data.messages,
+        };
+      },
+
+      async setupWS() {
+        const socket = new WebSocket("/cable");
+
+        socket.onopen = () => {
+          console.log("WS connected");
+          const msg = {
+            command: "subscribe",
+            identifier: JSON.stringify({
+              channel: "ChatChannel",
+            }),
+          };
+          socket.send(JSON.stringify(msg));
+        };
+
+        socket.onclose = () => {
+          console.log("WS disconnected");
+        };
+
+        socket.onmessage = async (event) => {
+          const data = JSON.parse(event.data);
+          const message = data.message;
+          if (data.type === "ping" || message === undefined) {
+            return;
+          }
+
+          if (message.message_type === "add-membership") {
+            this.selected_rooms.push(message.room);
+            this.getMessages(message.room);
+            return;
+          }
+
+          if (message.message_type === "remove-membership") {
+            this.messages[message.room.id] = [];
+            this.selected_rooms = this.selected_rooms.filter(
+              (room) => room.id !== message.room.id
+            );
+            if (this.selected_room?.id === message.room.id) {
+              this.selected_room = null;
+              this.selected_messages = [];
+            }
+            return;
+          }
+
+          if (message.message_type === "message") {
+            if (
+              message.room.id === this.selected_room?.id &&
+              (message.message_id === null ||
+                message.message_id === this.threadMessageId)
+            ) {
+              await this.destroyMessageUnread(message);
+            }
+            this.messages[message.room.id]
+              ? this.messages[message.room.id].unshift(message)
+              : (this.messages[message.room.id] = [message]);
+            if (message.message_id) {
+              for (const m of this.messages[message.room.id]) {
+                if (m.id === message.message_id) {
+                  m.messages.unshift(message);
+                }
+              }
+            }
+
+            if (message.room.id === this.selected_room?.id) {
+              this.selected_messages = this.messages[message.room.id];
+            }
+            this.sortRooms();
+            return;
+          }
+        };
+        socket.onerror = (error) => {
+          console.log("WS error: ", error);
+        };
+      },
+    }));
+  });
+</script>
