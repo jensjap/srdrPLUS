@@ -52,13 +52,6 @@
                   </div>
                 </td>
               <% end %>
-              <%# <td style="font-weight: <%= sd_meta_datum.state == 'DRAFT' ? 'normal' : 'bold' %>;"> <%= sd_meta_datum.state %> </td> %>
-              <%# <td>
-                <%= simple_form_for(sd_meta_datum, url: sd_meta_datum_path(sd_meta_datum)) do |f| %>
-                  <%= f.input :state, as: :hidden, input_html: { value: sd_meta_datum.state == 'DRAFT' ? 'COMPLETED' : 'DRAFT' } %>
-                  <%= f.button :submit, 'Toggle State', class: 'state-toggler', state: sd_meta_datum.state, data_sections_complete: sd_meta_datum.all_sections_complete? %>
-                <% end %>
-              </td> %>
               <td><%= distance_of_time_in_words_to_now(sd_meta_datum.updated_at) %> ago</td>
               <td><%= link_to('View', sd_meta_datum) %></td>
               <td><%= link_to "Work", edit_sd_meta_datum_path(sd_meta_datum.id), class: "sd-meta-data-index-edit" %></td>
