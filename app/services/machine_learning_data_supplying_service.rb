@@ -82,6 +82,7 @@ class MachineLearningDataSupplyingService
                           .joins("LEFT OUTER JOIN abstract_screening_results ON abstract_screening_results.citations_project_id = cp1.id")
                           .where("abstract_screening_results.id IS NULL OR cp1.id IS NULL")
                           .where.not(name: [nil, ''], abstract: [nil, ''])
+                          .distinct
                           .pluck(:id, :name, :abstract)
                           .reject { |id, name, abstract| name.nil? || abstract.nil? }
                           .map do |id, name, abstract|
@@ -133,5 +134,83 @@ class MachineLearningDataSupplyingService
     end
 
     scores_intervals
+  end
+
+  def self.get_labeled_id_label(project_id)
+    project = Project.find(project_id)
+    return [] unless project.abstract_screening_results.exists?
+
+    rows = project.abstract_screening_results
+                  .includes(citations_project: [:citation, :screening_qualifications])
+                  .map do |asr|
+      citation = asr.citation
+      next if citation.nil? || citation.name.blank? || citation.abstract.blank? || asr.label.nil?
+
+      screening_qualifications = asr.citations_project&.screening_qualifications || []
+      as_rejected = screening_qualifications.any? { |sq| sq.qualification_type == 'as-rejected' }
+      as_accepted = screening_qualifications.any? { |sq| sq.qualification_type == 'as-accepted' }
+
+      label_value =
+        if as_rejected
+          '0'
+        elsif as_accepted
+          '1'
+        else
+          asr.label == 1 ? '1' : '0'
+        end
+
+      {
+        citation_id: citation.id,
+        ti:  citation.name.gsub('"', "'"),
+        abs: citation.abstract.gsub('"', "'"),
+        label: label_value,
+        privileged: (asr.privileged || as_accepted || as_rejected) ? true : false
+      }
+    end.compact
+
+    grouped = {}
+    rows.each do |data|
+      key = [data[:ti], data[:abs]]
+      (grouped[key] ||= []) << data
+    end
+
+    results = []
+
+    grouped.each_value do |values|
+      if values.size > 1
+        privileged_data = values.find { |v| v[:privileged] }
+        if privileged_data
+          chosen = privileged_data
+        else
+          same_label_data = values.group_by { |v| v[:label] }
+                                  .select { |_, arr| arr.size > 1 }
+                                  .values
+                                  .flatten
+          chosen = same_label_data.any? ? same_label_data.first : nil
+        end
+      else
+        chosen = values.first
+      end
+
+      results << { citation_id: chosen[:citation_id], label: chosen[:label] } if chosen
+    end
+
+    results
+  end
+
+  def self.get_unlabeled_citation_ids(project_id)
+    project = Project.find(project_id)
+
+    project_ids = project.citations
+                          .joins("LEFT OUTER JOIN citations_projects AS cp1 ON cp1.citation_id = citations.id AND cp1.project_id = #{project_id}")
+                          .joins("LEFT OUTER JOIN abstract_screening_results ON abstract_screening_results.citations_project_id = cp1.id")
+                          .where("abstract_screening_results.id IS NULL OR cp1.id IS NULL")
+                          .where.not(name: [nil, ''], abstract: [nil, ''])
+                          .distinct
+                          .pluck(:id, :name, :abstract)
+                          .reject { |id, name, abstract| name.nil? || abstract.nil? }
+                          .map { |id, _name, _abstract| id }
+
+    project_ids
   end
 end
