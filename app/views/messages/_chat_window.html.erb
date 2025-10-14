@@ -96,7 +96,7 @@
             }"
             >
               <div
-                x-text="message.text"
+                x-html="renderMessageWithExtractionLinks(message.text)"
                 class="whitespace-pre-wrap"
                 @click="destroyMessageUnread(message)"
               ></div>
@@ -212,7 +212,7 @@
             }"
             >
               <div
-                x-text="message.text"
+                x-html="renderMessageWithExtractionLinks(message.text)"
                 class="whitespace-pre-wrap"
                 @click="destroyMessageUnread(message)"
               ></div>
@@ -284,7 +284,7 @@
               }"
             >
               <div
-                x-text="message.text"
+                x-html="renderMessageWithExtractionLinks(message.text)"
                 class="whitespace-pre-wrap"
                 @click="destroyMessageUnread(message)"
               ></div>
@@ -400,7 +400,7 @@
               }"
             >
               <div
-                x-text="message.text"
+                x-html="renderMessageWithExtractionLinks(message.text)"
                 class="whitespace-pre-wrap"
                 @click="destroyMessageUnread(message)"
               ></div>
@@ -439,49 +439,138 @@
 
   <div class="flex flex-row items-center w-full h-32">
     <div class="w-full flex relative">
-      <textarea
-        :disabled="!selected_room"
-        maxlength="65000"
-        rows="5"
-        type="text"
-        class="w-full !text-sm !p-2 !resize-none"
-        placeholder="Type message..."
-        x-ref="chattextarea"
-        x-model="chat_text[selected_room?.id]"
-        @keydown.shift="shiftPressed = true"
-        @keyup.shift="shiftPressed = false"
-        @keydown.enter.prevent="let insert;
-        if (shiftPressed) {
-          const insert = '\n';
-          const start = $event.target.selectionStart;
-          const end = $event.target.selectionEnd;
-          const oldValue = $event.target.value;
-          const newValue = oldValue.slice(0, start) + insert + oldValue.slice(end)
-          chat_text[selected_room?.id] = newValue
-          $event.target.value = newValue;
-          $event.target.selectionStart = $event.target.selectionEnd = start + insert.length;
-        } else {
-          sendMessage()
-        }"
-      ></textarea>
-      <textarea
-        x-cloak
-        x-show="threadMessageId"
-        :disabled="!selected_room"
-        maxlength="65000"
-        rows="5"
-        type="text"
-        class="w-full !text-sm !p-2 !resize-none"
-        placeholder="Type message..."
-        x-model="thread_chat_text[selected_room?.id]"
-        @keydown.shift="shiftPressed = true"
-        @keyup.shift="shiftPressed = false"
-        @keydown.enter.prevent="if (shiftPressed) {
-          return $event.target.value = $event.target.value + '\n'
-        }
-        sendMessage(true)
-        "
-      ></textarea>
+      <div class="relative w-full">
+        <textarea
+          :disabled="!selected_room"
+          maxlength="65000"
+          rows="5"
+          type="text"
+          class="w-full !text-sm !p-2 !resize-none font-mono"
+          placeholder="Type message... (Use # for extractions, @ for users)"
+          x-ref="chattextarea"
+          x-model="chat_text[selected_room?.id]"
+          @keydown.shift="shiftPressed = true"
+          @keyup.shift="shiftPressed = false"
+          @keydown="handleTextareaKeydown($event)"
+          @input="handleTextareaInput($event)"
+        ></textarea>
+
+        <!-- Extraction autocomplete dropdown -->
+        <div
+          x-show="showExtractionDropdown && extractionOptions.length > 0"
+          x-transition
+          x-ref="extractionDropdown"
+          class="absolute bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto z-50"
+          :style="`top: ${dropdownPosition.top}px; left: ${dropdownPosition.left}px; min-width: 300px;`"
+        >
+          <template x-for="(option, index) in extractionOptions" :key="option.id">
+            <div
+              x-ref="extractionOption"
+              class="px-3 py-2 cursor-pointer hover:bg-blue-100 text-sm border-b border-gray-100 last:border-b-0"
+              :class="{ 'bg-blue-100': index === selectedOptionIndex }"
+              @click="selectExtraction(option)"
+              x-text="option.display_text"
+            ></div>
+          </template>
+          <div
+            x-show="extractionOptions.length === 0 && extractionSearchQuery.length > 0"
+            class="px-3 py-2 text-sm text-gray-500"
+          >
+            No extractions found
+          </div>
+        </div>
+
+        <!-- User autocomplete dropdown -->
+        <div
+          x-show="showUserDropdown && userOptions.length > 0"
+          x-transition
+          x-ref="userDropdown"
+          class="absolute bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto z-50"
+          :style="`top: ${userDropdownPosition.top}px; left: ${userDropdownPosition.left}px; min-width: 300px;`"
+        >
+          <template x-for="(option, index) in userOptions" :key="option.id">
+            <div
+              x-ref="userOption"
+              class="px-3 py-2 cursor-pointer hover:bg-green-100 text-sm border-b border-gray-100 last:border-b-0"
+              :class="{ 'bg-green-100': index === selectedUserOptionIndex }"
+              @click="selectUser(option)"
+              x-text="option.display_text"
+            ></div>
+          </template>
+          <div
+            x-show="userOptions.length === 0 && userSearchQuery.length > 0"
+            class="px-3 py-2 text-sm text-gray-500"
+          >
+            No users found
+          </div>
+        </div>
+      </div>
+
+      <div class="relative w-full" x-cloak x-show="threadMessageId">
+        <textarea
+          :disabled="!selected_room"
+          maxlength="65000"
+          rows="5"
+          type="text"
+          class="w-full !text-sm !p-2 !resize-none font-mono"
+          placeholder="Type message... (Use # for extractions, @ for users)"
+          x-model="thread_chat_text[selected_room?.id]"
+          @keydown.shift="shiftPressed = true"
+          @keyup.shift="shiftPressed = false"
+          @keydown="handleThreadTextareaKeydown($event)"
+          @input="handleThreadTextareaInput($event)"
+        ></textarea>
+
+        <!-- Extraction autocomplete dropdown for thread textarea -->
+        <div
+          x-show="showThreadExtractionDropdown && threadExtractionOptions.length > 0"
+          x-transition
+          x-ref="threadExtractionDropdown"
+          class="absolute bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto z-50"
+          :style="`top: ${threadDropdownPosition.top}px; left: ${threadDropdownPosition.left}px; min-width: 300px;`"
+        >
+          <template x-for="(option, index) in threadExtractionOptions" :key="option.id">
+            <div
+              x-ref="threadExtractionOption"
+              class="px-3 py-2 cursor-pointer hover:bg-blue-100 text-sm border-b border-gray-100 last:border-b-0"
+              :class="{ 'bg-blue-100': index === selectedThreadOptionIndex }"
+              @click="selectThreadExtraction(option)"
+              x-text="option.display_text"
+            ></div>
+          </template>
+          <div
+            x-show="threadExtractionOptions.length === 0 && threadExtractionSearchQuery.length > 0"
+            class="px-3 py-2 text-sm text-gray-500"
+          >
+            No extractions found
+          </div>
+        </div>
+
+        <!-- User autocomplete dropdown for thread textarea -->
+        <div
+          x-show="showThreadUserDropdown && threadUserOptions.length > 0"
+          x-transition
+          x-ref="threadUserDropdown"
+          class="absolute bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto z-50"
+          :style="`top: ${threadUserDropdownPosition.top}px; left: ${threadUserDropdownPosition.left}px; min-width: 300px;`"
+        >
+          <template x-for="(option, index) in threadUserOptions" :key="option.id">
+            <div
+              x-ref="threadUserOption"
+              class="px-3 py-2 cursor-pointer hover:bg-green-100 text-sm border-b border-gray-100 last:border-b-0"
+              :class="{ 'bg-green-100': index === selectedThreadUserOptionIndex }"
+              @click="selectThreadUser(option)"
+              x-text="option.display_text"
+            ></div>
+          </template>
+          <div
+            x-show="threadUserOptions.length === 0 && threadUserSearchQuery.length > 0"
+            class="px-3 py-2 text-sm text-gray-500"
+          >
+            No users found
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

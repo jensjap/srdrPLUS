@@ -88,6 +88,8 @@ Rails.application.routes.draw do
           end
         end
       end
+      resources :user_extractions, only: [:index]
+      resources :user_project_members, only: [:index]
       resources :orderings do
         collection do
           patch 'update_positions'

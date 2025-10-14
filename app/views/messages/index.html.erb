@@ -38,6 +38,40 @@
       members: [],
       comboBoxQuery: "",
 
+      // Extraction tagging properties
+      showExtractionDropdown: false,
+      extractionOptions: [],
+      extractionSearchQuery: "",
+      selectedOptionIndex: -1,
+      dropdownPosition: { top: 0, left: 0 },
+      hashtagStartPosition: -1,
+      currentTextarea: null,
+
+      // Thread textarea extraction tagging
+      showThreadExtractionDropdown: false,
+      threadExtractionOptions: [],
+      threadExtractionSearchQuery: "",
+      selectedThreadOptionIndex: -1,
+      threadDropdownPosition: { top: 0, left: 0 },
+      threadHashtagStartPosition: -1,
+
+      // User tagging properties
+      showUserDropdown: false,
+      userOptions: [],
+      userSearchQuery: "",
+      selectedUserOptionIndex: -1,
+      userDropdownPosition: { top: 0, left: 0 },
+      atSymbolStartPosition: -1,
+      currentUserTextarea: null,
+
+      // Thread textarea user tagging
+      showThreadUserDropdown: false,
+      threadUserOptions: [],
+      threadUserSearchQuery: "",
+      selectedThreadUserOptionIndex: -1,
+      threadUserDropdownPosition: { top: 0, left: 0 },
+      threadAtSymbolStartPosition: -1,
+
       async init() {
         await this.fetchRooms();
         this.sortRooms();
@@ -348,6 +382,506 @@
         socket.onerror = (error) => {
           console.log("WS error: ", error);
         };
+      },
+
+      // Extraction tagging methods
+      async handleTextareaKeydown(event) {
+        this.currentTextarea = event.target;
+        this.currentUserTextarea = event.target;
+
+        // Handle extraction dropdown
+        if (this.showExtractionDropdown) {
+          if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            this.selectedOptionIndex = Math.min(this.selectedOptionIndex + 1, this.extractionOptions.length - 1);
+            this.scrollDropdownToSelected('extraction');
+          } else if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            this.selectedOptionIndex = Math.max(this.selectedOptionIndex - 1, 0);
+            this.scrollDropdownToSelected('extraction');
+          } else if (event.key === 'Enter') {
+            event.preventDefault();
+            if (this.selectedOptionIndex >= 0 && this.extractionOptions[this.selectedOptionIndex]) {
+              this.selectExtraction(this.extractionOptions[this.selectedOptionIndex]);
+            }
+            return;
+          } else if (event.key === 'Escape') {
+            event.preventDefault();
+            this.hideExtractionDropdown();
+          }
+          return;
+        }
+
+        // Handle user dropdown
+        if (this.showUserDropdown) {
+          if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            this.selectedUserOptionIndex = Math.min(this.selectedUserOptionIndex + 1, this.userOptions.length - 1);
+            this.scrollDropdownToSelected('user');
+          } else if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            this.selectedUserOptionIndex = Math.max(this.selectedUserOptionIndex - 1, 0);
+            this.scrollDropdownToSelected('user');
+          } else if (event.key === 'Enter') {
+            event.preventDefault();
+            if (this.selectedUserOptionIndex >= 0 && this.userOptions[this.selectedUserOptionIndex]) {
+              this.selectUser(this.userOptions[this.selectedUserOptionIndex]);
+            }
+            return;
+          } else if (event.key === 'Escape') {
+            event.preventDefault();
+            this.hideUserDropdown();
+          }
+          return;
+        }
+
+        // Handle Enter key when no dropdown is open
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault();
+          this.sendMessage();
+        } else if (event.key === 'Enter' && event.shiftKey) {
+          // Allow default behavior for shift+enter (new line)
+        }
+      },      async handleTextareaInput(event) {
+        const textarea = event.target;
+        const cursorPosition = textarea.selectionStart;
+        const text = textarea.value;
+
+        // Find hashtag before cursor (for extractions)
+        const beforeCursor = text.substring(0, cursorPosition);
+        const hashtagMatch = beforeCursor.match(/#([^#\s@]*)$/);
+        const atSymbolMatch = beforeCursor.match(/@([^#\s@]*)$/);
+
+        // Handle extraction tagging
+        if (hashtagMatch && !atSymbolMatch) {
+          this.hideUserDropdown(); // Hide user dropdown if open
+          this.hashtagStartPosition = beforeCursor.lastIndexOf('#');
+          this.extractionSearchQuery = hashtagMatch[1];
+          await this.searchExtractions(this.extractionSearchQuery);
+          this.showExtractionDropdown = true;
+          this.selectedOptionIndex = 0;
+          this.positionDropdown(textarea, this.hashtagStartPosition, 'extraction');
+        }
+        // Handle user tagging
+        else if (atSymbolMatch && !hashtagMatch) {
+          this.hideExtractionDropdown(); // Hide extraction dropdown if open
+          this.atSymbolStartPosition = beforeCursor.lastIndexOf('@');
+          this.userSearchQuery = atSymbolMatch[1];
+          await this.searchUsers(this.userSearchQuery);
+          this.showUserDropdown = true;
+          this.selectedUserOptionIndex = 0;
+          this.positionDropdown(textarea, this.atSymbolStartPosition, 'user');
+        }
+        // Hide both dropdowns if no matches
+        else {
+          this.hideExtractionDropdown();
+          this.hideUserDropdown();
+        }
+      },
+
+      async handleThreadTextareaKeydown(event) {
+        // Handle extraction dropdown
+        if (this.showThreadExtractionDropdown) {
+          if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            this.selectedThreadOptionIndex = Math.min(this.selectedThreadOptionIndex + 1, this.threadExtractionOptions.length - 1);
+            this.scrollThreadDropdownToSelected('extraction');
+          } else if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            this.selectedThreadOptionIndex = Math.max(this.selectedThreadOptionIndex - 1, 0);
+            this.scrollThreadDropdownToSelected('extraction');
+          } else if (event.key === 'Enter') {
+            event.preventDefault();
+            if (this.selectedThreadOptionIndex >= 0 && this.threadExtractionOptions[this.selectedThreadOptionIndex]) {
+              this.selectThreadExtraction(this.threadExtractionOptions[this.selectedThreadOptionIndex]);
+            }
+            return;
+          } else if (event.key === 'Escape') {
+            event.preventDefault();
+            this.hideThreadExtractionDropdown();
+          }
+          return;
+        }
+
+        // Handle user dropdown
+        if (this.showThreadUserDropdown) {
+          if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            this.selectedThreadUserOptionIndex = Math.min(this.selectedThreadUserOptionIndex + 1, this.threadUserOptions.length - 1);
+            this.scrollThreadDropdownToSelected('user');
+          } else if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            this.selectedThreadUserOptionIndex = Math.max(this.selectedThreadUserOptionIndex - 1, 0);
+            this.scrollThreadDropdownToSelected('user');
+          } else if (event.key === 'Enter') {
+            event.preventDefault();
+            if (this.selectedThreadUserOptionIndex >= 0 && this.threadUserOptions[this.selectedThreadUserOptionIndex]) {
+              this.selectThreadUser(this.threadUserOptions[this.selectedThreadUserOptionIndex]);
+            }
+            return;
+          } else if (event.key === 'Escape') {
+            event.preventDefault();
+            this.hideThreadUserDropdown();
+          }
+          return;
+        }
+
+        // Handle Enter key when no dropdown is open
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault();
+          this.sendMessage(true);
+        } else if (event.key === 'Enter' && event.shiftKey) {
+          // Allow default behavior for shift+enter (new line)
+        }
+      },
+
+      async handleThreadTextareaInput(event) {
+        const textarea = event.target;
+        const cursorPosition = textarea.selectionStart;
+        const text = textarea.value;
+
+        // Find hashtag or @ symbol before cursor
+        const beforeCursor = text.substring(0, cursorPosition);
+        const hashtagMatch = beforeCursor.match(/#([^#\s@]*)$/);
+        const atSymbolMatch = beforeCursor.match(/@([^#\s@]*)$/);
+
+        // Handle extraction tagging
+        if (hashtagMatch && !atSymbolMatch) {
+          this.hideThreadUserDropdown();
+          this.threadHashtagStartPosition = beforeCursor.lastIndexOf('#');
+          this.threadExtractionSearchQuery = hashtagMatch[1];
+          await this.searchThreadExtractions(this.threadExtractionSearchQuery);
+          this.showThreadExtractionDropdown = true;
+          this.selectedThreadOptionIndex = 0;
+          this.positionThreadDropdown(textarea, this.threadHashtagStartPosition, 'extraction');
+        }
+        // Handle user tagging
+        else if (atSymbolMatch && !hashtagMatch) {
+          this.hideThreadExtractionDropdown();
+          this.threadAtSymbolStartPosition = beforeCursor.lastIndexOf('@');
+          this.threadUserSearchQuery = atSymbolMatch[1];
+          await this.searchThreadUsers(this.threadUserSearchQuery);
+          this.showThreadUserDropdown = true;
+          this.selectedThreadUserOptionIndex = 0;
+          this.positionThreadDropdown(textarea, this.threadAtSymbolStartPosition, 'user');
+        }
+        // Hide both dropdowns
+        else {
+          this.hideThreadExtractionDropdown();
+          this.hideThreadUserDropdown();
+        }
+      },      async searchExtractions(query) {
+        try {
+          const response = await fetch(`/api/v1/user_extractions?q=${encodeURIComponent(query)}`, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRF-Token': document.querySelector("[name='csrf-token']").content,
+            }
+          });
+
+          if (response.ok) {
+            this.extractionOptions = await response.json();
+          } else {
+            this.extractionOptions = [];
+          }
+        } catch (error) {
+          console.error('Error searching extractions:', error);
+          this.extractionOptions = [];
+        }
+      },
+
+      async searchUsers(query) {
+        try {
+          const response = await fetch(`/api/v1/user_project_members?q=${encodeURIComponent(query)}`, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRF-Token': document.querySelector("[name='csrf-token']").content,
+            }
+          });
+
+          if (response.ok) {
+            this.userOptions = await response.json();
+          } else {
+            this.userOptions = [];
+          }
+        } catch (error) {
+          console.error('Error searching users:', error);
+          this.userOptions = [];
+        }
+      },
+
+      async searchThreadUsers(query) {
+        try {
+          const response = await fetch(`/api/v1/user_project_members?q=${encodeURIComponent(query)}`, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRF-Token': document.querySelector("[name='csrf-token']").content,
+            }
+          });
+
+          if (response.ok) {
+            this.threadUserOptions = await response.json();
+          } else {
+            this.threadUserOptions = [];
+          }
+        } catch (error) {
+          console.error('Error searching users:', error);
+          this.threadUserOptions = [];
+        }
+      },      selectExtraction(extraction) {
+        const textarea = this.currentTextarea;
+        const text = textarea.value;
+        const beforeTag = text.substring(0, this.hashtagStartPosition);
+        const afterCursor = text.substring(textarea.selectionStart);
+
+        const newText = beforeTag + extraction.display_text + ' ' + afterCursor;
+
+        if (this.selected_room) {
+          this.chat_text[this.selected_room.id] = newText;
+
+          // Set cursor position after the inserted text
+          this.$nextTick(() => {
+            const newCursorPos = beforeTag.length + extraction.display_text.length + 1;
+            textarea.setSelectionRange(newCursorPos, newCursorPos);
+            textarea.focus();
+          });
+        }
+
+        this.hideExtractionDropdown();
+      },
+
+      selectUser(user) {
+        const textarea = this.currentUserTextarea;
+        const text = textarea.value;
+        const beforeTag = text.substring(0, this.atSymbolStartPosition);
+        const afterCursor = text.substring(textarea.selectionStart);
+
+        const newText = beforeTag + user.display_text + ' ' + afterCursor;
+
+        if (this.selected_room) {
+          this.chat_text[this.selected_room.id] = newText;
+
+          // Set cursor position after the inserted text
+          this.$nextTick(() => {
+            const newCursorPos = beforeTag.length + user.display_text.length + 1;
+            textarea.setSelectionRange(newCursorPos, newCursorPos);
+            textarea.focus();
+          });
+        }
+
+        this.hideUserDropdown();
+      },
+
+      selectThreadUser(user) {
+        const textarea = document.querySelector('textarea[x-model="thread_chat_text[selected_room?.id]"]');
+        const text = textarea.value;
+        const beforeTag = text.substring(0, this.threadAtSymbolStartPosition);
+        const afterCursor = text.substring(textarea.selectionStart);
+
+        const newText = beforeTag + user.display_text + ' ' + afterCursor;
+
+        if (this.selected_room) {
+          this.thread_chat_text[this.selected_room.id] = newText;
+
+          // Set cursor position after the inserted text
+          this.$nextTick(() => {
+            const newCursorPos = beforeTag.length + user.display_text.length + 1;
+            textarea.setSelectionRange(newCursorPos, newCursorPos);
+            textarea.focus();
+          });
+        }
+
+        this.hideThreadUserDropdown();
+      },
+
+      positionDropdown(textarea, symbolPosition, type) {
+        const textBeforeSymbol = textarea.value.substring(0, symbolPosition);
+        const lines = textBeforeSymbol.split('\n');
+        const currentLine = lines.length - 1;
+        const columnPosition = lines[lines.length - 1].length;
+
+        // Get textarea dimensions and position
+        const textareaRect = textarea.getBoundingClientRect();
+        const charWidth = 8;
+        const lineHeight = 20;
+        const dropdownHeight = 240; // max-height is 60 (15rem)
+
+        let top = (currentLine + 1) * lineHeight + 10;
+        let left = columnPosition * charWidth + 10;
+
+        // Prevent dropdown from extending beyond bottom of window
+        const windowHeight = window.innerHeight;
+        const dropdownBottom = textareaRect.top + top + dropdownHeight;
+
+        if (dropdownBottom > windowHeight) {
+          // Position above the current line instead
+          top = currentLine * lineHeight - dropdownHeight - 10;
+          if (top < 0) {
+            // If still not enough space, position at the top of textarea
+            top = 10;
+          }
+        }
+
+        // Prevent dropdown from extending beyond right edge
+        const windowWidth = window.innerWidth;
+        if (textareaRect.left + left + 300 > windowWidth) {
+          left = Math.max(10, windowWidth - textareaRect.left - 320);
+        }
+
+        if (type === 'extraction') {
+          this.dropdownPosition = { top, left };
+        } else {
+          this.userDropdownPosition = { top, left };
+        }
+      },
+
+      positionThreadDropdown(textarea, symbolPosition, type) {
+        const textBeforeSymbol = textarea.value.substring(0, symbolPosition);
+        const lines = textBeforeSymbol.split('\n');
+        const currentLine = lines.length - 1;
+        const columnPosition = lines[lines.length - 1].length;
+
+        // Get textarea dimensions and position
+        const textareaRect = textarea.getBoundingClientRect();
+        const charWidth = 8;
+        const lineHeight = 20;
+        const dropdownHeight = 240;
+
+        let top = (currentLine + 1) * lineHeight + 10;
+        let left = columnPosition * charWidth + 10;
+
+        // Prevent dropdown from extending beyond bottom of window
+        const windowHeight = window.innerHeight;
+        const dropdownBottom = textareaRect.top + top + dropdownHeight;
+
+        if (dropdownBottom > windowHeight) {
+          top = currentLine * lineHeight - dropdownHeight - 10;
+          if (top < 0) {
+            top = 10;
+          }
+        }
+
+        // Prevent dropdown from extending beyond right edge
+        const windowWidth = window.innerWidth;
+        if (textareaRect.left + left + 300 > windowWidth) {
+          left = Math.max(10, windowWidth - textareaRect.left - 320);
+        }
+
+        if (type === 'extraction') {
+          this.threadDropdownPosition = { top, left };
+        } else {
+          this.threadUserDropdownPosition = { top, left };
+        }
+      },
+
+      hideExtractionDropdown() {
+        this.showExtractionDropdown = false;
+        this.extractionOptions = [];
+        this.selectedOptionIndex = -1;
+        this.extractionSearchQuery = "";
+        this.hashtagStartPosition = -1;
+      },
+
+      hideThreadExtractionDropdown() {
+        this.showThreadExtractionDropdown = false;
+        this.threadExtractionOptions = [];
+        this.selectedThreadOptionIndex = -1;
+        this.threadExtractionSearchQuery = "";
+        this.threadHashtagStartPosition = -1;
+      },
+
+      hideUserDropdown() {
+        this.showUserDropdown = false;
+        this.userOptions = [];
+        this.selectedUserOptionIndex = -1;
+        this.userSearchQuery = "";
+        this.atSymbolStartPosition = -1;
+      },
+
+      hideThreadUserDropdown() {
+        this.showThreadUserDropdown = false;
+        this.threadUserOptions = [];
+        this.selectedThreadUserOptionIndex = -1;
+        this.threadUserSearchQuery = "";
+        this.threadAtSymbolStartPosition = -1;
+      },
+
+      scrollDropdownToSelected(type) {
+        this.$nextTick(() => {
+          const dropdownRef = type === 'extraction' ? 'extractionDropdown' : 'userDropdown';
+          const selectedIndex = type === 'extraction' ? this.selectedOptionIndex : this.selectedUserOptionIndex;
+
+          const dropdown = this.$refs[dropdownRef];
+          if (!dropdown) return;
+
+          const options = dropdown.querySelectorAll('[x-ref]');
+          const selectedOption = options[selectedIndex];
+
+          if (selectedOption) {
+            const dropdownRect = dropdown.getBoundingClientRect();
+            const optionRect = selectedOption.getBoundingClientRect();
+
+            // Check if option is below visible area
+            if (optionRect.bottom > dropdownRect.bottom) {
+              selectedOption.scrollIntoView({ block: 'end', behavior: 'smooth' });
+            }
+            // Check if option is above visible area
+            else if (optionRect.top < dropdownRect.top) {
+              selectedOption.scrollIntoView({ block: 'start', behavior: 'smooth' });
+            }
+          }
+        });
+      },
+
+      scrollThreadDropdownToSelected(type) {
+        this.$nextTick(() => {
+          const dropdownRef = type === 'extraction' ? 'threadExtractionDropdown' : 'threadUserDropdown';
+          const selectedIndex = type === 'extraction' ? this.selectedThreadOptionIndex : this.selectedThreadUserOptionIndex;
+
+          const dropdown = this.$refs[dropdownRef];
+          if (!dropdown) return;
+
+          const options = dropdown.querySelectorAll('[x-ref]');
+          const selectedOption = options[selectedIndex];
+
+          if (selectedOption) {
+            const dropdownRect = dropdown.getBoundingClientRect();
+            const optionRect = selectedOption.getBoundingClientRect();
+
+            // Check if option is below visible area
+            if (optionRect.bottom > dropdownRect.bottom) {
+              selectedOption.scrollIntoView({ block: 'end', behavior: 'smooth' });
+            }
+            // Check if option is above visible area
+            else if (optionRect.top < dropdownRect.top) {
+              selectedOption.scrollIntoView({ block: 'start', behavior: 'smooth' });
+            }
+          }
+        });
+      },
+
+      renderMessageWithExtractionLinks(messageText) {
+        // Convert extraction tags to clickable links
+        let processedText = messageText.replace(/#(\d+):\s*([^(]+)\s*\(([^)]+)\)/g, (match, id, title, project) => {
+          const url = `/extractions/${id}/work`;
+          return `<a href="${url}" target="_blank" class="text-blue-600 hover:text-blue-800 underline font-medium bg-blue-50 px-1 rounded">#${id}: ${title.trim()} (${project.trim()})</a>`;
+        });
+
+        // Convert user tags to clickable mentions
+        processedText = processedText.replace(/@([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, (match, email) => {
+          return `<span class="text-green-600 font-medium bg-green-50 px-1 rounded cursor-pointer" title="User: ${email}">@${email}</span>`;
+        });
+
+        return processedText;
       },
     }));
   });

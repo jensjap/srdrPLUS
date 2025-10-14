@@ -22,8 +22,13 @@ class Message < ApplicationRecord
   belongs_to :extraction, optional: true
   has_many :messages
   has_many :message_unreads, dependent: :destroy
+  has_many :message_extractions, dependent: :destroy
+  has_many :tagged_extractions, through: :message_extractions, source: :extraction
 
   attribute :handle, type: :string
+
+  before_save :parse_extraction_tags
+  after_save :associate_extractions
 
   def handle
     user.handle
@@ -112,5 +117,36 @@ class Message < ApplicationRecord
     Redis.new.pubsub('channels', 'action_cable/*')
          .map { |c| Base64.decode64(c.split('/').last) }
          .map { |string| string.split('/').last.to_i }
+  end
+
+  def parse_extraction_tags
+    return unless text_changed?
+
+    # Find all extraction tags in the format #123: Citation Title (Project Name)
+    extraction_ids = []
+    text.scan(/#(\d+):/) do |match|
+      extraction_id = match[0].to_i
+      # Verify the extraction exists and user has access to it
+      extraction = Extraction.joins(:project, :citations_project)
+                             .where(id: extraction_id)
+                             .where(project: user.projects)
+                             .first
+      extraction_ids << extraction_id if extraction
+    end
+
+    # Store the extraction IDs to be associated after save
+    @extraction_ids_to_associate = extraction_ids.uniq
+  end
+
+  def associate_extractions
+    return unless @extraction_ids_to_associate
+
+    # Clear existing associations
+    message_extractions.destroy_all
+
+    # Create new associations
+    @extraction_ids_to_associate.each do |extraction_id|
+      message_extractions.create!(extraction_id: extraction_id)
+    end
   end
 end

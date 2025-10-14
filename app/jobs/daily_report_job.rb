@@ -101,7 +101,10 @@ class DailyReportJob < ApplicationJob
         next unless extraction.logs.present?
 
         newest_log = extraction.logs.max_by(&:id)
-        log_messages << "Extraction ID: #{extraction.id} (#{extraction.citations_project.citation.name}) was set to '#{newest_log.description}'"
+        log_messages << {
+          id: extraction.id,
+          message: "Extraction ID: #{extraction.id} (#{extraction.citations_project.citation.name}) was set to '#{newest_log.description}'"
+        }
       end
       extraction_logs[assignor] = log_messages
     end

@@ -1,3 +1,4 @@
+<!-- Add links wherever missing and make them more prominent -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -57,9 +58,17 @@
       </div>
       <% end %>
       <% @extract_log_messages.each do |log_message| %>
-      <div style="display: block; font-size: 14px; margin-left: 16px; margin-top: 0.25rem;">
-        <%= log_message %>
-      </div>
+      <% if log_message[:id].present? %>
+        <a target="_blank" href="<%= root_url %>extractions/<%= log_message[:id] %>">
+          <div style="display: block; font-size: 14px; margin-left: 16px; margin-top: 0.25rem; font-weight: bold; color: #1565c0; text-decoration: underline;">
+            <%= log_message[:message] %>
+          </div>
+        </a>
+      <% else %>
+        <div style="display: block; font-size: 14px; margin-left: 16px; margin-top: 0.25rem;">
+          <%= log_message[:message] %>
+        </div>
+      <% end %>
       <% end %>
       </div>
     </div>
