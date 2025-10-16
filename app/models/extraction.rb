@@ -75,7 +75,7 @@ class Extraction < ApplicationRecord
 
   has_one :extraction_checksum, dependent: :destroy, inverse_of: :extraction
   has_one :statusing, as: :statusable, dependent: :destroy
-  has_one :status, through: :statusing
+
   has_many :logs, dependent: :destroy, as: :loggable
   has_many :messages, dependent: :destroy
 
