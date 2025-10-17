@@ -1,27 +1,27 @@
 # frozen_string_literal: true
-return if Rails.env.production?
-
 require "aws-sdk-s3"
 
-S3_CREDENTIALS = Aws::Credentials.new(
-  ENV.fetch("S3_ACCESS_KEY_ID"),
-  ENV.fetch("S3_SECRET_ACCESS_KEY")
-)
+credentials =
+  if Rails.env.production?
+    nil
+  else
+    Aws::Credentials.new(ENV.fetch("S3_ACCESS_KEY_ID"), ENV.fetch("S3_SECRET_ACCESS_KEY"))
+  end
 
-S3_CLIENT = Aws::S3::Client.new(
-  endpoint: ENV["S3_ENDPOINT"],
-  region:   ENV.fetch("S3_REGION", "us-east-1"),
-  credentials: S3_CREDENTIALS,
-  force_path_style: ENV["S3_FORCE_PATH_STYLE"] == "true"
-)
+client_opts = {
+  region: ENV.fetch("S3_REGION", "us-east-1")
+}
+client_opts[:credentials] = credentials if credentials
+client_opts[:endpoint] = ENV["S3_ENDPOINT"] if ENV["S3_ENDPOINT"].present?
+client_opts[:force_path_style] = (ENV["S3_FORCE_PATH_STYLE"] == "true") if ENV["S3_ENDPOINT"].present?
 
+S3_CLIENT   = Aws::S3::Client.new(**client_opts)
 S3_RESOURCE = Aws::S3::Resource.new(client: S3_CLIENT)
 S3_BUCKET   = S3_RESOURCE.bucket(ENV.fetch("S3_BUCKET"))
 
-begin
-  unless S3_BUCKET.exists?
-    S3_CLIENT.create_bucket(bucket: ENV.fetch("S3_BUCKET"))
+if !Rails.env.production?
+  begin
+    S3_CLIENT.create_bucket(bucket: S3_BUCKET.name) unless S3_BUCKET.exists?
+  rescue Aws::S3::Errors::BucketAlreadyOwnedByYou, Aws::S3::Errors::BucketAlreadyExists
   end
-rescue Aws::S3::Errors::BucketAlreadyOwnedByYou, Aws::S3::Errors::BucketAlreadyExists
-  # ignore
 end
