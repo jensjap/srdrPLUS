@@ -9,7 +9,6 @@ services:
       - .:/app
       - node_modules:/app/node_modules
     env_file:
-      - docker.env
       - private.env
     environment:
       RAILS_ENV: production
@@ -24,7 +23,6 @@ services:
       - .:/app
       - node_modules:/app/node_modules
     env_file:
-      - docker.env
       - private.env
     environment:
       RAILS_ENV: production
