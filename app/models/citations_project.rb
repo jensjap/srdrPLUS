@@ -159,7 +159,7 @@ class CitationsProject < ApplicationRecord
         created_at: extraction.created_at,
         approved_on: extraction.approved_on,
         assignor: extraction.assignor&.handle || '',
-        status: extraction.status
+        status: extraction.status.to_s || ''
       }
     end
 
