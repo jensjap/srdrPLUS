@@ -298,6 +298,8 @@ class AdvancedExportJob < ApplicationJob
       eefpss = efps.extractions_extraction_forms_projects_sections
       eefpss.each do |eefps|
         extraction = eefps.extraction
+        next if extraction.nil?
+
         extractions << extraction unless extractions.include?(extraction)
         eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
           type1 = eefpst1.type1
@@ -398,12 +400,14 @@ class AdvancedExportJob < ApplicationJob
         eefps.reload
         [eefps.link_to_type1, eefps]
       end
-      raise 'must be linked, inconsistent data' if linked_eefpss.any? do |link_to_type1, eefps|
-                                                     link_to_type1.nil? || eefps.nil?
-                                                   end
+      # Select only linked_eefps for which link_to_type1 is present.
+      linked_eefpss = linked_eefpss.select { |link_to_type1, eefps| link_to_type1 && eefps }
 
       linked_eefpss.each do |eefps, child_eefps|
+        next if eefps.nil? || child_eefps.nil?
         extraction = eefps.extraction
+        next if extraction.nil?
+
         extractions_lookups[extraction.id] ||= { type1s: [] }
         eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
           type1 = eefpst1.type1
@@ -459,6 +463,8 @@ class AdvancedExportJob < ApplicationJob
       eefpss = efps.extractions_extraction_forms_projects_sections
       eefpss.each do |eefps|
         extraction = eefps.extraction
+        next if extraction.nil?
+
         extractions << extraction unless extractions.include?(extraction)
       end
 
@@ -496,7 +502,7 @@ class AdvancedExportJob < ApplicationJob
         end
 
         extractions.each do |extraction|
-          extractions_lookups[extraction.id][:type1s].each do |type1|
+          extractions_lookups.dig(extraction.id, :type1s)&.each do |type1|
             row = extract_default_row_columns(extraction)
             row << type1.name
             row << type1.description
@@ -533,6 +539,8 @@ class AdvancedExportJob < ApplicationJob
 
       efps.extractions_extraction_forms_projects_sections.each do |eefps|
         extraction = eefps.extraction
+        next if extraction.nil?
+
         eefps.extractions_extraction_forms_projects_sections_question_row_column_fields.each do |eefpsqrcf|
           qrcf = eefpsqrcf.question_row_column_field
           qrc = qrcf.question_row_column
@@ -583,7 +591,7 @@ class AdvancedExportJob < ApplicationJob
       eefpss = efps.extractions_extraction_forms_projects_sections
       eefpss.each do |eefps|
         extraction = eefps.extraction
-        raise 'inconsistent data' if extraction.nil?
+        next if extraction.nil?
 
         extractions << extraction unless extractions.include?(extraction)
       end
@@ -698,6 +706,8 @@ class AdvancedExportJob < ApplicationJob
 
     @arms_efps.extractions_extraction_forms_projects_sections.each do |eefps|
       extraction = eefps.extraction
+      next if extraction.nil?
+
       eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
         arms_lookups[extraction.id] ||= []
         arms_lookups[extraction.id] << eefpst1.type1 unless arms_lookups[extraction.id].include?(eefpst1.type1)
@@ -705,10 +715,13 @@ class AdvancedExportJob < ApplicationJob
     end
     @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
       extraction = eefps.extraction
+      next if extraction.nil?
+
       eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
         type1_type_id = eefpst1.type1_type_id || 1
         begin
-          raise 'inconsistent data' if type1_type_id > 2
+          # raise 'inconsistent data' if type1_type_id > 2
+          next if type1_type_id > 2
         rescue JSON::ParserError, TypeError => e
           Sentry.capture_exception(e) if Rails.env.production?
           next
@@ -802,6 +815,8 @@ class AdvancedExportJob < ApplicationJob
 
         @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
           extraction = eefps.extraction
+          next if extraction.nil?
+
           eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
             next if eefpst1.type1_type_id != type1_type_id || arms_lookups[extraction.id].blank?
 
@@ -859,6 +874,8 @@ class AdvancedExportJob < ApplicationJob
 
         @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
           extraction = eefps.extraction
+          next if extraction.nil?
+
           eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
             next if eefpst1.type1_type_id != type1_type_id
 
@@ -929,6 +946,8 @@ class AdvancedExportJob < ApplicationJob
 
       @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
         extraction = eefps.extraction
+        next if extraction.nil?
+
         eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
           eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
             rss = eefpst1r.result_statistic_sections.find do |result_statistic_section|
@@ -950,7 +969,8 @@ class AdvancedExportJob < ApplicationJob
 
               g1, g2 = comparison.comparate_groups.map do |comparate_group|
                 comparate_group.comparates.map do |comparate|
-                  raise 'inconsistent data' if comparate.comparable_element.comparable.nil?
+                  # raise 'inconsistent data' if comparate.comparable_element.comparable.nil?
+                  next if comparate.comparable_element.comparable.nil?
 
                   comparate.comparable_element.comparable.timepoint_name.name
                 end.join(', ')
@@ -998,6 +1018,8 @@ class AdvancedExportJob < ApplicationJob
 
       @outcomes_efps.extractions_extraction_forms_projects_sections.each do |eefps|
         extraction = eefps.extraction
+        next if extraction.nil?
+
         eefps.extractions_extraction_forms_projects_sections_type1s.each do |eefpst1|
           eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |eefpst1r|
             rss2 = eefpst1r.result_statistic_sections.find do |result_statistic_section|
@@ -1022,7 +1044,7 @@ class AdvancedExportJob < ApplicationJob
 
               g1, g2 = wac_comparison.comparate_groups.map do |comparate_group|
                 comparate_group.comparates.map do |comparate|
-                  comparate.comparable_element.comparable.timepoint_name.name
+                  comparate.comparable_element&.comparable&.timepoint_name&.name.to_s
                 end.join(', ')
               end
               row << "[ID: #{wac_comparison.id}] [#{g1}] vs. [#{g2}]"

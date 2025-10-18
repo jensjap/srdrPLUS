@@ -59,6 +59,9 @@ Rails.application.configure do
 
   mailserver_host = ENV['SRDRPLUS_MAILSERVER_HOST'].presence || '127.0.0.1'
   config.action_mailer.smtp_settings = { address: mailserver_host, port: 1025 }
+  config.action_mailer.default_options = {
+    from: 'no-reply@yourdomain.com'
+  }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

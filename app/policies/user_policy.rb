@@ -13,7 +13,7 @@ class UserPolicy
   end
 
   def create?
-    user.admin?
+    ENV['NEW_USER_FORM_WHITELIST']&.split()&.map(&:to_i)&.include?(user.id) || user.admin?
   end
 
   def edit?

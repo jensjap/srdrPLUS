@@ -337,6 +337,7 @@ GEM
       multi_json
     orm_adapter (0.5.0)
     ostruct (0.6.1)
+    parallel (1.27.0)
     passenger (6.0.22)
       rack
       rake (>= 0.8.1)
@@ -594,6 +595,7 @@ DEPENDENCIES
   nokogiri
   opensearch-ruby (~> 2.0)
   ostruct
+  parallel
   passenger
   puma
   pundit

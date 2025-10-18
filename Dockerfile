@@ -30,7 +30,7 @@ WORKDIR /app
 
 COPY Gemfile Gemfile.lock ./
 
-RUN bundle config set force_ruby_platform false \
+RUN bundle config set force_ruby_platform true \
       && bundle config build.nokogiri --use-system-libraries
 
 RUN bundle install --jobs 4 --retry 3
