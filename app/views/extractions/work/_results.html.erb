@@ -8,45 +8,46 @@
 
 <% if extraction_forms_project_type.id.eql?(1) && @extraction.results_section_ready_for_extraction? %>
   <div id="results-panel">
-    <div class="reveal" id="manage-measures-modal" style="min-height: 80vh" data-reveal data-options="closeOnClick:false;closeOnEsc:false;">
+    <div class="reveal large" id="manage-measures-modal" style="min-height: 80vh" data-reveal data-options="closeOnClick:false;closeOnEsc:false;">
       <button class="close-button" data-close aria-label="Close modal" type="button">
         <span aria-hidden="true">&times;</span>
       </button>
-      <div class="section-header">
-        <h4><%= section_name %></h4>
-        <%= render 'shared/statusing_form', statusing: eefps.statusing, status_name: eefps.statusing.status.name %>
-      </div>
-      <blockquote>
-        <%= efps.helper_message.present? ? efps.helper_message : "The results section is where you enter numerical data, comparisons, etc." %>
-      </blockquote>
-      <%= render 'extractions/shared/section_instructions', extraction: @extraction, section_name: section_name, eefps: eefps, efps: eefps.extraction_forms_projects_section %>
-      <%= render 'shared/extractions/work/results/outcome_selector' %>
-      <%= render 'extractions/work/results/results_table' %>
-      <div class="section-header" style="margin: 20px 0;">
-        <h4><%= section_name %></h4>
-        <%= render 'shared/statusing_form', statusing: eefps.statusing, status_name: eefps.statusing.status.name %>
-      </div>
+    </div>
+    <div class="section-header">
+      <h4><%= section_name %></h4>
+      <%= render 'shared/statusing_form', statusing: eefps.statusing, status_name: eefps.statusing.status.name %>
+    </div>
+    <blockquote>
+      <%= efps.helper_message.present? ? efps.helper_message : "The results section is where you enter numerical data, comparisons, etc." %>
+    </blockquote>
+    <%= render 'extractions/shared/section_instructions', extraction: @extraction, section_name: section_name, eefps: eefps, efps: eefps.extraction_forms_projects_section %>
+    <%= render 'shared/extractions/work/results/outcome_selector' %>
+    <%= render 'extractions/work/results/results_table' %>
+    <div class="section-header" style="margin: 20px 0;">
+      <h4><%= section_name %></h4>
+      <%= render 'shared/statusing_form', statusing: eefps.statusing, status_name: eefps.statusing.status.name %>
     </div>
   </div>
+  
 <% elsif extraction_forms_project_type.id.eql?(2) && @extraction.results_section_ready_for_extraction? %>
   <div id="results-panel">
-    <div class="reveal" id="manage-measures-modal" style="min-height: 80vh" data-reveal>
+    <div class="reveal large" id="manage-measures-modal" style="min-height: 80vh" data-reveal>
       <button class="close-button" data-close aria-label="Close modal" type="button">
         <span aria-hidden="true">&times;</span>
       </button>
-      <div class="section-header">
-        <h4><%= section_name %></h4>
-        <%= render 'shared/statusing_form', statusing: eefps.statusing, status_name: eefps.statusing.status.name %>
-      </div>
-      <blockquote>
-        <%= efps.helper_message.present? ? efps.helper_message : "The results section is where you enter numerical data, comparisons, etc." %>
-      </blockquote>
-      <%= render 'shared/extractions/work/results/outcome_selector' %>
-      <%= render 'extractions/work/results/diagnostic_test_results_table' %>
-      <div class="section-header" style="margin: 20px 0;">
-        <h4><%= section_name %></h4>
-        <%= render 'shared/statusing_form', statusing: eefps.statusing, status_name: eefps.statusing.status.name %>
-      </div>
+    </div>
+    <div class="section-header">
+      <h4><%= section_name %></h4>
+      <%= render 'shared/statusing_form', statusing: eefps.statusing, status_name: eefps.statusing.status.name %>
+    </div>
+    <blockquote>
+      <%= efps.helper_message.present? ? efps.helper_message : "The results section is where you enter numerical data, comparisons, etc." %>
+    </blockquote>
+    <%= render 'shared/extractions/work/results/outcome_selector' %>
+    <%= render 'extractions/work/results/diagnostic_test_results_table' %>
+    <div class="section-header" style="margin: 20px 0;">
+      <h4><%= section_name %></h4>
+      <%= render 'shared/statusing_form', statusing: eefps.statusing, status_name: eefps.statusing.status.name %>
     </div>
   </div>
 <% elsif extraction_forms_project_type.id.eql?(1) %>
