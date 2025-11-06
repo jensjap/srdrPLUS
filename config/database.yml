@@ -58,7 +58,6 @@ test:
 
 production:
   <<: *default
-  host: <%= DATABASE_CREDENTIALS['host'] if defined?(DATABASE_CREDENTIALS) %>
   username: <%= DATABASE_CREDENTIALS['username'] if defined?(DATABASE_CREDENTIALS) %>
   password: <%= DATABASE_CREDENTIALS['password'] if defined?(DATABASE_CREDENTIALS) %>
   database: <%= ENV['SRDRPLUS_DATABASE_SCHEMA'] %>
@@ -66,7 +65,6 @@ production:
 # For importing legacy srdr data.
 legacy_production:
   <<: *default
-  host: <%= DATABASE_CREDENTIALS['host'] if defined?(DATABASE_CREDENTIALS) %>
   username: <%= ENV['SRDR_LEGACY_DATABASE_USERNAME'] %>
   password: <%= ENV['SRDR_LEGACY_DATABASE_PASSWORD'] %>
   database: <%= ENV['SRDR_LEGACY_DATABASE_SCHEMA'] %>
@@ -74,7 +72,6 @@ legacy_production:
 # DB Snapshot for recovery purposes.
 recovery:
   <<: *default
-  host: <%= DATABASE_CREDENTIALS['host'] if defined?(DATABASE_CREDENTIALS) %>
   username: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['username'] : ENV['SRDRPLUS_DATABASE_USERNAME'] %>
   password: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['password'] : ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
   database: <%= ENV['SRDRPLUS_DATABASE_RECOVERY_SCHEMA'] %>
