@@ -2,7 +2,7 @@ Rails.application.configure do
   config.hosts = [
     'vadrr.org',
     'www.vadrr.org',
-    '44.210.141.64',
+    '34.232.148.35',
     'localhost:3000'   # Allow this to be addressed when running in containers via docker-compose.yml.
   ]
   # Settings specified here will take precedence over those in config/application.rb.
