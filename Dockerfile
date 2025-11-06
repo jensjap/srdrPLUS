@@ -3,12 +3,16 @@ FROM ruby:3.4
 ENV BUNDLER_VERSION=2.6.8 \
       LOGGER_VERSION=1.7.0
 
+ENV TAILWINDCSS_INSTALL_DIR="/usr/local/bin"
+
 RUN apt-get update -qq && apt-get install -y curl
 
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 
 RUN apt-get install -y nodejs \
     && npm install --global yarn
+
+RUN npm install -g tailwindcss
 
 RUN apt-get update -qq && apt-get install -y \
       build-essential \
@@ -30,7 +34,7 @@ WORKDIR /app
 
 COPY Gemfile Gemfile.lock ./
 
-RUN bundle config set force_ruby_platform false \
+RUN bundle config set force_ruby_platform true \
       && bundle config build.nokogiri --use-system-libraries
 
 RUN bundle install --jobs 4 --retry 3

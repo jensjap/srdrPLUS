@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require_relative "../config/environment"
+key = "healthchecks/#{Time.now.utc.to_i}.txt"
+S3_BUCKET.put_object(key: key, body: "ok #{Time.now.utc.iso8601}", content_type: "text/plain")
+obj = S3_BUCKET.object(key)
+content = obj.get.body.read
+puts "PUT/GET OK: #{content}"

@@ -39,6 +39,7 @@ gem 'awesome_print'
 gem 'aws-sdk-s3', require: false # Access to AWS S3 Cloud Storage.
 gem 'aws-sdk-secretsmanager'
 gem 'base64', '0.1.1'
+gem 'benchmark'
 gem 'bcrypt'
 gem 'benchmark'
 gem 'bio' # bioruby for pubmed queries.
