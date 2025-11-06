@@ -3,7 +3,7 @@ FROM ruby:3.4
 ENV BUNDLER_VERSION=2.6.8 \
       LOGGER_VERSION=1.7.0
 
-ENV TAILWINDCSS_INSTALL_DIR="/usr/local/bin"
+ENV TAILWINDCSS_INSTALL_DIR="/usr/local/bundle/bin"
 
 RUN apt-get update -qq && apt-get install -y curl
 
@@ -11,8 +11,6 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 
 RUN apt-get install -y nodejs \
     && npm install --global yarn
-
-RUN npm install -g tailwindcss
 
 RUN apt-get update -qq && apt-get install -y \
       build-essential \

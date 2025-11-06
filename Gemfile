@@ -41,7 +41,6 @@ gem 'aws-sdk-secretsmanager'
 gem 'base64', '0.1.1'
 gem 'benchmark'
 gem 'bcrypt'
-gem 'benchmark'
 gem 'bio' # bioruby for pubmed queries.
 gem 'bootsnap' # New for Rails 5.2.
 gem 'caxlsx' # Spreadsheet generation.
