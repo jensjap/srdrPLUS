@@ -3,8 +3,6 @@ FROM ruby:3.4
 ENV BUNDLER_VERSION=2.6.8 \
       LOGGER_VERSION=1.7.0
 
-ENV TAILWINDCSS_INSTALL_DIR="/usr/local/bundle/bin"
-
 RUN apt-get update -qq && apt-get install -y curl
 
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
@@ -32,7 +30,7 @@ WORKDIR /app
 
 COPY Gemfile Gemfile.lock ./
 
-RUN bundle config set force_ruby_platform true \
+RUN bundle config set force_ruby_platform false \
       && bundle config build.nokogiri --use-system-libraries
 
 RUN bundle install --jobs 4 --retry 3
