@@ -10,10 +10,10 @@
       <% end %>
     </li>
   <% end %>
-  <% if current_user.profile.advanced_mode %>
-    <%= link_to new_extraction_forms_project_extraction_forms_projects_section_path(@extraction_forms_project), class: 'button tiny secondary float-right' do %>
-      <i class="fi-plus"></i>
-      Add Section
-    <% end %>
-  <% end %>
 </ul>
+<% if current_user.profile.advanced_mode %>
+  <%= link_to new_extraction_forms_project_extraction_forms_projects_section_path(@extraction_forms_project), class: 'button tiny secondary float-right' do %>
+    <i class="fi-plus"></i>
+    Add Section
+  <% end %>
+<% end %>
