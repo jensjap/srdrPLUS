@@ -1,7 +1,7 @@
 <tr class="nested-fields population-nested-fields" removed="false">
   <%= f.simple_fields_for(:population_name, f.object.population_name || f.object.build_population_name) do |pn_form| %>
     <td style="font-size: x-large;">
-      <%= link_to_remove_association '\u2716', f %>
+      <%= link_to_remove_association '✖', f %>
     </td>
     <!-- /td.field = f.check_box :_destroy -->
     <td class="field">
