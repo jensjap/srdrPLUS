@@ -38,8 +38,23 @@ namespace :search_index_tasks do
         model_info[:klass].find_in_batches(batch_size: batch_size) do |batch|
           puts "  Processing batch #{batch_cnt}/#{total_batches} (#{batch.size} records)..."
 
-          # Reindex this batch
-          model_info[:klass].where(id: batch.map(&:id)).reindex
+          # Reindex this batch with retry logic
+          retries = 0
+          max_retries = 3
+          begin
+            model_info[:klass].where(id: batch.map(&:id)).reindex
+          rescue Net::ReadTimeout, Net::OpenTimeout, Faraday::TimeoutError => e
+            retries += 1
+            if retries <= max_retries
+              wait_time = retries * 5  # Exponential backoff: 5s, 10s, 15s
+              puts "    ⚠ Timeout error (attempt #{retries}/#{max_retries}), waiting #{wait_time}s before retry..."
+              sleep(wait_time)
+              retry
+            else
+              puts "    ✗ Failed after #{max_retries} retries: #{e.message}"
+              raise
+            end
+          end
 
           batch_cnt += 1
 
@@ -115,8 +130,23 @@ namespace :search_index_tasks do
       klass.find_in_batches(batch_size: batch_size) do |batch|
         puts "Processing batch #{batch_cnt}/#{total_batches} (#{batch.size} records)..."
 
-        # Reindex this batch
-        klass.where(id: batch.map(&:id)).reindex
+        # Reindex this batch with retry logic
+        retries = 0
+        max_retries = 3
+        begin
+          klass.where(id: batch.map(&:id)).reindex
+        rescue Net::ReadTimeout, Net::OpenTimeout, Faraday::TimeoutError => e
+          retries += 1
+          if retries <= max_retries
+            wait_time = retries * 5  # Exponential backoff: 5s, 10s, 15s
+            puts "  ⚠ Timeout error (attempt #{retries}/#{max_retries}), waiting #{wait_time}s before retry..."
+            sleep(wait_time)
+            retry
+          else
+            puts "  ✗ Failed after #{max_retries} retries: #{e.message}"
+            raise
+          end
+        end
 
         batch_cnt += 1
 
