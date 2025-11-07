@@ -1,8 +1,8 @@
 namespace :search_index_tasks do
   desc "Rebuild search index for all models with rate limiting"
   task :rebuild_all, [:batch_size, :delay] => [:environment] do |t, args|
-    batch_size = (args[:batch_size] || 100).to_i
-    delay = (args[:delay] || 2).to_f  # delay in seconds between batches
+    batch_size = (args[:batch_size] || 5000).to_i
+    delay = (args[:delay] || 0.5).to_f  # delay in seconds between batches
 
     models = [
       { klass: CitationsProject, name: 'CitationsProject' },
@@ -71,8 +71,8 @@ namespace :search_index_tasks do
       exit 1
     end
 
-    batch_size = (args[:batch_size] || 100).to_i
-    delay = (args[:delay] || 2).to_f
+    batch_size = (args[:batch_size] || 5000).to_i
+    delay = (args[:delay] || 0.5).to_f
 
     model_map = {
       'CitationsProject' => CitationsProject,
