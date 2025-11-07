@@ -58,8 +58,8 @@ test:
 
 production:
   <<: *default
-  username: <%= DATABASE_CREDENTIALS['username'] if defined?(DATABASE_CREDENTIALS) %>
-  password: <%= DATABASE_CREDENTIALS['password'] if defined?(DATABASE_CREDENTIALS) %>
+  username: "<%= DATABASE_CREDENTIALS['username'] if defined?(DATABASE_CREDENTIALS) %>"
+  password: "<%= DATABASE_CREDENTIALS['password'] if defined?(DATABASE_CREDENTIALS) %>"
   database: <%= ENV['SRDRPLUS_DATABASE_SCHEMA'] %>
 
 # For importing legacy srdr data.
