@@ -5,7 +5,11 @@ if Rails.env.production?
     url: ENV["OPENSEARCH_URL"],
     transport_options: {
       headers: { content_type: "application/json" }
-    }
+    },
+    retry_on_failure: true,
+    retry_on_status: [429, 502, 503, 504],
+    max_retries: 20,
+    resurrect_after: 10
   ) do |f|
     f.request :aws_sigv4,
       service: "es",
