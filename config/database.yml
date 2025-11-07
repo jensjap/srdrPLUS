@@ -11,8 +11,8 @@
 #
 default: &default
   host: <%= ENV['SRDRPLUS_DATABASE_HOST'] %>
-  username: <%= Rails.env.production? ? DATABASE_CREDENTIALS['username'] : ENV['MYSQL_USER'] %>
-  password: <%= Rails.env.production? ? DATABASE_CREDENTIALS['password'] : ENV['MYSQL_PASSWORD'] %>
+  username: "<%= Rails.env.production? ? DATABASE_CREDENTIALS['username'] : ENV['MYSQL_USER'] %>"
+  password: "<%= Rails.env.production? ? DATABASE_CREDENTIALS['password'] : ENV['MYSQL_PASSWORD'] %>"
   adapter: mysql2
   encoding: utf8
   pool: 5
@@ -72,6 +72,6 @@ legacy_production:
 # DB Snapshot for recovery purposes.
 recovery:
   <<: *default
-  username: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['username'] : ENV['SRDRPLUS_DATABASE_USERNAME'] %>
-  password: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['password'] : ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
+  username: "<%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['username'] : ENV['SRDRPLUS_DATABASE_USERNAME'] %>"
+  password: "<%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['password'] : ENV['SRDRPLUS_DATABASE_PASSWORD'] %>"
   database: <%= ENV['SRDRPLUS_DATABASE_RECOVERY_SCHEMA'] %>
