@@ -72,11 +72,14 @@ class DedupeCitationsJob < ApplicationJob
 
       next unless lsof_cp.size > 1
 
-      # Find master (the one with most associations)
-      master_cp = lsof_cp.max_by { |cp| association_count(cp) }
+      # Find master (prioritize most advanced screening_status, then association count)
+      master_cp = select_master_by_status(lsof_cp)
       duplicates_to_merge = lsof_cp - [master_cp]
 
-      Rails.logger.debug "Master CP: #{master_cp.id}, merging #{duplicates_to_merge.size} duplicates"
+      Rails.logger.debug "Master CP: #{master_cp.id} (status: #{master_cp.screening_status}), merging #{duplicates_to_merge.size} duplicates"
+
+      # Merge metadata from duplicates before transferring associations
+      merge_metadata(master_cp, duplicates_to_merge)
 
       duplicates_to_merge.each do |cp|
         transfer_all_associations(master_cp, cp)
@@ -103,10 +106,9 @@ class DedupeCitationsJob < ApplicationJob
   def dedupe_citations(project)
     return 0 if project.citations.empty?
 
-    # Use a more efficient approach to find duplicates
+    # Find duplicates by grouping citations (case-insensitive to match MySQL GROUP BY behavior)
     duplicate_citation_groups = project.citations
-                                       .select(:id, :citation_type_id, :name, :pmid, :abstract)
-                                       .group_by { |c| [c.citation_type_id, c.name, c.pmid, c.abstract] }
+                                       .group_by { |c| [c.citation_type_id, c.name&.downcase, c.pmid, c.abstract&.downcase] }
                                        .select { |_, citations| citations.size > 1 }
 
     return 0 if duplicate_citation_groups.empty?
@@ -266,6 +268,91 @@ class DedupeCitationsJob < ApplicationJob
     total = counts.values.sum
     Rails.logger.debug "CP #{cp.id} association counts: #{counts.inspect} (total: #{total})"
     total
+  end
+
+  # Merge metadata from duplicates into the master CitationsProject
+  # Preserves pilot_flag, refman, and other_reference where applicable
+  def merge_metadata(master_cp, duplicates)
+    return if duplicates.empty?
+
+    metadata_changed = false
+
+    # Merge pilot_flag: Set to true if ANY duplicate (or master) has it as true
+    if !master_cp.pilot_flag && duplicates.any?(&:pilot_flag)
+      master_cp.pilot_flag = true
+      metadata_changed = true
+      Rails.logger.debug "Merged pilot_flag to true from duplicates"
+    end
+
+    # Merge refman: Use non-empty value, prefer master if both have data
+    if master_cp.refman.blank?
+      non_empty_refman = duplicates.find { |cp| cp.refman.present? }&.refman
+      if non_empty_refman.present?
+        master_cp.refman = non_empty_refman
+        metadata_changed = true
+        Rails.logger.debug "Merged refman from duplicate"
+      end
+    end
+
+    # Merge other_reference: Combine unique non-empty values
+    all_references = [master_cp.other_reference]
+    all_references += duplicates.map(&:other_reference)
+    all_references = all_references.compact.reject(&:blank?).uniq
+
+    if all_references.size > 1
+      # Multiple unique references exist, combine them
+      master_cp.other_reference = all_references.join("\n---\n")
+      metadata_changed = true
+      Rails.logger.debug "Combined #{all_references.size} unique other_reference values"
+    elsif all_references.size == 1 && master_cp.other_reference.blank?
+      # Only one non-empty reference and master doesn't have it
+      master_cp.other_reference = all_references.first
+      metadata_changed = true
+      Rails.logger.debug "Merged other_reference from duplicate"
+    end
+
+    master_cp.save! if metadata_changed
+    metadata_changed
+  end
+
+  # Determine the most advanced screening status from a list of CitationsProjects
+  # Prioritizes non-rejected statuses and workflow progression
+  def select_master_by_status(citations_projects)
+    return citations_projects.first if citations_projects.size == 1
+
+    # Workflow progression order (higher number = more advanced)
+    status_order = {
+      CitationsProject::AS_UNSCREENED => 0,
+      CitationsProject::AS_PARTIALLY_SCREENED => 1,
+      CitationsProject::AS_IN_CONFLICT => 2,
+      CitationsProject::FS_UNSCREENED => 3,
+      CitationsProject::FS_PARTIALLY_SCREENED => 4,
+      CitationsProject::FS_IN_CONFLICT => 5,
+      CitationsProject::E_NEED_EXTRACTION => 6,
+      CitationsProject::E_IN_PROGRESS => 7,
+      CitationsProject::E_COMPLETE => 8,
+      CitationsProject::C_NEED_CONSOLIDATION => 9,
+      CitationsProject::C_IN_PROGRESS => 10,
+      CitationsProject::C_COMPLETE => 11
+    }
+
+    # Separate rejected from non-rejected
+    non_rejected = citations_projects.reject { |cp| CitationsProject::REJECTED.include?(cp.screening_status) }
+    rejected = citations_projects.select { |cp| CitationsProject::REJECTED.include?(cp.screening_status) }
+
+    # Prefer non-rejected if available
+    candidates = non_rejected.any? ? non_rejected : rejected
+
+    # Find the one with the most advanced status
+    master = candidates.max_by do |cp|
+      rank = status_order[cp.screening_status] || -1
+      # If statuses are equal, use association count as tiebreaker
+      assoc_count = association_count(cp)
+      [rank, assoc_count]
+    end
+
+    Rails.logger.debug "Selected master CP #{master.id} with status '#{master.screening_status}' from #{citations_projects.size} candidates"
+    master
   end
 
   # Report error to Sentry only in production

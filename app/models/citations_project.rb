@@ -85,28 +85,6 @@ class CitationsProject < ApplicationRecord
     C_REJECTED
   ]
 
-  # We find all CitationsProject entries that have the exact same citation_id
-  # and project_id. Then we pick the first (oldest) one. We refer to it as the
-  # "Master CP" and link associations from all other CitationsProject entries
-  # to the "Master CP"
-  def dedupe
-    citations_projects = CitationsProject.where(
-      citation_id:,
-      project_id:
-    ).to_a
-    master_citations_project = citations_projects.shift
-    citations_projects.each do |cp|
-      CitationsProject.dedupe_update_associations(master_citations_project, cp)
-      cp.destroy
-    end
-  end
-
-  def self.dedupe_update_associations(master_cp, cp_to_remove)
-    cp_to_remove.extractions.each do |e|
-      e.dup.update(citations_project_id: master_cp.id)
-    end
-  end
-
   def search_data
     abstract_screenings_by_group = abstract_screening_results.group_by { |asr| asr.abstract_screening }
     as_label_strings = []

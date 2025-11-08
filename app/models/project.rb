@@ -264,22 +264,22 @@ class Project < ApplicationRecord
   def has_duplicate_citations?
     is_any_citation_added_to_project_multiple_times =
       citations_projects
-      .select(:citation_id, :project_id)
       .group(:citation_id, :project_id)
-      .having('count(*) > 1').length > 0
+      .having('count(*) > 1')
+      .count
+      .any?
 
     is_the_same_citation_added_to_the_database_multiple_times_and_referenced_multiple_times =
       citations
-      .select(:pmid)
       .group(
         :citation_type_id,
         :name,
-        :refman,
         :pmid,
         :abstract
       )
       .having('count(*) > 1')
-      .length > 0
+      .count
+      .any?
 
     is_any_citation_added_to_project_multiple_times || is_the_same_citation_added_to_the_database_multiple_times_and_referenced_multiple_times
   end
