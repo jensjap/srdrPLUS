@@ -17,7 +17,13 @@ class AbstractScreeningResult < ApplicationRecord
   searchkick callbacks: :async,
              mappings: {
                properties: {
-                 name: { type: 'keyword' }
+                 name: {
+                   type: 'text',
+                   fields: {
+                     keyword: { type: 'keyword', ignore_above: 512 },
+                     raw: { type: 'keyword', ignore_above: 8191 }
+                   }
+                 }
                }
              }
 
