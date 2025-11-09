@@ -14,18 +14,7 @@
 #  form_complete         :boolean          default(FALSE), not null
 #
 class AbstractScreeningResult < ApplicationRecord
-  searchkick callbacks: :async,
-             mappings: {
-               properties: {
-                 name: {
-                   type: 'text',
-                   fields: {
-                     keyword: { type: 'keyword', ignore_above: 512 },
-                     raw: { type: 'keyword', ignore_above: 8191 }
-                   }
-                 }
-               }
-             }
+  searchkick callbacks: :async
 
   belongs_to :abstract_screening
   belongs_to :citations_project

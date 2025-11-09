@@ -101,9 +101,7 @@ class FulltextScreeningsController < ApplicationController
         @sort = params[:sort].present? ? params[:sort] : nil
         @page = params[:page].present? ? params[:page].to_i : 1
         per_page = 15
-        # Map 'name' to 'name.raw' for sorting (text fields can't be sorted directly)
-        order_by_field = @order_by == 'name' ? 'name.raw' : @order_by
-        order = order_by_field.present? ? { order_by_field => @sort } : { 'name.raw' => 'desc' }
+        order = @order_by.present? ? { @order_by => @sort } : {}
         where_hash = { fulltext_screening_id: @fulltext_screening.id }
         where_hash[:user_id] = current_user.id unless ProjectPolicy.new(current_user, @project).project_consolidator?
         fields = %w[accession_number_alts author_map_string name year user label privileged reasons tags notes]
