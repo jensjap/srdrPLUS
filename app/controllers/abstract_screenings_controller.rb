@@ -92,19 +92,57 @@ class AbstractScreeningsController < ApplicationController
         per_page = 100
         order = @order_by.present? ? { @order_by => @sort } : {}
         where_hash = { project_id: @project.id }
+        title_terms = []
 
-        # Parse field-specific queries (e.g., status:asu)
+        # Parse field-specific queries (e.g., status:asu, title:keyword)
         if @query.match(/(status:([\w\d]+))/)
           query_match, status_value = @query.match(/(status:([\w\d]+))/).captures
           where_hash[:screening_status] = status_value
           @query.slice!(query_match)
         end
 
-        @citations_projects =
-          CitationsProject
-          .search(@query.present? ? @query : '*',
-                  where: where_hash,
-                  limit: per_page, offset: per_page * (@page - 1), order:, load: false)
+        # Parse title-specific queries (e.g., title:assay title:pcr)
+        while @query.match(/(title:([\w\d]+))/)
+          query_match, title_term = @query.match(/(title:([\w\d]+))/).captures
+          title_terms << title_term
+          @query.slice!(query_match)
+        end
+
+        # Clean up query after slicing
+        @query = @query.strip
+
+        # Build search options
+        search_options = {
+          where: where_hash,
+          limit: per_page,
+          offset: per_page * (@page - 1),
+          order: order,
+          load: false
+        }
+
+        # If we have title-specific terms, search only in the name field
+        if title_terms.any?
+          # Combine all title terms with AND logic
+          title_query = title_terms.join(' ')
+
+          # If there's also a general query, we need to combine them differently
+          if @query.present? && @query != '*'
+            # Can't easily combine field-specific with general search in Searchkick
+            # For now, just use title search
+            @query = title_query
+            search_options[:fields] = ['name']
+          else
+            @query = title_query
+            search_options[:fields] = ['name']
+          end
+        elsif @query.blank?
+          @query = '*'
+        end
+
+        @citations_projects = CitationsProject.search(
+          @query,
+          **search_options
+        )
         @total_pages = (@citations_projects.total_count / per_page) + 1
       end
     end
