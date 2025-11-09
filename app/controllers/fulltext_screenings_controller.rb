@@ -104,22 +104,38 @@ class FulltextScreeningsController < ApplicationController
         order = @order_by.present? ? { @order_by => @sort } : {}
         where_hash = { fulltext_screening_id: @fulltext_screening.id }
         where_hash[:user_id] = current_user.id unless ProjectPolicy.new(current_user, @project).project_consolidator?
-        fields = %w[accession_number_alts author_map_string name year user label privileged reasons tags notes]
-        fields.each do |field|
-          next if @query.match(/(#{field}:(-?[\w\d]+))/).nil?
 
-          query, keyword = @query.match(/(#{field}:(-?[\w\d]+))/).captures
-          where_hash[field] =
-            case field
-            when 'privileged'
-              keyword == 'true'
-            when 'label'
-              keyword == 'null' ? nil : keyword
-            else
-              { ilike: "%#{keyword}%" }
-            end
-          @query.slice!(query)
+        # Collect all field-specific terms
+        field_terms = {}
+        fields = %w[accession_number_alts author_map_string name year user label privileged reasons tags notes]
+
+        fields.each do |field|
+          field_terms[field] = []
+
+          # Collect all occurrences of this field
+          while @query.match(/(#{field}:(-?[\w\d]+))/)
+            query_match, keyword = @query.match(/(#{field}:(-?[\w\d]+))/).captures
+            field_terms[field] << keyword
+            @query.slice!(query_match)
+          end
         end
+
+        # Build where_hash from collected field terms
+        field_terms.each do |field, terms|
+          next if terms.empty?
+
+          case field
+          when 'privileged'
+            where_hash[field] = terms.first == 'true'
+          when 'label'
+            where_hash[field] = terms.first == 'null' ? nil : terms.first
+          else
+            # For multiple terms, combine with AND logic using Searchkick's text search
+            where_hash[field] = terms.join(' ')
+          end
+        end
+
+        @query = @query.strip
         @fulltext_screening_results =
           FulltextScreeningResult
           .search(@query.present? ? @query : '*',
