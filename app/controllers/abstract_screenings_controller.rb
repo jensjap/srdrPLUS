@@ -93,6 +93,7 @@ class AbstractScreeningsController < ApplicationController
         order = @order_by.present? ? { @order_by => @sort } : {}
         where_hash = { project_id: @project.id }
         title_terms = []
+        author_terms = []
 
         # Parse field-specific queries (e.g., status:asu, title:keyword)
         if @query.match(/(status:([\w\d]+))/)
@@ -108,6 +109,13 @@ class AbstractScreeningsController < ApplicationController
           @query.slice!(query_match)
         end
 
+        # Parse author-specific queries (e.g., author:smith author:jones)
+        while @query.match(/(author:([\w\d]+))/)
+          query_match, author_term = @query.match(/(author:([\w\d]+))/).captures
+          author_terms << author_term
+          @query.slice!(query_match)
+        end
+
         # Clean up query after slicing
         @query = @query.strip
 
@@ -120,21 +128,21 @@ class AbstractScreeningsController < ApplicationController
           load: false
         }
 
-        # If we have title-specific terms, search only in the name field
-        if title_terms.any?
-          # Combine all title terms with AND logic
+        # Handle field-specific searches
+        if title_terms.any? && author_terms.any?
+          # Both title and author searches
           title_query = title_terms.join(' ')
-
-          # If there's also a general query, we need to combine them differently
-          if @query.present? && @query != '*'
-            # Can't easily combine field-specific with general search in Searchkick
-            # For now, just use title search
-            @query = title_query
-            search_options[:fields] = ['name']
-          else
-            @query = title_query
-            search_options[:fields] = ['name']
-          end
+          author_query = author_terms.join(' ')
+          @query = "#{title_query} #{author_query}"
+          search_options[:fields] = ['name', 'author_map_string']
+        elsif title_terms.any?
+          # Title-only search
+          @query = title_terms.join(' ')
+          search_options[:fields] = ['name']
+        elsif author_terms.any?
+          # Author-only search
+          @query = author_terms.join(' ')
+          search_options[:fields] = ['author_map_string']
         elsif @query.blank?
           @query = '*'
         end

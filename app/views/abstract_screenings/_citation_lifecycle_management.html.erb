@@ -49,6 +49,7 @@
             <li><strong>General search:</strong> Type any text to search across citation titles, authors, and other fields</li>
             <li><strong>Filter by status:</strong> Use <code class="px-1 py-0.5 bg-gray-200 rounded">status:xxx</code> to filter by screening status</li>
             <li><strong>Search in title only:</strong> Use <code class="px-1 py-0.5 bg-gray-200 rounded">title:keyword</code> to search only in citation titles (supports multiple terms with AND logic)</li>
+            <li><strong>Search in authors only:</strong> Use <code class="px-1 py-0.5 bg-gray-200 rounded">author:keyword</code> to search only in citation authors (supports multiple terms with AND logic)</li>
           </ul>
           <div class="mt-3">
             <p class="font-semibold text-gray-900 mb-1">Available Status Codes:</p>
@@ -74,9 +75,10 @@
             <ul class="space-y-0.5 text-xs text-gray-600">
               <li><code class="px-1 py-0.5 bg-gray-200 rounded">status:asu</code> - Show only unscreened citations</li>
               <li><code class="px-1 py-0.5 bg-gray-200 rounded">status:ec diabetes</code> - Show extracted citations about diabetes</li>
-              <li><code class="px-1 py-0.5 bg-gray-200 rounded">Smith status:fsu</code> - Show Smith citations needing fulltext screening</li>
+              <li><code class="px-1 py-0.5 bg-gray-200 rounded">author:smith</code> - Show citations by author "smith"</li>
               <li><code class="px-1 py-0.5 bg-gray-200 rounded">title:assay title:pcr</code> - Show citations with BOTH "assay" AND "pcr" in the title</li>
-              <li><code class="px-1 py-0.5 bg-gray-200 rounded">title:covid status:ec</code> - Show extracted citations with "covid" in the title</li>
+              <li><code class="px-1 py-0.5 bg-gray-200 rounded">author:jones author:chen</code> - Show citations with BOTH "jones" AND "chen" as authors</li>
+              <li><code class="px-1 py-0.5 bg-gray-200 rounded">title:covid author:smith status:ec</code> - Show extracted citations with "covid" in title by "smith"</li>
             </ul>
           </div>
         </div>
