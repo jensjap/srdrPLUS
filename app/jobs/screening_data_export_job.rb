@@ -309,7 +309,7 @@ class ScreeningDataExportJob < ApplicationJob
       'DOI',
       'Keywords',
       'First Label Time',
-      'Sub Status',
+      'Status',
     ]
     case style
     when 'sheet1'
