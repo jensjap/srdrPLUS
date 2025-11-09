@@ -91,10 +91,19 @@ class AbstractScreeningsController < ApplicationController
         @page = params[:page].present? ? params[:page].to_i : 1
         per_page = 100
         order = @order_by.present? ? { @order_by => @sort } : {}
+        where_hash = { project_id: @project.id }
+
+        # Parse field-specific queries (e.g., status:asu)
+        if @query.match(/(status:([\w\d]+))/)
+          query_match, status_value = @query.match(/(status:([\w\d]+))/).captures
+          where_hash[:screening_status] = status_value
+          @query.slice!(query_match)
+        end
+
         @citations_projects =
           CitationsProject
-          .search(@query,
-                  where: { project_id: @project.id },
+          .search(@query.present? ? @query : '*',
+                  where: where_hash,
                   limit: per_page, offset: per_page * (@page - 1), order:, load: false)
         @total_pages = (@citations_projects.total_count / per_page) + 1
       end
