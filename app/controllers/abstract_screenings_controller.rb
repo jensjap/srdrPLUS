@@ -256,31 +256,46 @@ class AbstractScreeningsController < ApplicationController
 
         # Collect all field-specific terms
         field_terms = {}
-        fields = %w[accession_number_alts author_map_string name year user label privileged reasons tags notes]
+        # Map user-facing field names to actual database fields
+        field_mapping = {
+          'title' => 'name',
+          'accession_number' => 'accession_number_alts',
+          'author' => 'author_map_string',
+          'year' => 'year',
+          'user' => 'user',
+          'label' => 'label',
+          'privileged' => 'privileged',
+          'reason' => 'reasons',
+          'tag' => 'tags',
+          'note' => 'notes'
+        }
 
-        fields.each do |field|
-          field_terms[field] = []
+        field_mapping.keys.each do |search_field|
+          field_terms[search_field] = []
 
           # Collect all occurrences of this field
-          while @query.match(/(#{field}:(-?[\w\d]+))/)
-            query_match, keyword = @query.match(/(#{field}:(-?[\w\d]+))/).captures
-            field_terms[field] << keyword
+          while @query.match(/(#{search_field}:(-?[\w\d]+))/)
+            query_match, keyword = @query.match(/(#{search_field}:(-?[\w\d]+))/).captures
+            field_terms[search_field] << keyword
             @query.slice!(query_match)
           end
         end
 
         # Build where_hash from collected field terms
-        field_terms.each do |field, terms|
+        field_terms.each do |search_field, terms|
           next if terms.empty?
 
-          case field
+          # Map to actual database field
+          db_field = field_mapping[search_field]
+
+          case search_field
           when 'privileged'
-            where_hash[field] = terms.first == 'true'
+            where_hash[db_field] = terms.first == 'true'
           when 'label'
-            where_hash[field] = terms.first == 'null' ? nil : terms.first
+            where_hash[db_field] = terms.first == 'null' ? nil : terms.first
           else
             # For multiple terms, combine with AND logic using Searchkick's text search
-            where_hash[field] = terms.join(' ')
+            where_hash[db_field] = terms.join(' ')
           end
         end
 
