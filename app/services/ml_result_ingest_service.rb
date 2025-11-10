@@ -117,20 +117,31 @@ class MlResultIngestService
     Rails.logger.warn("[PredictIngest] shard=#{shard_key} skipped_without_cp=#{skipped}") if skipped > 0
     return 0 if rows.empty?
 
+    adapter = ActiveRecord::Base.connection.adapter_name.downcase
+
     if MlPrediction.respond_to?(:upsert_all)
       rows.each_slice(5_000) do |chunk|
-        MlPrediction.upsert_all(
-          chunk,
-          unique_by: [:index_ml_predictions_on_citations_project_id_and_ml_model_id]
-        )
+        payload = chunk.map { |r| r.merge(created_at: Time.current, updated_at: Time.current) }
+
+        if adapter.include?("mysql")
+          MlPrediction.upsert_all(payload)
+        else
+          MlPrediction.upsert_all(
+            payload,
+            unique_by: :index_ml_predictions_on_citations_project_id_and_ml_model_id
+          )
+        end
       end
     else
       rows.each_slice(5_000) do |chunk|
         begin
-          MlPrediction.insert_all(chunk)
+          MlPrediction.insert_all(chunk.map { |r| r.merge(created_at: Time.current, updated_at: Time.current) })
         rescue ActiveRecord::RecordNotUnique
           chunk.each do |r|
-            MlPrediction.insert_all([r]) rescue nil
+            begin
+              MlPrediction.insert_all([r.merge(created_at: Time.current, updated_at: Time.current)])
+            rescue ActiveRecord::RecordNotUnique
+            end
           end
         end
       end

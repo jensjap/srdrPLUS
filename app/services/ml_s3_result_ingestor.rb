@@ -83,7 +83,7 @@ class MlS3ResultIngestor
 
       model_ts = payload.dig("model", "timestamp")
       ml_model = if model_ts.present?
-                   Project.find(pid).ml_models.find_by!(timestamp: model_ts)
+                   Project.find(pid).ml_models.find_by(timestamp: model_ts)
                  else
                    Project.find(pid).ml_models.order(created_at: :desc).first
                  end
