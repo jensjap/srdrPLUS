@@ -132,10 +132,6 @@ class FulltextScreeningsController < ApplicationController
           end
         end
 
-        # Separate text search fields from exact match fields
-        text_search_fields = []
-        text_search_query_parts = []
-
         field_terms.each do |search_field, terms|
           next if terms.empty?
 
@@ -148,9 +144,9 @@ class FulltextScreeningsController < ApplicationController
           when 'label'
             where_hash[db_field] = terms.first == 'null' ? nil : terms.first
           when 'title', 'author', 'accession_number', 'year', 'user', 'reason', 'tag', 'note'
-            # Text fields - use fields parameter for better matching
-            text_search_fields << db_field
-            text_search_query_parts << terms.join(' ')
+            # Text fields - combine all terms with OR logic, then use wildcard matching
+            combined_terms = terms.join(' ')
+            where_hash[db_field] = /#{Regexp.escape(combined_terms)}/i
           else
             # Fallback for any other fields
             where_hash[db_field] = terms.join(' ')
@@ -158,6 +154,7 @@ class FulltextScreeningsController < ApplicationController
         end
 
         @query = @query.strip
+        @query = '*' if @query.blank?
 
         # Build search options
         search_options = {
@@ -167,14 +164,6 @@ class FulltextScreeningsController < ApplicationController
           order: order,
           load: false
         }
-
-        # If we have text search fields, use fields parameter
-        if text_search_fields.any?
-          search_options[:fields] = text_search_fields
-          @query = text_search_query_parts.join(' ') if text_search_query_parts.any?
-        end
-
-        @query = '*' if @query.blank?
 
         @fulltext_screening_results =
           FulltextScreeningResult.search(@query, **search_options)

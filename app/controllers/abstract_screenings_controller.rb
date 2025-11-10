@@ -116,8 +116,20 @@ class AbstractScreeningsController < ApplicationController
           @query.slice!(query_match)
         end
 
+        # Apply field-specific terms to where clause with regex matching
+        if title_terms.any?
+          combined_title_terms = title_terms.join(' ')
+          where_hash[:name] = /#{Regexp.escape(combined_title_terms)}/i
+        end
+
+        if author_terms.any?
+          combined_author_terms = author_terms.join(' ')
+          where_hash[:author_map_string] = /#{Regexp.escape(combined_author_terms)}/i
+        end
+
         # Clean up query after slicing
         @query = @query.strip
+        @query = '*' if @query.blank?
 
         # Build search options
         search_options = {
@@ -127,25 +139,6 @@ class AbstractScreeningsController < ApplicationController
           order: order,
           load: false
         }
-
-        # Handle field-specific searches
-        if title_terms.any? && author_terms.any?
-          # Both title and author searches
-          title_query = title_terms.join(' ')
-          author_query = author_terms.join(' ')
-          @query = "#{title_query} #{author_query}"
-          search_options[:fields] = ['name', 'author_map_string']
-        elsif title_terms.any?
-          # Title-only search
-          @query = title_terms.join(' ')
-          search_options[:fields] = ['name']
-        elsif author_terms.any?
-          # Author-only search
-          @query = author_terms.join(' ')
-          search_options[:fields] = ['author_map_string']
-        elsif @query.blank?
-          @query = '*'
-        end
 
         @citations_projects = CitationsProject.search(
           @query,
@@ -289,10 +282,6 @@ class AbstractScreeningsController < ApplicationController
           end
         end
 
-        # Separate text search fields from exact match fields
-        text_search_fields = []
-        text_search_query_parts = []
-
         field_terms.each do |search_field, terms|
           next if terms.empty?
 
@@ -305,9 +294,9 @@ class AbstractScreeningsController < ApplicationController
           when 'label'
             where_hash[db_field] = terms.first == 'null' ? nil : terms.first
           when 'title', 'author', 'accession_number', 'year', 'user', 'reason', 'tag', 'note'
-            # Text fields - use fields parameter for better matching
-            text_search_fields << db_field
-            text_search_query_parts << terms.join(' ')
+            # Text fields - combine all terms with OR logic, then use wildcard matching
+            combined_terms = terms.join(' ')
+            where_hash[db_field] = /#{Regexp.escape(combined_terms)}/i
           else
             # Fallback for any other fields
             where_hash[db_field] = terms.join(' ')
@@ -315,6 +304,7 @@ class AbstractScreeningsController < ApplicationController
         end
 
         @query = @query.strip
+        @query = '*' if @query.blank?
 
         # Build search options
         search_options = {
@@ -324,14 +314,6 @@ class AbstractScreeningsController < ApplicationController
           order: order,
           load: false
         }
-
-        # If we have text search fields, use fields parameter
-        if text_search_fields.any?
-          search_options[:fields] = text_search_fields
-          @query = text_search_query_parts.join(' ') if text_search_query_parts.any?
-        end
-
-        @query = '*' if @query.blank?
 
         @abstract_screening_results =
           AbstractScreeningResult.search(@query, **search_options)
