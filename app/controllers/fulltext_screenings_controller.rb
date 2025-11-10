@@ -132,7 +132,10 @@ class FulltextScreeningsController < ApplicationController
           end
         end
 
-        # Build where_hash from collected field terms
+        # Separate text search fields from exact match fields
+        text_search_fields = []
+        text_search_query_parts = []
+
         field_terms.each do |search_field, terms|
           next if terms.empty?
 
@@ -144,18 +147,37 @@ class FulltextScreeningsController < ApplicationController
             where_hash[db_field] = terms.first == 'true'
           when 'label'
             where_hash[db_field] = terms.first == 'null' ? nil : terms.first
+          when 'title', 'author', 'accession_number', 'year', 'user', 'reason', 'tag', 'note'
+            # Text fields - use fields parameter for better matching
+            text_search_fields << db_field
+            text_search_query_parts << terms.join(' ')
           else
-            # For multiple terms, combine with AND logic using Searchkick's text search
+            # Fallback for any other fields
             where_hash[db_field] = terms.join(' ')
           end
         end
 
         @query = @query.strip
+
+        # Build search options
+        search_options = {
+          where: where_hash,
+          limit: per_page,
+          offset: per_page * (@page - 1),
+          order: order,
+          load: false
+        }
+
+        # If we have text search fields, use fields parameter
+        if text_search_fields.any?
+          search_options[:fields] = text_search_fields
+          @query = text_search_query_parts.join(' ') if text_search_query_parts.any?
+        end
+
+        @query = '*' if @query.blank?
+
         @fulltext_screening_results =
-          FulltextScreeningResult
-          .search(@query.present? ? @query : '*',
-                  where: where_hash,
-                  limit: per_page, offset: per_page * (@page - 1), order:, load: false)
+          FulltextScreeningResult.search(@query, **search_options)
         @total_pages = (@fulltext_screening_results.total_count / per_page) + 1
       end
     end
