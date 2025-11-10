@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_03_22_183941) do
+ActiveRecord::Schema[7.0].define(version: 2025_11_10_000200) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1068,6 +1068,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_22_183941) do
     t.float "score", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["citations_project_id", "ml_model_id"], name: "index_ml_predictions_on_citations_project_id_and_ml_model_id", unique: true
     t.index ["citations_project_id"], name: "fk_rails_c7d0d53a87"
     t.index ["ml_model_id"], name: "fk_rails_6c1d59597a"
   end
