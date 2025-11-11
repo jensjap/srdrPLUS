@@ -197,6 +197,7 @@ GEM
     dotenv-rails (3.1.2)
       dotenv (= 3.1.2)
       railties (>= 6.1)
+    drb (2.2.3)
     dropzonejs-rails (0.8.5)
       rails (> 3.1)
     erubi (1.12.0)
@@ -326,6 +327,8 @@ GEM
     nio4r (2.7.3)
     nokogiri (1.16.5)
       mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
+    nokogiri (1.16.5-aarch64-linux)
       racc (~> 1.4)
     nokogiri (1.16.5-arm64-darwin)
       racc (~> 1.4)
@@ -511,6 +514,8 @@ GEM
     stringio (3.1.7)
     tailwindcss-rails (2.6.0)
       railties (>= 7.0.0)
+    tailwindcss-rails (2.6.0-aarch64-linux)
+      railties (>= 7.0.0)
     tailwindcss-rails (2.6.0-arm64-darwin)
       railties (>= 7.0.0)
     tailwindcss-rails (2.6.0-x86_64-linux)
@@ -544,6 +549,7 @@ GEM
       rubyzip (>= 1.0.0)
 
 PLATFORMS
+  aarch64-linux
   arm64-darwin-22
   ruby
   x86_64-linux
@@ -576,6 +582,7 @@ DEPENDENCIES
   database_cleaner-active_record
   devise
   dotenv-rails
+  drb
   dropzonejs-rails
   factory_bot_rails
   faker!
@@ -639,4 +646,4 @@ DEPENDENCIES
   zip-zip
 
 BUNDLED WITH
-   2.6.8
+   2.4.20

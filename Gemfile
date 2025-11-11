@@ -7,6 +7,7 @@ end
 
 group :development, :test do
   gem 'byebug'
+  gem 'drb'
   gem 'factory_bot_rails'
   gem 'rspec-rails'
 end
