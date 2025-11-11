@@ -70,9 +70,6 @@ class ExtractionFormsProject < ApplicationRecord
              end
            },
            inverse_of: :extraction_forms_project
-  has_many :key_questions_projects,
-           -> { joins(:extraction_forms_projects_section) },
-           through: :extraction_forms_projects_sections, dependent: :destroy
   has_many :sections,
            -> { joins(:extraction_forms_projects_sections) },
            through: :extraction_forms_projects_sections, dependent: :destroy
@@ -160,9 +157,9 @@ class ExtractionFormsProject < ApplicationRecord
 
   def create_default_arms
     if extraction_forms_project_type.eql?(ExtractionFormsProjectType.find_by(name: 'Standard'))
-      extraction_forms_projects_sections.find_by(
-        section: Section.find_by(name: 'Arms')
-      ).type1s << Type1.find_or_create_by(name: 'Total', description: 'All Arms combined')
+    extraction_forms_projects_sections.find_by(
+      section: Section.find_by(name: 'Arms')
+    ).type1s << Type1.find_or_create_by(name: 'Total', description: 'All Arms combined')
     end
   end
 

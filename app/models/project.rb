@@ -65,7 +65,6 @@ class Project < ApplicationRecord
 
   has_one :data_audit, dependent: :destroy
   has_one :publishing, as: :publishable, dependent: :destroy
-  has_one :room, dependent: :destroy
   # NOTE
   # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one
   # publishing, therefore:

@@ -9,6 +9,7 @@
 #  followup_field_id                                  :bigint
 #
 class FollowupField < ApplicationRecord
+  has_many :followup_fields, dependent: :destroy
   belongs_to :question_row_columns_question_row_column_option, inverse_of: :followup_field
 
   has_many :extractions_extraction_forms_projects_sections_followup_fields, dependent: :destroy,

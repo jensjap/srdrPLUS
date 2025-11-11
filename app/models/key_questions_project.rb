@@ -13,19 +13,17 @@
 class KeyQuestionsProject < ApplicationRecord
   default_scope { order(:pos, :id) }
 
-  belongs_to :extraction_forms_projects_section, inverse_of: :key_questions_projects, optional: true
   belongs_to :key_question,                      inverse_of: :key_questions_projects
   belongs_to :project,                           inverse_of: :key_questions_projects # , touch: true
 
   has_many :key_questions_projects_questions, dependent: :destroy, inverse_of: :key_questions_project
   has_many :questions, through: :key_questions_projects_questions
 
-  has_many :sd_key_questions_projects, inverse_of: :key_questions_project
+  has_many :sd_key_questions_projects, inverse_of: :key_questions_project, dependent: :destroy
   has_many :sd_key_questions, through: :sd_key_questions_projects
 
   has_many :extractions_key_questions_projects_selections, -> { not_disqualified }, dependent: :destroy
 
-  delegate :extraction_forms_project, to: :extraction_forms_projects_section
   delegate :extraction_form, to: :extraction_forms_project
 
   accepts_nested_attributes_for :key_question, reject_if: :key_question_name_exists?

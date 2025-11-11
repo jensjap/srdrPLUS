@@ -2242,7 +2242,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_10_000200) do
   add_foreign_key "imported_files", "file_types"
   add_foreign_key "imported_files", "sections"
   add_foreign_key "invitations", "roles"
-  add_foreign_key "journals", "citations"
+  add_foreign_key "journals", "citations", name: "fk_journals_citation_id"
   add_foreign_key "key_questions_projects", "key_questions"
   add_foreign_key "key_questions_projects", "projects"
   add_foreign_key "key_questions_projects_questions", "key_questions_projects"
