@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :project do
     name { 'Test Project' }
-    # Add other required attributes here
+    create_empty { true }
   end
 end

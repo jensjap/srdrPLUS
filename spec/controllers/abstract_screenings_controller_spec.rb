@@ -1,10 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe AbstractScreeningsController, type: :controller do
-  let(:user) { User.create!(email: 'test@example.com', password: 'password') }
+  let(:user) { create(:user) }
   let(:project) { create(:project) }
-  let(:citation) { create(:citation, authors: 'Kwan J, Smith A', name: 'Pancreatic Cancer Study', year: 2020) }
+  let(:citation) { create(:citation, authors: 'Kwan J, Smith A', name: 'Pancreatic Cancer Study') }
   let(:citations_project) { create(:citations_project, project: project, citation: citation) }
+  let!(:projects_user) { create(:projects_user, user: user, project: project) }
 
   before do
     sign_in user
@@ -93,7 +94,7 @@ RSpec.describe AbstractScreeningsController, type: :controller do
           hash_including(
             where: hash_including(
               project_id: project.id,
-              author_map_string: /kwan smith/i
+              author_map_string: /kwan\ smith/i
             )
           )
         ).and_return(search_results)
@@ -106,12 +107,14 @@ RSpec.describe AbstractScreeningsController, type: :controller do
       it 'escapes special regex characters' do
         search_results = double('search_results', total_count: 1)
 
+        # The controller regex /(title:([\w\d]+))/ only captures word chars and digits,
+        # so 'title:test.+*' only extracts 'test' and leaves '.+*' in the main query
         expect(CitationsProject).to receive(:search).with(
-          '*',
+          '.+*',
           hash_including(
             where: hash_including(
               project_id: project.id,
-              name: /test\.\+\*/i
+              name: /test/i
             )
           )
         ).and_return(search_results)
@@ -163,7 +166,8 @@ RSpec.describe AbstractScreeningsController, type: :controller do
           hash_including(
             where: hash_including(
               abstract_screening_id: abstract_screening.id,
-              name: /pancreas/i
+              user_id: user.id,
+              'name' => /pancreas/i
             )
           )
         ).and_return(search_results)
@@ -181,7 +185,8 @@ RSpec.describe AbstractScreeningsController, type: :controller do
           hash_including(
             where: hash_including(
               abstract_screening_id: abstract_screening.id,
-              author_map_string: /kwan/i
+              user_id: user.id,
+              'author_map_string' => /kwan/i
             )
           )
         ).and_return(search_results)
@@ -199,7 +204,8 @@ RSpec.describe AbstractScreeningsController, type: :controller do
           hash_including(
             where: hash_including(
               abstract_screening_id: abstract_screening.id,
-              accession_number_alts: /12345/i
+              user_id: user.id,
+              'accession_number_alts' => /12345/i
             )
           )
         ).and_return(search_results)
@@ -217,7 +223,8 @@ RSpec.describe AbstractScreeningsController, type: :controller do
           hash_including(
             where: hash_including(
               abstract_screening_id: abstract_screening.id,
-              year: /2020/i
+              user_id: user.id,
+              'year' => /2020/i
             )
           )
         ).and_return(search_results)
@@ -235,7 +242,8 @@ RSpec.describe AbstractScreeningsController, type: :controller do
           hash_including(
             where: hash_including(
               abstract_screening_id: abstract_screening.id,
-              user: /john/i
+              user_id: user.id,
+              'user' => /john/i
             )
           )
         ).and_return(search_results)
@@ -253,7 +261,8 @@ RSpec.describe AbstractScreeningsController, type: :controller do
           hash_including(
             where: hash_including(
               abstract_screening_id: abstract_screening.id,
-              label: '1'
+              user_id: user.id,
+              'label' => '1'
             )
           )
         ).and_return(search_results)
@@ -271,7 +280,8 @@ RSpec.describe AbstractScreeningsController, type: :controller do
           hash_including(
             where: hash_including(
               abstract_screening_id: abstract_screening.id,
-              label: nil
+              user_id: user.id,
+              'label' => nil
             )
           )
         ).and_return(search_results)
@@ -289,7 +299,8 @@ RSpec.describe AbstractScreeningsController, type: :controller do
           hash_including(
             where: hash_including(
               abstract_screening_id: abstract_screening.id,
-              privileged: true
+              user_id: user.id,
+              'privileged' => true
             )
           )
         ).and_return(search_results)
@@ -307,7 +318,8 @@ RSpec.describe AbstractScreeningsController, type: :controller do
           hash_including(
             where: hash_including(
               abstract_screening_id: abstract_screening.id,
-              reasons: /excluded/i
+              user_id: user.id,
+              'reasons' => /excluded/i
             )
           )
         ).and_return(search_results)
@@ -325,7 +337,8 @@ RSpec.describe AbstractScreeningsController, type: :controller do
           hash_including(
             where: hash_including(
               abstract_screening_id: abstract_screening.id,
-              tags: /important/i
+              user_id: user.id,
+              'tags' => /important/i
             )
           )
         ).and_return(search_results)
@@ -343,7 +356,8 @@ RSpec.describe AbstractScreeningsController, type: :controller do
           hash_including(
             where: hash_including(
               abstract_screening_id: abstract_screening.id,
-              notes: /review/i
+              user_id: user.id,
+              'notes' => /review/i
             )
           )
         ).and_return(search_results)
@@ -361,9 +375,10 @@ RSpec.describe AbstractScreeningsController, type: :controller do
           hash_including(
             where: hash_including(
               abstract_screening_id: abstract_screening.id,
-              name: /pancreas/i,
-              author_map_string: /kwan/i,
-              year: /2020/i
+              user_id: user.id,
+              'name' => /pancreas/i,
+              'author_map_string' => /kwan/i,
+              'year' => /2020/i
             )
           )
         ).and_return(search_results)
@@ -381,9 +396,10 @@ RSpec.describe AbstractScreeningsController, type: :controller do
           hash_including(
             where: hash_including(
               abstract_screening_id: abstract_screening.id,
-              label: '1',
-              privileged: false,
-              author_map_string: /kwan/i
+              user_id: user.id,
+              'label' => '1',
+              'privileged' => false,
+              'author_map_string' => /kwan/i
             )
           )
         ).and_return(search_results)

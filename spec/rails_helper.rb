@@ -34,6 +34,15 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
+  config.include Devise::Test::ControllerHelpers, type: :controller
+
+  # Create essential records before running the test suite
+  config.before(:suite) do
+    # Create ExtractionForm and ExtractionFormsProjectType needed for projects with create_empty: true
+    FactoryBot.create(:extraction_form) unless ExtractionForm.exists?(name: 'ef1')
+    FactoryBot.create(:extraction_forms_project_type) unless ExtractionFormsProjectType.exists?(name: 'Standard')
+  end
+
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = Rails.root.join('spec/fixtures')
 

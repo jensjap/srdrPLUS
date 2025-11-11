@@ -124,20 +124,22 @@ RSpec.describe DedupeCitationsJob, type: :job do
     end
 
     it 'prefers non-rejected over rejected status when merging' do
-      # Create CP with rejected status
-      cp1 = create_citations_project_with_associations(project, citation, extractions: [1])
-      cp1.update!(screening_status: CitationsProject::AS_REJECTED)
+      # Create CP with rejected status but MORE associations
+      cp1 = create_citations_project_with_associations(project, citation, extractions: [1, 2, 3])
+      cp1.update_column(:screening_status, CitationsProject::AS_REJECTED)
 
-      # Create CP with non-rejected status (even if less advanced)
-      cp2 = create_citations_project_with_associations(project, citation, extractions: [2])
-      cp2.update!(screening_status: CitationsProject::AS_UNSCREENED)
+      # Create CP with non-rejected status but FEWER associations
+      cp2 = create_citations_project_with_associations(project, citation, extractions: [1])
+      cp2.update_column(:screening_status, CitationsProject::AS_UNSCREENED)
 
       described_class.perform_now(project.id)
 
-      # cp2 should be kept as master because it's not rejected
+      # cp2 should be kept as master because it's not rejected, even though it has fewer associations
       master = CitationsProject.find_by(project: project, citation: citation)
       expect(master.id).to eq(cp2.id)
       expect(master.screening_status).to eq(CitationsProject::AS_UNSCREENED)
+      # Associations from cp1 should be transferred to cp2
+      expect(master.extractions.count).to eq(4)
     end
   end
 
