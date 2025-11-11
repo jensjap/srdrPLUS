@@ -182,20 +182,16 @@ class DedupeCitationsJob < ApplicationJob
   end
 
   def transfer_association_records(master_cp, cp_to_remove, assoc_name, model_class)
-    records = cp_to_remove.public_send(assoc_name)
-    return if records.empty?
-
-    ids = records.map(&:id)
-    return if ids.empty?
-
+    # Use unscoped query to get ALL records, including those filtered by default scopes
+    # This is important for Extraction model which has a default_scope filtering rejected citations
     begin
-      updated_count = model_class.where(id: ids).update_all(citations_project_id: master_cp.id)
-      Rails.logger.debug "Transferred #{updated_count} #{assoc_name} from CP #{cp_to_remove.id} to #{master_cp.id}"
+      updated_count = model_class.unscoped.where(citations_project_id: cp_to_remove.id).update_all(citations_project_id: master_cp.id)
+      Rails.logger.debug "Transferred #{updated_count} #{assoc_name} from CP #{cp_to_remove.id} to #{master_cp.id}" if updated_count > 0
     rescue StandardError => e
       Rails.logger.error "Failed to bulk transfer #{assoc_name}: #{e.message}"
       report_sentry(e)
-      # Fallback to individual updates
-      records.each do |record|
+      # Fallback to individual updates using unscoped query
+      model_class.unscoped.where(citations_project_id: cp_to_remove.id).find_each do |record|
         record.update_column(:citations_project_id, master_cp.id)
       rescue StandardError => e2
         Rails.logger.error "Failed to transfer #{assoc_name.to_s.singularize} #{record.id}: #{e2.message}"
@@ -232,8 +228,8 @@ class DedupeCitationsJob < ApplicationJob
   def associations_empty?(cp)
     return false unless cp.persisted?
 
-    # Use loaded associations if available, otherwise query counts
-    extraction_count = cp.association(:extractions).loaded? ? cp.extractions.size : cp.extractions.count
+    # Use unscoped queries for extractions to include those filtered by default scope
+    extraction_count = Extraction.unscoped.where(citations_project_id: cp.id).count
     return false if extraction_count > 0
 
     asr_count = cp.association(:abstract_screening_results).loaded? ? cp.abstract_screening_results.size : cp.abstract_screening_results.count
@@ -256,8 +252,9 @@ class DedupeCitationsJob < ApplicationJob
   def association_count(cp)
     return 0 unless cp.persisted?
 
+    # Use unscoped query for extractions to include those filtered by default scope
     counts = {
-      extractions: cp.association(:extractions).loaded? ? cp.extractions.size : cp.extractions.count,
+      extractions: Extraction.unscoped.where(citations_project_id: cp.id).count,
       abstract_screening_results: cp.association(:abstract_screening_results).loaded? ? cp.abstract_screening_results.size : cp.abstract_screening_results.count,
       fulltext_screening_results: cp.association(:fulltext_screening_results).loaded? ? cp.fulltext_screening_results.size : cp.fulltext_screening_results.count,
       screening_qualifications: cp.association(:screening_qualifications).loaded? ? cp.screening_qualifications.size : cp.screening_qualifications.count,
@@ -340,14 +337,18 @@ class DedupeCitationsJob < ApplicationJob
     non_rejected = citations_projects.reject { |cp| CitationsProject::REJECTED.include?(cp.screening_status) }
     rejected = citations_projects.select { |cp| CitationsProject::REJECTED.include?(cp.screening_status) }
 
+    Rails.logger.debug "DEBUG select_master_by_status: non_rejected ids=#{non_rejected.map(&:id)}, rejected ids=#{rejected.map(&:id)}"
+
     # Prefer non-rejected if available
     candidates = non_rejected.any? ? non_rejected : rejected
+    Rails.logger.debug "DEBUG select_master_by_status: candidates ids=#{candidates.map(&:id)}"
 
     # Find the one with the most advanced status
     master = candidates.max_by do |cp|
       rank = status_order[cp.screening_status] || -1
       # If statuses are equal, use association count as tiebreaker
       assoc_count = association_count(cp)
+      Rails.logger.debug "DEBUG select_master_by_status: CP #{cp.id} rank=#{rank}, assoc_count=#{assoc_count}"
       [rank, assoc_count]
     end
 
