@@ -142,7 +142,12 @@
       "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
     };
     Alpine.data("projectStatus", () => ({
-      projectStatus: {},
+      projectStatus: {
+        pending_work: [],
+        extraction_activities: [],
+        extraction_kpis: [],
+        projects_users: []
+      },
       user_id: null,
       pendingWorkFilter: {
         awaiting_work: true,

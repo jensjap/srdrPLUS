@@ -11,8 +11,8 @@
 #
 default: &default
   host: <%= ENV['SRDRPLUS_DATABASE_HOST'] %>
-  username: <%= Rails.env.production? ? DATABASE_CREDENTIALS['username'] : ENV['MYSQL_USER'] %>
-  password: <%= Rails.env.production? ? DATABASE_CREDENTIALS['password'] : ENV['MYSQL_PASSWORD'] %>
+  username: "<%= Rails.env.production? ? DATABASE_CREDENTIALS['username'] : ENV['MYSQL_USER'] %>"
+  password: "<%= Rails.env.production? ? DATABASE_CREDENTIALS['password'] : ENV['MYSQL_PASSWORD'] %>"
   adapter: mysql2
   encoding: utf8
   pool: 5
@@ -25,6 +25,7 @@ development:
   username: <%= ENV['SRDRPLUS_DATABASE_USERNAME'] %>
   password: <%= ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
   database: srdrPLUS_development
+
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -57,8 +58,8 @@ test:
 
 production:
   <<: *default
-  username: <%= DATABASE_CREDENTIALS['username'] if defined?(DATABASE_CREDENTIALS) %>
-  password: <%= DATABASE_CREDENTIALS['password'] if defined?(DATABASE_CREDENTIALS) %>
+  username: "<%= DATABASE_CREDENTIALS['username'] if defined?(DATABASE_CREDENTIALS) %>"
+  password: "<%= DATABASE_CREDENTIALS['password'] if defined?(DATABASE_CREDENTIALS) %>"
   database: <%= ENV['SRDRPLUS_DATABASE_SCHEMA'] %>
 
 # For importing legacy srdr data.
@@ -71,6 +72,6 @@ legacy_production:
 # DB Snapshot for recovery purposes.
 recovery:
   <<: *default
-  username: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['username'] : ENV['SRDRPLUS_DATABASE_USERNAME'] %>
-  password: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['password'] : ENV['SRDRPLUS_DATABASE_PASSWORD'] %>
+  username: "<%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['username'] : ENV['SRDRPLUS_DATABASE_USERNAME'] %>"
+  password: "<%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['password'] : ENV['SRDRPLUS_DATABASE_PASSWORD'] %>"
   database: <%= ENV['SRDRPLUS_DATABASE_RECOVERY_SCHEMA'] %>

@@ -7,6 +7,9 @@ end
 
 group :development, :test do
   gem 'byebug'
+  gem 'drb'
+  gem 'factory_bot_rails'
+  gem 'rspec-rails'
 end
 
 group :test do
@@ -17,12 +20,12 @@ end
 group :development do
   gem 'active_record_doctor'
   gem 'annotate'
+  gem 'better_errors'
+  gem 'binding_of_caller'
   gem 'bullet'
   gem 'spring'
   gem 'spring-watcher-listen'
   gem 'web-console'
-  gem 'better_errors'
-  gem 'binding_of_caller'
 end
 
 group :production do

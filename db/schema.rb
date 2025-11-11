@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_03_22_183941) do
+ActiveRecord::Schema[7.0].define(version: 2025_11_10_000200) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1018,15 +1018,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_22_183941) do
     t.index ["project_id"], name: "index_mesh_descriptors_projects_on_project_id"
   end
 
-  create_table "message_extractions", charset: "utf8", force: :cascade do |t|
-    t.bigint "message_id", null: false
-    t.integer "extraction_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["extraction_id"], name: "fk_rails_3f2cace1fe"
-    t.index ["message_id", "extraction_id"], name: "index_message_extractions_on_message_id_and_extraction_id", unique: true
-  end
-
   create_table "message_unreads", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "message_id", null: false
@@ -1077,6 +1068,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_22_183941) do
     t.float "score", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["citations_project_id", "ml_model_id"], name: "index_ml_predictions_on_citations_project_id_and_ml_model_id", unique: true
     t.index ["citations_project_id"], name: "fk_rails_c7d0d53a87"
     t.index ["ml_model_id"], name: "fk_rails_6c1d59597a"
   end

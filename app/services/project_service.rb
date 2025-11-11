@@ -27,7 +27,7 @@ class ProjectService
         created_at: log&.created_at,
         time_ago_in_words: log&.created_at ? time_ago_in_words(log&.created_at) : '',
         id: extraction.id,
-        title: extraction.citations_project.citation.name
+        title: extraction.citations_project&.citation&.name || 'Unknown Citation'
       }
     end.sort_by { |pending_work| pending_work[:created_at] || 999_999_999 }
   end

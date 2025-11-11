@@ -2,9 +2,11 @@ require 'fileutils'
 require 'parallel'
 
 class ArchiveService
-  PUBLISHED_PATH = 'tmp/archives/published'
-  UNPUBLISHED_PATH = 'tmp/archives/unpublished'
-  SIMPLE_EXPORTS_PATH = 'tmp/simple_exports'
+  ARCHIVES_ROOT_PATH         = 'tmp/archives'
+  PUBLISHED_PATH             = 'tmp/archives/published'
+  UNPUBLISHED_PATH           = 'tmp/archives/unpublished'
+  SIMPLE_EXPORTS_PATH        = 'tmp/simple_exports'
+  PUBLIC_DOWNLOAD_URL_PREFIX = ENV.fetch('PUBLIC_DOWNLOAD_URL_PREFIX') # Raises KeyError if not set
 
   def self.export_all_projects(email:, parallel: 3)
     FileUtils.mkdir_p(PUBLISHED_PATH)
@@ -47,6 +49,47 @@ class ArchiveService
         end
         Rails.logger.error "Failed to export project #{project_id}: #{e.message}"
       end
+    end
+  end
+
+  def self.parse_and_print_published_projects_info
+    raise "Export path not set" unless UNPUBLISHED_PATH
+
+    projects_info = []
+
+    Dir.glob(File.join(UNPUBLISHED_PATH, "*.xlsx")).each do |file_path|
+      file_name = File.basename(file_path, ".xlsx")
+      # Example: project_3564_1744144196_advanced.xlsx
+      # Extract project id and export timestamp
+      match = file_name.match(/^project_(\d+)_(\d+)_/)
+      project_id = match[1] if match
+      export_timestamp = match[2] if match
+
+      next unless project_id
+
+      project = Project.find_by(id: project_id)
+      next unless project
+
+      export_info = {
+        public_download_url: "#{PUBLIC_DOWNLOAD_URL_PREFIX}#{file_name}.xlsx",
+        export_timestamp: export_timestamp ? Time.at(export_timestamp.to_i) : nil
+      }
+
+      info = {
+        id: project.id,
+        name: project.name,
+        description: project.description,
+        created_at: project.created_at,
+        updated_at: project.updated_at,
+        export: export_info
+      }
+      projects_info << info
+    end
+
+    # Save JSON to file in ARCHIVES_ROOT_PATH
+    FileUtils.mkdir_p(ARCHIVES_ROOT_PATH)
+    File.open(File.join(ARCHIVES_ROOT_PATH, "projects_info.json"), "w") do |f|
+      f.write(projects_info.to_json)
     end
   end
 end

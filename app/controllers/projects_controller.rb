@@ -164,7 +164,7 @@ class ProjectsController < ApplicationController
   end
 
   def export
-    authenticate_user! unless export_type_name_params == '.xlsx' || export_type_name_params == '.xlsx legacy'
+    authenticate_user! unless ['.xlsx', '.xlsx legacy'].include?(export_type_name_params)
 
     email = params[:email]
     authenticate_user! unless current_user || ((email =~ URI::MailTo::EMAIL_REGEXP) == 0)
@@ -373,7 +373,6 @@ class ProjectsController < ApplicationController
   def dedupe_citations
     authorize(@project)
     DedupeCitationsJob.set(wait: 1.minute).perform_later(@project.id)
-    # @project.dedupe_citations
     flash[:success] = 'Request to deduplicate citations has been received. Please come back later.'
 
     redirect_to(project_citations_path(@project), status: 303)
