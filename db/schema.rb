@@ -972,7 +972,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_10_000200) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "logs", charset: "utf8", force: :cascade do |t|
+  create_table "logs", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "loggable_type", null: false
     t.bigint "loggable_id", null: false
     t.string "description"
@@ -991,7 +991,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_10_000200) do
     t.index ["name"], name: "index_measures_on_name", unique: true
   end
 
-  create_table "memberships", charset: "utf8", force: :cascade do |t|
+  create_table "memberships", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "room_id", null: false
     t.bigint "user_id", null: false
     t.boolean "admin", default: false, null: false
@@ -1018,7 +1018,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_10_000200) do
     t.index ["project_id"], name: "index_mesh_descriptors_projects_on_project_id"
   end
 
-  create_table "message_unreads", charset: "utf8", force: :cascade do |t|
+  create_table "message_unreads", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "message_id", null: false
     t.datetime "created_at", null: false
@@ -1028,7 +1028,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_10_000200) do
     t.index ["user_id"], name: "index_message_unreads_on_user_id"
   end
 
-  create_table "messages", charset: "utf8", force: :cascade do |t|
+  create_table "messages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "message_id"
     t.bigint "user_id", null: false
     t.text "text", null: false
@@ -1507,7 +1507,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_10_000200) do
     t.index ["name"], name: "index_roles_on_name", unique: true
   end
 
-  create_table "rooms", charset: "utf8", force: :cascade do |t|
+  create_table "rooms", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
