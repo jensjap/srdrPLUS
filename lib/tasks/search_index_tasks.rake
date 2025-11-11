@@ -20,8 +20,12 @@ namespace :search_index_tasks do
       begin
         # Delete old index
         puts "Deleting old index for #{model_info[:name]}..."
-        model_info[:klass].search_index.clean_indices
-        model_info[:klass].search_index.delete
+        begin
+          model_info[:klass].search_index.clean_indices
+          model_info[:klass].search_index.delete
+        rescue => e
+          puts "  Note: Could not delete existing index (it may not exist): #{e.message}"
+        end
 
         # Create new index (without importing data)
         puts "Creating new index for #{model_info[:name]}..."
@@ -112,8 +116,12 @@ namespace :search_index_tasks do
     begin
       # Delete old index
       puts "Deleting old index..."
-      klass.search_index.clean_indices
-      klass.search_index.delete
+      begin
+        klass.search_index.clean_indices
+        klass.search_index.delete
+      rescue => e
+        puts "  Note: Could not delete existing index (it may not exist): #{e.message}"
+      end
 
       # Create new index
       puts "Creating new index..."
