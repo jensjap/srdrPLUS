@@ -1,13 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  extraction_forms_projects_section: four
   key_question: one
   project: one
-#  active: true
+  pos: 1
 
 two:
-  extraction_forms_projects_section: four
   key_question: two
   project: one
-#  active: true
+  pos: 2
