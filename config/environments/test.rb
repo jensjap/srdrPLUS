@@ -40,6 +40,9 @@ Rails.application.configure do
 
   # Set default url options.
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+  config.action_mailer.default_options = {
+    from: 'no-reply@yourdomain.com'
+  }
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
