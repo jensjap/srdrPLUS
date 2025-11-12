@@ -1,66 +1,160 @@
 button.close-button data-close='' aria-label='Close modal' type='button'
   span aria-hidden='true' &times;
 
-h4 Please select measures to be included from the list below:
-= simple_form_for @result_statistic_section, remote: (if @extraction_ids.blank? then true else false end) do |f|
+h4 Select measures to include in this results section
+
+.measure-selector-controls
+  .row
+    .columns.small-12.medium-8
+      label for="measure-search-input" Search:
+      input#measure-search-input type="text" placeholder="Type to filter measures..."
+    .columns.small-12.medium-4.text-right
+      button#select-all-measures.button.tiny type="button" Select All
+      button#deselect-all-measures.button.tiny.secondary type="button" Deselect All
+
+.measure-legend
+  strong Legend:
+  span.measure-default-badge Default
+  span.measure-custom-badge Custom
+  span.measure-has-data-badge Has Data
+
+= simple_form_for @result_statistic_section, remote: (if @extraction_ids.blank? then true else false end), html: { id: 'measure-form' } do |f|
   = f.hidden_field :measure_ids, :multiple => true, :value => ''
   - if @extraction_ids.present?
     = f.hidden_field :extraction_ids, value: @extraction_ids
 
-  table.dependence-selector
-    caption Measures
-
-    tbody
-      - @options.each do |option|
-        / If option[3] is blank then this is a top level measure.
+  #measure-list.measure-list
+    - if @options.nil? || @options.empty?
+      p.text-center.no-measures No measures available
+    - else
+      - @options.sort_by { |opt| opt[0].downcase }.each do |option|
+        / option = [name, id, selected_attrs, provider_attrs, is_default, data_count]
         - if option[3].blank?
-          tr
-            td.provider-measure-td
-              = label_tag do
-                => check_box_tag 'result_statistic_section[measure_ids][]', option[1], option[2].present? ? true : false, id: "result_statistic_section_measure_ids_#{ option[1] }"
-                =< option[0]
-            - @dict_of_dependencies[[] << option[1]].each do |dependent_opt|
-              td
-                = label_tag do
-                  => check_box_tag 'result_statistic_section[measure_ids][]', dependent_opt[1], dependent_opt[2].present? ? true : false
-                  =< dependent_opt[0]
-            / Might need to adjust this to the max number of dependent measures.
-            - (1..(5 - @dict_of_dependencies[[] << option[1]].length)).each do |cnt|
-              td
+          .measure-row data-measure-name=option[0].downcase
+            .measure-row-content
+              .measure-main
+                label.measure-label
+                  => check_box_tag 'result_statistic_section[measure_ids][]', option[1], option[2].present? ? true : false, id: "result_statistic_section_measure_ids_#{ option[1] }", class: 'provider-measure-checkbox', data: { 'has-data': option[5] > 0 }
+                  span.measure-name = option[0]
+                  - if option[4]
+                    span.measure-default-badge Default
+                  - else
+                    span.measure-custom-badge Custom
+                  - if option[5] > 0
+                    span.measure-has-data-badge title="This measure has #{option[5]} data #{option[5] == 1 ? 'entry' : 'entries'}"
+                      | Has Data (#{option[5]})
+              .measure-drag
+                span.drag-handle title="Drag to reorder" ⋮⋮
+
+            / Display dependent measures
+            - dependent_measures = @dict_of_dependencies[[] << option[1]]
+            - if dependent_measures.present?
+              .dependent-measures
+                - dependent_measures.each do |dependent_opt|
+                  / dependent_opt = [name, id, selected_attrs, provider_attrs, is_default, data_count]
+                  .dependent-measure-row
+                    label.measure-label
+                      => check_box_tag 'result_statistic_section[measure_ids][]', dependent_opt[1], dependent_opt[2].present? ? true : false, class: 'dependent-measure-checkbox', data: { 'has-data': dependent_opt[5] > 0 }
+                      span.measure-name = dependent_opt[0]
+                      span.dependent-label (dependent)
+                      - if dependent_opt[4]
+                        span.measure-default-badge Default
+                      - else
+                        span.measure-custom-badge Custom
+                      - if dependent_opt[5] > 0
+                        span.measure-has-data-badge title="This measure has #{dependent_opt[5]} data #{dependent_opt[5] == 1 ? 'entry' : 'entries'}"
+                          | Has Data (#{dependent_opt[5]})
 
   #measures
-
     .links
-      = link_to_add_association 'Add new measure', f, :measures
+      = link_to_add_association 'Add Custom Measure', f, :measures, class: 'button small'
 
-  = f.submit 'Update Results Section', class: 'button'
+  .form-actions
+    = f.submit 'Update Results Section', class: 'button'
+    button.button.secondary type="button" data-close='' Cancel
 
 javascript:
-  // Check and Uncheck dependents when provider changes.
-  $( '.provider-measure-td input').change( function() {
-    var _checked = this.checked;
+  $(document).ready(function() {
+    // Search functionality
+    $('#measure-search-input').on('keyup', function() {
+      var searchText = $(this).val().toLowerCase();
+      $('.measure-row').each(function() {
+        var measureName = $(this).data('measure-name');
+        if (measureName.indexOf(searchText) > -1) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      });
+    });
 
-    $( this ).closest( 'tr' ).find( 'td' ).each( function() {
-      $( this ).find( 'input' ).prop( 'checked', _checked )
-    } )
-  } )
+    // Select all / Deselect all
+    $('#select-all-measures').on('click', function() {
+      $('.measure-row:visible .provider-measure-checkbox').prop('checked', true).trigger('change');
+    });
 
-  // If at least one of the providers containing the word "Adjusted" we also select "Adjusted for:".
-  // If none of the providers containing the word "Adjusted" is selected we deselect "Adjusted for:".
-  $( '.provider-measure-td input').change( function() {
-    var lsof_tds_w_adjusted = $( this ).closest( 'table' ).find( 'td label:contains("Adjusted")' );
-    var _checked = false;
+    $('#deselect-all-measures').on('click', function() {
+      $('.measure-row:visible .provider-measure-checkbox').prop('checked', false).trigger('change');
+    });
 
-    // Kind of a while loop. While _checked is not true continue to look. Otherwise, if _checked is already true
-    // we can stop checking.
-    lsof_tds_w_adjusted.each( function( idx ) {
-      if ( ( $( this ).text().toLowerCase().indexOf( 'adjusted' ) !== -1 ) && !( $( this ).text().match( 'Adjusted for:' ) ) ) {
-        if ( !_checked ) {
-          _checked = $( this ).find( 'input' )[0].checked
+    // Provider measure checkbox change - check/uncheck dependents
+    $('.provider-measure-checkbox').on('change', function() {
+      var isChecked = $(this).prop('checked');
+      $(this).closest('.measure-row').find('.dependent-measure-checkbox').prop('checked', isChecked);
+    });
+
+    // Confirmation when unchecking measure with data
+    $('.provider-measure-checkbox, .dependent-measure-checkbox').on('change', function() {
+      if (!$(this).prop('checked') && $(this).data('has-data')) {
+        if (!confirm('This measure has data entries. Are you sure you want to remove it?')) {
+          $(this).prop('checked', true);
+          return false;
         }
       }
-    } )
+    });
 
-    // Set the "Adjusted for:" selection to the _checked value.
-    $( $( 'td label:contains("Adjusted for:")' ).find( 'input' )[0] ).prop( 'checked', _checked )
-  } )
+    // Hover effect for measure rows
+    $('.measure-row').hover(
+      function() { $(this).css('background', '#f0f0f0'); },
+      function() { $(this).css('background', '#fafafa'); }
+    );
+
+    // Drag and drop reordering using Sortable.js (if available)
+    if (typeof Sortable !== 'undefined') {
+      var el = document.getElementById('measure-list');
+      Sortable.create(el, {
+        animation: 150,
+        handle: '.drag-handle',
+        ghostClass: 'sortable-ghost',
+        onEnd: function(evt) {
+          // Reordering is visual only for now
+          // Could add AJAX call here to persist order if needed
+          console.log('Reordered from', evt.oldIndex, 'to', evt.newIndex);
+        }
+      });
+    }
+
+    // If at least one of the providers containing the word "Adjusted" we also select "Adjusted for:".
+    $('.provider-measure-checkbox').on('change', function() {
+      var adjustedCheckboxes = $('.measure-row .provider-measure-checkbox').filter(function() {
+        var label = $(this).siblings('.measure-name').text();
+        return label.toLowerCase().indexOf('adjusted') > -1 && !label.match('Adjusted for:');
+      });
+
+      var anyAdjustedChecked = false;
+      adjustedCheckboxes.each(function() {
+        if ($(this).prop('checked')) {
+          anyAdjustedChecked = true;
+          return false;
+        }
+      });
+
+      // Find and set "Adjusted for:" checkbox
+      $('.measure-row .provider-measure-checkbox').each(function() {
+        var label = $(this).siblings('.measure-name').text();
+        if (label.match('Adjusted for:')) {
+          $(this).prop('checked', anyAdjustedChecked);
+        }
+      });
+    });
+  });

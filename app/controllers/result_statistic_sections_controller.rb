@@ -89,6 +89,24 @@ class ResultStatisticSectionsController < ApplicationController
         @extraction_ids = params[:extraction_ids] if params[:extraction_ids].present?
         @result_statistic_section = ResultStatisticSection.find(params[:rss_id])
         @result_statistic_section.result_statistic_sections_measures.build.build_measure
+
+        # Get measures with data count
+        @measures_with_data = {}
+        @result_statistic_section.result_statistic_sections_measures.each do |rssm|
+          data_count = rssm.tps_comparisons_rssms.joins(:records).where.not(records: { name: ['', nil] }).count +
+                       rssm.tps_arms_rssms.joins(:records).where.not(records: { name: ['', nil] }).count +
+                       rssm.comparisons_arms_rssms.joins(:records).where.not(records: { name: ['', nil] }).count +
+                       rssm.wacs_bacs_rssms.joins(:records).where.not(records: { name: ['', nil] }).count
+          @measures_with_data[rssm.measure.id] = data_count if data_count > 0
+        end
+
+        # Get default measures
+        @default_measure_ids = @result_statistic_section
+                               .result_statistic_section_type
+                               .result_statistic_section_types_measures
+                               .where(type1_type: @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1.type1_type, default: true)
+                               .pluck(:measure_id)
+
         @options = @result_statistic_section
                    .result_statistic_section_type
                    .result_statistic_section_types_measures
@@ -98,18 +116,22 @@ class ResultStatisticSectionsController < ApplicationController
             rsstm.measure.name,
             rsstm.measure.id,
             @result_statistic_section.measures.include?(rsstm.measure) ? { 'data-selected' => '' } : '',
-            rsstm.provider_measure.present? ? { 'provider-measure-id' => rsstm.provider_measure.measure.id } : ''
+            rsstm.provider_measure.present? ? { 'provider-measure-id' => rsstm.provider_measure.measure.id } : '',
+            @default_measure_ids.include?(rsstm.measure.id),
+            @measures_with_data[rsstm.measure.id] || 0
           ]
         end
 
         @result_statistic_section.related_measures.each do |measure|
-          next if @options.any? { |_, measure_id, _| measure_id == measure.id }
+          next if @options.any? { |opt| opt[1] == measure.id }
 
           @options << [
             measure.name,
             measure.id,
             @result_statistic_section.measures.include?(measure) ? { 'data-selected' => '' } : '',
-            ''
+            '',
+            false,
+            @measures_with_data[measure.id] || 0
           ]
         end
 

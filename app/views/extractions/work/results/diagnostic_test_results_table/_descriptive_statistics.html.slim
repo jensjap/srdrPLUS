@@ -1,5 +1,8 @@
 table
-  caption Descriptive Statistics
+  caption
+    | Descriptive Statistics
+    br
+    = link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: rss.id), remote: true, onclick: "return false"
   thead
     tr
       th Measure
