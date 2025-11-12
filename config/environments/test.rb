@@ -13,10 +13,19 @@ Rails.application.configure do
   config.eager_load = false
 
   # Configure public file server for tests with Cache-Control for performance.
-  config.public_file_server.enabled = false  # SimpleCov
+  config.public_file_server.enabled = true
   config.public_file_server.headers = {
     'Cache-Control' => "public, max-age=#{1.hour.to_i}"
   }
+
+  # Use precompiled assets from development for system tests
+  # (Asset compilation fails in test due to Sass/Tailwind incompatibility)
+  config.assets.compile = false
+  config.assets.debug = false
+  config.assets.digest = true
+  config.assets.prefix = '/assets'
+  # Fallback to application.css if tailwind.css fails
+  config.assets.unknown_asset_fallback = true
 
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true

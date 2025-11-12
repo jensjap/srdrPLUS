@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :citation do
-    name { 'Test Citation' }
+    sequence(:name) { |n| "Test Citation #{n} #{SecureRandom.hex(4)}" }
     association :citation_type
-    pmid { '123456' }
+    sequence(:pmid) { |n| "#{123456 + n}" }
     abstract { 'Test abstract' }
     # Add other required attributes here
   end

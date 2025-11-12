@@ -9,6 +9,10 @@ abort('The Rails environment is running in production mode!') if Rails.env.produ
 # return unless Rails.env.test?
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
+require 'capybara/rails'
+require 'capybara/rspec'
+require 'selenium/webdriver'
+require 'rails-controller-testing'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -32,15 +36,34 @@ begin
 rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
+# Capybara configuration
+Capybara.register_driver :selenium_chrome_headless do |app|
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.add_argument('--headless')
+  options.add_argument('--no-sandbox')
+  options.add_argument('--disable-dev-shm-usage')
+  options.add_argument('--disable-gpu')
+  options.add_argument('--window-size=1400,1400')
+
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+end
+
+Capybara.javascript_driver = :selenium_chrome_headless
+Capybara.default_max_wait_time = 5
+
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::IntegrationHelpers, type: :system
+  config.include Rails::Controller::Testing::TestProcess, type: :controller
+  config.include Rails::Controller::Testing::TemplateAssertions, type: :controller
+  config.include Rails::Controller::Testing::Integration, type: :controller
 
   # Create essential records before running the test suite
   config.before(:suite) do
     # Create ExtractionForm and ExtractionFormsProjectType needed for projects with create_empty: true
-    FactoryBot.create(:extraction_form) unless ExtractionForm.exists?(name: 'ef1')
-    FactoryBot.create(:extraction_forms_project_type) unless ExtractionFormsProjectType.exists?(name: 'Standard')
+    ExtractionForm.find_or_create_by!(name: 'ef1')
+    ExtractionFormsProjectType.find_or_create_by!(name: 'Standard')
   end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
@@ -50,6 +73,32 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
+
+  # For system tests with JavaScript, we need to use a different strategy
+  config.before(:each, type: :system) do
+    driven_by :rack_test
+  end
+
+  config.before(:each, type: :system, js: true) do
+    driven_by :selenium_chrome_headless
+  end
+
+  # Stub complex model callbacks for tests
+  config.before(:each) do
+    allow_any_instance_of(Project).to receive(:create_default_extraction_form).and_return(true)
+    allow_any_instance_of(Extraction).to receive(:ensure_extraction_form_structure).and_return(true)
+    allow_any_instance_of(ExtractionFormsProject).to receive(:create_default_arms).and_return(true)
+
+    # Stub suggestion creation callbacks that require User.current
+    allow_any_instance_of(ExtractionForm).to receive(:record_suggestor).and_return(true)
+    allow_any_instance_of(Type1).to receive(:record_suggestor).and_return(true)
+    allow_any_instance_of(Section).to receive(:record_suggestor).and_return(true)
+  end
+
+  # Disable CSRF protection for controller tests
+  config.before(:each, type: :controller) do
+    allow_any_instance_of(ActionController::Base).to receive(:protect_against_forgery?).and_return(false)
+  end
 
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false

@@ -13,8 +13,12 @@ group :development, :test do
 end
 
 group :test do
+  gem 'capybara'
   gem 'database_cleaner-active_record'
+  gem 'rails-controller-testing'
+  gem 'selenium-webdriver'
   gem 'simplecov', require: false
+  gem 'webdrivers'
 end
 
 group :development do
