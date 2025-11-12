@@ -5,8 +5,18 @@ RSpec.describe Profile, type: :model do
   let(:user_two) { create(:user) }
   let(:organization_one) { create(:organization) }
   let(:organization_two) { create(:organization) }
-  let(:profile_one) { create(:profile, user: user_one, organization: organization_one) }
-  let(:profile_two) { create(:profile, user: user_two) }
+  # Users automatically get a profile created via after_create callback
+  let(:profile_one) { user_one.profile.tap { |p| p.update(organization: organization_one) } }
+  let(:profile_two) { user_two.profile }
+
+  before(:each) do
+    # Set User.current to a valid user to handle after_create callbacks
+    User.current = create(:user)
+  end
+
+  after(:each) do
+    User.current = nil
+  end
 
   describe 'degree association' do
     it 'submitting properly formatted degree_ids should update correctly' do
@@ -29,6 +39,9 @@ RSpec.describe Profile, type: :model do
     end
 
     it 'should properly cache Profile objects referenced directly, and also through degrees_profiles' do
+      # Create a degree and associate it with the profile first
+      degree = create(:degree)
+      profile_one.degrees << degree
       degrees_profile = profile_one.degrees_profiles.first
       expect(profile_one.object_id).to eq(degrees_profile.profile.object_id)
     end

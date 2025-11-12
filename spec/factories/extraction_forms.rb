@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :extraction_form do
-    name { 'ef1' }
+    sequence(:name) { |n| "Extraction Form #{n}" }
   end
 end
