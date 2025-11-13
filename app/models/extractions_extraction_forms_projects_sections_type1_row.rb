@@ -17,8 +17,10 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   #   - Within Arm Comparisons
   #   - NET Change
   after_create :create_default_result_statistic_sections
-  after_create :create_default_type1_row_columns
+  after_save :create_default_type1_row_columns, if: :saved_change_to_id?
   after_commit :set_extraction_stale, on: %i[create update destroy]
+
+  validate :must_have_at_least_one_timepoint, on: :update
 
   belongs_to :extractions_extraction_forms_projects_sections_type1,
              inverse_of: :extractions_extraction_forms_projects_sections_type1_rows
@@ -115,6 +117,9 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
   end
 
   def create_appropriate_number_of_type1_row_columns
+    # Skip if user is providing timepoints via nested attributes
+    return if extractions_extraction_forms_projects_sections_type1_row_columns.any?
+
     # Need to reload self.question here because it is being cached and its CollectionProxy
     # doesn't have the newly created extractions_extraction_forms_projects_sections_type1_row yet.
     if extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.blank?
@@ -127,7 +132,11 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
        .extractions_extraction_forms_projects_sections_type1_row_columns
        .count == 0
 
-      # If this is the first/only row then we default to creating (arbitrarily) 1 column.
+      # If this is the first/only row then we default to creating 1 baseline timepoint.
+      baseline = TimepointName.find_or_create_by!(name: 'Baseline', unit: '')
+      extractions_extraction_forms_projects_sections_type1_row_columns.create!(
+        timepoint_name: baseline
+      )
 
     else
 
@@ -141,6 +150,20 @@ class ExtractionsExtractionFormsProjectsSectionsType1Row < ApplicationRecord
         extractions_extraction_forms_projects_sections_type1_row_columns.create(timepoint_name: eefpst1rc.timepoint_name)
       end
 
+    end
+  end
+
+  def must_have_at_least_one_timepoint
+    # Only validate if this is an update and timepoints exist
+    return unless persisted?
+
+    # Count remaining timepoints (not marked for destruction)
+    remaining_timepoints = extractions_extraction_forms_projects_sections_type1_row_columns.reject do |tp|
+      tp.marked_for_destruction?
+    end
+
+    if remaining_timepoints.empty?
+      errors.add(:base, 'Must keep at least one timepoint')
     end
   end
 end
