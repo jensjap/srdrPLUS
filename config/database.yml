@@ -11,8 +11,8 @@
 #
 default: &default
   host: <%= ENV['VADRR_DATABASE_HOST'] %>
-  username: "<%= Rails.env.production? ? DATABASE_CREDENTIALS['username'] : ENV['MYSQL_USER'] %>"
-  password: "<%= Rails.env.production? ? DATABASE_CREDENTIALS['password'] : ENV['MYSQL_PASSWORD'] %>"
+  username: <%= Rails.env.production? ? DATABASE_CREDENTIALS['username'] : ENV['MYSQL_USER'] %>
+  password: <%= Rails.env.production? ? DATABASE_CREDENTIALS['password'] : ENV['MYSQL_PASSWORD'] %>
   adapter: mysql2
   encoding: utf8
   pool: 5
@@ -33,7 +33,7 @@ test:
   <<: *default
   username: <%= ENV['VADRR_DATABASE_USERNAME'] %>
   password: <%= ENV['VADRR_DATABASE_PASSWORD'] %>
-  database: VADRR_test
+  database: vadrr_test
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -64,8 +64,8 @@ production:
 # For importing legacy srdr data.
 legacy_production:
   <<: *default
-  username: <%= ENV['SRDR_LEGACY_DATABASE_USERNAME'] %>
-  password: <%= ENV['SRDR_LEGACY_DATABASE_PASSWORD'] %>
+  username: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['username'] : ENV['VADRR_DATABASE_USERNAME'] %>
+  password: <%= defined?(DATABASE_CREDENTIALS) ? DATABASE_CREDENTIALS['password'] : ENV['VADRR_DATABASE_PASSWORD'] %>
   database: <%= ENV['SRDR_LEGACY_DATABASE_SCHEMA'] %>
 
 # DB Snapshot for recovery purposes.

@@ -10,6 +10,7 @@
 #  created_at                                       :datetime         not null
 #  updated_at                                       :datetime         not null
 #  pos                                              :integer          default(999999)
+#  comparisons_assisted                             :boolean          default(FALSE)
 #
 
 class ExtractionsExtractionFormsProjectsSectionsType1 < ApplicationRecord
