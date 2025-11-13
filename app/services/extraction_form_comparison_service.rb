@@ -51,7 +51,10 @@ class ExtractionFormComparisonService
       questions: [
         :dependencies,
         :key_questions_projects,
-        { question_rows: { question_row_columns: :question_row_column_fields } }
+        { question_rows: { question_row_columns: [
+          :question_row_column_fields,
+          { question_row_columns_question_row_column_options: %i[question_row_column_option followup_field] }
+        ] } }
       ]
     ).order(:pos, :id)
 
@@ -62,7 +65,10 @@ class ExtractionFormComparisonService
       questions: [
         :dependencies,
         :key_questions_projects,
-        { question_rows: { question_row_columns: :question_row_column_fields } }
+        { question_rows: { question_row_columns: [
+          :question_row_column_fields,
+          { question_row_columns_question_row_column_options: %i[question_row_column_option followup_field] }
+        ] } }
       ]
     ).order(:pos, :id)
 
@@ -99,11 +105,11 @@ class ExtractionFormComparisonService
       return false
     end
 
-    # Compare position
-    if section1.pos != section2.pos
-      @differences << "Section #{index} (#{section1.section.name}): Different positions: #{section1.pos} vs #{section2.pos}"
-      return false
-    end
+    # # Compare position
+    # if section1.pos != section2.pos
+    #   @differences << "Section #{index} (#{section1.section.name}): Different positions: #{section1.pos} vs #{section2.pos}"
+    #   return false
+    # end
 
     # Compare link_to_type1
     link1_section_name = section1.link_to_type1&.section&.name
@@ -255,6 +261,10 @@ class ExtractionFormComparisonService
       end
     end
 
+    # Compare question_row_columns_question_row_column_options
+    return false unless compare_question_row_column_options(c1, c2, section_index, q_index, r_index, c_index,
+                                                            section_name)
+
     true
   end
 
@@ -301,6 +311,153 @@ class ExtractionFormComparisonService
     kqps1.zip(kqps2).each_with_index do |(kqp1, kqp2), kq_index|
       if kqp1.key_question.name.to_s != kqp2.key_question.name.to_s
         @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Key Question #{kq_index}: Different names: '#{kqp1.key_question.name}' vs '#{kqp2.key_question.name}'"
+        return false
+      end
+    end
+
+    true
+  end
+
+  def compare_question_row_column_options(c1, c2, section_index, q_index, r_index, c_index, section_name)
+    type_name = c1.question_row_column_type.name
+
+    case type_name
+    when QuestionRowColumnType::TEXT
+      # For text fields, compare min and max character length
+      compare_text_field_options(c1, c2, section_index, q_index, r_index, c_index, section_name)
+
+    when QuestionRowColumnType::NUMERIC, QuestionRowColumnType::NUMERIC_RANGE, QuestionRowColumnType::SCIENTIFIC
+      # For numeric fields, compare "Allow equality", min, and max
+      compare_numeric_field_options(c1, c2, section_index, q_index, r_index, c_index, section_name)
+
+    when *QuestionRowColumnType::OPTION_SELECTION_TYPES
+      # For checkbox, dropdown, radio, select2: compare answer choices
+      compare_answer_choice_options(c1, c2, section_index, q_index, r_index, c_index, section_name, type_name)
+
+    else
+      # For other types, no specific comparison needed
+      true
+    end
+  end
+
+  def compare_text_field_options(c1, c2, section_index, q_index, r_index, c_index, section_name)
+    min_length1 = c1.question_row_columns_question_row_column_options.find do |opt|
+      opt.question_row_column_option.name == 'min_length'
+    end&.name.to_s
+    min_length2 = c2.question_row_columns_question_row_column_options.find do |opt|
+      opt.question_row_column_option.name == 'min_length'
+    end&.name.to_s
+
+    max_length1 = c1.question_row_columns_question_row_column_options.find do |opt|
+      opt.question_row_column_option.name == 'max_length'
+    end&.name.to_s
+    max_length2 = c2.question_row_columns_question_row_column_options.find do |opt|
+      opt.question_row_column_option.name == 'max_length'
+    end&.name.to_s
+
+    if min_length1 != min_length2
+      @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Row #{r_index}, Column #{c_index}: Different min length: '#{min_length1}' vs '#{min_length2}'"
+      return false
+    end
+
+    if max_length1 != max_length2
+      @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Row #{r_index}, Column #{c_index}: Different max length: '#{max_length1}' vs '#{max_length2}'"
+      return false
+    end
+
+    true
+  end
+
+  def compare_numeric_field_options(c1, c2, section_index, q_index, r_index, c_index, section_name)
+    # "additional_char" represents "Allow ~, <, >, ≤, ≥"
+    additional_char1 = c1.question_row_columns_question_row_column_options.find do |opt|
+      opt.question_row_column_option.name == 'additional_char'
+    end&.name.to_s
+    additional_char2 = c2.question_row_columns_question_row_column_options.find do |opt|
+      opt.question_row_column_option.name == 'additional_char'
+    end&.name.to_s
+
+    min_value1 = c1.question_row_columns_question_row_column_options.find do |opt|
+      opt.question_row_column_option.name == 'min_value'
+    end&.name.to_s
+    min_value2 = c2.question_row_columns_question_row_column_options.find do |opt|
+      opt.question_row_column_option.name == 'min_value'
+    end&.name.to_s
+
+    max_value1 = c1.question_row_columns_question_row_column_options.find do |opt|
+      opt.question_row_column_option.name == 'max_value'
+    end&.name.to_s
+    max_value2 = c2.question_row_columns_question_row_column_options.find do |opt|
+      opt.question_row_column_option.name == 'max_value'
+    end&.name.to_s
+
+    if additional_char1 != additional_char2
+      @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Row #{r_index}, Column #{c_index}: Different 'Allow equality' setting: '#{additional_char1}' vs '#{additional_char2}'"
+      return false
+    end
+
+    if min_value1 != min_value2
+      @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Row #{r_index}, Column #{c_index}: Different min value: '#{min_value1}' vs '#{min_value2}'"
+      return false
+    end
+
+    if max_value1 != max_value2
+      @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Row #{r_index}, Column #{c_index}: Different max value: '#{max_value1}' vs '#{max_value2}'"
+      return false
+    end
+
+    true
+  end
+
+  def compare_answer_choice_options(c1, c2, section_index, q_index, r_index, c_index, section_name, type_name)
+    # Filter to only answer_choice options with non-empty names (the actual choices)
+    options1 = c1.question_row_columns_question_row_column_options
+                 .select { |opt| opt.question_row_column_option.name == 'answer_choice' && opt.name.to_s.present? }
+                 .sort_by { |opt| [opt.pos, opt.id] }
+
+    options2 = c2.question_row_columns_question_row_column_options
+                 .select { |opt| opt.question_row_column_option.name == 'answer_choice' && opt.name.to_s.present? }
+                 .sort_by { |opt| [opt.pos, opt.id] }
+
+    if options1.count != options2.count
+      @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Row #{r_index}, Column #{c_index}: Different number of answer choices: #{options1.count} vs #{options2.count}"
+      return false
+    end
+
+    # Only compare followup fields for checkbox and radio types
+    compare_followup = [QuestionRowColumnType::CHECKBOX, QuestionRowColumnType::RADIO].include?(type_name)
+
+    options1.zip(options2).each_with_index do |(o1, o2), o_index|
+      unless compare_question_row_column_option_pair(o1, o2, section_index, q_index, r_index, c_index, o_index,
+                                                     section_name, compare_followup)
+        return false
+      end
+    end
+
+    true
+  end
+
+  def compare_question_row_column_option_pair(o1, o2, section_index, q_index, r_index, c_index, o_index, section_name,
+                                              compare_followup = false)
+    # Compare option type (e.g., answer_choice, min_length, max_length, etc.)
+    if o1.question_row_column_option.name != o2.question_row_column_option.name
+      @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Row #{r_index}, Column #{c_index}, Option #{o_index}: Different option types: '#{o1.question_row_column_option.name}' vs '#{o2.question_row_column_option.name}'"
+      return false
+    end
+
+    # Compare option value/name (the actual choice text or constraint value)
+    if o1.name.to_s != o2.name.to_s
+      @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Row #{r_index}, Column #{c_index}, Option #{o_index} (#{o1.question_row_column_option.name}): Different values: '#{o1.name}' vs '#{o2.name}'"
+      return false
+    end
+
+    # Only compare followup_field presence for checkbox and radio types
+    if compare_followup
+      has_followup1 = o1.followup_field.present?
+      has_followup2 = o2.followup_field.present?
+
+      if has_followup1 != has_followup2
+        @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Row #{r_index}, Column #{c_index}, Option #{o_index} (#{o1.question_row_column_option.name}): Different followup field presence: #{has_followup1} vs #{has_followup2}"
         return false
       end
     end
