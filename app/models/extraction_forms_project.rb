@@ -71,11 +71,9 @@ class ExtractionFormsProject < ApplicationRecord
            },
            inverse_of: :extraction_forms_project
   has_many :key_questions_projects,
-           -> { joins(:extraction_forms_projects_section) },
-           through: :extraction_forms_projects_sections, dependent: :destroy
+           through: :extraction_forms_projects_sections
   has_many :sections,
-           -> { joins(:extraction_forms_projects_sections) },
-           through: :extraction_forms_projects_sections, dependent: :destroy
+           through: :extraction_forms_projects_sections
 
   accepts_nested_attributes_for :extraction_form, reject_if: :extraction_form_name_exists?
 
