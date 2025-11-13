@@ -270,6 +270,8 @@ Rails.application.routes.draw do
       post 'import_ris'
       post 'import_endnote'
       post 'import_pubmed'
+      get 'citation_duplicates'
+      post 'merge_citation_duplicates'
       post 'dedupe_citations'
       post 'citations_in_ris'
       post 'create_citation_screening_extraction_form'

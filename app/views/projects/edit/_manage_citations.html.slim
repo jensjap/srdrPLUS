@@ -2,10 +2,13 @@
 - project_leader = ProjectPolicy.new(current_user, @project).project_leader?
 div#project_leader.hidden data-project-leader="#{project_leader}"
 div#project_consolidator.hidden data-project-consolidator="#{project_consolidator}"
-- if @project.has_duplicate_citations?
-  div.row style="margin: 0;"
+
+- if project_leader
+  div.row style="margin: 0 0 10px 0;"
     div.columns.medium-12
-      = link_to " (Dedupe citations in this project)", dedupe_citations_project_path(@project), method: :POST
+      = link_to "Review Duplicates", citation_duplicates_project_path(@project), class: "button", style: "background-color: #3b82f6; color: white; margin-right: 10px;"
+      - if @project.has_duplicate_citations?
+        = link_to "Auto-Merge All Duplicates", dedupe_citations_project_path(@project), method: :POST, data: { confirm: "This will automatically merge all duplicate citations. Continue?" }, class: "button alert"
 
 div.row#btm-anchor style="margin: 10px 0 0 0;"
   div.columns.medium-12.my-4
