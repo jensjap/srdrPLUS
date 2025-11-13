@@ -28,14 +28,8 @@ class KeyQuestionsProject < ApplicationRecord
 
   accepts_nested_attributes_for :key_question, reject_if: :key_question_name_exists?
 
-  validate :extraction_forms_projects_section_is_key_question_type, if: :extraction_forms_projects_section_present?
-
   def abs_pos
     project.key_questions_projects.index(self) + 1
-  end
-
-  def extraction_forms_projects_section_present?
-    extraction_forms_projects_section.present?
   end
 
   # Key Question should belong to ExtractionFormsProjectsSection that is of type 'Key Questions' only.

@@ -3,13 +3,14 @@ class ExtractionsController < ApplicationController
 
   before_action :set_project,
                 only: %i[index new create comparison_tool compare consolidate edit_type1_across_extractions]
-  before_action :set_extraction, only: %i[show edit update destroy work update_kqp_selections reassign_extraction]
+  before_action :set_extraction,
+                only: %i[show edit update destroy work update_kqp_selections reassign_extraction check_compatibility]
   before_action :set_extractions, only: %i[consolidate]
   before_action :ensure_extraction_form_structure, only: %i[consolidate work]
   before_action :set_eefps_by_efps_dict, only: [:work]
 
   before_action :skip_policy_scope, except: %i[compare consolidate edit_type1_across_extractions]
-  before_action :skip_authorization, only: %i[index show]
+  before_action :skip_authorization, only: %i[index show check_compatibility]
 
   # GET /projects/1/extractions
   # GET /projects/1/extractions.json
@@ -44,6 +45,36 @@ class ExtractionsController < ApplicationController
   def reassign_extraction
     @nav_buttons.push('extractions', 'my_projects')
     @extraction = Extraction.find(params[:id])
+  end
+
+  # GET /extractions/:id/check_compatibility?target_project_ids[]=1&target_project_ids[]=2
+  # Returns compatibility status for copying extraction to target projects
+  def check_compatibility
+    target_project_ids = params[:target_project_ids] || []
+    source_project = @extraction.project
+
+    results = target_project_ids.map do |target_project_id|
+      target_project = Project.find_by(id: target_project_id)
+
+      if target_project.nil?
+        {
+          project_id: target_project_id.to_i,
+          compatible: false,
+          error: 'Project not found'
+        }
+      else
+        comparison_service = ExtractionFormComparisonService.new(source_project, target_project)
+        compatible = comparison_service.first_extraction_forms_identical?
+
+        {
+          project_id: target_project_id.to_i,
+          compatible: compatible,
+          differences: compatible ? [] : comparison_service.get_differences
+        }
+      end
+    end
+
+    render json: results
   end
 
   # GET /extractions/1

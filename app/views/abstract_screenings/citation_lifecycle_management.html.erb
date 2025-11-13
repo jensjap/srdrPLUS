@@ -70,6 +70,7 @@
       showCopyModal: false,
       selectedExtractionId: null,
       userProjects: [],
+      projectCompatibility: {},
       detailedResult: 0,
       lastIndexSelected: null,
       copied: false,
@@ -122,10 +123,114 @@
           }
 
           const data = await response.json();
-          this.userProjects = data;
+          this.userProjects = data.map((project) => ({
+            ...project,
+            showDifferences: false,
+          }));
         } catch (error) {
           console.error("An error occurred:", error);
         }
+      },
+
+      async checkExtractionCompatibility() {
+        if (!this.selectedExtractionId || this.userProjects.length === 0) {
+          return;
+        }
+
+        // Reset compatibility status
+        this.projectCompatibility = {};
+
+        // Set all projects to loading state
+        this.userProjects.forEach((project) => {
+          this.projectCompatibility[project.id] = { status: "loading" };
+        });
+
+        try {
+          const projectIds = this.userProjects.map((p) => p.id);
+          const queryString = projectIds
+            .map((id) => `target_project_ids[]=${id}`)
+            .join("&");
+
+          const response = await fetch(
+            `/extractions/${this.selectedExtractionId}/check_compatibility?${queryString}`,
+            {
+              method: "GET",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                  .content,
+              },
+            }
+          );
+
+          if (!response.ok) {
+            console.error(`Error: ${response.status} - ${response.statusText}`);
+            // Set all to error state
+            this.userProjects.forEach((project) => {
+              this.projectCompatibility[project.id] = {
+                status: "error",
+                error: "Failed to check compatibility",
+              };
+            });
+            return;
+          }
+
+          const results = await response.json();
+
+          // Update compatibility status for each project
+          results.forEach((result) => {
+            this.projectCompatibility[result.project_id] = {
+              status: "loaded",
+              compatible: result.compatible,
+              differences: result.differences || [],
+              error: result.error,
+            };
+          });
+        } catch (error) {
+          console.error("An error occurred:", error);
+          // Set all to error state
+          this.userProjects.forEach((project) => {
+            this.projectCompatibility[project.id] = {
+              status: "error",
+              error: "Network error",
+            };
+          });
+        }
+      },
+
+      getCompatibilityStatus(projectId) {
+        return this.projectCompatibility[projectId] || { status: "loading" };
+      },
+
+      isCompatibilityLoading(projectId) {
+        const status = this.getCompatibilityStatus(projectId);
+        return status.status === "loading";
+      },
+
+      isCompatible(projectId) {
+        const status = this.getCompatibilityStatus(projectId);
+        return status.status === "loaded" && status.compatible === true;
+      },
+
+      hasIncompatibility(projectId) {
+        const status = this.getCompatibilityStatus(projectId);
+        return status.status === "loaded" && status.compatible === false;
+      },
+
+      hasCompatibilityError(projectId) {
+        const status = this.getCompatibilityStatus(projectId);
+        return status.status === "error";
+      },
+
+      getCompatibilityMessage(projectId) {
+        const status = this.getCompatibilityStatus(projectId);
+        if (status.status === "loading") return "Checking compatibility...";
+        if (status.status === "error")
+          return status.error || "Error checking compatibility";
+        if (status.compatible) return "Compatible";
+        return "Incompatible extraction form";
       },
 
       applyTdBg(screening_status) {

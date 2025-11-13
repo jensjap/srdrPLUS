@@ -313,6 +313,23 @@ class Project < ApplicationRecord
     exported_items.where('created_at >= ?', 1.week.ago).order(created_at: :desc)
   end
 
+  # Compare if this project's first extraction form is functionally identical
+  # to another project's first extraction form
+  # Returns true if identical, false otherwise
+  def first_extraction_form_identical_to?(other_project)
+    comparison_service = ExtractionFormComparisonService.new(self, other_project)
+    comparison_service.first_extraction_forms_identical?
+  end
+
+  # Get detailed differences between this project's first extraction form
+  # and another project's first extraction form
+  # Returns array of difference descriptions
+  def first_extraction_form_differences_with(other_project)
+    comparison_service = ExtractionFormComparisonService.new(self, other_project)
+    comparison_service.first_extraction_forms_identical? # Run comparison
+    comparison_service.get_differences
+  end
+
   private
 
   def process_list_of_pmids(listOf_pmids)

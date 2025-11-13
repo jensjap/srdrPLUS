@@ -11,6 +11,7 @@
   x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
   @click.outside="showCopyModal = false"
   @keyup.window.esc="showCopyModal = false"
+  x-init="$watch('showCopyModal', value => { if (value) checkExtractionCompatibility(); })"
 >
   <div class="absolute top-0 right-0 pt-4 pr-4 block">
     <button
@@ -57,7 +58,7 @@
               <tr>
                 <th
                   scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider w-24"
                 >
                   Project ID
                 </th>
@@ -69,7 +70,13 @@
                 </th>
                 <th
                   scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider w-48"
+                >
+                  Compatibility
+                </th>
+                <th
+                  scope="col"
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider w-32"
                 >
                   Action
                 </th>
@@ -82,14 +89,130 @@
                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
                     x-text="project.id"
                   ></td>
-                  <td
-                    class="px-6 py-4 text-sm text-gray-900"
-                    x-text="project.name"
-                  ></td>
+                  <td class="px-6 py-4 text-sm text-gray-900">
+                    <div x-text="project.name"></div>
+                    <!-- Show differences if incompatible -->
+                    <template x-if="hasIncompatibility(project.id)">
+                      <div class="mt-2">
+                        <button
+                          @click="project.showDifferences = !project.showDifferences"
+                          class="text-xs text-red-600 hover:text-red-800 underline"
+                          type="button"
+                        >
+                          <span
+                            x-text="project.showDifferences ? 'Hide differences' : 'Show differences'"
+                          ></span>
+                        </button>
+                        <div
+                          x-show="project.showDifferences"
+                          class="mt-2 p-2 bg-red-50 border border-red-200 rounded text-xs"
+                        >
+                          <ul
+                            class="list-disc list-inside space-y-1 text-red-700"
+                          >
+                            <template
+                              x-for="diff in getCompatibilityStatus(project.id).differences"
+                              :key="diff"
+                            >
+                              <li x-text="diff"></li>
+                            </template>
+                          </ul>
+                        </div>
+                      </div>
+                    </template>
+                  </td>
+                  <td class="px-6 py-4 text-sm">
+                    <!-- Loading state -->
+                    <div
+                      x-show="isCompatibilityLoading(project.id)"
+                      class="flex items-center text-gray-500"
+                    >
+                      <svg
+                        class="animate-spin h-4 w-4 mr-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          class="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          stroke-width="4"
+                        ></circle>
+                        <path
+                          class="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      <span class="text-xs">Checking...</span>
+                    </div>
+                    <!-- Compatible -->
+                    <div
+                      x-show="isCompatible(project.id)"
+                      class="flex items-center text-green-600"
+                    >
+                      <svg
+                        class="h-5 w-5 mr-1"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      <span class="text-xs font-medium">Compatible</span>
+                    </div>
+                    <!-- Incompatible -->
+                    <div
+                      x-show="hasIncompatibility(project.id)"
+                      class="flex items-center text-red-600"
+                    >
+                      <svg
+                        class="h-5 w-5 mr-1"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      <span class="text-xs font-medium">Incompatible</span>
+                    </div>
+                    <!-- Error -->
+                    <div
+                      x-show="hasCompatibilityError(project.id)"
+                      class="flex items-center text-orange-600"
+                    >
+                      <svg
+                        class="h-5 w-5 mr-1"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      <span class="text-xs">Error</span>
+                    </div>
+                  </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm">
                     <button
                       @click="console.log('Copy extraction', selectedExtractionId, 'to project', project.id)"
-                      class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition"
+                      :disabled="!isCompatible(project.id)"
+                      :class="{
+                        'opacity-50 cursor-not-allowed': !isCompatible(project.id),
+                        'hover:bg-indigo-700': isCompatible(project.id)
+                      }"
+                      class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
