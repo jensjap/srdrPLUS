@@ -238,4 +238,149 @@ RSpec.describe DedupeCitationsJob, type: :job do
       }.from(2).to(1)
     end
   end
+
+  describe 'multi-project Citation deduplication' do
+    let(:project2) { create(:project) }
+
+    it 'updates CitationsProject in other projects to point to master Citation' do
+      # Create duplicate citations
+      citation2 = create(:citation,
+                         citation_type_id: citation.citation_type_id,
+                         name: citation.name,
+                         pmid: citation.pmid,
+                         abstract: citation.abstract)
+
+      # Project 1 has both citations
+      cp1_citation1 = create_citations_project_with_associations(project, citation, extractions: [1])
+      cp1_citation2 = create_citations_project_with_associations(project, citation2, extractions: [1, 2])
+
+      # Project 2 has only citation2 (the one that will be destroyed)
+      cp2_citation2 = create_citations_project_with_associations(project2, citation2, extractions: [1, 2, 3])
+
+      # Store IDs before deduplication
+      cp2_id = cp2_citation2.id
+      citation1_id = citation.id
+      citation2_id = citation2.id
+
+      # Run deduplication on project1
+      described_class.perform_now(project.id)
+
+      # Verify: Citation2 should be destroyed, Citation1 should remain
+      expect(Citation.exists?(citation1_id)).to be true
+      expect(Citation.exists?(citation2_id)).to be false
+
+      # CRITICAL: Project2's CitationsProject should still exist and point to master Citation
+      cp2_reloaded = CitationsProject.find_by(id: cp2_id)
+      expect(cp2_reloaded).not_to be_nil, 'CitationsProject in project2 should not be destroyed'
+      expect(cp2_reloaded.citation_id).to eq(citation1_id), 'Project2 CitationsProject should point to master Citation'
+
+      # Verify associations are preserved in project2
+      expect(cp2_reloaded.extractions.count).to eq(3)
+    end
+
+    it 'preserves CitationsProject records with all associations in other projects' do
+      # Create duplicate citations with extensive associations
+      citation2 = create(:citation,
+                         citation_type_id: citation.citation_type_id,
+                         name: citation.name,
+                         pmid: citation.pmid,
+                         abstract: citation.abstract)
+
+      # Project 1: Both citations with some associations
+      create_citations_project_with_associations(project, citation, extractions: [1])
+      create_citations_project_with_associations(project, citation2, extractions: [1, 2])
+
+      # Project 2: citation2 with many associations (would be lost if destroyed)
+      cp2 = create_citations_project_with_associations(project2, citation2,
+                                                        extractions: [1, 2, 3],
+                                                        logs: [1])
+
+      # Store association counts before deduplication
+      extractions_count = cp2.extractions.count
+
+      # Run deduplication on project1
+      described_class.perform_now(project.id)
+
+      # Verify: Project2's CitationsProject exists with all associations intact
+      cp2.reload
+      expect(cp2.citation_id).to eq(citation.id)
+      expect(cp2.extractions.count).to eq(extractions_count)
+    end
+
+    it 'handles multiple projects all referencing the duplicate Citation' do
+      project3 = create(:project)
+
+      # Create duplicate citation
+      citation2 = create(:citation,
+                         citation_type_id: citation.citation_type_id,
+                         name: citation.name,
+                         pmid: citation.pmid,
+                         abstract: citation.abstract)
+
+      # All three projects have citation2
+      cp1 = create_citations_project_with_associations(project, citation2, extractions: [1])
+      cp2 = create_citations_project_with_associations(project2, citation2, extractions: [1, 2])
+      cp3 = create_citations_project_with_associations(project3, citation2, extractions: [1, 2, 3])
+
+      # Project1 also has the master citation
+      master_cp = create_citations_project_with_associations(project, citation, extractions: [1, 2, 3, 4])
+
+      # Store IDs for verification
+      citation1_id = citation.id
+      citation2_id = citation2.id
+      cp1_id = cp1.id
+
+      # Run deduplication on project1
+      described_class.perform_now(project.id)
+
+      # Verify citation2 was destroyed
+      expect(Citation.exists?(citation2_id)).to be false
+
+      # cp1 should be destroyed (merged into master_cp during CitationsProject dedup)
+      expect(CitationsProject.exists?(cp1_id)).to be false
+
+      # master_cp should have all extractions from both CPs in project1
+      master_cp.reload
+      expect(master_cp.extractions.count).to eq(5) # 4 original + 1 from cp1
+
+      # cp2 and cp3 (from other projects) should be updated to point to citation1
+      cp2.reload
+      cp3.reload
+      expect(cp2.citation_id).to eq(citation1_id)
+      expect(cp3.citation_id).to eq(citation1_id)
+
+      # All extractions should be preserved in other projects
+      expect(cp2.extractions.count).to eq(2)
+      expect(cp3.extractions.count).to eq(3)
+    end
+
+    it 'updates CitationsProject records before destroying duplicate Citation' do
+      citation2 = create(:citation,
+                         citation_type_id: citation.citation_type_id,
+                         name: citation.name,
+                         pmid: citation.pmid,
+                         abstract: citation.abstract)
+
+      create_citations_project_with_associations(project, citation)
+      create_citations_project_with_associations(project, citation2)
+      cp_other_project = create_citations_project_with_associations(project2, citation2)
+
+      # Before deduplication, project2's CP points to citation2
+      expect(cp_other_project.citation_id).to eq(citation2.id)
+
+      # Run deduplication
+      described_class.perform_now(project.id)
+
+      # After deduplication:
+      # 1. citation2 should be destroyed
+      expect(Citation.exists?(citation2.id)).to be false
+
+      # 2. But project2's CP should still exist and point to citation1
+      cp_other_project.reload
+      expect(cp_other_project.citation_id).to eq(citation.id)
+
+      # 3. No CitationsProject records should reference the destroyed citation
+      expect(CitationsProject.where(citation_id: citation2.id).count).to eq(0)
+    end
+  end
 end

@@ -121,8 +121,10 @@ class DedupeCitationsJob < ApplicationJob
 
       Rails.logger.debug "Processing #{group.size} duplicate citations with signature: #{signature.inspect}"
 
-      master_citation = group.first
-      duplicate_citations = group[1..-1]
+      # Sort by ID to ensure oldest (lowest ID) Citation is kept as master
+      sorted_group = group.sort_by(&:id)
+      master_citation = sorted_group.first
+      duplicate_citations = sorted_group[1..-1]
 
       duplicate_citations.each do |duplicate_citation|
         master_cp = project.citations_projects.find_by(citation_id: master_citation.id)

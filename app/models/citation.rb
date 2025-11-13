@@ -31,7 +31,7 @@ class Citation < ApplicationRecord
 
   has_one :journal, dependent: :nullify
 
-  has_many :citations_projects, dependent: :destroy, inverse_of: :citation
+  has_many :citations_projects, dependent: :nullify, inverse_of: :citation
   has_many :projects, through: :citations_projects
   has_and_belongs_to_many :keywords, dependent: :destroy
 
