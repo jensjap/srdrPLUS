@@ -69,6 +69,8 @@ services:
       plugins.security.disabled: true
       OPENSEARCH_INITIAL_ADMIN_PASSWORD: Str0ngP@ssw0rd!
       OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
+    ports:
+      - '9200:9200'
 
   sidekiq:
     build:
