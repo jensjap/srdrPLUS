@@ -82,79 +82,80 @@ document.addEventListener 'DOMContentLoaded', ->
           $( '#delete-citations-select-all' ).prop( 'checked', false )
 
     #### FILE DROPZONE
-    Dropzone.options.fileDropzone = {
-      url: $('#fileDropzone').attr('dropzone-path'),
-      autoProcessQueue: false,
-      uploadMultiple: false,
+    if $( '#fileDropzone' ).length > 0
+      Dropzone.options.fileDropzone = {
+        url: $('#fileDropzone').attr('dropzone-path'),
+        autoProcessQueue: false,
+        uploadMultiple: false,
 
-      init: ()->
-        wrapperThis = this
-        this.on('addedfile', (file) ->
-          ris_type_id = $( "#dropzone-div input#ris-file-type-id" ).val()
-          csv_type_id = $( "#dropzone-div input#csv-file-type-id" ).val()
-          endnote_type_id = $( "#dropzone-div input#endnote-file-type-id" ).val()
-          pubmed_type_id = $( "#dropzone-div input#pubmed-file-type-id" ).val()
-          json_type_id = $( "#dropzone-div input#json-file-type-id" ).val()
+        init: ()->
+          wrapperThis = this
+          this.on('addedfile', (file) ->
+            ris_type_id = $( "#dropzone-div input#ris-file-type-id" ).val()
+            csv_type_id = $( "#dropzone-div input#csv-file-type-id" ).val()
+            endnote_type_id = $( "#dropzone-div input#endnote-file-type-id" ).val()
+            pubmed_type_id = $( "#dropzone-div input#pubmed-file-type-id" ).val()
+            json_type_id = $( "#dropzone-div input#json-file-type-id" ).val()
 
-          file_extension = file.name.split('.').pop().toLowerCase()
-          switch
-            when file_extension == 'ris'
-              file_type_id = ris_type_id
-              file_type_name = "RIS File"
-            when file_extension == 'csv'
-              file_type_id = csv_type_id
-              file_type_name = "Comma Separated File"
-            when file_extension == 'enw'
-              file_type_id = endnote_type_id
-              file_type_name = "EndNote File"
-            when file_extension == 'json'
-              file_type_id = json_type_id
-              file_type_name = "JSON File"
-            when file_extension == 'txt'
-              file_type_id = pubmed_type_id
-              file_type_name = "PubMed ID List"
-            else
-              toastr.error("ERROR: Unknown file extension. Unable to process.")
-              wrapperThis.removeFile(file)
-              return
+            file_extension = file.name.split('.').pop().toLowerCase()
+            switch
+              when file_extension == 'ris'
+                file_type_id = ris_type_id
+                file_type_name = "RIS File"
+              when file_extension == 'csv'
+                file_type_id = csv_type_id
+                file_type_name = "Comma Separated File"
+              when file_extension == 'enw'
+                file_type_id = endnote_type_id
+                file_type_name = "EndNote File"
+              when file_extension == 'json'
+                file_type_id = json_type_id
+                file_type_name = "JSON File"
+              when file_extension == 'txt'
+                file_type_id = pubmed_type_id
+                file_type_name = "PubMed ID List"
+              else
+                toastr.error("ERROR: Unknown file extension. Unable to process.")
+                wrapperThis.removeFile(file)
+                return
 
-          file.file_type_id = file_type_id
+            file.file_type_id = file_type_id
 
-          showModalEvent = new CustomEvent('show-modal', { detail: "This looks like a " + file_type_name + ". Do you wish to continue?" })
-          window.dispatchEvent(showModalEvent)
+            showModalEvent = new CustomEvent('show-modal', { detail: "This looks like a " + file_type_name + ". Do you wish to continue?" })
+            window.dispatchEvent(showModalEvent)
 
-          modalDecisionPromise = new Promise((resolve, reject) ->
-            window.modalResolve = resolve
+            modalDecisionPromise = new Promise((resolve, reject) ->
+              window.modalResolve = resolve
+            )
+
+            modalDecisionPromise.then((confirmed) ->
+              if confirmed
+                wrapperThis.processQueue()
+              else
+                wrapperThis.removeFile(file)
+            )
+          )
+          this.on('sending', (file, xhr, formData) ->
+            file_type_id = file.file_type_id
+
+            formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val())
+            formData.append("projects_user_id", $("#dropzone-div").find("#import_projects_user_id").val())
+            formData.append("import_type_id", $("#dropzone-div").find("#import_import_type_id").val())
+            formData.append("file_type_id", file_type_id)
+            formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val())
           )
 
-          modalDecisionPromise.then((confirmed) ->
-            if confirmed
-              wrapperThis.processQueue()
-            else
-              wrapperThis.removeFile(file)
+          this.on('success', (file, response) ->
+            wrapperThis.removeFile(file)
+            window.location.href = '/imports/' + response.id
           )
-        )
-        this.on('sending', (file, xhr, formData) ->
-          file_type_id = file.file_type_id
+          this.on('error', (file, error_message) ->
+            toastr.error("ERROR: Cannot upload citation file. #{ error_message }")
+            wrapperThis.removeFile(file)
+          )
+      }
 
-          formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val())
-          formData.append("projects_user_id", $("#dropzone-div").find("#import_projects_user_id").val())
-          formData.append("import_type_id", $("#dropzone-div").find("#import_import_type_id").val())
-          formData.append("file_type_id", file_type_id)
-          formData.append("authenticity_token", $("#dropzone-div input[name='authenticity_token']").val())
-        )
-
-        this.on('success', (file, response) ->
-          wrapperThis.removeFile(file)
-          window.location.href = '/imports/' + response.id
-        )
-        this.on('error', (file, error_message) ->
-          toastr.error("ERROR: Cannot upload citation file. #{ error_message }")
-          wrapperThis.removeFile(file)
-        )
-    }
-
-    new Dropzone( '#fileDropzone' )
+      new Dropzone( '#fileDropzone' )
 
 
     list_options = { valueNames: [ 'citation-numbers', 'citation-title', 'citation-authors', 'citation-journal', 'citation-journal-date', 'citation-abstract', 'citation-abstract' ] }
