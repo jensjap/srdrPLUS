@@ -321,9 +321,9 @@
     <!-- prettier-ignore -->
     <% if add_submenu?(controller_name, action_name, controller, @publishable_record) %>
       <% project = find_project(@project, @extraction, @extraction_forms_project, @question, @extraction_forms_projects_section, @publishable_record) %>
-    <div class="h-28 bg-srdr-secondary px-4 lg:px-8 text-white">
-      <div class="flex h-12 items-center justify-between pt-4">
-        <div class="mb-4 mt-4">
+    <div class="bg-srdr-secondary py-2 px-4 lg:px-8 text-white">
+      <div class="flex items-center justify-between">
+        <div class="">
           <!-- prettier-ignore -->
           <%= link_to "Project ID##{project.id}: #{project.name}",
                         project_citation_lifecycle_management_path(project),
@@ -353,7 +353,7 @@
           </a>
         </div>
       </div>
-      <div class="flex h-8 items-center justify-between pt-4 bg-srdr-secondary">
+      <div class="flex items-center justify-between bg-srdr-secondary">
         <%= render "projects/index/project_list_item_dropdown_links", project:
         project, index: 0, usage: 'project-navigation' %>
       </div>

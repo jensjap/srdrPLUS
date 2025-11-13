@@ -36,350 +36,477 @@
   }"
 >
   <% if usage.eql?('project-card') %>
-  <div class="mx-4 grid grid-cols-1 gap-6 lg:grid-cols-6 text-xl <%= index % 2 == 0 ? '!bg-purple-100' : '!bg-white' %> text-srdr-primary">
+  <nav class="grid grid-cols-2 gap-2 lg:grid-cols-6 lg:gap-4 text-base <%= index % 2 == 0 ? '!bg-purple-100' : '!bg-white' %> text-srdr-primary rounded-lg overflow-visible relative" aria-label="Project actions">
   <% elsif usage.eql?('project-navigation') %>
-  <div class="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-6 text-xl bg-srdr-secondary !text-gray-300">
+  <nav class="grid grid-cols-2 gap-2 lg:grid-cols-6 lg:gap-4 text-base bg-srdr-secondary !text-gray-300 rounded-lg shadow-md overflow-visible relative" aria-label="Project navigation">
   <% else %>
-  <div class="grid grid-cols-3 gap-6 lg:grid-cols-6">
+  <nav class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6 lg:gap-4 py-2 lg:py-3 overflow-visible relative" aria-label="Project menu">
   <% end %>
     <!-- Dropdown for "Project Info" -->
-    <div class="relative inline-block text-left"
+    <div class="relative inline-block text-left w-full lg:w-auto"
          x-data="{ isOpen: false }"
          @click.away="isOpen = false"
          :id="'projectInfoDropdownProjectId_' + <%= project.id %>">
       <button @click="isOpen = !isOpen"
               type="button"
-              class="text-xl cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
-              :class="project_info_dropdown && 'bg-srdr-tertiary !text-white'"
-              id="projectInfoDropdown"
+              class="w-full lg:w-auto inline-flex justify-between lg:justify-start items-center gap-1 lg:gap-2 px-2 py-2 lg:px-4 lg:py-2.5 text-xs lg:text-sm font-medium rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-srdr-secondary <%= usage.eql?('project-navigation') ? 'text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:bg-srdr-tertiary focus:text-white' : 'text-srdr-primary hover:bg-gray-100' %>"
+              :class="project_info_dropdown && 'bg-srdr-tertiary !text-white shadow-sm'"
+              :aria-expanded="isOpen"
               aria-haspopup="true"
-              aria-expanded="true">
-        <i class='fi-info'> Project Info</i>
-        <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              aria-label="Project information menu">
+        <span class="inline-flex items-center gap-1 lg:gap-2">
+          <i class='fi-info text-base lg:text-lg' aria-hidden="true"></i>
+          <span class="truncate">Project Info</span>
+        </span>
+        <svg class="w-3 h-3 lg:w-4 lg:h-4 transition-transform duration-200 flex-shrink-0"
+             :class="isOpen && 'rotate-180'"
+             fill="none"
+             stroke="currentColor"
+             viewBox="0 0 24 24"
+             aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </button>
 
       <!-- Dropdown items -->
-      <div x-cloak
-           x-show="isOpen"
-           x-transition:enter="transition ease-out duration-200"
-           x-transition:enter-start="transform opacity-0 scale-95"
-           x-transition:enter-end="transform opacity-100 scale-100"
-           x-transition:leave="transition ease-in duration-75"
-           x-transition:leave-start="transform opacity-100 scale-100"
-           x-transition:leave-end="transform opacity-0 scale-95"
-           style="min-width: max-content;"
-           class="shadow-lg custom-shadow-dropdown z-10 origin-top-right absolute mt-0 w-46 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 border border-black"
-           role="menu"
-           aria-orientation="vertical"
-           aria-labelledby="projectInfoDropdownProjectId_<%= project.id %>">
-        <%= link_to 'Project Dashboard',
-                    project_citation_lifecycle_management_path(project),
-                    class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                    'x-bind:class': "{ 'bg-srdr-tertiary': lifecycle_management, '!text-white': lifecycle_management }" %>
-        <%= link_to 'Project Info',
-                    edit_project_path(project, page: 'info'),
-                    class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                    'x-bind:class': "{ 'bg-srdr-tertiary': project_info, '!text-white': project_info }" %>
-        <% kq_count = @projects.present? ? @projects_key_questions_project_counts[project.id] : project.key_questions.size %>
-        <% kq_title = "Key Questions (#{ kq_count || 0 })" %>
-        <%= link_to "#{ kq_title }",
-                    edit_project_path(project, page: 'key_questions'),
-                    class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                    'x-bind:class': "{ 'bg-srdr-tertiary': key_questions, '!text-white': key_questions }" %>
-        <% m_count = @projects.present? ? @projects_projects_user_counts[project.id] : project.members.size %>
-        <% m_title = "Members & Roles (#{ m_count || 1 })" %>
-        <%= link_to "#{ m_title }",
-                    edit_project_path(project, page: 'members_and_roles'),
-                    class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                    'x-bind:class': "{ 'bg-srdr-tertiary': members_and_roles, '!text-white': members_and_roles }" %>
-        <% c_count = @projects.present? ? @projects_citations_project_counts[project.id] : project.citations.size %>
-        <% c_title = "Citations (#{ c_count || 0 })" %>
-        <%= link_to "#{ c_title }",
-                    project_citations_path(project),
-                    class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                    'x-bind:class': "{ 'bg-srdr-tertiary': citation_pool, '!text-white': citation_pool }" %>
+   <div x-cloak
+     x-show="isOpen"
+     @click.away="isOpen = false"
+     x-transition:enter="transition ease-out duration-200"
+     x-transition:enter-start="transform opacity-0 scale-95"
+     x-transition:enter-end="transform opacity-100 scale-100"
+     x-transition:leave="transition ease-in duration-150"
+     x-transition:leave-start="transform opacity-100 scale-100"
+     x-transition:leave-end="transform opacity-0 scale-95"
+     class="absolute z-[100] left-0 mt-2 w-full lg:w-64 lg:left-auto lg:right-auto origin-top-left lg:origin-top-right rounded-lg shadow-xl bg-white border border-gray-200 overflow-hidden"
+     role="menu"
+     aria-orientation="vertical"
+     aria-labelledby="projectInfoDropdownProjectId_<%= project.id %>">
+        <div class="py-1">
+          <%= link_to 'Project Dashboard',
+                      project_citation_lifecycle_management_path(project),
+                      class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                      'x-bind:class': "{ 'bg-srdr-secondary text-white': lifecycle_management }",
+                      role: "menuitem" %>
+          <%= link_to 'Project Info',
+                      edit_project_path(project, page: 'info'),
+                      class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                      'x-bind:class': "{ 'bg-srdr-secondary text-white': project_info }",
+                      role: "menuitem" %>
+          <% kq_count = @projects.present? ? @projects_key_questions_project_counts[project.id] : project.key_questions.size %>
+          <% kq_title = "Key Questions (#{ kq_count || 0 })" %>
+          <%= link_to "#{ kq_title }",
+                      edit_project_path(project, page: 'key_questions'),
+                      class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                      'x-bind:class': "{ 'bg-srdr-secondary text-white': key_questions }",
+                      role: "menuitem" %>
+          <% m_count = @projects.present? ? @projects_projects_user_counts[project.id] : project.members.size %>
+          <% m_title = "Members & Roles (#{ m_count || 1 })" %>
+          <%= link_to "#{ m_title }",
+                      edit_project_path(project, page: 'members_and_roles'),
+                      class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                      'x-bind:class': "{ 'bg-srdr-secondary text-white': members_and_roles }",
+                      role: "menuitem" %>
+          <% c_count = @projects.present? ? @projects_citations_project_counts[project.id] : project.citations.size %>
+          <% c_title = "Citations (#{ c_count || 0 })" %>
+          <%= link_to "#{ c_title }",
+                      project_citations_path(project),
+                      class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                      'x-bind:class': "{ 'bg-srdr-secondary text-white': citation_pool }",
+                      role: "menuitem" %>
+        </div>
       </div>
     </div>
 
     <!-- Dropdown for "Edit Forms" -->
-    <div class="relative inline-block text-left"
+    <div class="relative inline-block text-left w-full lg:w-auto"
          x-data="{ isOpen: false }"
          @click.away="isOpen = false"
          :id="'editFormsDropdownProjectId_' + <%= project.id %>">
       <button @click="isOpen = !isOpen"
               type="button"
-              class="text-xl cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
-              :class="form_builder_dropdown && 'bg-srdr-tertiary !text-white'"
-              id="editFormsDropdown"
+              class="w-full lg:w-auto inline-flex justify-between lg:justify-start items-center gap-1 lg:gap-2 px-2 py-2 lg:px-4 lg:py-2.5 text-xs lg:text-sm font-medium rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-srdr-secondary <%= usage.eql?('project-navigation') ? 'text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:bg-srdr-tertiary focus:text-white' : 'text-srdr-primary hover:bg-gray-100' %>"
+              :class="form_builder_dropdown && 'bg-srdr-tertiary !text-white shadow-sm'"
+              :aria-expanded="isOpen"
               aria-haspopup="true"
-              aria-expanded="true">
-        <i class='fi-page-edit'> Edit Forms</i>
-        <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              aria-label="Edit forms menu">
+        <span class="inline-flex items-center gap-1 lg:gap-2">
+          <i class='fi-page-edit text-base lg:text-lg' aria-hidden="true"></i>
+          <span class="truncate">Edit Forms</span>
+        </span>
+        <svg class="w-3 h-3 lg:w-4 lg:h-4 transition-transform duration-200 flex-shrink-0"
+             :class="isOpen && 'rotate-180'"
+             fill="none"
+             stroke="currentColor"
+             viewBox="0 0 24 24"
+             aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </button>
 
       <!-- Dropdown items -->
-      <div x-cloak
-           x-show="isOpen"
-           x-transition:enter="transition ease-out duration-200"
-           x-transition:enter-start="transform opacity-0 scale-95"
-           x-transition:enter-end="transform opacity-100 scale-100"
-           x-transition:leave="transition ease-in duration-75"
-           x-transition:leave-start="transform opacity-100 scale-100"
-           x-transition:leave-end="transform opacity-0 scale-95"
-           style="min-width: max-content;"
-           class="shadow-lg custom-shadow-dropdown z-10 origin-top-right absolute mt-0 w-46 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 border border-black"
-           role="menu"
-           aria-orientation="vertical"
-           aria-labelledby="editFormsDropdownProjectId_<%= project.id %>">
-        <% if project.leaders.include?(current_user) %>
-          <% if project.key_questions.present? %>
-            <% efp = project.extraction_forms_projects.first %>
-            <%= link_to 'Screening Form Builder',
-                        project_screening_forms_path(project),
-                        class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                        'x-bind:class': "{ 'bg-srdr-tertiary': screening_form_builder, '!text-white': screening_form_builder }" %>
-            <%= link_to 'Extraction Form Builder',
-                        build_extraction_forms_project_path(efp, 'panel-tab': efp.default_section_id),
-                        class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                        'x-bind:class': "{ 'bg-srdr-tertiary': extraction_form_builder, '!text-white': extraction_form_builder }" %>
+   <div x-cloak
+     x-show="isOpen"
+     @click.away="isOpen = false"
+     x-transition:enter="transition ease-out duration-200"
+     x-transition:enter-start="transform opacity-0 scale-95"
+     x-transition:enter-end="transform opacity-100 scale-100"
+     x-transition:leave="transition ease-in duration-150"
+     x-transition:leave-start="transform opacity-100 scale-100"
+     x-transition:leave-end="transform opacity-0 scale-95"
+     class="static absolute z-[100] left-0 mt-2 w-full lg:w-64 lg:left-auto lg:right-auto origin-top-left lg:origin-top-right rounded-lg shadow-xl bg-white border border-gray-200 overflow-hidden"
+     role="menu"
+     aria-orientation="vertical"
+     aria-labelledby="editFormsDropdownProjectId_<%= project.id %>">
+        <div class="py-1">
+          <% if project.leaders.include?(current_user) %>
+            <% if project.key_questions.present? %>
+              <% efp = project.extraction_forms_projects.first %>
+              <%= link_to 'Screening Form Builder',
+                          project_screening_forms_path(project),
+                          class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                          'x-bind:class': "{ 'bg-srdr-secondary text-white': screening_form_builder }",
+                          role: "menuitem" %>
+              <%= link_to 'Extraction Form Builder',
+                          build_extraction_forms_project_path(efp, 'panel-tab': efp.default_section_id),
+                          class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                          'x-bind:class': "{ 'bg-srdr-secondary text-white': extraction_form_builder }",
+                          role: "menuitem" %>
+            <% else %>
+              <%= link_to 'Screening Form Builder',
+                          project_screening_forms_path(project),
+                          class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                          'x-bind:class': "{ 'bg-srdr-secondary text-white': screening_form_builder }",
+                          role: "menuitem" %>
+              <%= link_to 'Extraction Form Builder',
+                          '#',
+                          class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                          'x-bind:class': "{ 'bg-srdr-secondary text-white': extraction_form_builder }",
+                          onclick: "alert('Extraction Form Builder is unavailable. You must add at least one Key Question first.')",
+                          role: "menuitem" %>
+            <% end %>
           <% else %>
-            <%= link_to 'Screening Form Builder',
-                        project_screening_forms_path(project),
-                        class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                        'x-bind:class': "{ 'bg-srdr-tertiary': screening_form_builder, '!text-white': screening_form_builder }" %>
-            <%= link_to 'Extraction Form Builder',
-                        '#',
-                        class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                        'x-bind:class': "{ 'bg-srdr-tertiary': extraction_form_builder, '!text-white': extraction_form_builder }",
-                        onclick: "alert('Extraction Form Builder is unavailable. You must add at least one Key Question first.')"%>
+            <div class="block px-4 py-3 text-sm text-gray-400 bg-gray-50 cursor-not-allowed" role="menuitem" aria-disabled="true" title="Only project leaders can access form builders">
+              Screening Form Builder
+            </div>
+            <div class="block px-4 py-3 text-sm text-gray-400 bg-gray-50 cursor-not-allowed" role="menuitem" aria-disabled="true" title="Only project leaders can access form builders">
+              Extraction Form Builder
+            </div>
           <% end %>
-        <% else %>
-          <div style="opacity: 0.3; cursor: not-allowed" class="block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white">Screening Form Builder</div>
-          <div style="opacity: 0.3; cursor: not-allowed" class="block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white">Extraction Form Builder</div>
-        <% end %>
+        </div>
       </div>
     </div>
 
     <!-- Dropdown for "Screening" -->
-    <div class="relative inline-block text-left"
+    <div class="relative inline-block text-left w-full lg:w-auto"
          x-data="{ isOpen: false }"
          @click.away="isOpen = false"
          :id="'screeningDropdownProjectId_' + <%= project.id %>">
       <button @click="isOpen = !isOpen"
               type="button"
-              class="text-xl cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
-              :class="screening_dropdown && 'bg-srdr-tertiary !text-white'"
-              id="screeningDropdown"
+              class="w-full lg:w-auto inline-flex justify-between lg:justify-start items-center gap-1 lg:gap-2 px-2 py-2 lg:px-4 lg:py-2.5 text-xs lg:text-sm font-medium rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-srdr-secondary <%= usage.eql?('project-navigation') ? 'text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:bg-srdr-tertiary focus:text-white' : 'text-srdr-primary hover:bg-gray-100' %>"
+              :class="screening_dropdown && 'bg-srdr-tertiary !text-white shadow-sm'"
+              :aria-expanded="isOpen"
               aria-haspopup="true"
-              aria-expanded="true">
-        <% c_title = "Screening" %>
-        <i class='fi-page-search'> <%= c_title %></i>
-        <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              aria-label="Screening menu">
+        <span class="inline-flex items-center gap-1 lg:gap-2">
+          <i class='fi-page-search text-base lg:text-lg' aria-hidden="true"></i>
+          <span class="truncate">Screening</span>
+        </span>
+        <svg class="w-3 h-3 lg:w-4 lg:h-4 transition-transform duration-200 flex-shrink-0"
+             :class="isOpen && 'rotate-180'"
+             fill="none"
+             stroke="currentColor"
+             viewBox="0 0 24 24"
+             aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </button>
 
       <!-- Dropdown items -->
-      <div x-cloak
-           x-show="isOpen"
-           x-transition:enter="transition ease-out duration-200"
-           x-transition:enter-start="transform opacity-0 scale-95"
-           x-transition:enter-end="transform opacity-100 scale-100"
-           x-transition:leave="transition ease-in duration-75"
-           x-transition:leave-start="transform opacity-100 scale-100"
-           x-transition:leave-end="transform opacity-0 scale-95"
-           style="min-width: max-content;"
-           class="shadow-lg custom-shadow-dropdown z-10 origin-top-right absolute mt-0 w-46 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 border border-black"
-           role="menu"
-           aria-orientation="vertical"
-           aria-labelledby="screeningDropdownProjectId_<%= project.id %>">
-        <% projects_user = ProjectsUser.find_by(project_id: project.id, user_id: current_user.id) %>
-        <% if projects_user&.project_leader? || projects_user&.project_consolidator? %>
-          <%= link_to "Abstract Screening",
-                      project_abstract_screenings_path(project),
-                      title: 'Abstract Screening',
-                      class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                      'x-bind:class': "{ 'bg-srdr-tertiary': abstract_screening, '!text-white': abstract_screening }" %>
-          <%= link_to "Full-text Screening",
-                      project_fulltext_screenings_path(project),
-                      title: 'Full-text Screening',
-                      class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                      'x-bind:class': "{ 'bg-srdr-tertiary': fulltext_screening, '!text-white': fulltext_screening }" %>
-        <% elsif projects_user&.project_contributor? && !projects_user&.project_leader? && !projects_user&.project_consolidator? %>
-          <%= link_to "Abstract Screening",
-                      work_selection_project_abstract_screenings_path(project),
-                      title: 'Abstract Screening Work Selection',
-                      class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                      'x-bind:class': "{ 'bg-srdr-tertiary': abstract_screening, '!text-white': abstract_screening }" %>
-          <%= link_to "Full-text Screening",
-                      work_selection_project_fulltext_screenings_path(project),
-                      title: 'Full-text Screening Work Selection',
-                      class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                      'x-bind:class': "{ 'bg-srdr-tertiary': fulltext_screening, '!text-white': fulltext_screening }" %>
-        <% else %>
-          <div style="opacity: 0.3; cursor: not-allowed" class="block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white">Abstract Screening</div>
-          <div style="opacity: 0.3; cursor: not-allowed" class="block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white">Full-text Screening</div>
-        <% end %>
+   <div x-cloak
+     x-show="isOpen"
+     @click.away="isOpen = false"
+     x-transition:enter="transition ease-out duration-200"
+     x-transition:enter-start="transform opacity-0 scale-95"
+     x-transition:enter-end="transform opacity-100 scale-100"
+     x-transition:leave="transition ease-in duration-150"
+     x-transition:leave-start="transform opacity-100 scale-100"
+     x-transition:leave-end="transform opacity-0 scale-95"
+     class="static absolute z-[100] left-0 mt-2 w-full lg:w-64 lg:left-auto lg:right-auto origin-top-left lg:origin-top-right rounded-lg shadow-xl bg-white border border-gray-200 overflow-hidden"
+     role="menu"
+     aria-orientation="vertical"
+     aria-labelledby="screeningDropdownProjectId_<%= project.id %>">
+        <div class="py-1">
+          <% projects_user = ProjectsUser.find_by(project_id: project.id, user_id: current_user.id) %>
+          <% if projects_user&.project_leader? || projects_user&.project_consolidator? %>
+            <%= link_to "Abstract Screening",
+                        project_abstract_screenings_path(project),
+                        title: 'Abstract Screening',
+                        class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                        'x-bind:class': "{ 'bg-srdr-secondary text-white': abstract_screening }",
+                        role: "menuitem" %>
+            <%= link_to "Full-text Screening",
+                        project_fulltext_screenings_path(project),
+                        title: 'Full-text Screening',
+                        class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                        'x-bind:class': "{ 'bg-srdr-secondary text-white': fulltext_screening }",
+                        role: "menuitem" %>
+          <% elsif projects_user&.project_contributor? && !projects_user&.project_leader? && !projects_user&.project_consolidator? %>
+            <%= link_to "Abstract Screening",
+                        work_selection_project_abstract_screenings_path(project),
+                        title: 'Abstract Screening Work Selection',
+                        class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                        'x-bind:class': "{ 'bg-srdr-secondary text-white': abstract_screening }",
+                        role: "menuitem" %>
+            <%= link_to "Full-text Screening",
+                        work_selection_project_fulltext_screenings_path(project),
+                        title: 'Full-text Screening Work Selection',
+                        class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                        'x-bind:class': "{ 'bg-srdr-secondary text-white': fulltext_screening }",
+                        role: "menuitem" %>
+          <% else %>
+            <div class="block px-4 py-3 text-sm text-gray-400 bg-gray-50 cursor-not-allowed" role="menuitem" aria-disabled="true" title="You need appropriate permissions to access screening">
+              Abstract Screening
+            </div>
+            <div class="block px-4 py-3 text-sm text-gray-400 bg-gray-50 cursor-not-allowed" role="menuitem" aria-disabled="true" title="You need appropriate permissions to access screening">
+              Full-text Screening
+            </div>
+          <% end %>
+        </div>
       </div>
     </div>
 
     <!-- Dropdown for Extractions -->
-    <div class="relative inline-block text-left"
-         title="* Number of citations with one or more extractions"
+    <div class="relative inline-block text-left w-full lg:w-auto"
          x-data="{ isOpen: false }"
          @click.away="isOpen = false"
          :id="'extractionsDropdownProjectId_' + <%= project.id %>">
       <button @click="isOpen = !isOpen"
               type="button"
-              class="text-xl cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
-              :class="extractions_dropdown && 'bg-srdr-tertiary !text-white'"
-              id="extractionsDropdown"
+              class="w-full lg:w-auto inline-flex justify-between lg:justify-start items-center gap-1 lg:gap-2 px-2 py-2 lg:px-4 lg:py-2.5 text-xs lg:text-sm font-medium rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-srdr-secondary <%= usage.eql?('project-navigation') ? 'text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:bg-srdr-tertiary focus:text-white' : 'text-srdr-primary hover:bg-gray-100' %>"
+              :class="extractions_dropdown && 'bg-srdr-tertiary !text-white shadow-sm'"
+              :aria-expanded="isOpen"
               aria-haspopup="true"
-              aria-expanded="true">
+              aria-label="Extractions menu"
+              title="Number of citations with one or more extractions">
         <% e_count = @projects.present? ? @projects_extracted_citations_counts[project.id] : project.extractions.map(&:citations_project_id).uniq.size %>
         <% e_title = "Extractions* (#{e_count || 0})" %>
-        <i class='fi-wrench'> <%= e_title %></i>
-        <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <span class="inline-flex items-center gap-1 lg:gap-2">
+          <i class='fi-wrench text-base lg:text-lg' aria-hidden="true"></i>
+          <span class="truncate"><%= e_title %></span>
+        </span>
+        <svg class="w-3 h-3 lg:w-4 lg:h-4 transition-transform duration-200 flex-shrink-0"
+             :class="isOpen && 'rotate-180'"
+             fill="none"
+             stroke="currentColor"
+             viewBox="0 0 24 24"
+             aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </button>
 
       <!-- Dropdown items -->
-      <div x-cloak
-           x-show="isOpen"
-           x-transition:enter="transition ease-out duration-200"
-           x-transition:enter-start="transform opacity-0 scale-95"
-           x-transition:enter-end="transform opacity-100 scale-100"
-           x-transition:leave="transition ease-in duration-75"
-           x-transition:leave-start="transform opacity-100 scale-100"
-           x-transition:leave-end="transform opacity-0 scale-95"
-           style="min-width: max-content;"
-           class="shadow-lg custom-shadow-dropdown z-10 origin-top-right absolute mt-0 w-46 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 border border-black"
-           role="menu"
-           aria-orientation="vertical"
-           aria-labelledby="extractionsDropdownProjectId_<%= project.id %>">
-        <% e_count = @projects.present? ? @projects_extraction_counts_wo_consolidated[project.id] : project.extractions.where(consolidated: false).size %>
-        <% e_title = "Data Extractions (#{ e_count || 0 })" %>
-        <%= link_to "#{ e_title }",
-                    project_extractions_path(project),
-                    title: t('manage_extractions'),
-                    class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                    'x-bind:class': "{ 'bg-srdr-tertiary': extractions, '!text-white': extractions }" %>
-        <% e_consolidated_count = @projects.present? ? @projects_extraction_counts_w_consolidated[project.id] : project.extractions.where(consolidated: true).size %>
-        <% e_consolidated_title = "Comparison Tool (#{ e_consolidated_count || 0 })" %>
-        <%= link_to "#{ e_consolidated_title }",
-                    comparison_tool_project_extractions_path(project),
-                    title: 'Comparison Tool',
-                    class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                    'x-bind:class': "{ 'bg-srdr-tertiary': comparison_tool, '!text-white': comparison_tool }" %>
+   <div x-cloak
+     x-show="isOpen"
+     @click.away="isOpen = false"
+     x-transition:enter="transition ease-out duration-200"
+     x-transition:enter-start="transform opacity-0 scale-95"
+     x-transition:enter-end="transform opacity-100 scale-100"
+     x-transition:leave="transition ease-in duration-150"
+     x-transition:leave-start="transform opacity-100 scale-100"
+     x-transition:leave-end="transform opacity-0 scale-95"
+     class="static absolute z-[100] left-0 mt-2 w-full lg:w-64 lg:left-auto lg:right-auto origin-top-left lg:origin-top-right rounded-lg shadow-xl bg-white border border-gray-200 overflow-hidden"
+     role="menu"
+     aria-orientation="vertical"
+     aria-labelledby="extractionsDropdownProjectId_<%= project.id %>">
+        <div class="py-1">
+          <% e_count = @projects.present? ? @projects_extraction_counts_wo_consolidated[project.id] : project.extractions.where(consolidated: false).size %>
+          <% e_title = "Data Extractions (#{ e_count || 0 })" %>
+          <%= link_to "#{ e_title }",
+                      project_extractions_path(project),
+                      title: t('manage_extractions'),
+                      class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                      'x-bind:class': "{ 'bg-srdr-secondary text-white': extractions }",
+                      role: "menuitem" %>
+          <% e_consolidated_count = @projects.present? ? @projects_extraction_counts_w_consolidated[project.id] : project.extractions.where(consolidated: true).size %>
+          <% e_consolidated_title = "Comparison Tool (#{ e_consolidated_count || 0 })" %>
+          <%= link_to "#{ e_consolidated_title }",
+                      comparison_tool_project_extractions_path(project),
+                      title: 'Comparison Tool',
+                      class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                      'x-bind:class': "{ 'bg-srdr-secondary text-white': comparison_tool }",
+                      role: "menuitem" %>
+        </div>
       </div>
     </div>
 
     <!-- Dropdown for "Export & Import" -->
-    <div class="relative inline-block text-left"
+    <div class="relative inline-block text-left w-full lg:w-auto"
          x-data="{ isOpen: false }"
          @click.away="isOpen = false"
          :id="'exportImportDropdownProjectId_' + <%= project.id %>">
       <button @click="isOpen = !isOpen"
               type="button"
-              class="text-xl cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
-              :class="export_import_dropdown && 'bg-srdr-tertiary !text-white'"
-              id="exportImportDropdown"
+              class="w-full lg:w-auto inline-flex justify-between lg:justify-start items-center gap-1 lg:gap-2 px-2 py-2 lg:px-4 lg:py-2.5 text-xs lg:text-sm font-medium rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-srdr-secondary <%= usage.eql?('project-navigation') ? 'text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:bg-srdr-tertiary focus:text-white' : 'text-srdr-primary hover:bg-gray-100' %>"
+              :class="export_import_dropdown && 'bg-srdr-tertiary !text-white shadow-sm'"
+              :aria-expanded="isOpen"
               aria-haspopup="true"
-              aria-expanded="true">
-        <i class='fi-page-export'> Export & Import</i>
-        <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              aria-label="Export and import menu">
+        <span class="inline-flex items-center gap-1 lg:gap-2">
+          <i class='fi-page-export text-base lg:text-lg' aria-hidden="true"></i>
+          <span class="truncate hidden sm:inline">Export & Import</span>
+          <span class="truncate sm:hidden">Export</span>
+        </span>
+        <svg class="w-3 h-3 lg:w-4 lg:h-4 transition-transform duration-200 flex-shrink-0"
+             :class="isOpen && 'rotate-180'"
+             fill="none"
+             stroke="currentColor"
+             viewBox="0 0 24 24"
+             aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </button>
 
       <!-- Dropdown items -->
-      <div x-cloak
-           x-show="isOpen"
-           x-transition:enter="transition ease-out duration-200"
-           x-transition:enter-start="transform opacity-0 scale-95"
-           x-transition:enter-end="transform opacity-100 scale-100"
-           x-transition:leave="transition ease-in duration-75"
-           x-transition:leave-start="transform opacity-100 scale-100"
-           x-transition:leave-end="transform opacity-0 scale-95"
-           style="min-width: max-content;"
-           class="shadow-lg custom-shadow-dropdown z-10 origin-top-right absolute mt-0 w-46 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 border border-black"
-           role="menu"
-           aria-orientation="vertical"
-           aria-labelledby="exportImportDropdownProjectId_<%= project.id %>">
-        <a
-          id="export-modal-button"
-          data-open='<%= "export-modal-#{ project.id.to_s }" %>'
-          class="block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white"
-        >
-          Export SRDR+ Data<br />(quick menu)
-        </a>
-        <% if project.leaders.include?(current_user) %>
-          <%= link_to "Export & Import",
-                      project_imports_path(project),
-                      title: 'Export & Import',
-                      class:"block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                      'x-bind:class': "{ 'bg-srdr-tertiary': export_import, '!text-white': export_import }" %>
-        <% else %>
-          <div style="opacity: 0.3; cursor: not-allowed" class="block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white">Export & Import</div>
-        <% end %>
+   <div x-cloak
+     x-show="isOpen"
+     @click.away="isOpen = false"
+     x-transition:enter="transition ease-out duration-200"
+     x-transition:enter-start="transform opacity-0 scale-95"
+     x-transition:enter-end="transform opacity-100 scale-100"
+     x-transition:leave="transition ease-in duration-150"
+     x-transition:leave-start="transform opacity-100 scale-100"
+     x-transition:leave-end="transform opacity-0 scale-95"
+     class="static absolute z-[100] left-0 mt-2 w-full lg:w-64 lg:left-auto lg:right-auto origin-top-left lg:origin-top-right rounded-lg shadow-xl bg-white border border-gray-200 overflow-hidden"
+     role="menu"
+     aria-orientation="vertical"
+     aria-labelledby="exportImportDropdownProjectId_<%= project.id %>">
+        <div class="py-1">
+          <a id="export-modal-button"
+             data-open='<%= "export-modal-#{ project.id.to_s }" %>'
+             class="dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white cursor-pointer transition-colors duration-150"
+             role="menuitem">
+            Export SRDR+ Data<br />
+            <span class="text-xs opacity-75">(quick menu)</span>
+          </a>
+          <% if project.leaders.include?(current_user) %>
+            <%= link_to "Export & Import",
+                        project_imports_path(project),
+                        title: 'Export & Import',
+                        class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                        'x-bind:class': "{ 'bg-srdr-secondary text-white': export_import }",
+                        role: "menuitem" %>
+          <% else %>
+            <div class="block px-4 py-3 text-sm text-gray-400 bg-gray-50 cursor-not-allowed" role="menuitem" aria-disabled="true" title="Only project leaders can access export and import">
+              Export & Import
+            </div>
+          <% end %>
+        </div>
       </div>
     </div>
     <%= render partial: 'shared/select_export_type', locals: { project: project } %>
 
     <!-- Dropdown for "Publication" -->
-    <div class="relative inline-block text-left"
+    <div class="relative inline-block text-left w-full lg:w-auto"
          x-data="{ isOpen: false }"
          @click.away="isOpen = false"
          :id="'publicationDropdownProjectId_' + <%= project.id %>">
       <button @click="isOpen = !isOpen"
               type="button"
-              class="text-xl cursor-pointer inline-flex items-center px-4 py-2 text-sm font-medium focus:outline-none focus:shadow-outline-blue <%= usage.eql?('project-navigation') ? 'rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:text-white hover:underline' : 'hover:underline' %>"
-              :class="publication_dropdown && 'bg-srdr-tertiary !text-white'"
-              id="publicationsDropdown"
+              class="w-full lg:w-auto inline-flex justify-between lg:justify-start items-center gap-1 lg:gap-2 px-2 py-2 lg:px-4 lg:py-2.5 text-xs lg:text-sm font-medium rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-srdr-secondary <%= usage.eql?('project-navigation') ? 'text-gray-300 hover:bg-srdr-tertiary hover:text-white focus:bg-srdr-tertiary focus:text-white' : 'text-srdr-primary hover:bg-gray-100' %>"
+              :class="publication_dropdown && 'bg-srdr-tertiary !text-white shadow-sm'"
+              :aria-expanded="isOpen"
               aria-haspopup="true"
-              aria-expanded="true">
-        <i class='fi-print'> Publication</i>
-        <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              aria-label="Publication menu">
+        <span class="inline-flex items-center gap-1 lg:gap-2">
+          <i class='fi-print text-base lg:text-lg' aria-hidden="true"></i>
+          <span class="truncate">Publication</span>
+        </span>
+        <svg class="w-3 h-3 lg:w-4 lg:h-4 transition-transform duration-200 flex-shrink-0"
+             :class="isOpen && 'rotate-180'"
+             fill="none"
+             stroke="currentColor"
+             viewBox="0 0 24 24"
+             aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </button>
 
       <!-- Dropdown items -->
-      <div x-cloak
-           x-show="isOpen"
-           x-transition:enter="transition ease-out duration-200"
-           x-transition:enter-start="transform opacity-0 scale-95"
-           x-transition:enter-end="transform opacity-100 scale-100"
-           x-transition:leave="transition ease-in duration-75"
-           x-transition:leave-start="transform opacity-100 scale-100"
-           x-transition:leave-end="transform opacity-0 scale-95"
-           style="min-width: max-content;"
-           class="shadow-lg custom-shadow-dropdown z-10 origin-top-right absolute mt-0 w-46 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 border border-black"
-           role="menu"
-           aria-orientation="vertical"
-           aria-labelledby="publicationDropdownProjectId_<%= project.id %>">
-        <%= link_to 'Request Publication',
-                    new_publishing_path(type: Project.to_s, id: project.id),
-                    title: t('request_publication'),
-                    class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                    'x-bind:class': "{ 'bg-srdr-tertiary': publication, '!text-white': publication }" %>
-        <%= link_to 'SR-360',
-                    project_sd_meta_data_path(project),
-                    title: 'SR-360',
-                    class: "block px-4 py-2 text-gray-800 hover:bg-srdr-tertiary hover:text-white",
-                    'x-bind:class': "{ 'bg-srdr-tertiary': sr360, '!text-white': sr360 }" %>
+   <div x-cloak
+     x-show="isOpen"
+     @click.away="isOpen = false"
+     x-transition:enter="transition ease-out duration-200"
+     x-transition:enter-start="transform opacity-0 scale-95"
+     x-transition:enter-end="transform opacity-100 scale-100"
+     x-transition:leave="transition ease-in duration-150"
+     x-transition:leave-start="transform opacity-100 scale-100"
+     x-transition:leave-end="transform opacity-0 scale-95"
+     class="static absolute z-[100] left-0 mt-2 w-full lg:w-64 lg:left-auto lg:right-auto origin-top-left lg:origin-top-right rounded-lg shadow-xl bg-white border border-gray-200 overflow-hidden"
+     role="menu"
+     aria-orientation="vertical"
+     aria-labelledby="publicationDropdownProjectId_<%= project.id %>">
+        <div class="py-1">
+          <%= link_to 'Request Publication',
+                      new_publishing_path(type: Project.to_s, id: project.id),
+                      title: t('request_publication'),
+                      class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                      'x-bind:class': "{ 'bg-srdr-secondary text-white': publication }",
+                      role: "menuitem" %>
+          <%= link_to 'SR-360',
+                      project_sd_meta_data_path(project),
+                      title: 'SR-360',
+                      class: "dropdown-menu-item block px-4 py-3 text-sm text-gray-800 hover:bg-srdr-secondary hover:text-white transition-colors duration-150",
+                      'x-bind:class': "{ 'bg-srdr-secondary text-white': sr360 }",
+                      role: "menuitem" %>
+        </div>
       </div>
     </div>
-  </div>
+  </nav>
 </div>
 
 <style>
-  .custom-shadow-dropdown {
-    box-shadow: 2px 4px 8px rgba(40, 20, 255, 0.4);
+  /* Enhanced dropdown menu animations and interactions */
+  .dropdown-menu-item {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dropdown-menu-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background-color: #005ea2;
+    transform: scaleY(0);
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .dropdown-menu-item:hover::before,
+  .dropdown-menu-item:focus::before {
+    transform: scaleY(1);
+  }
+
+  /* Smooth fade for icons */
+  .fi-info, .fi-page-edit, .fi-page-search, .fi-wrench, .fi-page-export, .fi-print {
+    transition: transform 0.2s ease-in-out;
+  }
+
+  button:hover .fi-info,
+  button:hover .fi-page-edit,
+  button:hover .fi-page-search,
+  button:hover .fi-wrench,
+  button:hover .fi-page-export,
+  button:hover .fi-print {
+    transform: scale(1.1);
+  }
+
+  /* Improved focus visibility for accessibility */
+  button:focus-visible {
+    outline: 2px solid #005ea2;
+    outline-offset: 2px;
   }
 </style>
