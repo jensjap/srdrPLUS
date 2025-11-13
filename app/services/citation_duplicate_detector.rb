@@ -162,11 +162,18 @@ class CitationDuplicateDetector
       next false if value1.blank? || value2.blank?
 
       # Check if this field should use fuzzy matching
-      if fuzzy_threshold[field.to_sym] && FUZZY_MATCHABLE_FIELDS.include?(field)
-        similarity = calculate_similarity(value1, value2)
-        similarity >= fuzzy_threshold[field.to_sym]
+      # Use has_key? to distinguish between "not set" and "set to 0"
+      if fuzzy_threshold.has_key?(field.to_sym) && FUZZY_MATCHABLE_FIELDS.include?(field)
+        threshold = fuzzy_threshold[field.to_sym]
+        # If threshold is 0, require exact match
+        if threshold == 0.0
+          value1 == value2
+        else
+          similarity = calculate_similarity(value1, value2)
+          similarity >= threshold
+        end
       else
-        # Exact match
+        # Exact match (no fuzzy threshold configured for this field)
         value1 == value2
       end
     end
