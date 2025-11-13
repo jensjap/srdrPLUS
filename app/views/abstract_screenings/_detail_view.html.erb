@@ -1,6 +1,6 @@
 <template x-if="results !== null">
   <div
-    class="left-0 right-0 top-0 bottom-0 m-auto fixed h-[90vh] w-[90vw] z-10 transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:p-6 border border-slate-200"
+    class="left-0 right-0 top-0 bottom-0 m-auto fixed h-[90vh] w-[90vw] z-10 transform overflow-hidden rounded-2xl bg-white px-6 pt-6 pb-6 text-left shadow-2xl transition-all sm:p-8 border border-slate-300"
     x-show="showDetailView"
     x-cloak
     x-transition:enter="ease-out duration-300"
@@ -9,23 +9,25 @@
     x-transition:leave="ease-in duration-200"
     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-    @click.outside="showDetailView = !showDetailView"
+    @click.outside="if (!showCopyModal) {
+      showDetailView = !showDetailView
+    }"
     @keyup.window.esc="showDetailView = false"
   >
     <div class="absolute top-0 right-0 pt-4 pr-4 block">
       <button
         type="button"
-        class="cursor-pointer rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        class="cursor-pointer rounded-full bg-slate-100 text-gray-500 hover:bg-indigo-100 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow"
         @click="showDetailView = false"
+        aria-label="Close"
       >
         <span class="sr-only">Close</span>
-        <!-- Heroicon name: outline/x-mark -->
         <svg
-          class="h-6 w-6"
+          class="h-7 w-7"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
-          stroke-width="1.5"
+          stroke-width="2"
           stroke="currentColor"
           aria-hidden="true"
         >
@@ -38,167 +40,263 @@
       </button>
     </div>
     <div class="overflow-y-auto overscroll-contain h-full pr-8">
-      <div
-        class="overflow-y-scroll overscroll-contain mt-6 h-[13rem] md:h-[17rem] border p-2"
-      >
-        <div class="font-bold">Citation Details</div>
-        <hr class="mt-0 mb-2" />
-        <h4
-          class="!text-base font-medium leading-6 text-gray-900"
-          id="modal-title"
-          x-text="results[detailedResult].name"
-        ></h4>
-        <div class="mt-2">
-          <div class="text-sm text-gray-500">
-            Authors:
+      <div class="mt-6">
+        <div class="font-bold text-lg text-indigo-700 mb-2">
+          Citation Details
+        </div>
+        <div
+          class="overflow-y-scroll overscroll-contain h-[13rem] md:h-[17rem] border border-slate-200 rounded-lg bg-slate-50 p-4 shadow-sm"
+        >
+          <h4
+            class="!text-xl font-semibold leading-6 text-gray-900 mb-2"
+            id="modal-title"
+            x-text="results[detailedResult].name"
+          ></h4>
+        <div class="mt-2 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+          <div class="text-sm text-gray-600">
+            <span class="font-medium">Authors:</span>
             <span x-text="results[detailedResult].author_map_string"></span>
           </div>
-          <div class="text-sm text-gray-500">
-            Acession No. (e.g. PubMed ID):
+          <div class="text-sm text-gray-600">
+            <span class="font-medium">Accession No. (e.g. PubMed ID):</span>
             <span x-text="results[detailedResult].accession_number_alts"></span>
           </div>
-          <div class="text-sm text-gray-500">
-            Year:
+          <div class="text-sm text-gray-600">
+            <span class="font-medium">Year:</span>
             <span x-text="results[detailedResult].year"></span>
           </div>
-          <div class="text-sm text-gray-500">
-            Status:
+          <div class="text-sm text-gray-600">
+            <span class="font-medium">Status:</span>
             <span x-text="results[detailedResult].screening_status"></span>
           </div>
           <div
             x-text="results[detailedResult].abstract"
-            class="text-sm text-gray-500 my-4"
+            class="text-sm text-gray-700 my-4 bg-white rounded p-3 border border-slate-100 shadow"
           ></div>
         </div>
       </div>
       <% if ProjectPolicy.new(current_user, @project).project_leader? %>
-      <div
-        class="overflow-y-scroll overscroll-contain mt-6 h-[13rem] md:h-[17rem] border p-2"
-      >
-        <div class="font-bold">Screening Results</div>
-        <hr class="mt-0 mb-2" />
-        <template
-          x-for="aso in results[detailedResult].abstract_screening_objects"
+      <div class="mt-6">
+        <div class="font-bold text-lg text-indigo-700 mb-2">
+          Screening Results
+        </div>
+        <div
+          class="overflow-y-scroll overscroll-contain h-[13rem] md:h-[17rem] border border-slate-200 rounded-lg bg-slate-50 p-4 shadow-sm"
         >
-          <div class="border border-slate-200 rounded-md">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <template
+            x-for="aso in results[detailedResult].abstract_screening_objects"
+          >
             <div
-              class="p-2 text-sm text-gray-500 border-b border-slate-200"
-              x-text="`Abstract Screening Type: ${aso.type}`"
-            ></div>
-            <template x-for="asr in aso.asrs">
-              <div class="p-2 border-b border-slate-200">
-                <div>
-                  <div class="text-sm text-gray-500">
-                    Privileged:
-                    <span x-text="asr.privileged"></span>
-                  </div>
-                  <div class="text-sm text-gray-500">
-                    Users:
-                    <span x-text="asr.user"></span>
-                  </div>
-                  <div class="text-sm text-gray-500">
-                    Label: <span x-text="asr.label"></span>
-                  </div>
-                  <div class="text-sm text-gray-500">
-                    Reasons: <span x-text="asr.reasons"></span>
-                  </div>
-                  <div class="text-sm text-gray-500">
-                    Tags: <span x-text="asr.tags"></span>
-                  </div>
-                  <div class="text-sm text-gray-500">
-                    Notes: <span x-text="asr.notes"></span>
+              class="border border-slate-200 rounded-lg bg-white mb-4 shadow hover:shadow-md transition"
+            >
+              <div
+                class="p-2 text-sm text-indigo-600 border-b border-slate-200 font-semibold bg-slate-50 rounded-t-lg"
+                x-text="`Abstract Screening Type: ${aso.type}`"
+              ></div>
+              <template x-for="asr in aso.asrs">
+                <div
+                  class="p-2 border-b border-slate-100 hover:bg-slate-50 transition"
+                >
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+                    <div class="text-xs text-gray-500">
+                      <span class="font-medium">Privileged:</span>
+                      <span x-text="asr.privileged"></span>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                      <span class="font-medium">Users:</span>
+                      <span x-text="asr.user"></span>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                      <span class="font-medium">Label:</span>
+                      <span x-text="asr.label"></span>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                      <span class="font-medium">Reasons:</span>
+                      <span x-text="asr.reasons"></span>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                      <span class="font-medium">Tags:</span>
+                      <span x-text="asr.tags"></span>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                      <span class="font-medium">Notes:</span>
+                      <span x-text="asr.notes"></span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </template>
-          </div>
-        </template>
-        <template
-          x-for="fso in results[detailedResult].fulltext_screening_objects"
-        >
-          <div class="border border-slate-200 rounded-md">
+              </template>
+            </div>
+          </template>
+          <template
+            x-for="fso in results[detailedResult].fulltext_screening_objects"
+          >
             <div
-              class="p-2 text-sm text-gray-500 border-b border-slate-200"
-              x-text="`Fulltext Screening Type: ${fso.type}`"
-            ></div>
-            <template x-for="fsr in fso.fsrs">
-              <div class="p-2 border-b border-slate-200">
-                <div>
-                  <div class="text-sm text-gray-500">
-                    Users:
-                    <span x-text="fsr.user"></span>
-                  </div>
-                  <div class="text-sm text-gray-500">
-                    Label: <span x-text="fsr.label"></span>
-                  </div>
-                  <div class="text-sm text-gray-500">
-                    Reasons: <span x-text="fsr.reasons"></span>
-                  </div>
-                  <div class="text-sm text-gray-500">
-                    Tags: <span x-text="fsr.tags"></span>
-                  </div>
-                  <div class="text-sm text-gray-500">
-                    Notes: <span x-text="fsr.notes"></span>
+              class="border border-slate-200 rounded-lg bg-white mb-4 shadow hover:shadow-md transition"
+            >
+              <div
+                class="p-2 text-sm text-indigo-600 border-b border-slate-200 font-semibold bg-slate-50 rounded-t-lg"
+                x-text="`Fulltext Screening Type: ${fso.type}`"
+              ></div>
+              <template x-for="fsr in fso.fsrs">
+                <div
+                  class="p-2 border-b border-slate-100 hover:bg-slate-50 transition"
+                >
+                  <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+                    <div class="text-xs text-gray-500">
+                      <span class="font-medium">Users:</span>
+                      <span x-text="fsr.user"></span>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                      <span class="font-medium">Label:</span>
+                      <span x-text="fsr.label"></span>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                      <span class="font-medium">Reasons:</span>
+                      <span x-text="fsr.reasons"></span>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                      <span class="font-medium">Tags:</span>
+                      <span x-text="fsr.tags"></span>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                      <span class="font-medium">Notes:</span>
+                      <span x-text="fsr.notes"></span>
+                    </div>
                   </div>
                 </div>
-                <!-- <div>
-              <button
-                class="text-xs text-white bg-srdr-primary hover:bg-srdr-secondary p-1 cursor-pointer w-full"
-              >
-                Override Label
-              </button>
-            </div> -->
-              </div>
-            </template>
-          </div>
-        </template>
+              </template>
+            </div>
+          </template>
+        </div>
       </div>
       <% else %>
-      <div
-        class="overflow-y-scroll overscroll-contain mt-6 h-[13rem] md:h-[17rem] border p-2"
-      >
-        <div class="font-bold">Screening Results</div>
-        <hr class="mt-0 mb-2" />
-        <div class="text-red-300 text-xs font-thin uppercase">
-          Must be Project Leader to see results
+      <div class="mt-6">
+        <div class="font-bold text-lg text-indigo-700 mb-2">
+          Screening Results
+        </div>
+        <div
+          class="overflow-y-scroll overscroll-contain h-[13rem] md:h-[17rem] border border-slate-200 rounded-lg bg-slate-50 p-4 shadow-sm"
+        >
+          <div class="text-red-400 text-xs font-thin uppercase tracking-wide">
+            Must be Project Leader to see results
+          </div>
         </div>
       </div>
       <% end %>
-      <div
-        class="overflow-y-scroll overscroll-contain mt-6 h-[13rem] md:h-[17rem] border p-2"
-      >
-        <div class="font-bold">Extractions</div>
-        <hr class="mt-0 mb-2" />
-        <table>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Created At</th>
-              <th>Approved On</th>
-              <th>Extractor</th>
-              <th>Assignor</th>
-              <th>Consolidated</th>
-            </tr>
-          </thead>
-          <tbody>
-            <template
-              x-for="extraction in results[detailedResult].extraction_objects"
+      <div class="mt-6">
+        <div class="font-bold text-lg text-indigo-700 mb-2">Extractions</div>
+        <div
+          class="overflow-y-scroll overscroll-contain h-[13rem] md:h-[17rem] border border-slate-200 rounded-lg bg-slate-50 p-4 shadow-sm"
+        >
+          <div class="overflow-x-auto">
+            <table
+              class="min-w-full border border-slate-200 rounded-lg text-sm shadow"
             >
-              <tr>
-                <td x-text="extraction.status"></td>
-                <td
-                  x-text="new Date(extraction.created_at).toLocaleString()"
-                ></td>
-                <td
-                  x-text="new Date(extraction.approved_on).toLocaleString()"
-                ></td>
-                <td x-text="extraction.user"></td>
-                <td x-text="extraction.assignor"></td>
-                <td x-text="extraction.consolidated"></td>
-              </tr>
-            </template>
-          </tbody>
-        </table>
+              <thead class="bg-indigo-50 sticky top-0 z-10">
+                <tr>
+                  <th class="px-3 py-2 border-b font-semibold text-left">
+                    Status
+                  </th>
+                  <th class="px-3 py-2 border-b font-semibold text-left">
+                    Created At
+                  </th>
+                  <th class="px-3 py-2 border-b font-semibold text-left">
+                    Approved On
+                  </th>
+                  <th class="px-3 py-2 border-b font-semibold text-left">
+                    Extractor
+                  </th>
+                  <th class="px-3 py-2 border-b font-semibold text-left">
+                    Assignor
+                  </th>
+                  <th class="px-3 py-2 border-b font-semibold text-left">
+                    Consolidated
+                  </th>
+                  <th class="px-3 py-2 border-b font-semibold text-left">Work</th>
+                  <th class="px-3 py-2 border-b font-semibold text-left">Copy</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template
+                  x-for="extraction in results[detailedResult].extraction_objects"
+                >
+                  <tr
+                    class="even:bg-white odd:bg-slate-50 hover:bg-indigo-100 transition cursor-pointer"
+                  >
+                    <td
+                      class="px-3 py-2 border-b"
+                      x-text="extraction.status"
+                    ></td>
+                    <td
+                      class="px-3 py-2 border-b"
+                      x-text="new Date(extraction.created_at).toLocaleString()"
+                    ></td>
+                    <td
+                      class="px-3 py-2 border-b"
+                      x-text="new Date(extraction.approved_on).toLocaleString()"
+                    ></td>
+                    <td class="px-3 py-2 border-b" x-text="extraction.user"></td>
+                    <td
+                      class="px-3 py-2 border-b"
+                      x-text="extraction.assignor"
+                    ></td>
+                    <td
+                      class="px-3 py-2 border-b"
+                      x-text="extraction.consolidated"
+                    ></td>
+                    <td class="px-3 py-2 border-b">
+                      <a
+                        :href="`/extractions/${extraction.id}/work`"
+                        target="_blank"
+                        rel="noopener"
+                        class="text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1 font-medium"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"
+                          />
+                        </svg>
+                        Work
+                      </a>
+                    </td>
+                    <td class="px-3 py-2 border-b">
+                      <button
+                        @click="selectedExtractionId = extraction.id; showCopyModal = true"
+                        class="text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1 font-medium"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                          />
+                        </svg>
+                        Copy
+                      </button>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>

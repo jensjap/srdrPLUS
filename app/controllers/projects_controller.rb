@@ -13,7 +13,7 @@ class ProjectsController < ApplicationController
     index edit show filter export new create
   ]
   before_action :skip_policy_scope, except: %i[
-    index show edit update destroy filter export import_csv
+    index user_projects show edit update destroy filter export import_csv
     import_pubmed import_endnote import_ris
   ]
 
@@ -27,6 +27,12 @@ class ProjectsController < ApplicationController
         render json: ProjectService.status_report(@project, user_id)
       end
     end
+  end
+
+  # GET /projects/user_projects
+  def user_projects
+    projects = current_user.projects.select(:id, :name, :created_at, :updated_at)
+    render json: projects.map { |p| { id: p.id, name: p.name, created_at: p.created_at, updated_at: p.updated_at } }
   end
 
   # GET /projects

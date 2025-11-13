@@ -67,6 +67,9 @@
       showDetailView: false,
       showCreateExtractions: false,
       showCitationsInRis: false,
+      showCopyModal: false,
+      selectedExtractionId: null,
+      userProjects: [],
       detailedResult: 0,
       lastIndexSelected: null,
       copied: false,
@@ -78,6 +81,7 @@
         window.onkeyup = () => (window.shift = false);
         window.onkeydown = () => (window.shift = true);
         this.fetch_results();
+        this.fetchUserProjects();
         this.$watch("query", (value, oldValue) => {
           this.pagination.current_page = 1;
           this.pagination.query = value;
@@ -97,6 +101,31 @@
         setTimeout(() => {
           this.copied = false;
         }, 3000);
+      },
+
+      async fetchUserProjects() {
+        try {
+          const response = await fetch("/projects/user_projects", {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "X-Requested-With": "XMLHttpRequest",
+              "X-CSRF-Token": document.querySelector("[name='csrf-token']")
+                .content,
+            },
+          });
+
+          if (!response.ok) {
+            console.error(`Error: ${response.status} - ${response.statusText}`);
+            return;
+          }
+
+          const data = await response.json();
+          this.userProjects = data;
+        } catch (error) {
+          console.error("An error occurred:", error);
+        }
       },
 
       applyTdBg(screening_status) {
