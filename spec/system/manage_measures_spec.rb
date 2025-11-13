@@ -11,16 +11,26 @@ RSpec.describe 'Manage Measures Interface', type: :system, js: true do
   end
 
   describe 'Adding and removing measures via modal' do
+    # Create extraction with proper associations
     let(:extraction) { create(:extraction, project: project) }
-    let(:population) { create(:extractions_extraction_forms_projects_sections_type1_row) }
-    let!(:result_section) { create(:result_statistic_section, :descriptive, population: population) }
+    let(:section) { Section.find_or_create_by!(name: 'Results') }
+    let(:efp) { project.extraction_forms_projects.first || create(:extraction_forms_project, project: project, extraction_forms_project_type: ExtractionFormsProjectType.first) }
+    let(:efps) { create(:extraction_forms_projects_section, extraction_forms_project: efp, section: section) }
+    let(:eefps) { create(:extractions_extraction_forms_projects_section, extraction: extraction, extraction_forms_projects_section: efps) }
+    let(:eefpst1) { create(:extractions_extraction_forms_projects_sections_type1, extractions_extraction_forms_projects_section: eefps) }
+    let!(:population) { create(:extractions_extraction_forms_projects_sections_type1_row, extractions_extraction_forms_projects_sections_type1: eefpst1) }
+    let!(:result_section) do
+      # The factory auto-creates result sections, so find the descriptive one
+      rsst = ResultStatisticSectionType.find_or_create_by!(name: 'Descriptive Statistics')
+      population.result_statistic_sections.find_by!(result_statistic_section_type: rsst)
+    end
 
     let!(:mean_measure) { create(:measure, :mean) }
     let!(:median_measure) { create(:measure, :median) }
     let!(:sd_measure) { create(:measure, :standard_deviation) }
 
     before do
-      # Setup available measures
+      # Setup available measures for the result section type
       rsst = result_section.result_statistic_section_type
       [mean_measure, median_measure, sd_measure].each do |measure|
         create(:result_statistic_section_types_measure,
@@ -29,28 +39,44 @@ RSpec.describe 'Manage Measures Interface', type: :system, js: true do
                default: true)
       end
 
-      # Navigate to extraction page (simplified - adjust path as needed)
-      visit edit_extraction_path(extraction)
+      # Navigate to the work/results page where the "(edit measures)" link exists
+      visit work_extraction_path(extraction)
+
+      # Wait for page to load by checking for a common element
+      expect(page).to have_content(project.name)
     end
 
     scenario 'User opens manage measures modal' do
-      # Click the "(edit measures)" link
-      click_link '(edit measures)'
+      # Debug: save screenshot to see what's on the page
+      save_screenshot('/tmp/test_page.png')
+      puts "Page HTML: #{page.html[0..500]}"  # Print first 500 chars
+      puts "Looking for '(edit measures)' link..."
 
-      # Wait for modal to appear
-      expect(page).to have_css('#manage-measures-modal', visible: true)
-      expect(page).to have_content('Manage Measures')
+      # Check if the link exists
+      if page.has_link?('(edit measures)')
+        # Click the "(edit measures)" link (match: :first since there may be multiple)
+        click_link '(edit measures)', match: :first
+
+        # Wait for modal to appear
+        expect(page).to have_css('#manage-measures-modal', visible: true)
+        # Check for the header text from the form
+        expect(page).to have_content('Select measures to include in this results section')
+      else
+        puts "Link '(edit measures)' not found on page"
+        puts "Available links: #{page.all('a').map(&:text).join(', ')}"
+        fail "The '(edit measures)' link is not present on the page. Test data may not be set up correctly."
+      end
     end
 
     scenario 'User adds measures via checkboxes' do
-      click_link '(edit measures)'
+      click_link '(edit measures)', match: :first
 
       within '#manage-measures-modal' do
-        # Check measures
-        check "measure_ids_#{mean_measure.id}"
-        check "measure_ids_#{median_measure.id}"
+        # Check measures (correct ID format from the form)
+        check "result_statistic_section_measure_ids_#{mean_measure.id}"
+        check "result_statistic_section_measure_ids_#{median_measure.id}"
 
-        click_button 'Save'
+        click_button 'Update Results Section'
       end
 
       # Wait for modal to close

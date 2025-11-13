@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :comparison do
-    sequence(:name) { |n| "Comparison #{n}" }
+    is_anova { false }
   end
 end

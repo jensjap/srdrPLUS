@@ -18,14 +18,18 @@ Rails.application.configure do
     'Cache-Control' => "public, max-age=#{1.hour.to_i}"
   }
 
-  # Use precompiled assets from development for system tests
-  # (Asset compilation fails in test due to Sass/Tailwind incompatibility)
+  # Disable asset compilation - use stub files directly
   config.assets.compile = false
   config.assets.debug = false
-  config.assets.digest = true
+  config.assets.digest = false  # Disable digests for simpler asset paths
   config.assets.prefix = '/assets'
-  # Fallback to application.css if tailwind.css fails
+  # Allow fallback for missing assets
   config.assets.unknown_asset_fallback = true
+  config.assets.check_precompiled_asset = false
+  # Quiet asset compilation for cleaner test output
+  config.assets.quiet = true
+  # Disable Sass compression to avoid modern CSS syntax issues
+  config.assets.css_compressor = nil
 
   # Show full error reports and disable caching.
   config.consider_all_requests_local       = true
