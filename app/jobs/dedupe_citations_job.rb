@@ -128,12 +128,25 @@ class DedupeCitationsJob < ApplicationJob
         master_cp = project.citations_projects.find_by(citation_id: master_citation.id)
         cp_to_remove = project.citations_projects.find_by(citation_id: duplicate_citation.id)
 
+        # Transfer associations and destroy cp_to_remove if both exist in current project
         if master_cp && cp_to_remove
           transfer_all_associations(master_cp, cp_to_remove)
+          reload_associations_safely(cp_to_remove)
+          Rails.logger.debug "Destroying CitationsProject #{cp_to_remove.id} (citation #{duplicate_citation.id}) in current project"
+          cp_to_remove.destroy!
         elsif cp_to_remove.nil?
-          Rails.logger.warn "CitationsProject not found for citation #{duplicate_citation.id} in project #{project.id}"
+          Rails.logger.debug "CitationsProject not found for citation #{duplicate_citation.id} in project #{project.id} (may have been removed during CitationsProject dedup)"
         elsif master_cp.nil?
           Rails.logger.warn "Master CitationsProject not found for citation #{master_citation.id} in project #{project.id}"
+        end
+
+        # Update ALL CitationsProject records (in OTHER projects only) to point to master Citation
+        # This must happen BEFORE destroying the duplicate Citation to prevent cascading deletion
+        other_project_cps = CitationsProject.where(citation_id: duplicate_citation.id).where.not(project_id: project.id)
+        duplicate_cp_count = other_project_cps.count
+        if duplicate_cp_count > 0
+          Rails.logger.debug "Updating #{duplicate_cp_count} CitationsProject records (in other projects) to point to master Citation #{master_citation.id}"
+          other_project_cps.update_all(citation_id: master_citation.id)
         end
 
         # Reload citations_projects and their associations to avoid stale data before destroying
