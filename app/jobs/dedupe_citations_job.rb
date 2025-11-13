@@ -16,16 +16,14 @@ class DedupeCitationsJob < ApplicationJob
 
     start_time = Time.current
     citations_projects_processed = 0
-    citations_processed = 0
 
     begin
       ActiveRecord::Base.transaction do
         citations_projects_processed = dedupe_citations_projects(@project)
-        citations_processed = dedupe_citations(@project)
       end
 
       duration = Time.current - start_time
-      Rails.logger.info "#{self.class.name}: Completed for project #{project_id} in #{duration.round(2)}s. Processed #{citations_projects_processed} CitationsProject groups and #{citations_processed} Citation groups"
+      Rails.logger.info "#{self.class.name}: Completed for project #{project_id} in #{duration.round(2)}s. Processed #{citations_projects_processed} CitationsProject groups"
     rescue ActiveRecord::RecordNotFound => e
       Rails.logger.error "#{self.class.name}: Record not found - #{e.message}"
       report_sentry(e)
@@ -102,75 +100,76 @@ class DedupeCitationsJob < ApplicationJob
     processed_count
   end
 
-  # Modularized: Deduplicate Citation records
-  def dedupe_citations(project)
-    return 0 if project.citations.empty?
-
-    # Find duplicates by grouping citations (case-insensitive to match MySQL GROUP BY behavior)
-    duplicate_citation_groups = project.citations
-                                       .group_by { |c| [c.citation_type_id, c.name&.downcase, c.pmid, c.abstract&.downcase] }
-                                       .select { |_, citations| citations.size > 1 }
-
-    return 0 if duplicate_citation_groups.empty?
-
-    Rails.logger.info "Found #{duplicate_citation_groups.size} Citation duplicate groups to process"
-    processed_count = 0
-
-    duplicate_citation_groups.each do |signature, group|
-      next if group.blank? || group.size < 2
-
-      Rails.logger.debug "Processing #{group.size} duplicate citations with signature: #{signature.inspect}"
-
-      # Sort by ID to ensure oldest (lowest ID) Citation is kept as master
-      sorted_group = group.sort_by(&:id)
-      master_citation = sorted_group.first
-      duplicate_citations = sorted_group[1..-1]
-
-      duplicate_citations.each do |duplicate_citation|
-        master_cp = project.citations_projects.find_by(citation_id: master_citation.id)
-        cp_to_remove = project.citations_projects.find_by(citation_id: duplicate_citation.id)
-
-        # Transfer associations and destroy cp_to_remove if both exist in current project
-        if master_cp && cp_to_remove
-          transfer_all_associations(master_cp, cp_to_remove)
-          reload_associations_safely(cp_to_remove)
-          Rails.logger.debug "Destroying CitationsProject #{cp_to_remove.id} (citation #{duplicate_citation.id}) in current project"
-          cp_to_remove.destroy!
-        elsif cp_to_remove.nil?
-          Rails.logger.debug "CitationsProject not found for citation #{duplicate_citation.id} in project #{project.id} (may have been removed during CitationsProject dedup)"
-        elsif master_cp.nil?
-          Rails.logger.warn "Master CitationsProject not found for citation #{master_citation.id} in project #{project.id}"
-        end
-
-        # Update ALL CitationsProject records (in OTHER projects only) to point to master Citation
-        # This must happen BEFORE destroying the duplicate Citation to prevent cascading deletion
-        other_project_cps = CitationsProject.where(citation_id: duplicate_citation.id).where.not(project_id: project.id)
-        duplicate_cp_count = other_project_cps.count
-        if duplicate_cp_count > 0
-          Rails.logger.debug "Updating #{duplicate_cp_count} CitationsProject records (in other projects) to point to master Citation #{master_citation.id}"
-          other_project_cps.update_all(citation_id: master_citation.id)
-        end
-
-        # Reload citations_projects and their associations to avoid stale data before destroying
-        duplicate_citation.association(:citations_projects).reload
-        duplicate_citation.citations_projects.each { |cp| reload_associations_safely(cp) }
-        Rails.logger.debug "Destroying duplicate Citation #{duplicate_citation.id}"
-        duplicate_citation.destroy!
-      rescue ActiveRecord::RecordNotDestroyed => e
-        Rails.logger.error "Failed to destroy Citation #{duplicate_citation.id}: #{e.message}"
-        report_sentry(e)
-      rescue StandardError => e
-        Rails.logger.error "Error processing Citation #{duplicate_citation.id}: #{e.message}"
-        report_sentry(e)
-      end
-
-      master_citation.association(:citations_projects).reload
-      master_citation.citations_projects.each(&:reindex)
-      processed_count += 1
-    end
-
-    processed_count
-  end
+  # DEPRECATED: This method is no longer used as we only deduplicate at the CitationsProject level
+  # Keeping for reference only
+  # def dedupe_citations(project)
+  #   return 0 if project.citations.empty?
+  #
+  #   # Find duplicates by grouping citations (case-insensitive to match MySQL GROUP BY behavior)
+  #   duplicate_citation_groups = project.citations
+  #                                      .group_by { |c| [c.citation_type_id, c.name&.downcase, c.pmid, c.abstract&.downcase] }
+  #                                      .select { |_, citations| citations.size > 1 }
+  #
+  #   return 0 if duplicate_citation_groups.empty?
+  #
+  #   Rails.logger.info "Found #{duplicate_citation_groups.size} Citation duplicate groups to process"
+  #   processed_count = 0
+  #
+  #   duplicate_citation_groups.each do |signature, group|
+  #     next if group.blank? || group.size < 2
+  #
+  #     Rails.logger.debug "Processing #{group.size} duplicate citations with signature: #{signature.inspect}"
+  #
+  #     # Sort by ID to ensure oldest (lowest ID) Citation is kept as master
+  #     sorted_group = group.sort_by(&:id)
+  #     master_citation = sorted_group.first
+  #     duplicate_citations = sorted_group[1..-1]
+  #
+  #     duplicate_citations.each do |duplicate_citation|
+  #       master_cp = project.citations_projects.find_by(citation_id: master_citation.id)
+  #       cp_to_remove = project.citations_projects.find_by(citation_id: duplicate_citation.id)
+  #
+  #       # Transfer associations and destroy cp_to_remove if both exist in current project
+  #       if master_cp && cp_to_remove
+  #         transfer_all_associations(master_cp, cp_to_remove)
+  #         reload_associations_safely(cp_to_remove)
+  #         Rails.logger.debug "Destroying CitationsProject #{cp_to_remove.id} (citation #{duplicate_citation.id}) in current project"
+  #         cp_to_remove.destroy!
+  #       elsif cp_to_remove.nil?
+  #         Rails.logger.debug "CitationsProject not found for citation #{duplicate_citation.id} in project #{project.id} (may have been removed during CitationsProject dedup)"
+  #       elsif master_cp.nil?
+  #         Rails.logger.warn "Master CitationsProject not found for citation #{master_citation.id} in project #{project.id}"
+  #       end
+  #
+  #       # Update ALL CitationsProject records (in OTHER projects only) to point to master Citation
+  #       # This must happen BEFORE destroying the duplicate Citation to prevent cascading deletion
+  #       other_project_cps = CitationsProject.where(citation_id: duplicate_citation.id).where.not(project_id: project.id)
+  #       duplicate_cp_count = other_project_cps.count
+  #       if duplicate_cp_count > 0
+  #         Rails.logger.debug "Updating #{duplicate_cp_count} CitationsProject records (in other projects) to point to master Citation #{master_citation.id}"
+  #         other_project_cps.update_all(citation_id: master_citation.id)
+  #       end
+  #
+  #       # Reload citations_projects and their associations to avoid stale data before destroying
+  #       duplicate_citation.association(:citations_projects).reload
+  #       duplicate_citation.citations_projects.each { |cp| reload_associations_safely(cp) }
+  #       Rails.logger.debug "Destroying duplicate Citation #{duplicate_citation.id}"
+  #       duplicate_citation.destroy!
+  #     rescue ActiveRecord::RecordNotDestroyed => e
+  #       Rails.logger.error "Failed to destroy Citation #{duplicate_citation.id}: #{e.message}"
+  #       report_sentry(e)
+  #     rescue StandardError => e
+  #       Rails.logger.error "Error processing Citation #{duplicate_citation.id}: #{e.message}"
+  #       report_sentry(e)
+  #     end
+  #
+  #     master_citation.association(:citations_projects).reload
+  #     master_citation.citations_projects.each(&:reindex)
+  #     processed_count += 1
+  #   end
+  #
+  #   processed_count
+  # end
 
   # Modularized: Transfer all associations from cp_to_remove to master_cp
   def transfer_all_associations(master_cp, cp_to_remove)

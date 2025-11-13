@@ -415,8 +415,8 @@ class ProjectsController < ApplicationController
       return
     end
 
-    # Process each group of citations
-    total_citations = 0
+    # Process each group of citations_projects
+    total_citations_projects = 0
     groups_merged = 0
 
     ActiveRecord::Base.transaction do
@@ -424,45 +424,31 @@ class ProjectsController < ApplicationController
         citation_ids = group.split(',').map(&:to_i)
         next if citation_ids.size < 2
 
-        # Get citations for this group ordered by id (oldest first)
-        citations = Citation.where(id: citation_ids).order(:id)
-        next if citations.size < 2
+        # Get CitationsProject records for this group in the current project, ordered by citation_id (oldest first)
+        citations_projects = @project.citations_projects.where(citation_id: citation_ids).includes(:citation).order('citations.id')
+        next if citations_projects.size < 2
 
-        master_citation = citations.first
-        duplicate_citations = citations[1..]
+        master_cp = citations_projects.first
+        duplicate_cps = citations_projects[1..]
 
-        duplicate_citations.each do |duplicate_citation|
-          master_cp = @project.citations_projects.find_by(citation_id: master_citation.id)
-          cp_to_remove = @project.citations_projects.find_by(citation_id: duplicate_citation.id)
-
-          # Transfer associations and destroy cp_to_remove if both exist in current project
-          if master_cp && cp_to_remove
-            # Transfer all associations using the job's logic
-            DedupeCitationsJob.new.send(:transfer_all_associations, master_cp, cp_to_remove)
-            DedupeCitationsJob.new.send(:reload_associations_safely, cp_to_remove)
-            cp_to_remove.destroy!
-          end
-
-          # Update ALL CitationsProject records (in OTHER projects only) to point to master Citation
-          other_project_cps = CitationsProject.where(citation_id: duplicate_citation.id).where.not(project_id: @project.id)
-          other_project_cps.update_all(citation_id: master_citation.id) if other_project_cps.any?
-
-          # Destroy the duplicate citation
-          duplicate_citation.association(:citations_projects).reload
-          duplicate_citation.destroy!
+        duplicate_cps.each do |cp_to_remove|
+          # Transfer all associations using the job's logic
+          DedupeCitationsJob.new.send(:transfer_all_associations, master_cp, cp_to_remove)
+          DedupeCitationsJob.new.send(:reload_associations_safely, cp_to_remove)
+          cp_to_remove.destroy!
         end
 
-        total_citations += citations.size
+        total_citations_projects += citations_projects.size
         groups_merged += 1
 
         # Reindex the master
-        master_cp = @project.citations_projects.find_by(citation_id: master_citation.id)
-        master_cp&.reindex
+        DedupeCitationsJob.new.send(:reload_associations_safely, master_cp)
+        master_cp.reindex
       end
     end
 
     if groups_merged > 0
-      flash[:success] = "Successfully merged #{groups_merged} group(s) containing #{total_citations} citations."
+      flash[:success] = "Successfully merged #{groups_merged} group(s) containing #{total_citations_projects} citations."
     else
       flash[:error] = 'No valid groups were selected for merging.'
     end
