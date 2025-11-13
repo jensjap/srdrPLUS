@@ -30,13 +30,20 @@
                 | Add Comparison
 
     tbody
-      - @result_statistic_section.timepoints.each do |tp|
+      - if @result_statistic_section.timepoints.empty?
         tr
-          td = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '')
-          - @result_statistic_section.comparisons.each_with_index do |bac, i|
-            td.consolidated-data-cell
-              div.consolidated-dropdown
-              - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
+          td colspan="100%" style="padding: 20px; text-align: center; background-color: #fff3cd; color: #856404;"
+            strong Warning: No timepoints defined for this population
+            br
+            | Please add at least one timepoint to this population in the outcome section before entering data.
+      - else
+        - @result_statistic_section.timepoints.each do |tp|
+          tr
+            td = tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{ tp.timepoint_name.unit })" : '')
+            - @result_statistic_section.comparisons.each_with_index do |bac, i|
+              td.consolidated-data-cell
+                div.consolidated-dropdown
+                - @result_statistic_section.result_statistic_sections_measures.each do |rssm|
                 // Create record form for rssm. (timepoint x bac x rssm)
                 /- tps_comparisons_rssm = TpsComparisonsRssm.find_or_create_by!( \
                 /timepoint: tp,
