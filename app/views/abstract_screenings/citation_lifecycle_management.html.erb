@@ -1,36 +1,63 @@
 <script src="/echarts.min.js"></script>
-<div x-data="citation_lifecycle_management">
-  <div class="flex items-center space-x-2 ml-7">
+<div
+  x-data="citation_lifecycle_management"
+  class="max-w-full overflow-x-hidden"
+>
+  <div
+    class="flex items-center space-x-2 ml-4 md:ml-7"
+    role="tablist"
+    aria-label="Main navigation tabs"
+  >
     <div
       @click="tab = 'extractionOverview'"
-      class="bg-srdrpurple-light text-white m-1 p-2 rounded-md cursor-pointer"
+      tabindex="0"
+      role="tab"
+      aria-selected="tab === 'extractionOverview'"
+      aria-label="Extraction Overview"
+      class="bg-srdrpurple-light text-white m-1 p-2 rounded-md cursor-pointer transition-colors duration-150 hover:!bg-srdrpurple-dark focus:!bg-srdrpurple-dark outline-none"
       :class="{ '!bg-srdrpurple': tab === 'extractionOverview' }"
     >
       Extraction Overview
     </div>
     <div
       @click="tab = 'citationLifecycleManagement'"
-      class="bg-srdrpurple-light text-white m-1 p-2 rounded-md cursor-pointer"
+      tabindex="0"
+      role="tab"
+      aria-selected="tab === 'citationLifecycleManagement'"
+      aria-label="Citation Lifecycle Management"
+      class="bg-srdrpurple-light text-white m-1 p-2 rounded-md cursor-pointer transition-colors duration-150 hover:!bg-srdrpurple-dark focus:!bg-srdrpurple-dark outline-none"
       :class="{ '!bg-srdrpurple': tab === 'citationLifecycleManagement' }"
     >
       Citation Lifecycle Management
     </div>
     <div
       @click="tab = 'projectMessages'; if (Notification.permission !== 'granted') { Notification.requestPermission() };"
-      class="bg-srdrpurple-light text-white m-1 p-2 rounded-md cursor-pointer"
+      tabindex="0"
+      role="tab"
+      aria-selected="tab === 'projectMessages'"
+      aria-label="All Message Boards"
+      class="bg-srdrpurple-light text-white m-1 p-2 rounded-md cursor-pointer transition-colors duration-150 hover:!bg-srdrpurple-dark focus:!bg-srdrpurple-dark outline-none"
       :class="{ '!bg-srdrpurple': tab === 'projectMessages' }"
     >
       All Message Boards
     </div>
   </div>
-  <div class="px-4 lg:px-8 py-2 lg:py-4">
-    <div x-cloak x-show="tab === 'extractionOverview'">
+  <div class="px-4 md:px-6 xl:px-8 py-2 lg:py-4 max-w-full">
+    <div
+      class="max-w-full min-w-0"
+      x-cloak
+      x-show="tab === 'extractionOverview'"
+    >
       <%= render 'projects/status' %>
     </div>
-    <div x-cloak x-show="tab === 'citationLifecycleManagement'">
+    <div
+      class="max-w-full min-w-0"
+      x-cloak
+      x-show="tab === 'citationLifecycleManagement'"
+    >
       <%= render 'citation_lifecycle_management' %>
     </div>
-    <div x-cloak x-show="tab === 'projectMessages'">
+    <div class="max-w-full min-w-0" x-cloak x-show="tab === 'projectMessages'">
       <%= render 'projects/project_messages' %>
     </div>
   </div>

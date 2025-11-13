@@ -1,18 +1,18 @@
-<div x-data="projectStatus" class="flex space-x-8">
-  <div class="relative w-48">
+<div x-data="projectStatus" class="flex flex-col md:flex-row gap-4">
+  <div class="w-full md:w-48 xl:w-56 flex-shrink-0">
     <h1 class="text-lg font-bold">By User</h1>
-    <ul class="h-[calc(100vh-280px)] overflow-auto !m-0">
+    <ul class="h-auto md:h-[calc(100vh-280px)] overflow-auto !m-0">
       <li
-        class="cursor-pointer text-xs"
-        :class="{ 'font-bold': null === user_id }"
+        class="cursor-pointer text-xs py-1 px-2 hover:bg-gray-100 rounded transition-colors"
+        :class="{ 'font-bold bg-gray-100': null === user_id }"
         @click="user_id = null; await getProjectStatus(); generateChart(); generateApprovalDurations();"
       >
         ALL USERS
       </li>
       <template x-for="projects_user in projectStatus?.projects_users">
         <li
-          class="cursor-pointer truncate text-xs"
-          :class="{ 'font-bold': projects_user.id === user_id }"
+          class="cursor-pointer truncate text-xs py-1 px-2 hover:bg-gray-100 rounded transition-colors"
+          :class="{ 'font-bold bg-gray-100': projects_user.id === user_id }"
           x-text="`${projects_user.handle}`"
           :title="projects_user.handle"
           @click="user_id = projects_user.id; await getProjectStatus(); generateChart(); generateApprovalDurations();"
@@ -20,115 +20,134 @@
       </template>
     </ul>
   </div>
-  <div class="grow">
-    <div class="flex flex-col lg:flex-row">
-      <div class="grow basis-0">
-        <h1 class="text-lg font-bold">Overview</h1>
-        <div
-          id="logChart"
-          style="width: calc(50vw - 9rem); height: 250px"
-        ></div>
+  <div class="flex-1 min-w-0">
+    <div class="flex flex-col gap-4 lg:flex-row lg:gap-6 mb-6">
+      <div class="w-full lg:w-1/2 min-w-0">
+        <h1 class="text-lg font-bold mb-2">Overview</h1>
+        <div id="logChart" class="w-full min-w-0" style="height: 250px"></div>
       </div>
-      <div class="grow basis-0">
-        <h1 class="text-lg font-bold">
+      <div class="w-full lg:w-1/2 min-w-0">
+        <h1 class="text-lg font-bold mb-2">
           Approval Durations of Extractions in 'work accepted'
         </h1>
         <div
           id="extractionKPIChart"
-          style="width: calc(50vw - 9rem); height: 250px"
+          class="w-full min-w-0"
+          style="height: 250px"
         ></div>
       </div>
     </div>
-    <div class="mb-2">
-      <h1 class="text-lg font-bold">
-        Pending Work
-        <span class="text-gray-600 text-xs"
-          >(extractions not in 'work_accepted' status)</span
-        >
-        <span
-          class="text-xs text-white bg-orange-700 p-1 rounded-md cursor-pointer select-none"
-          :class="{
-            'opacity-30': !pendingWorkFilter.awaiting_work
-          }"
-          @click="pendingWorkFilter.awaiting_work = !pendingWorkFilter.awaiting_work"
-          >awaiting_work</span
-        >
-        <span
-          class="text-xs text-white bg-blue-800 p-1 rounded-md cursor-pointer select-none"
-          :class="{
-            'opacity-30': !pendingWorkFilter.awaiting_review
-          }"
-          @click="pendingWorkFilter.awaiting_review = !pendingWorkFilter.awaiting_review"
-          >awaiting_review</span
-        >
-        <span
-          class="text-xs text-white bg-red-800 p-1 rounded-md cursor-pointer select-none"
-          :class="{
-            'opacity-30': !pendingWorkFilter.work_returned
-          }"
-          @click="pendingWorkFilter.work_returned = !pendingWorkFilter.work_returned"
-          >work_returned</span
-        >
-      </h1>
-      <div
-        class="h-[calc(100vh-36rem)] overflow-y-scroll text-xs text-gray-500 border rounded-md"
-      >
-        <table class="table-fixed w-full">
-          <thead>
-            <tr>
-              <th class="w-20">ID</th>
-              <th>Citation Title</th>
-              <th class="w-40">Extractor</th>
-              <th class="w-24">Status</th>
-              <th class="w-44">Status Date</th>
-              <th class="w-40">Time Ago</th>
-              <th class="w-48">Link</th>
-            </tr>
-          </thead>
-          <tbody>
-            <template x-for="extraction in filterPendingWork()">
-              <tr>
-                <td x-text="extraction.id" class="text-center"></td>
-                <td
-                  x-text="extraction.title"
-                  :title="extraction.title"
-                  class="truncate"
-                ></td>
-                <td
-                  x-text="extraction.handle || 'System'"
-                  :title="extraction.handle"
-                  class="text-left truncate"
-                ></td>
-                <td
-                  x-text="extraction.status"
-                  class="text-center font-bold"
-                  :class="{
-                    'text-orange-700': extraction.status === 'awaiting_work',
-                    'text-blue-800': extraction.status === 'awaiting_review',
-                    'text-red-900': extraction.status === 'work_returned',
-                  }"
-                ></td>
-                <td
-                  x-text="extraction.created_at ? new Date(extraction.created_at).toLocaleString() : ''"
-                  class="text-center"
-                ></td>
-                <td
-                  x-text="extraction.time_ago_in_words"
-                  class="text-center"
-                ></td>
-                <td>
-                  <a
-                    :href="`/extractions/${extraction.id}/work`"
-                    x-text="`/extractions/${extraction.id}/work`"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="underline"
-                  ></a>
-                </td>
-              </tr>
-            </template>
-          </tbody>
-        </table>
+    <div class="mt-6">
+      <div class="mb-3">
+        <h1 class="text-lg font-bold mb-2">
+          Pending Work
+          <span class="text-gray-600 text-xs block sm:inline mt-1 sm:mt-0">
+            (extractions not in 'work_accepted' status)
+          </span>
+        </h1>
+        <div class="flex flex-wrap gap-2">
+          <button
+            type="button"
+            class="text-xs text-white bg-orange-700 px-2 py-1 rounded-md cursor-pointer select-none transition-opacity hover:opacity-80"
+            :class="{ 'opacity-30': !pendingWorkFilter.awaiting_work }"
+            @click="pendingWorkFilter.awaiting_work = !pendingWorkFilter.awaiting_work"
+          >
+            awaiting_work
+          </button>
+          <button
+            type="button"
+            class="text-xs text-white bg-blue-800 px-2 py-1 rounded-md cursor-pointer select-none transition-opacity hover:opacity-80"
+            :class="{ 'opacity-30': !pendingWorkFilter.awaiting_review }"
+            @click="pendingWorkFilter.awaiting_review = !pendingWorkFilter.awaiting_review"
+          >
+            awaiting_review
+          </button>
+          <button
+            type="button"
+            class="text-xs text-white bg-red-800 px-2 py-1 rounded-md cursor-pointer select-none transition-opacity hover:opacity-80"
+            :class="{ 'opacity-30': !pendingWorkFilter.work_returned }"
+            @click="pendingWorkFilter.work_returned = !pendingWorkFilter.work_returned"
+          >
+            work_returned
+          </button>
+        </div>
+      </div>
+      <div class="border rounded-md overflow-hidden">
+        <div class="h-[calc(100vh-36rem)] overflow-y-auto">
+          <div class="overflow-x-auto">
+            <table class="min-w-max w-full text-xs text-gray-500">
+              <thead class="sticky top-0 bg-gray-50 z-10 border-b">
+                <tr>
+                  <th class="px-3 py-2 text-left font-semibold w-20">ID</th>
+                  <th class="px-3 py-2 text-left font-semibold min-w-[12rem]">
+                    Citation Title
+                  </th>
+                  <th class="px-3 py-2 text-left font-semibold w-40">
+                    Extractor
+                  </th>
+                  <th class="px-3 py-2 text-center font-semibold w-32">
+                    Status
+                  </th>
+                  <th class="px-3 py-2 text-center font-semibold w-44">
+                    Status Date
+                  </th>
+                  <th class="px-3 py-2 text-center font-semibold w-32">
+                    Time Ago
+                  </th>
+                  <th class="px-3 py-2 text-left font-semibold w-48">Link</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200">
+                <template x-for="extraction in filterPendingWork()">
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td
+                      x-text="extraction.id"
+                      class="px-3 py-2 text-center"
+                    ></td>
+                    <td
+                      x-text="extraction.title"
+                      :title="extraction.title"
+                      class="px-3 py-2 break-words"
+                    ></td>
+                    <td
+                      x-text="extraction.handle || 'System'"
+                      :title="extraction.handle"
+                      class="px-3 py-2 truncate"
+                    ></td>
+                    <td class="px-3 py-2 text-center">
+                      <span
+                        x-text="extraction.status"
+                        class="font-bold whitespace-nowrap"
+                        :class="{
+                          'text-orange-700': extraction.status === 'awaiting_work',
+                          'text-blue-800': extraction.status === 'awaiting_review',
+                          'text-red-900': extraction.status === 'work_returned',
+                        }"
+                      ></span>
+                    </td>
+                    <td
+                      x-text="extraction.created_at ? new Date(extraction.created_at).toLocaleString() : ''"
+                      class="px-3 py-2 text-center whitespace-nowrap"
+                    ></td>
+                    <td
+                      x-text="extraction.time_ago_in_words"
+                      class="px-3 py-2 text-center whitespace-nowrap"
+                    ></td>
+                    <td class="px-3 py-2">
+                      <a
+                        :href="`/extractions/${extraction.id}/work`"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-blue-600 hover:text-blue-800 underline truncate block"
+                        x-text="`View Extraction ${extraction.id}`"
+                      ></a>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -146,7 +165,7 @@
         pending_work: [],
         extraction_activities: [],
         extraction_kpis: [],
-        projects_users: []
+        projects_users: [],
       },
       user_id: null,
       pendingWorkFilter: {

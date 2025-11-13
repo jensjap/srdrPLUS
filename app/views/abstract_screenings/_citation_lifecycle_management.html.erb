@@ -33,10 +33,22 @@
           class="text-sm text-srdrpurple hover:text-srdrpurple-dark flex items-center gap-1"
           type="button"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
           </svg>
-          <span x-text="showSearchHelp ? 'Hide Search Help' : 'Show Search Help'"></span>
+          <span
+            x-text="showSearchHelp ? 'Hide Search Help' : 'Show Search Help'"
+          ></span>
         </button>
         <div
           x-show="showSearchHelp"
@@ -46,50 +58,143 @@
         >
           <h3 class="font-semibold text-gray-900 mb-2">Search Tips</h3>
           <ul class="space-y-1 text-gray-700">
-            <li><strong>General search:</strong> Type any text to search across citation titles, authors, and other fields</li>
-            <li><strong>Filter by status:</strong> Use <code class="px-1 py-0.5 bg-gray-200 rounded">status:xxx</code> to filter by screening status</li>
-            <li><strong>Search in title only:</strong> Use <code class="px-1 py-0.5 bg-gray-200 rounded">title:keyword</code> to search only in citation titles (supports multiple terms with AND logic)</li>
-            <li><strong>Search in authors only:</strong> Use <code class="px-1 py-0.5 bg-gray-200 rounded">author:keyword</code> to search only in citation authors (supports multiple terms with AND logic)</li>
+            <li>
+              <strong>General search:</strong> Type any text to search across
+              citation titles, authors, and other fields
+            </li>
+            <li>
+              <strong>Filter by status:</strong> Use
+              <code class="px-1 py-0.5 bg-gray-200 rounded">status:xxx</code> to
+              filter by screening status
+            </li>
+            <li>
+              <strong>Search in title only:</strong> Use
+              <code class="px-1 py-0.5 bg-gray-200 rounded">title:keyword</code>
+              to search only in citation titles (supports multiple terms with
+              AND logic)
+            </li>
+            <li>
+              <strong>Search in authors only:</strong> Use
+              <code class="px-1 py-0.5 bg-gray-200 rounded"
+                >author:keyword</code
+              >
+              to search only in citation authors (supports multiple terms with
+              AND logic)
+            </li>
           </ul>
           <div class="mt-3">
-            <p class="font-semibold text-gray-900 mb-1">Available Status Codes:</p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-600">
-              <div><code class="px-1 py-0.5 bg-gray-200 rounded">asu</code> - Abstract Screening: Unscreened</div>
-              <div><code class="px-1 py-0.5 bg-gray-200 rounded">asps</code> - Abstract Screening: Partially Screened</div>
-              <div><code class="px-1 py-0.5 bg-gray-200 rounded">asic</code> - Abstract Screening: In Conflict</div>
-              <div><code class="px-1 py-0.5 bg-gray-200 rounded">asr</code> - Abstract Screening: Rejected</div>
-              <div><code class="px-1 py-0.5 bg-gray-200 rounded">fsu</code> - Fulltext Screening: Unscreened</div>
-              <div><code class="px-1 py-0.5 bg-gray-200 rounded">fsps</code> - Fulltext Screening: Partially Screened</div>
-              <div><code class="px-1 py-0.5 bg-gray-200 rounded">fsic</code> - Fulltext Screening: In Conflict</div>
-              <div><code class="px-1 py-0.5 bg-gray-200 rounded">fsr</code> - Fulltext Screening: Rejected</div>
-              <div><code class="px-1 py-0.5 bg-gray-200 rounded">ene</code> - Extraction: Need Extraction</div>
-              <div><code class="px-1 py-0.5 bg-gray-200 rounded">eip</code> - Extraction: In Progress</div>
-              <div><code class="px-1 py-0.5 bg-gray-200 rounded">ec</code> - Extraction: Complete</div>
-              <div><code class="px-1 py-0.5 bg-gray-200 rounded">cnc</code> - Consolidation: Need Consolidation</div>
-              <div><code class="px-1 py-0.5 bg-gray-200 rounded">cip</code> - Consolidation: In Progress</div>
-              <div><code class="px-1 py-0.5 bg-gray-200 rounded">cc</code> - Consolidation: Complete</div>
+            <p class="font-semibold text-gray-900 mb-1">
+              Available Status Codes:
+            </p>
+            <div
+              class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-600"
+            >
+              <div>
+                <code class="px-1 py-0.5 bg-gray-200 rounded">asu</code> -
+                Abstract Screening: Unscreened
+              </div>
+              <div>
+                <code class="px-1 py-0.5 bg-gray-200 rounded">asps</code> -
+                Abstract Screening: Partially Screened
+              </div>
+              <div>
+                <code class="px-1 py-0.5 bg-gray-200 rounded">asic</code> -
+                Abstract Screening: In Conflict
+              </div>
+              <div>
+                <code class="px-1 py-0.5 bg-gray-200 rounded">asr</code> -
+                Abstract Screening: Rejected
+              </div>
+              <div>
+                <code class="px-1 py-0.5 bg-gray-200 rounded">fsu</code> -
+                Fulltext Screening: Unscreened
+              </div>
+              <div>
+                <code class="px-1 py-0.5 bg-gray-200 rounded">fsps</code> -
+                Fulltext Screening: Partially Screened
+              </div>
+              <div>
+                <code class="px-1 py-0.5 bg-gray-200 rounded">fsic</code> -
+                Fulltext Screening: In Conflict
+              </div>
+              <div>
+                <code class="px-1 py-0.5 bg-gray-200 rounded">fsr</code> -
+                Fulltext Screening: Rejected
+              </div>
+              <div>
+                <code class="px-1 py-0.5 bg-gray-200 rounded">ene</code> -
+                Extraction: Need Extraction
+              </div>
+              <div>
+                <code class="px-1 py-0.5 bg-gray-200 rounded">eip</code> -
+                Extraction: In Progress
+              </div>
+              <div>
+                <code class="px-1 py-0.5 bg-gray-200 rounded">ec</code> -
+                Extraction: Complete
+              </div>
+              <div>
+                <code class="px-1 py-0.5 bg-gray-200 rounded">cnc</code> -
+                Consolidation: Need Consolidation
+              </div>
+              <div>
+                <code class="px-1 py-0.5 bg-gray-200 rounded">cip</code> -
+                Consolidation: In Progress
+              </div>
+              <div>
+                <code class="px-1 py-0.5 bg-gray-200 rounded">cc</code> -
+                Consolidation: Complete
+              </div>
             </div>
           </div>
           <div class="mt-3 pt-2 border-t border-blue-300">
             <p class="font-semibold text-gray-900 mb-1">Examples:</p>
             <ul class="space-y-0.5 text-xs text-gray-600">
-              <li><code class="px-1 py-0.5 bg-gray-200 rounded">status:asu</code> - Show only unscreened citations</li>
-              <li><code class="px-1 py-0.5 bg-gray-200 rounded">status:ec diabetes</code> - Show extracted citations about diabetes</li>
-              <li><code class="px-1 py-0.5 bg-gray-200 rounded">author:smith</code> - Show citations by author "smith"</li>
-              <li><code class="px-1 py-0.5 bg-gray-200 rounded">title:assay title:pcr</code> - Show citations with BOTH "assay" AND "pcr" in the title</li>
-              <li><code class="px-1 py-0.5 bg-gray-200 rounded">author:jones author:chen</code> - Show citations with BOTH "jones" AND "chen" as authors</li>
-              <li><code class="px-1 py-0.5 bg-gray-200 rounded">title:covid author:smith status:ec</code> - Show extracted citations with "covid" in title by "smith"</li>
+              <li>
+                <code class="px-1 py-0.5 bg-gray-200 rounded">status:asu</code>
+                - Show only unscreened citations
+              </li>
+              <li>
+                <code class="px-1 py-0.5 bg-gray-200 rounded"
+                  >status:ec diabetes</code
+                >
+                - Show extracted citations about diabetes
+              </li>
+              <li>
+                <code class="px-1 py-0.5 bg-gray-200 rounded"
+                  >author:smith</code
+                >
+                - Show citations by author "smith"
+              </li>
+              <li>
+                <code class="px-1 py-0.5 bg-gray-200 rounded"
+                  >title:assay title:pcr</code
+                >
+                - Show citations with BOTH "assay" AND "pcr" in the title
+              </li>
+              <li>
+                <code class="px-1 py-0.5 bg-gray-200 rounded"
+                  >author:jones author:chen</code
+                >
+                - Show citations with BOTH "jones" AND "chen" as authors
+              </li>
+              <li>
+                <code class="px-1 py-0.5 bg-gray-200 rounded"
+                  >title:covid author:smith status:ec</code
+                >
+                - Show extracted citations with "covid" in title by "smith"
+              </li>
             </ul>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="my-4 flex flex-col">
-    <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-      <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+  <div class="my-4">
+    <div class="overflow-x-auto">
+      <div class="inline-block min-w-full align-middle">
         <div
-          class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg mb-8"
+          class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg mb-8"
         >
           <table class="w-full divide-y divide-gray-300">
             <thead class="bg-gray-50">

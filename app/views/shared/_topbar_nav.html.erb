@@ -37,82 +37,82 @@
   }"
 >
   <nav class="bg-srdr-primary">
-    <div class="mx-auto px-4 lg:px-8">
-      <div class="flex h-16 items-center justify-between">
-        <div class="flex items-center">
-          <div class="flex w-[250px] h-16">
-            <a class="inline w-[250px] h-16" href="/?no_redirect=true">
+    <div class="mx-auto px-4 lg:px-8 max-w-full overflow-x-hidden">
+      <div class="flex h-16 items-center justify-between min-w-0">
+        <div class="flex items-center min-w-0 flex-shrink">
+          <div class="flex w-[180px] h-16 flex-shrink-0">
+            <a class="inline w-[180px] h-16" href="/?no_redirect=true">
               <!-- prettier-ignore -->
-              <%= image_tag('VADRR Top.png', alt: 'VADRR - Home', class: 'w-[250px] h-16') %>
+              <%= image_tag('VADRR Top.png', alt: 'VADRR - Home', class: 'w-[180px] sm:w-[200px] h-16 object-contain') %>
             </a>
           </div>
-          <div class="hidden lg:ml-6 lg:block">
-            <div class="flex space-x-4">
+          <div class="hidden lg:ml-6 lg:block min-w-0 flex-shrink">
+            <div class="flex space-x-1 flex-wrap">
               <!-- Current: "rounded-md bg-srdr-secondary px-3 py-2 text-sm font-medium text-white" -->
               <a
                 href="<%= root_path(no_redirect: true) %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+                class="rounded-md p-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white whitespace-nowrap"
                 :class="home && 'bg-srdr-secondary !text-white underline'"
                 >Home</a
               >
               <% if current_user %>
               <a
                 href="<%= projects_path %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+                class="rounded-md p-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white whitespace-nowrap"
                 :class="my_projects && 'bg-srdr-secondary !text-white underline'"
                 >My Projects</a
               >
               <% end %>
               <a
                 href="<%= blog_path %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+                class="rounded-md p-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white whitespace-nowrap"
                 :class="blog && 'bg-srdr-secondary !text-white underline'"
                 >Blog</a
               >
               <a
                 href="<%= published_projects_path %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+                class="rounded-md p-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white whitespace-nowrap"
                 :class="published_projects && 'bg-srdr-secondary !text-white underline'"
                 >Published Projects</a
               >
               <a
                 href="<%= searches_path %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+                class="rounded-md p-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white whitespace-nowrap"
                 :class="search && 'bg-srdr-secondary !text-white underline'"
                 >Search</a
               >
               <a
                 href="/contact"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+                class="rounded-md p-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white whitespace-nowrap"
                 :class="contact && 'bg-srdr-secondary !text-white underline'"
                 >Contact</a
               >
               <a
                 href="/about"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+                class="rounded-md p-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white whitespace-nowrap"
                 :class="about && 'bg-srdr-secondary !text-white underline'"
                 >About</a
               >
               <a
                 href="<%= help_path %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+                class="rounded-md p-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white whitespace-nowrap"
                 :class="help && 'bg-srdr-secondary !text-white underline'"
                 >Help</a
               >
             </div>
           </div>
         </div>
-        <div class="hidden lg:ml-6 lg:block">
-          <div class="flex items-center space-x-4">
+        <div class="hidden lg:block flex-shrink-0">
+          <div class="flex items-center space-x-2 xl:space-x-4">
             <% if current_user %>
             <div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="1.5"
+                stroke-width="1"
                 stroke="white"
-                class="size-6 cursor-pointer"
+                class="size-5 cursor-pointer"
                 x-cloak
                 x-show="notification_enabled"
                 @click="setupNotification()"
@@ -147,9 +147,9 @@
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
+                  stroke-width="1"
                   stroke="white"
-                  class="size-6 cursor-pointer"
+                  class="size-5 cursor-pointer"
                 >
                   <path
                     stroke-linecap="round"
@@ -161,14 +161,15 @@
             </div>
             <% if current_user && (ENV['NEW_USER_FORM_WHITELIST']&.split()&.map(&:to_i)&.include?(current_user.id) || current_user.admin?) %>
               <div>
-                <%= link_to "New User Form", users_new_path, class: "rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white" %>
+                <%= link_to "New User Form", users_new_path, class: "rounded-md p-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white whitespace-nowrap" %>
               </div>
             <% end %>
             <div>
               <a
                 href="<%= edit_user_registration_path %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+                class="rounded-md p-1 text-xs font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white whitespace-nowrap truncate max-w-[120px] inline-block"
                 :class="account && 'bg-srdr-secondary !text-white underline'"
+                :title="'<%= current_user.handle %>'"
                 ><%= current_user.handle %></a
               >
             </div>
@@ -176,7 +177,7 @@
             <div>
               <a
                 href="<%= new_user_session_path %>"
-                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white"
+                class="rounded-md p-2 text-sm font-medium text-gray-300 hover:bg-srdr-secondary hover:text-white focus:text-white whitespace-nowrap"
                 :class="signin && 'bg-srdr-secondary !text-white underline'"
                 >Login</a
               >
@@ -330,17 +331,17 @@
                         class: "rounded-md text-xl font-medium text-gray-300 hover:text-white focus:text-white" %>
             <% if project.publishing.present? && project.publishing.approval.present? %>
           <span
-            class="ml-4 inline-flex items-center rounded bg-green-100 px-2 py-0.5 text-xs font-bold text-green-800"
+            class="ml-4 inline-flex items-center rounded bg-green-100 px-2 py-0.5 text-sm font-bold text-green-800"
             >Published</span
           >
           <% elsif project.publishing.present? %>
           <span
-            class="ml-4 inline-flex items-center rounded bg-yellow-700 px-2 py-0.5 text-xs font-bold text-white"
+            class="ml-4 inline-flex items-center rounded bg-yellow-700 px-2 py-0.5 text-sm font-bold text-white"
             >Publication Requested</span
           >
           <% else %>
           <span
-            class="ml-4 inline-flex items-center rounded bg-gray-100 px-2 py-0.5 text-xs font-bold text-gray-800"
+            class="ml-4 inline-flex items-center rounded bg-gray-100 px-2 py-0.5 text-sm font-bold text-gray-800"
             >Unpublished</span
           >
           <% end %>
@@ -348,7 +349,7 @@
         <div class="ml-4" x-show="!extractions" x-cloak>
           <a
             href="<%= project_extractions_path(project) %>"
-            class="rounded-md px-2 py-1 text-xs font-medium bg-green-700 !text-white border-[0.5px] border-white"
+            class="text-nowrap rounded-md px-2 py-1 text-sm font-medium bg-green-700 !text-white border-[0.5px] border-white"
             >Go to Extractions
           </a>
         </div>
