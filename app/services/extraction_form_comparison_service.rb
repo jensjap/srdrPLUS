@@ -151,8 +151,8 @@ class ExtractionFormComparisonService
   end
 
   def compare_questions(section1, section2, section_index)
-    questions1 = section1.questions.order(:id)
-    questions2 = section2.questions.order(:id)
+    questions1 = section1.questions.order(:pos, :id)
+    questions2 = section2.questions.order(:pos, :id)
 
     if questions1.count != questions2.count
       @differences << "Section #{section_index} (#{section1.section.name}): Different number of questions: #{questions1.count} vs #{questions2.count}"
@@ -287,13 +287,102 @@ class ExtractionFormComparisonService
       return false
     end
 
-    # NOTE: Comparing dependencies by count and structure, not by actual IDs
+    # NOTE: Comparing dependencies by structure and relative position, not by actual IDs
     # since the prerequisite IDs will be different between projects
     deps1.zip(deps2).each_with_index do |(d1, d2), d_index|
       if d1.prerequisitable_type != d2.prerequisitable_type
-        @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Dependency #{d_index}: Different prerequisitable_type"
+        @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Dependency #{d_index}: Different prerequisitable_type: '#{d1.prerequisitable_type}' vs '#{d2.prerequisitable_type}'"
         return false
       end
+
+      # Compare prerequisite question relative positions within their section
+      prereq_q1 = d1.prerequisitable.question
+      prereq_q2 = d2.prerequisitable.question
+
+      section1_questions = prereq_q1.extraction_forms_projects_section.questions.order(:pos, :id).to_a
+      section2_questions = prereq_q2.extraction_forms_projects_section.questions.order(:pos, :id).to_a
+
+      prereq_q1_relative_index = section1_questions.find_index { |q| q.id == prereq_q1.id }
+      prereq_q2_relative_index = section2_questions.find_index { |q| q.id == prereq_q2.id }
+
+      if prereq_q1_relative_index != prereq_q2_relative_index
+        @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Dependency #{d_index}: Different prerequisite question relative position: #{prereq_q1_relative_index} vs #{prereq_q2_relative_index} (section has #{section1_questions.count} questions)"
+        return false
+      end
+
+      # For field and option prerequisites, also compare their relative positions within the question
+      case d1.prerequisitable_type
+      when 'QuestionRowColumnField'
+        return false unless compare_field_prerequisite_positions(d1, d2, section_index, q_index, d_index, section_name)
+      when 'QuestionRowColumnsQuestionRowColumnOption'
+        return false unless compare_option_prerequisite_positions(d1, d2, section_index, q_index, d_index, section_name)
+      end
+    end
+
+    true
+  end
+
+  def compare_field_prerequisite_positions(d1, d2, section_index, q_index, d_index, section_name)
+    field1 = d1.prerequisitable
+    field2 = d2.prerequisitable
+
+    # Get the row and column positions
+    row1_index = field1.question_row_column.question_row.question.question_rows.index(field1.question_row_column.question_row)
+    row2_index = field2.question_row_column.question_row.question.question_rows.index(field2.question_row_column.question_row)
+
+    if row1_index != row2_index
+      @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Dependency #{d_index}: Different prerequisite row position: #{row1_index} vs #{row2_index}"
+      return false
+    end
+
+    col1_index = field1.question_row_column.question_row.question_row_columns.index(field1.question_row_column)
+    col2_index = field2.question_row_column.question_row.question_row_columns.index(field2.question_row_column)
+
+    if col1_index != col2_index
+      @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Dependency #{d_index}: Different prerequisite column position: #{col1_index} vs #{col2_index}"
+      return false
+    end
+
+    true
+  end
+
+  def compare_option_prerequisite_positions(d1, d2, section_index, q_index, d_index, section_name)
+    option1 = d1.prerequisitable
+    option2 = d2.prerequisitable
+
+    # Get the row and column positions
+    row1_index = option1.question_row_column.question_row.question.question_rows.index(option1.question_row_column.question_row)
+    row2_index = option2.question_row_column.question_row.question.question_rows.index(option2.question_row_column.question_row)
+
+    if row1_index != row2_index
+      @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Dependency #{d_index}: Different prerequisite row position: #{row1_index} vs #{row2_index}"
+      return false
+    end
+
+    col1_index = option1.question_row_column.question_row.question_row_columns.index(option1.question_row_column)
+    col2_index = option2.question_row_column.question_row.question_row_columns.index(option2.question_row_column)
+
+    if col1_index != col2_index
+      @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Dependency #{d_index}: Different prerequisite column position: #{col1_index} vs #{col2_index}"
+      return false
+    end
+
+    # For options, compare the relative position within the column's answer choices (not all options)
+    # Filter to only answer_choice options with non-empty names (the actual selectable choices)
+    # This handles cases where pos is still 999999 (default) vs 1 (reordered)
+    column1_options = option1.question_row_column.question_row_columns_question_row_column_options
+                             .select { |opt| opt.question_row_column_option.name == 'answer_choice' && opt.name.to_s.present? }
+                             .sort_by { |opt| [opt.pos, opt.id] }
+    column2_options = option2.question_row_column.question_row_columns_question_row_column_options
+                             .select { |opt| opt.question_row_column_option.name == 'answer_choice' && opt.name.to_s.present? }
+                             .sort_by { |opt| [opt.pos, opt.id] }
+
+    option1_relative_index = column1_options.find_index { |opt| opt.id == option1.id }
+    option2_relative_index = column2_options.find_index { |opt| opt.id == option2.id }
+
+    if option1_relative_index != option2_relative_index
+      @differences << "Section #{section_index} (#{section_name}), Question #{q_index}, Dependency #{d_index}: Different prerequisite option relative position: #{option1_relative_index} vs #{option2_relative_index} (among #{column1_options.count} answer choices)"
+      return false
     end
 
     true
