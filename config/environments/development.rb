@@ -1,7 +1,5 @@
 Rails.application.configure do
   config.hosts = [
-    'vadrr.org',
-    'www.vadrr.org',
     'localhost:3000'   # Allow this to be addressed when running in containers via docker-compose.yml.
   ]
   # config.after_initialize do
@@ -60,7 +58,7 @@ Rails.application.configure do
   mailserver_host = ENV['SRDRPLUS_MAILSERVER_HOST'].presence || '127.0.0.1'
   config.action_mailer.smtp_settings = { address: mailserver_host, port: 1025 }
   config.action_mailer.default_options = {
-    from: 'no-reply@yourdomain.com'
+    from: 'hello@dev.mycenaean.org'
   }
 
   # Print deprecation notices to the Rails logger.

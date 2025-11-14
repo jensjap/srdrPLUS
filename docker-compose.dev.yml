@@ -47,6 +47,19 @@ services:
       - docker.env
     environment:
       - MYSQL_ROOT_PASSWORD=password
+    # Pass configuration flags directly to the mysqld command
+    command: 
+      [
+        "mysqld",
+        "--innodb-buffer-pool-size=32G",
+        "--innodb-buffer-pool-instances=8",
+        "--innodb-flush-method=O_DIRECT",
+        "--innodb-io-capacity=2000",
+        "--innodb-io-capacity-max=4000",
+        "--innodb-log-file-size=1G",
+        "--innodb-log-buffer-size=64M"
+        # The other settings like default_storage_engine are usually default or set by the base image
+      ]
     security_opt:
       - seccomp:unconfined
 
