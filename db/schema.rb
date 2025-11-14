@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_11_10_000200) do
+ActiveRecord::Schema[7.0].define(version: 2025_11_14_100500) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -1198,7 +1198,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_11_10_000200) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "projects_paginate_per"
     t.boolean "conflict_resolution_label_visibility", default: false
-    t.text "storage"
+    t.text "storage", size: :medium
     t.boolean "follow_project_settings_in_conflict_resolution", default: true, null: false
     t.string "notification", default: "email"
     t.index ["organization_id"], name: "index_profiles_on_organization_id"
