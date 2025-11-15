@@ -21,7 +21,7 @@
           <%= f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: ImportType::ASSIGNMENTS_MAPPINGS).id } %>
           <%= f.simple_fields_for @import.imported_files.build do |i_f| %>
           <div
-            id="#fileDropzone"
+            id="fileDropzone"
             class="dropzone"
             name="mainFileUploader"
             dropzone-path="#{ imports_path }"

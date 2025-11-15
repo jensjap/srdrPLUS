@@ -4,8 +4,7 @@ Rails.application.configure do
   config.hosts = [
     'vadrr.org',
     'www.vadrr.org',
-    '44.210.141.64',
-    'localhost:3000' # Allow this to be addressed when running in containers via docker-compose.yml.
+    '34.232.148.35'
   ]
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -74,6 +73,9 @@ Rails.application.configure do
     password: ENV.fetch('SMTP_PASSWORD', nil),
     authentication: ENV.fetch('SMTP_AUTHENTICATION', nil),
     enable_starttls_auto: true
+  }
+  config.action_mailer.default_options = {
+    from: 'hello@mycenaean.org'
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to

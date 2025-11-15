@@ -14,12 +14,7 @@
 #  form_complete         :boolean          default(FALSE), not null
 #
 class AbstractScreeningResult < ApplicationRecord
-  searchkick callbacks: :async,
-             mappings: {
-               properties: {
-                 name: { type: 'keyword' }
-               }
-             }
+  searchkick callbacks: :async
 
   belongs_to :abstract_screening
   belongs_to :citations_project
@@ -118,14 +113,14 @@ class AbstractScreeningResult < ApplicationRecord
       abstract_screening_id:,
       accession_number_alts: citation.accession_number_alts.to_s,
       author_map_string: citation.authors,
-      name: citation.name,
+      name: citation.name.to_s,
       year: citation.year,
       user: user.handle,
       user_id:,
       label:,
       privileged:,
-      reasons: reasons.map(&:name).join(', '),
-      tags: tags.map(&:name).join(', '),
+      reasons: (reasons || []).map(&:name).join(', '),
+      tags: (tags || []).map(&:name).join(', '),
       notes:,
       updated_at:
     }

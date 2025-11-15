@@ -17,3 +17,173 @@ form.dirty {
     background-color: lightyellow !important;
   }
 }
+
+// Improved measure selector styles
+.measure-selector-controls {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+
+  input[type="text"] {
+    margin-bottom: 0;
+  }
+}
+
+.measure-legend {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  background: #e9ecef;
+  border-radius: 4px;
+
+  strong {
+    margin-right: 0.5rem;
+  }
+}
+
+.measure-list {
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1rem;
+  background: white;
+}
+
+.measure-row {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: #fafafa;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #f0f0f0;
+  }
+
+  &.sortable-ghost {
+    opacity: 0.5;
+    background: #e3f2fd;
+    border: 2px dashed #2196f3;
+  }
+
+  .measure-row-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .measure-main {
+    flex: 1;
+    min-width: 0; // Prevents flex item from overflowing
+  }
+
+  .measure-drag {
+    flex-shrink: 0;
+  }
+
+  .measure-label {
+    margin-bottom: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+
+    input[type="checkbox"] {
+      flex-shrink: 0;
+    }
+
+    .measure-name {
+      font-weight: 500;
+      flex: 1 1 auto;
+      min-width: 150px;
+    }
+  }
+
+  .drag-handle {
+    cursor: move;
+    color: #999;
+    font-size: 1.2rem;
+    padding: 0.25rem;
+    user-select: none;
+
+    &:hover {
+      color: #333;
+    }
+  }
+}
+
+.dependent-measures {
+  margin-top: 0.5rem;
+  margin-left: 2rem;
+  padding-left: 1rem;
+  border-left: 3px solid #6c757d;
+
+  .dependent-measure-row {
+    padding: 0.5rem;
+    margin-bottom: 0.25rem;
+
+    .measure-label {
+      .measure-name {
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+.measure-default-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 3px;
+  font-size: 0.75rem;
+}
+
+.measure-custom-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 3px;
+  font-size: 0.75rem;
+}
+
+.measure-has-data-badge {
+  display: inline-block;
+  padding: 2px 6px;
+  background: #cfe2ff;
+  border: 1px solid #b6d4fe;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  cursor: help;
+}
+
+#measures {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 4px;
+}
+
+.form-actions {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 2px solid #e0e0e0;
+  text-align: right;
+}
+
+.dependent-label {
+  color: #6c757d;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.no-measures {
+  padding: 2rem;
+  color: #999;
+}

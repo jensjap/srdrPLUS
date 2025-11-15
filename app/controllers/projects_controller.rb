@@ -373,7 +373,6 @@ class ProjectsController < ApplicationController
   def dedupe_citations
     authorize(@project)
     DedupeCitationsJob.set(wait: 1.minute).perform_later(@project.id)
-    # @project.dedupe_citations
     flash[:success] = 'Request to deduplicate citations has been received. Please come back later.'
 
     redirect_to(project_citations_path(@project), status: 303)

@@ -176,8 +176,7 @@
               id="screeningDropdown"
               aria-haspopup="true"
               aria-expanded="true">
-        <% c_count = @projects.present? ? @projects_citations_project_counts[project.id] : project.citations_projects.where.not(id: nil).count %>
-        <% c_title = "Screening (#{ c_count || 0 })" %>
+        <% c_title = "Screening" %>
         <i class='fi-page-search'> <%= c_title %></i>
         <svg class="w-4 h-4 ml-1 -mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>

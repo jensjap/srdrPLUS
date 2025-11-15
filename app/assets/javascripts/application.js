@@ -18,7 +18,6 @@
 //= require xlsx.mini.js
 //= require tether.min
 //= require dropzone
-//= require ahrq_foresee_qa_survey
 
 //= require_tree .
 

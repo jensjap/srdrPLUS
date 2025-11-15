@@ -15,12 +15,28 @@ Rails.application.configure do
   # loading is working properly before deploying your code.
   config.eager_load = ENV['CI'].present?
 
-  # Configure public file server for tests with cache-control for performance.
-  config.public_file_server.headers = { 'cache-control' => 'public, max-age=3600' }
+  # Configure public file server for tests with Cache-Control for performance.
+  config.public_file_server.enabled = true
+  config.public_file_server.headers = {
+    'Cache-Control' => "public, max-age=#{1.hour.to_i}"
+  }
 
-  # Show full error reports.
-  config.consider_all_requests_local = true
-  config.cache_store = :null_store
+  # Disable asset compilation - use stub files directly
+  config.assets.compile = false
+  config.assets.debug = false
+  config.assets.digest = false  # Disable digests for simpler asset paths
+  config.assets.prefix = '/assets'
+  # Allow fallback for missing assets
+  config.assets.unknown_asset_fallback = true
+  config.assets.check_precompiled_asset = false
+  # Quiet asset compilation for cleaner test output
+  config.assets.quiet = true
+  # Disable Sass compression to avoid modern CSS syntax issues
+  config.assets.css_compressor = nil
+
+  # Show full error reports and disable caching.
+  config.consider_all_requests_local       = true
+  config.action_controller.perform_caching = false
 
   # Render exception templates for rescuable exceptions and raise for other exceptions.
   config.action_dispatch.show_exceptions = :rescuable
@@ -38,6 +54,9 @@ Rails.application.configure do
 
   # Set host to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+  config.action_mailer.default_options = {
+    from: 'no-reply@yourdomain.com'
+  }
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr

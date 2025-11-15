@@ -7,11 +7,18 @@ end
 
 group :development, :test do
   gem 'byebug'
+  gem 'drb'
+  gem 'factory_bot_rails'
+  gem 'rspec-rails'
 end
 
 group :test do
+  gem 'capybara'
   gem 'database_cleaner-active_record'
+  gem 'rails-controller-testing'
+  gem 'selenium-webdriver'
   gem 'simplecov', require: false
+  gem 'webdrivers'
 end
 
 group :development do
@@ -72,6 +79,7 @@ gem 'net-smtp', require: false
 gem 'nokogiri'
 gem 'opensearch-ruby'
 gem 'ostruct'
+gem 'parallel'
 gem 'passenger'
 gem 'puma' # Use Puma as the app server
 gem 'pundit' # authorizations.

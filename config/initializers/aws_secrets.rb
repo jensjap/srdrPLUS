@@ -16,6 +16,15 @@ begin
   response = secrets_manager_client.get_secret_value(secret_id: secret_name)
   secret = response.secret_string
   DATABASE_CREDENTIALS = JSON.parse(secret)
+  Rails.logger.info "Successfully loaded DATABASE_CREDENTIALS from AWS Secrets Manager"
 rescue Aws::SecretsManager::Errors::ServiceError => e
+  Rails.logger.error "CRITICAL: Failed to fetch DATABASE_CREDENTIALS from AWS Secrets Manager: #{e.message}"
+  Rails.logger.error "Database connections may fail! The credential refresh module will attempt to recover."
   puts "Error fetching secret: #{e.message}"
+end
+
+# Verify credentials were loaded
+if !defined?(DATABASE_CREDENTIALS) || DATABASE_CREDENTIALS.nil?
+  Rails.logger.fatal "DATABASE_CREDENTIALS is not set! Initial database connection will likely fail."
+  Rails.logger.fatal "The credential refresh module will attempt to fetch credentials on first connection failure."
 end

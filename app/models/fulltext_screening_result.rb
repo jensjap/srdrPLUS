@@ -14,12 +14,7 @@
 #  form_complete         :boolean          default(FALSE), not null
 #
 class FulltextScreeningResult < ApplicationRecord
-  searchkick callbacks: :async,
-             mappings: {
-               properties: {
-                 name: { type: 'keyword' }
-               }
-             }
+  searchkick callbacks: :async
 
   belongs_to :fulltext_screening
   belongs_to :citations_project

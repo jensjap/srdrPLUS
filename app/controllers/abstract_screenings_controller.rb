@@ -91,11 +91,59 @@ class AbstractScreeningsController < ApplicationController
         @page = params[:page].present? ? params[:page].to_i : 1
         per_page = 100
         order = @order_by.present? ? { @order_by => @sort } : {}
-        @citations_projects =
-          CitationsProject
-          .search(@query,
-                  where: { project_id: @project.id },
-                  limit: per_page, offset: per_page * (@page - 1), order:, load: false)
+        where_hash = { project_id: @project.id }
+        title_terms = []
+        author_terms = []
+
+        # Parse field-specific queries (e.g., status:asu, title:keyword)
+        if @query.match(/(status:([\w\d]+))/)
+          query_match, status_value = @query.match(/(status:([\w\d]+))/).captures
+          where_hash[:screening_status] = status_value
+          @query.slice!(query_match)
+        end
+
+        # Parse title-specific queries (e.g., title:assay title:pcr)
+        while @query.match(/(title:([\w\d]+))/)
+          query_match, title_term = @query.match(/(title:([\w\d]+))/).captures
+          title_terms << title_term
+          @query.slice!(query_match)
+        end
+
+        # Parse author-specific queries (e.g., author:smith author:jones)
+        while @query.match(/(author:([\w\d]+))/)
+          query_match, author_term = @query.match(/(author:([\w\d]+))/).captures
+          author_terms << author_term
+          @query.slice!(query_match)
+        end
+
+        # Apply field-specific terms to where clause with regex matching
+        if title_terms.any?
+          combined_title_terms = title_terms.join(' ')
+          where_hash[:name] = /#{Regexp.escape(combined_title_terms)}/i
+        end
+
+        if author_terms.any?
+          combined_author_terms = author_terms.join(' ')
+          where_hash[:author_map_string] = /#{Regexp.escape(combined_author_terms)}/i
+        end
+
+        # Clean up query after slicing
+        @query = @query.strip
+        @query = '*' if @query.blank?
+
+        # Build search options
+        search_options = {
+          where: where_hash,
+          limit: per_page,
+          offset: per_page * (@page - 1),
+          order: order,
+          load: false
+        }
+
+        @citations_projects = CitationsProject.search(
+          @query,
+          **search_options
+        )
         @total_pages = (@citations_projects.total_count / per_page) + 1
       end
     end
@@ -203,30 +251,72 @@ class AbstractScreeningsController < ApplicationController
         @sort = params[:sort].present? ? params[:sort] : nil
         @page = params[:page].present? ? params[:page].to_i : 1
         per_page = 15
-        order = @order_by.present? ? { @order_by => @sort } : { 'name' => 'desc' }
+        order = @order_by.present? ? { @order_by => @sort } : {}
         where_hash = { abstract_screening_id: @abstract_screening.id }
         where_hash[:user_id] = current_user.id unless ProjectPolicy.new(current_user, @project).project_consolidator?
-        fields = %w[accession_number_alts author_map_string name year user label privileged reasons tags notes]
-        fields.each do |field|
-          next if @query.match(/(#{field}:(-?[\w\d]+))/).nil?
 
-          query, keyword = @query.match(/(#{field}:(-?[\w\d]+))/).captures
-          where_hash[field] =
-            case field
-            when 'privileged'
-              keyword == 'true'
-            when 'label'
-              keyword == 'null' ? nil : keyword
-            else
-              { ilike: "%#{keyword}%" }
-            end
-          @query.slice!(query)
+        # Collect all field-specific terms
+        field_terms = {}
+        # Map user-facing field names to actual database fields
+        field_mapping = {
+          'title' => 'name',
+          'accession_number' => 'accession_number_alts',
+          'author' => 'author_map_string',
+          'year' => 'year',
+          'user' => 'user',
+          'label' => 'label',
+          'privileged' => 'privileged',
+          'reason' => 'reasons',
+          'tag' => 'tags',
+          'note' => 'notes'
+        }
+
+        field_mapping.keys.each do |search_field|
+          field_terms[search_field] = []
+
+          # Collect all occurrences of this field
+          while @query.match(/(#{search_field}:(-?[\w\d]+))/)
+            query_match, keyword = @query.match(/(#{search_field}:(-?[\w\d]+))/).captures
+            field_terms[search_field] << keyword
+            @query.slice!(query_match)
+          end
         end
+
+        field_terms.each do |search_field, terms|
+          next if terms.empty?
+
+          # Map to actual database field
+          db_field = field_mapping[search_field]
+
+          case search_field
+          when 'privileged'
+            where_hash[db_field] = terms.first == 'true'
+          when 'label'
+            where_hash[db_field] = terms.first == 'null' ? nil : terms.first
+          when 'title', 'author', 'accession_number', 'year', 'user', 'reason', 'tag', 'note'
+            # Text fields - combine all terms with OR logic, then use wildcard matching
+            combined_terms = terms.join(' ')
+            where_hash[db_field] = /#{Regexp.escape(combined_terms)}/i
+          else
+            # Fallback for any other fields
+            where_hash[db_field] = terms.join(' ')
+          end
+        end
+
+        @query = @query.strip
+        @query = '*' if @query.blank?
+
+        # Build search options
+        search_options = {
+          where: where_hash,
+          limit: per_page,
+          offset: per_page * (@page - 1),
+          order: order,
+          load: false
+        }
+
         @abstract_screening_results =
-          AbstractScreeningResult
-          .search(@query.present? ? @query : '*',
-                  where: where_hash,
-                  limit: per_page, offset: per_page * (@page - 1), order:, load: false)
+          AbstractScreeningResult.search(@query, **search_options)
         @total_pages = (@abstract_screening_results.total_count / per_page) + 1
       end
     end

@@ -46,6 +46,19 @@ class ProfilesController < ApplicationController
     end
 
     new_storage = old_storage.merge(request.parameters[:storage])
+
+    # Limit the number of stored DataTables states to prevent storage column overflow
+    # Keep only the most recent 10 DataTables entries based on timestamp
+    datatable_keys = new_storage.keys.select { |k| k.start_with?('DataTables-') }
+    if datatable_keys.size > 10
+      # Sort by time (oldest first) and remove the oldest entries
+      datatable_keys.sort_by { |k| new_storage.dig(k, 'time') || 0 }
+                    .first(datatable_keys.size - 10)
+                    .each { |k| new_storage.delete(k) }
+
+      Rails.logger.info "Cleaned up #{datatable_keys.size - 10} old DataTables entries for user #{current_user.id}"
+    end
+
     @profile.update(storage: new_storage.to_json)
     render json: new_storage, status: 200
   end

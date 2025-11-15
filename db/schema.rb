@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_03_22_183941) do
+ActiveRecord::Schema[7.0].define(version: 2025_11_14_100500) do
   create_table "abstrackr_settings", id: :integer, charset: "utf8", force: :cascade do |t|
     t.integer "profile_id"
     t.boolean "authors_visible", default: true
@@ -972,7 +972,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_22_183941) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
-  create_table "logs", charset: "utf8", force: :cascade do |t|
+  create_table "logs", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "loggable_type", null: false
     t.bigint "loggable_id", null: false
     t.string "description"
@@ -991,7 +991,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_22_183941) do
     t.index ["name"], name: "index_measures_on_name", unique: true
   end
 
-  create_table "memberships", charset: "utf8", force: :cascade do |t|
+  create_table "memberships", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "room_id", null: false
     t.bigint "user_id", null: false
     t.boolean "admin", default: false, null: false
@@ -1018,7 +1018,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_22_183941) do
     t.index ["project_id"], name: "index_mesh_descriptors_projects_on_project_id"
   end
 
-  create_table "message_unreads", charset: "utf8", force: :cascade do |t|
+  create_table "message_unreads", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "message_id", null: false
     t.datetime "created_at", null: false
@@ -1028,7 +1028,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_22_183941) do
     t.index ["user_id"], name: "index_message_unreads_on_user_id"
   end
 
-  create_table "messages", charset: "utf8", force: :cascade do |t|
+  create_table "messages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "message_id"
     t.bigint "user_id", null: false
     t.text "text", null: false
@@ -1068,6 +1068,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_22_183941) do
     t.float "score", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["citations_project_id", "ml_model_id"], name: "index_ml_predictions_on_citations_project_id_and_ml_model_id", unique: true
     t.index ["citations_project_id"], name: "fk_rails_c7d0d53a87"
     t.index ["ml_model_id"], name: "fk_rails_6c1d59597a"
   end
@@ -1197,7 +1198,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_22_183941) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "projects_paginate_per"
     t.boolean "conflict_resolution_label_visibility", default: false
-    t.text "storage"
+    t.text "storage", size: :medium
     t.boolean "follow_project_settings_in_conflict_resolution", default: true, null: false
     t.string "notification", default: "email"
     t.index ["organization_id"], name: "index_profiles_on_organization_id"
@@ -1506,7 +1507,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_22_183941) do
     t.index ["name"], name: "index_roles_on_name", unique: true
   end
 
-  create_table "rooms", charset: "utf8", force: :cascade do |t|
+  create_table "rooms", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

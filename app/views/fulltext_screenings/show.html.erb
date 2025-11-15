@@ -9,6 +9,9 @@
             </h1>
             <p class="mt-2 text-sm text-gray-700">
               A list of all results for citations that have been labeled.
+              <span x-show="pagination.total_count !== undefined" x-cloak class="ml-2 font-semibold">
+                (<span x-text="pagination.total_count"></span> results)
+              </span>
             </p>
           </div>
           <div class="flex-col items-end md:w-96">
@@ -146,6 +149,58 @@
         Clear Results (X)
       </div>
     </div>
+    <div class="mt-2">
+      <button
+        @click="showSearchHelp = !showSearchHelp"
+        class="text-sm text-srdrpurple hover:text-srdrpurple-dark flex items-center gap-1"
+        type="button"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span x-text="showSearchHelp ? 'Hide Search Help' : 'Show Search Help'"></span>
+      </button>
+      <div
+        x-show="showSearchHelp"
+        x-cloak
+        x-transition
+        class="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md text-sm"
+      >
+        <h3 class="font-semibold text-gray-900 mb-2">Search Tips</h3>
+        <ul class="space-y-1 text-gray-700">
+          <li><strong>General search:</strong> Type any text to search across all fields</li>
+          <li><strong>Field-specific search:</strong> Use <code class="px-1 py-0.5 bg-gray-200 rounded">field:keyword</code> to search in a specific field</li>
+          <li><strong>Multiple terms:</strong> Use multiple field queries for AND logic (e.g., <code class="px-1 py-0.5 bg-gray-200 rounded">title:assay title:pcr</code>)</li>
+        </ul>
+        <div class="mt-3">
+          <p class="font-semibold text-gray-900 mb-1">Available Search Fields:</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-600">
+            <div><code class="px-1 py-0.5 bg-gray-200 rounded">title</code> - Citation title</div>
+            <div><code class="px-1 py-0.5 bg-gray-200 rounded">author</code> - Citation authors</div>
+            <div><code class="px-1 py-0.5 bg-gray-200 rounded">accession_number</code> - PubMed ID, etc.</div>
+            <div><code class="px-1 py-0.5 bg-gray-200 rounded">year</code> - Publication year</div>
+            <div><code class="px-1 py-0.5 bg-gray-200 rounded">user</code> - Screener username</div>
+            <div><code class="px-1 py-0.5 bg-gray-200 rounded">reason</code> - Screening reasons</div>
+            <div><code class="px-1 py-0.5 bg-gray-200 rounded">tag</code> - Screening tags</div>
+            <div><code class="px-1 py-0.5 bg-gray-200 rounded">note</code> - Screening notes</div>
+            <div><code class="px-1 py-0.5 bg-gray-200 rounded">label</code> - Screening label (1, -1, 0, null)</div>
+            <div><code class="px-1 py-0.5 bg-gray-200 rounded">privileged</code> - Privileged status (true/false)</div>
+          </div>
+        </div>
+        <div class="mt-3 pt-2 border-t border-blue-300">
+          <p class="font-semibold text-gray-900 mb-1">Examples:</p>
+          <ul class="space-y-0.5 text-xs text-gray-600">
+            <li><code class="px-1 py-0.5 bg-gray-200 rounded">title:diabetes</code> - Search for "diabetes" in citation titles</li>
+            <li><code class="px-1 py-0.5 bg-gray-200 rounded">title:assay title:pcr</code> - Citations with BOTH "assay" AND "pcr" in title</li>
+            <li><code class="px-1 py-0.5 bg-gray-200 rounded">author:smith</code> - Search for "smith" in authors</li>
+            <li><code class="px-1 py-0.5 bg-gray-200 rounded">user:john reason:excluded</code> - Results by user "john" with reason "excluded"</li>
+            <li><code class="px-1 py-0.5 bg-gray-200 rounded">accession_number:12345</code> - Search by PubMed ID or other accession number</li>
+            <li><code class="px-1 py-0.5 bg-gray-200 rounded">label:1</code> - Show only included citations</li>
+            <li><code class="px-1 py-0.5 bg-gray-200 rounded">privileged:true</code> - Show only privileged screenings</li>
+          </ul>
+        </div>
+      </div>
+    </div>
     <div class="mb-8 flex flex-col">
       <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
@@ -199,9 +254,7 @@
                         </svg>
                       </template>
                     </div>
-                    <span class="text-xs text-gray-500"
-                      >"accession_number_alts:keyword"</span
-                    >
+                    <span class="text-xs text-gray-500">accession_number:12345</span>
                   </th>
                   <th
                     scope="col"
@@ -247,9 +300,7 @@
                         </svg>
                       </template>
                     </div>
-                    <span class="text-xs text-gray-500"
-                      >"author_map_string:keyword"</span
-                    >
+                    <span class="text-xs text-gray-500">author:smith</span>
                   </th>
                   <th
                     scope="col"
@@ -295,7 +346,7 @@
                         </svg>
                       </template>
                     </div>
-                    <span class="text-xs text-gray-500">"name:keyword"</span>
+                    <span class="text-xs text-gray-500">title:diabetes</span>
                   </th>
                   <th
                     scope="col"
@@ -341,7 +392,7 @@
                         </svg>
                       </template>
                     </div>
-                    <span class="text-xs text-gray-500">"year:keyword"</span>
+                    <span class="text-xs text-gray-500">year:2020</span>
                   </th>
                   <th
                     scope="col"
@@ -387,7 +438,7 @@
                         </svg>
                       </template>
                     </div>
-                    <span class="text-xs text-gray-500">"user:keyword"</span>
+                    <span class="text-xs text-gray-500">user:john</span>
                   </th>
                   <th
                     scope="col"
@@ -433,7 +484,7 @@
                         </svg>
                       </template>
                     </div>
-                    <span class="text-xs text-gray-500">"label:keyword"</span>
+                    <span class="text-xs text-gray-500">label:1</span>
                   </th>
                   <th
                     scope="col"
@@ -479,9 +530,7 @@
                         </svg>
                       </template>
                     </div>
-                    <span class="text-xs text-gray-500"
-                      >"privileged:keyword"</span
-                    >
+                    <span class="text-xs text-gray-500">privileged:true</span>
                   </th>
                   <th
                     scope="col"
@@ -527,7 +576,7 @@
                         </svg>
                       </template>
                     </div>
-                    <span class="text-xs text-gray-500">"reasons:keyword"</span>
+                    <span class="text-xs text-gray-500">reason:excluded</span>
                   </th>
                   <th
                     scope="col"
@@ -573,7 +622,7 @@
                         </svg>
                       </template>
                     </div>
-                    <span class="text-xs text-gray-500">"tags:keyword"</span>
+                    <span class="text-xs text-gray-500">tag:important</span>
                   </th>
                   <th
                     scope="col"
@@ -618,7 +667,7 @@
                         </svg>
                       </template>
                     </div>
-                    <span class="text-xs text-gray-500">"notes:keyword"</span>
+                    <span class="text-xs text-gray-500">note:review</span>
                   </th>
                   <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                     <span class="sr-only">Edit</span>
@@ -646,6 +695,7 @@
                       <td
                         class="px-3 text-sm text-gray-500 max-w-[150px] overflow-hidden text-ellipsis whitespace-nowrap"
                         x-text="result.author_map_string"
+                        :title="result.author_map_string"
                       ></td>
                       <td
                         class="px-3 text-sm text-gray-500"
@@ -719,6 +769,7 @@
         order_by: null,
         sort: null,
       },
+      showSearchHelp: false,
 
       init() {
         this.fetch_results();

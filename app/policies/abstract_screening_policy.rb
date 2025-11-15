@@ -5,6 +5,17 @@ class AbstractScreeningPolicy < ApplicationPolicy
     end
   end
 
+  def initialize(user, record)
+    raise Pundit::NotAuthorizedError, 'must be logged in' unless user
+
+    @user = user
+    @record = record
+    # If the record is a Project (for actions like citation_lifecycle_management),
+    # use it directly; otherwise, get the project from the record
+    @project = record.is_a?(Project) ? record : record.project
+    @projects_user = ProjectsUser.find_by(user: user, project: @project)
+  end
+
   def create?
     project_leader?
   end

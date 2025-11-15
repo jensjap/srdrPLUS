@@ -104,6 +104,8 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
+    addressable (2.8.7)
+      public_suffix (>= 2.0.2, < 7.0)
     amoeba (3.3.0)
       activerecord (>= 5.2.0)
     annotate (2.6.5)
@@ -156,6 +158,15 @@ GEM
       msgpack (~> 1.2)
     builder (3.2.4)
     byebug (11.1.3)
+    capybara (3.40.0)
+      addressable
+      matrix
+      mini_mime (>= 0.1.3)
+      nokogiri (~> 1.11)
+      rack (>= 1.6.0)
+      rack-test (>= 0.6.3)
+      regexp_parser (>= 1.5, < 3.0)
+      xpath (~> 3.2)
     caxlsx (4.1.0)
       htmlentities (~> 4.3, >= 4.3.4)
       marcel (~> 1.0)
@@ -194,6 +205,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
+    diff-lcs (1.6.2)
     docile (1.4.0)
     dotenv (3.1.2)
     dotenv-rails (3.1.2)
@@ -206,6 +218,11 @@ GEM
     et-orbi (1.2.11)
       tzinfo
     execjs (2.9.1)
+    factory_bot (6.5.5)
+      activesupport (>= 6.1.0)
+    factory_bot_rails (6.5.1)
+      factory_bot (~> 6.5)
+      railties (>= 6.1.0)
     faraday (2.13.4)
       faraday-net_http (>= 2.0, < 3.5)
       json
@@ -294,11 +311,13 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.4)
+    matrix (0.4.3)
+    method_source (1.1.0)
     mime-types (3.5.2)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2024.0507)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.8)
+    mini_portile2 (2.8.9)
     minitest (5.23.1)
     msgpack (1.7.2)
     multi_json (1.17.0)
@@ -324,6 +343,8 @@ GEM
     nokogiri (1.16.5)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
+    nokogiri (1.16.5-aarch64-linux)
+      racc (~> 1.4)
     nokogiri (1.16.5-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.16.5-x86_64-linux)
@@ -333,6 +354,7 @@ GEM
       multi_json (>= 1.0)
     orm_adapter (0.5.0)
     ostruct (0.6.1)
+    parallel (1.27.0)
     passenger (6.0.22)
       rack
       rake (>= 0.8.1)
@@ -342,6 +364,7 @@ GEM
     psych (5.2.5)
       date
       stringio
+    public_suffix (6.0.2)
     puma (6.4.2)
       nio4r (~> 2.0)
     pundit (2.3.2)
@@ -374,6 +397,10 @@ GEM
       activesupport (= 8.0.3)
       bundler (>= 1.15.0)
       railties (= 8.0.3)
+    rails-controller-testing (1.0.5)
+      actionpack (>= 5.0.1.rc1)
+      actionview (>= 5.0.1.rc1)
+      activesupport (>= 5.0.1.rc1)
     rails-dom-testing (2.2.0)
       activesupport (>= 5.0.0)
       minitest
@@ -408,10 +435,28 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
+    rexml (3.4.4)
     roo (2.10.1)
       nokogiri (~> 1)
       rubyzip (>= 1.3.0, < 3.0.0)
     rouge (4.3.0)
+    rspec-core (3.13.5)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.5)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.5)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-rails (7.1.1)
+      actionpack (>= 7.0)
+      activesupport (>= 7.0)
+      railties (>= 7.0)
+      rspec-core (~> 3.13)
+      rspec-expectations (~> 3.13)
+      rspec-mocks (~> 3.13)
+      rspec-support (~> 3.13)
+    rspec-support (3.13.6)
     rubyXL (3.4.27)
       nokogiri (>= 1.10.8)
       rubyzip (>= 1.3.0)
@@ -439,6 +484,10 @@ GEM
       activemodel (>= 6.1)
       hashie
     securerandom (0.4.1)
+    selenium-webdriver (4.10.0)
+      rexml (~> 3.2, >= 3.2.5)
+      rubyzip (>= 1.2.2, < 3.0)
+      websocket (~> 1.0)
     sentry-rails (5.17.3)
       railties (>= 5.0)
       sentry-ruby (~> 5.17.3)
@@ -486,6 +535,8 @@ GEM
     stringio (3.1.7)
     tailwindcss-rails (2.6.0)
       railties (>= 7.0.0)
+    tailwindcss-rails (2.6.0-aarch64-linux)
+      railties (>= 7.0.0)
     tailwindcss-rails (2.6.0-arm64-darwin)
       railties (>= 7.0.0)
     tailwindcss-rails (2.6.0-x86_64-linux)
@@ -512,14 +563,22 @@ GEM
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
     webrick (1.9.1)
+    webdrivers (5.3.1)
+      nokogiri (~> 1.6)
+      rubyzip (>= 1.3.0)
+      selenium-webdriver (~> 4.0, < 4.11)
+    websocket (1.2.11)
     websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    xpath (3.2.0)
+      nokogiri (~> 1.8)
     zeitwerk (2.6.15)
     zip-zip (0.3)
       rubyzip (>= 1.0.0)
 
 PLATFORMS
+  aarch64-linux
   arm64-darwin-22
   ruby
   x86_64-linux
@@ -543,6 +602,7 @@ DEPENDENCIES
   bio
   bootsnap
   byebug
+  capybara
   caxlsx
   caxlsx_rails
   cocoon
@@ -551,7 +611,9 @@ DEPENDENCIES
   database_cleaner-active_record
   devise
   dotenv-rails
+  drb
   dropzonejs-rails
+  factory_bot_rails
   faker!
   faraday_middleware-aws-sigv4
   fhir_models!
@@ -576,22 +638,26 @@ DEPENDENCIES
   nokogiri
   opensearch-ruby
   ostruct
+  parallel
   passenger
   puma
   pundit
   rack-attack
   rack-cors
   rails (~> 8)
+  rails-controller-testing
   rdoc
   redis
   ref_parsers!
   remotipart!
   responders
   roo
+  rspec-rails
   rubyXL
   sass-rails
   searchjoy
   searchkick
+  selenium-webdriver
   sentry-rails
   sentry-ruby
   sentry-sidekiq
@@ -607,6 +673,7 @@ DEPENDENCIES
   tzinfo-data
   uglifier
   web-console
+  webdrivers
   zip-zip
 
 BUNDLED WITH

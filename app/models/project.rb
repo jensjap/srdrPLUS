@@ -65,7 +65,6 @@ class Project < ApplicationRecord
 
   has_one :data_audit, dependent: :destroy
   has_one :publishing, as: :publishable, dependent: :destroy
-  has_one :room, dependent: :destroy
   # NOTE
   # I think we are using polymorphism incorrectly above. I think what we want is for each project to have at most one
   # publishing, therefore:
@@ -264,68 +263,24 @@ class Project < ApplicationRecord
   def has_duplicate_citations?
     is_any_citation_added_to_project_multiple_times =
       citations_projects
-      .select(:citation_id, :project_id)
       .group(:citation_id, :project_id)
-      .having('count(*) > 1').length > 0
+      .having('count(*) > 1')
+      .count
+      .any?
 
     is_the_same_citation_added_to_the_database_multiple_times_and_referenced_multiple_times =
       citations
-      .select(:pmid)
       .group(
         :citation_type_id,
         :name,
-        :refman,
         :pmid,
         :abstract
       )
       .having('count(*) > 1')
-      .length > 0
+      .count
+      .any?
 
     is_any_citation_added_to_project_multiple_times || is_the_same_citation_added_to_the_database_multiple_times_and_referenced_multiple_times
-  end
-
-  def dedupe_citations
-    # This takes care of citations that have been added to the project
-    # multiple times.
-    citations_projects
-      .group(:citation_id, :project_id)
-      .having('count(*) > 1')
-      .each do |cp|
-      cp.dedupe
-    end
-
-    sub_query = citations
-                .select(
-                  :citation_type_id,
-                  :name,
-                  :refman,
-                  :pmid,
-                  :abstract
-                )
-                .group(
-                  :citation_type_id,
-                  :name,
-                  :refman,
-                  :pmid,
-                  :abstract
-                )
-                .having('count(*) > 1')
-    citations_that_have_multiple_entries = citations.joins("INNER JOIN (#{sub_query.to_sql}) as t1").distinct
-
-    # Group citations and dedupe each group.
-    cthme_groups = citations_that_have_multiple_entries.group_by do |i|
-      [i.citation_type_id, i.name, i.refman, i.pmid,
-       i.abstract]
-    end
-    cthme_groups.each do |cthme_group|
-      master_citation = cthme_group[1][0]
-      cthme_group[1][1..-1].each do |cit|
-        master_cp = CitationsProject.find_by(citation_id: master_citation.id, project_id: id)
-        cp_to_remove = CitationsProject.find_by(citation_id: cit.id, project_id: id)
-        CitationsProject.dedupe_update_associations(master_cp, cp_to_remove)
-        cit.destroy
-      end
-    end
   end
 
   def key_questions_attributes=(attributes)

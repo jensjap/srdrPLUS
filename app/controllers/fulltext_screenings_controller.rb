@@ -101,30 +101,72 @@ class FulltextScreeningsController < ApplicationController
         @sort = params[:sort].present? ? params[:sort] : nil
         @page = params[:page].present? ? params[:page].to_i : 1
         per_page = 15
-        order = @order_by.present? ? { @order_by => @sort } : { 'name' => 'desc' }
+        order = @order_by.present? ? { @order_by => @sort } : {}
         where_hash = { fulltext_screening_id: @fulltext_screening.id }
         where_hash[:user_id] = current_user.id unless ProjectPolicy.new(current_user, @project).project_consolidator?
-        fields = %w[accession_number_alts author_map_string name year user label privileged reasons tags notes]
-        fields.each do |field|
-          next if @query.match(/(#{field}:(-?[\w\d]+))/).nil?
 
-          query, keyword = @query.match(/(#{field}:(-?[\w\d]+))/).captures
-          where_hash[field] =
-            case field
-            when 'privileged'
-              keyword == 'true'
-            when 'label'
-              keyword == 'null' ? nil : keyword
-            else
-              { ilike: "%#{keyword}%" }
-            end
-          @query.slice!(query)
+        # Collect all field-specific terms
+        field_terms = {}
+        # Map user-facing field names to actual database fields
+        field_mapping = {
+          'title' => 'name',
+          'accession_number' => 'accession_number_alts',
+          'author' => 'author_map_string',
+          'year' => 'year',
+          'user' => 'user',
+          'label' => 'label',
+          'privileged' => 'privileged',
+          'reason' => 'reasons',
+          'tag' => 'tags',
+          'note' => 'notes'
+        }
+
+        field_mapping.keys.each do |search_field|
+          field_terms[search_field] = []
+
+          # Collect all occurrences of this field
+          while @query.match(/(#{search_field}:(-?[\w\d]+))/)
+            query_match, keyword = @query.match(/(#{search_field}:(-?[\w\d]+))/).captures
+            field_terms[search_field] << keyword
+            @query.slice!(query_match)
+          end
         end
+
+        field_terms.each do |search_field, terms|
+          next if terms.empty?
+
+          # Map to actual database field
+          db_field = field_mapping[search_field]
+
+          case search_field
+          when 'privileged'
+            where_hash[db_field] = terms.first == 'true'
+          when 'label'
+            where_hash[db_field] = terms.first == 'null' ? nil : terms.first
+          when 'title', 'author', 'accession_number', 'year', 'user', 'reason', 'tag', 'note'
+            # Text fields - combine all terms with OR logic, then use wildcard matching
+            combined_terms = terms.join(' ')
+            where_hash[db_field] = /#{Regexp.escape(combined_terms)}/i
+          else
+            # Fallback for any other fields
+            where_hash[db_field] = terms.join(' ')
+          end
+        end
+
+        @query = @query.strip
+        @query = '*' if @query.blank?
+
+        # Build search options
+        search_options = {
+          where: where_hash,
+          limit: per_page,
+          offset: per_page * (@page - 1),
+          order: order,
+          load: false
+        }
+
         @fulltext_screening_results =
-          FulltextScreeningResult
-          .search(@query.present? ? @query : '*',
-                  where: where_hash,
-                  limit: per_page, offset: per_page * (@page - 1), order:, load: false)
+          FulltextScreeningResult.search(@query, **search_options)
         @total_pages = (@fulltext_screening_results.total_count / per_page) + 1
       end
     end

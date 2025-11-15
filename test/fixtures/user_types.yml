@@ -1,0 +1,10 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_type: Admin
+
+two:
+  user_type: Member
+
+three:
+  user_type: Trainee
