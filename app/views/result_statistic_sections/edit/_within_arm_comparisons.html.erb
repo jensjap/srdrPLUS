@@ -43,7 +43,10 @@
           <%= simple_form_for @result_statistic_section, url: add_comparison_result_statistic_section_path, method: :post do |f| %>
             <%= f.input :comparison_type, as: :hidden, input_html: { value: :wac } %>
             <div class="links add-comparison">
-              <%= link_to_add_association f, :comparisons, class: 'button tiny', partial: 'result_statistic_sections/edit/comparison_fields', render_options: { locals: { rss: rss, comparison: :wac } } %>
+              <%= link_to_add_association f, :comparisons, class: 'button tiny', partial: 'result_statistic_sections/edit/comparison_fields', render_options: { locals: { rss: @result_statistic_section, comparison: :wac } } do %>
+                <i class="fi-plus"></i>
+                Add Comparison
+              <% end %>
             </div>
           <% end %>
         </td>

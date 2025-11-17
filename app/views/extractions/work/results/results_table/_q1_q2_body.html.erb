@@ -1,7 +1,16 @@
 <% tab_indices = {} %>
 <% counter = counter_index %>
 <% print_tp_name = true %>
-<% dsc_rss.timepoints.each_with_index do |tp, tp_index| %>
+<% if dsc_rss.timepoints.empty? %>
+  <tr>
+    <td colspan="100%" style="padding: 20px; text-align: center; background-color: #fff3cd; color: #856404;">
+      <strong>Warning: No timepoints defined for this population</strong>
+      <br>
+      Please add at least one timepoint to this population before entering data.
+    </td>
+  </tr>
+<% else %>
+  <% dsc_rss.timepoints.each_with_index do |tp, tp_index| %>
   <% tp_counter = 1000 * tp_index %>
   <% max_row_cnt = [dsc_rss.result_statistic_sections_measures.length, bac_rss.result_statistic_sections_measures.length].max - 1 %>
   <% (-1..max_row_cnt).each do |row_cnt| %>
@@ -77,4 +86,5 @@
   <% end %>
   <% print_tp_name = true %>
   <% counter += 1000 %>
+  <% end %>
 <% end %>

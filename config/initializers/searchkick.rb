@@ -33,5 +33,5 @@ else
       request_timeout: 300,
       timeout: 300
     }
-  }
+  end
 end

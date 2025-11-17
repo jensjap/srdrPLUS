@@ -39,7 +39,16 @@
       </tr>
     </thead>
     <tbody>
-      <% @result_statistic_section.timepoints.each do |tp| %>
+      <% if @result_statistic_section.timepoints.empty? %>
+        <tr>
+          <td colspan="100%" style="padding: 20px; text-align: center; background-color: #fff3cd; color: #856404;">
+            <strong>Warning: No timepoints defined for this population</strong>
+            <br>
+            Please add at least one timepoint to this population in the outcome section before entering data.
+          </td>
+        </tr>
+      <% else %>
+        <% @result_statistic_section.timepoints.each do |tp| %>
         <tr>
           <td><%= tp.timepoint_name.name %><%= tp.timepoint_name.unit.present? ? " (#{tp.timepoint_name.unit})" : "" %></td>
           <% @result_statistic_section.comparisons.each_with_index do |bac, i| %>
@@ -84,6 +93,7 @@
             </td>
           <% end %>
         </tr>
+      <% end %>
       <% end %>
       <tr>
         <td><%= link_to '(edit measures)', manage_measures_result_statistic_section_path(rss_id: @result_statistic_section.id, extraction_ids: @extractions.map(&:id)), remote: true, onclick: "return false" %></td>
