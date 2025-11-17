@@ -37,4 +37,8 @@ RUN bundle install --jobs 4 --retry 3
 
 COPY . ./
 
+# Build Tailwind CSS and precompile assets
+RUN bundle exec rails tailwindcss:build && \
+    bundle exec rails assets:precompile
+
 ENTRYPOINT ["./entrypoints/docker-entrypoint.sh"]

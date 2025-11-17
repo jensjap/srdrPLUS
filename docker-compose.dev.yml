@@ -86,6 +86,21 @@ services:
       OPENSEARCH_INITIAL_ADMIN_PASSWORD: "Str0ngP@ssw0rd!"
       OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
 
+  tailwind:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - app
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    env_file:
+      - docker.env
+    environment:
+      RAILS_ENV: development
+    command: bin/rails tailwindcss:watch
+
   sidekiq:
     build:
       context: .
