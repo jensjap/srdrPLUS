@@ -14,6 +14,9 @@ Rails.application.config.action_controller.forgery_protection_origin_check = tru
 # Previous versions had false.
 ActiveSupport.to_time_preserves_timezone = true
 
+# Rails 8.1 compatibility: preserve full timezone rather than offset
+Rails.application.config.active_support.to_time_preserves_timezone = :zone
+
 # Require `belongs_to` associations by default. Previous versions had false.
 Rails.application.config.active_record.belongs_to_required_by_default = true
 
