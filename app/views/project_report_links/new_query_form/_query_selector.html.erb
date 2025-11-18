@@ -78,7 +78,7 @@
     if(confirm("Are you sure?")){
       sd_meta_data_query_id = $( event.target ).parents( '.query-item' ).data( 'sd-meta-data-query-id' )
       $.ajax({
-        url: "#{ sd_meta_data_queries_url }/" + sd_meta_data_query_id,
+        url: "<%= sd_meta_data_queries_url %>/" + sd_meta_data_query_id,
         method: 'DELETE',
         success: function(data) { $( '.query-item[data-sd-meta-data-query-id="' + sd_meta_data_query_id + '"]' ).remove() },
         error: function(data) { toastr.error('ERROR: Unable to delete query')}
@@ -95,7 +95,7 @@
     sd_meta_data_query_id = $( '.query-item.selected' ).data( 'sd-meta-data-query-id' )
     $.ajax({
       beforeSend: xhr => { xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content')) },
-      url: "#{project_report_link_options_form_path(sd_meta_datum)}",
+      url: "<%= project_report_link_options_form_path(sd_meta_datum) %>",
       method: 'POST',
       data: { sd_meta_data_query_id: sd_meta_data_query_id }}).done(function(data){
       initialize();
