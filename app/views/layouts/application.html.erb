@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= content_for?(:title) ? yield(:title) + " | VADRR" : 'VADRR' %></title>
+    <script src="https://kit.fontawesome.com/a55e144d79.js" crossorigin="anonymous"></script>
+    <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
+    <!-- Roboto Font Family -->
+    <%= stylesheet_link_tag 'application', 'https://fonts.googleapis.com/css?family=Noto+Sans|Roboto&display=swap' %>
+    <%= stylesheet_link_tag 'application' %>
+    <%= javascript_include_tag 'application' %>
+    <!-- Select2 4.0.13 -->
+    <%= stylesheet_link_tag 'https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css' %>
+    <%= javascript_include_tag 'https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js' %>
+    <%= javascript_include_tag '/alpinejs@3.14.1.ui.min.js', defer: true %>
+    <%= javascript_include_tag '/alpinejs@3.14.1.focus.min.js', defer: true %>
+    <%= javascript_include_tag '/alpinejs@3.14.1.collapse.min.js', defer: true %>
+    <%= javascript_include_tag '/alpinejs@3.14.1.min.js', defer: true %>
+    <%= csrf_meta_tag %>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Halant:400,700|Noto+Sans:400,400i,700">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+  </head>
+  <body class="<%= controller_name %> <%= action_name %>">
+    <%= Gon::Base.render_data(camelCase: true) %>
+    <%= render 'shared/noscript' %>
+    <% if content_for?(:content) %>
+      <%= yield(:content) %>
+    <% else %>
+      <div>
+        <% if @systematic_review_report %>
+          <div class="off-canvas position-right" id="offCanvasRightReportHtml" data-off-canvas>
+            <button class="close-button" aria-label="Close menu" type="button" data-close>
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <iframe class="iframe" style="height: 100vh" id="htmlReportIframe" src="/TOC.html" text="Systematic Review Report" title="Systematic Review Report" width="100%"></iframe>
+          </div>
+        <% end %>
+        <div class="off-canvas-content" data-off-canvas-content x-data="application">
+          <%= render "shared/topbar_nav" %>
+          <div class="min-h-[10vh]">
+            <%= yield %>
+            <%= render 'shared/scroll_top_wrapper' %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <%= render 'toastr_rails/flash' %>
+    <script>
+      document.addEventListener("alpine:init", () => {
+        const headers = {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+          "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+        };
+        Alpine.data("application", () => ({
+          notification_enabled: false,
+          async init() {
+            await this.setupWS();
+            this.check_notification_status();
+          },
+          check_notification_status() {
+            this.notification_enabled = Notification.permission === 'granted';
+          },
+          async setupWS() {
+            const socket = new WebSocket("/cable");
+            socket.onopen = () => {
+              console.log("WS connected");
+              const msg = {
+                command: "subscribe",
+                identifier: JSON.stringify({ channel: "NotificationChannel" }),
+              };
+              socket.send(JSON.stringify(msg));
+            };
+            socket.onclose = () => {
+              console.log("WS disconnected");
+            };
+            socket.onmessage = async (event) => {
+              const data = JSON.parse(event.data);
+              const message = data.message;
+              if (data.type === "ping" || message === undefined) {
+                return;
+              }
+              if (message.message_type === "message") {
+                this.createNotification(message.text, message.url);
+              }
+            };
+            socket.onerror = (error) => {
+              console.log("WS error: ", error);
+            };
+          },
+          async setupNotification() {
+            if (this.notification_enabled) {
+              return this.createNotification('Site notifications are already setup. To disable please reset this site\'s permissions in the browser.', '/')
+            }
+            const permission = await Notification.requestPermission();
+            if (permission === 'denied') {
+              alert('To re-enable notifications, please reset this site\'s permissions in the browser.')
+            } else if (permission === 'granted') {
+              this.createNotification('Site notifications are setup.', '/')
+            }
+            this.check_notification_status();
+          },
+          createNotification(text, url) {
+            const notification = new Notification("You've received a new message", { body: text });
+            notification.onclick = function () {
+              window.open(url);
+            };
+          },
+        }));
+      });
+    </script>
+  </body>
+</html>

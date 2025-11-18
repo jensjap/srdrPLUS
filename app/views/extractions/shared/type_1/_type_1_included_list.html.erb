@@ -1,0 +1,109 @@
+<div id="outcomes-table" class="table-scroll">
+  <% if section_name.eql?('Diagnostic Tests') %>
+    <%= render 'extractions/shared/type_1/type_1_included_list/diagnostic_tests_table', eefps: eefps %>
+  <% else %>
+    <table>
+      <col style="width: 1%;">
+      <% if ['Outcomes', 'Diagnoses'].include? section_name %>
+        <col style="width: 10%;">
+        <col style="width: 30%;">
+        <col style="width: 25%;">
+        <col style="width: 10%;">
+        <col style="width: 10%;">
+        <col style="width: 4%;">
+        <col style="width: 10%;">
+      <% else %>
+        <col>
+        <col>
+        <col>
+        <col>
+      <% end %>
+      <thead style="background: initial; border: none;">
+        <tr>
+          <th style="border: none; min-width: 0; width: 10px;"></th>
+          <% if section_name == 'Outcomes' %>
+            <th style="border: none;">Type</th>
+          <% end %>
+          <th style="border: none;"><%= section_name.eql?('Outcomes') ? 'Domain' : "#{section_name.singularize} Name" %></th>
+          <th style="border: none;"><%= section_name.eql?('Outcomes') ? 'Specific measurement (i.e., tool/definition/specific outcome)' : "#{section_name.singularize} Description" %></th>
+          <th style="border: none;">Instructions by Lead</th>
+          <% if ['Outcomes', 'Diagnoses'].include? section_name %>
+            <th style="border: none;">Populations</th>
+            <th style="border: none;">Timepoints</th>
+            <th style="border: none;"></th>
+            <th style="border: none;">FHIR Format</th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody class="orderable-list" orderable-url="<%= update_positions_api_v1_orderings_url %>">
+        <% eefps.eefpst1s_without_total.each do |eefpst1| %>
+          <% bgcolor = '' %>
+          <% if eefpst1.type1_type && eefpst1.type1_type.name == 'Categorical' %>
+            <% bgcolor = '#eeeeff' %>
+          <% elsif eefpst1.type1_type && eefpst1.type1_type.name == 'Continuous' %>
+            <% bgcolor = '#ccf5de' %>
+          <% end %>
+          <tr class="orderable-item" table="extractions_extraction_forms_projects_sections_type1s" position="<%= eefpst1.pos %>" ordering-id="<%= eefpst1.id %>" style="background-color: <%= bgcolor %>">
+            <td class="sort-handle" style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"><i class="fa fa-arrows"></i></td>
+            <% if section_name == 'Outcomes' %>
+              <td><%= eefpst1.type1_type.present? ? eefpst1.type1_type.name : '' %></td>
+              <td><%= eefpst1.type1.name %></td>
+            <% else %>
+              <td><%= eefpst1.type1.name %></td>
+            <% end %>
+            <td><%= eefpst1.type1.description %></td>
+            <td class="text-red-500"><%= eefps.extraction_forms_projects_section.extraction_forms_projects_sections_type1s.where("type1_type_id IS NULL OR type1_type_id = ?", eefpst1.type1_type_id).find_by(type1: eefpst1.type1)&.instructions %></td>
+            <% confirmation_message = "Deleting this data point will potentially remove any data associated with it as well. Are you sure you would like to delete: '#{eefpst1.type1.name}'?" %>
+            <% if ['Outcomes', 'Diagnoses'].include? section_name %>
+              <% populations = [] %>
+              <% timepoints = [] %>
+              <td>
+                <ul>
+                  <% if eefpst1.extractions_extraction_forms_projects_sections_type1_rows.present? %>
+                    <% eefpst1.extractions_extraction_forms_projects_sections_type1_rows.each do |pop| %>
+                      <li><%= pop.population_name.name %></li>
+                      <% populations << pop.population_name.name %>
+                    <% end %>
+                  <% else %>
+                    <li>No populations</li>
+                  <% end %>
+                </ul>
+              </td>
+              <td>
+                <ul class="orderable-list list-none" orderable-url="<%= update_positions_api_v1_orderings_url %>">
+                  <% if eefpst1.extractions_extraction_forms_projects_sections_type1_rows.try(:first).try(:extractions_extraction_forms_projects_sections_type1_row_columns).present? %>
+                    <% eefpst1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp| %>
+                      <li class="orderable-item" table="extractions_extraction_forms_projects_sections_type1_row_columns" position="<%= tp.pos %>" ordering-id="<%= tp.id %>">
+                        <span class="sort-handle mr-2" style="min-width: 0; vertical-align: middle; width: 10px; cursor: pointer;"><i class="fa fa-arrows"></i></span>
+                        <%= tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{tp.timepoint_name.unit})" : '') %>
+                        <% timepoints << tp.timepoint_name.name + (tp.timepoint_name.unit.present? ? " (#{tp.timepoint_name.unit})" : '') %>
+                      </li>
+                    <% end %>
+                  <% else %>
+                    <li>No Timepoints</li>
+                  <% end %>
+                </ul>
+              </td>
+              <% confirmation_message = "Deleting this data point will potentially remove any data associated with it as well. Are you sure you would like to delete: '#{eefpst1.type1.name}' with populations: '#{populations.join(', ')}' and timepoints: '#{timepoints.join(', ')}'?" %>
+            <% end %>
+            <td>
+              <div><%= link_to edit_extractions_extraction_forms_projects_sections_type1_path(eefpst1) do %><i class="fi-pencil"></i> Edit<% end %></div>
+              <div>
+                <% delete_url = extractions_extraction_forms_projects_sections_type1_path(eefpst1) %>
+                <a href="#" @click.prevent="$store.sharedExtractionStore.openAlertModal('<%= delete_url %>')"><i class="fi-trash"></i> Remove</a>
+              </div>
+            </td>
+            <% if ['Outcomes', 'Diagnoses'].include? section_name %>
+              <td>
+                <ul>
+                  <li><%= link_to 'JSON', api_v1_evidence_variable_path(eefpst1, format: :json), target: '_blank' %></li>
+                  <li><%= link_to 'ODV', "https://computablepublishing.com/outcome-definition-viewer/?srdr#{eefpst1.id}", target: '_blank', data: { confirm: @exit_disclaimer } %></li>
+                </ul>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

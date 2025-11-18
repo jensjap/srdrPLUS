@@ -1,0 +1,50 @@
+<% provide(:title, 'Edit User Profile') %>
+
+<div class="column row">
+  <h2>User Profile</h2>
+</div>
+
+<div class="column row">
+  <%= simple_form_for(@profile, url: profile_path, html: { data: { 'abide': '' } }) do |f| %>
+    <%= f.error_notification %>
+
+    <div class="row">
+      <div class="column medium-6">
+        <fieldset class="fieldset">
+          <legend>Organization Information</legend>
+          <%= f.association :organization, include_blank: false, autofocus: true %>
+        </fieldset>
+      </div>
+      <div class="column medium-6">
+        <fieldset class="fieldset">
+          <legend>Degree Information</legend>
+          <%= f.association :degrees, label: 'Degrees (select all that apply)', include_blank: false %>
+        </fieldset>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="column">
+        <fieldset class="fieldset">
+          <legend>Profile Information</legend>
+          <div class="row">
+            <div class="column medium-6">
+              <%= f.input :username %>
+              <%= f.input :time_zone, priority: /US/ %>
+              <%= f.input :advanced_mode %>
+            </div>
+            <div class="column medium-6">
+              <%= f.input :first_name %>
+              <%= f.input :middle_name %>
+              <%= f.input :last_name %>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+
+    <div class="column row">
+      <%= f.button :submit %>
+    </div>
+  <% end %>
+</div>

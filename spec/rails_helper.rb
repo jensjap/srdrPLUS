@@ -59,6 +59,20 @@ RSpec.configure do |config|
   config.include Rails::Controller::Testing::TemplateAssertions, type: :controller
   config.include Rails::Controller::Testing::Integration, type: :controller
 
+  # Rails 8 compatibility: Set up Devise mappings before controller tests
+  config.before(:each, type: :controller) do
+    @request.env["devise.mapping"] = Devise.mappings[:user] if @request
+  end
+
+  # Override sign_in to explicitly pass scope for Rails 8 compatibility
+  config.include Module.new {
+    def sign_in(resource, deprecated = nil, scope: nil)
+      # For Rails 8, always use :user scope for User model
+      scope = :user if resource.is_a?(User)
+      super(resource, scope: scope)
+    end
+  }, type: :controller
+
   # Create essential records before running the test suite
   config.before(:suite) do
     # Create ExtractionForm and ExtractionFormsProjectType needed for projects with create_empty: true

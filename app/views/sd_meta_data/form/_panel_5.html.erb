@@ -1,0 +1,74 @@
+<div id="panel-5" class="tabs-panel is-active">
+  <div class="hide">
+    <!-- JS expects there to be a form on every panel, needs to be updated later -->
+    <%= simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f| %>
+    <% end %>
+  </div>
+  <fieldset>
+    <div style="display:flex; flex-direction: row;">
+      <legend>Key Question Mapping</legend>
+      <div class="status-switch" id="5-yes-no-section" class="<%= @sd_meta_datum.section_flag_5 ? 'completed' : 'draft' %>" data-sd_meta_datum_id="<%= @sd_meta_datum.id %>">
+        <span class="status-label">
+          <% if @sd_meta_datum.section_flag_5 %>
+            Completed
+          <% else %>
+            Draft
+          <% end %>
+        </span>
+      </div>
+    </div>
+    <div class="sd-kq-mapping-container" data-row-span="2">
+      <div class="no-border" data-field-span="1">
+        <h5>SRDR+ Key Questions</h5>
+      </div>
+      <div class="no-border" data-field-span="1">
+        <h5 style="float: left;">Report Key Questions</h5>
+        <div style="float: right; display: flex; flex-direction: column; align-items: flex-end;">
+          <a id="reset-all" onclick="resetAllMappings()">Auto Mapping</a>
+          <a id="clear-all" onclick="clear_all_mappings()">Clear All</a>
+        </div>
+      </div>
+      <div class="srdr-key-questions-box no-border" data-field-span="1" style="overflow: scroll; max-height: 1000px;">
+        <% @sd_meta_datum.try(:project).try(:key_questions).uniq.try(:each) do |srdr_kq| %>
+          <div class="srdr-kq draggable" id="srdr_kq-<%= srdr_kq.id %>" data-keyQuestionId="<%= srdr_kq.id %>" draggable="true">
+            <span class="clamp-span"><%= srdr_kq.name %></span>
+          </div>
+        <% end %>
+      </div>
+      <div class="report-key-questions-box" data-field-span="1" style="overflow: scroll; max-height: 1000px;">
+        <% @sd_meta_datum.sd_key_questions.each do |sd_key_question| %>
+          <div class="report-kq droppable disableselect" data-reportKeyQuestionId="<%= sd_key_question.id %>">
+            <%= sd_key_question.key_question_name %>
+            <div class="srdr-kq-target grid-x align-center">
+              <% if sd_key_question.srdr_key_questions.length == 0 %>
+                <div class="srdr-kq-target-prompt">Drag One or More Key Questions Here</div>
+              <% else %>
+                <div class="srdr-kq-target-prompt hide">Drag One or More Key Questions Here</div>
+                <% sd_key_question.srdr_key_questions.each do |srdr_key_question| %>
+                  <div class="srdr-kq draggable clickremove" id="srdr_kq-<%= srdr_key_question.id %>" data-keyQuestionId="<%= srdr_key_question.id %>" draggable="true">
+                    <span class="clamp-span"><%= srdr_key_question.name %></span>
+                    <span class="hover-message">Click to Remove</span>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+            <!-- <a class="button tiny" style="margin: 10px;" onclick="resetMapping(<%= sd_key_question.id %>)">Reset Auto Match</a> -->
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <!--
+    <div class="no-border" data-row-span="2">
+      <div class="no-border" data-field-span="2">
+        <div class="legend-box alice-box"></div>
+        <div>Drop SRDR+ Key Question here to associate with a Report Key Question</div>
+      </div>
+      <div data-field-span="2">
+        <div class="legend-box green-box"></div>
+        <div>SRDR+ Key Question has been associated to at least 1 Report Key Question</div>
+      </div>
+    </div>
+    -->
+  </fieldset>
+  <%= render 'sd_meta_data/form/form_mapping_js' %>
+</div>

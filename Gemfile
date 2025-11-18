@@ -26,7 +26,7 @@ group :development do
   gem 'annotate'
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'bullet'
+  # gem 'bullet'
   gem 'spring'
   gem 'spring-watcher-listen'
   gem 'web-console'
@@ -44,8 +44,8 @@ gem 'awesome_print'
 gem 'aws-sdk-s3', require: false # Access to AWS S3 Cloud Storage.
 gem 'aws-sdk-secretsmanager'
 gem 'base64', '0.1.1'
-gem 'benchmark'
 gem 'bcrypt'
+gem 'benchmark'
 gem 'bio' # bioruby for pubmed queries.
 gem 'bootsnap' # New for Rails 5.2.
 gem 'caxlsx' # Spreadsheet generation.
@@ -77,7 +77,7 @@ gem 'mysql2' # Use mysql as the database for Active Record
 gem 'net-ftp'
 gem 'net-smtp', require: false
 gem 'nokogiri'
-gem 'opensearch-ruby', '~> 2.0'
+gem 'opensearch-ruby'
 gem 'ostruct'
 gem 'parallel'
 gem 'passenger'
@@ -85,7 +85,7 @@ gem 'puma' # Use Puma as the app server
 gem 'pundit' # authorizations.
 gem 'rack-attack' # Limit request rates
 gem 'rack-cors' # CORS.
-gem 'rails', '~> 7.0.3'
+gem 'rails', '~> 8'
 gem 'rdoc'
 gem 'redis'
 gem 'ref_parsers', github: 'jensjap/ref_parsers' # for parsing ris files.
@@ -102,7 +102,6 @@ gem 'sentry-sidekiq' # full-stack error tracking system
 gem 'sidekiq' # Background jobs.
 gem 'sidekiq-cron' # Allows periodic background jobs
 gem 'simple_form'
-gem 'slim-rails'
 gem 'sortable-rails' # List reordering, Drag & Drop.
 gem 'tailwindcss-rails'
 gem 'toastr_rails'

@@ -1,0 +1,61 @@
+<div class="announcement-container">
+  <!-- .announcement-label.label tabindex="0" -->
+  <span class="announcement-label label" tabindex="0">New Announcement</span>
+  <div class="announcement-content">
+    <span><b>NEW!</b></span>
+    <span>Click <a href='https://evsynthacademy.com/index.php/course/data-extraction-tools-for-systematic-reviews-a-focus-on-srdr/'>here</a> for a free, online course on various data extraction tools, with a focus on <b>SRDR+</b>.</span>
+    <span>The course is offered through the <%= link_to('Evidence Synthesis Academy.', 'https://evsynthacademy.com/', target: '_blank', data: { confirm: @exit_disclaimer }) %></span>
+  </div>
+</div>
+
+<script>
+  document.querySelector('.announcement-label').addEventListener('click', function() {
+    document.querySelector('.announcement-label').style.display = 'none';
+    document.querySelector('.announcement-content').style.display = 'block';
+  });
+
+  document.body.addEventListener('click', function(e) {
+    var container = document.querySelector('.announcement-container');
+    if (!container.isEqualNode(e.target) && !container.contains(e.target)) {
+      document.querySelector('.announcement-content').style.display = 'none';
+      document.querySelector('.announcement-label').style.display = 'inline-block';
+    }
+  });
+</script>
+
+<style>
+  .announcement-container {
+    display: block;
+    position: relative;
+    left: 30px;
+    top: auto;
+  }
+  .announcement-content {
+    position: absolute;
+    width: 60vw;
+    background: transparent;
+    display: none;
+  }
+  .announcement-content a {
+    color: #58b3e8 !important;
+    font-weight: bold;
+  }
+  .announcement-content span {
+    display: block;
+    color: white;
+    font-size: 15px;
+  }
+  .announcement-label {
+    cursor: pointer;
+    opacity: 0.9;
+    position: absolute;
+    background: #0F5D8A;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 15px;
+    padding-top: 7px;
+  }
+  .announcement-label:hover {
+    opacity: 1.0;
+  }
+</style>

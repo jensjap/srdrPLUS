@@ -1,0 +1,14 @@
+<table style="margin: 0;">
+  <thead></thead>
+  <tbody>
+    <tr>
+      <td>
+        <%= number_field_tag('before_decimal_point-' + qrc.id.to_s, nil, data: { prereq: "prereq-#{qrc.class}-#{qrc.id}" }) %>
+      </td>
+      <td>To</td>
+      <td>
+        <%= number_field_tag('after_decimal_point-' + qrc.id.to_s, nil, data: { prereq: "prereq-#{qrc.class}-#{qrc.id}" }) %>
+      </td>
+    </tr>
+  </tbody>
+</table>

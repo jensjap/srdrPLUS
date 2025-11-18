@@ -22,7 +22,7 @@ class MessagesController < ApplicationController
           @all_users =
             ProjectsUser
             .joins(:project)
-            .where(projects: current_user.projects)
+            .where(project: current_user.projects)
             .includes(user: :profile)
             .map { |pu| { username: pu.user.username, user_id: pu.user_id } }
             .uniq

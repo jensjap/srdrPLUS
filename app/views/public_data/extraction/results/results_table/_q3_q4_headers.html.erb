@@ -1,0 +1,42 @@
+<tr>
+  <th class="bg-lightgreen vertical"></th>
+  <th class="bg-lightgreen freeze"></th>
+  <th class="bg-lightgreen" colspan="<%= arms.length %>">Within Arm Comparisons</th>
+  <th class="bg-lightpink freeze"></th>
+  <th class="bg-lightpink" colspan="<%= bac_rss.comparisons.length %>">Net Comparisons</th>
+</tr>
+<tr>
+  <th class="bg-lightgreen vertical"></th>
+  <th class="bg-lightgreen freeze"></th>
+  <% arms.sort_by { |eefpst1| eefpst1.pos }.each do |arm| %>
+    <th class="bg-lightgreen" title="<%= arm.type1.description %>"><%= arm.type1.name %></th>
+  <% end %>
+  <th class="bg-lightpink freeze"></th>
+  <% bac_rss.comparisons.each do |bac| %>
+    <th class="bg-lightpink">
+      <% if !bac.is_anova %>
+        <div style="padding-top: 15px;">
+          <% bac.comparate_groups.first&.comparates&.each do |c| %>
+            <span class="has-tip tip-right" data-tooltip aria-haspopup="true" data-options="show_on:small" title="Description: <%= c.comparable_element.comparable.type1.description %>">
+              <%= c.comparable_element.comparable.type1.short_name_and_description %>
+            </span><br>
+          <% end %>
+        </div>
+        <div style="font-weight: normal;">vs.</div>
+        <div style="padding-bottom: 15px;">
+          <% bac.comparate_groups.second&.comparates&.each do |c| %>
+            <span class="has-tip tip-right" data-tooltip aria-haspopup="true" data-options="show_on:small" title="Description: <%= c.comparable_element.comparable.type1.description %>">
+              <%= c.comparable_element.comparable.type1.short_name_and_description %>
+            </span><br>
+          <% end %>
+        </div>
+      <% else %>
+        <div>
+          <span class="has-tip tip-right" data-tooltip aria-haspopup="true" data-options="show_on:small" title="Description: Analysis of variance">
+            All Arms (ANOVA)
+          </span><br>
+        </div>
+      <% end %>
+    </th>
+  <% end %>
+</tr>

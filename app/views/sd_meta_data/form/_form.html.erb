@@ -1,0 +1,134 @@
+<div class="grid-x align-center" style="font-size: small !important;">
+  <div class="cell medium-3">
+    <ul id="vertical-tabs" class="tabs vertical">
+      <li class="tabs-title">
+        <%= link_to '?panel_number=0', class: [(@panel_number == 0 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_0 ? 'to-be-checked' : '')].reject(&:blank?).join(' '), id: "panel-0-label" do %>
+          Title, Funding Sources, and Dates
+          <div class="check-container" panel-number="0"></div>
+        <% end %>
+      </li>
+      <li class="tabs-title">
+        <%= link_to '?panel_number=1', class: [(@panel_number == 1 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_1 ? 'to-be-checked' : '')].reject(&:blank?).join(' '), id: "panel-1-label" do %>
+          Authors and Stakeholders
+          <div class="check-container" panel-number="1"></div>
+        <% end %>
+      </li>
+      <li class="tabs-title">
+        <%= link_to '?panel_number=2', class: [(@panel_number == 2 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_2 ? 'to-be-checked' : '')].reject(&:blank?).join(' '), id: "panel-2-label" do %>
+          URL Links
+          <div class="check-container" panel-number="2"></div>
+        <% end %>
+      </li>
+      <li class="tabs-title">
+        <%= link_to '?panel_number=3', class: [(@panel_number == 3 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_3 ? 'to-be-checked' : '')].reject(&:blank?).join(' '), id: "panel-3-label" do %>
+          Purpose, Analytic Framework, and Key Questions
+          <div class="check-container" panel-number="3"></div>
+          <div class="warning-container" panel-number="3"></div>
+        <% end %>
+      </li>
+      <li class="tabs-title">
+        <%= link_to '?panel_number=4', class: [(@panel_number == 4 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_4 ? 'to-be-checked' : '')].reject(&:blank?).join(' '), id: "panel-4-label" do %>
+          PICODTS
+          <div class="check-container" panel-number="4"></div>
+        <% end %>
+      </li>
+      <% if @sd_meta_datum.section_flag_3 %>
+        <li class="tabs-title mapping-kq-title">
+          <%= link_to '?panel_number=5', class: [(@panel_number == 5 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_5 ? 'to-be-checked' : '')].reject(&:blank?).join(' '), id: "panel-5-label" do %>
+            Key Question Mapping (Submitter Only)
+            <div class="check-container" panel-number="5"></div>
+            <div class="warning-container" panel-number="5"></div>
+          <% end %>
+        </li>
+      <% end %>
+      <li class="tabs-title">
+        <%= link_to '?panel_number=6', class: [(@panel_number == 6 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_6 ? 'to-be-checked' : '')].reject(&:blank?).join(' '), id: "panel-6-label" do %>
+          Search Strategy and Results of Screening
+          <div class="check-container" panel-number="6"></div>
+        <% end %>
+      </li>
+      <li class="tabs-title">
+        <%= link_to '?panel_number=7', class: [(@panel_number == 7 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_7 ? 'to-be-checked' : '')].reject(&:blank?).join(' '), id: "panel-7-label" do %>
+          Risk of Bias and Overall Summary of Evidence
+          <div class="check-container" panel-number="7"></div>
+        <% end %>
+      </li>
+      <li class="tabs-title">
+        <%= link_to '?panel_number=8', class: [(@panel_number == 8 ? 'bg-light-grey' : ''), (@sd_meta_datum.section_flag_8 ? 'to-be-checked' : '')].reject(&:blank?).join(' '), id: "panel-8-label" do %>
+          Results for Individual Outcomes
+          <div class="check-container" panel-number="8"></div>
+        <% end %>
+      </li>
+    </ul>
+  </div>
+  <div class="cell medium-9">
+    <div id="status-check-modal" class="reveal" data-reveal>
+      <% if @panel_number != 5 %>
+        There are incomplete input fields. Do you want to continue?
+      <% else %>
+        There are unmapped key questions. Do you want to continue?
+      <% end %>
+      <div id="status-check-modal-buttons">
+        <div id="abort-status-switch" class="button alert">Show missing fields</div>
+        <div id="confirm-status-switch" class="button confirm">Continue</div>
+      </div>
+    </div>
+    <% if @panel_number != 5 %>
+      <div class="preview-container-container float-center hide">
+        <a class="close-preview float-right">&#x2716;</a>
+        <div class="grid-form">
+          <div class="preview-container"></div>
+        </div>
+      </div>
+      <a class="preview-button button float-right" data-panel-number="<%= @panel_number %>">Preview</a>
+      <div class="float-right" style="display: flex; justify-contents: center; margin: 8px;">
+        <span style="font-weight: bold; margin-right: 10px;">Progress:</span>
+        <% sd_meta_datum = @sd_meta_datum %>
+        <div class="success progress" style="width: 100px;">
+          <div class="progress-meter" style="width: <%= sd_meta_datum.progress_meter_width %>%;"></div>
+        </div>
+      </div>
+    <% end %>
+    <div class="panel-content grid-form">
+      <div class="tabs-content vertical">
+        <div class="infoDiv" style="opacity: 0; color: green;">Saved!</div>
+        <%= render partial: "sd_meta_data/form/panel_#{@panel_number}", locals: { sd_meta_datum: @sd_meta_datum, project: @project, url: @url } %>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  .preview-container-container {
+    .close-preview {
+      font-size: xx-large;
+    }
+    width: 100%;
+    height: 100%;
+    background-color: white;
+  }
+</style>
+<script>
+  $('textarea').each(function() {
+    this.style.height = "";
+    this.style.height = this.scrollHeight + "px";
+  });
+  $('a.close-preview').on('click', function(event) {
+    $('.preview-container').html('');
+    $('.preview-container-container').addClass('hide');
+    $('.panel-content').removeClass('hide');
+    $('.preview-button').removeClass('hide');
+  });
+  $('.preview-button').on('click', function(event) {
+    if (event.target.hasAttribute('disabled')) { return; }
+    $('.panel-content').addClass('hide');
+    $('.preview-button').addClass('hide');
+    $.ajax({
+      url: "<%= sd_meta_datum_preview_url(@sd_meta_datum) %>",
+      data: { panel_number: $('.preview-button').data('panel-number') },
+      method: 'GET'
+    });
+  });
+  $(document).on('click', '.openable', function() {
+    window.open($(this).attr('src'));
+  });
+</script>

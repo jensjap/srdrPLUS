@@ -1,0 +1,13 @@
+<%= simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: :sd_search_strategies, class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f| %>
+  <%= f.input :item_id, as: :hidden, input_html: { value: 44 } %>
+  <div class="orderable-list" orderable-url="<%= update_positions_api_v1_orderings_url %>">
+    <%= f.simple_fields_for :sd_search_strategies do |sd_search_strategy| %>
+      <div class="sd-item sd-inner orderable-item sort-handle" table="sd_search_strategies" ordering-id="<%= sd_search_strategy.object.id %>">
+        <%= render 'sd_meta_data/form/dynamic_fields/sd_search_strategy_fields', f: sd_search_strategy %>
+      </div>
+    <% end %>
+  </div>
+  <div class="<%= f.object.sd_search_strategies.present? ? '' : 'zero-nested-associations' %>">
+    <%= link_to_add_association 'Add Search Strategy', f, :sd_search_strategies, partial: 'sd_meta_data/form/dynamic_fields/sd_search_strategy_fields', class: 'add-item-link' %>
+  </div>
+<% end %>

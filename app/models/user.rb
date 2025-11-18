@@ -45,6 +45,23 @@ class User < ApplicationRecord
          :confirmable, :lockable, :timeoutable,
          authentication_keys: [:login]
 
+  # Rails 8 compatibility: Override serialization methods to handle both old and new signatures
+  def self.serialize_from_session(key, salt = nil)
+    # Devise 4.9.4 with Rails < 8 passes an array [key, salt]
+    # Rails 8+ passes two separate arguments
+    if key.is_a?(Array) && salt.nil?
+      key, salt = key
+    end
+
+    record = to_adapter.get(key)
+    record if record && record.authenticatable_salt == salt
+  end
+
+  def self.serialize_into_session(record)
+    # Return both id and authenticatable_salt
+    [record.to_key, record.authenticatable_salt]
+  end
+
   belongs_to :user_type
   has_one :profile, dependent: :destroy, inverse_of: :user
   accepts_nested_attributes_for :profile

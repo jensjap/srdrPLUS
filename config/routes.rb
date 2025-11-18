@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   post 'publishings/:id/approve', to: 'publishings#approve', as: 'publishings_approve'
   post 'publishings/:id/rescind_approval', to: 'publishings#rescind_approval', as: 'rescind_approval'
 
-  resources :project_report_links, only: %i[index view] do
+  resources :project_report_links, only: %i[index] do
     get 'new_query_form'
     post 'options_form'
   end

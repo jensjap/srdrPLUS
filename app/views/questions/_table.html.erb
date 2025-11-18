@@ -1,0 +1,80 @@
+<div class="table-scroll clean-table">
+  <table id="question" class="hover">
+    <thead>
+      <tr>
+        <% f.simple_fields_for(:question_rows, @question.question_rows.first) do |qr_f| %>
+          <th></th>
+          <% qr_f.simple_fields_for(:question_row_columns) do |qrc_f| %>
+            <th style="min-width: 350px;">
+              <%= qrc_f.input :name, label: 'Column Header', wrapper_html: { style: 'margin-bottom: 0;' } %>
+              <div @click='destroyResource("/question_row_columns/#{qrc_f.object.id}/destroy_entire_column", "question_row_column")' class='cursor-pointer float-right' style='font-weight: normal;'>Remove</div>
+            </th>
+          <% end %>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% f.simple_fields_for(:question_rows) do |qr_f| %>
+        <tr>
+          <td>
+            <%= qr_f.input :name, label: 'Row Header', wrapper_html: { style: 'margin-bottom: 0;' } %>
+            <div @click='destroyResource("/question_rows/#{qr_f.object.id}", "question_row")' class='cursor-pointer float-right'>Remove</div>
+          </td>
+          <% qr_f.simple_fields_for(:question_row_columns) do |qrc_f| %>
+            <!-- - extracted_data = qrc_f.object.extracted_data? -->
+            <td>
+              <fieldset class="fieldset">
+                <legend>Options</legend>
+                <div class="text-sm text-red-800 mb-2">Please note: Changing the question field type may result in loss of data if extractions have begun. Modify forms after data extraction started with caution.</div>
+                <!-- Let's disable some question types for now...they are unstable. -->
+                <%= qrc_f.association :question_row_column_type, label: 'Field Type',
+                  include_blank: false,
+                  collection: QuestionRowColumnType::DEFAULT_QRC_TYPES,
+                  wrapper: 'horizontal_form' %>
+                <!-- disabled: extracted_data, -->
+                <!-- input_html: { title: extracted_data ? "Extracted data detected! Modifying question field type is not allowed when extracted data for this question exist. Please create a new question field instead and transfer data or delete the question if it is no longer needed. WARNING: All associated data will be removed when the question is deleted." : "" } -->
+                <%= qrc_f.simple_fields_for(:question_row_columns_question_row_column_options) do |qrcqrco_f| %>
+                  <% option = qrcqrco_f.object %>
+                  <div class="field-options field-option-type-<%= option.question_row_column_option.name %>">
+                    <!-- Provide remove link for deletion of answer choices except when only one is present. -->
+                    <%= qrcqrco_f.input :name,
+                      label: option.question_row_column_option.label,
+                      as: option.question_row_column_option.field_type,
+                      input_html: { title: option.question_row_column_option.description, style: 'margin-bottom: 0;' },
+                      wrapper: 'horizontal_form' %>
+                    <div class="row" style="margin-bottom: 0.7rem;">
+                      <div class="columns medium-offset-3 medium-9">
+                        <% if (option.question_row_column_option_id == 1) %>
+                          <% if (option.question_row_column.question_row_columns_question_row_column_options.select{|qrcqrco| qrcqrco.question_row_column_option == QuestionRowColumnOption::ANSWER_CHOICE_QRCO}.length > 1) %>
+                            <div class="float-right">
+                              <div @click='destroyResource("/question_row_columns_question_row_column_options/#{option.id}", "question_row_column_option")' class='cursor-pointer float-right' style='font-weight:bold; color:#cc4b37 !important;'>Remove</div>
+                            </div>
+                          <% end %>
+                          <div class="float-left followup_container">
+                            <%= qrcqrco_f.input :includes_followup, as: :boolean, :input_html => { :checked => qrcqrco_f.object.includes_followup }, label: 'Include Followup Question', wrapper_html: { class: 'followup-checkbox' } %>
+                          </div>
+                        <% end %>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+                <div class="links">
+                  <%= link_to_add_association qrc_f,
+                    :question_row_columns_question_row_column_options,
+                    partial: 'questions/question_types/question_row_column_fields_question_row_column_field_option_fields',
+                    class: 'button secondary tiny' do %>
+                    <i class="fi-plus"></i>
+                    Add answer choice
+                  <% end %>
+                </div>
+              </fieldset>
+            </td>
+          <% end %>
+          <td class="align-middle px-4 w-32">
+            <div @click="duplicateRow(<%= qr_f.object.id %>)" class="text-center mx-auto p-2 rounded-md bg-srdrpurple text-white cursor-pointer flex items-center justify-center">Duplicate Row</div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

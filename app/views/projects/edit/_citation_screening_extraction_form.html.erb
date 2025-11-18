@@ -1,0 +1,98 @@
+<% efp = @project.extraction_forms_projects.find_by(
+  extraction_forms_project_type: ExtractionFormsProjectType.find_by(name: "Citation Screening Extraction Form")
+) %>
+
+<% if efp %>
+  <div class="grid-container">
+    <div class="grid-x grid-margin-x">
+      <div class="cell medium-3">
+        <ul id="citation-screening-extraction-tabs" class="vertical tabs" data-tabs="">
+          <li class="tabs-title is-active">
+            <a href="#tabs-panel-acceptance-reasons" aria-selected="true">Acceptance Reasons</a>
+          </li>
+          <li class="tabs-title">
+            <a href="#tabs-panel-deferment-reasons">Deferment Reasons</a>
+          </li>
+          <li class="tabs-title">
+            <a href="#tabs-panel-rejection-reasons">Rejection Reasons</a>
+          </li>
+        </ul>
+      </div>
+      <div class="cell medium-9">
+        <div class="tabs-content" data-tabs-content="citation-screening-extraction-tabs">
+          <% is_first = true %>
+          <% efp.extraction_forms_projects_sections.each do |efps| %>
+            <% if is_first %>
+              <div class="tabs-panel is-active" id="tabs-panel-<%= efps.section.name.parameterize %>">
+                <div class="column row">
+                  <%= render 'extraction_forms_projects/build/type2/type2_friendly_helper_message', efps: efps %>
+                </div>
+                <div class="column row">
+                  <%= render 'extraction_forms_projects/build/type2/type2_link_to_type1', efps: efps %>
+                </div>
+                <div class="column row">
+                  <%= render 'extraction_forms_projects/build/type2/type2_question_list', efps: efps %>
+                </div>
+                <% if efps.section.name == 'Risk of Bias Assessment' %>
+                  <div class="column row">
+                    <%= render 'extraction_forms_projects/build/type2/type2_quality_predefined', efps: efps %>
+                  </div>
+                <% end %>
+                <button class="create-button" data-open="<%= efps.id.to_s %>-new-question-modal">
+                  <i class="fi-plus"></i>
+                  Add Question
+                </button>
+                <div class="new-question-modal reveal" data-reveal="" id="<%= efps.id.to_s %>-new-question-modal">
+                  <%= simple_form_for([efps, efps.questions.new], html: { data: { 'abide': '', 'live-validate': true } }) do |f| %>
+                    <%= f.input :name, required: true, label: 'Question Text', autofocus: true %>
+                    <div class="form-actions">
+                      <%= button_tag(type: 'submit', class: 'button create-button') do %>
+                        <i class="fi-plus"></i>
+                        Add Question
+                      <% end %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+              <% is_first = false %>
+            <% else %>
+              <div class="tabs-panel" id="tabs-panel-<%= efps.section.name.parameterize %>">
+                <div class="column row">
+                  <%= render 'extraction_forms_projects/build/type2/type2_friendly_helper_message', efps: efps %>
+                </div>
+                <div class="column row">
+                  <%= render 'extraction_forms_projects/build/type2/type2_link_to_type1', efps: efps %>
+                </div>
+                <div class="column row">
+                  <%= render 'extraction_forms_projects/build/type2/type2_question_list', efps: efps %>
+                </div>
+                <% if efps.section.name == 'Risk of Bias Assessment' %>
+                  <div class="column row">
+                    <%= render 'extraction_forms_projects/build/type2/type2_quality_predefined', efps: efps %>
+                  </div>
+                <% end %>
+                <button class="create-button" data-open="<%= efps.id.to_s %>-new-question-modal">
+                  <i class="fi-plus"></i>
+                  Add Question
+                </button>
+                <div class="new-question-modal reveal" data-reveal="" id="<%= efps.id.to_s %>-new-question-modal">
+                  <%= simple_form_for([efps, efps.questions.new], html: { data: { 'abide': '', 'live-validate': true } }) do |f| %>
+                    <%= f.input :name, required: true, label: 'Question Text', autofocus: true %>
+                    <div class="form-actions">
+                      <%= button_tag(type: 'submit', class: 'button create-button') do %>
+                        <i class="fi-plus"></i>
+                        Add Question
+                      <% end %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% else %>
+  <%= link_to "Create Citation Screening Mini Extraction Form", create_citation_screening_extraction_form_project_path(@project), class: "button", method: :post %>
+<% end %>

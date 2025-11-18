@@ -1,0 +1,8 @@
+<div class="nested-fields">
+  <% option = f.object %>
+  <div class="field">
+    <%= f.input :value, label: option.key.blank? ? 'Option' : option.key.titleize,
+                      as: option.value_type %>
+  </div>
+  <%= link_to_remove_association 'remove option', f %>
+</div>

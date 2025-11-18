@@ -1,0 +1,54 @@
+<%= simple_form_for([
+  @extraction_forms_projects_section, @question
+], html: { data: { 'abide': '', 'live-validate': true }, "@submit.prevent": "await updateQuestionTable(edit_question_id, $event.target); question_modal = false;" }) do |f| %>
+  <%= f.error_notification %>
+  <div class="alert callout" data-abide-error style="display: none;">
+    <p>
+      <i class="fi-alert"></i>
+      Please correct the errors below.
+    </p>
+  </div>
+  <div class="form-inputs">
+    <% kqps = @question.project.key_questions_projects || [] %>
+    <label class="field-label" for="kq-container">Associated Key Questions</label>
+    <div id="kq-container">
+      <%= f.association :key_questions_projects, collection: kqps, label: false, as: :check_boxes, label_method: :kq_name %>
+    </div>
+    <label class="field-label" for="name-container">Question Text</label>
+    <div id="name-container">
+      <%= f.input :name, required: true, label: false, autofocus: true %>
+    </div>
+    <label class="field-label" for="description-container">Extractor Instructions</label>
+    <div id="description-container">
+      <%= f.input :description, label: false %>
+    </div>
+    <label class="field-label" for="structure-container">Question Structure</label>
+    <div id="structure">
+      <% if !params[:partial] %>
+        <div id="add_column_link" class="float-right button secondary tiny">
+          <i class="fi-arrow-right"></i>
+          Add Column
+        </div>
+      <% end %>
+      <div id="add_column_button" class="float-right button secondary tiny" @click="addRowOrColumn('add_column');">
+        <i class="fi-arrow-right"></i>
+        Add Column
+      </div>
+      <%= render 'questions/table', f: f %>
+      <% if !params[:partial] %>
+        <div id="add_row_link" class="button secondary tiny">
+          <i class="fi-arrow-down"></i>
+          Add Row
+        </div>
+      <% end %>
+      <div id="add_row_button" class="button secondary tiny" @click="addRowOrColumn('add_row');">
+        <i class="fi-arrow-down"></i>
+        Add Row
+      </div>
+    </div>
+  </div>
+  <div class="form-actions flex justify-between space-x-8 mt-2">
+    <div class="cursor-pointer !p-2 rounded-md bg-gray-600 text-white text-sm" @click="question_modal = false;">Close without saving changes</div>
+    <div class="cursor-pointer p-2 rounded-md bg-green-800 text-white text-sm" @click="await updateQuestionTable(edit_question_id, document.getElementById(`edit_question_${edit_question_id}`)); question_modal = false;">Save</div>
+  </div>
+<% end %>

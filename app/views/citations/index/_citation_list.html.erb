@@ -1,0 +1,13 @@
+<ul class="accordion" data-accordion="" data-multi-expand="false" data-allow-all-closed="true">
+  <h3>Citations:</h3>
+
+  <% if @citations.blank? %>
+    <h4>There are no citations in this project.</h4>
+  <% end %>
+
+  <% @citations.each do |citation| %>
+    <li class="accordion-item" data-accordion-item="">
+      <%= render 'citations/show/citation_partial', citation: citation %>
+    </li>
+  <% end %>
+</ul>

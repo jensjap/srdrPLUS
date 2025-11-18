@@ -1,0 +1,67 @@
+<% section_name = efps.section.name.titleize.singularize %>
+<h5>Add <%= section_name %> Suggestion</h5>
+<%= simple_form_for(efps) do |f| %>
+  <%= f.simple_fields_for(:extraction_forms_projects_sections_type1s,
+    f.object.extraction_forms_projects_sections_type1s.build) do |sf_efpst1| %>
+    <div class="form-inputs new-type1-fields-<%= efps.id.to_s %>">
+      <%= sf_efpst1.association :type1_type,
+        collection: Type1Type.diagnostic_test_types,
+        required: true,
+        label: "Select Type of Suggested #{section_name}" %>
+      <%= sf_efpst1.simple_fields_for(:type1, sf_efpst1.object.build_type1) do |sf_t1| %>
+        <%= sf_t1.input :name, label: 'Title', required: true, hint: "Name can't be blank" %>
+        <%= sf_t1.input :description, label: 'Description', input_html: { rows: 2 } %>
+      <% end %>
+    </div>
+    <div class="links">
+      <%= link_to_add_association sf_efpst1,
+        :extraction_forms_projects_sections_type1_rows,
+        class: 'add-population-link',
+        partial: 'extraction_forms_projects_sections_type1_rows/threshold_fields' do %>
+        <i class="fi-plus"></i>
+        Add Threshold
+      <% end %>
+    </div>
+  <% end %>
+  <div class="form-actions">
+    <%= f.button :submit, 'Save' %>
+  </div>
+<% end %>
+<h5>Index Tests</h5>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Thresholds</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% efps.extraction_forms_projects_sections_type1s.where('type1_type_id = 5').each do |efpst1| %>
+      <tr>
+        <td><%= efpst1.type1.name %></td>
+        <td><%= efpst1.type1.description %></td>
+        <td><%= efpst1.extraction_forms_projects_sections_type1_rows.collect(&:population_name).collect(&:name).join(', ') %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<h5>Reference Tests</h5>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Thresholds</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% efps.extraction_forms_projects_sections_type1s.where('type1_type_id = 6').each do |efpst1| %>
+      <tr>
+        <td><%= efpst1.type1.name %></td>
+        <td><%= efpst1.type1.description %></td>
+        <td><%= efpst1.extraction_forms_projects_sections_type1_rows.collect(&:population_name).collect(&:name).join(', ') %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

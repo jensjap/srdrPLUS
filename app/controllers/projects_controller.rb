@@ -2,7 +2,7 @@ class ProjectsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:export]
 
   before_action :set_project, only: %i[
-    citations_in_ris export_data show edit update destroy export
+    citations_in_ris show edit update destroy export
     export_assignments_and_mappings import_assignments_and_mappings simple_import
     import_csv import_pubmed import_endnote import_ris
     confirm_deletion dedupe_citations citation_duplicates merge_citation_duplicates

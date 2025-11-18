@@ -1,0 +1,10 @@
+<div class="column row">
+  <h3>Add new <%= @extraction_forms_projects_section.section.name.titleize %> Title</h3>
+</div>
+<div class="column row">
+  <%= render 'form' %>
+</div>
+<div class="column row">
+  <%= link_to 'Back', build_extraction_forms_project_path(@type1.extraction_forms_projects_section.extraction_forms_project,
+                                                        'panel-tab': @type1.extraction_forms_projects_section.id) %>
+</div>

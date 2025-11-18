@@ -1,0 +1,15 @@
+<div>
+  <%= render 'extraction_forms_projects/build/instructions_form', efps: efps %>
+</div>
+<div>
+  <%= render 'extraction_forms_projects/build/type2/type2_link_to_type1', efps: efps %>
+</div>
+<div>
+  <%= render 'extraction_forms_projects/build/type2/type2_question_list', efps: efps %>
+</div>
+<% if efps.section.name == 'Risk of Bias Assessment' %>
+  <div>
+    <%= render 'extraction_forms_projects/build/type2/type2_quality_predefined', efps: efps %>
+  </div>
+  <button class="button float-right" data-open="modal-<%= efps.id.to_s %>">Add questions from a pre-defined list</button>
+<% end %>

@@ -1,0 +1,48 @@
+<tr>
+  <th class="vertical" style="width: 200px;"></th>
+  <th class="freeze" style="width: 250px;"></th>
+  <th colspan="<%= arms.length %>" style="width: <%= [arms.length, 1].max * 150 %>px;">Descriptive Statistics</th>
+  <th class="bg-lightblue freeze" style="width: 250px;"></th>
+  <th class="bg-lightblue" colspan="<%= bac_rss.comparisons.length %>" style="width: <%= [bac_rss.comparisons.length, 1].max * 150 %>px;">Between Arm Comparisons</th>
+</tr>
+<tr>
+  <th class="vertical"></th>
+  <th class="freeze"></th>
+  <% arms.sort_by { |eefpst1| eefpst1.pos }.each do |arm| %>
+    <th title="<%= arm.type1.description %>"><%= arm.type1.name %></th>
+  <% end %>
+  <th class="bg-lightblue freeze"></th>
+  <% if bac_rss.comparisons.blank? %>
+    <th class="bg-lightblue"></th>
+  <% else %>
+    <% bac_rss.comparisons.each do |bac| %>
+      <th class="bg-lightblue" style="position: relative;">
+        <% if !bac.is_anova %>
+          <br>
+          <div>
+            <% bac.comparate_groups.first&.comparates&.each do |c| %>
+              <span class="has-tip tip-right" data-tooltip aria-haspopup="true" data-options="show_on:small" title="Description: <%= c.comparable_element.comparable.type1.description %>">
+                <%= c.comparable_element.comparable.type1.short_name_and_description %>
+              </span><br>
+            <% end %>
+          </div>
+          <div style="font-weight: normal;">vs.</div>
+          <div>
+            <% bac.comparate_groups.second&.comparates&.each do |c| %>
+              <span class="has-tip tip-right" data-tooltip aria-haspopup="true" data-options="show_on:small" title="Description: <%= c.comparable_element.comparable.type1.description %>">
+                <%= c.comparable_element.comparable.type1.short_name_and_description %>
+              </span><br>
+            <% end %>
+          </div>
+        <% else %>
+          <br>
+          <div>
+            <span class="has-tip tip-right" data-tooltip aria-haspopup="true" data-options="show_on:small" title="Description: Analysis of variance">
+              All Arms (ANOVA)
+            </span><br>
+          </div>
+        <% end %>
+      </th>
+    <% end %>
+  <% end %>
+</tr>

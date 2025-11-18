@@ -1,0 +1,50 @@
+<% provide(:title, 'Sign Up') %>
+<div class="row column">
+  <h2>Register a new SRDR+ Account</h2>
+</div>
+<div class="row">
+  <div class="column small-9"></div>
+  <div class="column small-3" style="border: solid 1px black; padding: 5px; width: 200px;">
+    <p>Form Approved</p>
+    <p>OMB No. 0935-0244</p>
+    <p>Exp. Date 11/30/2025</p>
+  </div>
+</div>
+<div class="row">
+  <div class="column medium-6 small-centered">
+    <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { data: { 'abide': '' } }) do |f| %>
+      <div class="alert callout" data-abide-error style="display: none;">
+        <p><i class="fi-alert"></i> Please correct the errors below.</p>
+      </div>
+      <div class="form-inputs">
+        <%= f.input :email, required: true, hint: 'Email must have the following format: example@domain.edu', autofocus: true %>
+        <%= f.simple_fields_for :profile do |p| %>
+          <%= p.input :first_name, required: true %>
+          <%= p.input :middle_name, required: false %>
+          <%= p.input :last_name, required: true %>
+        <% end %>
+        <%= f.input :password, label: "Password (Must contain a minium of #{@minimum_password_length} characters.)", required: true, input_html: { minlength: @minimum_password_length } %>
+      </div>
+      <div class="small">
+        <br>
+        Already have an account?
+        <%= link_to('Sign in.', new_user_session_path) %>
+      </div>
+      <br>
+      <div class="form-actions">
+        <%= f.button :submit, "Sign up" %>
+      </div>
+    <% end %>
+    <%= render "users/shared/links" %>
+  </div>
+</div>
+<br>
+<br>
+<hr>
+<br>
+<br>
+<div class="row column">
+  <p>Public reporting burden for this collection of information is estimated to average 2 minutes per response, the estimated time required to complete the survey. An agency may not conduct or sponsor, and a person is not required to respond to, a collection of information unless it displays a currently valid OMB control number. Send comments regarding this burden estimate or any other aspect of this collection of information, including suggestions for reducing this burden, to: AHRQ Reports Clearance Officer Attention: PRA, Paperwork Reduction Project (0935-0244) AHRQ, 5600 Fishers Lane, # 07W41A, Rockville, MD 20857.</p>
+  <br>
+  <p>Your responses will be kept confidential to the extent permitted by law, including AHRQ’s confidentiality statute, 42 USC 299c-3(c).</p>
+</div>

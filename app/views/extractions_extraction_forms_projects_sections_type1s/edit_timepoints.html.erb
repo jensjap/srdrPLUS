@@ -1,0 +1,24 @@
+<h4>Define Outcome Timepoints</h4>
+<ul>
+  <% @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.each do |tp| %>
+    <li>(-) <%= tp.timepoint_name.name %><%= tp.timepoint_name.unit.present? ? " (#{tp.timepoint_name.unit})" : '' %></li>
+  <% end %>
+</ul>
+<%= simple_form_for([
+  @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first,
+  @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first.extractions_extraction_forms_projects_sections_type1_row_columns.new
+]) do |f| %>
+  <%= f.error_notification %>
+  <div class="form-inputs">
+    <!-- = f.input :name -->
+    <!-- = f.input :unit -->
+    <%= f.association :timepoint_name, label_method: :select_label, include_blanks: false %>
+  </div>
+  <div class="form-actions">
+    <%= f.button :submit, 'Create Timepoint' %>
+  </div>
+<% end %>
+<%= link_to 'Back', work_extraction_path(
+  @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction,
+  'panel-tab': @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.id
+) %>

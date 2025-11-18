@@ -1,0 +1,63 @@
+<div id="panel-3" class="tabs-panel is-active">
+  <fieldset>
+    <div style="display:flex; flex-direction: row;">
+      <legend>Purpose, Analytic Framework, and Key Questions</legend>
+      <div class="status-switch" id="3-yes-no-section" class="<%= @sd_meta_datum.section_flag_3 ? 'completed' : 'draft' %>" data-sd_meta_datum_id="<%= @sd_meta_datum.id %>">
+        <span class="status-label">
+          <% if @sd_meta_datum.section_flag_3 %>
+            Completed
+          <% else %>
+            Draft
+          <% end %>
+        </span>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div class="sd-item" data-field-span="1">
+        <%= simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: :overall_purpose_of_review, class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f| %>
+          <%= f.input :overall_purpose_of_review, label: 'Overall Purpose of Review', input_html: { oninput: 'this.style.height = "";this.style.height = this.scrollHeight + "px"' } %>
+        <% end %>
+      </div>
+    </div>
+    <div data-row-span="2">
+      <div class="sd-item" data-field-span="1">
+        <%= simple_form_for(@sd_meta_datum, url: @url, authenticity_token: true, remote: true, html: { id: :review_type, class: "sd-form", data: { 'abide': '', 'live-validate': true } }) do |f| %>
+          <%= f.association :review_type, label: 'Type of Review', input_html: { class: 'review_type sd-select2' } %>
+        <% end %>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Analytic / Conceptual Framework</label>
+        <div class="cocoon-container analytic-framework-list">
+          <%= render 'sd_meta_data/form/nested_associations/analytic_framework_list', sd_meta_datum: @sd_meta_datum, url: @url %>
+        </div>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Report Key Questions (must include at least one Key Question)</label>
+        <div class="cocoon-container key-question-list">
+          <%= render 'sd_meta_data/form/nested_associations/key_question_list', sd_meta_datum: @sd_meta_datum, url: @url %>
+        </div>
+      </div>
+    </div>
+    <!--
+    <fieldset>
+      <legend>Section Review & Validation</legend>
+      <div data-row-span="1">
+        <div data-field-span="1">
+          <div>Section Finished?</div>
+          <div class="switch">
+            <input class="switch-input" id="3-yes-no-section" type="checkbox" name="sectionSection" data-sd_meta_datum_id="<%= @sd_meta_datum.id %>">
+            <label class="switch-paddle" for="3-yes-no-section">
+              <span class="switch-active" aria-hidden="true">Yes</span>
+              <span class="switch-inactive" aria-hidden="true">No</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+    -->
+  </fieldset>
+</div>

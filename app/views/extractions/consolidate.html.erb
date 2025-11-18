@@ -1,0 +1,19 @@
+<% provide(:title, "#{ action_name } #{ controller_name }".titleize) %>
+<div style='margin-left: 34px;'>
+  <h5>
+    Consolidated Extraction assigned to <span style="font-weight: bold"><%= @consolidated_extraction.user.handle %></span>
+  </h5>
+</div>
+<div style='margin: 0 34px; border-color: #bbb6dd; padding: 0; width: auto;'>
+  <h6 style='margin: 0;'><%= @consolidated_extraction.citation.handle.split("\n").join(" - ") %></h6>
+</div>
+<div id="spinner-modal" class="reveal large" data-reveal='' data-options='closeOnClick:false;closeOnEsc:false;'>
+  <div class="spinner float-left"></div>
+  <h2>Please wait for page to reload..</h2>
+</div>
+<div id="edit-type1-modal" class="large reveal" data-reveal=''></div>
+<div id="preview" class="work">
+  <%= render 'extractions/shared/extraction_forms_project_tab_links' %>
+  <%= render 'extractions/shared/extraction_forms_project_tab_content' %>
+</div>
+<%= link_to 'Back', comparison_tool_project_extractions_path(@project), title: t('compare_extractions') %>

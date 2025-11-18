@@ -1,0 +1,8 @@
+<% content_for :content do %>
+  <%= render partial: "shared/topbar_nav", locals: { no_off_canvas: true } %>
+  <div class="content">
+    <%= content_for?(:static_pages_content) ? yield(:static_pages_content) : yield %>
+    <%= render 'shared/scroll_top_wrapper' %>
+  </div>
+<% end %>
+<%= render template: 'layouts/application' %>

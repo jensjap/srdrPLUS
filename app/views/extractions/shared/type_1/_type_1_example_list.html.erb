@@ -1,0 +1,51 @@
+<% section_name = eefps.extraction_forms_projects_section.section.name.titleize.singularize %>
+<div class="reveal" id="modal-<%= eefps.id %>" data-reveal>
+  <h5>Example <%= section_name %> Names and Descriptions</h5>
+  <div class="table-scroll">
+    <table class="hover fill-suggestion" style="width: 100%;" data-section-id="<%= eefps.id %>">
+      <thead>
+        <tr>
+          <% if section_name == 'Outcome' %>
+            <th>Type of Outcome</th>
+            <th>Domain</th>
+            <th>Specific measurement (i.e., tool/definition/specific outcome)</th>
+            <th>Timepoint(s)</th>
+          <% else %>
+            <th>Name</th>
+            <th>Description</th>
+          <% end %>
+          <th><%= section_name %> Specific Instructions by Lead</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% eefps.type1s_suggested_by_project_leads.each do |efpst1| %>
+          <% t1 = efpst1.type1 %>
+          <tr>
+            <% if section_name == 'Outcome' %>
+              <td data-t1-type data-t1-type-id="<%= efpst1.type1_type.try(:id) || '' %>"><%= efpst1.type1_type.try(:name) || '' %></td>
+              <td data-t1-name><%= t1.name %></td>
+              <td data-t1-description><%= t1.description %></td>
+              <td data-timepoints>
+                <% if efpst1.timepoint_names.present? %>
+                  <ul>
+                    <% efpst1.timepoint_names.each do |tn| %>
+                      <li data-tp-name="<%= tn.name %>" data-tp-unit="<%= tn.unit %>"><%= tn.pretty_print_export_header %></li>
+                    <% end %>
+                  </ul>
+                <% end %>
+              </td>
+            <% else %>
+              <td data-t1-name><%= t1.name %></td>
+              <td data-t1-description><%= t1.description %></td>
+            <% end %>
+            <td class="text-red-500" data-t1-instructions><%= efpst1.instructions %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <button class="close-button" data-close aria-label="Close modal" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<a class="suggestion-list-button button" data-open="modal-<%= eefps.id %>">Suggested <%= eefps.section.name %></a>

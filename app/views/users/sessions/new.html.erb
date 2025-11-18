@@ -1,0 +1,17 @@
+<% provide(:title, 'Log in') %>
+<div class="row my-4">
+  <div class="column medium-6 small-centered">
+    <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <div class="form-inputs">
+        <%= f.input :login, placeholder: 'email or username', required: false, autofocus: true %>
+        <%= f.input :password, placeholder: 'password', required: false %>
+        <%= f.input :remember_me, as: :boolean if devise_mapping.rememberable? %>
+        <%= f.hidden_field :redirect_path, value: params[:redirect_path] %>
+      </div>
+      <div class="form-actions">
+        <%= f.button :submit, "Log in" %>
+      </div>
+    <% end %>
+    <%= render "users/shared/links" %>
+  </div>
+</div>

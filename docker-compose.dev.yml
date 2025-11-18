@@ -47,6 +47,19 @@ services:
       - docker.env
     environment:
       - MYSQL_ROOT_PASSWORD=password
+    # Pass configuration flags directly to the mysqld command
+    command: 
+      [
+        "mysqld",
+        "--innodb-buffer-pool-size=32G",
+        "--innodb-buffer-pool-instances=8",
+        "--innodb-flush-method=O_DIRECT",
+        "--innodb-io-capacity=2000",
+        "--innodb-io-capacity-max=4000",
+        "--innodb-log-file-size=1G",
+        "--innodb-log-buffer-size=64M"
+        # The other settings like default_storage_engine are usually default or set by the base image
+      ]
     security_opt:
       - seccomp:unconfined
 
@@ -60,6 +73,9 @@ services:
     volumes:
       - esdata:/usr/share/opensearch/data
       - certs:/usr/share/opensearch/config/certs
+    env_file:
+      - docker.env
+      - private.env
     depends_on:
       setup:
         condition: service_healthy
@@ -67,8 +83,23 @@ services:
       RAILS_ENV: development
       discovery.type: single-node
       plugins.security.disabled: true
-      OPENSEARCH_INITIAL_ADMIN_PASSWORD: Str0ngP@ssw0rd!
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: "Str0ngP@ssw0rd!"
       OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
+
+  tailwind:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - app
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    env_file:
+      - docker.env
+    environment:
+      RAILS_ENV: development
+    command: bin/rails tailwindcss:watch
 
   sidekiq:
     build:

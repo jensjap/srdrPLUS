@@ -1,0 +1,42 @@
+<% if @project.duplicate_extraction_form? %>
+  <p id="warning" class="callout alert">
+    Notice: Duplicate Extraction Form title detected. This is likely a mistake. Please correct below.
+  </p>
+<% end %>
+
+<% if @project.key_questions_projects.blank? %>
+  <p id="warning" class="callout alert">
+    You must add Key Questions before creating Extraction Forms.
+  </p>
+<% else %>
+  <div class="table-scroll">
+    <table class="hover">
+      <thead>
+        <tr>
+          <th><%= t('extraction_form_title') %></th>
+          <th><%= t('key_question_assignment') %></th>
+          <th><%= t('date_created') %></th>
+          <th><%= t('date_updated') %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @project.extraction_forms_projects.each do |efp| %>
+          <tr>
+            <td><%= efp.extraction_form.name %></td>
+            <td><%= list_of_key_questions(efp) %></td>
+            <td><%= efp.created_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P') %></td>
+            <td><%= efp.updated_at.in_time_zone(current_user.profile.time_zone).strftime('%b %-d, %Y - %l:%M %P') %></td>
+            <td><%= link_to t('build'), build_extraction_forms_project_path(efp, 'panel-tab': efp.extraction_forms_projects_sections.present? ? efp.default_section_id : '') %></td>
+            <td><%= link_to t('rename'), edit_extraction_forms_project_path(efp) %></td>
+            <td><%= link_to t('remove'), efp, method: :delete, data: { confirm: t('confirm') } %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <hr>
+  <h6><%= t('create_extraction_form') %></h6>
+  <%= simple_form_for(ExtractionFormsProject.new(project: @project), url: project_extraction_forms_projects_path(@project), html: { 'abide': '', 'live-validate': true }) do |f| %>
+    <%= render 'extraction_forms_projects/form', f: f %>
+  <% end %>
+<% end %>

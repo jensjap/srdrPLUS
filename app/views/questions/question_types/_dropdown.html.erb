@@ -1,0 +1,35 @@
+<div class="column row">
+  <%= simple_form_for(@question, html: { 'abide': '', 'live-validate': true }) do |f| %>
+    <%= f.error_notification %>
+    <div class="alert callout" data-abide-error style="display: none;">
+      <p>
+        <i class="fi-alert"></i>
+        Please correct the errors below.
+      </p>
+    </div>
+    <div class="form-inputs">
+      <%= f.input :name, label: 'Question Text', autofocus: true %>
+      <%= f.input :description, label: 'Instructions for Extractor (optional)', input_html: { rows: 8 } %>
+      <%= f.simple_fields_for(:question_rows) do |qr_f| %>
+        <%= qr_f.simple_fields_for(:question_row_columns) do |qrc_f| %>
+          <fieldset class="fieldset">
+            <legend>Field Options</legend>
+            <div id="question-row-column-field-options">
+              <%= qrc_f.simple_fields_for(:question_row_column_options) do |qrco_f| %>
+                <%= render 'questions/question_types/question_row_column_field_option_fields', f: qrco_f %>
+              <% end %>
+              <div class="links">
+                <%= link_to_add_association 'add option', qrc_f,
+                                          :question_row_column_options,
+                                          partial: 'questions/question_types/question_row_column_field_option_fields' %>
+              </div>
+            </div>
+          </fieldset>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="form-actions">
+      <%= f.button :submit, t('save') %>
+    </div>
+  <% end %>
+</div>

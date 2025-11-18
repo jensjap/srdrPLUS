@@ -1,0 +1,36 @@
+<div class="row columns">
+  <h3>New Import</h3>
+  <h4><%= @project.name %></h4>
+</div>
+<div class="row">
+  <div class="columns medium-2" id="palette-container"></div>
+  <div class="columns medium-10 import-panel-container hide" id="import-panel-container">
+    <div id="import-tabs-panel"></div>
+    <div id="import-columns-panel"></div>
+    <div class="float-left">
+      <button class="button discard-button">Discard</button>
+    </div>
+    <div class="float-right">
+      <button class="button create-button">Confirm</button>
+    </div>
+  </div>
+  <div id="dropzone-div">
+    <%= simple_form_for(@import, remote: true, authenticity_token: true) do |f| %>
+      <div class="form-inputs">
+        <%= f.input :projects_user_id, as: :hidden, input_html: { value: @projects_user.id } %>
+        <%= f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: 'Project').id } %>
+        <%= f.simple_fields_for(@imported_file) do |i_f| %>
+          <%= f.input :file_type_id, as: :hidden, input_html: { value: FileType.find_by(name: '.xlsx').id } %>
+          <div id="fileDropzone" class="dropzone" name="mainFileUploader" dropzone-path="<%= imports_path %>">
+            <div class="fallback">
+              <%= i_f.input :content, as: :file, label: 'Excel File' %>
+              <div class="form-actions">
+                <%= f.button :submit, 'Upload file', class: 'small', id: 'submit-all' %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

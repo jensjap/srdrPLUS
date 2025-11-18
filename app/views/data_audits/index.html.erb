@@ -1,0 +1,18 @@
+<div class="grid-container">
+  <div class="grid-x">
+    <div class="cell">
+      <%= form_with(url: data_audits_path, method: :get) do |form| %>
+        <%= form.label :query, 'Fetch Statistics for Project ID:' %>
+        <%= form.text_field :query %>
+        <%= form.submit 'Query' %>
+      <% end %>
+    </div>
+  </div>
+</div>
+<div class="grid-container" style="padding-top: 2em;">
+  <div class="grid-x">
+    <div class="cell">
+      <%= render 'data_audits/index/table' %>
+    </div>
+  </div>
+</div>
