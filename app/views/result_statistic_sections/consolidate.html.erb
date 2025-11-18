@@ -1,0 +1,14 @@
+<% provide(:title, 'Results: ' + @result_statistic_section.result_statistic_section_type.name) %>
+<div class="column row">
+  <h4>Outcome: <%= @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1.type1.name %></h4>
+  Description: <%= @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1.type1.description %>
+  <h5>Population: <%= @result_statistic_section.population.population_name.name %></h5>
+  Description: <%= @result_statistic_section.population.population_name.description %>
+</div>
+<div class="column row">
+  <%= render 'result_statistic_sections/shared/auto_save_notification' %>
+</div>
+<div class="column row">
+  <%= render 'result_statistic_sections/consolidate/' + @result_statistic_section.result_statistic_section_type.name.parameterize.underscore %>
+</div>
+<%= link_to 'Back', consolidate_project_extractions_path(project_id: @project.id, extraction_ids: @extractions.map(&:id), params: { eefpst1_id: @result_statistic_section.population.extractions_extraction_forms_projects_sections_type1_id, "panel-tab" => @result_statistic_section.eefps_result.id }), title: t('compare_extractions') %>

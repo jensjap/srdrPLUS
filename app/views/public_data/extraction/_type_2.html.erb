@@ -1,0 +1,67 @@
+<% eefps = @eefps_by_efps_dict[efps.id].first %>
+<% linked_section = eefps.link_to_type1 %>
+<% questions = efps.questions %>
+<% if questions.empty? %>
+  <div>N/A</div>
+<% else %>
+  <% questions.each_with_index do |q, idx| %>
+    <% prereq = q.dependencies.map { |d| d.prerequisitable_type + '-' + d.prerequisitable_id.to_s }.map { |h| "prereq-#{h}" }.join(' ') %>
+    <% kqreq = q.key_questions_projects.map { |kqp| "kqreq-#{kqp.id}" }.join(' ') %>
+    <div class="card <%= prereq %> <%= kqreq %>" style="box-shadow: 6px 8px 20px 0px #d8d6d6; margin-bottom: 1.5rem;">
+      <div class="card-divider">
+        <h5 class="font-black text-lg pb-1"><%= (idx + 1).to_s %>. <%= q.name %></h5>
+        <div class="description" style="white-space: pre-wrap;"><em><%= q.description %></em></div>
+      </div>
+      <div class="card-section">
+        <div class="table-scroll">
+          <div id="step-two">
+            <% if linked_section %>
+              <% if efps.extraction_forms_projects_section_option.by_type1 %>
+                <% if efps.extraction_forms_projects_section_option.include_total && linked_section.eefpst1s_without_total.count > 1 %>
+                  <% linked_section.eefpst1s_with_total.map(&:type1).each_with_index do |t1, idx| %>
+                    <div style="background: <%= t1.name == 'Total' ? 'LightSalmon' : color(idx) %>">
+                      <h5 style="font-weight: bold;" data-allow-html="true" data-tooltip title="<%= linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name + '<br>' + 'Description: ' + t1.description.to_s %>">
+                        <%= t1.name %>
+                      </h5>
+                      <%= render 'public_data/extraction/type_2/question_fields', q: q, t1: t1, eefps: eefps, display_only: false %>
+                    </div>
+                  <% end %>
+                <% else %>
+                  <% linked_section.eefpst1s_without_total.map(&:type1).uniq.each_with_index do |t1, idx| %>
+                    <div style="background: <%= color(idx) %>">
+                      <h5 style="font-weight: bold;" data-allow-html="true" data-tooltip title="<%= linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name + '<br>' + 'Description: ' + t1.description.to_s %>">
+                        <%= t1.name %>
+                      </h5>
+                      <%= render 'public_data/extraction/type_2/question_fields', q: q, t1: t1, eefps: eefps, display_only: false %>
+                    </div>
+                  <% end %>
+                <% end %>
+              <% else %>
+                <% if efps.extraction_forms_projects_section_option.include_total %>
+                  <% linked_section.eefpst1s_only_total.map(&:type1).each_with_index do |t1, idx| %>
+                    <div style="background: <%= t1.name == 'Total' ? 'LightSalmon' : color(idx) %>">
+                      <h5 style="font-weight: bold;" data-allow-html="true" data-tooltip title="<%= linked_section.extraction_forms_projects_section.section.name.singularize + ': ' + t1.name + '<br>' + 'Description: ' + t1.description.to_s %>">
+                        <%= t1.name %>
+                      </h5>
+                      <%= render 'public_data/extraction/type_2/question_fields', q: q, t1: t1, eefps: eefps, display_only: false %>
+                    </div>
+                  <% end %>
+                <% else %>
+                  <div>
+                    <div></div>
+                    <%= render 'public_data/extraction/type_2/question_fields', q: q, t1: nil, eefps: eefps, display_only: false %>
+                  </div>
+                <% end %>
+              <% end %>
+            <% else %>
+              <div>
+                <div></div>
+                <%= render 'public_data/extraction/type_2/question_fields', q: q, t1: nil, eefps: eefps, display_only: false %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>

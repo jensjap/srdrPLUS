@@ -1,0 +1,164 @@
+<% project_consolidator = ProjectPolicy.new(current_user, @project).project_consolidator? %>
+<% project_leader = ProjectPolicy.new(current_user, @project).project_leader? %>
+<div id="project_leader" class="hidden" data-project-leader="<%= project_leader %>"></div>
+<div id="project_consolidator" class="hidden" data-project-consolidator="<%= project_consolidator %>"></div>
+<% if @project.has_duplicate_citations? %>
+  <div class="row" style="margin: 0;">
+    <div class="columns medium-12">
+      <%= link_to " (Dedupe citations in this project)", dedupe_citations_project_path(@project), method: :post %>
+    </div>
+  </div>
+<% end %>
+<div class="row" id="btm-anchor" style="margin: 10px 0 0 0;">
+  <div class="columns medium-12 my-4">
+    <a class="text-white bg-srdrpurple text-sm p-2 rounded-md hover:text-white hover:no-underline" onclick="$('#add_citation_button').trigger('click')" href="#add_citation">Add Citation</a>
+  </div>
+</div>
+<div x-data='{
+  isAlertModalOpen: false,
+  alertModalContent: "",
+  currentAction: "",
+  openModal(action) {
+    this.isAlertModalOpen = true;
+    this.currentAction = action;
+  },
+  closeAlertModal() {
+    this.isAlertModalOpen = false;
+    this.currentAction = "";
+    if (typeof window.modalResolve == "function") {
+      window.modalResolve(false);
+    }
+  },
+  modalConfirmAction() {
+    this.isAlertModalOpen = false;
+    if (this.currentAction === "deleteCitations") {
+      document.getElementById("delete-citations-form").submit();
+    }
+    this.currentAction = "";
+    if (typeof window.modalResolve == "function") {
+      window.modalResolve(true);
+    }
+  },
+  showModal(message, action = "defaultAction") {
+    this.alertModalContent = message;
+    this.openModal(action);
+  }
+}' @show-modal.window="showModal($event.detail)">
+  <%= render 'shared/alert_modal' %>
+  <div class="row" style="margin: 0;">
+    <div class="columns medium-9">
+      <%= simple_form_for @project, html: { id: 'delete-citations-form' } do |form_project| %>
+        <div id="delete-citations-inner">
+          <table id="citations-table" data-project_id="<%= @project.id %>">
+            <thead>
+              <tr>
+                <th>Accession No. (e.g. PubMed ID)</th>
+                <th>RefID</th>
+                <th>Authors</th>
+                <th>Title</th>
+                <th>Edit</th>
+                <th>
+                  <% if ProjectPolicy.new(current_user, @project).project_leader? %>
+                    Delete?
+                  <% end %>
+                </th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <td style="text-align: center;"></td>
+                <td style="text-align: center;"></td>
+                <td style="text-align: center;"></td>
+                <td style="text-align: center;"></td>
+                <td style="text-align: center;"></td>
+                <td style="text-align: center; margin: 0;"></td>
+              </tr>
+            </tfoot>
+          </table>
+          <% if project_leader %>
+            <div id="delete-citations-submit-row" class="m-10">
+              <div class="float-right">
+                <input id="delete-citations-select-all" class="m-10" type="checkbox" />
+                <label class="m-10" for="delete-citations-select-all">Select All</label>
+                <button class="button alert float-right" onclick="event.preventDefault(); showModal('Any data associated with these citations will also be removed: Any screening results (labels), any extracted data, etc.', 'deleteCitations')">
+                  Delete Selected Citations
+                </button>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+    <div class="columns medium-3">
+      <div id="top-anchor" data-sticky-container>
+        <div class="sticky" data-sticky data-top-anchor="top-anchor" data-btm-anchor="btm-anchor" data-margin-top="5" data-check-every="0">
+          <% projects_user = ProjectsUser.find_by(user: current_user, project: @project) %>
+          <% unless projects_user.nil? && current_user.admin? %>
+            <% new_import = projects_user.imports.build %>
+            <div style='display:flex; flex-direction:row;'>
+              <span class="import-headline">
+                <h5>Upload Citation File(s)</h5>
+              </span>
+              <span class="import-tooltip-icon" style="margin-left: 3px;" data-open="import-tooltip-content">
+                <i class="fi-info" style="color:#28b0f3;font-size:20px;"></i>
+              </span>
+            </div>
+            <div class="reveal" id="import-tooltip-content" data-reveal style="font-size:large;line-height:25px;">
+              You can upload the following file formats to add citations to this project:
+              <ul style="padding-top:15px;font-size:large;line-height:25px;">
+                <li>
+                  <a href="https://srdrplus.s3.amazonaws.com/sample_ris.ris">RIS File (.ris)</a>
+                </li>
+                <li>
+                  <a href="https://srdrplus.s3.amazonaws.com/sample_csv.csv">Comma Separated File (.csv)</a>
+                </li>
+                <li>
+                  <a href="https://srdrplus.s3.amazonaws.com/sample_pubmed.txt">PubMed ID List (.txt)</a>
+                </li>
+                <li>
+                  <a href="https://srdrplus.s3.amazonaws.com/sample_endnote.enw">EndNote File (.enw)</a>
+                </li>
+              </ul>
+            </div>
+            <div id="dropzone-div">
+              <input id="ris-file-type-id" class="hide" value="<%= FileType.find_by(name: '.ris').id %>" />
+              <input id="csv-file-type-id" class="hide" value="<%= FileType.find_by(name: '.csv').id %>" />
+              <input id="endnote-file-type-id" class="hide" value="<%= FileType.find_by(name: '.enl').id %>" />
+              <input id="pubmed-file-type-id" class="hide" value="<%= FileType.find_by(name: 'PubMed').id %>" />
+              <input id="json-file-type-id" class="hide" value="<%= FileType.find_by(name: '.json').id %>" />
+              <%= simple_form_for(new_import, remote: true, authenticity_token: true) do |f| %>
+                <div class="form-inputs">
+                  <%= f.input :projects_user_id, as: :hidden, input_html: { value: projects_user.id } %>
+                  <%= f.input :import_type_id, as: :hidden, input_html: { value: ImportType.find_by(name: 'Citation').id } %>
+                  <%= simple_fields_for new_import.imported_files.build do |i_f| %>
+                    <div id="fileDropzone" class="dropzone" name="mainFileUploader" dropzone-path="<%= imports_path %>">
+                      <div class="fallback">
+                        <%= i_f.input :file_type_id, as: :select, required: true, collection: FileType.all, selected: FileType.first.id %>
+                        <%= i_f.input :content, as: :file, label: 'Citation File' %>
+                        <div class="form-actions">
+                          <%= f.button :submit, 'Upload file', class: "small", id: "submit-all" %>
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row" id="btm-anchor" style="margin: 10px 0 0 0;">
+  <div class="columns medium-12">
+    <div id="add_citation" style="display: block; position: relative; top: -180px; visibility: hidden;"></div>
+    <%= simple_form_for(@project, url: project_path(@project), html: { id: 'citations-form' }) do |f| %>
+      <%= f.error_notification %>
+      <%= f.hidden_field :redirect_path, value: project_citations_path(@project) %>
+      <div class="mt-4">
+        <%= link_to_add_association 'Add Citation', f, :citations_projects, partial: 'projects/edit/citations_project_fields', id: 'add_citation_button', class: "text-white bg-srdrpurple text-sm p-2 rounded-md hover:text-white hover:no-underline focus:text-white focus:no-underline" %>
+      </div>
+    <% end %>
+  </div>
+</div>

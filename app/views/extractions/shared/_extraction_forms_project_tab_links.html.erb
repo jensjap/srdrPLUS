@@ -1,0 +1,10 @@
+<ul id="extraction-forms-projects-tabs" class="tabs" data-deep-link="true" data-update-history="true" data-tabs>
+  <% @extraction_forms_projects.each do |efp| %>
+    <% ef_name = efp.extraction_form.name %>
+    <li class="tabs-title">
+      <%= link_to ef_name,
+        "#panel-extraction-forms-project-#{efp.id}",
+        title: "Extraction Form: #{ef_name}" %>
+    </li>
+  <% end %>
+</ul>

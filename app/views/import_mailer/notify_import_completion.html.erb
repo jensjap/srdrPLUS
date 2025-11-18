@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+  </head>
+  <body>
+    <h1>Huzzah!</h1>
+    <p>The following citation file, "<%= @filename %>", has been imported into your SRDRPlus project.</p>
+    <p>Project Name: "<%= @project.name %>"</p>
+    <p>Please follow this link to view your project:</p>
+    <p><%= link_to @project.name, project_citations_url(@project), 'ses:no-track': '' %></p>
+  </body>
+</html>

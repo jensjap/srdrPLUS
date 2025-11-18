@@ -1,0 +1,75 @@
+<% provide(:title, 'User Profile') %>
+
+<div class="column row">
+  <div class="title-heading">
+    <h2>User Profile</h2>
+    <%= link_to edit_profile_path, class: 'button small warning', style: 'margin-left: 1rem;' do %>
+      <i class="fi-widget"></i>
+      <%= t('.edit') %>
+    <% end %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="column medium-4">
+    <dl>
+      <dt class="label">Organization</dt>
+      <dd class="callout secondary"><%= @profile.organization.present? ? @profile.organization.name : '' %></dd>
+    </dl>
+  </div>
+  <div class="column medium-4">
+    <dl>
+      <dt class="label">Username</dt>
+      <dd class="callout secondary"><%= @profile.username %></dd>
+    </dl>
+  </div>
+  <div class="column medium-4">
+    <dl>
+      <dt class="label">Timezone</dt>
+      <dd class="callout secondary"><%= @profile.time_zone %></dd>
+    </dl>
+  </div>
+</div>
+
+<div class="row">
+  <div class="column medium-4">
+    <dl>
+      <dt class="label">First Name</dt>
+      <dd class="callout secondary"><%= @profile.first_name %></dd>
+    </dl>
+  </div>
+  <div class="column medium-4">
+    <dl>
+      <dt class="label">Middle Name</dt>
+      <dd class="callout secondary"><%= @profile.middle_name %></dd>
+    </dl>
+  </div>
+  <div class="column medium-4">
+    <dl>
+      <dt class="label">Last Name</dt>
+      <dd class="callout secondary"><%= @profile.last_name %></dd>
+    </dl>
+  </div>
+</div>
+
+<div class="row">
+  <div class="column medium-4">
+    <dl>
+      <dt class="label">Degrees</dt>
+      <dd class="callout secondary">
+        <% @profile.degrees.map { |degree| degree.name }.each do |name| %>
+          <span class="label secondary" style="margin-right: 3px; padding-top: 2px; padding-bottom: 2px;"> <%= name %> </span>
+        <% end %>
+      </dd>
+    </dl>
+  </div>
+  <div class="column medium-4">
+    <dl>
+      <dt class="label">Mode</dt>
+      <dd class="callout secondary"><%= @profile.advanced_mode ? 'Advanced' : 'Basic' %></dd>
+    </dl>
+  </div>
+  <div class="column medium-4">
+    <!-- Empty column for layout symmetry -->
+  </div>
+</div>

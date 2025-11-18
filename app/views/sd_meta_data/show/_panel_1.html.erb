@@ -1,0 +1,89 @@
+<div id="panel-1" class="tabs-panel is-active">
+  <fieldset>
+    <legend>Authors and Stakeholders</legend>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Organization of Authors of Full Report</label>
+        <div>
+          <% if !@sd_meta_datum.organization.present? %>
+            -----
+          <% end %>
+          <% if @sd_meta_datum.organization %>
+            <% @sd_meta_datum.organization.split("\n").each do |organization| %>
+              <div><%= organization %></div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Authors of Full Report</label>
+        <div>
+          <% if !@sd_meta_datum.authors.present? %>
+            -----
+          <% end %>
+          <% if @sd_meta_datum.authors %>
+            <% @sd_meta_datum.authors.split("\n").each do |author| %>
+              <div><%= author %></div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Conflicts of Interest of Authors of Full Report</label>
+        <% acoiof = @sd_meta_datum.authors_conflict_of_interest_of_full_report %>
+        <div><%= acoiof.present? ? simple_format(acoiof) : '-----' %></div>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Stakeholders Involved - Key Informants</label>
+        <% s1 = @sd_meta_datum.stakeholders_key_informants %>
+        <div><%= s1.present? ? simple_format(s1) : '-----' %></div>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Stakeholders Involved - Technical Expert Panel</label>
+        <% s2 = @sd_meta_datum.stakeholders_technical_experts %>
+        <div><%= s2.present? ? simple_format(s2) : '-----' %></div>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Stakeholders Involved - Peer Reviewers</label>
+        <% s3 = @sd_meta_datum.stakeholders_peer_reviewers %>
+        <div><%= s3.present? ? simple_format(s3) : '-----' %></div>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Stakeholders Involved - Others</label>
+        <% s4 = @sd_meta_datum.stakeholders_others %>
+        <div><%= s4.present? ? simple_format(s4) : '-----' %></div>
+      </div>
+    </div>
+    <div data-row-span="2">
+      <div data-field-span="1">
+        <label>SRDR+ Project Leads:</label>
+        <% @project.try(:leaders).try(:map) do |user| %>
+          <% next if user.email.include?("@test.com") %>
+          <div><b><%= [user.profile.first_name, user.profile.middle_name, user.profile.last_name].join(" ") %></b> (<%= user.email %>)</div>
+        <% end %>
+      </div>
+      <!--
+      <div data-field-span="1">
+        <label>SRDR+ Project Creator:</label>
+        <% if @project.creator.email.include?("@test.com") %>
+          <div></div>
+        <% else %>
+          <div><b><%= [@project.creator.profile.first_name, @project.creator.profile.middle_name, @project.creator.profile.last_name].join(" ") %></b> (<%= @project.creator.email %>)</div>
+        <% end %>
+      </div>
+      -->
+    </div>
+  </fieldset>
+</div>

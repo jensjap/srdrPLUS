@@ -1,0 +1,54 @@
+<% if efps.questions.empty? %>
+  <div>N/A</div>
+<% else %>
+  <% efps.questions.each_with_index do |q, idx| %>
+    <div>
+      <div class="card-divider">
+        <h5 class="font-black text-lg pb-1"><%= (idx + 1).to_s %>. <%= q.name %></h5>
+        <div class="description" style="white-space: pre-wrap;"><%= q.description %></div>
+        <% if q.dependencies.present? %>
+          <div class="border-gray-300 rounded">
+            <h5>Dependency</h5>
+            <% q.dependencies.group_by { |d| d.prerequisitable.question.pos }.each do |group, ds| %>
+              <li class="pl-2">Question Position: <%= group.to_s %></li>
+              <ul class="pl-8">
+                <% ds.each do |d| %>
+                  <% if d.prerequisitable.question.question_type == 'Matrix' %>
+                    <%# Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi. %>
+                    <% if [5, 6, 7, 8, 9].include?(d.prerequisitable.question_row_column_type.id) %>
+                      <li>- Cell: (<%= d.prerequisitable.question_row.name.to_s %> x <%= d.prerequisitable.question_row_column.name.to_s %>)</li>
+                      <li>- Option: <%= d.prerequisitable.name %></li>
+                    <%# Text, Numeric, Numeric_Range, Scientific. %>
+                    <% else %>
+                      <li>- Cell: (<%= d.prerequisitable.question_row.name.to_s %> x <%= d.prerequisitable.name.to_s %>)</li>
+                    <% end %>
+                  <% else %>
+                    <%# Checkbox, Dropdown, Radio, Select2_Single, Select2_Multi. %>
+                    <% if [5, 6, 7, 8, 9].include?(d.prerequisitable.question_row_column_type.id) %>
+                      <li>- Option: <%= d.prerequisitable.name %></li>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              </ul>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+      <div class="card-section"></div>
+      <div class="table-scroll clean-table">
+        <div id="step-two">
+          <% if efps.link_to_type1.present? %>
+            <% type1s = efps.link_to_type1.extraction_forms_projects_sections_type1s.includes(:type1).collect(&:type1).delete_if { |t1| t1.id.eql?(100) } %>
+            <% if type1s.present? %>
+              <% t1 = type1s.first %>
+              <%= t1.name %>:
+              <%= render 'public_data/extraction_form/type2/question_fields', q: q, t1: t1 %>
+            <% end %>
+          <% else %>
+            <%= render 'public_data/extraction_form/type2/question_fields', q: q, t1: nil %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>

@@ -1,0 +1,213 @@
+<script>
+  $.event.props.push('dataTransfer');
+  // sends mappings to server after a set time
+  var timer;
+  var reset_post_timer = function() {
+    if( timer ) {
+      clearTimeout( timer );
+    }
+    timer = setTimeout( postMappings, 750 );
+  }
+  var update_kq_target_prompt = function() {
+    $( '.srdr-kq-target' ).each( function( i, target_elem ) {
+      $prompt_elem = $( target_elem ).find( '.srdr-kq-target-prompt' );
+      if ( $( target_elem ).find( '.srdr-kq' ).length > 0 ) {
+        $prompt_elem.addClass( 'hide' ) ;
+      } else {
+        $prompt_elem.removeClass( 'hide' );
+      }
+    });
+  }
+  var colorCode = function() {
+    $( '.srdr-kq.kq-mapped' ).removeClass( 'empty-kq' );
+    $('.report-key-questions-box').find( '.srdr-kq-target-prompt.hide' ).parents('.report-kq').removeClass( 'empty-kq' );
+    var reportQuestions = $('.srdr-key-questions-box').children();
+    reportQuestions.each(function() {
+      var kqId = $(this).attr('data-keyquestionid');
+      var allKqItems = $(`*[data-keyquestionid=${kqId}]`);
+      if (allKqItems.length === 1) {
+        allKqItems.removeClass('kq-mapped')
+      } else if (allKqItems.length > 1) {
+        allKqItems.addClass('kq-mapped')
+      }
+    })
+  }
+  $(document).on('click', '.clickremove', function(ev) {
+    $( ev.target ).closest('.clickremove').remove();
+    var mappings = checkMapping();
+    var emptyReportQuestions = mappings.emptyReportQuestions;
+    var emptySrdrQuestions = mappings.emptySrdrQuestions;
+    if (emptyReportQuestions.length > 0 || emptySrdrQuestions.length > 0) {
+      $('#5-yes-no-section')[0].checked = false;
+    }
+    colorCode();
+    update_kq_target_prompt();
+    reset_post_timer();
+  })
+  var extractReportQuestions = function() {
+    var hash = {};
+    var reportQuestions = $('.report-key-questions-box').children();
+    reportQuestions.each(function() {
+      var currentKey = $(this).attr('data-reportKeyQuestionId');
+      hash[currentKey] = [];
+      $(this).find('.srdr-kq').each(function() {
+        hash[currentKey].push($(this).attr('data-keyQuestionId'));
+      })
+    })
+    delete hash[undefined]
+    return hash;
+  }
+  var extractSrdrQuestions = function() {
+    var hash = {};
+    var srdrQuestions = $('.srdr-key-questions-box').children();
+    srdrQuestions.each(function() {
+      var currentKey = $(this).attr('data-keyQuestionId');
+      hash[currentKey] = [];
+    })
+    var reportKeyQuestionsHash = extractReportQuestions();
+    Object.keys(reportKeyQuestionsHash).forEach(function(key) {
+      var values = reportKeyQuestionsHash[key];
+      if (values === undefined) return;
+      values.forEach(function(value) {
+        hash[value].push(key);
+      });
+    });
+    delete hash[undefined];
+    return hash
+  }
+  window.extractSrdrQuestions = extractSrdrQuestions
+  var postMappings = function() {
+    $.post(`${$('.sd-form')[0].action}/mapping_update`,
+      { sd_meta_datum: {
+        key_questions: extractSrdrQuestions(),
+        _: true,
+        }
+      }
+    );
+  }
+  var resetMapping = function(sdKeyQuestionId) {
+    $.get( `/sd_key_questions/${sdKeyQuestionId}/fuzzy_match`, function( data ) {
+      var parentNode = $(`[data-reportKeyQuestionId=${sdKeyQuestionId}] .srdr-kq-target`)
+      parentNode.children('.srdr-kq').remove();
+      if (data === undefined) {
+        alert(`No match found for Question: ${parentNode.text()}`);
+      } else {
+        var newNode = $( `<div id="srdr_kq-${data.id}" data-keyQuestionId="${data.id}" draggable="true" class="srdr-kq draggable clickremove"><span class="clamp-span">${data.name}</span><span class="hover-message">Click to Remove</span></div>` );
+        parentNode.append(newNode);
+        colorCode();
+      }
+      update_kq_target_prompt();
+    });
+    reset_post_timer();
+  };
+  var resetAllMappings = function() {
+    $( '.empty-kq' ).removeClass( 'empty-kq' );
+    var sdKeyQuestionIds = Object.keys(extractReportQuestions());
+    sdKeyQuestionIds.forEach(function(sdKeyQuestionId) {
+      resetMapping(sdKeyQuestionId);
+    });
+  };
+  var clear_all_mappings = function() {
+    $( '.empty-kq' ).removeClass( 'empty-kq' );
+    var sdKeyQuestionIds = Object.keys(extractReportQuestions());
+    sdKeyQuestionIds.forEach(function(sdKeyQuestionId) {
+      var parentNode = $(`[data-reportKeyQuestionId=${sdKeyQuestionId}] .srdr-kq-target`);
+      parentNode.children('.srdr-kq').remove();
+    });
+    colorCode();
+    update_kq_target_prompt();
+    reset_post_timer();
+  };
+  var checkMapping = function() {
+    var emptyReportQuestions = [];
+    var emptySrdrQuestions = [];
+    var reportQuestions = extractReportQuestions();
+    var srdrQuestions = extractSrdrQuestions();
+    Object.keys(reportQuestions).forEach(function(key) {
+      if (reportQuestions[key].length === 0) emptyReportQuestions.push(key);
+    });
+    Object.keys(srdrQuestions).forEach(function(key) {
+      if (srdrQuestions[key].length === 0) emptySrdrQuestions.push(key);
+    });
+    emptyReportQuestions = emptyReportQuestions.map(function(id) {
+      var parentNode = $(`[data-reportKeyQuestionId=${id}]`);
+      return parentNode.text();
+    })
+    emptySrdrQuestions = emptySrdrQuestions.map(function(id) {
+      var parentNode = $(`[data-keyQuestionId=${id}]`);
+      return parentNode.text();
+    })
+    return { emptyReportQuestions: emptyReportQuestions, emptySrdrQuestions: emptySrdrQuestions }
+  }
+  var addWarningIcon = function(panel_no, add) {
+    var attention = ' <i id="map-warning" class="fa fa-exclamation-triangle"></i>';
+    var warning_container = $('.warning-container[panel-number="' + panel_no.toString() + '"]');
+    warning_container.html('');
+    if (add == true) {
+      warning_container.html(attention);
+    }
+  };
+  var appendMissingKQs = function(title, questions) {
+    $('#missing-mappings').append($(`<br />`))
+    $('#missing-mappings').append($(`<h5>${title}</h5>`))
+    questions.forEach(function(el, index) {
+      $('#missing-mappings').append($(`<br />`));
+      $('#missing-mappings').append($(`<div>${el}</div>`));
+    })
+  }
+  var reportMissingKqs = function() {
+    var mappings = checkMapping();
+    var emptyReportQuestions = mappings.emptyReportQuestions;
+    var emptySrdrQuestions = mappings.emptySrdrQuestions;
+    addWarningIcon(3, emptyReportQuestions.length > 0);
+    addWarningIcon(5, emptySrdrQuestions.length > 0);
+  }
+  var initialize = function () {
+    $(document).on('dragend', '.draggable', function(ev) {
+      colorCode();
+    })
+    $(document).on('dragstart', '.draggable', function(ev) {
+      ev.dataTransfer.setData("text/plain", ev.target.id);
+    })
+    $(document).on('dragleave', '.droppable', function(ev) {
+      ev.preventDefault();
+      ev.currentTarget.style.background = "aliceblue";
+    })
+    $(document).on('dragover', '.droppable', function(ev) {
+      ev.stopPropagation();
+      ev.preventDefault();
+      if (ev.target.getAttribute("draggable") == "true") {
+        ev.dataTransfer.dropEffect = "none";
+      } else {
+        ev.currentTarget.style.background = "lightblue";
+        ev.dataTransfer.dropEffect = "copy";
+      }
+    })
+    $(document).on('drop', '.droppable', function(ev) {
+      ev.preventDefault();
+      ev.currentTarget.style.background = "aliceblue";
+      var data = ev.dataTransfer.getData("text/plain");
+      if ($( ev.target ).closest( '.report-kq' ).find(".srdr-kq[data-keyquestionid='" + $(document.getElementById(data)).data('keyquestionid') + "']" ).length > 0) {
+        return
+      }
+      var nodeCopy = document.getElementById(data).cloneNode(true);
+      nodeCopy.removeAttribute('draggable');
+      nodeCopy.id = new Date().getTime();
+      $(nodeCopy).find( 'span.clamp-span' ).text(`${$(nodeCopy).text()}`)
+      $(nodeCopy).append( $('<span />').addClass('hover-message').text('Click to Remove') )
+      $(nodeCopy).addClass('disableselect');
+      $(nodeCopy).addClass('clickremove');
+      $( ev.target ).closest( '.report-kq' ).find( '.srdr-kq-target' )[ 0 ].appendChild(nodeCopy);
+      update_kq_target_prompt();
+      reset_post_timer();
+      colorCode();
+    })
+    colorCode();
+  }
+  $(window).on('beforeunload', function () {
+    postMappings();
+  });
+  $(document).on("DOMContentLoaded", function() {
+    initialize();
+  });
+</script>

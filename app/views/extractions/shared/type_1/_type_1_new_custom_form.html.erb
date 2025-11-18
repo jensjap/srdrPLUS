@@ -1,0 +1,135 @@
+<% section_name = section_name.singularize %>
+<%= simple_form_for(eefps, remote: section_name == 'Outcome', html: { autocomplete: 'off', data: { 'abide': '', 'live-validate': true } }) do |f| %>
+  <% if @extractions.present? %>
+    <%= f.hidden_field :action, value: :consolidate %>
+    <%= f.hidden_field :extraction_ids, value: @extractions.map { |x| x.id } %>
+  <% else %>
+    <%= f.hidden_field :action, value: :work %>
+  <% end %>
+  <%= f.simple_fields_for(:extractions_extraction_forms_projects_sections_type1s, f.object.extractions_extraction_forms_projects_sections_type1s.build) do |sf_eefpst1| %>
+    <div class="row">
+      <div class="column small-6 form-inputs new-type1-fields-<%= eefps.id %>">
+        <h5>
+          <span style="margin-right: 10px;">Add New <%= section_name %></span>
+          <%= render 'extractions/shared/type_1/type_1_example_list', extraction: @extraction, section_name: section_name, eefps: eefps %>
+        </h5>
+        <div class="alert callout" data-abide-error style="display: none;">
+          <p><i class="fi-alert"></i> Please correct the errors below.</p>
+        </div>
+        <% if section_name.eql?('Outcome') %>
+          <%= sf_eefpst1.association :type1_type,
+            required: true,
+            collection: Type1Type.outcome_types,
+            label: "Type of #{section_name}",
+            input_html: { 'data-t1-type-input' => '' } %>
+        <% end %>
+        <% if section_name.eql?('Diagnostic Test') %>
+          <%= sf_eefpst1.association :type1_type,
+            required: true,
+            collection: Type1Type.diagnostic_test_types,
+            label: "Type of #{section_name}",
+            input_html: { 'data-t1-type-input' => '' } %>
+        <% end %>
+        <%= sf_eefpst1.simple_fields_for(:type1, sf_eefpst1.object.build_type1) do |sf_t1| %>
+          <%= sf_t1.input :name,
+            label: section_name.eql?('Outcome') ? 'Domain' : 'Name',
+            required: true,
+            hint: "Name can't be blank", input_html: { 'data-t1-name-input' => '' } %>
+          <%= sf_t1.input :description,
+            label: section_name.eql?('Outcome') ? 'Specific measurement (i.e., tool/definition/specific outcome)' : 'Description',
+            input_html: { rows: 2, 'data-t1-description-input' => '' } %>
+        <% end %>
+        <% if section_name.eql?('Outcome') %>
+          <%= sf_eefpst1.input :units, input_html: { 'data-t1-units-input' => '' } %>
+        <% end %>
+      </div>
+      <% if section_name.eql?('Outcome') || section_name.eql?('Diagnosis') %>
+        <div class="column small-6" style="border-left: #e2e2e2 1px solid;">
+          <%= sf_eefpst1.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_rows, sf_eefpst1.object.extractions_extraction_forms_projects_sections_type1_rows.build({ population_name_attributes: { name: 'All Participants', description: 'All patients enrolled in this study.' } })) do |pop_form| %>
+            <div id="populations" style="margin: 1rem 0 1rem 0;">
+              <h5>Populations</h5>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Delete</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody id="populations-node">
+                  <%= render 'extractions_extraction_forms_projects_sections_type1s/population_fields', f: pop_form %>
+                </tbody>
+              </table>
+              <div class="links">
+                <%= link_to_add_association sf_eefpst1,
+                  :extractions_extraction_forms_projects_sections_type1_rows,
+                  class: 'add-population-link',
+                  'data-association-insertion-node': 'tbody#populations-node',
+                  'data-association-insertion-method': 'append',
+                  partial: 'extractions_extraction_forms_projects_sections_type1s/population_fields' do %>
+                  <i class="fi-plus"></i>
+                  Add Population
+                <% end %>
+              </div>
+            </div>
+            <%= pop_form.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_row_columns, pop_form.object.extractions_extraction_forms_projects_sections_type1_row_columns.build({ timepoint_name_attributes: { name: 'Baseline' } })) do |tp_form| %>
+              <div id="timepoints" style="margin: 1rem 0 1rem 0;">
+                <h5>Timepoints (e.g., 2 wk)</h5>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Delete</th>
+                      <th>Number</th>
+                      <th>Time unit</th>
+                    </tr>
+                  </thead>
+                  <tbody id="timepoints-node">
+                    <%= render 'extractions_extraction_forms_projects_sections_type1s/timepoint_fields', f: tp_form %>
+                  </tbody>
+                </table>
+                <div class="links">
+                  <%= link_to_add_association pop_form,
+                    :extractions_extraction_forms_projects_sections_type1_row_columns,
+                    class: 'add-timepoint-link',
+                    'data-association-insertion-node': 'tbody#timepoints-node',
+                    'data-association-insertion-method': 'append',
+                    partial: 'extractions_extraction_forms_projects_sections_type1s/timepoint_fields' do %>
+                    <i class="fi-plus"></i>
+                    Add Timepoint
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+    <div class="row">
+      <div class="column">
+        <div class="cell auto form-actions" style="text-align: right; margin-top: 1rem;">
+          <%= f.button :submit, 'Save' %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+<script>
+$(document).ready(function() {
+  $('#timepoints').on("cocoon:before-remove", function(event, elementToBeRemoved) {
+    if ($('.timepoint-nested-fields[removed="false"]').length == 1) {
+      alert('You must keep at least one timepoint');
+      event.preventDefault();
+    } else {
+      $(elementToBeRemoved).attr('removed', 'true');
+    }
+  });
+  $('#populations').on("cocoon:before-remove", function(event, elementToBeRemoved) {
+    if ($('.population-nested-fields[removed="false"]').length == 1) {
+      alert('You must keep at least one population');
+      event.preventDefault();
+    } else {
+      $(elementToBeRemoved).attr('removed', 'true');
+    }
+  });
+});
+</script>

@@ -1,0 +1,15 @@
+<% provide(:title, 'Edit') %>
+
+<div class="column row">
+  <!-- h3 Title: <%= @extractions_extraction_forms_projects_sections_type1.type1.name.titleize %> -->
+  <h3>Edit <%= @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.section.name.singularize %></h3>
+</div>
+
+<div class="column row">
+  <%= render 'form' %>
+</div>
+
+<div class="column row">
+  <%= link_to 'Back', work_extraction_path(@extractions_extraction_forms_projects_sections_type1.extraction,
+    'panel-tab': @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.extraction_forms_projects_section.id) %>
+</div>

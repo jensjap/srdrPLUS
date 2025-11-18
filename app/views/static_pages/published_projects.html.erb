@@ -1,0 +1,48 @@
+<% content_for :title, content="Published Projects" %>
+
+<div class="grid-container fluid">
+  <div class="grid-x align-center-middle Recently-published">
+    <div class="cell medium-9">
+      <h1>Recently Published Projects</h1>
+    </div>
+  </div>
+  <div class="grid-x align-center-middle">
+    <div class="cell medium-9" style="text-align: center; padding-bottom: 30px;">
+      <%= link_to 'Search for more Projects', '/searches', class: 'button' %>
+    </div>
+  </div>
+  <div class="grid-x align-center-middle">
+    <div class="cell medium-9">
+      <% @projects.each do |project| %>
+        <div class="cell medium-12 recent-project">
+          <div class="grid-x grid-padding-x grid-padding-y">
+            <div class="cell medium-4">
+              <div class="small">
+                Published on <%= project.publishing.approval.created_at.to_datetime.strftime("%B %d, %Y") %>
+              </div>
+              <span class="bold"><%= project.name %></span>
+              <div class="small">
+                <%= project.citations.count %> Citations &bull; <%= project.key_questions.count %> Key Questions &bull; <%= project.extractions.count %> Extractions
+              </div>
+              <div class="small">
+                Project created on <%= project.created_at.to_datetime.strftime("%B %d, %Y") %> <br>
+                Last updated on <%= project.updated_at.to_datetime.strftime("%B %d, %Y") %>
+              </div>
+            </div>
+            <div class="cell medium-8">
+              <div class="small summary">Objectives: <%= project.description %></div>
+              <div class="small bold">
+                <%= link_to public_data_path(type: 'project', id: project.id) do %>
+                  READ MORE <i class="fas fa-external-link-alt fa-sm"></i>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+      <div class="cell medium-12 mt-4">
+        <%= paginate(@projects, theme: 'foundation') %>
+      </div>
+    </div>
+  </div>
+</div>

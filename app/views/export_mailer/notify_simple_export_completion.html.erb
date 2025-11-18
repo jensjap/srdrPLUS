@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <h1>Huzzah!</h1>
+    <p>The export you requested for project:</p>
+    <div class="project-name">
+      <h2><%= @project.name %></h2>
+    </div>
+    <p>is ready for you to download.</p>
+    <p>To download, please follow the link below. The link will be available for 7 days:</p>
+    <p>
+      <%= link_to "Download Link", @exported_item.external_url, 'ses:no-track': '' %>
+    </p>
+  </body>
+</html>

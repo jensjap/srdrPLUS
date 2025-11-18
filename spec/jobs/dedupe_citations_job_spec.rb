@@ -51,15 +51,21 @@ RSpec.describe DedupeCitationsJob, type: :job do
     expect(CitationsProject.where(project: project, citation: citation).count).to eq(1)
   end
 
-  it 'deduplicates Citations by citation_type, name, pmid, abstract' do
+  it 'does NOT deduplicate Citation records - only CitationsProject records with same citation_id' do
+    # Create two separate citations that look similar
     citation2 = create(:citation, citation_type_id: citation.citation_type_id, name: citation.name,
                                   pmid: citation.pmid, abstract: citation.abstract)
     create_citations_project_with_associations(project, citation)
     create_citations_project_with_associations(project, citation2)
-    expect { described_class.perform_now(project.id) }.to change {
+
+    # Should NOT change Citation count
+    expect { described_class.perform_now(project.id) }.not_to change {
       Citation.where(citation_type_id: citation.citation_type_id, name: citation.name, pmid: citation.pmid,
                      abstract: citation.abstract).count
-    }.from(2).to(1)
+    }
+
+    # Should NOT merge CitationsProject records because they point to different citations
+    expect(CitationsProject.where(project: project).count).to eq(2)
   end
 
   it 'transfers logs to master CitationsProject' do
@@ -216,26 +222,58 @@ RSpec.describe DedupeCitationsJob, type: :job do
     end
   end
 
-  describe 'detection and removal consistency' do
-    it 'uses same grouping criteria for Citation deduplication' do
-      # Create two citations with same type, name, pmid, abstract but different refman
-      citation2 = create(:citation,
-                         citation_type_id: citation.citation_type_id,
-                         name: citation.name,
-                         pmid: citation.pmid,
-                         abstract: citation.abstract,
-                         refman: 'Different refman')
+  describe 'project-scoped deduplication only' do
+    let(:project2) { create(:project) }
 
-      create_citations_project_with_associations(project, citation)
-      create_citations_project_with_associations(project, citation2)
+    it 'does not affect Citation records or other projects' do
+      # Project 1 has duplicate CitationsProject records pointing to same citation
+      cp1_dup1 = create_citations_project_with_associations(project, citation, extractions: [1])
+      cp1_dup2 = create_citations_project_with_associations(project, citation, extractions: [1, 2])
 
-      # Should detect as duplicates and merge (refman not considered)
-      expect { described_class.perform_now(project.id) }.to change {
-        Citation.where(citation_type_id: citation.citation_type_id,
-                       name: citation.name,
-                       pmid: citation.pmid,
-                       abstract: citation.abstract).count
-      }.from(2).to(1)
+      # Project 2 also has this citation (should remain untouched)
+      cp2_citation = create_citations_project_with_associations(project2, citation, extractions: [1, 2, 3])
+
+      # Store IDs before deduplication
+      cp2_id = cp2_citation.id
+      citation_id = citation.id
+
+      # Run deduplication on project1
+      described_class.perform_now(project.id)
+
+      # Verify: Citation record should still exist
+      expect(Citation.exists?(citation_id)).to be true
+
+      # Project1 should have only 1 CitationsProject (duplicates merged)
+      expect(CitationsProject.where(project: project).count).to eq(1)
+
+      # Project2's CitationsProject should be completely untouched
+      cp2_reloaded = CitationsProject.find_by(id: cp2_id)
+      expect(cp2_reloaded).not_to be_nil
+      expect(cp2_reloaded.citation_id).to eq(citation_id)
+      expect(cp2_reloaded.extractions.count).to eq(3) # Associations preserved
+    end
+
+    it 'only merges CitationsProject records within the same project' do
+      # Project 1: Duplicate CitationsProject records for same citation
+      create_citations_project_with_associations(project, citation, extractions: [1])
+      create_citations_project_with_associations(project, citation, extractions: [1, 2])
+
+      # Project 2: Also has this citation
+      cp2 = create_citations_project_with_associations(project2, citation, extractions: [1, 2, 3])
+
+      initial_project2_cp_count = CitationsProject.where(project: project2).count
+
+      # Run deduplication on project1
+      described_class.perform_now(project.id)
+
+      # Project1: CitationsProject duplicates merged
+      expect(CitationsProject.where(project: project).count).to eq(1)
+
+      # Project2: Completely unaffected
+      expect(CitationsProject.where(project: project2).count).to eq(initial_project2_cp_count)
+      cp2.reload
+      expect(cp2.citation_id).to eq(citation.id)
+      expect(cp2.extractions.count).to eq(3)
     end
   end
 end

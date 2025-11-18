@@ -1,0 +1,24 @@
+<div id="panel-8" class="tabs-panel is-active">
+  <fieldset>
+    <div style="display:flex; flex-direction: row;">
+      <legend>Results for Individual Outcomes</legend>
+      <div class="status-switch" id="8-yes-no-section" class="<%= @sd_meta_datum.section_flag_8 ? 'completed' : 'draft' %>" data-sd_meta_datum_id="<%= @sd_meta_datum.id %>">
+        <span class="status-label">
+          <% if @sd_meta_datum.section_flag_8 %>
+            Completed
+          <% else %>
+            Draft
+          <% end %>
+        </span>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Results by Key Questions</label>
+        <div class="cocoon-container result-item-list">
+          <%= render 'sd_meta_data/form/nested_associations/result_item_list', sd_meta_datum: @sd_meta_datum, url: @url %>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>

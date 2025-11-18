@@ -1,0 +1,94 @@
+<div id="panel-6" class="tabs-panel is-active">
+  <fieldset>
+    <legend>Search Strategy and Results of Screening</legend>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Search Strategies</label>
+        <% if @sd_meta_datum.sd_search_strategies.empty? %>
+          <div>-----</div>
+        <% else %>
+          <% @sd_meta_datum.sd_search_strategies.each do |sd_search_strategy| %>
+            <div class="sd-show-inner">
+              <div data-row-span="2">
+                <div data-field-span="1">
+                  <label>Database</label>
+                  <div><%= sd_search_strategy.sd_search_database&.name.present? ? sd_search_strategy.sd_search_database&.name : "-----" %></div>
+                </div>
+                <div data-field-span="1">
+                  <label>Search Run Date</label>
+                  <div><%= sd_search_strategy.date_of_search.present? ? sd_search_strategy.date_of_search : '-----' %></div>
+                </div>
+              </div>
+              <div data-row-span="1">
+                <div data-field-span="1">
+                  <label>Search Limits</label>
+                  <div><%= sd_search_strategy.search_limits.present? ? simple_format(sd_search_strategy.search_limits) : '-----' %></div>
+                </div>
+              </div>
+              <div data-row-span="1">
+                <div data-field-span="1">
+                  <label>Search Terms</label>
+                  <div><%= sd_search_strategy.search_terms.present? ? simple_format(sd_search_strategy.search_terms) : '-----' %></div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>Grey Literature Search</label>
+        <% if @sd_meta_datum.sd_grey_literature_searches.empty? %>
+          <div>-----</div>
+        <% else %>
+          <% @sd_meta_datum.sd_grey_literature_searches.each do |sd_grey_literature_search| %>
+            <div class="sd-show-inner">
+              <div>
+                <label>Description</label>
+                <div><%= sd_grey_literature_search.name.present? ? simple_format(sd_grey_literature_search.name) : '-----' %></div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+    <div data-row-span="1">
+      <div data-field-span="1">
+        <label>PRISMA / Literature Flow Diagrams</label>
+        <% if @sd_meta_datum.sd_prisma_flows.empty? %>
+          <div>-----</div>
+        <% else %>
+          <% @sd_meta_datum.sd_prisma_flows.each do |sd_prisma_flow| %>
+            <div class="sd-show-inner">
+              <div data-row-span="1">
+                <div data-field-span="1">
+                  <label>Description</label>
+                  <div><%= sd_prisma_flow.name.present? ? simple_format(sd_prisma_flow.name) : '-----' %></div>
+                </div>
+              </div>
+              <div data-row-span="1">
+                <div data-field-span="1">
+                  <label>Figure(s)</label>
+                  <% sd_prisma_flow.sd_meta_data_figures.each do |sd_meta_data_figure| %>
+                    <div class="sd-show-inner">
+                      <div data-row-span="1">
+                        <div data-field-span="1">
+                          <% sd_meta_data_figure.pictures.each do |picture| %>
+                            <div class="sd-show-image">
+                              <%= image_tag(picture, class: 'openable sd-image', title: sd_meta_data_figure.alt_text || "") %>
+                            </div>
+                          <% end %>
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </fieldset>
+</div>

@@ -1,0 +1,12 @@
+<div class="column row">
+  <h3>Question Builder</h3>
+  <div class="column row">
+    <%= render 'form' %>
+  </div>
+  <% if !params[:partial] %>
+    <div class="column row">
+      <%= link_to 'Back', build_extraction_forms_project_path(@question.extraction_forms_project,
+                      'panel-tab': @question.extraction_forms_projects_section.id) %>
+    </div>
+  <% end %>
+</div>

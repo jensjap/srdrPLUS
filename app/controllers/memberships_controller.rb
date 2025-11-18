@@ -2,7 +2,7 @@ class MembershipsController < ApplicationController
   def index
     respond_to do |format|
       format.json do
-        @room = Room.includes(project: :users).find(params[:room_id])
+        @room = Room.find(params[:room_id])
         authorize(@room, policy_class: MembershipPolicy)
 
         @memberships = @room.memberships.includes(user: :profile)

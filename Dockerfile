@@ -1,4 +1,4 @@
-FROM ruby:3.4
+FROM ruby:3.4.6
 
 ENV BUNDLER_VERSION=2.6.8 \
       LOGGER_VERSION=1.7.0
@@ -8,7 +8,7 @@ RUN apt-get update -qq && apt-get install -y curl
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 
 RUN apt-get install -y nodejs \
-    && npm install --global yarn
+      && npm install --global yarn
 
 RUN apt-get update -qq && apt-get install -y \
       build-essential \
@@ -36,5 +36,9 @@ RUN bundle config set force_ruby_platform false \
 RUN bundle install --jobs 4 --retry 3
 
 COPY . ./
+
+# Build Tailwind CSS and precompile assets
+RUN bundle exec rails tailwindcss:build && \
+    bundle exec rails assets:precompile
 
 ENTRYPOINT ["./entrypoints/docker-entrypoint.sh"]

@@ -1,0 +1,129 @@
+<% section_name = @extractions_extraction_forms_projects_sections_type1 \
+  .extractions_extraction_forms_projects_section \
+  .extraction_forms_projects_section \
+  .section \
+  .name %>
+
+<%= simple_form_for([
+  @extractions_extraction_forms_projects_section,
+  @extractions_extraction_forms_projects_sections_type1
+], html: { data: { 'abide': '' } }) do |f| %>
+  <%= f.error_notification %>
+  <div class="form-inputs">
+    <div class="row column">
+      <% if section_name.eql?('Outcomes') %>
+        <%= f.association :type1_type,
+          collection: Type1Type.outcome_types,
+          required: true,
+          label: 'Type of Outcome' %>
+        <div id="type1s">
+          <%= f.simple_fields_for(:type1) do |type1_form| %>
+            <%= type1_form.input :name, label: 'Domain',
+              collection: @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.type1s_suggested_by_project_leads.map(&:type1).map(&:name) + [type1_form.object.try(:name)],
+              input_html: { class: 'dropdown_with_writein' },
+              selected: type1_form.object.try(:name),
+              required: true %>
+            <%= type1_form.input :description, label: 'Specific measurement (i.e., tool/definition/specific outcome)' %>
+          <% end %>
+        </div>
+        <%= f.input :units %>
+      <% else %>
+        <div id="type1s">
+          <%= f.simple_fields_for(:type1) do |type1_form| %>
+            <%= type1_form.input :name,
+              collection: @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_section.type1s_suggested_by_project_leads.map(&:type1).map(&:name) + [type1_form.object.try(:name)],
+              input_html: { class: 'dropdown_with_writein' },
+              selected: type1_form.object.try(:name),
+              required: true %>
+            <%= type1_form.input :description %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+    <% if ['Outcomes', 'Diagnoses'].include?(section_name) %>
+      <div class="row">
+        <div class="columns medium-6">
+          <h4>Populations</h4>
+          <div id="populations">
+            <table>
+              <thead>
+                <tr>
+                  <th>Delete</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <%= f.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_rows) do |pop_form| %>
+                  <%= render 'population_fields', f: pop_form %>
+                <% end %>
+              </tbody>
+            </table>
+            <div class="links">
+              <%= link_to_add_association f,
+                :extractions_extraction_forms_projects_sections_type1_rows,
+                'data-association-insertion-method': 'append',
+                partial: 'population_fields' do %>
+                <i class="fi-plus"></i>
+                Add Population
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <div class="columns medium-6">
+          <h4>Timepoints (e.g., 2 weeks)</h4>
+          <div id="timepoints">
+            <%= f.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_rows,
+              @extractions_extraction_forms_projects_sections_type1.extractions_extraction_forms_projects_sections_type1_rows.first) do |pop_form| %>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Delete</th>
+                    <th>Number</th>
+                    <th>Timepoint unit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <%= pop_form.simple_fields_for(:extractions_extraction_forms_projects_sections_type1_row_columns) do |tp_form| %>
+                    <%= render 'timepoint_fields', f: tp_form %>
+                  <% end %>
+                </tbody>
+              </table>
+              <div class="links">
+                <%= link_to_add_association pop_form,
+                  :extractions_extraction_forms_projects_sections_type1_row_columns,
+                  partial: 'timepoint_fields' do %>
+                  <i class="fi-plus"></i>
+                  Add Timepoint
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <div class="form-actions">
+    <%= f.button :submit, t('update') %>
+  </div>
+<% end %>
+<script>
+  $(document).ready(function() {
+    $('#timepoints').on("cocoon:before-remove", function(event, elementToBeRemoved) {
+      if ($('.timepoint-nested-fields[removed="false"]').length == 1) {
+        alert('You must keep at least one timepoint');
+        event.preventDefault();
+      } else {
+        $(elementToBeRemoved).attr('removed', 'true');
+      }
+    });
+    $('#populations').on("cocoon:before-remove", function(event, elementToBeRemoved) {
+      if ($('.population-nested-fields[removed="false"]').length == 1) {
+        alert('You must keep at least one population');
+        event.preventDefault();
+      } else {
+        $(elementToBeRemoved).attr('removed', 'true');
+      }
+    });
+  });
+</script>

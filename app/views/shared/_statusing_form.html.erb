@@ -1,0 +1,14 @@
+<%= simple_form_for(statusing, remote: true) do |f| %>
+  <div class="hide">
+    <%= f.input :status_id, as: :select, collection: Status.all, selected: statusing.status.id %>
+  </div>
+  <div class="status-switch <%= status_name == 'Draft' ? 'draft' : 'completed' %>" id="<%= statusing.id.to_s %>-status" statusing-id="<%= statusing.id.to_s %>">
+    <span class="status-label">
+      <% if status_name == 'Draft' %>
+        Draft
+      <% elsif status_name == 'Completed' %>
+        Completed
+      <% end %>
+    </span>
+  </div>
+<% end %>

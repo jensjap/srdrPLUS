@@ -1,0 +1,6 @@
+<div class="nested-fields">
+  <div class="text-right">
+    <%= link_to_remove_association "remove url", f, data: { confirm: "Are you sure?" } %>
+  </div>
+  <%= f.input :name, placeholder: 'URL', as: :string, label: 'URL', input_html: { class: 'url-input' } %>
+</div>

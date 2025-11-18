@@ -1,0 +1,10 @@
+<h5><%= section_name %></h5>
+<blockquote>
+  The results section is where you enter numerical data, comparisons, etc.
+</blockquote>
+<%= render 'shared/extractions/work/results/outcome_selector' %>
+<div class="columns row">
+  <div id="results-data-table-links">
+    <%= render 'extractions/consolidate/results/results_populations_tabs', eefpst1: @eefpst1 %>
+  </div>
+</div>

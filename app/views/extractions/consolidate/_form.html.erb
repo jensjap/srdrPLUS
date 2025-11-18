@@ -1,0 +1,111 @@
+<div class="p-4 lg:p-8">
+  <h1 class="text-xl font-bold">
+    <%= 'Comparison Tool ' %>
+    <a class="text-base" href="/projects/<%= @project.id %>/consolidations?consolidation_beta_opt_in=true">To try the New Consolidator in alpha click here</a>
+  </h1>
+  <% if @citation_groups[:consolidations].present? %>
+    <table class="hover" id="dttb-consolidations">
+      <thead>
+        <tr>
+          <th colspan="3">Consolidations</th>
+        </tr>
+        <tr>
+          <th></th>
+          <th class="citation-handle-header" data-sort-mode="name" data-sort-direction="asc">Citation (Sorted by Title)</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @citation_groups[:consolidations].each do |citations_project_id, consolidation| %>
+          <% citations_project_info = @citation_groups[:citations_projects][consolidation.citations_project_id] %>
+          <% citation_handle = citations_project_info[:citation_info] + '<br />' + citations_project_info[:citation_name_long].truncate(70) %>
+          <% consolidation.status = Status::DRAFT if consolidation.status.blank? %>
+          <tr>
+            <td style='min-width: 80px !important;'>
+              <%= link_to t('work'), work_extraction_path(consolidation), style: 'font-weight:bold;' %>
+            </td>
+            <td title="<%= citations_project_info[:citation_name_long] %>">
+              <%= link_to citation_handle.html_safe, citation_path(citations_project_info[:citation_id]) %>
+            </td>
+            <td>
+              <%= render 'shared/statusing_form', statusing: consolidation.statusing, status_name: consolidation.statusing.status.name %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <hr>
+    <br>
+  <% end %>
+
+  <table class="hover comparisons-list">
+    <thead>
+      <tr>
+        <th colspan="4">Extractions</th>
+      </tr>
+      <tr>
+        <th class="citation-handle-header" data-sort-mode="name" data-sort-direction="asc">Citation (Sorted by Title)</th>
+        <th>Number of Extractions</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @citation_groups[:citations_projects].each do |key, val| %>
+        <% next if val[:extractions].length < 2 %>
+        <% consolidation_complete = @citation_groups[:consolidations].has_key?(val[:citations_project_id]) && @citation_groups[:consolidations][val[:citations_project_id]].status.eql?(Status::COMPLETED) %>
+        <% hide = consolidation_complete ? "hide" : "" %>
+        <tr class="<%= hide %>" data-statusable-id="<%= @citation_groups[:consolidations].fetch(key, nil).try(:id) %>">
+          <% citation_handle = val[:citation_info] + '<br />' + val[:citation_name_long].truncate(70) %>
+          <td title="<%= val[:citation_name_long] %>">
+            <%= link_to citation_handle.html_safe, citation_path(val[:citation_id]) %>
+          </td>
+          <td>
+            <%= val[:extractions].length.to_s %>
+          </td>
+          <% if val[:data_discrepancy] %>
+            <% if val[:consolidated_status] %>
+              <td>
+                <i class="fi-asterisk" style="color: #006aaa"></i>
+                Consolidation in Progress
+              </td>
+              <td>
+                <% if @project.members.include?(current_user) %>
+                  <%= link_to('Resume',
+                    consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
+                    style: 'margin-bottom:0; color:#006aaa; font-weight:bold;') %>
+                <% end %>
+              </td>
+            <% else %>
+              <td>
+                <i class="fi-alert" style="color: #c527c0;"></i>
+                Differences Detected
+              </td>
+              <td>
+                <% if @project.members.include?(current_user) %>
+                  <%= link_to('Consolidate Extractions',
+                    consolidate_project_extractions_path(extraction_ids: val[:extractions].pluck(:id)),
+                    style: 'margin-bottom:0; color:#c527c0; font-weight:bold;') %>
+                <% end %>
+              </td>
+            <% end %>
+          <% else %>
+            <td>
+              <i class="fi-check" style="color: green;"></i>
+              No Differences Detected
+            </td>
+            <td></td>
+          <% end %>
+        </tr>
+      <% end %>
+      <% if @citation_groups[:citations_project_count] < 1 %>
+        <tr>
+          <td>No comparisons found.</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

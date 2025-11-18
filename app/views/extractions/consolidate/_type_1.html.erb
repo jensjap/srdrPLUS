@@ -1,0 +1,238 @@
+<% consolidated_eefps = @eefps_by_extraction_and_efps_dict[@consolidated_extraction.id][efps.id].first %>
+<div class="grid-x">
+  <div class="cell small-1">
+    <%= render 'shared/statusing_form', statusing: consolidated_eefps.statusing, status_name: consolidated_eefps.statusing.status.name %>
+  </div>
+</div>
+<div class="row">
+  <div class="toggle-consolidated-extraction-link-medium-8-12 columns medium-8">
+    <h5><%= section_name %></h5>
+    <ul class="accordion consolidate" data-accordion='' data-multi-expand='true' data-allow-all-closed='true'>
+      <% @head_to_head.dig(efp.id, efps.id, :all_type1s).each do |type1| %>
+        <% type1_found_cnt = @head_to_head.dig(efp.id, efps.id, type1.id, :eefpst1s).try(:length) || 0 %>
+        <% type1_omnipresent = type1_found_cnt.eql? @extractions.length %>
+        <li class="accordion-item" data-accordion-item=''>
+          <a class="accordion-title inline" href="#" title="Description: <%= type1.description %>">
+            <table>
+              <thead>
+                <tr>
+                  <th style='font-weight: normal;'>
+                    <%= type1.name_and_description %>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <% if type1_omnipresent %>
+                    <td>
+                      <i class="fi-check" style='color: green;'></i>
+                      <span style='color: green;'><%= section_name.singularize %> found in All Extractions</span>
+                    </td>
+                  <% else %>
+                    <td>
+                      <i class="fi-x" style='color: red;'></i>
+                      <span style='color: red;'><%= section_name.singularize %> found in <%= type1_found_cnt %> out of <%= @extractions.length %> extractions</span>
+                    </td>
+                  <% end %>
+                </tr>
+                <% if @head_to_head.dig(efp.id, efps.id, type1.id, :population_names).present? %>
+                  <tr>
+                    <% population_name_omnipresent = @head_to_head.dig(efp.id, efps.id, type1.id, :population_names).all? { |population_name_id, values| values[:eefpst1rs].length.eql?( @extractions.length) } %>
+                    <% if population_name_omnipresent %>
+                      <td>
+                        <i class="fi-check" style='color: green;'></i>
+                        <span style='color: green;'>Populations</span>
+                      </td>
+                    <% else %>
+                      <td>
+                        <i class="fi-x" style='color: red;'></i>
+                        <span style='color: red;'>Populations</span>
+                      </td>
+                    <% end %>
+                  </tr>
+                  <tr>
+                    <% if population_name_omnipresent %>
+                      <% timepoint_name_omnipresent = @head_to_head.dig(efp.id, efps.id, type1.id, :population_names).all? { |population_name_id, values| values[:timepoint_names].all? { |timepoint_name_id, _values| _values[:eefpst1rcs].length.eql?(@extractions.length) } } %>
+                      <% if timepoint_name_omnipresent %>
+                        <td>
+                          <i class="fi-check" style='color: green;'></i>
+                          <span style='color: green;'>Timepoints</span>
+                        </td>
+                      <% else %>
+                        <td>
+                          <i class="fi-x" style='color: red;'></i>
+                          <span style='color: red;'>Timepoints</span>
+                        </td>
+                      <% end %>
+                    <% else %>
+                      <td>
+                        <i class="fi-x" style='color: red;'></i>
+                        <span style='color: red;'>Timepoints</span>
+                      </td>
+                    <% end %>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </a>
+          <div class="accordion-content" data-tab-content=''>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <% @extractions.each do |extraction| %>
+                      <th>Extracted by <%= extraction.username %> (Extraction ID: <%= extraction.id %>)</th>
+                    <% end %>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <% @extractions.each do |extraction| %>
+                      <% eefps = @eefps_by_extraction_and_efps_dict[extraction.id][efps.id].first %>
+                      <% if eefps.extractions_extraction_forms_projects_sections_type1s.map(&:type1_id).include? type1.id %>
+                        <td title="<%= type1.name_and_description %> <%= section_name.singularize %> included in extraction id <%= extraction.id %>">
+                          <i class="fi-check" style='color: green;'></i>
+                          <%= type1.name %>
+                          <%= link_to '#', class: 'edit-type1-link', data: { type1_id: type1.id, efps_id: efps.id, eefps_id: eefps.id, extraction_ids: @extractions.pluck(:id) } do %>
+                            <i class="fi-pencil"></i>
+                            Change
+                          <% end %>
+                          <br>
+                          <%= type1.description.present? ? "(#{type1.description})" : '' %>
+                        </td>
+                      <% else %>
+                        <td title="<%= type1.name_and_description %> <%= section_name.singularize %> not included in extraction id <%= extraction.id %>">
+                          <i class="fi-x" style='color: red;'></i>
+                          <%= type1.name %>
+                          <br>
+                          <%= type1.description.present? ? "(#{type1.description})" : '' %>
+                        </td>
+                      <% end %>
+                    <% end %>
+                  </tr>
+                </tbody>
+              </table>
+              <ul class="accordion" data-accordion='' data-multi-expand='false' data-allow-all-closed='true'>
+                <% if @head_to_head.dig(efp.id, efps.id, type1.id, :population_names).present? %>
+                  <% @head_to_head.dig(efp.id, efps.id, type1.id, :unique_population_names).each do |population_name| %>
+                    <li class="accordion-item" data-accordion-item=''>
+                      <% if (@head_to_head.dig(efp.id, efps.id, type1.id, :population_names, population_name.id, :timepoint_names).present? && @head_to_head.dig(efp.id, efps.id, type1.id, :population_names, population_name.id, :timepoint_names).all? { |timepoint_name_id, values| values[:eefpst1rcs].length.eql?(@extractions.length) }) %>
+                        <a class="accordion-title populations" href="#" title="Description: <%= population_name.description %>" style='color: green;'><%= population_name.name_and_description %></a>
+                      <% else %>
+                        <a class="accordion-title populations" href="#" title="Description: <%= population_name.description %>" style='color: red;'><%= population_name.name_and_description %></a>
+                      <% end %>
+                      <div class="accordion-content" data-tab-content=''>
+                        <h6>Populations</h6>
+                        <div class="table-scroll">
+                          <table>
+                            <thead style='display: none;'>
+                              <tr>
+                                <% @extractions.each do |extraction| %>
+                                  <th>Extracted by <%= extraction.username %> (Extraction ID: <%= extraction.id %>)</th>
+                                <% end %>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <% @extractions.each do |extraction| %>
+                                  <% eefps = @eefps_by_extraction_and_efps_dict[extraction.id][efps.id].first %>
+                                  <% eefpst1 = @eefpst1_by_eefps_and_t1_dict[eefps.id][type1.id]&.first %>
+                                  <% if eefpst1 %>
+                                    <% if eefpst1.extractions_extraction_forms_projects_sections_type1_rows.map(&:population_name).include? population_name %>
+                                      <td title="<%= population_name.name_and_description %> included in <%= type1.name %> <%= section_name.singularize %>">
+                                        <i class="fi-check" style='color: green;'></i>
+                                        <%= population_name.short_name_and_description %>
+                                      </td>
+                                    <% else %>
+                                      <td title="<%= population_name.name_and_description %> not included in <%= type1.name %> <%= section_name.singularize %>">
+                                        <i class="fi-x" style='color: red;'></i>
+                                        <%= population_name.short_name_and_description %>
+                                      </td>
+                                    <% end %>
+                                  <% else %>
+                                    <td title="<%= population_name.name_and_description %> not included in <%= type1.name %> <%= section_name.singularize %>">
+                                      <i class="fi-x" style='color: red;'></i>
+                                      <%= population_name.short_name_and_description %>
+                                    </td>
+                                  <% end %>
+                                <% end %>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <h6>Timepoints</h6>
+                        <div class="table-scroll">
+                          <table>
+                            <thead style='display: none;'>
+                              <tr>
+                                <% @extractions.each do |extraction| %>
+                                  <th>Extracted by <%= extraction.username %> (Extraction ID: <%= extraction.id %>)</th>
+                                <% end %>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <% @head_to_head.dig(efp.id, efps.id, type1.id, :population_names, population_name.id, :unique_timepoint_names).to_a.each do |timepoint_name| %>
+                                <tr>
+                                  <% @extractions.each do |extraction| %>
+                                    <% eefps = @eefps_by_extraction_and_efps_dict[extraction.id][efps.id].first %>
+                                    <% eefpst1 = @eefpst1_by_eefps_and_t1_dict[eefps.id][type1.id]&.first %>
+                                    <% if eefpst1 %>
+                                      <% eefpst1r = ExtractionsExtractionFormsProjectsSectionsType1Row.find_by(
+                                        extractions_extraction_forms_projects_sections_type1: eefpst1,
+                                        population_name: population_name) %>
+                                      <% if eefpst1r %>
+                                        <% if eefpst1r.extractions_extraction_forms_projects_sections_type1_row_columns.map(&:timepoint_name).include? timepoint_name %>
+                                          <td title="<%= timepoint_name.pretty_print_export_header %> included in <%= population_name.name %>">
+                                            <i class="fi-check" style='color: green;'></i>
+                                            <%= timepoint_name.pretty_print_export_header %>
+                                          </td>
+                                        <% else %>
+                                          <td title="<%= timepoint_name.pretty_print_export_header %> not included in <%= population_name.name %>">
+                                            <i class="fi-x" style='color: red;'></i>
+                                            <%= timepoint_name.pretty_print_export_header %>
+                                          </td>
+                                        <% end %>
+                                      <% else %>
+                                        <td title="<%= timepoint_name.pretty_print_export_header %> not included in <%= population_name.name %>">
+                                          <i class="fi-x" style='color: red;'></i>
+                                          <%= timepoint_name.pretty_print_export_header %>
+                                        </td>
+                                      <% end %>
+                                    <% else %>
+                                      <td title="<%= timepoint_name.pretty_print_export_header %> not included in <%= population_name.name %>">
+                                        <i class="fi-x" style='color: red;'></i>
+                                        <%= timepoint_name.pretty_print_export_header %>
+                                      </td>
+                                    <% end %>
+                                  <% end %>
+                                </tr>
+                              <% end %>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </li>
+                  <% end %>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="toggle-consolidated-extraction-link-medium-4-0-hide columns medium-4">
+    <% eefps = @eefps_by_extraction_and_efps_dict[@consolidated_extraction.id][efps.id].first %>
+    <div class="row">
+      <div class="column">
+        <%= render 'extractions/shared/type_1/type_1_included_list', extraction: @consolidated_extraction, section_name: section_name, eefps: eefps %>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="column">
+        <%= render 'extractions/shared/type_1/type_1_new_custom_form', extraction: @consolidated_extraction, section_name: section_name, eefps: eefps %>
+      </div>
+    </div>
+  </div>
+</div>

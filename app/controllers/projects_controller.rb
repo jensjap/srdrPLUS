@@ -2,10 +2,11 @@ class ProjectsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:export]
 
   before_action :set_project, only: %i[
-    citations_in_ris export_data show edit update destroy export
+    citations_in_ris show edit update destroy export
     export_assignments_and_mappings import_assignments_and_mappings simple_import
     import_csv import_pubmed import_endnote import_ris
-    confirm_deletion dedupe_citations create_citation_screening_extraction_form
+    confirm_deletion dedupe_citations citation_duplicates merge_citation_duplicates
+    create_citation_screening_extraction_form
     create_full_text_screening_extraction_form machine_learning_results
   ]
 
@@ -376,6 +377,84 @@ class ProjectsController < ApplicationController
     flash[:success] = 'Request to deduplicate citations has been received. Please come back later.'
 
     redirect_to(project_citations_path(@project), status: 303)
+  end
+
+  def citation_duplicates
+    authorize(@project)
+    comparison_fields = params[:comparison_fields] || ['title']
+
+    # Build fuzzy threshold hash from parameters
+    fuzzy_threshold = {}
+    if params[:fuzzy_title].present?
+      fuzzy_threshold[:title] = params[:fuzzy_title].to_f / 100.0
+    end
+    if params[:fuzzy_authors].present?
+      fuzzy_threshold[:authors] = params[:fuzzy_authors].to_f / 100.0
+    end
+
+    @detector = CitationDuplicateDetector.new(
+      @project,
+      comparison_fields: comparison_fields,
+      fuzzy_threshold: fuzzy_threshold
+    )
+    @duplicate_groups = @detector.find_duplicates
+    @comparison_fields = comparison_fields
+    @fuzzy_title = params[:fuzzy_title].to_i
+    @fuzzy_authors = params[:fuzzy_authors].to_i
+  end
+
+  def merge_citation_duplicates
+    authorize(@project)
+
+    # Get selected groups (each group is comma-separated citation_ids)
+    group_citation_ids = params[:group_citation_ids] || []
+
+    if group_citation_ids.empty?
+      flash[:error] = 'Please select at least one group to merge.'
+      redirect_back(fallback_location: citation_duplicates_project_path(@project), status: 303)
+      return
+    end
+
+    # Process each group of citations_projects
+    total_citations_projects = 0
+    groups_merged = 0
+
+    ActiveRecord::Base.transaction do
+      group_citation_ids.each do |group|
+        citation_ids = group.split(',').map(&:to_i)
+        next if citation_ids.size < 2
+
+        # Get CitationsProject records for this group in the current project, ordered by citation_id (oldest first)
+        citations_projects = @project.citations_projects.where(citation_id: citation_ids).includes(:citation).order('citations.id')
+        next if citations_projects.size < 2
+
+        master_cp = citations_projects.first
+        duplicate_cps = citations_projects[1..]
+
+        duplicate_cps.each do |cp_to_remove|
+          # Transfer all associations using the job's logic
+          DedupeCitationsJob.new.send(:transfer_all_associations, master_cp, cp_to_remove)
+          DedupeCitationsJob.new.send(:reload_associations_safely, cp_to_remove)
+          cp_to_remove.destroy!
+        end
+
+        total_citations_projects += citations_projects.size
+        groups_merged += 1
+
+        # Reindex the master
+        DedupeCitationsJob.new.send(:reload_associations_safely, master_cp)
+        master_cp.reindex
+      end
+    end
+
+    if groups_merged > 0
+      flash[:success] = "Successfully merged #{groups_merged} group(s) containing #{total_citations_projects} citations."
+    else
+      flash[:error] = 'No valid groups were selected for merging.'
+    end
+
+    # Return to the same page with preserved filter settings
+    redirect_back(fallback_location: citation_duplicates_project_path(@project), status: 303)
   end
 
   def create_citation_screening_extraction_form

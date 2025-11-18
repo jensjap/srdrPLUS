@@ -1,0 +1,117 @@
+<div class="max-w-full mx-auto py-6 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto space-y-6">
+    <h1 class="text-3xl font-medium text-warm-gray-900"><%= empty_or_na(@project.name) %></h1>
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+      <div class="px-4 py-5 sm:px-6 bg-purple-900">
+        <h1 class="text-2xl font-bold leading-6 font-medium text-white">Project Summary Title and Description</h1>
+      </div>
+      <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+        <dl class="sm:divide-y sm:divide-gray-200">
+          <div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Title</dt>
+            <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2"><%= empty_or_na(@project.name) %></dd>
+          </div>
+          <div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Description</dt>
+            <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2"><%= empty_or_na(@project.description) %></dd>
+          </div>
+          <div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Attribution</dt>
+            <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2"><%= empty_or_na(@project.attribution) %></dd>
+          </div>
+          <div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Authors of Report</dt>
+            <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2"><%= empty_or_na(@project.authors_of_report) %></dd>
+          </div>
+          <div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Methodology description</dt>
+            <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2"><%= empty_or_na(@project.methodology_description) %></dd>
+          </div>
+          <div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">PROSPERO</dt>
+            <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2"><%= empty_or_na(@project.prospero) %></dd>
+          </div>
+          <div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">DOI</dt>
+            <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2"><%= empty_or_na(@project.doi) %></dd>
+          </div>
+          <div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Notes</dt>
+            <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2"><%= empty_or_na(@project.notes) %></dd>
+          </div>
+          <div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Funding Source</dt>
+            <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2"><%= empty_or_na(@project.funding_source) %></dd>
+          </div>
+          <div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">MeSH Terms</dt>
+            <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2">
+              <ul>
+                <% @project.mesh_descriptors.each do |md| %>
+                  <li><%= link_to(md.name, md.resource_uri, target: '_blank', data: { confirm: @exit_disclaimer }) %></li>
+                <% end %>
+              </ul>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+      <div class="px-4 py-5 sm:px-6 bg-purple-900">
+        <h1 class="text-2xl font-bold leading-6 font-medium text-white">Key Questions</h1>
+      </div>
+      <% @project.key_questions.each_with_index do |kq, idx| %>
+        <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+          <dl class="sm:divide-y sm:divide-gray-200">
+            <div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
+              <dt class="text-sm font-medium text-gray-500"><%= idx + 1 %></dt>
+              <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2"><%= kq.name %></dd>
+            </div>
+          </dl>
+        </div>
+      <% end %>
+    </div>
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+      <div class="px-4 py-5 sm:px-6 bg-purple-900">
+        <h1 class="text-2xl font-bold leading-6 font-medium text-white">Downloadable Data Content</h1>
+      </div>
+      <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+        <dl class="sm:divide-y sm:divide-gray-200">
+          <div class="py-4 sm:py-5 sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6">
+            <dt class="text-sm font-medium text-gray-500">Files</dt>
+            <dd class="mt-1 text-gray-900 sm:mt-0 sm:col-span-2">
+              <ul class="border border-gray-200 rounded-md divide-y divide-gray-200">
+                <li class="pl-3 pr-4 py-3 flex items-center justify-between">
+                  <div class="w-0 flex-1 flex items-center">
+                    <!-- Heroicon name: solid/paper-clip -->
+                    <svg class="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                      <path clip-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" fill-rule="evenodd" />
+                    </svg>
+                    <span class="ml-2 flex-1 w-0 truncate">XLSX Project Data</span>
+                  </div>
+                  <div class="ml-4 flex-shrink-0">
+                    <% if current_user %>
+                      <%= link_to "Export", export_project_path(@project, export_type_name: '.xlsx'), method: :post, class: "font-medium text-indigo-600 hover:text-indigo-500" %>
+                    <% else %>
+                      <%= link_to "Export", new_user_session_path(redirect_path: request.fullpath), class: "font-medium text-indigo-600 hover:text-indigo-500" %>
+                    <% end %>
+                  </div>
+                </li>
+              </ul>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+    <div class="grid-container">
+      <div class="grid-y grid-padding-y">
+        <div class="cell">
+          <% if controller.class == ProjectsController && policy(@project).edit? %>
+            <%= link_to 'Edit', edit_project_path(@project) %> |
+          <% end %>
+          <%= link_to 'Back', projects_path %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

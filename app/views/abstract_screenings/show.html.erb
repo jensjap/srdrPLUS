@@ -9,6 +9,9 @@
             </h1>
             <p class="mt-2 text-sm text-gray-700">
               A list of all results for citations that have been labeled.
+              <span x-show="pagination.total_count !== undefined" x-cloak class="ml-2 font-semibold">
+                (<span x-text="pagination.total_count"></span> results)
+              </span>
             </p>
           </div>
           <div class="flex-col items-end md:w-96">

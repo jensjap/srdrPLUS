@@ -1,0 +1,56 @@
+<div class="reveal large" id="modal-<%= efps.id.to_s %>" data-reveal>
+  <div class="columns row">
+    <button class="button" id="submit-quality-dimensions" type="button" data-extraction-forms-projects-section-id="<%= efps.id.to_s %>" style="z-index:1000; position: fixed; right: 10%;">Submit</button>
+  </div>
+  <div class="columns row">
+    <ul class="accordion" data-accordion data-allow-all-closed="true">
+      <% QualityDimensionSectionGroup.includes(quality_dimension_sections: { quality_dimension_questions: :quality_dimension_options }).all.each do |qdsg| %>
+        <li class="accordion-item" data-accordion-item>
+          <a class="accordion-title"><%= qdsg.name %></a>
+          <div class="accordion-content" data-tab-content>
+            <% qdsg.quality_dimension_sections.each do |qds| %>
+              <table class="unstriped hover">
+                <caption style="text-align: left; font-weight: bold; font-size: 1.4em;">
+                  <a class="add-quality-dimension-section" id="<%= qds.id %>"><%= qds.name %></a>
+                </caption>
+                <col>
+                <col>
+                <colgroup span="5"></colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">
+                      <input class="select-all" id="select-all-section-id-<%= qds.id %>" type="checkbox" />
+                    </th>
+                    <th scope="col">Question Text</th>
+                    <th colspan="5" scope="colgroup">Options</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% qds.quality_dimension_questions.each do |qdq| %>
+                    <% is_present = false %>
+                    <% efps.questions.each do |q| %>
+                      <% if q.name == qdq.name && q.description == qdq.description %>
+                        <% is_present = true %>
+                      <% end %>
+                    <% end %>
+                    <% unless is_present %>
+                      <tr>
+                        <td>
+                          <input class="quality-dimension-select" id="<%= qdq.id %>" type="checkbox" />
+                        </td>
+                        <th id="<%= qdq.id %>" scope="row" style="text-align: left;"><%= qdq.name %></th>
+                        <% qdq.quality_dimension_options.each do |qdo| %>
+                          <td><%= qdo.name %></td>
+                        <% end %>
+                      </tr>
+                    <% end %>
+                  <% end %>
+                </tbody>
+              </table>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

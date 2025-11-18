@@ -1,0 +1,20 @@
+<table style="margin: 0;">
+  <thead></thead>
+  <tbody>
+    <tr>
+      <td>
+        <%= number_field_tag('before_decimal_point-' + qrc.id.to_s, nil, data: { prereq: "prereq-#{qrc.class}-#{qrc.id}" }, in: 1..9, step: 1, maxlength: 1) %>
+      </td>
+      <td></td>
+      <td>
+        <%= number_field_tag('after_decimal_point-' + qrc.id.to_s, nil, data: { prereq: "prereq-#{qrc.class}-#{qrc.id}" }, min: 0, max: 9999999) %>
+      </td>
+      <td>
+        X 10 ^
+      </td>
+      <td>
+        <%= number_field_tag("exponent-#{qrc.id}", nil, data: { prereq: "prereq-#{qrc.class}-#{qrc.id}" }, min: -999, max: 999) %>
+      </td>
+    </tr>
+  </tbody>
+</table>

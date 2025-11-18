@@ -1,0 +1,73 @@
+<% section_name = section_name.singularize %>
+<h5>Add New <%= section_name %></h5>
+<%= simple_form_for(eefps, html: { data: { 'abide': '', 'live-validate': true } }) do |f| %>
+  <div class="alert callout" data-abide-error style="display: none;">
+    <p><i class="fi-alert"></i> Please correct the errors below.</p>
+  </div>
+  <%= f.hidden_field :action, value: @extractions.present? ? :consolidate : :work %>
+  <%= f.simple_fields_for(:extractions_extraction_forms_projects_sections_type1s,
+    f.object.extractions_extraction_forms_projects_sections_type1s.build) do |sf_eefpst1| %>
+    <div class="row">
+      <div class="columns medium-6 form-inputs new-type1-fields-<%= eefps.id %>">
+        <%= sf_eefpst1.association :type1_type,
+          collection: Type1Type.diagnostic_test_types,
+          required: true,
+          label: "Select Type of Test" %>
+        <%= sf_eefpst1.simple_fields_for(:type1, sf_eefpst1.object.build_type1) do |sf_t1| %>
+          <%= sf_t1.input :name, label: 'Title', required: true, hint: "Name can't be blank" %>
+          <%= sf_t1.input :description, label: 'Description', input_html: { rows: 2 } %>
+        <% end %>
+      </div>
+      <div class="links">
+        <%= link_to_add_association sf_eefpst1,
+          :extractions_extraction_forms_projects_sections_type1_rows,
+          class: 'add-population-link',
+          partial: 'extractions_extraction_forms_projects_sections_type1s/threshold_fields' do %>
+          <i class="fi-plus"></i>
+          Add Threshold
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+  <div class="form-actions">
+    <%= f.button :submit, 'Save' %>
+  </div>
+<% end %>
+<h5>Index Tests</h5>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Thresholds</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% eefps.extractions_extraction_forms_projects_sections_type1s.where('type1_type_id = 5').each do |eefpst1| %>
+      <tr>
+        <td><%= eefpst1.type1.name %></td>
+        <td><%= eefpst1.type1.description %></td>
+        <td><%= eefpst1.extractions_extraction_forms_projects_sections_type1_rows.collect(&:population_name).collect(&:name).join(', ') %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<h5>Reference Tests</h5>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Thresholds</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% eefps.extractions_extraction_forms_projects_sections_type1s.where('type1_type_id = 6').each do |eefpst1| %>
+      <tr>
+        <td><%= eefpst1.type1.name %></td>
+        <td><%= eefpst1.type1.description %></td>
+        <td><%= eefpst1.extractions_extraction_forms_projects_sections_type1_rows.collect(&:population_name).collect(&:name).join(', ') %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

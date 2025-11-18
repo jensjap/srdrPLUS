@@ -164,6 +164,14 @@ class ProjectPolicy < ApplicationPolicy
     project_leader?
   end
 
+  def citation_duplicates?
+    project_leader?
+  end
+
+  def merge_citation_duplicates?
+    project_leader?
+  end
+
   def create_citation_screening_extraction_form?
     project_leader?
   end

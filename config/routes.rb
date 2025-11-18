@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   post 'publishings/:id/approve', to: 'publishings#approve', as: 'publishings_approve'
   post 'publishings/:id/rescind_approval', to: 'publishings#rescind_approval', as: 'rescind_approval'
 
-  resources :project_report_links, only: %i[index view] do
+  resources :project_report_links, only: %i[index] do
     get 'new_query_form'
     post 'options_form'
   end
@@ -270,6 +270,8 @@ Rails.application.routes.draw do
       post 'import_ris'
       post 'import_endnote'
       post 'import_pubmed'
+      get 'citation_duplicates'
+      post 'merge_citation_duplicates'
       post 'dedupe_citations'
       post 'citations_in_ris'
       post 'create_citation_screening_extraction_form'

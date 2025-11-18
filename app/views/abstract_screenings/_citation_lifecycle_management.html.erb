@@ -9,7 +9,12 @@
   <div class="sm:flex sm:items-center">
     <div class="sm:flex-auto">
       <h1 class="text-xl font-bold">Citation Lifecycle Management</h1>
-      <p class="mt-2 text-sm text-gray-700">Promote or demote citations.</p>
+      <p class="mt-2 text-sm text-gray-700">
+        Promote or demote citations.
+        <span x-show="pagination.total_count !== undefined" x-cloak class="ml-2 font-semibold">
+          (<span x-text="pagination.total_count"></span> results)
+        </span>
+      </p>
       <div class="relative">
         <input
           x-model.debounce.500ms="query"

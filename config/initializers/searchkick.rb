@@ -2,7 +2,7 @@ if Rails.env.production?
   require 'faraday_middleware/aws_sigv4'
 
   Searchkick.client = OpenSearch::Client.new(
-    url: ENV["OPENSEARCH_URL"],
+    url: ENV['OPENSEARCH_URL'],
     transport_options: {
       headers: { content_type: "application/json" },
       request: { timeout: 300, open_timeout: 10 }  # 5 minute timeout for bulk operations
@@ -15,10 +15,10 @@ if Rails.env.production?
     timeout: 300  # Overall timeout
   ) do |f|
     f.request :aws_sigv4,
-      service: "es",
-      region: ENV["AWS_REGION"],
-      access_key_id: ENV["AWS_ACCESS_KEY_ID"],
-      secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"]
+              service: 'es',
+              region: ENV['AWS_REGION'],
+              access_key_id: ENV['AWS_ACCESS_KEY_ID'],
+              secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
     f.adapter Faraday.default_adapter
   end
 else

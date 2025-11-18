@@ -1,0 +1,12 @@
+<% if efps.instructions.present? %>
+  <h5>Special instructions for this section:</h5>
+  <blockquote>
+    <span class="font-bold text-red-500"><%= efps.instructions %></span>
+    <cite>Project Lead</cite>
+  </blockquote>
+<% else %>
+  <blockquote>
+    Please fill out the form below.
+    <cite>Friendly Helper</cite>
+  </blockquote>
+<% end %>
