@@ -19,7 +19,7 @@ class PublishedProjectsListingService
       next unless project_id
 
       # when loading project, consider preloading associations to avoid N+1:
-      project = Project.includes(:key_questions, :extraction_forms, :citations_projects => :citation).find_by(id: project_id)
+      project = Project.includes(:key_questions, :extraction_forms, :citations_projects => :citation, :publishing => :approval).find_by(id: project_id)
       next unless project
 
       # before fetching project, build public prefix and parse filename
@@ -49,6 +49,13 @@ class PublishedProjectsListingService
       doi = project.respond_to?(:doi) ? project.doi : nil
       notes = project.respond_to?(:notes) ? project.notes : nil
       funding_source = project.respond_to?(:funding_source) ? project.funding_source : nil
+
+      # publication_date: extract from approval.created_at
+      publication_date = if project.respond_to?(:publishing) && project.publishing&.respond_to?(:approval)
+        project.publishing&.approval&.created_at
+      else
+        nil
+      end
 
       # key_questions: normalize to an array of { name, created_at } using actual model attributes
       key_questions = []
@@ -110,6 +117,7 @@ class PublishedProjectsListingService
         doi: doi,
         notes: notes,
         funding_source: funding_source,
+        publication_date: publication_date,
         key_questions: key_questions,
         associated_extraction_forms: associated_extraction_forms,
         associated_studies: associated_studies,
